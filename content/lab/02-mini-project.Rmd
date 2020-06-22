@@ -4,15 +4,15 @@ date: "2020-05-29"
 due_date: "2020-05-29"
 due_time: "11:59 PM"
 menu:
-  assignment:
+  labs:
     parent: Projects
-    weight: 2
-weight: 2
+    weight: 1
+weight: 1
 type: docs
 output:
   blogdown::html_page:
     toc: true
-editor_options: 
+editor_options:
   chunk_output_type: console
 ---
 
@@ -35,10 +35,10 @@ Here's what you need to do:
 #. **Download** the Department of Homeland Security's annual count of people granted refugee status between 2006-2015:
 
     [<i class="fas fa-file-csv"></i> DHS refugees, 2006-2015](/data/refugee_status.csv)
-    
+
     Place this in the `data` subfolder you created in step 1. You might need to right click on this link and choose "Save link as…", since your browser may try to display it as text. This data was originally [uploaded by the Department of Homeland Security to Kaggle](https://www.kaggle.com/dhs/refugee-report), and is provided with a public domain license.
 
-#. **Create** a new R Markdown file and save it in your project. In RStudio go to File > New File > R Markdown…, choose the default options, and delete all the placeholder text in the new file except for the metadata at the top, which is between `---` and `---`. 
+#. **Create** a new R Markdown file and save it in your project. In RStudio go to File > New File > R Markdown…, choose the default options, and delete all the placeholder text in the new file except for the metadata at the top, which is between `---` and `---`.
 
 #. **Verify** that your project folder is structured like this:
 
@@ -95,7 +95,7 @@ The data isn't perfectly clean and tidy, but it's real world data, so this is no
 
 These are the main issues with the data:
 
-- There are non-numeric values in the data, like `-`, `X`, and `D`. The data isn't very well documented; I'm assuming `-` indicates a missing value, but I'm not sure what `X` and `D` mean, so for this assignment, we'll just assume they're also missing. 
+- There are non-numeric values in the data, like `-`, `X`, and `D`. The data isn't very well documented; I'm assuming `-` indicates a missing value, but I'm not sure what `X` and `D` mean, so for this assignment, we'll just assume they're also missing.
 
 - The data generally includes rows for dozens of countries, but there are also rows for some continents, "unknown," "other," and a total row. Because [Africa is not a country](https://twitter.com/africasacountry), and neither are the other continents, we want to exclude all non-countries.
 
@@ -104,7 +104,7 @@ These are the main issues with the data:
 - To ensure that country names are consistent in this data, we use the **countrycode** package (install it if you don't have it), which is amazing. The `countrycode()` function will take a country name in a given coding scheme and convert it to a different coding scheme using this syntax:
 
         countrycode(variable, "current-coding-scheme", "new-coding-scheme")
-    
+
     It also does a farily good job at guessing and parsing inconsistent country names (e.g. it will recognize "Congo, Democratic Republic", even though it should technically be "Democratic Republic of the Congo"). Here, we use `countrycode()` to convert the inconsistent country names into ISO3 codes. We then create a cleaner version of the `origin_country` column by converting the ISO3 codes back into country names. Note that the function chokes on North Korea initially, since it's included as "Korea, North"—we use the `custom_match` argument to help the function out.
 
 - The data isn't tidy—there are individual columns for each year. `gather()` takes every column and changes it to a row. We exclude the country, region, continent, and ISO3 code from the change-into-rows transformation with `-origin_country, -iso3, -origin_region, -origin_continent`.
@@ -118,15 +118,15 @@ library(lubridate)    # For dealing with dates
 ```
 
 ```{r load-data-real, include=FALSE}
-refugees_raw <- read_csv(here::here("static/data/refugee_status.csv"), na = c("-", "X", "D")) 
+refugees_raw <- read_csv(here::here("static/data/refugee_status.csv"), na = c("-", "X", "D"))
 ```
 
 ```{r load-data-fake, eval=FALSE}
-refugees_raw <- read_csv("data/refugee_status.csv", na = c("-", "X", "D")) 
+refugees_raw <- read_csv("data/refugee_status.csv", na = c("-", "X", "D"))
 ```
 
 ```{r clean-data}
-non_countries <- c("Africa", "Asia", "Europe", "North America", "Oceania", 
+non_countries <- c("Africa", "Asia", "Europe", "North America", "Oceania",
                    "South America", "Unknown", "Other", "Total")
 
 refugees_clean <- refugees_raw %>%
@@ -158,7 +158,7 @@ Here are some possible summaries of the data you might use…
 This is just the `refugees_clean` data frame I gave you. You'll want to filter it and select specific countries, though—you won't really be able to plot 60 countries all at once unless you use sparklines.
 
 ```{r show-refugees-countries, echo=FALSE}
-refugees_clean %>% 
+refugees_clean %>%
   head()
 ```
 
@@ -176,7 +176,7 @@ refugees_countries_cumulative <- refugees_clean %>%
 ```{r show-refugees-countries-cumulative, echo=FALSE}
 refugees_countries_cumulative %>%
   arrange(origin_country) %>%
-  select(-origin_region) %>% 
+  select(-origin_region) %>%
   head()
 ```
 
@@ -221,11 +221,11 @@ You can redesign one of these ugly, less-than-helpful graphs, or create a brand 
 ```{r create-plots, fig.width=11, fig.height=6, warning=FALSE, message=FALSE, echo=FALSE}
 library(patchwork)
 
-plot_countries <- ggplot(filter(refugees_clean, 
+plot_countries <- ggplot(filter(refugees_clean,
                                 iso3 %in% c("IRQ", "SYR", "IRN")),
-                         aes(x = year_date, y = number, 
+                         aes(x = year_date, y = number,
                              color = origin_country)) +
-  geom_line() + 
+  geom_line() +
   labs(title = "1. Specific countries over time") +
   theme_minimal(base_size = 10) +
   theme(legend.position = "bottom",
@@ -233,7 +233,7 @@ plot_countries <- ggplot(filter(refugees_clean,
 
 plot_countries_cum <- ggplot(filter(refugees_countries_cumulative,
                                     iso3 %in% c("IRQ", "SYR", "IRN")),
-                             aes(x = year_date, y = cumulative_total, 
+                             aes(x = year_date, y = cumulative_total,
                                  color = origin_country)) +
   geom_line() +
   labs(title = "2. Specific countries over time, cumulative") +
@@ -242,7 +242,7 @@ plot_countries_cum <- ggplot(filter(refugees_countries_cumulative,
         plot.title = element_text(face = "bold"))
 
 plot_continents <- ggplot(refugees_continents,
-                          aes(x = year_date, y = total, 
+                          aes(x = year_date, y = total,
                               color = origin_continent)) +
   geom_line() +
   labs(title = "3. Continents over time") +
@@ -251,7 +251,7 @@ plot_continents <- ggplot(refugees_continents,
         plot.title = element_text(face = "bold"))
 
 plot_continents_cum <- ggplot(refugees_continents_cumulative,
-                              aes(x = year_date, y = cumulative_total, 
+                              aes(x = year_date, y = cumulative_total,
                                   color = origin_continent)) +
   geom_line() +
   labs(title = "4. Continents over time, cumulative") +
@@ -259,7 +259,7 @@ plot_continents_cum <- ggplot(refugees_continents_cumulative,
   theme(legend.position = "bottom",
         plot.title = element_text(face = "bold"))
 
-plot_all <- plot_countries + plot_countries_cum + 
+plot_all <- plot_countries + plot_countries_cum +
   plot_continents + plot_continents_cum
 
 plot_all
@@ -270,18 +270,18 @@ Or be super brave and make a map!
 ```{r create-map, fig.width=11, fig.height=5, echo=FALSE, warning=FALSE, message=FALSE}
 library(sf)
 
-world_shapes <- read_sf(here::here("static", "data", 
+world_shapes <- read_sf(here::here("static", "data",
                                    "ne_110m_admin_0_countries/ne_110m_admin_0_countries.shp"))
 
-refugees_2015 <- refugees_clean %>% 
+refugees_2015 <- refugees_clean %>%
   filter(year == 2015)
 
 refugee_map <- world_shapes %>%
   left_join(refugees_2015, by = c("ISO_A3" = "iso3")) %>%
   filter(ISO_A3 != "ATA")
 
-ggplot() + 
-  geom_sf(data = refugee_map, aes(fill = number), size = 0.25, color = "black") + 
+ggplot() +
+  geom_sf(data = refugee_map, aes(fill = number), size = 0.25, color = "black") +
   coord_sf(crs = 54030, datum = NA) +
   scale_fill_viridis_c(na.value = "white") +
   labs(title = "5. Refugees admitted to the US in 2015") +

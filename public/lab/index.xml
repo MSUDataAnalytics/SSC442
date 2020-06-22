@@ -5,7 +5,7 @@
     <link>/lab/</link>
       <atom:link href="/lab/index.xml" rel="self" type="application/rss+xml" />
     <description>Labs and Evaluations</description>
-    <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><lastBuildDate>Tue, 01 Sep 2020 00:00:00 +0000</lastBuildDate>
+    <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator>
     <image>
       <url>/img/social-image.png</url>
       <title>Labs and Evaluations</title>
@@ -86,12 +86,210 @@ Replace this line with a code chunk and use it to create a plot.
     </item>
     
     <item>
+      <title>Mini project 2</title>
+      <link>/lab/02-mini-project/</link>
+      <pubDate>Fri, 29 May 2020 00:00:00 +0000</pubDate>
+      <guid>/lab/02-mini-project/</guid>
+      <description>
+
+&lt;div id=&#34;TOC&#34;&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#instructions&#34;&gt;Instructions&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#data-cleaning-code&#34;&gt;Data cleaning code&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#data-to-possibly-use-in-your-plot&#34;&gt;Data to possibly use in your plot&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#country-totals-over-time&#34;&gt;Country totals over time&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#cumulative-country-totals-over-time&#34;&gt;Cumulative country totals over time&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#continent-totals-over-time&#34;&gt;Continent totals over time&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#cumulative-continent-totals-over-time&#34;&gt;Cumulative continent totals over time&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#visualization-ideas&#34;&gt;Visualization ideas&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+
+&lt;p&gt;The United States has resettled more than 600,000 refugees from 60 different countries since 2006.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/img/assignments/refugees_welcome.jpg&#34; width=&#34;70%&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;In this mini project, you will use &lt;strong&gt;R, ggplot, and &lt;a href=&#34;https://www.adobe.com/products/illustrator.html&#34;&gt;Illustrator&lt;/a&gt;, &lt;a href=&#34;https://inkscape.org/en/&#34;&gt;Inkscape&lt;/a&gt;, or &lt;a href=&#34;https://www.designer.io/&#34;&gt;Gravit Designer&lt;/a&gt;&lt;/strong&gt; to explore where these refugees have come from.&lt;/p&gt;
+&lt;div id=&#34;instructions&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Instructions&lt;/h2&gt;
+&lt;p&gt;Here’s what you need to do:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;Create&lt;/strong&gt; a new RStudio project and place it on your computer somewhere. Open that new folder in Windows File Explorer or macOS Finder (however you navigate around the files on your computer), and create two subfolders there named &lt;code&gt;data&lt;/code&gt; and &lt;code&gt;output&lt;/code&gt;.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;Download&lt;/strong&gt; the Department of Homeland Security’s annual count of people granted refugee status between 2006-2015:&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;/data/refugee_status.csv&#34;&gt;&lt;i class=&#34;fas fa-file-csv&#34;&gt;&lt;/i&gt; DHS refugees, 2006-2015&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Place this in the &lt;code&gt;data&lt;/code&gt; subfolder you created in step 1. You might need to right click on this link and choose “Save link as…”, since your browser may try to display it as text. This data was originally &lt;a href=&#34;https://www.kaggle.com/dhs/refugee-report&#34;&gt;uploaded by the Department of Homeland Security to Kaggle&lt;/a&gt;, and is provided with a public domain license.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;Create&lt;/strong&gt; a new R Markdown file and save it in your project. In RStudio go to File &amp;gt; New File &amp;gt; R Markdown…, choose the default options, and delete all the placeholder text in the new file except for the metadata at the top, which is between &lt;code&gt;---&lt;/code&gt; and &lt;code&gt;---&lt;/code&gt;.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;Verify&lt;/strong&gt; that your project folder is structured like this:&lt;/p&gt;
+&lt;pre class=&#34;text&#34;&gt;&lt;code&gt;your-project-name/
+  your-analysis.Rmd
+  your-project-name.Rproj
+  data/
+    refugee_status.csv
+  output/
+    NOTHING&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;Clean&lt;/strong&gt; the data using the code I’ve given you below.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;Summarize&lt;/strong&gt; the data somehow. There is data for 60 countries over 10 years, so you’ll probably need to aggregate or reshape the data somehow (unless you do a 60-country sparkline). I’ve included some examples down below.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;Create&lt;/strong&gt; an appropriate time-based visualization based on the data. I’ve shown a few different ways to summarize the data so that it’s plottable down below. Don’t just calculate overall averages or totals per country—the visualization needs to deal with change over time. &lt;em&gt;Do as much polishing and refining in R&lt;/em&gt;—make adjustments to the colors, scales, labels, grid lines, and even fonts, etc.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;Save&lt;/strong&gt; the figure as a PDF. Use &lt;code&gt;ggsave(plot_name, filename = &#34;output/blah.pdf&#34;, width = XX, height = XX)&lt;/code&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;Refine and polish&lt;/strong&gt; the saved PDF in &lt;a href=&#34;https://www.adobe.com/products/illustrator.html&#34;&gt;Illustrator&lt;/a&gt; or &lt;a href=&#34;https://inkscape.org/en/&#34;&gt;Inkscape&lt;/a&gt; or &lt;a href=&#34;https://www.designer.io/&#34;&gt;Gravit Designer&lt;/a&gt;, adding annotations, changing colors, and otherwise enhancing it.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;Export&lt;/strong&gt; the polished image as a PDF and a PNG file.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;Write&lt;/strong&gt; a memo (no word limit) explaining your process. I’m specifically looking for the following:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;What story are you telling with your graphic?&lt;/li&gt;
+&lt;li&gt;How did you apply the principles of CRAP?&lt;/li&gt;
+&lt;li&gt;How did you apply Kieran Healy’s principles of great visualizations or Alberto Cairo’s five qualities of great visualizations?&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;Upload&lt;/strong&gt; the following outputs to iCollege:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;A PDF or Word file of your memo with your final code, intermediate graphic (the one you create in R), and final graphic (the one you enhance) in it. Remember to use &lt;code&gt;![Caption](path/to/figure/here)&lt;/code&gt; to place external images in Markdown.&lt;/li&gt;
+&lt;li&gt;A standalone PNG version of your graphic. You’ll export this from Illustrator or Inkscape.&lt;/li&gt;
+&lt;li&gt;A standalone PDF version of your graphic. You’ll export this from Illustrator or Inkscape.&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;You will be graded based on completion using the standard ✓ system, but I’ll provide comments on how you use R and &lt;strong&gt;ggplot2&lt;/strong&gt;, how well you apply the principles of CRAP, &lt;em&gt;The Truthful Art&lt;/em&gt;, and &lt;em&gt;Effective Data Visualization&lt;/em&gt;, and how appropriate the graph is for the data and the story you’re telling. I will use &lt;a href=&#34;/files/mini-project-2-rubric.pdf&#34;&gt;this rubric&lt;/a&gt; to make comments and provide you with a simulated grade.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;/files/mini-project-2-rubric.pdf&#34;&gt;&lt;i class=&#34;fas fa-file-pdf&#34;&gt;&lt;/i&gt; &lt;code&gt;mini-project-2-rubric.pdf&lt;/code&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;For this assignment, I am less concerned with the code (that’s why I gave most of it to you), and more concerned with the &lt;em&gt;design&lt;/em&gt;. Choose good colors based on palettes. Choose good, clean fonts. Use the heck out of &lt;code&gt;theme()&lt;/code&gt;. Add informative design elements in Illustrator/Inkscape/Gravit Designer. Make it look beautiful and CRAPpy. Refer to &lt;a href=&#34;/resource/design/&#34;&gt;the design resources here&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;The assignment is due by 11:59 PM on Friday, May 29&lt;/strong&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Please seek out help when you need it!&lt;/strong&gt; You know enough R (and have enough examples of code from class and your readings) to be able to do this. Your project has to be turned in individually, and your visualization should be your own (i.e. if you work with others, don’t all turn in the same graph), but you should work with others! Reach out to me for help too—I’m here to help!&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;You can do this,&lt;/em&gt; and you’ll feel like a budding dataviz witch/wizard when you’re done.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;data-cleaning-code&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Data cleaning code&lt;/h2&gt;
+&lt;p&gt;The data isn’t perfectly clean and tidy, but it’s real world data, so this is normal. Because the emphasis for this assignment is on design, not code, I’ve provided code to help you clean up the data.&lt;/p&gt;
+&lt;p&gt;These are the main issues with the data:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;There are non-numeric values in the data, like &lt;code&gt;-&lt;/code&gt;, &lt;code&gt;X&lt;/code&gt;, and &lt;code&gt;D&lt;/code&gt;. The data isn’t very well documented; I’m assuming &lt;code&gt;-&lt;/code&gt; indicates a missing value, but I’m not sure what &lt;code&gt;X&lt;/code&gt; and &lt;code&gt;D&lt;/code&gt; mean, so for this assignment, we’ll just assume they’re also missing.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;The data generally includes rows for dozens of countries, but there are also rows for some continents, “unknown,” “other,” and a total row. Because &lt;a href=&#34;https://twitter.com/africasacountry&#34;&gt;Africa is not a country&lt;/a&gt;, and neither are the other continents, we want to exclude all non-countries.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Maintaining consistent country names across different datasets is &lt;em&gt;literally&lt;/em&gt; the woooooooorst. Countries have different formal official names and datasets are never consistent in how they use those names.&lt;a href=&#34;#fn1&#34; class=&#34;footnote-ref&#34; id=&#34;fnref1&#34;&gt;&lt;sup&gt;1&lt;/sup&gt;&lt;/a&gt; It’s such a tricky problem that social scientists have spent their careers just figuring out how to properly name and code countries. Really.&lt;a href=&#34;#fn2&#34; class=&#34;footnote-ref&#34; id=&#34;fnref2&#34;&gt;&lt;sup&gt;2&lt;/sup&gt;&lt;/a&gt; There are international standards for country codes, though, like &lt;a href=&#34;https://en.wikipedia.org/wiki/ISO_3166-1_alpha-3&#34;&gt;ISO 3166-1 alpha 3&lt;/a&gt; (my favorite), also known as ISO3. It’s not perfect—it omits microstates (some Polynesian countries) and gray area states (Palestine, Kosovo)—but it’s an international standard, so it has that going for it.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;To ensure that country names are consistent in this data, we use the &lt;strong&gt;countrycode&lt;/strong&gt; package (install it if you don’t have it), which is amazing. The &lt;code&gt;countrycode()&lt;/code&gt; function will take a country name in a given coding scheme and convert it to a different coding scheme using this syntax:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;  countrycode(variable, &amp;quot;current-coding-scheme&amp;quot;, &amp;quot;new-coding-scheme&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;It also does a farily good job at guessing and parsing inconsistent country names (e.g. it will recognize “Congo, Democratic Republic”, even though it should technically be “Democratic Republic of the Congo”). Here, we use &lt;code&gt;countrycode()&lt;/code&gt; to convert the inconsistent country names into ISO3 codes. We then create a cleaner version of the &lt;code&gt;origin_country&lt;/code&gt; column by converting the ISO3 codes back into country names. Note that the function chokes on North Korea initially, since it’s included as “Korea, North”—we use the &lt;code&gt;custom_match&lt;/code&gt; argument to help the function out.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;The data isn’t tidy—there are individual columns for each year. &lt;code&gt;gather()&lt;/code&gt; takes every column and changes it to a row. We exclude the country, region, continent, and ISO3 code from the change-into-rows transformation with &lt;code&gt;-origin_country, -iso3, -origin_region, -origin_continent&lt;/code&gt;.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Currently, the year is being treated as a number, but it’s helpful to also treat it as an actual date. We create a new variable named &lt;code&gt;year_date&lt;/code&gt; that converts the raw number (e.g. 2009) into a date. The date needs to have at least a month, day, and year, so we actually convert it to January 1, 2009 with &lt;code&gt;ymd(paste0(year, &#34;-01-01&#34;))&lt;/code&gt;.&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(tidyverse)    # For ggplot, dplyr, and friends
+library(countrycode)  # For dealing with country names, abbreviations, and codes
+library(lubridate)    # For dealing with dates&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;refugees_raw &amp;lt;- read_csv(&amp;quot;data/refugee_status.csv&amp;quot;, na = c(&amp;quot;-&amp;quot;, &amp;quot;X&amp;quot;, &amp;quot;D&amp;quot;))&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;non_countries &amp;lt;- c(&amp;quot;Africa&amp;quot;, &amp;quot;Asia&amp;quot;, &amp;quot;Europe&amp;quot;, &amp;quot;North America&amp;quot;, &amp;quot;Oceania&amp;quot;,
+                   &amp;quot;South America&amp;quot;, &amp;quot;Unknown&amp;quot;, &amp;quot;Other&amp;quot;, &amp;quot;Total&amp;quot;)
+
+refugees_clean &amp;lt;- refugees_raw %&amp;gt;%
+  # Make this column name easier to work with
+  rename(origin_country = `Continent/Country of Nationality`) %&amp;gt;%
+  # Get rid of non-countries
+  filter(!(origin_country %in% non_countries)) %&amp;gt;%
+  # Convert country names to ISO3 codes
+  mutate(iso3 = countrycode(origin_country, &amp;quot;country.name&amp;quot;, &amp;quot;iso3c&amp;quot;,
+                            custom_match = c(&amp;quot;Korea, North&amp;quot; = &amp;quot;PRK&amp;quot;))) %&amp;gt;%
+  # Convert ISO3 codes to country names, regions, and continents
+  mutate(origin_country = countrycode(iso3, &amp;quot;iso3c&amp;quot;, &amp;quot;country.name&amp;quot;),
+         origin_region = countrycode(iso3, &amp;quot;iso3c&amp;quot;, &amp;quot;region&amp;quot;),
+         origin_continent = countrycode(iso3, &amp;quot;iso3c&amp;quot;, &amp;quot;continent&amp;quot;)) %&amp;gt;%
+  # Make this data tidy
+  gather(year, number, -origin_country, -iso3, -origin_region, -origin_continent) %&amp;gt;%
+  # Make sure the year column is numeric + make an actual date column for years
+  mutate(year = as.numeric(year),
+         year_date = ymd(paste0(year, &amp;quot;-01-01&amp;quot;)))&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;data-to-possibly-use-in-your-plot&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Data to possibly use in your plot&lt;/h2&gt;
+&lt;p&gt;Here are some possible summaries of the data you might use…&lt;/p&gt;
+&lt;div id=&#34;country-totals-over-time&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Country totals over time&lt;/h3&gt;
+&lt;p&gt;This is just the &lt;code&gt;refugees_clean&lt;/code&gt; data frame I gave you. You’ll want to filter it and select specific countries, though—you won’t really be able to plot 60 countries all at once unless you use sparklines.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 6 x 7
+##   origin_country iso3  origin_region    origin_continent  year number year_date 
+##   &amp;lt;chr&amp;gt;          &amp;lt;chr&amp;gt; &amp;lt;chr&amp;gt;            &amp;lt;chr&amp;gt;            &amp;lt;dbl&amp;gt;  &amp;lt;dbl&amp;gt; &amp;lt;date&amp;gt;    
+## 1 Afghanistan    AFG   South Asia       Asia              2006    651 2006-01-01
+## 2 Angola         AGO   Sub-Saharan Afr… Africa            2006     13 2006-01-01
+## 3 Armenia        ARM   Europe &amp;amp; Centra… Asia              2006     87 2006-01-01
+## 4 Azerbaijan     AZE   Europe &amp;amp; Centra… Asia              2006     77 2006-01-01
+## 5 Belarus        BLR   Europe &amp;amp; Centra… Europe            2006    350 2006-01-01
+## 6 Bhutan         BTN   South Asia       Asia              2006      3 2006-01-01&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;cumulative-country-totals-over-time&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Cumulative country totals over time&lt;/h3&gt;
+&lt;p&gt;Note the &lt;code&gt;cumsum()&lt;/code&gt; function—it calculates the cumulative sum of a column.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;refugees_countries_cumulative &amp;lt;- refugees_clean %&amp;gt;%
+  arrange(year_date) %&amp;gt;%
+  group_by(origin_country) %&amp;gt;%
+  mutate(cumulative_total = cumsum(number))&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 6 x 7
+## # Groups:   origin_country [1]
+##   origin_country iso3  origin_continent  year number year_date  cumulative_total
+##   &amp;lt;chr&amp;gt;          &amp;lt;chr&amp;gt; &amp;lt;chr&amp;gt;            &amp;lt;dbl&amp;gt;  &amp;lt;dbl&amp;gt; &amp;lt;date&amp;gt;                &amp;lt;dbl&amp;gt;
+## 1 Afghanistan    AFG   Asia              2006    651 2006-01-01              651
+## 2 Afghanistan    AFG   Asia              2007    441 2007-01-01             1092
+## 3 Afghanistan    AFG   Asia              2008    576 2008-01-01             1668
+## 4 Afghanistan    AFG   Asia              2009    349 2009-01-01             2017
+## 5 Afghanistan    AFG   Asia              2010    515 2010-01-01             2532
+## 6 Afghanistan    AFG   Asia              2011    428 2011-01-01             2960&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;continent-totals-over-time&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Continent totals over time&lt;/h3&gt;
+&lt;p&gt;Note the &lt;code&gt;na.rm = TRUE&lt;/code&gt; argument in &lt;code&gt;sum()&lt;/code&gt;. This makes R ignore any missing data when calculating the total. Without it, if R finds a missing value in the column, it will mark the final sum as &lt;code&gt;NA&lt;/code&gt; too, which we don’t want.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;refugees_continents &amp;lt;- refugees_clean %&amp;gt;%
+  group_by(origin_continent, year_date) %&amp;gt;%
+  summarize(total = sum(number, na.rm = TRUE))&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## `summarise()` regrouping output by &amp;#39;origin_continent&amp;#39; (override with `.groups` argument)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 6 x 3
+## # Groups:   origin_continent [1]
+##   origin_continent year_date  total
+##   &amp;lt;chr&amp;gt;            &amp;lt;date&amp;gt;     &amp;lt;dbl&amp;gt;
+## 1 Africa           2006-01-01 18116
+## 2 Africa           2007-01-01 17473
+## 3 Africa           2008-01-01  8931
+## 4 Africa           2009-01-01  9664
+## 5 Africa           2010-01-01 13303
+## 6 Africa           2011-01-01  7677&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;cumulative-continent-totals-over-time&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Cumulative continent totals over time&lt;/h3&gt;
+&lt;p&gt;Note that there are two &lt;code&gt;group_by()&lt;/code&gt; functions here. First we get the total number of refugees per continent per year, then we group by continent only to get the cumulative sum of refugees across continents.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;refugees_continents_cumulative &amp;lt;- refugees_clean %&amp;gt;%
+  group_by(origin_continent, year_date) %&amp;gt;%
+  summarize(total = sum(number, na.rm = TRUE)) %&amp;gt;%
+  arrange(year_date) %&amp;gt;%
+  group_by(origin_continent) %&amp;gt;%
+  mutate(cumulative_total = cumsum(total))&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## `summarise()` regrouping output by &amp;#39;origin_continent&amp;#39; (override with `.groups` argument)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 6 x 4
+## # Groups:   origin_continent [1]
+##   origin_continent year_date  total cumulative_total
+##   &amp;lt;chr&amp;gt;            &amp;lt;date&amp;gt;     &amp;lt;dbl&amp;gt;            &amp;lt;dbl&amp;gt;
+## 1 Africa           2006-01-01 18116            18116
+## 2 Africa           2007-01-01 17473            35589
+## 3 Africa           2008-01-01  8931            44520
+## 4 Africa           2009-01-01  9664            54184
+## 5 Africa           2010-01-01 13303            67487
+## 6 Africa           2011-01-01  7677            75164&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;visualization-ideas&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Visualization ideas&lt;/h2&gt;
+&lt;p&gt;You can redesign one of these ugly, less-than-helpful graphs, or create a brand new visualization (like a map!).&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/lab/02-mini-project_files/figure-html/create-plots-1.png&#34; width=&#34;1056&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Or be super brave and make a map!&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/lab/02-mini-project_files/figure-html/create-map-1.png&#34; width=&#34;1056&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&#34;footnotes&#34;&gt;
+&lt;hr /&gt;
+&lt;ol&gt;
+&lt;li id=&#34;fn1&#34;&gt;&lt;p&gt;For instance, “North Korea”, “Korea, North”, “DPRK”, “Korea, Democratic People’s Republic of”, and “Democratic People’s Republic of Korea”, and “Korea (DPRK)” are all perfectly normal versions of the country’s name and you’ll find them all in the wild.&lt;a href=&#34;#fnref1&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li id=&#34;fn2&#34;&gt;&lt;p&gt;See Gleditsch, Kristian S. &amp;amp; Michael D. Ward. 1999. &lt;a href=&#34;https://www.tandfonline.com/doi/abs/10.1080/03050629908434958&#34;&gt;“Interstate System Membership: A Revised List of the Independent States since 1816.”&lt;/a&gt; &lt;em&gt;International Interactions&lt;/em&gt; 25: 393-413; or the &lt;a href=&#34;http://www.paulhensel.org/icownames.html&#34;&gt;“ICOW Historical State Names Data Set”&lt;/a&gt;.&lt;a href=&#34;#fnref2&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    
+    <item>
       <title>Mini project 1</title>
       <link>/lab/01-mini-project/</link>
       <pubDate>Fri, 22 May 2020 00:00:00 +0000</pubDate>
       <guid>/lab/01-mini-project/</guid>
       <description>
-&lt;script src=&#34;/rmarkdown-libs/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
 
 &lt;div id=&#34;TOC&#34;&gt;
 &lt;ul&gt;
@@ -192,7 +390,7 @@ rats_clean %&amp;gt;%
 rats_by_weekday &amp;lt;- rats_clean %&amp;gt;%
   count(sighting_weekday, sighting_year)
 
-ggplot(rats_by_weekday, aes(x = fct_rev(sighting_weekday), y = n)) + 
+ggplot(rats_by_weekday, aes(x = fct_rev(sighting_weekday), y = n)) +
   geom_col() +
   coord_flip() +
   facet_wrap(~ sighting_year)
@@ -213,205 +411,6 @@ rats_clean %&amp;gt;%
 &lt;hr /&gt;
 &lt;ol&gt;
 &lt;li id=&#34;fn1&#34;&gt;&lt;p&gt;You can approach this in a couple different ways—you can write the memo and then include the full figure and code at the end, &lt;a href=&#34;https://rud.is/b/2017/09/18/mapping-fall-foliage-with-sf/&#34;&gt;similar to this blog post&lt;/a&gt;, or you can write the memo in an incremental way, describing the different steps of creating the figure, ultimately arriving at a clean final figure, &lt;a href=&#34;https://rudeboybert.github.io/fivethirtyeight/articles/bechdel.html&#34;&gt;like this blog post&lt;/a&gt;.&lt;a href=&#34;#fnref1&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
-&lt;/ol&gt;
-&lt;/div&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>Mini project 2</title>
-      <link>/lab/02-mini-project/</link>
-      <pubDate>Fri, 29 May 2020 00:00:00 +0000</pubDate>
-      <guid>/lab/02-mini-project/</guid>
-      <description>
-&lt;script src=&#34;/rmarkdown-libs/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
-
-&lt;div id=&#34;TOC&#34;&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;a href=&#34;#instructions&#34;&gt;Instructions&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;#data-cleaning-code&#34;&gt;Data cleaning code&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;#data-to-possibly-use-in-your-plot&#34;&gt;Data to possibly use in your plot&lt;/a&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;a href=&#34;#country-totals-over-time&#34;&gt;Country totals over time&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;#cumulative-country-totals-over-time&#34;&gt;Cumulative country totals over time&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;#continent-totals-over-time&#34;&gt;Continent totals over time&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;#cumulative-continent-totals-over-time&#34;&gt;Cumulative continent totals over time&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;#visualization-ideas&#34;&gt;Visualization ideas&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/div&gt;
-
-&lt;p&gt;The United States has resettled more than 600,000 refugees from 60 different countries since 2006.&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;/img/assignments/refugees_welcome.jpg&#34; width=&#34;70%&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
-&lt;p&gt;In this mini project, you will use &lt;strong&gt;R, ggplot, and &lt;a href=&#34;https://www.adobe.com/products/illustrator.html&#34;&gt;Illustrator&lt;/a&gt;, &lt;a href=&#34;https://inkscape.org/en/&#34;&gt;Inkscape&lt;/a&gt;, or &lt;a href=&#34;https://www.designer.io/&#34;&gt;Gravit Designer&lt;/a&gt;&lt;/strong&gt; to explore where these refugees have come from.&lt;/p&gt;
-&lt;div id=&#34;instructions&#34; class=&#34;section level2&#34;&gt;
-&lt;h2&gt;Instructions&lt;/h2&gt;
-&lt;p&gt;Here’s what you need to do:&lt;/p&gt;
-&lt;ol&gt;
-&lt;li&gt;&lt;p&gt;&lt;strong&gt;Create&lt;/strong&gt; a new RStudio project and place it on your computer somewhere. Open that new folder in Windows File Explorer or macOS Finder (however you navigate around the files on your computer), and create two subfolders there named &lt;code&gt;data&lt;/code&gt; and &lt;code&gt;output&lt;/code&gt;.&lt;/p&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;&lt;strong&gt;Download&lt;/strong&gt; the Department of Homeland Security’s annual count of people granted refugee status between 2006-2015:&lt;/p&gt;
-&lt;p&gt;&lt;a href=&#34;/data/refugee_status.csv&#34;&gt;&lt;i class=&#34;fas fa-file-csv&#34;&gt;&lt;/i&gt; DHS refugees, 2006-2015&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;Place this in the &lt;code&gt;data&lt;/code&gt; subfolder you created in step 1. You might need to right click on this link and choose “Save link as…”, since your browser may try to display it as text. This data was originally &lt;a href=&#34;https://www.kaggle.com/dhs/refugee-report&#34;&gt;uploaded by the Department of Homeland Security to Kaggle&lt;/a&gt;, and is provided with a public domain license.&lt;/p&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;&lt;strong&gt;Create&lt;/strong&gt; a new R Markdown file and save it in your project. In RStudio go to File &amp;gt; New File &amp;gt; R Markdown…, choose the default options, and delete all the placeholder text in the new file except for the metadata at the top, which is between &lt;code&gt;---&lt;/code&gt; and &lt;code&gt;---&lt;/code&gt;.&lt;/p&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;&lt;strong&gt;Verify&lt;/strong&gt; that your project folder is structured like this:&lt;/p&gt;
-&lt;pre class=&#34;text&#34;&gt;&lt;code&gt;your-project-name/
-  your-analysis.Rmd
-  your-project-name.Rproj
-  data/
-    refugee_status.csv
-  output/
-    NOTHING&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;&lt;strong&gt;Clean&lt;/strong&gt; the data using the code I’ve given you below.&lt;/p&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;&lt;strong&gt;Summarize&lt;/strong&gt; the data somehow. There is data for 60 countries over 10 years, so you’ll probably need to aggregate or reshape the data somehow (unless you do a 60-country sparkline). I’ve included some examples down below.&lt;/p&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;&lt;strong&gt;Create&lt;/strong&gt; an appropriate time-based visualization based on the data. I’ve shown a few different ways to summarize the data so that it’s plottable down below. Don’t just calculate overall averages or totals per country—the visualization needs to deal with change over time. &lt;em&gt;Do as much polishing and refining in R&lt;/em&gt;—make adjustments to the colors, scales, labels, grid lines, and even fonts, etc.&lt;/p&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;&lt;strong&gt;Save&lt;/strong&gt; the figure as a PDF. Use &lt;code&gt;ggsave(plot_name, filename = &#34;output/blah.pdf&#34;, width = XX, height = XX)&lt;/code&gt;&lt;/p&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;&lt;strong&gt;Refine and polish&lt;/strong&gt; the saved PDF in &lt;a href=&#34;https://www.adobe.com/products/illustrator.html&#34;&gt;Illustrator&lt;/a&gt; or &lt;a href=&#34;https://inkscape.org/en/&#34;&gt;Inkscape&lt;/a&gt; or &lt;a href=&#34;https://www.designer.io/&#34;&gt;Gravit Designer&lt;/a&gt;, adding annotations, changing colors, and otherwise enhancing it.&lt;/p&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;&lt;strong&gt;Export&lt;/strong&gt; the polished image as a PDF and a PNG file.&lt;/p&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;&lt;strong&gt;Write&lt;/strong&gt; a memo (no word limit) explaining your process. I’m specifically looking for the following:&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;What story are you telling with your graphic?&lt;/li&gt;
-&lt;li&gt;How did you apply the principles of CRAP?&lt;/li&gt;
-&lt;li&gt;How did you apply Kieran Healy’s principles of great visualizations or Alberto Cairo’s five qualities of great visualizations?&lt;/li&gt;
-&lt;/ul&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;&lt;strong&gt;Upload&lt;/strong&gt; the following outputs to iCollege:&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;A PDF or Word file of your memo with your final code, intermediate graphic (the one you create in R), and final graphic (the one you enhance) in it. Remember to use &lt;code&gt;![Caption](path/to/figure/here)&lt;/code&gt; to place external images in Markdown.&lt;/li&gt;
-&lt;li&gt;A standalone PNG version of your graphic. You’ll export this from Illustrator or Inkscape.&lt;/li&gt;
-&lt;li&gt;A standalone PDF version of your graphic. You’ll export this from Illustrator or Inkscape.&lt;/li&gt;
-&lt;/ul&gt;&lt;/li&gt;
-&lt;/ol&gt;
-&lt;p&gt;You will be graded based on completion using the standard ✓ system, but I’ll provide comments on how you use R and &lt;strong&gt;ggplot2&lt;/strong&gt;, how well you apply the principles of CRAP, &lt;em&gt;The Truthful Art&lt;/em&gt;, and &lt;em&gt;Effective Data Visualization&lt;/em&gt;, and how appropriate the graph is for the data and the story you’re telling. I will use &lt;a href=&#34;/files/mini-project-2-rubric.pdf&#34;&gt;this rubric&lt;/a&gt; to make comments and provide you with a simulated grade.&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;a href=&#34;/files/mini-project-2-rubric.pdf&#34;&gt;&lt;i class=&#34;fas fa-file-pdf&#34;&gt;&lt;/i&gt; &lt;code&gt;mini-project-2-rubric.pdf&lt;/code&gt;&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;For this assignment, I am less concerned with the code (that’s why I gave most of it to you), and more concerned with the &lt;em&gt;design&lt;/em&gt;. Choose good colors based on palettes. Choose good, clean fonts. Use the heck out of &lt;code&gt;theme()&lt;/code&gt;. Add informative design elements in Illustrator/Inkscape/Gravit Designer. Make it look beautiful and CRAPpy. Refer to &lt;a href=&#34;/resource/design/&#34;&gt;the design resources here&lt;/a&gt;.&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;The assignment is due by 11:59 PM on Friday, May 29&lt;/strong&gt;.&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;Please seek out help when you need it!&lt;/strong&gt; You know enough R (and have enough examples of code from class and your readings) to be able to do this. Your project has to be turned in individually, and your visualization should be your own (i.e. if you work with others, don’t all turn in the same graph), but you should work with others! Reach out to me for help too—I’m here to help!&lt;/p&gt;
-&lt;p&gt;&lt;em&gt;You can do this,&lt;/em&gt; and you’ll feel like a budding dataviz witch/wizard when you’re done.&lt;/p&gt;
-&lt;/div&gt;
-&lt;div id=&#34;data-cleaning-code&#34; class=&#34;section level2&#34;&gt;
-&lt;h2&gt;Data cleaning code&lt;/h2&gt;
-&lt;p&gt;The data isn’t perfectly clean and tidy, but it’s real world data, so this is normal. Because the emphasis for this assignment is on design, not code, I’ve provided code to help you clean up the data.&lt;/p&gt;
-&lt;p&gt;These are the main issues with the data:&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;p&gt;There are non-numeric values in the data, like &lt;code&gt;-&lt;/code&gt;, &lt;code&gt;X&lt;/code&gt;, and &lt;code&gt;D&lt;/code&gt;. The data isn’t very well documented; I’m assuming &lt;code&gt;-&lt;/code&gt; indicates a missing value, but I’m not sure what &lt;code&gt;X&lt;/code&gt; and &lt;code&gt;D&lt;/code&gt; mean, so for this assignment, we’ll just assume they’re also missing.&lt;/p&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;The data generally includes rows for dozens of countries, but there are also rows for some continents, “unknown,” “other,” and a total row. Because &lt;a href=&#34;https://twitter.com/africasacountry&#34;&gt;Africa is not a country&lt;/a&gt;, and neither are the other continents, we want to exclude all non-countries.&lt;/p&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;Maintaining consistent country names across different datasets is &lt;em&gt;literally&lt;/em&gt; the woooooooorst. Countries have different formal official names and datasets are never consistent in how they use those names.&lt;a href=&#34;#fn1&#34; class=&#34;footnote-ref&#34; id=&#34;fnref1&#34;&gt;&lt;sup&gt;1&lt;/sup&gt;&lt;/a&gt; It’s such a tricky problem that social scientists have spent their careers just figuring out how to properly name and code countries. Really.&lt;a href=&#34;#fn2&#34; class=&#34;footnote-ref&#34; id=&#34;fnref2&#34;&gt;&lt;sup&gt;2&lt;/sup&gt;&lt;/a&gt; There are international standards for country codes, though, like &lt;a href=&#34;https://en.wikipedia.org/wiki/ISO_3166-1_alpha-3&#34;&gt;ISO 3166-1 alpha 3&lt;/a&gt; (my favorite), also known as ISO3. It’s not perfect—it omits microstates (some Polynesian countries) and gray area states (Palestine, Kosovo)—but it’s an international standard, so it has that going for it.&lt;/p&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;To ensure that country names are consistent in this data, we use the &lt;strong&gt;countrycode&lt;/strong&gt; package (install it if you don’t have it), which is amazing. The &lt;code&gt;countrycode()&lt;/code&gt; function will take a country name in a given coding scheme and convert it to a different coding scheme using this syntax:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;  countrycode(variable, &amp;quot;current-coding-scheme&amp;quot;, &amp;quot;new-coding-scheme&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;It also does a farily good job at guessing and parsing inconsistent country names (e.g. it will recognize “Congo, Democratic Republic”, even though it should technically be “Democratic Republic of the Congo”). Here, we use &lt;code&gt;countrycode()&lt;/code&gt; to convert the inconsistent country names into ISO3 codes. We then create a cleaner version of the &lt;code&gt;origin_country&lt;/code&gt; column by converting the ISO3 codes back into country names. Note that the function chokes on North Korea initially, since it’s included as “Korea, North”—we use the &lt;code&gt;custom_match&lt;/code&gt; argument to help the function out.&lt;/p&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;The data isn’t tidy—there are individual columns for each year. &lt;code&gt;gather()&lt;/code&gt; takes every column and changes it to a row. We exclude the country, region, continent, and ISO3 code from the change-into-rows transformation with &lt;code&gt;-origin_country, -iso3, -origin_region, -origin_continent&lt;/code&gt;.&lt;/p&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;Currently, the year is being treated as a number, but it’s helpful to also treat it as an actual date. We create a new variable named &lt;code&gt;year_date&lt;/code&gt; that converts the raw number (e.g. 2009) into a date. The date needs to have at least a month, day, and year, so we actually convert it to January 1, 2009 with &lt;code&gt;ymd(paste0(year, &#34;-01-01&#34;))&lt;/code&gt;.&lt;/p&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(tidyverse)    # For ggplot, dplyr, and friends
-library(countrycode)  # For dealing with country names, abbreviations, and codes
-library(lubridate)    # For dealing with dates&lt;/code&gt;&lt;/pre&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;refugees_raw &amp;lt;- read_csv(&amp;quot;data/refugee_status.csv&amp;quot;, na = c(&amp;quot;-&amp;quot;, &amp;quot;X&amp;quot;, &amp;quot;D&amp;quot;)) &lt;/code&gt;&lt;/pre&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;non_countries &amp;lt;- c(&amp;quot;Africa&amp;quot;, &amp;quot;Asia&amp;quot;, &amp;quot;Europe&amp;quot;, &amp;quot;North America&amp;quot;, &amp;quot;Oceania&amp;quot;, 
-                   &amp;quot;South America&amp;quot;, &amp;quot;Unknown&amp;quot;, &amp;quot;Other&amp;quot;, &amp;quot;Total&amp;quot;)
-
-refugees_clean &amp;lt;- refugees_raw %&amp;gt;%
-  # Make this column name easier to work with
-  rename(origin_country = `Continent/Country of Nationality`) %&amp;gt;%
-  # Get rid of non-countries
-  filter(!(origin_country %in% non_countries)) %&amp;gt;%
-  # Convert country names to ISO3 codes
-  mutate(iso3 = countrycode(origin_country, &amp;quot;country.name&amp;quot;, &amp;quot;iso3c&amp;quot;,
-                            custom_match = c(&amp;quot;Korea, North&amp;quot; = &amp;quot;PRK&amp;quot;))) %&amp;gt;%
-  # Convert ISO3 codes to country names, regions, and continents
-  mutate(origin_country = countrycode(iso3, &amp;quot;iso3c&amp;quot;, &amp;quot;country.name&amp;quot;),
-         origin_region = countrycode(iso3, &amp;quot;iso3c&amp;quot;, &amp;quot;region&amp;quot;),
-         origin_continent = countrycode(iso3, &amp;quot;iso3c&amp;quot;, &amp;quot;continent&amp;quot;)) %&amp;gt;%
-  # Make this data tidy
-  gather(year, number, -origin_country, -iso3, -origin_region, -origin_continent) %&amp;gt;%
-  # Make sure the year column is numeric + make an actual date column for years
-  mutate(year = as.numeric(year),
-         year_date = ymd(paste0(year, &amp;quot;-01-01&amp;quot;)))&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-&lt;div id=&#34;data-to-possibly-use-in-your-plot&#34; class=&#34;section level2&#34;&gt;
-&lt;h2&gt;Data to possibly use in your plot&lt;/h2&gt;
-&lt;p&gt;Here are some possible summaries of the data you might use…&lt;/p&gt;
-&lt;div id=&#34;country-totals-over-time&#34; class=&#34;section level3&#34;&gt;
-&lt;h3&gt;Country totals over time&lt;/h3&gt;
-&lt;p&gt;This is just the &lt;code&gt;refugees_clean&lt;/code&gt; data frame I gave you. You’ll want to filter it and select specific countries, though—you won’t really be able to plot 60 countries all at once unless you use sparklines.&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;## # A tibble: 6 x 7
-##   origin_country iso3  origin_region    origin_continent  year number year_date 
-##   &amp;lt;chr&amp;gt;          &amp;lt;chr&amp;gt; &amp;lt;chr&amp;gt;            &amp;lt;chr&amp;gt;            &amp;lt;dbl&amp;gt;  &amp;lt;dbl&amp;gt; &amp;lt;date&amp;gt;    
-## 1 Afghanistan    AFG   South Asia       Asia              2006    651 2006-01-01
-## 2 Angola         AGO   Sub-Saharan Afr… Africa            2006     13 2006-01-01
-## 3 Armenia        ARM   Europe &amp;amp; Centra… Asia              2006     87 2006-01-01
-## 4 Azerbaijan     AZE   Europe &amp;amp; Centra… Asia              2006     77 2006-01-01
-## 5 Belarus        BLR   Europe &amp;amp; Centra… Europe            2006    350 2006-01-01
-## 6 Bhutan         BTN   South Asia       Asia              2006      3 2006-01-01&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-&lt;div id=&#34;cumulative-country-totals-over-time&#34; class=&#34;section level3&#34;&gt;
-&lt;h3&gt;Cumulative country totals over time&lt;/h3&gt;
-&lt;p&gt;Note the &lt;code&gt;cumsum()&lt;/code&gt; function—it calculates the cumulative sum of a column.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;refugees_countries_cumulative &amp;lt;- refugees_clean %&amp;gt;%
-  arrange(year_date) %&amp;gt;%
-  group_by(origin_country) %&amp;gt;%
-  mutate(cumulative_total = cumsum(number))&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## # A tibble: 6 x 7
-## # Groups:   origin_country [1]
-##   origin_country iso3  origin_continent  year number year_date  cumulative_total
-##   &amp;lt;chr&amp;gt;          &amp;lt;chr&amp;gt; &amp;lt;chr&amp;gt;            &amp;lt;dbl&amp;gt;  &amp;lt;dbl&amp;gt; &amp;lt;date&amp;gt;                &amp;lt;dbl&amp;gt;
-## 1 Afghanistan    AFG   Asia              2006    651 2006-01-01              651
-## 2 Afghanistan    AFG   Asia              2007    441 2007-01-01             1092
-## 3 Afghanistan    AFG   Asia              2008    576 2008-01-01             1668
-## 4 Afghanistan    AFG   Asia              2009    349 2009-01-01             2017
-## 5 Afghanistan    AFG   Asia              2010    515 2010-01-01             2532
-## 6 Afghanistan    AFG   Asia              2011    428 2011-01-01             2960&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-&lt;div id=&#34;continent-totals-over-time&#34; class=&#34;section level3&#34;&gt;
-&lt;h3&gt;Continent totals over time&lt;/h3&gt;
-&lt;p&gt;Note the &lt;code&gt;na.rm = TRUE&lt;/code&gt; argument in &lt;code&gt;sum()&lt;/code&gt;. This makes R ignore any missing data when calculating the total. Without it, if R finds a missing value in the column, it will mark the final sum as &lt;code&gt;NA&lt;/code&gt; too, which we don’t want.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;refugees_continents &amp;lt;- refugees_clean %&amp;gt;%
-  group_by(origin_continent, year_date) %&amp;gt;%
-  summarize(total = sum(number, na.rm = TRUE))&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## # A tibble: 6 x 3
-## # Groups:   origin_continent [1]
-##   origin_continent year_date  total
-##   &amp;lt;chr&amp;gt;            &amp;lt;date&amp;gt;     &amp;lt;dbl&amp;gt;
-## 1 Africa           2006-01-01 18116
-## 2 Africa           2007-01-01 17473
-## 3 Africa           2008-01-01  8931
-## 4 Africa           2009-01-01  9664
-## 5 Africa           2010-01-01 13303
-## 6 Africa           2011-01-01  7677&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-&lt;div id=&#34;cumulative-continent-totals-over-time&#34; class=&#34;section level3&#34;&gt;
-&lt;h3&gt;Cumulative continent totals over time&lt;/h3&gt;
-&lt;p&gt;Note that there are two &lt;code&gt;group_by()&lt;/code&gt; functions here. First we get the total number of refugees per continent per year, then we group by continent only to get the cumulative sum of refugees across continents.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;refugees_continents_cumulative &amp;lt;- refugees_clean %&amp;gt;%
-  group_by(origin_continent, year_date) %&amp;gt;%
-  summarize(total = sum(number, na.rm = TRUE)) %&amp;gt;%
-  arrange(year_date) %&amp;gt;%
-  group_by(origin_continent) %&amp;gt;%
-  mutate(cumulative_total = cumsum(total))&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## # A tibble: 6 x 4
-## # Groups:   origin_continent [1]
-##   origin_continent year_date  total cumulative_total
-##   &amp;lt;chr&amp;gt;            &amp;lt;date&amp;gt;     &amp;lt;dbl&amp;gt;            &amp;lt;dbl&amp;gt;
-## 1 Africa           2006-01-01 18116            18116
-## 2 Africa           2007-01-01 17473            35589
-## 3 Africa           2008-01-01  8931            44520
-## 4 Africa           2009-01-01  9664            54184
-## 5 Africa           2010-01-01 13303            67487
-## 6 Africa           2011-01-01  7677            75164&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div id=&#34;visualization-ideas&#34; class=&#34;section level2&#34;&gt;
-&lt;h2&gt;Visualization ideas&lt;/h2&gt;
-&lt;p&gt;You can redesign one of these ugly, less-than-helpful graphs, or create a brand new visualization (like a map!).&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;/assignment/02-mini-project_files/figure-html/create-plots-1.png&#34; width=&#34;1056&#34; /&gt;&lt;/p&gt;
-&lt;p&gt;Or be super brave and make a map!&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;/assignment/02-mini-project_files/figure-html/create-map-1.png&#34; width=&#34;1056&#34; /&gt;&lt;/p&gt;
-&lt;/div&gt;
-&lt;div class=&#34;footnotes&#34;&gt;
-&lt;hr /&gt;
-&lt;ol&gt;
-&lt;li id=&#34;fn1&#34;&gt;&lt;p&gt;For instance, “North Korea”, “Korea, North”, “DPRK”, “Korea, Democratic People’s Republic of”, and “Democratic People’s Republic of Korea”, and “Korea (DPRK)” are all perfectly normal versions of the country’s name and you’ll find them all in the wild.&lt;a href=&#34;#fnref1&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
-&lt;li id=&#34;fn2&#34;&gt;&lt;p&gt;See Gleditsch, Kristian S. &amp;amp; Michael D. Ward. 1999. &lt;a href=&#34;https://www.tandfonline.com/doi/abs/10.1080/03050629908434958&#34;&gt;“Interstate System Membership: A Revised List of the Independent States since 1816.”&lt;/a&gt; &lt;em&gt;International Interactions&lt;/em&gt; 25: 393-413; or the &lt;a href=&#34;http://www.paulhensel.org/icownames.html&#34;&gt;“ICOW Historical State Names Data Set”&lt;/a&gt;.&lt;a href=&#34;#fnref2&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
 &lt;/ol&gt;
 &lt;/div&gt;
 </description>
@@ -466,20 +465,17 @@ refugees_clean &amp;lt;- refugees_raw %&amp;gt;%
       <pubDate>Fri, 05 Jun 2020 00:00:00 +0000</pubDate>
       <guid>/lab/final-project/</guid>
       <description>
-&lt;script src=&#34;/rmarkdown-libs/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
 
 &lt;div id=&#34;TOC&#34;&gt;
 &lt;ul&gt;
-&lt;li&gt;&lt;a href=&#34;#data-from-the-internet&#34;&gt;Data from the internet&lt;/a&gt;
-&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#data-from-the-internet&#34;&gt;Data from the internet&lt;/a&gt;&lt;ul&gt;
 &lt;li&gt;&lt;a href=&#34;#nonprofit-management&#34;&gt;Nonprofit management&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;#federal-state-and-local-government-management&#34;&gt;Federal, state, and local government management&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;#business-management&#34;&gt;Business management&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;#instructions&#34;&gt;Instructions&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;#final-deliverables&#34;&gt;Final deliverables&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;#past-examples&#34;&gt;Past examples&lt;/a&gt;
-&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#past-examples&#34;&gt;Past examples&lt;/a&gt;&lt;ul&gt;
 &lt;li&gt;&lt;a href=&#34;#travel-runs-in-yellowstone&#34;&gt;Travel runs in Yellowstone&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;#firefighter-fatalities&#34;&gt;Firefighter fatalities&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;#scripture-use-by-the-killers&#34;&gt;Scripture use by &lt;em&gt;The Killers&lt;/em&gt;&lt;/a&gt;&lt;/li&gt;

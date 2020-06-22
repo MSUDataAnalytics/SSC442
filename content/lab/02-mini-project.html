@@ -4,26 +4,24 @@ date: "2020-05-29"
 due_date: "2020-05-29"
 due_time: "11:59 PM"
 menu:
-  assignment:
+  labs:
     parent: Projects
-    weight: 2
-weight: 2
+    weight: 1
+weight: 1
 type: docs
 output:
   blogdown::html_page:
     toc: true
-editor_options: 
+editor_options:
   chunk_output_type: console
 ---
 
-<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
 
 <div id="TOC">
 <ul>
 <li><a href="#instructions">Instructions</a></li>
 <li><a href="#data-cleaning-code">Data cleaning code</a></li>
-<li><a href="#data-to-possibly-use-in-your-plot">Data to possibly use in your plot</a>
-<ul>
+<li><a href="#data-to-possibly-use-in-your-plot">Data to possibly use in your plot</a><ul>
 <li><a href="#country-totals-over-time">Country totals over time</a></li>
 <li><a href="#cumulative-country-totals-over-time">Cumulative country totals over time</a></li>
 <li><a href="#continent-totals-over-time">Continent totals over time</a></li>
@@ -98,8 +96,8 @@ editor_options:
 <pre class="r"><code>library(tidyverse)    # For ggplot, dplyr, and friends
 library(countrycode)  # For dealing with country names, abbreviations, and codes
 library(lubridate)    # For dealing with dates</code></pre>
-<pre class="r"><code>refugees_raw &lt;- read_csv(&quot;data/refugee_status.csv&quot;, na = c(&quot;-&quot;, &quot;X&quot;, &quot;D&quot;)) </code></pre>
-<pre class="r"><code>non_countries &lt;- c(&quot;Africa&quot;, &quot;Asia&quot;, &quot;Europe&quot;, &quot;North America&quot;, &quot;Oceania&quot;, 
+<pre class="r"><code>refugees_raw &lt;- read_csv(&quot;data/refugee_status.csv&quot;, na = c(&quot;-&quot;, &quot;X&quot;, &quot;D&quot;))</code></pre>
+<pre class="r"><code>non_countries &lt;- c(&quot;Africa&quot;, &quot;Asia&quot;, &quot;Europe&quot;, &quot;North America&quot;, &quot;Oceania&quot;,
                    &quot;South America&quot;, &quot;Unknown&quot;, &quot;Other&quot;, &quot;Total&quot;)
 
 refugees_clean &lt;- refugees_raw %&gt;%
@@ -160,6 +158,7 @@ refugees_clean &lt;- refugees_raw %&gt;%
 <pre class="r"><code>refugees_continents &lt;- refugees_clean %&gt;%
   group_by(origin_continent, year_date) %&gt;%
   summarize(total = sum(number, na.rm = TRUE))</code></pre>
+<pre><code>## `summarise()` regrouping output by &#39;origin_continent&#39; (override with `.groups` argument)</code></pre>
 <pre><code>## # A tibble: 6 x 3
 ## # Groups:   origin_continent [1]
 ##   origin_continent year_date  total
@@ -180,6 +179,7 @@ refugees_clean &lt;- refugees_raw %&gt;%
   arrange(year_date) %&gt;%
   group_by(origin_continent) %&gt;%
   mutate(cumulative_total = cumsum(total))</code></pre>
+<pre><code>## `summarise()` regrouping output by &#39;origin_continent&#39; (override with `.groups` argument)</code></pre>
 <pre><code>## # A tibble: 6 x 4
 ## # Groups:   origin_continent [1]
 ##   origin_continent year_date  total cumulative_total
@@ -195,9 +195,9 @@ refugees_clean &lt;- refugees_raw %&gt;%
 <div id="visualization-ideas" class="section level2">
 <h2>Visualization ideas</h2>
 <p>You can redesign one of these ugly, less-than-helpful graphs, or create a brand new visualization (like a map!).</p>
-<p><img src="/assignment/02-mini-project_files/figure-html/create-plots-1.png" width="1056" /></p>
+<p><img src="/lab/02-mini-project_files/figure-html/create-plots-1.png" width="1056" /></p>
 <p>Or be super brave and make a map!</p>
-<p><img src="/assignment/02-mini-project_files/figure-html/create-map-1.png" width="1056" /></p>
+<p><img src="/lab/02-mini-project_files/figure-html/create-map-1.png" width="1056" /></p>
 </div>
 <div class="footnotes">
 <hr />

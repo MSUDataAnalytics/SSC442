@@ -4,7 +4,7 @@ date: "2020-05-22"
 due_date: "2020-05-22"
 due_time: "11:59 PM"
 menu:
-  assignment:
+  labs:
     parent: Projects
     weight: 1
 weight: 1
@@ -12,11 +12,10 @@ type: docs
 output:
   blogdown::html_page:
     toc: true
-editor_options: 
+editor_options:
   chunk_output_type: console
 ---
 
-<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
 
 <div id="TOC">
 <ul>
@@ -113,7 +112,7 @@ rats_clean %&gt;%
 rats_by_weekday &lt;- rats_clean %&gt;%
   count(sighting_weekday, sighting_year)
 
-ggplot(rats_by_weekday, aes(x = fct_rev(sighting_weekday), y = n)) + 
+ggplot(rats_by_weekday, aes(x = fct_rev(sighting_weekday), y = n)) +
   geom_col() +
   coord_flip() +
   facet_wrap(~ sighting_year)

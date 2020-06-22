@@ -4,7 +4,7 @@ date: "2020-05-22"
 due_date: "2020-05-22"
 due_time: "11:59 PM"
 menu:
-  assignment:
+  labs:
     parent: Projects
     weight: 1
 weight: 1
@@ -12,7 +12,7 @@ type: docs
 output:
   blogdown::html_page:
     toc: true
-editor_options: 
+editor_options:
   chunk_output_type: console
 ---
 
@@ -20,7 +20,7 @@ New York City is full of urban wildlife, and rats are one of the city's most inf
 
 `r blogdown::shortcode("youtube", "PeJUqcbool4")`
 
-NYC keeps incredibly detailed data regarding animal sightings, including rats, and [it makes this data publicly available](https://www.kaggle.com/new-york-city/nyc-rat-sightings/data). 
+NYC keeps incredibly detailed data regarding animal sightings, including rats, and [it makes this data publicly available](https://www.kaggle.com/new-york-city/nyc-rat-sightings/data).
 
 For this first mini project, you will use **R and ggplot2** to tell an interesting story hidden in the data. You can recreate one of these ugly, less-than-helpful graphs, or create a new story by looking at other variables in the data:
 
@@ -37,7 +37,7 @@ df1 <- rats_clean %>%
 df1
 
 ggplot(df1, aes(x = location_type, y = n)) +
-  geom_bar(stat = "identity") + 
+  geom_bar(stat = "identity") +
   coord_flip() +
   facet_wrap(~ sighting_year)
 
@@ -48,7 +48,7 @@ df2
 ggplot(df2, aes(x = "", y = n, fill = borough)) +
   geom_bar(stat = "identity", width = 1) +
   coord_polar("y", start=0) +
-  theme_minimal() + 
+  theme_minimal() +
   theme(axis.text.x = element_blank(), legend.position = "bottom") +
   labs(x = NULL, y = NULL, title = "Rat sightings across NYC") +
   facet_wrap(~ sighting_year)
@@ -56,7 +56,7 @@ ggplot(df2, aes(x = "", y = n, fill = borough)) +
 df3 <- rats_clean %>%
   count(created_date, borough)
 
-ggplot(df3, aes(x = created_date, y = n, color = borough)) + 
+ggplot(df3, aes(x = created_date, y = n, color = borough)) +
   geom_line()
 
 # Table for homework slopegraph
@@ -78,11 +78,11 @@ Here's what you need to do:
 
 2. **Download** New York City's database of rat sightings since 2010:
 
-    - <a href="https://raw.githubusercontent.com/andrewheiss/datavizf18.classes.andrewheiss.com/master/static/data/Rat_Sightings.csv" target="_blank" download><i class="fas fa-file-csv"></i> `Rat_Sightings.csv`</a> 
+    - <a href="https://raw.githubusercontent.com/andrewheiss/datavizf18.classes.andrewheiss.com/master/static/data/Rat_Sightings.csv" target="_blank" download><i class="fas fa-file-csv"></i> `Rat_Sightings.csv`</a>
 
     - Place this in the `data` subfolder you created in step 1. You might need to right click on this link and choose "Save link as…", since your browser may try to display it as text. The data was originally [uploaded by the City of New York to Kaggle](https://www.kaggle.com/new-york-city/nyc-rat-sightings/data), and is provided with a public domain license.
 
-3. **Create** a new R Markdown file and save it in your project. In RStudio go to File > New File > R Markdown…, choose the default options, and delete all the placeholder text in the new file except for the metadata at the top, which is between `---` and `---`. 
+3. **Create** a new R Markdown file and save it in your project. In RStudio go to File > New File > R Markdown…, choose the default options, and delete all the placeholder text in the new file except for the metadata at the top, which is between `---` and `---`.
 
 4. **Verify** that your project folder is structured like this:
 
@@ -96,7 +96,7 @@ Here's what you need to do:
         NOTHING
     ```
 
-5. **Summarize** the data somehow. The raw data has more than 100,000 rows, which means you'll need to aggregate the data (`filter()`, `group_by()`, and `summarize()` will be your friends). Consider looking at the number of sightings per borough, per year, per dwelling type, etc., or a combination of these, like the change in the number sightings across the 5 boroughs between 2010 and 2016. 
+5. **Summarize** the data somehow. The raw data has more than 100,000 rows, which means you'll need to aggregate the data (`filter()`, `group_by()`, and `summarize()` will be your friends). Consider looking at the number of sightings per borough, per year, per dwelling type, etc., or a combination of these, like the change in the number sightings across the 5 boroughs between 2010 and 2016.
 
 6. **Create** an appropriate visualization based on the data you summarized.
 
@@ -170,7 +170,7 @@ rats_clean %>%
 rats_by_weekday <- rats_clean %>%
   count(sighting_weekday, sighting_year)
 
-ggplot(rats_by_weekday, aes(x = fct_rev(sighting_weekday), y = n)) + 
+ggplot(rats_by_weekday, aes(x = fct_rev(sighting_weekday), y = n)) +
   geom_col() +
   coord_flip() +
   facet_wrap(~ sighting_year)

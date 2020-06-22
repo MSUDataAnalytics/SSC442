@@ -1,6 +1,6 @@
 ---
-title: "Truth, beauty, and data"
-author: "Andrew Heiss"
+title: "Introduction to Data Science"
+author: "Ben Bushong"
 date: "`r Sys.Date()`"
 output:
   xaringan::moon_reader:
@@ -16,709 +16,202 @@ output:
       navigation:
         scroll: false
       # beforeInit: "libs/offline-mathjax.js"
-editor_options: 
+editor_options:
   chunk_output_type: console
 ---
+# Machine Learning Overview
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(warning = FALSE, message = FALSE, 
-                      fig.retina = 3, fig.align = "center")
+```{r packages, include = FALSE}
+library("tidyverse")
+library("knitr")
+library("kableExtra")
 ```
 
-```{r packages-data, include=FALSE}
-library(tidyverse)
+---
+
+## What is Machine Learning?
+
+Machine learning (ML) is about **learning _functions_ from _data_**.^[This is a purposefully narrow view of machine learning. Obviously there's a lot more to ML, but the author believes this statement will help readers understand that the methods learned in this text are simply tools that must be evaluated as a part of a larger analysis.] That's it. Really. Pretty boring, right?^[An alternative title of this book could be: *ML is boring but useful*.]
+
+---
+
+To quickly address some buzzwords that come up when discussing machine learning:
+
+- **Deep learning** is a subset of machine learning.
+- **Artificial Intelligence** (AI) overlaps machine learning but has much loftier goals. In general, if someone claims to be using AI, they are not. They're probably using function learning! For example, we will learn logistic regression in this course. People in marketing might call that AI! Someone who understands ML will simply call it function learning. Don't buy the hype! We don't need to call simple methods AI to make them effective.^[There are certainly people who do legitamtely work on AI, but the strong statement is made here to try to downplay the hype.]
+- Machine learning is not **data science**. Data science sometimes uses machine learning.
+- Does **big data** exist? If it does, I would bet a lot of money that you haven't seen it, and probably won't see it that often.
+- **Analytics** is just a fancy word for doing data analysis. Machine learning can be used in analyses! When it is, it is often called "Predictive Analytics."
+
+What makes machine learning interesting are the uses of these learned functions. We could develop functions that have applications in a wide variety of fields.
+
+In **medicine**, we could develop a function that helps detect skin cancer.
+
+- Input: Pixels from an image of mole
+- Output: A probability that the mole is cancerous
+
+In **sport analytics**, we could develop a function that helps determine player salary.
+
+- Input: Lifetime statistics of an NBA player
+- Output: An estimate of player's salary
+
+In **meteorology**, we could develop a function to predict the weather.
+
+- Input: Historic weather data in Champaign, IL
+- Output: A probability of rain tomorrow in Champaign, IL
+
+In **political science** we could develop a function that predicts the mood of the president.
+
+- Input: The text of a tweet from President Donald Trump
+- Output: A prediction of Donald's mood (happy, sad, angry, etc)
+
+In **urban planning** we could develop a function that predicts the rental prices of Airbnbs.
+
+- Input: The attributes of the location for rent
+- Output: An estimate of the rent of the property
+
+How do we learn these functions? By looking at many previous examples, that is, data! Again, we will learn functions from data. That's what we're here to do.
+
+## Machine Learning Tasks
+
+When doing machine learning, we will classify our *tasks* into one of two categories, **supervised** or **unsupervised** learning.^[There are technically other tasks such as reinforcement learning and semi-supervised learning, but they are outside the scope of this text. To understand these advanced tasks, you should first learn the basics!] Within these two broad categories of ML tasks, we will define some specifics.
+
+```{r, echo = FALSE}
+gen_sup_reg = function(sample_size = 10) {
+  x1 = sample(c("A", "B", "C"), size = sample_size, replace = TRUE)
+  x2 = round(rnorm(n = sample_size), 2)
+  x3 = round(rnorm(n = sample_size), 2)
+  y = round(-5 * x2 + 10 + round(rnorm(n = sample_size), 2), 2)
+  tibble(x1, x2, x3, y)
+}
 ```
 
-class: center middle main-title section-title-4
-
-# Truth, beauty,<br>and data
-
-.class-info[
-
-**Session 1**
-
-.light[PMAP 8921: Data Visualization with R<br>
-Andrew Young School of Policy Studies<br>
-May 2020]
-
-]
-
----
-
-name: outline
-class: title title-inv-7
-
-# Plan for today
-
---
-
-.box-2.medium.sp-after-half[Facts, truth, and beauty]
-
---
-
-.box-3.medium.sp-after-half[Data, truth, and beauty]
-
---
-
-.box-6.medium.sp-after-half[Beautiful visualizations]
-
---
-
-.box-7.medium[Class details]
-
-
----
-
-layout: false
-name: facts-truth-beauty
-class: center middle section-title section-title-2 animated fadeIn
-
-# Facts, truth, and beauty
-
----
-
-layout: true
-class: title title-2
-
----
-
-# What is truth?
-
-.box-inv-2.medium[Core principles of the universe?]
-
---
-
-.box-inv-2.medium[Underlying trends in society?]
-
---
-
-.box-inv-2.medium[Something transcendental?]
-
---
-
-.box-inv-2.medium[Reality?]
-
----
-
-# How do we find truth?
-
-.box-inv-2.medium[Science!]
-
-.center[
-<figure>
-  <img src="img/01/ndgt-scientism.png" alt="Neil deGrasse Tyson on science" title="Neil deGrasse Tyson on science" width="70%">
-</figure>
-]
-
-???
-
-[Original tweet](https://twitter.com/neiltyson/status/345551599382446081)
-
----
-
-# But wait!
-
-.box-inv-2.medium.sp-after[Beware of scientism!]
-
-.box-2["… promotion of science as the best or only<br>objective means by which society should determine<br>normative and epistemological values"]
-
-???
-
-[Wikipedia](https://en.wikipedia.org/wiki/Scientism)
-
----
-
-# Science is not the only way
-
-.box-inv-2.medium[Art]
-
-.box-inv-2.medium[Music]
-
-.box-inv-2.medium[Literature]
-
-.box-inv-2.medium[Religion]
-
-.box-inv-2.medium[Nature]
-
-???
-
-None of these methods deal with raw facts, though!
-
----
-
-# Nothing here is factual…
-
-.box-inv-2[…but it all reveals truth]
-
-.pull-left[
-
-.pull-left[
-<figure>
-  <img src="img/01/les-mis.jpg" alt="ZZZ" title="ZZZ" width="100%">
-  <figcaption>Cosette</figcaption>
-</figure>
-]
-
-.pull-right[
-<figure>
-  <img src="img/01/King_Lear.jpg" alt="King Lear" title="King Lear" width="100%">
-  <figcaption>King Lear</figcaption>
-</figure>
-]
-
-]
-
-.pull-right[
-<figure>
-  <img src="img/01/beethoven.png" alt="ZZZ" title="ZZZ" width="100%">
-  <figcaption>Beethoven's 9th symphony</figcaption>
-</figure>
-]
-
-???
-
-Sources: 
-
-- [Cosette](https://commons.wikimedia.org/wiki/File:Cosette-sweeping-les-miserables-albert-bellenger-1886.jpg)
-- [King Lear](https://commons.wikimedia.org/wiki/File:King_Lear.jpg)
-- [Beethoven](https://commons.wikimedia.org/wiki/File:Beethoven,_Symphony_No._9,_finale,_bars_116-123.png)
-
----
-
-layout: false
-class: middle
-
-.box-2.huge[Facts ≠ truth]
-
----
-
-class: middle
-
-.box-2.large.sp-after[Where does truth come when<br>there are no facts?]
-
---
-
-.box-inv-2.huge[Beauty]
-
-
----
-
-layout: true
-class: title title-2
-
----
-
-# Beauty in science
-
-.pull-left.center[
-
-<figure>
-  <img src="img/01/beautiful-question.jpg" alt="Frank Wilczek's A Beautiful Question" title="Frank Wilczek's A Beautiful Question" width="60%">
-</figure>
-
-]
-
-.box-inv-2.medium[This is also true for science and math<br>and other more<br>factual realms]
-
----
-
-# Rhetoric and beauty
-
-.box-inv-2[λόγος&emsp;•&emsp;λέξις]
-
-.box-inv-2.tiny.sp-after[Logos&emsp;•&emsp;Lexis]
-
-.box-inv-2[Res&emsp;•&emsp;Verba]
-
-.box-inv-2[Essence&emsp;•&emsp;Structure]
-
-.box-inv-2.sp-after[Content&emsp;•&emsp;Form]
-
-.box-2.medium[Truth&emsp;•&emsp;Beauty]
-
-???
-
-One is the underlying metaphysical meaning—what the author or artist intends. The other is *how* they convey that message—what it looks like, what they used, etc.
-
----
-
-# Content + form
-
-.box-inv-2.large[Art is how we translate core,<br>essential **content** (or truth!)<br>to different **forms**<br>for specific **audiences**.]
-
----
-
-# Truth is beautiful
-
-.box-inv-2.medium[Truth ≠ facts]
-
-.box-inv-2.medium.sp-after[Truth comes from aesthetic<br>combination of content and form]
-
-.box-2.medium[Facts require beauty to be true]
-
----
-
-layout: false
-name: data-truth-beauty
-class: center middle section-title section-title-3 animated fadeIn
-
-# Data, truth, and beauty
-
----
-
-layout: true
-class: title title-3
-
----
-
-# Just show me the data!
-
-```{r load-datasaurus-dozen, echo=FALSE}
-dozen <- read_tsv("data/DatasaurusDozen.tsv")
-my_data <- dozen %>% 
-  filter(dataset == "dino") %>% 
-  select(x, y)
+```{r, echo = FALSE}
+gen_sup_class = function(sample_size = 10) {
+  x1 = sample(c("Q", "P"), size = sample_size, replace = TRUE)
+  x2 = round(runif(n = sample_size), 2)
+  x3 = round(6 * runif(n = sample_size), 2)
+  y = sample(c("A", "B", "C"), size = sample_size, replace = TRUE)
+  tibble(x1, x2, x3, y)
+}
 ```
 
---
-
-.pull-left-3.small-code[
-```{r head-datasaurus}
-head(my_data, 10)
-```
-]
-
---
-
-.pull-middle-3.small-code[
-```{r summary-datasaurus, highlight.output=1}
-mean(my_data$x)
-mean(my_data$y)
-cor(my_data$x, my_data$y)
-```
-]
-
---
-
-.pull-right-3[
-&nbsp;
-
-.box-inv-3[Seems reasonable]
-
-&nbsp;
-
-.box-inv-3[Seems reasonable]
-
-&nbsp;
-
-.box-inv-3[No correlation]
-]
-
----
-
-# oh no
-
-.center[
-<figure>
-  <img src="img/01/DinoSequentialSmaller.gif" alt="Datasaurus Dozen" title="Datasaurus Dozen" width="100%">
-  <figcaption><a href="https://www.autodeskresearch.com/publications/samestats" target="_blank">The Datasaurus Dozen</a></figcaption>
-</figure>
-]
-
----
-
-# Raw data is not enough
-
-.box-inv-3.small[Each of these has the same mean, standard deviation, variance, and correlation]
-
-```{r plot-full-dozen, echo=FALSE, fig.dim=c(10, 4), out.width="100%"}
-ggplot(filter(dozen, dataset != "bullseye"), aes(x = x, y = y)) +
-  geom_point(size = 1) +
-  facet_wrap(vars(dataset))
+```{r, echo = FALSE}
+gen_unsup = function() {
+  modify = c(0, 0, 0, 0, 0, 10, 10, 10, 10, 10)
+  x1 = round(3 * runif(n = 10), 2) - modify
+  x2 = round(runif(n = 10), 2) - modify
+  x3 = round(6 * runif(n = 10), 2) - modify
+  x4 = round(6 * runif(n = 10), 2) - modify
+  x5 = round(6 * runif(n = 10), 2) - modify
+  tibble(x1, x2, x3, x4, x5)
+}
 ```
 
+### Supervised Learning
 
----
+In supervised learning, we want to "predict" a specific *response variable*. (The response variable might also be called the target or outcome variable.) In the following examples, this is the `y` variable. Supervised learning tasks are called **regression** if the response variable is *numeric*. If a supervised learning tasks has a *categorical* response, it is called **classification**.
 
-# Humans love patterns
+<!-- TODO: add an appendix chapter about tabular data? -->
 
-.center[
-<figure>
-  <img src="img/01/pattern-processing.png" alt="Pattern processing" title="Pattern processing" width="100%">
-  <figcaption><a href="https://doi.org/10.3389/fnins.2014.00265" target="_blank">https://doi.org/10.3389/fnins.2014.00265</a></figcaption>
-</figure>
-]
+#### Regression
 
----
+In the regression task, we want to predict **numeric** response variables. The non-response variables, which we will call the feature variables, or simply **features** can be either *categorical* or *numeric*.^[These variables are often called "predictor" variables, but we find this nomenclature to be needlessly confusing.]
 
-# (Sometimes we love them too much)
-
---
-
-.center[
-.box-inv-3.sp-after[**Pareidolia**: seeing patterns that aren't there.]
-]
-
---
-
-.pull-left-3[
-![](img/01/pareidolia-1.jpg)
-]
-
---
-
-.pull-middle-3[
-![](img/01/pareidolia-2.jpg)
-]
-
---
-
-.pull-right-3[
-![](img/01/pareidolia-3.jpg)
-]
-
----
-
-# Beauty is necessary to see patterns
-
-.pull-left[
-
-<figure>
-  <img src="img/01/amount-diffs-table.png" alt="Amount donated table" title="Amount donated table" width="100%">
-</figure>
-
-]
-
---
-
-.pull-right.center[
-
-<figure>
-  <img src="img/01/amount-diffs.png" alt="Amount donated graph" title="Amount donated graph" width="85%">
-</figure>
-
-]
-
----
-
-layout: false
-name: beautiful-visualizations
-class: center middle section-title section-title-6 animated fadeIn
-
-# Beautiful visualizations
-
----
-
-layout: true
-class: title title-6
-
----
-
-# What makes a great visualization?
-
-.box-inv-6.medium[Truthful]
-
-.box-inv-6.medium[Functional]
-
-.box-inv-6.medium[Beautiful]
-
-.box-inv-6.medium[Insightful]
-
-.box-inv-6.medium[Enlightening]
-
-.box-6.tiny[Alberto Cairo, *The Truthful Art*]
-
-???
-
-Alberto Cairo, *The Truthful Art*:
-
-> 1. It is truthful, as it’s based on thorough and honest research.
-> 
-> 2. It is functional, as it constitutes an accurate depiction of the data, and it’s built in a way that lets people do meaningful operations based on it (seeing change in time).
-> 
-> 3. It is beautiful, in the sense of being attractive, intriguing, and even aesthetically pleasing for its intended audience—scientists, in the first place, but the general public, too.
-> 
-> 4. It is insightful, as it reveals evidence that we would have a hard time seeing otherwise.
-> 
-> 5. It is enlightening because if we grasp and accept the evidence it depicts, it will change our minds for the better.
-
----
-
-# What makes a great visualization?
-
-.box-inv-6["Graphical excellence is the **well-designed presentation of interesting data**—a matter of substance, of statistics, and of design … [It] consists of complex ideas communicated with clarity, precision, and efficiency. … [It] is that which **gives to the viewer the greatest number of ideas in the shortest time with the least ink in the smallest space** … [It] is nearly always multivariate … And graphical excellence requires **telling the truth about the data**."]
-
-.box-6.tiny[Edward Tufte, *The Visual Display of Quantitative Information*, p. 51]
-
----
-
-# What makes a great visualization?
-
-.box-inv-6.medium[Good aesthetics]
-
---
-
-.box-inv-6.medium[No substantive issues]
-
---
-
-.box-inv-6.medium[No perceptual issues]
-
---
-
-.box-inv-6.medium[Honesty + good judgment]
-
-.box-6.tiny[Kieran Healy, *Data Visualization: A Practical Introduction*]
-
----
-
-# What's wrong?
-
-.center[
-<figure>
-  <img src="img/01/pie-genus.png" alt="Distribution of genus" title="Distribution of genus" width="60%">
-</figure>
-]
-
-???
-
-- Aesthetic issues
-- Substantive issues
-- Perceptual issues
-- Honesty + judgment issues
-
----
-
-# What's wrong?
-
-.center[
-<figure>
-  <img src="img/01/changing-face-of-america.png" alt="Changing face of America" title="Changing face of America" width="45%">
-</figure>
-]
-
-???
-
-- Aesthetic issues
-- Substantive issues
-- Perceptual issues
-- Honesty + judgment issues
-
----
-
-# What's wrong?
-
-.center[
-<figure>
-  <img src="img/01/how-stuff-works-recidivism.png" alt="Recidivism pie chart" title="Recidivism pie chart" width="45%">
-</figure>
-]
-
-???
-
-- Aesthetic issues
-- Substantive issues
-- Perceptual issues
-- Honesty + judgment issues
-
----
-
-# What's right?
-
-.pull-left[
-
-```{r flatten-the-curve, echo=FALSE, fig.dim=c(4.8, 3.75), out.width="100%"}
-high_mean <- 12
-high_sd <- 4
-flat_mean <- 35
-flat_sd <- 12
-
-ggplot(tibble(x = c(0, 70)), aes(x = x)) +
-  stat_function(geom = "area", fun = dnorm, n = 1000, 
-                args = list(mean = high_mean, sd = high_sd),
-                fill = "#FF4136", alpha = 0.8) +
-  stat_function(geom = "area", fun = dnorm, n = 1000, 
-                args = list(mean = flat_mean, sd = flat_sd),
-                fill = "#0074D9", alpha = 0.8) +
-  geom_hline(yintercept = dnorm(flat_mean, flat_mean, flat_sd), 
-             linetype = "61", color = "grey75") +
-  annotate(geom = "text", x = qnorm(0.5, high_mean, high_sd), 
-           y = dnorm(qnorm(0.5, high_mean, high_sd), high_mean, high_sd) / 2, 
-           label = "Without\nprotective\nmeasures", color = "white", size = 3,
-           family = "Fira Sans Condensed", fontface = "bold") +
-  annotate(geom = "text", x = qnorm(0.5, flat_mean, sd = flat_sd), 
-           y = dnorm(qnorm(0.5, flat_mean, sd = flat_sd), flat_mean, sd = flat_sd) / 2, 
-           label = "With protective\nmeasures", color = "white", size = 3,
-           family = "Fira Sans Condensed", fontface = "bold") +
-  annotate(geom = "text", x = 45, y = dnorm(flat_mean, flat_mean, sd = flat_sd), 
-           label = "Healthcare system capacity", vjust = -0.5, hjust = 0, size = 3,
-           family = "Fira Sans Condensed", fontface = "bold") +
-  labs(x = "Time since first case", 
-       y = "# of\ncases",
-       title = "Flatten the curve!", 
-       subtitle = "Slow down community spread by social distancing",
-       caption = "Adapted from the CDC and The Economist\nVisit flattenthecurve.com") +
-  scale_x_continuous(expand = c(0, 0)) +
-  scale_y_continuous(expand = c(0, 0)) +
-  theme_minimal(base_family = "Fira Sans Condensed Light") +
-  theme(panel.grid = element_blank(),
-        axis.line = element_line(color = "black"),
-        axis.text = element_blank(),
-        axis.title = element_text(family = "Fira Sans Condensed", face = "bold"),
-        axis.title.y = element_text(angle = 0, vjust = 0.5),
-        plot.title = element_text(family = "Fira Sans Condensed", face = "bold", size = rel(1.7)),
-        plot.subtitle = element_text(size = rel(1.2), color = "grey50"),
-        plot.caption = element_text(color = "grey50"))
+```{r, echo = FALSE}
+set.seed(42)
+sup_reg_data = gen_sup_reg()
+sup_reg_data %>% 
+  kable() %>% 
+  kable_styling(full_width = FALSE)
 ```
 
-]
+With the data above, our goal would be to learn a function that takes as input values of the three features (`x1`, `x2`, and `x3`) and returns a prediction (best guess) for the true (but usually unknown) value of the response `y`. For example, we could obtain some "new" data that does not contain the response.
 
-???
+```{r, echo = FALSE}
+gen_sup_reg(sample_size = 1)[, -4] %>% 
+  kable() %>% 
+  kable_styling(full_width = FALSE)
+```
 
-- Aesthetic issues
-- Substantive issues
-- Perceptual issues
-- Honesty + judgment issues
+We would then pass this data to our function, which would return a prediction of the value of `y`. Stated mathematically, our prediction will often be an estimate of the conditional mean of $Y$, given values of the $\boldsymbol{X}$ variables. 
 
---
+$$
+\mu(\boldsymbol{x}) = \mathbb{E}[Y \mid \boldsymbol{X} = \boldsymbol{x}]
+$$
 
-.pull-right.center[
+In other words, we want to learn this function, $\mu(\boldsymbol{x})$. Much more on this later.^[For now, just understand that we are able to make a "best guess" for a new observation.]
 
-<figure>
-  <img src="img/01/bergstrom-tweet.png" alt="Carl Bergstrom tweet" title="Carl Bergstrom tweet" width="80%">
-  <figcaption><a href="https://twitter.com/CT_Bergstrom/status/1235865328074153986" target="_blank">Thread by Carl T. Bergstrom</a></figcaption>
-</figure>
+#### Classification
 
-]
+Classification is similar to regression, except it considers **categorical** response variables. 
 
-???
+```{r, echo = FALSE}
+set.seed(42)
+gen_sup_class() %>% 
+  kable() %>% 
+  kable_styling(full_width = FALSE)
+```
 
-[Carl Bergstrom on the flatten the curve visualization](https://twitter.com/CT_Bergstrom/status/1235865328074153986)
+As before we want to learn a function from this data using the same inputs, except this time, we want it to output one of `A`, `B`, or `C` for predictions of the `y` variable. Again, consider some new data:
 
----
+```{r, echo = FALSE}
+gen_sup_class(sample_size = 1)[, -4] %>% 
+  kable() %>% 
+  kable_styling(full_width = FALSE)
+```
 
-layout: false
-name: class-details
-class: center middle section-title section-title-7 animated fadeIn
+While ultimately we would like our function to return one of `A`, `B`, or `C`, what we actually would like is an intermediate return of probabilities that `y` is `A`, `B`, or `C`. In other words, we are attempting to estimate the conditional probability that $Y$ is each of the possible categories, given values of the $\boldsymbol{X}$ values.
 
-# Class details
+$$
+p_k(\boldsymbol{x}) = P\left[ Y = k \mid \boldsymbol{X} = \boldsymbol{x} \right]
+$$
 
----
+We want to learn this function, $p_k(\boldsymbol{x})$. Much more on this later.
 
-layout: true
-class: title title-7
+### Unsupervised Learning
 
----
+Unsupervised learning is a very broad task that is rather difficult to define. Essentially, it is learning without a response variable. To get a better idea about what unsupervised learning is, consider some specific tasks. 
 
-# Goal for the class
+```{r, echo = FALSE}
+set.seed(42)
+gen_unsup() %>% 
+  kable() %>% 
+  kable_styling(full_width = FALSE)
+```
 
-.center[
-.box-inv-7.huge[Recognize and create beautiful and truthful visualizations with real world data]
-]
+#### Clustering
 
----
+Clustering is essentially the task of **grouping** the observations of a dataset. In the above data, can you see an obvious grouping? (Hint: Compare the first five observations to the second five observations.) In general, we try to group observations that are similar.
 
-# Plan for the class
+#### Density Estimation
 
-&nbsp;
+Density estimation tries to do exactly what the name implies, estimate the density. In this case, the joint density of $X_1, X_2, X_3, X_4, X_5$. In other words, we would like to learn the **function** that generated this data.^[You could take the position that this is the **only** machine learning task, and all other tasks are subset of this task. We'll hold off on explaining this for a while.]
 
-.center[
-<figure>
-  <img src="img/01/dataviz-flowchart.png" alt="Class flowchart" title="Class flowchart" width="100%">
-</figure>
-]
+#### Outlier Detection
 
----
+Consider some new data:
 
-# Class technology
+```{r, echo = FALSE}
+(gen_unsup()[1, ] + 66) %>% 
+  kable() %>% 
+  kable_styling(full_width = FALSE)
+```
 
-.center[
-<figure>
-  <img src="img/01/complexity-chart@4x.png" alt="Complexity chart" title="Complexity chart" width="65%">
-</figure>
-]
+Was this data generated by the same process as the data above? If we don't believe so, we would call it an outlier.
 
----
+## Open Questions
 
-# Class technology
+The two previous sections were probably more confusing than helpful. But of course, because we haven't started learning yet! Hopefully, you are currently pondering one very specific question:
 
-.pull-left-3.center[
+- *How* do we **learn** functions from data?
 
-<figure>
-  <img src="img/01/Rlogo.png" alt="R logo" title="R logo" width="80%">
-</figure>
+That's what this text will be about! We will spend a lot of time on this question. It is what us statisticians call fitting a model. On some level the answer is: look at a bunch of old data before predicting on new data. 
 
-<figure>
-  <img src="img/01/rstudio-logo.png" alt="R logo" title="R logo" width="100%">
-</figure>
+While we will dedicate a large amount of time to answering this question, sometimes, some of the details might go unanswered. Since this is an introductory text, we can only go so far. However, as long as we answer another question, this will be OK.
 
-]
+- *How* do we **evaluate** how well learned functions work?
 
---
+This text places a high priority on being able to **do** machine learning, specifically do machine learning in R. You can actually do a lot of machine learning without fully understanding how the learning is taking place. That makes the *evaluation* of ML models extremely important.
 
-.pull-middle-3[
 
-<figure>
-  <img src="img/01/ggplot-logo.png" alt="ggplot logo" title="ggplot logo" width="100%">
-</figure>
-
-]
-
---
-
-.pull-right-3[
-
-&nbsp;
-
-<figure>
-  <img src="img/03/ggplot-layers@4x.png" alt="ggplot logo" title="ggplot logo" width="100%">
-</figure>
-
-]
-
----
-
-# The tidyverse
-
-.center[
-<figure>
-  <img src="img/01/tidyverse.png" alt="The tidyverse" title="The tidyverse" width="50%">
-</figure>
-]
-
----
-
-# Sucking
-
-.center[
-.box-inv-7.medium[“There is no way of knowing nothing about a subject to knowing something about a subject without going through a period of much frustration and suckiness.”]
-
-.box-inv-7.medium[**“Push through. You’ll suck less.”**]
-
-.box-inv-7.tiny[Hadley Wickham, author of **ggplot2**]
-]
-
-???
-
-[Source for quote](https://twitter.com/Akbaritabar/status/1022057084802748416)
-
----
-
-# Sucking
-
-&nbsp;
-
-.pull-left[
-<figure>
-  <img src="img/01/sucking-first-step.jpg" alt="Sucking at something is the first step towards being sort of good at something" title="Sucking at something is the first step towards being sort of good at something" width="100%">
-</figure>
-]
-
---
-
-.pull-right[
-<figure>
-  <img src="img/01/sucking-nyt.png" alt="It's great to suck at something" title="It's great to suck at something" width="100%">
-  <figcaption><a href="https://www.nytimes.com/2017/04/28/opinion/its-great-to-suck-at-surfing.html" target="_blank">Karen Rinaldi, "(It's Great to) Suck at Something"</a></figcaption>
-</figure>
-]
