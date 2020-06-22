@@ -1,0 +1,1706 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Interactive lessons | Data Analytics</title>
+    <link>/lesson/</link>
+      <atom:link href="/lesson/index.xml" rel="self" type="application/rss+xml" />
+    <description>Interactive lessons</description>
+    <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><lastBuildDate>Mon, 01 Jun 2020 00:00:00 +0000</lastBuildDate>
+    <image>
+      <url>/img/social-image.png</url>
+      <title>Interactive lessons</title>
+      <link>/lesson/</link>
+    </image>
+    
+    <item>
+      <title>Introduction to R and the tidyverse</title>
+      <link>/lesson/01-lesson/</link>
+      <pubDate>Mon, 11 May 2020 00:00:00 +0000</pubDate>
+      <guid>/lesson/01-lesson/</guid>
+      <description>
+&lt;script src=&#34;/rmarkdown-libs/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
+
+&lt;div id=&#34;TOC&#34;&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#part-1-the-basics-of-r-and-dplyr&#34;&gt;Part 1: The basics of R and dplyr&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#part-2-getting-familiar-with-rstudio&#34;&gt;Part 2: Getting familiar with RStudio&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#part-3-rstudio-projects&#34;&gt;Part 3: RStudio Projects&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#part-4-getting-familiar-with-r-markdown&#34;&gt;Part 4: Getting familiar with R Markdown&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+
+&lt;div id=&#34;part-1-the-basics-of-r-and-dplyr&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Part 1: The basics of R and dplyr&lt;/h2&gt;
+&lt;p&gt;For the first part of today’s lesson, you need to work through a few of RStudio’s introductory primers. You’ll do these in your browser and type code and see results there.&lt;/p&gt;
+&lt;p&gt;You’ll learn some of the basics of R, as well as some powerful methods for manipulating data with the &lt;strong&gt;dplyr&lt;/strong&gt; package.&lt;/p&gt;
+&lt;p&gt;Complete these:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;The Basics&lt;/strong&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://rstudio.cloud/learn/primers/1.1&#34;&gt;Visualization Basics&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://rstudio.cloud/learn/primers/1.2&#34;&gt;Programming Basics&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Work with Data&lt;/strong&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://rstudio.cloud/learn/primers/2.1&#34;&gt;Working with Tibbles&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://rstudio.cloud/learn/primers/2.2&#34;&gt;Isolating Data with dplyr&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://rstudio.cloud/learn/primers/2.3&#34;&gt;Deriving Information with dplyr&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;The content from these primers comes from the (free and online!) book &lt;a href=&#34;https://r4ds.had.co.nz/&#34;&gt;&lt;em&gt;R for Data Science&lt;/em&gt; by Garrett Grolemund and Hadley Wickham&lt;/a&gt;. I highly recommend the book as a reference and for continuing to learn and use R in the future (like running regression models and other types of statistical analysis)&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;part-2-getting-familiar-with-rstudio&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Part 2: Getting familiar with RStudio&lt;/h2&gt;
+&lt;p&gt;The RStudio primers you just worked through are a great introduction to writing and running R code, but you typically won’t type code in a browser when you work with R. Instead, you’ll use a nicer programming environment like RStudio, which lets you type and save code in scripts, run code from those scripts, and see the output of that code, all in the same program.&lt;/p&gt;
+&lt;p&gt;To get familiar with RStudio, watch this video:&lt;/p&gt;
+&lt;div class=&#34;embed-responsive embed-responsive-16by9&#34;&gt;
+&lt;iframe class=&#34;embed-responsive-item&#34; src=&#34;https://www.youtube.com/embed/cnQ-v1UUWyE&#34; frameborder=&#34;0&#34; allow=&#34;accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture&#34; allowfullscreen&gt;
+&lt;/iframe&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;part-3-rstudio-projects&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Part 3: RStudio Projects&lt;/h2&gt;
+&lt;p&gt;One of the most powerful and useful aspects of RStudio is its ability to manage projects.&lt;/p&gt;
+&lt;p&gt;When you first open R, it is “pointed” at some folder on your computer, and anything you do will be relative to that folder. The technical term for this is a “working directory.”&lt;/p&gt;
+&lt;p&gt;When you first open RStudio, look in the area right at the top of the Console pane to see your current working directory. Most likely you’ll see something cryptic: &lt;code&gt;~/&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/img/lesson/working-directory.png&#34; width=&#34;50%&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;That tilde sign (&lt;code&gt;~&lt;/code&gt;) is a shortcut that stands for your user directory. On Windows this is &lt;code&gt;C:\Users\your_user_name\&lt;/code&gt;; on macOS this is &lt;code&gt;/Users/your_user_name/&lt;/code&gt;. With the working directory set to &lt;code&gt;~/&lt;/code&gt;, R is “pointed” at that folder, and anything you save will end up in that folder, and R will expect any data that you load to be there too.&lt;/p&gt;
+&lt;p&gt;It’s always best to point R at some other directory. If you don’t use RStudio, you need to manually set the working directory to where you want it with &lt;code&gt;setwd()&lt;/code&gt;, and many R scripts in the wild include something like &lt;code&gt;setwd(&#34;C:\\Users\\bill\\Desktop\\Important research project&#34;)&lt;/code&gt; at the beginning to change the directory. &lt;strong&gt;THIS IS BAD THOUGH&lt;/strong&gt; (&lt;a href=&#34;https://www.tidyverse.org/blog/2017/12/workflow-vs-script/&#34;&gt;see here for an explanation&lt;/a&gt;). If you ever move that directory somewhere else, or run the script on a different computer, or share the project with someone, the path will be wrong and nothing will run and you will be sad.&lt;/p&gt;
+&lt;p&gt;The best way to deal with working directories with RStudio is to use RStudio Projects. These are special files that RStudio creates for you that end in a &lt;code&gt;.Rproj&lt;/code&gt; extension. When you open one of these special files, a new RStudio instance will open up and be pointed at the correct directory automatically. If you move the folder later or open it on a different computer, it will work just fine and you will not be sad.&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://r4ds.had.co.nz/workflow-projects.html&#34;&gt;Read this super short chapter on RStudio projects.&lt;/a&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;part-4-getting-familiar-with-r-markdown&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Part 4: Getting familiar with R Markdown&lt;/h2&gt;
+&lt;p&gt;To ensure that the analysis and graphics you make are reproducible, you’ll do the majority of your work in this class using &lt;strong&gt;R Markdown&lt;/strong&gt; files.&lt;/p&gt;
+&lt;p&gt;Do the following things:&lt;/p&gt;
+&lt;ol style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;Watch this video:&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class=&#34;embed-responsive embed-responsive-16by9&#34;&gt;
+&lt;iframe class=&#34;embed-responsive-item&#34; src=&#34;https://player.vimeo.com/video/178485416?color=428bca&#34; frameborder=&#34;0&#34; allow=&#34;autoplay; fullscreen&#34; allowfullscreen&gt;
+&lt;/iframe&gt;
+&lt;/div&gt;
+&lt;p&gt; &lt;/p&gt;
+&lt;ol start=&#34;2&#34; style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;&lt;p&gt;Skim through the content at these pages:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;/resource/markdown/&#34;&gt;Using Markdown&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;/resource/rmarkdown/&#34;&gt;Using R Markdown&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://rmarkdown.rstudio.com/lesson-2.html&#34;&gt;How it Works&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://rmarkdown.rstudio.com/lesson-3.html&#34;&gt;Code Chunks&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://rmarkdown.rstudio.com/lesson-4.html&#34;&gt;Inline Code&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://rmarkdown.rstudio.com/lesson-8.html&#34;&gt;Markdown Basics&lt;/a&gt; (The &lt;a href=&#34;https://www.rstudio.com/wp-content/uploads/2015/03/rmarkdown-reference.pdf&#34;&gt;R Markdown Reference Guide&lt;/a&gt; is super useful here.)&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://rmarkdown.rstudio.com/lesson-9.html&#34;&gt;Output Formats&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Watch this video:&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class=&#34;embed-responsive embed-responsive-16by9&#34;&gt;
+&lt;iframe class=&#34;embed-responsive-item&#34; src=&#34;https://www.youtube.com/embed/fT5xI1cmE2c&#34; frameborder=&#34;0&#34; allow=&#34;accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture&#34; allowfullscreen&gt;
+&lt;/iframe&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Graphic design</title>
+      <link>/lesson/02-lesson/</link>
+      <pubDate>Tue, 12 May 2020 00:00:00 +0000</pubDate>
+      <guid>/lesson/02-lesson/</guid>
+      <description>
+&lt;script src=&#34;/rmarkdown-libs/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
+
+&lt;div id=&#34;TOC&#34;&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#file-types&#34;&gt;File types&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#select-the-best-file-type&#34;&gt;Select the best file type&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+
+&lt;div id=&#34;file-types&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;File types&lt;/h2&gt;
+&lt;p&gt;Recall from the &lt;a href=&#34;/slides/02-slides.html#image-types&#34;&gt;last section of the lecture&lt;/a&gt; that you’ll typically work with one of two image file types: bitmap images and vector images.&lt;/p&gt;
+&lt;p&gt;Bitmaps store image information as tiny squares, or pixels. Specific files types compress these images in different ways: JPEG files smudge together groups of similarly colored pixels to save repetition, while PNG and GIF files look for fields of the exact same color.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/slides/img/02/example-bitmap.png&#34; width=&#34;30%&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;You use bitmap images for things that go on the internet and when you place images in Word (technically modern versions of Word can handle some types of vector images, but that support isn’t universal yet).&lt;/p&gt;
+&lt;p&gt;Vector images, on the other hand, do not store image information as pixels. Instead, these use mathematical formulas to draw lines and curves and fill areas with specific colors. This makes them a little more complicated to draw and create, but it also means that you can scale them up or down infinitely—a vector image will look just as crisp on a postage stamp as it would on a billboard.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/slides/img/02/example-vector.png&#34; width=&#34;30%&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Here are some general guidelines:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;If an image has lots of colors (like a photograph), you should use a bitmap file type designed for lots of colors, like JPEG. This is the case regardless of where the image will ultimately end up. If you’re putting it on the internet, it needs to be a JPEG. If you’re blowing it up to fit on a billboard, it will still need to be a JPEG (and you have to use a fancy super high quality camera to get a high enough resolution for that kind of expansion)&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;If an image has a few colors and some text and is not a photograph &lt;em&gt;and&lt;/em&gt; you’re using the image in Word or on the internet, you should use a bitmap file type designed for carefully compressing a few colors, like PNG.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;If an image has a few colors and some text and is not a photograph &lt;em&gt;and&lt;/em&gt; you’re planning on using it in multiple sizes (like a logo), or using it in fancier production software like Adobe InDesign (for print) or Adobe After Effects (for video), you should use a vector file type like PDF or SVG.&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;div id=&#34;select-the-best-file-type&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Select the best file type&lt;/h2&gt;
+&lt;p&gt;Practice deciding what kind of file type you should use by looking at these images and choosing what you think works the best.&lt;/p&gt;
+&lt;div class=&#34;question&#34;&gt;
+&lt;p&gt;&lt;img src=&#34;/img/lesson/file-types/atlanta-sign.jpg&#34; width=&#34;60%&#34; /&gt;&lt;/p&gt;
+&lt;form name=&#34;form_1&#34; onsubmit=&#34;return validate_form_1()&#34; method=&#34;post&#34;&gt;
+&lt;input type=&#34;radio&#34; name=&#34;answer_1&#34; id=&#34;1_1&#34; value=&#34;PNG&#34;&gt;&lt;label for=&#34;1&#34;&gt;PNG&lt;/label&gt;&lt;br&gt;&lt;input type=&#34;radio&#34; name=&#34;answer_1&#34; id=&#34;1_2&#34; value=&#34;JPG&#34;&gt;&lt;label for=&#34;2&#34;&gt;JPG&lt;/label&gt;&lt;br&gt;&lt;input type=&#34;radio&#34; name=&#34;answer_1&#34; id=&#34;1_3&#34; value=&#34;PDF&#34;&gt;&lt;label for=&#34;3&#34;&gt;PDF&lt;/label&gt;&lt;br&gt;&lt;input type=&#34;submit&#34; value=&#34;Check answer&#34;&gt;
+&lt;/form&gt;
+&lt;p id=&#34;result_1&#34;&gt;
+&lt;/p&gt;
+&lt;script&gt; function validate_form_1() {var x, text; var x = document.forms[&#34;form_1&#34;][&#34;answer_1&#34;].value;if (x == &#34;JPG&#34;){text = &#39;Correct! This is a photograph, so it should be a JPG. It might seem a little tricky since there are so few colors, but it still needs to be a JPG because the black paint on the brick is actually a range of thousands of different shades of black pixels.&#39;;} else {text = &#39;Not quite—this image has a lot of colors in it…&#39;;} document.getElementById(&#39;result_1&#39;).innerHTML = text; return false;} &lt;/script&gt;
+&lt;/div&gt;
+&lt;hr /&gt;
+&lt;div class=&#34;question&#34;&gt;
+&lt;p&gt;&lt;img src=&#34;/img/lesson/file-types/gsu-logo.png&#34; width=&#34;60%&#34; /&gt;&lt;/p&gt;
+&lt;form name=&#34;form_2&#34; onsubmit=&#34;return validate_form_2()&#34; method=&#34;post&#34;&gt;
+&lt;input type=&#34;radio&#34; name=&#34;answer_2&#34; id=&#34;2_1&#34; value=&#34;PNG&#34;&gt;&lt;label for=&#34;1&#34;&gt;PNG&lt;/label&gt;&lt;br&gt;&lt;input type=&#34;radio&#34; name=&#34;answer_2&#34; id=&#34;2_2&#34; value=&#34;JPG&#34;&gt;&lt;label for=&#34;2&#34;&gt;JPG&lt;/label&gt;&lt;br&gt;&lt;input type=&#34;radio&#34; name=&#34;answer_2&#34; id=&#34;2_3&#34; value=&#34;PDF&#34;&gt;&lt;label for=&#34;3&#34;&gt;PDF&lt;/label&gt;&lt;br&gt;&lt;input type=&#34;submit&#34; value=&#34;Check answer&#34;&gt;
+&lt;/form&gt;
+&lt;p id=&#34;result_2&#34;&gt;
+&lt;/p&gt;
+&lt;script&gt; function validate_form_2() {var x, text; var x = document.forms[&#34;form_2&#34;][&#34;answer_2&#34;].value;if (x == &#34;PNG&#34;|x == &#34;PDF&#34;){text = &#39;Correct! This is a logo with a few colors in it, so it’s vector-based. If you use a PDF of the logo, you can rescale it infinitely big or small. If you use a PNG, it will work nicely online.&#39;;} else {text = &#39;Not quite—this image doesn’t have a lot of colors in it…&#39;;} document.getElementById(&#39;result_2&#39;).innerHTML = text; return false;} &lt;/script&gt;
+&lt;/div&gt;
+&lt;hr /&gt;
+&lt;div class=&#34;question&#34;&gt;
+&lt;p&gt;&lt;img src=&#34;/img/lesson/file-types/pie_chart.png&#34; width=&#34;60%&#34; /&gt;&lt;/p&gt;
+&lt;form name=&#34;form_3&#34; onsubmit=&#34;return validate_form_3()&#34; method=&#34;post&#34;&gt;
+&lt;input type=&#34;radio&#34; name=&#34;answer_3&#34; id=&#34;3_1&#34; value=&#34;PNG&#34;&gt;&lt;label for=&#34;1&#34;&gt;PNG&lt;/label&gt;&lt;br&gt;&lt;input type=&#34;radio&#34; name=&#34;answer_3&#34; id=&#34;3_2&#34; value=&#34;JPG&#34;&gt;&lt;label for=&#34;2&#34;&gt;JPG&lt;/label&gt;&lt;br&gt;&lt;input type=&#34;radio&#34; name=&#34;answer_3&#34; id=&#34;3_3&#34; value=&#34;PDF&#34;&gt;&lt;label for=&#34;3&#34;&gt;PDF&lt;/label&gt;&lt;br&gt;&lt;input type=&#34;submit&#34; value=&#34;Check answer&#34;&gt;
+&lt;/form&gt;
+&lt;p id=&#34;result_3&#34;&gt;
+&lt;/p&gt;
+&lt;script&gt; function validate_form_3() {var x, text; var x = document.forms[&#34;form_3&#34;][&#34;answer_3&#34;].value;if (x == &#34;PNG&#34;|x == &#34;PDF&#34;){text = &#39;Correct! This is a grpah with a few colors in it, so should be vector-based. If you’re using this in a fancy publication or report, use a PDF. If you’e using Word or HTML, use a PNG.&#39;;} else {text = &#39;Not quite—this image doesn’t have a lot of colors in it…&#39;;} document.getElementById(&#39;result_3&#39;).innerHTML = text; return false;} &lt;/script&gt;
+&lt;/div&gt;
+&lt;hr /&gt;
+&lt;div class=&#34;question&#34;&gt;
+&lt;p&gt;&lt;img src=&#34;/img/lesson/file-types/solo.jpg&#34; width=&#34;60%&#34; /&gt;&lt;/p&gt;
+&lt;form name=&#34;form_4&#34; onsubmit=&#34;return validate_form_4()&#34; method=&#34;post&#34;&gt;
+&lt;input type=&#34;radio&#34; name=&#34;answer_4&#34; id=&#34;4_1&#34; value=&#34;PNG&#34;&gt;&lt;label for=&#34;1&#34;&gt;PNG&lt;/label&gt;&lt;br&gt;&lt;input type=&#34;radio&#34; name=&#34;answer_4&#34; id=&#34;4_2&#34; value=&#34;JPG&#34;&gt;&lt;label for=&#34;2&#34;&gt;JPG&lt;/label&gt;&lt;br&gt;&lt;input type=&#34;radio&#34; name=&#34;answer_4&#34; id=&#34;4_3&#34; value=&#34;PDF&#34;&gt;&lt;label for=&#34;3&#34;&gt;PDF&lt;/label&gt;&lt;br&gt;&lt;input type=&#34;submit&#34; value=&#34;Check answer&#34;&gt;
+&lt;/form&gt;
+&lt;p id=&#34;result_4&#34;&gt;
+&lt;/p&gt;
+&lt;script&gt; function validate_form_4() {var x, text; var x = document.forms[&#34;form_4&#34;][&#34;answer_4&#34;].value;if (x == &#34;JPG&#34;){text = &#39;Correct! This has a ton of colors in it and is mostly a photograph. You may have been thrown off by the text in the bottom section, or the stylized shapes of the Millennium Falcon’s windows at the top. Those shapes and the text are both vector-based, but because the majority of the image is a photogrpah, it still needs to be saved as a JPG. To keep the text nice and crisp, it needs to be exported at a high resolution.&#39;;} else {text = &#39;Not quite—this image has a lot of colors in it…&#39;;} document.getElementById(&#39;result_4&#39;).innerHTML = text; return false;} &lt;/script&gt;
+&lt;/div&gt;
+&lt;hr /&gt;
+&lt;div class=&#34;question&#34;&gt;
+&lt;p&gt;&lt;img src=&#34;/img/lesson/file-types/butterflies.png&#34; width=&#34;60%&#34; /&gt;&lt;/p&gt;
+&lt;form name=&#34;form_5&#34; onsubmit=&#34;return validate_form_5()&#34; method=&#34;post&#34;&gt;
+&lt;input type=&#34;radio&#34; name=&#34;answer_5&#34; id=&#34;5_1&#34; value=&#34;PNG&#34;&gt;&lt;label for=&#34;1&#34;&gt;PNG&lt;/label&gt;&lt;br&gt;&lt;input type=&#34;radio&#34; name=&#34;answer_5&#34; id=&#34;5_2&#34; value=&#34;JPG&#34;&gt;&lt;label for=&#34;2&#34;&gt;JPG&lt;/label&gt;&lt;br&gt;&lt;input type=&#34;radio&#34; name=&#34;answer_5&#34; id=&#34;5_3&#34; value=&#34;PDF&#34;&gt;&lt;label for=&#34;3&#34;&gt;PDF&lt;/label&gt;&lt;br&gt;&lt;input type=&#34;submit&#34; value=&#34;Check answer&#34;&gt;
+&lt;/form&gt;
+&lt;p id=&#34;result_5&#34;&gt;
+&lt;/p&gt;
+&lt;script&gt; function validate_form_5() {var x, text; var x = document.forms[&#34;form_5&#34;][&#34;answer_5&#34;].value;if (x == &#34;PNG&#34;|x == &#34;PDF&#34;){text = &#39;Correct! Even though this is very colorful, it should be a PNG or PDF, since it’s vector-based and not a photograph. &#39;;} else {text = &#39;Not quite—this image doesn’t have a lot of colors in it…&#39;;} document.getElementById(&#39;result_5&#39;).innerHTML = text; return false;} &lt;/script&gt;
+&lt;/div&gt;
+&lt;hr /&gt;
+&lt;div class=&#34;question&#34;&gt;
+&lt;p&gt;&lt;img src=&#34;/img/lesson/file-types/atlanta-night.jpg&#34; width=&#34;60%&#34; /&gt;&lt;/p&gt;
+&lt;form name=&#34;form_6&#34; onsubmit=&#34;return validate_form_6()&#34; method=&#34;post&#34;&gt;
+&lt;input type=&#34;radio&#34; name=&#34;answer_6&#34; id=&#34;6_1&#34; value=&#34;PNG&#34;&gt;&lt;label for=&#34;1&#34;&gt;PNG&lt;/label&gt;&lt;br&gt;&lt;input type=&#34;radio&#34; name=&#34;answer_6&#34; id=&#34;6_2&#34; value=&#34;JPG&#34;&gt;&lt;label for=&#34;2&#34;&gt;JPG&lt;/label&gt;&lt;br&gt;&lt;input type=&#34;radio&#34; name=&#34;answer_6&#34; id=&#34;6_3&#34; value=&#34;PDF&#34;&gt;&lt;label for=&#34;3&#34;&gt;PDF&lt;/label&gt;&lt;br&gt;&lt;input type=&#34;submit&#34; value=&#34;Check answer&#34;&gt;
+&lt;/form&gt;
+&lt;p id=&#34;result_6&#34;&gt;
+&lt;/p&gt;
+&lt;script&gt; function validate_form_6() {var x, text; var x = document.forms[&#34;form_6&#34;][&#34;answer_6&#34;].value;if (x == &#34;JPG&#34;){text = &#39;Correct! This is a photograph and should be a JPG.&#39;;} else {text = &#39;Not quite—this image has a lot of colors in it…&#39;;} document.getElementById(&#39;result_6&#39;).innerHTML = text; return false;} &lt;/script&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Mapping data to graphics</title>
+      <link>/lesson/03-lesson/</link>
+      <pubDate>Wed, 13 May 2020 00:00:00 +0000</pubDate>
+      <guid>/lesson/03-lesson/</guid>
+      <description>
+&lt;script src=&#34;/rmarkdown-libs/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
+
+&lt;div id=&#34;TOC&#34;&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#part-1-data-visualization-with-ggplot2&#34;&gt;Part 1: Data visualization with &lt;strong&gt;ggplot2&lt;/strong&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#part-2-reshaping-data-with-tidyr&#34;&gt;Part 2: Reshaping data with &lt;strong&gt;tidyr&lt;/strong&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+
+&lt;div id=&#34;part-1-data-visualization-with-ggplot2&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Part 1: Data visualization with &lt;strong&gt;ggplot2&lt;/strong&gt;&lt;/h2&gt;
+&lt;p&gt;For the first part of today’s lesson, you need to work through RStudio’s introductory primers for &lt;strong&gt;ggplot2&lt;/strong&gt;. You’ll do these in your browser and type code and see results there.&lt;/p&gt;
+&lt;p&gt;It seems like there are a lot, but they’re short and go fairly quickly (especially as you get the hang of the &lt;code&gt;ggplot()&lt;/code&gt; syntax). Complete these:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Visualize Data&lt;/strong&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://rstudio.cloud/learn/primers/3.1&#34;&gt;Exploratory Data Analysis&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://rstudio.cloud/learn/primers/3.2&#34;&gt;Bar Charts&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://rstudio.cloud/learn/primers/3.3&#34;&gt;Histograms&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://rstudio.cloud/learn/primers/3.4&#34;&gt;Boxplots and Counts&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://rstudio.cloud/learn/primers/3.5&#34;&gt;Scatterplots&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://rstudio.cloud/learn/primers/3.6&#34;&gt;Line plots&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://rstudio.cloud/learn/primers/3.7&#34;&gt;Overplotting and Big Data&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://rstudio.cloud/learn/primers/3.8&#34;&gt;Customize Your Plots&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;div id=&#34;part-2-reshaping-data-with-tidyr&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Part 2: Reshaping data with &lt;strong&gt;tidyr&lt;/strong&gt;&lt;/h2&gt;
+&lt;p&gt;For the last part of today’s lesson, you’ll work through just one RStudio primer to learn how to use the &lt;strong&gt;tidyr&lt;/strong&gt; package to reshape data from wide to long and back to wide.&lt;/p&gt;
+&lt;p&gt;Complete this:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Tidy Your Data&lt;/strong&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://rstudio.cloud/learn/primers/4.1&#34;&gt;Reshape Data&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;note&#34;&gt;
+&lt;p&gt;Recent versions of &lt;strong&gt;tidyr&lt;/strong&gt; have renamed these core functions: &lt;code&gt;gather()&lt;/code&gt; is now &lt;code&gt;pivot_longer()&lt;/code&gt; and &lt;code&gt;spread()&lt;/code&gt; is now &lt;code&gt;pivot_wider()&lt;/code&gt;. The syntax for these &lt;code&gt;pivot_*()&lt;/code&gt; functions is &lt;em&gt;slightly&lt;/em&gt; different from what it was in &lt;code&gt;gather()&lt;/code&gt; and &lt;code&gt;spread()&lt;/code&gt;, so you can’t just replace the names. Fortunately, both &lt;code&gt;gather()&lt;/code&gt; and &lt;code&gt;spread()&lt;/code&gt; still work and won’t go away for a while, so you can still use them as you learn about reshaping and tidying data. It would be worth learning how the newer &lt;code&gt;pivot_*()&lt;/code&gt; functions work, eventually, though (&lt;a href=&#34;https://tidyr.tidyverse.org/articles/pivot.html&#34;&gt;see here for examples&lt;/a&gt;).&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Amounts and proportions</title>
+      <link>/lesson/04-lesson/</link>
+      <pubDate>Thu, 14 May 2020 00:00:00 +0000</pubDate>
+      <guid>/lesson/04-lesson/</guid>
+      <description>
+&lt;script src=&#34;/rmarkdown-libs/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
+
+&lt;div id=&#34;TOC&#34;&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#manipulating-data-with-dplyr&#34;&gt;Manipulating data with &lt;strong&gt;dplyr&lt;/strong&gt;&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#filtering-with-filter&#34;&gt;Filtering with &lt;code&gt;filter()&lt;/code&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#adding-new-columns-with-mutate&#34;&gt;Adding new columns with &lt;code&gt;mutate()&lt;/code&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#combining-multiple-verbs-with-pipes&#34;&gt;Combining multiple verbs with pipes (&lt;code&gt;%&amp;gt;%&lt;/code&gt;)&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#summarizing-data-by-groups-with-group_by-summarize&#34;&gt;Summarizing data by groups with &lt;code&gt;group_by() %&amp;gt;% summarize()&lt;/code&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#selecting-with-select&#34;&gt;Selecting with &lt;code&gt;select()&lt;/code&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#arranging-data-with-arrange&#34;&gt;Arranging data with &lt;code&gt;arrange()&lt;/code&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#thats-it&#34;&gt;That’s it!&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#changing-colors-shapes-and-sizes-with-scale_&#34;&gt;Changing colors, shapes, and sizes, with &lt;code&gt;scale_*()&lt;/code&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+
+&lt;p&gt;When you visualize proportions with ggplot, you’ll typically go through a two-step process:&lt;/p&gt;
+&lt;ol style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;Summarize the data with &lt;strong&gt;dplyr&lt;/strong&gt; (typically with a combination of &lt;code&gt;group_by()&lt;/code&gt; and &lt;code&gt;summarize()&lt;/code&gt;)&lt;/li&gt;
+&lt;li&gt;Plot the summarized data&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div id=&#34;manipulating-data-with-dplyr&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Manipulating data with &lt;strong&gt;dplyr&lt;/strong&gt;&lt;/h2&gt;
+&lt;p&gt;You had some experience with &lt;strong&gt;dplyr&lt;/strong&gt; functions in the RStudio primers, but we’ll briefly review them here.&lt;/p&gt;
+&lt;p&gt;There are 6 important verbs that you’ll typically use when working with data:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Extract rows/cases with &lt;code&gt;filter()&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;Extract columns/variables with &lt;code&gt;select()&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;Arrange/sort rows with &lt;code&gt;arrange()&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;Make new columns/variables with &lt;code&gt;mutate()&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;Make group summaries with &lt;code&gt;group_by %&amp;gt;% summarize()&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Every &lt;strong&gt;dplyr&lt;/strong&gt; verb follows the same pattern. The first argument is always a data frame, and the function always returns a data frame:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#39;language-r&#39;&gt;&lt;code&gt;&lt;span style=&#39;background-color:pink&#39;&gt;VERB&lt;/span&gt;(&lt;span style=&#39;background-color:yellow&#39;&gt;DATA_TO_TRANSFORM&lt;/span&gt;, &lt;span style=&#39;background-color:lightblue&#39;&gt;STUFF_IT_DOES&lt;/span&gt;)&lt;/code&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;div id=&#34;filtering-with-filter&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Filtering with &lt;code&gt;filter()&lt;/code&gt;&lt;/h3&gt;
+&lt;p&gt;The &lt;code&gt;filter()&lt;/code&gt; function takes two arguments: a data frame to transform, and a set of tests. It will return each row for which the test is TRUE.&lt;/p&gt;
+&lt;p&gt;This code, for instance, will look at the &lt;code&gt;gapminder&lt;/code&gt; dataset and return all rows where &lt;code&gt;country&lt;/code&gt; is equal to “Denmark”:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#39;language-r&#39;&gt;&lt;code&gt;&lt;span style=&#39;background-color:pink&#39;&gt;filter&lt;/span&gt;(&lt;span style=&#39;background-color:yellow&#39;&gt;gapminder&lt;/span&gt;, &lt;span style=&#39;background-color:lightblue&#39;&gt;country == &#34;Denmark&#34;&lt;/span&gt;)&lt;/code&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;
+## # A tibble: 12 x 6
+##    country continent  year lifeExp     pop gdpPercap
+##    &amp;lt;fct&amp;gt;   &amp;lt;fct&amp;gt;     &amp;lt;int&amp;gt;   &amp;lt;dbl&amp;gt;   &amp;lt;int&amp;gt;     &amp;lt;dbl&amp;gt;
+##  1 Denmark Europe     1952    70.8 4334000     9692.
+##  2 Denmark Europe     1957    71.8 4487831    11100.
+##  3 Denmark Europe     1962    72.4 4646899    13583.
+##  4 Denmark Europe     1967    73.0 4838800    15937.
+##  5 Denmark Europe     1972    73.5 4991596    18866.
+##  6 Denmark Europe     1977    74.7 5088419    20423.
+##  7 Denmark Europe     1982    74.6 5117810    21688.
+##  8 Denmark Europe     1987    74.8 5127024    25116.
+##  9 Denmark Europe     1992    75.3 5171393    26407.
+## 10 Denmark Europe     1997    76.1 5283663    29804.
+## 11 Denmark Europe     2002    77.2 5374693    32167.
+## 12 Denmark Europe     2007    78.3 5468120    35278.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Notice that there are two equal signs (&lt;code&gt;==&lt;/code&gt;). This is because it’s a logical test, similar to greater than (&lt;code&gt;&amp;gt;&lt;/code&gt;) or less than (&lt;code&gt;&amp;lt;&lt;/code&gt;). When you use a single equal sign, you set an argument (like &lt;code&gt;data = gapminder&lt;/code&gt;); when you use two, you are doing a test. There are lots of different ways to do logical tests:&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr class=&#34;header&#34;&gt;
+&lt;th&gt;Test&lt;/th&gt;
+&lt;th&gt;Meaning&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td&gt;&lt;code&gt;x &amp;lt; y&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;Less than&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td&gt;&lt;code&gt;x &amp;gt; y&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;Greater than&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td&gt;&lt;code&gt;x == y&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;Equal to&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td&gt;&lt;code&gt;x &amp;lt;= y&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;Less than or equal to&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td&gt;&lt;code&gt;x &amp;gt;= y&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;Greater than or equal to&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td&gt;&lt;code&gt;x != y&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;Not equal to&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td&gt;&lt;code&gt;x %in% y&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;In (group membership)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td&gt;&lt;code&gt;is.na(x)&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;Is missing&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td&gt;&lt;code&gt;!is.na(x)&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;Is not missing&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;div class=&#34;puzzle&#34;&gt;
+&lt;p&gt;&lt;strong&gt;Your turn&lt;/strong&gt;: Use &lt;code&gt;filter()&lt;/code&gt; and logical tests to show:&lt;/p&gt;
+&lt;ol style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;The data for Canada&lt;/li&gt;
+&lt;li&gt;All data for countries in Oceania&lt;/li&gt;
+&lt;li&gt;Rows where life expectancy is greater than 82&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;
+&lt;iframe style=&#34;margin:0 auto; min-width: 100%;&#34; id=&#34;learnr-04-lesson-dplyr1&#34; class=&#34;interactive&#34; src=&#34;https://andrewheiss.shinyapps.io/datavizm20_04-dplyr-1/&#34; scrolling=&#34;no&#34; frameborder=&#34;no&#34; onload=&#39;iFrameResize({}, &#34;#learnr-04-lesson-dplyr1&#34;)&#39;&gt;&lt;/iframe&gt;
+
+&lt;p&gt;You can also use multiple conditions, and these will extract rows that meet every test. By default, if you separate the tests with a comma, R will consider this an “and” test and find rows that are &lt;em&gt;both&lt;/em&gt; Denmark and greater than 2000.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#39;language-r&#39;&gt;&lt;code&gt;&lt;span style=&#39;background-color:pink&#39;&gt;filter&lt;/span&gt;(&lt;span style=&#39;background-color:yellow&#39;&gt;gapminder&lt;/span&gt;, &lt;span style=&#39;background-color:lightblue&#39;&gt;country == &#34;Denmark&#34;, year &gt; 2000&lt;/span&gt;)&lt;/code&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;
+## # A tibble: 2 x 6
+##   country continent  year lifeExp     pop gdpPercap
+##   &amp;lt;fct&amp;gt;   &amp;lt;fct&amp;gt;     &amp;lt;int&amp;gt;   &amp;lt;dbl&amp;gt;   &amp;lt;int&amp;gt;     &amp;lt;dbl&amp;gt;
+## 1 Denmark Europe     2002    77.2 5374693    32167.
+## 2 Denmark Europe     2007    78.3 5468120    35278.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;You can also use “or” with “&lt;code&gt;|&lt;/code&gt;” and “not” with “&lt;code&gt;!&lt;/code&gt;”:&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr class=&#34;header&#34;&gt;
+&lt;th&gt;Operator&lt;/th&gt;
+&lt;th&gt;Meaning&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td&gt;&lt;code&gt;a &amp;amp; b&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;and&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td&gt;&lt;code&gt;a | b&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;or&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td&gt;&lt;code&gt;!a&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;not&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;div class=&#34;puzzle&#34;&gt;
+&lt;p&gt;&lt;strong&gt;Your turn&lt;/strong&gt;: Use &lt;code&gt;filter()&lt;/code&gt; and logical tests to show:&lt;/p&gt;
+&lt;ol style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;Canada before 1970&lt;/li&gt;
+&lt;li&gt;Countries where life expectancy in 2007 is below 50&lt;/li&gt;
+&lt;li&gt;Countries where life expectancy in 2007 is below 50 and are not in Africa&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;
+&lt;iframe style=&#34;margin:0 auto; min-width: 100%;&#34; id=&#34;learnr-04-lesson-dplyr2&#34; class=&#34;interactive&#34; src=&#34;https://andrewheiss.shinyapps.io/datavizm20_04-dplyr-2/&#34; scrolling=&#34;no&#34; frameborder=&#34;no&#34; onload=&#39;iFrameResize({}, &#34;#learnr-04-lesson-dplyr2&#34;)&#39;&gt;&lt;/iframe&gt;
+
+&lt;p&gt;Beware of some common mistakes! You can’t collapse multiple tests into one. Instead, use two separate tests:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# This won&amp;#39;t work!
+filter(gapminder, 1960 &amp;lt; year &amp;lt; 1980)
+
+# This will work
+filter(gapminder, 1960 &amp;lt; year, year &amp;lt; 1980)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Also, you can avoid stringing together lots of tests by using the &lt;code&gt;%in%&lt;/code&gt; operator, which checks to see if a value is in a list of values.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# This works, but is tedious
+filter(gapminder, 
+       country == &amp;quot;Mexico&amp;quot; | country == &amp;quot;Canada&amp;quot; | country == &amp;quot;United States&amp;quot;)
+
+# This is more concise and easier to add other countries later
+filter(gapminder, 
+       country %in% c(&amp;quot;Mexico&amp;quot;, &amp;quot;Canada&amp;quot;, &amp;quot;United States&amp;quot;))&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;adding-new-columns-with-mutate&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Adding new columns with &lt;code&gt;mutate()&lt;/code&gt;&lt;/h3&gt;
+&lt;p&gt;You create new columns with the &lt;code&gt;mutate()&lt;/code&gt; function. You can create a single column like this:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#39;language-r&#39;&gt;&lt;code&gt;&lt;span style=&#39;background-color:pink&#39;&gt;mutate&lt;/span&gt;(&lt;span style=&#39;background-color:yellow&#39;&gt;gapminder&lt;/span&gt;, &lt;span style=&#39;background-color:lightblue&#39;&gt;gdp = gdpPercap * pop&lt;/span&gt;)&lt;/code&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;
+## # A tibble: 1,704 x 7
+##    country     continent  year lifeExp      pop gdpPercap          gdp
+##    &amp;lt;fct&amp;gt;       &amp;lt;fct&amp;gt;     &amp;lt;int&amp;gt;   &amp;lt;dbl&amp;gt;    &amp;lt;int&amp;gt;     &amp;lt;dbl&amp;gt;        &amp;lt;dbl&amp;gt;
+##  1 Afghanistan Asia       1952    28.8  8425333      779.  6567086330.
+##  2 Afghanistan Asia       1957    30.3  9240934      821.  7585448670.
+##  3 Afghanistan Asia       1962    32.0 10267083      853.  8758855797.
+##  4 Afghanistan Asia       1967    34.0 11537966      836.  9648014150.
+##  5 Afghanistan Asia       1972    36.1 13079460      740.  9678553274.
+##  6 Afghanistan Asia       1977    38.4 14880372      786. 11697659231.
+##  7 Afghanistan Asia       1982    39.9 12881816      978. 12598563401.
+##  8 Afghanistan Asia       1987    40.8 13867957      852. 11820990309.
+##  9 Afghanistan Asia       1992    41.7 16317921      649. 10595901589.
+## 10 Afghanistan Asia       1997    41.8 22227415      635. 14121995875.
+## # … with 1,694 more rows
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;And you can create multiple columns by including a comma-separated list of new columns to create:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#39;language-r&#39;&gt;&lt;code&gt;&lt;span style=&#39;background-color:pink&#39;&gt;mutate&lt;/span&gt;(&lt;span style=&#39;background-color:yellow&#39;&gt;gapminder&lt;/span&gt;, &lt;span style=&#39;background-color:lightblue&#39;&gt;gdp = gdpPercap * pop&lt;/span&gt;,&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&lt;span style=&#39;background-color:lightblue&#39;&gt;pop_mill = round(pop / 1000000)&lt;/span&gt;)&lt;/code&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;
+## # A tibble: 1,704 x 8
+##    country     continent  year lifeExp      pop gdpPercap          gdp pop_mill
+##    &amp;lt;fct&amp;gt;       &amp;lt;fct&amp;gt;     &amp;lt;int&amp;gt;   &amp;lt;dbl&amp;gt;    &amp;lt;int&amp;gt;     &amp;lt;dbl&amp;gt;        &amp;lt;dbl&amp;gt;    &amp;lt;dbl&amp;gt;
+##  1 Afghanistan Asia       1952    28.8  8425333      779.  6567086330.        8
+##  2 Afghanistan Asia       1957    30.3  9240934      821.  7585448670.        9
+##  3 Afghanistan Asia       1962    32.0 10267083      853.  8758855797.       10
+##  4 Afghanistan Asia       1967    34.0 11537966      836.  9648014150.       12
+##  5 Afghanistan Asia       1972    36.1 13079460      740.  9678553274.       13
+##  6 Afghanistan Asia       1977    38.4 14880372      786. 11697659231.       15
+##  7 Afghanistan Asia       1982    39.9 12881816      978. 12598563401.       13
+##  8 Afghanistan Asia       1987    40.8 13867957      852. 11820990309.       14
+##  9 Afghanistan Asia       1992    41.7 16317921      649. 10595901589.       16
+## 10 Afghanistan Asia       1997    41.8 22227415      635. 14121995875.       22
+## # … with 1,694 more rows
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;You can also do conditional tests within &lt;code&gt;mutate()&lt;/code&gt; using the &lt;code&gt;ifelse()&lt;/code&gt; function. This works like the &lt;code&gt;=IFELSE&lt;/code&gt; function in Excel. Feed the function three arguments: (1) a test, (2) the value if the test is true, and (3) the value if the test is false:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#39;language-r&#39;&gt;&lt;code&gt;ifelse(&lt;span style=&#39;background-color:#faca7d&#39;&gt;TEST&lt;/span&gt;, &lt;span style=&#39;background-color:#9bbffa&#39;&gt;VALUE_IF_TRUE&lt;/span&gt;, &lt;span style=&#39;background-color:#f79b94&#39;&gt;VALUE_IF_FALSE&lt;/span&gt;)&lt;/code&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;We can create a new column that is a binary indicator for whether the country’s row is after 1960:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#39;language-r&#39;&gt;&lt;code&gt;mutate(gapminder, after_1960 = ifelse(&lt;span style=&#39;background-color:#faca7d&#39;&gt;year &gt; 1960&lt;/span&gt;, &lt;span style=&#39;background-color:#9bbffa&#39;&gt;TRUE&lt;/span&gt;, &lt;span style=&#39;background-color:#f79b94&#39;&gt;FALSE&lt;/span&gt;))&lt;/code&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;
+## # A tibble: 1,704 x 7
+##    country     continent  year lifeExp      pop gdpPercap after_1960
+##    &amp;lt;fct&amp;gt;       &amp;lt;fct&amp;gt;     &amp;lt;int&amp;gt;   &amp;lt;dbl&amp;gt;    &amp;lt;int&amp;gt;     &amp;lt;dbl&amp;gt; &amp;lt;lgl&amp;gt;     
+##  1 Afghanistan Asia       1952    28.8  8425333      779. FALSE     
+##  2 Afghanistan Asia       1957    30.3  9240934      821. FALSE     
+##  3 Afghanistan Asia       1962    32.0 10267083      853. TRUE      
+##  4 Afghanistan Asia       1967    34.0 11537966      836. TRUE      
+##  5 Afghanistan Asia       1972    36.1 13079460      740. TRUE      
+##  6 Afghanistan Asia       1977    38.4 14880372      786. TRUE      
+##  7 Afghanistan Asia       1982    39.9 12881816      978. TRUE      
+##  8 Afghanistan Asia       1987    40.8 13867957      852. TRUE      
+##  9 Afghanistan Asia       1992    41.7 16317921      649. TRUE      
+## 10 Afghanistan Asia       1997    41.8 22227415      635. TRUE      
+## # … with 1,694 more rows
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;We can also use text labels instead of &lt;code&gt;TRUE&lt;/code&gt; and &lt;code&gt;FALSE&lt;/code&gt;:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#39;language-r&#39;&gt;&lt;code&gt;mutate(gapminder, &lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;after_1960 = ifelse(&lt;span style=&#39;background-color:#faca7d&#39;&gt;year &gt; 1960&lt;/span&gt;, &lt;span style=&#39;background-color:#9bbffa&#39;&gt;&#34;After 1960&#34;&lt;/span&gt;, &lt;span style=&#39;background-color:#f79b94&#39;&gt;&#34;Before 1960&#34;&lt;/span&gt;))&lt;/code&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;
+## # A tibble: 1,704 x 7
+##    country     continent  year lifeExp      pop gdpPercap after_1960 
+##    &amp;lt;fct&amp;gt;       &amp;lt;fct&amp;gt;     &amp;lt;int&amp;gt;   &amp;lt;dbl&amp;gt;    &amp;lt;int&amp;gt;     &amp;lt;dbl&amp;gt; &amp;lt;chr&amp;gt;      
+##  1 Afghanistan Asia       1952    28.8  8425333      779. Before 1960
+##  2 Afghanistan Asia       1957    30.3  9240934      821. Before 1960
+##  3 Afghanistan Asia       1962    32.0 10267083      853. After 1960 
+##  4 Afghanistan Asia       1967    34.0 11537966      836. After 1960 
+##  5 Afghanistan Asia       1972    36.1 13079460      740. After 1960 
+##  6 Afghanistan Asia       1977    38.4 14880372      786. After 1960 
+##  7 Afghanistan Asia       1982    39.9 12881816      978. After 1960 
+##  8 Afghanistan Asia       1987    40.8 13867957      852. After 1960 
+##  9 Afghanistan Asia       1992    41.7 16317921      649. After 1960 
+## 10 Afghanistan Asia       1997    41.8 22227415      635. After 1960 
+## # … with 1,694 more rows
+&lt;/code&gt;&lt;/pre&gt;
+&lt;div class=&#34;puzzle&#34;&gt;
+&lt;p&gt;&lt;strong&gt;Your turn&lt;/strong&gt;: Use &lt;code&gt;mutate()&lt;/code&gt; to:&lt;/p&gt;
+&lt;ol style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;Add an &lt;code&gt;africa&lt;/code&gt; column that is TRUE if the country is on the African continent&lt;/li&gt;
+&lt;li&gt;Add a column for logged GDP per capita&lt;/li&gt;
+&lt;li&gt;Add an &lt;code&gt;africa_asia&lt;/code&gt; column that says “Africa or Asia” if the country is in Africa or Asia, and “Not Africa or Asia” if it’s not&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;
+&lt;iframe style=&#34;margin:0 auto; min-width: 100%;&#34; id=&#34;learnr-04-lesson-dplyr3&#34; class=&#34;interactive&#34; src=&#34;https://andrewheiss.shinyapps.io/datavizm20_04-dplyr-3/&#34; scrolling=&#34;no&#34; frameborder=&#34;no&#34; onload=&#39;iFrameResize({}, &#34;#learnr-04-lesson-dplyr3&#34;)&#39;&gt;&lt;/iframe&gt;
+
+&lt;/div&gt;
+&lt;div id=&#34;combining-multiple-verbs-with-pipes&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Combining multiple verbs with pipes (&lt;code&gt;%&amp;gt;%&lt;/code&gt;)&lt;/h3&gt;
+&lt;p&gt;What if you want to filter to include only rows from 2002 &lt;em&gt;and&lt;/em&gt; make a new column with the logged GDP per capita? Doing this requires both &lt;code&gt;filter()&lt;/code&gt; and &lt;code&gt;mutate()&lt;/code&gt;, so we need to find a way to use both at once.&lt;/p&gt;
+&lt;p&gt;One solution is to use intermediate variables for each step:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#39;language-r&#39;&gt;&lt;code&gt;&lt;span style=&#39;background-color:#faca7d&#39;&gt;gapminder_2002_filtered&lt;/span&gt; &lt;- filter(gapminder, year == 2002)&lt;br&gt;&lt;br&gt;&lt;span style=&#39;background-color:#9bbffa&#39;&gt;gapminder_2002_logged&lt;/span&gt; &lt;- mutate(&lt;span style=&#39;background-color:#faca7d&#39;&gt;gapminder_2002_filtered&lt;/span&gt;, log_gdpPercap = log(gdpPercap))&lt;/code&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;That works fine, but your environment panel will start getting full of lots of intermediate data frames.&lt;/p&gt;
+&lt;p&gt;Another solution is to nest the functions inside each other. Remember that all &lt;strong&gt;dplyr&lt;/strong&gt; functions return data frames, so you can feed the results of one into another:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#39;language-r&#39;&gt;&lt;code&gt;&lt;span style=&#39;background-color:#faca7d&#39;&gt;filter&lt;/span&gt;(&lt;span style=&#39;background-color:#9bbffa&#39;&gt;mutate(gapminder, log_gdpPercap = log(gdpPercap))&lt;/span&gt;, &lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&lt;span style=&#39;background-color:#faca7d&#39;&gt;year == 2002&lt;/span&gt;)&lt;/code&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;That works too, but it gets &lt;em&gt;really&lt;/em&gt; complicated once you have even more functions, and it’s hard to keep track of which function’s arguments go where. I’d avoid doing this entirely.&lt;/p&gt;
+&lt;p&gt;One really nice solution is to use a pipe, or &lt;code&gt;%&amp;gt;%&lt;/code&gt;. &lt;strong&gt;The pipe takes an object on the left and passes it as the first argument of the function on the right&lt;/strong&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# gapminder will automatically get placed in the _____ spot
+gapminder %&amp;gt;% filter(_____, country == &amp;quot;Canada&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;These two lines of code do the same thing:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#39;language-r&#39;&gt;&lt;code&gt;filter(&lt;span style=&#39;background-color:#f79b94&#39;&gt;gapminder&lt;/span&gt;, country == &#34;Canada&#34;)&lt;br&gt;&lt;br&gt;&lt;span style=&#39;background-color:#f79b94&#39;&gt;gapminder&lt;/span&gt; %&gt;% filter(country == &#34;Canada&#34;)&lt;/code&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Using pipes, you can start with a data frame, pass it to one verb, then pass the output of that verb to the next verb, and so on. &lt;strong&gt;When reading any code with a &lt;code&gt;%&amp;gt;%&lt;/code&gt;, it’s easiest to read the &lt;code&gt;%&amp;gt;%&lt;/code&gt; as “and then”.&lt;/strong&gt; This would read:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Take the &lt;code&gt;gapminder&lt;/code&gt; dataset &lt;em&gt;and then&lt;/em&gt; filter it so that it only has rows from 2002 &lt;em&gt;and then&lt;/em&gt; add a new column with the logged GDP per capita&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;gapminder %&amp;gt;% 
+  filter(year == 2002) %&amp;gt;% 
+  mutate(log_gdpPercap = log(gdpPercap))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Here’s another way to think about pipes more conceptually. This isn’t valid R code, obviously, but imagine you’re going to take yourself, and then wake up, get out of bed, get dressed, and leave the house. Writing that whole process as nested functions would look like this:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#39;language-r&#39;&gt;&lt;code&gt;&lt;span style=&#39;color:Coral;underline:text-decoration&#39;&gt;leave_house&lt;/span&gt;(&lt;span style=&#39;color:Coral;underline:text-decoration&#39;&gt;get_dressed&lt;/span&gt;(&lt;span style=&#39;color:Coral;underline:text-decoration&#39;&gt;get_out_of_bed&lt;/span&gt;(&lt;span style=&#39;color:Coral;underline:text-decoration&#39;&gt;wake_up&lt;/span&gt;(&lt;span style=&#39;background-color:Aquamarine&#39;&gt;me&lt;/span&gt;, &lt;span style=&#39;color:CornflowerBlue&#39;&gt;time&lt;/span&gt; = &lt;span style=&#39;background-color:Aquamarine&#39;&gt;&#34;8:00&#34;&lt;/span&gt;), &lt;span style=&#39;color:CornflowerBlue&#39;&gt;side&lt;/span&gt; = &lt;span style=&#39;background-color:Aquamarine&#39;&gt;&#34;correct&#34;&lt;/span&gt;), &lt;span style=&#39;color:CornflowerBlue&#39;&gt;pants&lt;/span&gt; = &lt;span style=&#39;background-color:Aquamarine&#39;&gt;TRUE&lt;/span&gt;, &lt;span style=&#39;color:CornflowerBlue&#39;&gt;shirt&lt;/span&gt; = &lt;span style=&#39;background-color:Aquamarine&#39;&gt;TRUE&lt;/span&gt;), &lt;span style=&#39;color:CornflowerBlue&#39;&gt;car&lt;/span&gt; = &lt;span style=&#39;background-color:Aquamarine&#39;&gt;TRUE&lt;/span&gt;, &lt;span style=&#39;color:CornflowerBlue&#39;&gt;bike&lt;/span&gt; = &lt;span style=&#39;background-color:Aquamarine&#39;&gt;FALSE&lt;/span&gt;)&lt;/code&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Instead of nesting everything, we can use pipes to chain these together. This would read&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Take myself, &lt;em&gt;and then&lt;/em&gt; wake up at 8:00, &lt;em&gt;and then&lt;/em&gt; get out of bed on the correct side, &lt;em&gt;and then&lt;/em&gt; get dressed with pants and a shirt, &lt;em&gt;and then&lt;/em&gt; leave the house in a car&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;pre&gt;&lt;code class=&#39;language-r&#39;&gt;&lt;code&gt;me %&gt;% &lt;br&gt;&amp;nbsp;&amp;nbsp;&lt;span style=&#39;color:Coral;underline:text-decoration&#39;&gt;wake_up&lt;/span&gt;(&lt;span style=&#39;color:CornflowerBlue&#39;&gt;time&lt;/span&gt; = &lt;span style=&#39;background-color:Aquamarine&#39;&gt;&#34;8:00&#34;&lt;/span&gt;) %&gt;% &lt;br&gt;&amp;nbsp;&amp;nbsp;&lt;span style=&#39;color:Coral;underline:text-decoration&#39;&gt;get_out_of_bed&lt;/span&gt;(&lt;span style=&#39;color:CornflowerBlue&#39;&gt;side&lt;/span&gt; = &lt;span style=&#39;background-color:Aquamarine&#39;&gt;&#34;correct&#34;&lt;/span&gt;) %&gt;% &lt;br&gt;&amp;nbsp;&amp;nbsp;&lt;span style=&#39;color:Coral;underline:text-decoration&#39;&gt;get_dressed&lt;/span&gt;(&lt;span style=&#39;color:CornflowerBlue&#39;&gt;pants&lt;/span&gt; = &lt;span style=&#39;background-color:Aquamarine&#39;&gt;TRUE&lt;/span&gt;, &lt;span style=&#39;color:CornflowerBlue&#39;&gt;shirt&lt;/span&gt; = &lt;span style=&#39;background-color:Aquamarine&#39;&gt;TRUE&lt;/span&gt;) %&gt;% &lt;br&gt;&amp;nbsp;&amp;nbsp;&lt;span style=&#39;color:Coral;underline:text-decoration&#39;&gt;leave_house&lt;/span&gt;(&lt;span style=&#39;color:CornflowerBlue&#39;&gt;car&lt;/span&gt; = &lt;span style=&#39;background-color:Aquamarine&#39;&gt;TRUE&lt;/span&gt;, &lt;span style=&#39;color:CornflowerBlue&#39;&gt;bike&lt;/span&gt; = &lt;span style=&#39;background-color:Aquamarine&#39;&gt;FALSE&lt;/span&gt;)&lt;/code&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;summarizing-data-by-groups-with-group_by-summarize&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Summarizing data by groups with &lt;code&gt;group_by() %&amp;gt;% summarize()&lt;/code&gt;&lt;/h3&gt;
+&lt;p&gt;The &lt;code&gt;summarize()&lt;/code&gt; verb takes an entire frame and calculates summary information about it. For instance, this will find the average life expectancy for the whole &lt;code&gt;gapminder&lt;/code&gt; data:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#39;language-r&#39;&gt;&lt;code&gt;&lt;span style=&#39;background-color:yellow&#39;&gt;gapminder&lt;/span&gt; %&gt;% &lt;span style=&#39;background-color:pink&#39;&gt;summarize&lt;/span&gt;(&lt;span style=&#39;background-color:lightblue&#39;&gt;mean_life = mean(lifeExp)&lt;/span&gt;)&lt;/code&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;
+## # A tibble: 1 x 1
+##   mean_life
+##       &amp;lt;dbl&amp;gt;
+## 1      59.5
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;You can also make multiple summary variables, just like &lt;code&gt;mutate()&lt;/code&gt;, and it will return a column for each:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#39;language-r&#39;&gt;&lt;code&gt;&lt;span style=&#39;background-color:yellow&#39;&gt;gapminder&lt;/span&gt; %&gt;% &lt;span style=&#39;background-color:pink&#39;&gt;summarize&lt;/span&gt;(&lt;span style=&#39;background-color:lightblue&#39;&gt;mean_life = mean(lifeExp)&lt;/span&gt;,&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&lt;span style=&#39;background-color:lightblue&#39;&gt;min_life = min(lifeExp)&lt;/span&gt;)&lt;/code&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;
+## # A tibble: 1 x 2
+##   mean_life min_life
+##       &amp;lt;dbl&amp;gt;    &amp;lt;dbl&amp;gt;
+## 1      59.5     23.6
+&lt;/code&gt;&lt;/pre&gt;
+&lt;div class=&#34;puzzle&#34;&gt;
+&lt;p&gt;&lt;strong&gt;Your turn&lt;/strong&gt;: Use &lt;code&gt;summarize()&lt;/code&gt; to calculate:&lt;/p&gt;
+&lt;ol style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;The first (minimum) year in the &lt;code&gt;gapminder&lt;/code&gt; dataset&lt;/li&gt;
+&lt;li&gt;The last (maximum) year in the dataset&lt;/li&gt;
+&lt;li&gt;The number of rows in the dataset (use the &lt;a href=&#34;https://rstudio.com/wp-content/uploads/2015/02/data-wrangling-cheatsheet.pdf&#34;&gt;&lt;strong&gt;dplyr&lt;/strong&gt; cheatsheet&lt;/a&gt;)&lt;/li&gt;
+&lt;li&gt;The number of distinct countries in the dataset (use the &lt;a href=&#34;https://rstudio.com/wp-content/uploads/2015/02/data-wrangling-cheatsheet.pdf&#34;&gt;&lt;strong&gt;dplyr&lt;/strong&gt; cheatsheet&lt;/a&gt;)&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;
+&lt;iframe style=&#34;margin:0 auto; min-width: 100%;&#34; id=&#34;learnr-04-lesson-dplyr4&#34; class=&#34;interactive&#34; src=&#34;https://andrewheiss.shinyapps.io/datavizm20_04-dplyr-4/&#34; scrolling=&#34;no&#34; frameborder=&#34;no&#34; onload=&#39;iFrameResize({}, &#34;#learnr-04-lesson-dplyr4&#34;)&#39;&gt;&lt;/iframe&gt;
+
+&lt;div class=&#34;puzzle&#34;&gt;
+&lt;p&gt;&lt;strong&gt;Your turn&lt;/strong&gt;: Use &lt;code&gt;filter()&lt;/code&gt; and &lt;code&gt;summarize()&lt;/code&gt; to calculate the median life expectancy on the African continent in 2007:&lt;/p&gt;
+&lt;/div&gt;
+&lt;iframe style=&#34;margin:0 auto; min-width: 100%;&#34; id=&#34;learnr-04-lesson-dplyr5&#34; class=&#34;interactive&#34; src=&#34;https://andrewheiss.shinyapps.io/datavizm20_04-dplyr-5/&#34; scrolling=&#34;no&#34; frameborder=&#34;no&#34; onload=&#39;iFrameResize({}, &#34;#learnr-04-lesson-dplyr5&#34;)&#39;&gt;&lt;/iframe&gt;
+
+&lt;p&gt;Notice that &lt;code&gt;summarize()&lt;/code&gt; on its own summarizes the whole dataset, so you only get a single row back. These values are the averages and minimums for the entire data frame. If you group your data into separate subgroups, you can use &lt;code&gt;summarize()&lt;/code&gt; to calculate summary statistics for each group. Do this with &lt;code&gt;group_by()&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;The &lt;code&gt;group_by()&lt;/code&gt; function puts rows into groups based on values in a column. If you run this:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#39;language-r&#39;&gt;&lt;code&gt;&lt;span style=&#39;background-color:yellow&#39;&gt;gapminder&lt;/span&gt; %&gt;% &lt;span style=&#39;background-color:pink&#39;&gt;group_by&lt;/span&gt;(&lt;span style=&#39;background-color:lightblue&#39;&gt;continent&lt;/span&gt;)&lt;/code&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;
+## # A tibble: 1,704 x 6
+## # Groups:   continent [5]
+##    country     continent  year lifeExp      pop gdpPercap
+##    &amp;lt;fct&amp;gt;       &amp;lt;fct&amp;gt;     &amp;lt;int&amp;gt;   &amp;lt;dbl&amp;gt;    &amp;lt;int&amp;gt;     &amp;lt;dbl&amp;gt;
+##  1 Afghanistan Asia       1952    28.8  8425333      779.
+##  2 Afghanistan Asia       1957    30.3  9240934      821.
+##  3 Afghanistan Asia       1962    32.0 10267083      853.
+##  4 Afghanistan Asia       1967    34.0 11537966      836.
+##  5 Afghanistan Asia       1972    36.1 13079460      740.
+##  6 Afghanistan Asia       1977    38.4 14880372      786.
+##  7 Afghanistan Asia       1982    39.9 12881816      978.
+##  8 Afghanistan Asia       1987    40.8 13867957      852.
+##  9 Afghanistan Asia       1992    41.7 16317921      649.
+## 10 Afghanistan Asia       1997    41.8 22227415      635.
+## # … with 1,694 more rows
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;…you won’t see anything different! R has put the dataset into separate invisible groups behind the scenes, but you haven’t done anything with those groups, so nothing has really happened. If you do things with those groups with &lt;code&gt;summarize()&lt;/code&gt;, though, &lt;code&gt;group_by()&lt;/code&gt; becomes much more useful.&lt;/p&gt;
+&lt;p&gt;For instance, this will take the &lt;code&gt;gapminder&lt;/code&gt; data frame, group it by continent, and then summarize it by calculating the number of distinct countries in each group. It will return &lt;em&gt;one row for each group&lt;/em&gt;, so there should be a row for each continent:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;gapminder %&amp;gt;% 
+  group_by(continent) %&amp;gt;% 
+  summarize(n_countries = n_distinct(country)) &lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 5 x 2
+##   continent n_countries
+##   &amp;lt;fct&amp;gt;           &amp;lt;int&amp;gt;
+## 1 Africa             52
+## 2 Americas           25
+## 3 Asia               33
+## 4 Europe             30
+## 5 Oceania             2&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;You can calculate multiple summary statistics, as before:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;gapminder %&amp;gt;% 
+  group_by(continent) %&amp;gt;% 
+  summarize(n_countries = n_distinct(country),
+            avg_life_exp = mean(lifeExp)) &lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 5 x 3
+##   continent n_countries avg_life_exp
+##   &amp;lt;fct&amp;gt;           &amp;lt;int&amp;gt;        &amp;lt;dbl&amp;gt;
+## 1 Africa             52         48.9
+## 2 Americas           25         64.7
+## 3 Asia               33         60.1
+## 4 Europe             30         71.9
+## 5 Oceania             2         74.3&lt;/code&gt;&lt;/pre&gt;
+&lt;div class=&#34;puzzle&#34;&gt;
+&lt;p&gt;&lt;strong&gt;Your turn&lt;/strong&gt;: Find the minimum, maximum, and median life expectancy for each continent:&lt;/p&gt;
+&lt;/div&gt;
+&lt;iframe style=&#34;margin:0 auto; min-width: 100%;&#34; id=&#34;learnr-04-lesson-dplyr6&#34; class=&#34;interactive&#34; src=&#34;https://andrewheiss.shinyapps.io/datavizm20_04-dplyr-6/&#34; scrolling=&#34;no&#34; frameborder=&#34;no&#34; onload=&#39;iFrameResize({}, &#34;#learnr-04-lesson-dplyr6&#34;)&#39;&gt;&lt;/iframe&gt;
+
+&lt;div class=&#34;puzzle&#34;&gt;
+&lt;p&gt;&lt;strong&gt;Your turn&lt;/strong&gt;: Find the minimum, maximum, and median life expectancy for each continent in 2007 only:&lt;/p&gt;
+&lt;/div&gt;
+&lt;iframe style=&#34;margin:0 auto; min-width: 100%;&#34; id=&#34;learnr-04-lesson-dplyr7&#34; class=&#34;interactive&#34; src=&#34;https://andrewheiss.shinyapps.io/datavizm20_04-dplyr-7/&#34; scrolling=&#34;no&#34; frameborder=&#34;no&#34; onload=&#39;iFrameResize({}, &#34;#learnr-04-lesson-dplyr7&#34;)&#39;&gt;&lt;/iframe&gt;
+
+&lt;p&gt;Finally, you can group by multiple columns and R will create subgroups for every combination of the groups and return the number of rows of combinations. For instance, we can calculate the average life expectancy by both year and continent and we’ll get 60 rows, since there are 5 continents and 12 years (5 × 12 = 60):&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;gapminder %&amp;gt;% 
+  group_by(continent, year) %&amp;gt;% 
+  summarize(avg_life_exp = mean(lifeExp)) &lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 60 x 3
+## # Groups:   continent [5]
+##    continent  year avg_life_exp
+##    &amp;lt;fct&amp;gt;     &amp;lt;int&amp;gt;        &amp;lt;dbl&amp;gt;
+##  1 Africa     1952         39.1
+##  2 Africa     1957         41.3
+##  3 Africa     1962         43.3
+##  4 Africa     1967         45.3
+##  5 Africa     1972         47.5
+##  6 Africa     1977         49.6
+##  7 Africa     1982         51.6
+##  8 Africa     1987         53.3
+##  9 Africa     1992         53.6
+## 10 Africa     1997         53.6
+## # … with 50 more rows&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;selecting-with-select&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Selecting with &lt;code&gt;select()&lt;/code&gt;&lt;/h3&gt;
+&lt;p&gt;The last two verbs are far simpler than &lt;code&gt;filter()&lt;/code&gt;, &lt;code&gt;mutate()&lt;/code&gt;, and &lt;code&gt;group_by() %&amp;gt;% summarize()&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;You can choose specific columns with the &lt;code&gt;select()&lt;/code&gt; verb. This will only keep two columns: &lt;code&gt;lifeExp&lt;/code&gt; and &lt;code&gt;year&lt;/code&gt;:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#39;language-r&#39;&gt;&lt;code&gt;&lt;span style=&#39;background-color:yellow&#39;&gt;gapminder&lt;/span&gt; %&gt;% &lt;span style=&#39;background-color:pink&#39;&gt;select&lt;/span&gt;(&lt;span style=&#39;background-color:lightblue&#39;&gt;lifeExp, year&lt;/span&gt;)&lt;/code&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;
+## # A tibble: 1,704 x 2
+##    lifeExp  year
+##      &amp;lt;dbl&amp;gt; &amp;lt;int&amp;gt;
+##  1    28.8  1952
+##  2    30.3  1957
+##  3    32.0  1962
+##  4    34.0  1967
+##  5    36.1  1972
+##  6    38.4  1977
+##  7    39.9  1982
+##  8    40.8  1987
+##  9    41.7  1992
+## 10    41.8  1997
+## # … with 1,694 more rows
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;You can remove specific columns by prefacing the column names with &lt;code&gt;-&lt;/code&gt;, like &lt;code&gt;-lifeExp&lt;/code&gt;:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#39;language-r&#39;&gt;&lt;code&gt;&lt;span style=&#39;background-color:yellow&#39;&gt;gapminder&lt;/span&gt; %&gt;% &lt;span style=&#39;background-color:pink&#39;&gt;select&lt;/span&gt;(&lt;span style=&#39;background-color:lightblue&#39;&gt;-lifeExp&lt;/span&gt;)&lt;/code&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;
+## # A tibble: 1,704 x 5
+##    country     continent  year      pop gdpPercap
+##    &amp;lt;fct&amp;gt;       &amp;lt;fct&amp;gt;     &amp;lt;int&amp;gt;    &amp;lt;int&amp;gt;     &amp;lt;dbl&amp;gt;
+##  1 Afghanistan Asia       1952  8425333      779.
+##  2 Afghanistan Asia       1957  9240934      821.
+##  3 Afghanistan Asia       1962 10267083      853.
+##  4 Afghanistan Asia       1967 11537966      836.
+##  5 Afghanistan Asia       1972 13079460      740.
+##  6 Afghanistan Asia       1977 14880372      786.
+##  7 Afghanistan Asia       1982 12881816      978.
+##  8 Afghanistan Asia       1987 13867957      852.
+##  9 Afghanistan Asia       1992 16317921      649.
+## 10 Afghanistan Asia       1997 22227415      635.
+## # … with 1,694 more rows
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;You can also rename columns using &lt;code&gt;select()&lt;/code&gt;. Follow this pattern: &lt;code&gt;select(old_name = new_name)&lt;/code&gt;.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#39;language-r&#39;&gt;&lt;code&gt;&lt;span style=&#39;background-color:yellow&#39;&gt;gapminder&lt;/span&gt; %&gt;% &lt;span style=&#39;background-color:pink&#39;&gt;select&lt;/span&gt;(&lt;span style=&#39;background-color:lightblue&#39;&gt;year, country, life_expectancy = lifeExp&lt;/span&gt;)&lt;/code&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;
+## # A tibble: 1,704 x 3
+##     year country     life_expectancy
+##    &amp;lt;int&amp;gt; &amp;lt;fct&amp;gt;                 &amp;lt;dbl&amp;gt;
+##  1  1952 Afghanistan            28.8
+##  2  1957 Afghanistan            30.3
+##  3  1962 Afghanistan            32.0
+##  4  1967 Afghanistan            34.0
+##  5  1972 Afghanistan            36.1
+##  6  1977 Afghanistan            38.4
+##  7  1982 Afghanistan            39.9
+##  8  1987 Afghanistan            40.8
+##  9  1992 Afghanistan            41.7
+## 10  1997 Afghanistan            41.8
+## # … with 1,694 more rows
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Alternatively, there’s a special &lt;code&gt;rename()&lt;/code&gt; verb that will, um, rename, while keeping all the other columns:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#39;language-r&#39;&gt;&lt;code&gt;&lt;span style=&#39;background-color:yellow&#39;&gt;gapminder&lt;/span&gt; %&gt;% &lt;span style=&#39;background-color:pink&#39;&gt;rename&lt;/span&gt;(&lt;span style=&#39;background-color:lightblue&#39;&gt;life_expectancy = lifeExp&lt;/span&gt;)&lt;/code&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;
+## # A tibble: 1,704 x 6
+##    country     continent  year life_expectancy      pop gdpPercap
+##    &amp;lt;fct&amp;gt;       &amp;lt;fct&amp;gt;     &amp;lt;int&amp;gt;           &amp;lt;dbl&amp;gt;    &amp;lt;int&amp;gt;     &amp;lt;dbl&amp;gt;
+##  1 Afghanistan Asia       1952            28.8  8425333      779.
+##  2 Afghanistan Asia       1957            30.3  9240934      821.
+##  3 Afghanistan Asia       1962            32.0 10267083      853.
+##  4 Afghanistan Asia       1967            34.0 11537966      836.
+##  5 Afghanistan Asia       1972            36.1 13079460      740.
+##  6 Afghanistan Asia       1977            38.4 14880372      786.
+##  7 Afghanistan Asia       1982            39.9 12881816      978.
+##  8 Afghanistan Asia       1987            40.8 13867957      852.
+##  9 Afghanistan Asia       1992            41.7 16317921      649.
+## 10 Afghanistan Asia       1997            41.8 22227415      635.
+## # … with 1,694 more rows
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;arranging-data-with-arrange&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Arranging data with &lt;code&gt;arrange()&lt;/code&gt;&lt;/h3&gt;
+&lt;p&gt;The &lt;code&gt;arrange()&lt;/code&gt; verb sorts data. By default it sorts ascendingly, putting the lowest values first:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#39;language-r&#39;&gt;&lt;code&gt;&lt;span style=&#39;background-color:yellow&#39;&gt;gapminder&lt;/span&gt; %&gt;% &lt;span style=&#39;background-color:pink&#39;&gt;arrange&lt;/span&gt;(&lt;span style=&#39;background-color:lightblue&#39;&gt;lifeExp&lt;/span&gt;)&lt;/code&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;
+## # A tibble: 1,704 x 6
+##    country      continent  year lifeExp     pop gdpPercap
+##    &amp;lt;fct&amp;gt;        &amp;lt;fct&amp;gt;     &amp;lt;int&amp;gt;   &amp;lt;dbl&amp;gt;   &amp;lt;int&amp;gt;     &amp;lt;dbl&amp;gt;
+##  1 Rwanda       Africa     1992    23.6 7290203      737.
+##  2 Afghanistan  Asia       1952    28.8 8425333      779.
+##  3 Gambia       Africa     1952    30    284320      485.
+##  4 Angola       Africa     1952    30.0 4232095     3521.
+##  5 Sierra Leone Africa     1952    30.3 2143249      880.
+##  6 Afghanistan  Asia       1957    30.3 9240934      821.
+##  7 Cambodia     Asia       1977    31.2 6978607      525.
+##  8 Mozambique   Africa     1952    31.3 6446316      469.
+##  9 Sierra Leone Africa     1957    31.6 2295678     1004.
+## 10 Burkina Faso Africa     1952    32.0 4469979      543.
+## # … with 1,694 more rows
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;You can reverse that by wrapping the column name with &lt;code&gt;desc()&lt;/code&gt;:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#39;language-r&#39;&gt;&lt;code&gt;&lt;span style=&#39;background-color:yellow&#39;&gt;gapminder&lt;/span&gt; %&gt;% &lt;span style=&#39;background-color:pink&#39;&gt;arrange&lt;/span&gt;(&lt;span style=&#39;background-color:lightblue&#39;&gt;desc(lifeExp)&lt;/span&gt;)&lt;/code&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;
+## # A tibble: 1,704 x 6
+##    country          continent  year lifeExp       pop gdpPercap
+##    &amp;lt;fct&amp;gt;            &amp;lt;fct&amp;gt;     &amp;lt;int&amp;gt;   &amp;lt;dbl&amp;gt;     &amp;lt;int&amp;gt;     &amp;lt;dbl&amp;gt;
+##  1 Japan            Asia       2007    82.6 127467972    31656.
+##  2 Hong Kong, China Asia       2007    82.2   6980412    39725.
+##  3 Japan            Asia       2002    82   127065841    28605.
+##  4 Iceland          Europe     2007    81.8    301931    36181.
+##  5 Switzerland      Europe     2007    81.7   7554661    37506.
+##  6 Hong Kong, China Asia       2002    81.5   6762476    30209.
+##  7 Australia        Oceania    2007    81.2  20434176    34435.
+##  8 Spain            Europe     2007    80.9  40448191    28821.
+##  9 Sweden           Europe     2007    80.9   9031088    33860.
+## 10 Israel           Asia       2007    80.7   6426679    25523.
+## # … with 1,694 more rows
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;You can sort by multiple columns by specifying them in a comma separated list. For example, we can sort by continent and then sort by life expectancy within the continents:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#39;language-r&#39;&gt;&lt;code&gt;&lt;span style=&#39;background-color:yellow&#39;&gt;gapminder&lt;/span&gt; %&gt;% &lt;br&gt;&amp;nbsp;&amp;nbsp;&lt;span style=&#39;background-color:pink&#39;&gt;arrange&lt;/span&gt;(&lt;span style=&#39;background-color:lightblue&#39;&gt;continent, desc(lifeExp)&lt;/span&gt;)&lt;/code&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;
+## # A tibble: 1,704 x 6
+##    country   continent  year lifeExp      pop gdpPercap
+##    &amp;lt;fct&amp;gt;     &amp;lt;fct&amp;gt;     &amp;lt;int&amp;gt;   &amp;lt;dbl&amp;gt;    &amp;lt;int&amp;gt;     &amp;lt;dbl&amp;gt;
+##  1 Reunion   Africa     2007    76.4   798094     7670.
+##  2 Reunion   Africa     2002    75.7   743981     6316.
+##  3 Reunion   Africa     1997    74.8   684810     6072.
+##  4 Libya     Africa     2007    74.0  6036914    12057.
+##  5 Tunisia   Africa     2007    73.9 10276158     7093.
+##  6 Reunion   Africa     1992    73.6   622191     6101.
+##  7 Tunisia   Africa     2002    73.0  9770575     5723.
+##  8 Mauritius Africa     2007    72.8  1250882    10957.
+##  9 Libya     Africa     2002    72.7  5368585     9535.
+## 10 Algeria   Africa     2007    72.3 33333216     6223.
+## # … with 1,694 more rows
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;thats-it&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;That’s it!&lt;/h3&gt;
+&lt;p&gt;Those are the main verbs you’ll deal with in this class. There are dozens of other really useful ones—check out the &lt;a href=&#34;https://rstudio.com/wp-content/uploads/2015/02/data-wrangling-cheatsheet.pdf&#34;&gt;&lt;strong&gt;dplyr&lt;/strong&gt; and &lt;strong&gt;tidyr&lt;/strong&gt; cheat sheet&lt;/a&gt; for examples.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;changing-colors-shapes-and-sizes-with-scale_&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Changing colors, shapes, and sizes, with &lt;code&gt;scale_*()&lt;/code&gt;&lt;/h2&gt;
+&lt;p&gt;Recall from session 3 that the grammar of graphics uses a set of layers to define elements of plots:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/slides/img/03/ggplot-layers@4x.png&#34; width=&#34;50%&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;In tomorrow’s session, you’ll learn all about the Theme layer. Here we’ll briefly cover the Scales layer, which we use for changing aspects of the different aesthetics, like using logged axes or changing colors or shapes.&lt;/p&gt;
+&lt;p&gt;All the functions that deal with scales conveniently follow the same naming pattern:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#39;language-r&#39;&gt;&lt;code&gt;scale_&lt;span style=&#39;background-color:pink&#39;&gt;AESTHETIC&lt;/span&gt;_&lt;span style=&#39;background-color:yellow&#39;&gt;DETAILS&lt;/span&gt;()&lt;/code&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Here are some common scale functions:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#39;language-r&#39;&gt;&lt;code&gt;scale_&lt;span style=&#39;background-color:pink&#39;&gt;x&lt;/span&gt;_&lt;span style=&#39;background-color:yellow&#39;&gt;continuous&lt;/span&gt;()&lt;br&gt;scale_&lt;span style=&#39;background-color:pink&#39;&gt;y&lt;/span&gt;_&lt;span style=&#39;background-color:yellow&#39;&gt;reverse&lt;/span&gt;()&lt;br&gt;scale_&lt;span style=&#39;background-color:pink&#39;&gt;color&lt;/span&gt;_&lt;span style=&#39;background-color:yellow&#39;&gt;viridis_c&lt;/span&gt;()&lt;br&gt;scale_&lt;span style=&#39;background-color:pink&#39;&gt;shape&lt;/span&gt;_&lt;span style=&#39;background-color:yellow&#39;&gt;manual&lt;/span&gt;(values = c(19, 13, 15))&lt;br&gt;scale_&lt;span style=&#39;background-color:pink&#39;&gt;fill&lt;/span&gt;_&lt;span style=&#39;background-color:yellow&#39;&gt;manual&lt;/span&gt;(values = c(&#34;red&#34;, &#34;orange&#34;, &#34;blue&#34;))&lt;/code&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;You can see a &lt;a href=&#34;https://ggplot2.tidyverse.org/reference/index.html#section-scales&#34;&gt;list of all of the possible scale functions here&lt;/a&gt;, and you should reference that documentation (and the excellent examples) often when working with these functions.&lt;/p&gt;
+&lt;p&gt;As long as you have mapped a variable to an aesthetic with &lt;code&gt;aes()&lt;/code&gt;, you can use the &lt;code&gt;scale_*()&lt;/code&gt; functions to deal with it. For instance, in this ggplot, we have mapped variables to &lt;code&gt;x&lt;/code&gt;, &lt;code&gt;y&lt;/code&gt;, and &lt;code&gt;fill&lt;/code&gt;, which means we can use those corresponding scale functions to manipulate how those aesthetics are shown. Here we reverse the y-axis (ew, don’t really do this), and we use a discrete viridis color palette:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;continent_counts &amp;lt;- gapminder %&amp;gt;% 
+  group_by(continent) %&amp;gt;% 
+  summarize(countries = n_distinct(country))
+
+ggplot(continent_counts, aes(x = continent, y = countries, fill = continent)) +
+  geom_col() +
+  scale_y_reverse() +  # lol this is bad; don&amp;#39;t do it in real life
+  scale_fill_viridis_d()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/lesson/04-lesson_files/figure-html/plot-continent-counts-1.png&#34; width=&#34;576&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;You can also use different arguments in the scale functions—again, check the documentation for examples. For instance, if we want to use the &lt;a href=&#34;https://ggplot2.tidyverse.org/reference/scale_viridis.html&#34;&gt;plasma palette from the viridis package&lt;/a&gt;, we can set that as an option:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(continent_counts, aes(x = continent, y = countries, fill = continent)) +
+  geom_col() +
+  scale_fill_viridis_d(option = &amp;quot;plasma&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/lesson/04-lesson_files/figure-html/plot-continent-plasma-1.png&#34; width=&#34;576&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;That yellow might be too bright and hard to see, so we can tell ggplot to not use the full range of the palette, ending at 90% of the range instead:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(continent_counts, aes(x = continent, y = countries, fill = continent)) +
+  geom_col() +
+  scale_fill_viridis_d(option = &amp;quot;plasma&amp;quot;, end = 0.9)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/lesson/04-lesson_files/figure-html/plot-continent-plasma-9-1.png&#34; width=&#34;576&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Instead of letting R calculate the colors from a general palette, you can also specify your own colors with &lt;code&gt;scale_fill_manual()&lt;/code&gt; and feeding it a list of values—generally as &lt;a href=&#34;https://www.google.com/search?q=color+picker&#34;&gt;hex codes&lt;/a&gt; or a name from a &lt;a href=&#34;http://www.stat.columbia.edu/~tzheng/files/Rcolor.pdf&#34;&gt;list of built-in R colors&lt;/a&gt;:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(continent_counts, aes(x = continent, y = countries, fill = continent)) +
+  geom_col() +
+  scale_fill_manual(values = c(&amp;quot;chartreuse4&amp;quot;, &amp;quot;cornsilk4&amp;quot;, &amp;quot;black&amp;quot;, &amp;quot;#fc03b6&amp;quot;, &amp;quot;#5c47d6&amp;quot;))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/lesson/04-lesson_files/figure-html/plot-continent-manual-1.png&#34; width=&#34;576&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Scale functions also work for other aesthetics like &lt;code&gt;shape&lt;/code&gt; or &lt;code&gt;color&lt;/code&gt; or &lt;code&gt;size&lt;/code&gt;. For instance, consider this plot, which has all three:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;gapminder_2007 &amp;lt;- gapminder %&amp;gt;% 
+  filter(year == 2007)
+
+ggplot(gapminder_2007,
+       aes(x = gdpPercap, y = lifeExp, 
+           color = continent, shape = continent, size = pop)) +
+  geom_point() +
+  scale_x_log10()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/lesson/04-lesson_files/figure-html/plot-health-wealth-basic-1.png&#34; width=&#34;576&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;We can change the colors of the points with &lt;code&gt;scale_color_*()&lt;/code&gt;:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(gapminder_2007,
+       aes(x = gdpPercap, y = lifeExp, 
+           color = continent, shape = continent, size = pop)) +
+  geom_point() +
+  scale_x_log10() +
+  scale_color_manual(values = c(&amp;quot;chartreuse4&amp;quot;, &amp;quot;cornsilk4&amp;quot;, &amp;quot;black&amp;quot;, &amp;quot;#fc03b6&amp;quot;, &amp;quot;#5c47d6&amp;quot;))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/lesson/04-lesson_files/figure-html/plot-health-wealth-colors-1.png&#34; width=&#34;576&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;We can change the shapes with &lt;code&gt;scale_shape_*()&lt;/code&gt;. If you run &lt;code&gt;?pch&lt;/code&gt; in your console or search for &lt;code&gt;pch&lt;/code&gt; in the help, you can see all the possible shapes.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(gapminder_2007,
+       aes(x = gdpPercap, y = lifeExp, 
+           color = continent, shape = continent, size = pop)) +
+  geom_point() +
+  scale_x_log10() +
+  scale_shape_manual(values = c(12, 9, 17, 19, 15))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/lesson/04-lesson_files/figure-html/plot-health-wealth-shapes-1.png&#34; width=&#34;576&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;You can change the size with &lt;code&gt;scale_size_*()&lt;/code&gt;. Here we make it so the smallest possible size is 1 and the largest is 15:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(gapminder_2007,
+       aes(x = gdpPercap, y = lifeExp, 
+           color = continent, shape = continent, size = pop)) +
+  geom_point() +
+  scale_x_log10() +
+  scale_size_continuous(range = c(1, 15))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/lesson/04-lesson_files/figure-html/plot-health-wealth-size-1.png&#34; width=&#34;576&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;We can even do all three at once:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(gapminder_2007,
+       aes(x = gdpPercap, y = lifeExp, 
+           color = continent, shape = continent, size = pop)) +
+  geom_point() +
+  scale_x_log10() +
+  scale_color_manual(values = c(&amp;quot;chartreuse4&amp;quot;, &amp;quot;cornsilk4&amp;quot;, &amp;quot;black&amp;quot;, &amp;quot;#fc03b6&amp;quot;, &amp;quot;#5c47d6&amp;quot;)) +
+  scale_shape_manual(values = c(12, 9, 17, 19, 15)) +
+  scale_size_continuous(range = c(1, 15))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/lesson/04-lesson_files/figure-html/plot-health-wealth-everything-1.png&#34; width=&#34;576&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Phew. That’s ugly.&lt;/p&gt;
+&lt;p&gt;One last thing we can do with scales is format how they show up on the plot. Notice how the population legend uses scientific notation like &lt;code&gt;2.50e+08&lt;/code&gt;. This means you need to move the decimal point 8 places to the right, making it &lt;code&gt;250000000&lt;/code&gt;. Leaving it in scientific notation isn’t great because it makes it really hard to read and interpret.&lt;/p&gt;
+&lt;p&gt;If you load the &lt;strong&gt;scales&lt;/strong&gt; library (which is installed as part of &lt;strong&gt;tidyverse&lt;/strong&gt; but isn’t automatically loaded), you can use some neat helper functions to reformat the text that shows up in plots. For instance, we can make it so population is formatted as a number with commas every 3 numbers, and the x-axis is formatted as dollars:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(scales)
+
+ggplot(gapminder_2007,
+       aes(x = gdpPercap, y = lifeExp, 
+           color = continent, shape = continent, size = pop)) +
+  geom_point() +
+  scale_x_log10(labels = dollar) +
+  scale_size_continuous(labels = comma)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/lesson/04-lesson_files/figure-html/plot-health-wealth-scale-labels-1.png&#34; width=&#34;576&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://scales.r-lib.org/reference/index.html&#34;&gt;Check the documentation for &lt;strong&gt;scales&lt;/strong&gt;&lt;/a&gt; for details about all the labelling functions it has, including dates, percentages, p-values, LaTeX math, etc.&lt;/p&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Themes</title>
+      <link>/lesson/05-lesson/</link>
+      <pubDate>Fri, 15 May 2020 00:00:00 +0000</pubDate>
+      <guid>/lesson/05-lesson/</guid>
+      <description>
+&lt;script src=&#34;/rmarkdown-libs/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
+
+&lt;div id=&#34;TOC&#34;&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#complete-ggplot-themes&#34;&gt;Complete ggplot themes&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#modifying-plot-elements-with-theme&#34;&gt;Modifying plot elements with &lt;code&gt;theme()&lt;/code&gt;&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#deal-with-general-plot-elements&#34;&gt;Deal with general plot elements&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#disable-elements-completely-with-element_blank&#34;&gt;Disable elements completely with &lt;code&gt;element_blank()&lt;/code&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#deal-with-borders-and-backgrounds-with-element_rect&#34;&gt;Deal with borders and backgrounds with &lt;code&gt;element_rect()&lt;/code&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#deal-with-lines-with-element_line&#34;&gt;Deal with lines with &lt;code&gt;element_line()&lt;/code&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#deal-with-text-with-element_text&#34;&gt;Deal with text with &lt;code&gt;element_text()&lt;/code&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#important-note-about-ordering&#34;&gt;Important note about ordering&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#fonts&#34;&gt;Fonts&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#reusing-themes&#34;&gt;Reusing themes&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#saving-plots&#34;&gt;Saving plots&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+
+&lt;div id=&#34;complete-ggplot-themes&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Complete ggplot themes&lt;/h2&gt;
+&lt;p&gt;There are many built-in complete themes that have a good combination of all the different &lt;code&gt;theme()&lt;/code&gt; options already set for you. By default, ggplot uses &lt;code&gt;theme_gray()&lt;/code&gt; (also spelled &lt;code&gt;theme_grey()&lt;/code&gt; for UK English; because the first developer of ggplot (Hadley Wickham) is from New Zealand, British spelling works throughout (e.g. you can use &lt;code&gt;colour&lt;/code&gt; instead of &lt;code&gt;color&lt;/code&gt;))&lt;/p&gt;
+&lt;div class=&#34;puzzle&#34;&gt;
+&lt;p&gt;&lt;strong&gt;Your turn&lt;/strong&gt;: Add &lt;code&gt;theme_minimal()&lt;/code&gt; to this plot:&lt;/p&gt;
+&lt;/div&gt;
+&lt;iframe style=&#34;margin:0 auto; min-width: 100%;&#34; id=&#34;learnr-05-lesson-theme1&#34; class=&#34;interactive&#34; src=&#34;https://andrewheiss.shinyapps.io/datavizm20_05-themes-1/&#34; scrolling=&#34;no&#34; frameborder=&#34;no&#34; onload=&#39;iFrameResize({}, &#34;#learnr-05-lesson-theme1&#34;)&#39;&gt;&lt;/iframe&gt;
+
+&lt;p&gt;Hopefully that was easy!&lt;/p&gt;
+&lt;p&gt;If you look at &lt;a href=&#34;https://ggplot2.tidyverse.org/reference/ggtheme.html&#34;&gt;the documentation for the different theme functions&lt;/a&gt;, you’ll notice that there are a few optional arguments, like &lt;code&gt;base_size&lt;/code&gt; and &lt;code&gt;base_family&lt;/code&gt;. The &lt;code&gt;base_size&lt;/code&gt; argument changes the base font size for the text in the plot, and it is 11 by default. Changing it to something like 20 will not make all the text in the plot be sized at 20—functions like &lt;code&gt;theme_minimal()&lt;/code&gt; set the size of plot elements based on the &lt;code&gt;base_size&lt;/code&gt;. For instance, in &lt;code&gt;theme_minimal()&lt;/code&gt;, the plot title is set to be 120% of &lt;code&gt;base_size&lt;/code&gt;, while the caption is 80%. Changing &lt;code&gt;base_size&lt;/code&gt; will resize all the different elements accordingly.&lt;/p&gt;
+&lt;div class=&#34;puzzle&#34;&gt;
+&lt;p&gt;&lt;strong&gt;Your turn&lt;/strong&gt;: Modify this plot to use &lt;code&gt;theme_minimal()&lt;/code&gt; with a base size of 16:&lt;/p&gt;
+&lt;/div&gt;
+&lt;iframe style=&#34;margin:0 auto; min-width: 100%;&#34; id=&#34;learnr-05-lesson-theme2&#34; class=&#34;interactive&#34; src=&#34;https://andrewheiss.shinyapps.io/datavizm20_05-themes-2/&#34; scrolling=&#34;no&#34; frameborder=&#34;no&#34; onload=&#39;iFrameResize({}, &#34;#learnr-05-lesson-theme2&#34;)&#39;&gt;&lt;/iframe&gt;
+
+&lt;p&gt;Hopefully that was also fairly straightforward!&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;modifying-plot-elements-with-theme&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Modifying plot elements with &lt;code&gt;theme()&lt;/code&gt;&lt;/h2&gt;
+&lt;p&gt;Using a complete theme like &lt;code&gt;theme_minimal()&lt;/code&gt; or &lt;code&gt;theme_bw()&lt;/code&gt; is a great starting point for getting a nice, clean, well designed plot. You’ll often need to make adjustments to smaller, more specific parts of the plot though. To do this, you can use the &lt;code&gt;theme()&lt;/code&gt; function.&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;theme()&lt;/code&gt; is a massive function and has perhaps the most possible arguments of any function in R. It is impossible to remember everything it can possibly do. Fortunately its documentation is incredible. Run &lt;code&gt;?theme&lt;/code&gt; in your R console to see the help page, or &lt;a href=&#34;https://ggplot2.tidyverse.org/reference/theme.html&#34;&gt;go to this page online&lt;/a&gt;.&lt;/p&gt;
+&lt;div id=&#34;deal-with-general-plot-elements&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Deal with general plot elements&lt;/h3&gt;
+&lt;p&gt;A few arguments to &lt;code&gt;theme()&lt;/code&gt; don’t use any special function—you can just specify settings with text like &lt;code&gt;&#34;bottom&#34;&lt;/code&gt; or &lt;code&gt;&#34;right&#34;&lt;/code&gt;&lt;/p&gt;
+&lt;div class=&#34;puzzle&#34;&gt;
+&lt;p&gt;&lt;strong&gt;Your turn&lt;/strong&gt;: Look at the &lt;a href=&#34;https://ggplot2.tidyverse.org/reference/theme.html&#34;&gt;documentation for &lt;code&gt;theme()&lt;/code&gt; online&lt;/a&gt;. Make this plot’s legend appear on the bottom instead of the left.&lt;/p&gt;
+&lt;/div&gt;
+&lt;iframe style=&#34;margin:0 auto; min-width: 100%;&#34; id=&#34;learnr-05-lesson-theme3&#34; class=&#34;interactive&#34; src=&#34;https://andrewheiss.shinyapps.io/datavizm20_05-themes-3/&#34; scrolling=&#34;no&#34; frameborder=&#34;no&#34; onload=&#39;iFrameResize({}, &#34;#learnr-05-lesson-theme3&#34;)&#39;&gt;&lt;/iframe&gt;
+
+&lt;/div&gt;
+&lt;div id=&#34;disable-elements-completely-with-element_blank&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Disable elements completely with &lt;code&gt;element_blank()&lt;/code&gt;&lt;/h3&gt;
+&lt;p&gt;Any plot element can be disabled by using &lt;code&gt;element_blank()&lt;/code&gt;. For instance, if you want to remove the axis ticks, you can use &lt;code&gt;theme(axis.ticks = element_blank())&lt;/code&gt;.&lt;/p&gt;
+&lt;div class=&#34;puzzle&#34;&gt;
+&lt;p&gt;&lt;strong&gt;Your turn&lt;/strong&gt;: Look at the &lt;a href=&#34;https://ggplot2.tidyverse.org/reference/theme.html&#34;&gt;documentation for &lt;code&gt;theme()&lt;/code&gt; online&lt;/a&gt;. Disable the panel grid in this plot.&lt;/p&gt;
+&lt;/div&gt;
+&lt;iframe style=&#34;margin:0 auto; min-width: 100%;&#34; id=&#34;learnr-05-lesson-theme4&#34; class=&#34;interactive&#34; src=&#34;https://andrewheiss.shinyapps.io/datavizm20_05-themes-4/&#34; scrolling=&#34;no&#34; frameborder=&#34;no&#34; onload=&#39;iFrameResize({}, &#34;#learnr-05-lesson-theme4&#34;)&#39;&gt;&lt;/iframe&gt;
+
+&lt;p&gt;You can also target more specific plot elements. You can specify something like &lt;code&gt;axis.text&lt;/code&gt;, which applies to all axis text, or you can use &lt;code&gt;axis.text.y&lt;/code&gt; to only target the text on the y-axis.&lt;/p&gt;
+&lt;div class=&#34;puzzle&#34;&gt;
+&lt;p&gt;&lt;strong&gt;Your turn&lt;/strong&gt;: Look at the &lt;a href=&#34;https://ggplot2.tidyverse.org/reference/theme.html&#34;&gt;documentation for &lt;code&gt;theme()&lt;/code&gt; online&lt;/a&gt;. Make the following changes to this plot:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Disable the major panel grid for the x-axis&lt;/li&gt;
+&lt;li&gt;Disable the minor panel grid for the x-axis&lt;/li&gt;
+&lt;li&gt;Disable the minor panel grid for the y-axis.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;You should only have three horizontal lines for the grid.&lt;/p&gt;
+&lt;/div&gt;
+&lt;iframe style=&#34;margin:0 auto; min-width: 100%;&#34; id=&#34;learnr-05-lesson-theme5&#34; class=&#34;interactive&#34; src=&#34;https://andrewheiss.shinyapps.io/datavizm20_05-themes-5/&#34; scrolling=&#34;no&#34; frameborder=&#34;no&#34; onload=&#39;iFrameResize({}, &#34;#learnr-05-lesson-theme5&#34;)&#39;&gt;&lt;/iframe&gt;
+
+&lt;hr /&gt;
+&lt;p&gt;Almost every other plot element fits into one of three categories: a rectangle, a line, or text. Changing the settings on these elements requires specific functions that correspond to these categories.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;deal-with-borders-and-backgrounds-with-element_rect&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Deal with borders and backgrounds with &lt;code&gt;element_rect()&lt;/code&gt;&lt;/h3&gt;
+&lt;p&gt;Things like the plot background or the panel background or the legend background are rectangles and can be manipulated with &lt;code&gt;element_rect()&lt;/code&gt;. If you want the legend box to be yellow with a thin black border, you would use &lt;code&gt;theme(legend.box.background = element_rect(fill = &#34;yellow&#34;, color = &#34;black&#34;, size = 1)&lt;/code&gt;.&lt;/p&gt;
+&lt;div class=&#34;puzzle&#34;&gt;
+&lt;p&gt;&lt;strong&gt;Your turn&lt;/strong&gt;: Look at the &lt;a href=&#34;https://ggplot2.tidyverse.org/reference/theme.html&#34;&gt;documentation for &lt;code&gt;theme()&lt;/code&gt;&lt;/a&gt; and the &lt;a href=&#34;https://ggplot2.tidyverse.org/reference/element.html&#34;&gt;documentation for &lt;code&gt;element()&lt;/code&gt;&lt;/a&gt; online. Make the following changes to this plot:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Fill the plot background with &lt;span style=&#34;color: #F2D8CE&#34;&gt;#F2D8CE&lt;/span&gt;&lt;/li&gt;
+&lt;li&gt;Fill the panel background with &lt;span style=&#34;color: #608BA6&#34;&gt;#608BA6&lt;/span&gt;, and make the border &lt;span style=&#34;color: #184759&#34;&gt;#184759&lt;/span&gt; with size = 5&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;This will be a fairly ugly plot.&lt;/p&gt;
+&lt;/div&gt;
+&lt;iframe style=&#34;margin:0 auto; min-width: 100%;&#34; id=&#34;learnr-05-lesson-theme6&#34; class=&#34;interactive&#34; src=&#34;https://andrewheiss.shinyapps.io/datavizm20_05-themes-6/&#34; scrolling=&#34;no&#34; frameborder=&#34;no&#34; onload=&#39;iFrameResize({}, &#34;#learnr-05-lesson-theme6&#34;)&#39;&gt;&lt;/iframe&gt;
+
+&lt;/div&gt;
+&lt;div id=&#34;deal-with-lines-with-element_line&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Deal with lines with &lt;code&gt;element_line()&lt;/code&gt;&lt;/h3&gt;
+&lt;p&gt;Things like the panel grid, tick marks, and axis lines are all lines and can be manipulated with &lt;code&gt;element_line()&lt;/code&gt;. If you want the x-axis line to be a dotted orange like, you would use &lt;code&gt;theme(axis.line.x = element_line(color = &#34;orange&#34;, linetype = &#34;dotted&#34;)&lt;/code&gt;.&lt;/p&gt;
+&lt;div class=&#34;puzzle&#34;&gt;
+&lt;p&gt;&lt;strong&gt;Your turn&lt;/strong&gt;: Look at the &lt;a href=&#34;https://ggplot2.tidyverse.org/reference/theme.html&#34;&gt;documentation for &lt;code&gt;theme()&lt;/code&gt;&lt;/a&gt; and the &lt;a href=&#34;https://ggplot2.tidyverse.org/reference/element.html&#34;&gt;documentation for &lt;code&gt;element()&lt;/code&gt;&lt;/a&gt; online. Make the following changes to this plot:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Make the major panel gridlines blue and dashed with size = 1&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;This will also be a fairly ugly plot.&lt;/p&gt;
+&lt;/div&gt;
+&lt;iframe style=&#34;margin:0 auto; min-width: 100%;&#34; id=&#34;learnr-05-lesson-theme7&#34; class=&#34;interactive&#34; src=&#34;https://andrewheiss.shinyapps.io/datavizm20_05-themes-7/&#34; scrolling=&#34;no&#34; frameborder=&#34;no&#34; onload=&#39;iFrameResize({}, &#34;#learnr-05-lesson-theme7&#34;)&#39;&gt;&lt;/iframe&gt;
+
+&lt;/div&gt;
+&lt;div id=&#34;deal-with-text-with-element_text&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Deal with text with &lt;code&gt;element_text()&lt;/code&gt;&lt;/h3&gt;
+&lt;p&gt;Finally, anything with text can be manipulated with &lt;code&gt;element_text()&lt;/code&gt;, and you can specify all sorts of things, including font family (&lt;code&gt;family&lt;/code&gt;), font weight (&lt;code&gt;face&lt;/code&gt;), color (&lt;code&gt;color&lt;/code&gt;), horizontal justification (&lt;code&gt;hjust&lt;/code&gt;), angle (&lt;code&gt;angle&lt;/code&gt;), and a bunch of other options. If you want the x-axis text to be italicized and rotated at a 45º angle, you would use &lt;code&gt;theme(axis.text.x = element_text(face = &#34;italic&#34;, angle = 45))&lt;/code&gt;.&lt;/p&gt;
+&lt;div class=&#34;puzzle&#34;&gt;
+&lt;p&gt;&lt;strong&gt;Your turn&lt;/strong&gt;: Look at the &lt;a href=&#34;https://ggplot2.tidyverse.org/reference/theme.html&#34;&gt;documentation for &lt;code&gt;theme()&lt;/code&gt;&lt;/a&gt; and the &lt;a href=&#34;https://ggplot2.tidyverse.org/reference/element.html&#34;&gt;documentation for &lt;code&gt;element()&lt;/code&gt;&lt;/a&gt; online. Make the following changes to this plot:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Make the y-axis text italic&lt;/li&gt;
+&lt;li&gt;Make the plot title right aligned, bold, and colored with &lt;span style=&#34;color: #8C7811&#34;&gt;#8C7811&lt;/span&gt;&lt;/li&gt;
+&lt;li&gt;Make the plot subtitle right aligned&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;iframe style=&#34;margin:0 auto; min-width: 100%;&#34; id=&#34;learnr-05-lesson-theme8&#34; class=&#34;interactive&#34; src=&#34;https://andrewheiss.shinyapps.io/datavizm20_05-themes-8/&#34; scrolling=&#34;no&#34; frameborder=&#34;no&#34; onload=&#39;iFrameResize({}, &#34;#learnr-05-lesson-theme8&#34;)&#39;&gt;&lt;/iframe&gt;
+
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;important-note-about-ordering&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Important note about ordering&lt;/h2&gt;
+&lt;p&gt;Things like &lt;code&gt;theme_grey()&lt;/code&gt; or &lt;code&gt;theme_minimal()&lt;/code&gt; are really just collections of changes to &lt;code&gt;theme()&lt;/code&gt;, so the order is important when using a complete theme. If you do something like this to turn off the gridlines in the plot panel:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(...) +
+  geom_point(...) +
+  theme(panel.grid = element_blank()) +
+  theme_bw()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;…you’ll still have panel gridlines! That’s because &lt;code&gt;theme_bw()&lt;/code&gt; turns them on, and you typed it after you turned it off. If you want to use both &lt;code&gt;theme_bw()&lt;/code&gt; and remove the gridlines, you need to make sure any theme adjustments come after &lt;code&gt;theme_bw()&lt;/code&gt;:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(...) +
+  geom_point(...) +
+  theme_bw() +
+  theme(panel.grid = element_blank())&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;fonts&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Fonts&lt;/h2&gt;
+&lt;p&gt;You can use &lt;code&gt;theme()&lt;/code&gt; to change the fonts as well, though sometimes it’s a little tricky to get R to see the fonts on your computer—especially if you use Windows. &lt;a href=&#34;https://www.andrewheiss.com/blog/2017/09/27/working-with-r-cairo-graphics-custom-fonts-and-ggplot/&#34;&gt;This detailed blog post&lt;/a&gt; explains how to work with custom fonts in ggplot and shows how to get it set up on Windows. It should Just Work™ on macOS.&lt;/p&gt;
+&lt;p&gt;In short, as long as you load the fonts correctly, you can specify different fonts either in a complete theme like &lt;code&gt;theme_minimal(base_family = &#34;Comic Sans MS&#34;)&lt;/code&gt; or in &lt;code&gt;theme()&lt;/code&gt; like &lt;code&gt;theme(plot.title = element_text(family = &#34;Papyrus&#34;))&lt;/code&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;reusing-themes&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Reusing themes&lt;/h2&gt;
+&lt;p&gt;If you want to repeat specific theme settings throughout a document, you can save yourself a ton of typing by storing the results of &lt;code&gt;theme()&lt;/code&gt; to an object and reusing it. For instance, suppose you want your plots to be based on theme_minimal, have right aligned title and subtitle text, have the legend at the bottom, and have no minor gridlines. You can save all of that into an object named &lt;code&gt;my_neato_theme&lt;/code&gt; or something, and then reuse it:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;my_neato_theme &amp;lt;- theme_minimal() +
+  theme(plot.title = element_text(hjust = 1),
+        plot.subtitle = element_text(hjust = 1),
+        legend.position = &amp;quot;bottom&amp;quot;,
+        panel.grid.minor = element_blank())
+
+# Make one plot
+ggplot(data = mpg,
+       mapping = aes(x = displ, y = hwy, color = drv)) +
+  geom_point(size = 3) +
+  labs(title = &amp;quot;Engine displacement and highway MPG&amp;quot;,
+       subtitle = &amp;quot;Heavier cars get worse mileage&amp;quot;) +
+  my_neato_theme&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/lesson/05-lesson_files/figure-html/saved-theme-1.png&#34; width=&#34;576&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# Make another plot
+ggplot(data = mpg,
+       mapping = aes(x = displ, y = hwy, color = cty)) +
+  geom_point(size = 3) +
+  labs(title = &amp;quot;Engine displacement and highway MPG&amp;quot;,
+       subtitle = &amp;quot;Points colored by city MPG&amp;quot;) +
+  my_neato_theme&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/lesson/05-lesson_files/figure-html/saved-theme-2.png&#34; width=&#34;576&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;saving-plots&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Saving plots&lt;/h2&gt;
+&lt;p&gt;So far, all your plots have ended up either in RStudio or in a knitted HTML, Word, or PDF document. But what if you want to save just the plot to your computer so you can send it out to the world?! You could take a screenshot, but that won’t provide the highest resolution, and that will only save the plot as a bitmap-based PNG, not an infinitely resizable vector-based PDF!&lt;/p&gt;
+&lt;p&gt;Fortunately it’s pretty easy to save a plot using the special &lt;code&gt;ggsave()&lt;/code&gt; function. You can specify whatever dimensions you want and whatever file type you want and save the standalone plot to your computer. You should look at the &lt;a href=&#34;https://ggplot2.tidyverse.org/reference/ggsave.html&#34;&gt;documentation for &lt;code&gt;ggsave()&lt;/code&gt;&lt;/a&gt; for complete details of all the different options and arguments it can take. Typically, you do something like this.&lt;/p&gt;
+&lt;p&gt;First create a plot and store it as an object. We haven’t done that yet in this lesson—so far we’ve just run &lt;code&gt;ggplot()&lt;/code&gt; and seen the output immediately. If you save the output of &lt;code&gt;ggplot()&lt;/code&gt; to an object, you actually won’t see anything until you run the name of the object.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;a_cool_plot &amp;lt;- ggplot(data = mpg,
+                      mapping = aes(x = displ, y = hwy, color = drv)) +
+  geom_point(size = 3) +
+  labs(title = &amp;quot;Engine displacement and highway MPG&amp;quot;,
+       subtitle = &amp;quot;Heavier cars get worse mileage&amp;quot;)
+
+# Make sure you run this so you can see the plot
+a_cool_plot&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/lesson/05-lesson_files/figure-html/ggsave-example-1.png&#34; width=&#34;576&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Next you can feed your saved plot to &lt;code&gt;ggsave()&lt;/code&gt; to save it. It will automatically determine how to save it based on the filename you provide. If you tell it to be &lt;code&gt;something.png&lt;/code&gt;, R will make a PNG; if you tell it to be &lt;code&gt;something.pdf&lt;/code&gt;, R will make a PDF, and so on. Common types are PDF, PNG, JPEG (ew though), SVG, TIFF, and others.&lt;/p&gt;
+&lt;p&gt;You can also save the plot as multiple files. I typically make PNG and PDF versions of any plots I export like so:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggsave(filename = &amp;quot;a_cool_plot.pdf&amp;quot;, plot = a_cool_plot,
+       width = 6, height = 4.5, units = &amp;quot;in&amp;quot;)
+
+ggsave(filename = &amp;quot;a_cool_plot.png&amp;quot;, plot = a_cool_plot,
+       width = 6, height = 4.5, units = &amp;quot;in&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;From a file management perspective, it often makes sense to store all your output in a separate folder in your project, like &lt;code&gt;output&lt;/code&gt; or &lt;code&gt;figures&lt;/code&gt; or something. If you want to put saved images in a subfolder, include the name in the file name:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggsave(filename = &amp;quot;figures/a_cool_plot.png&amp;quot;, plot = a_cool_plot,
+       width = 6, height = 4.5, units = &amp;quot;in&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;And finally, if you’re using custom fonts, you need to add one bit of wizardry to get the fonts to embed correctly in PDFs. This is something you just have to memorize or copy and paste a lot—if you want to know the full details, &lt;a href=&#34;https://www.andrewheiss.com/blog/2017/09/27/working-with-r-cairo-graphics-custom-fonts-and-ggplot/&#34;&gt;see this blog post&lt;/a&gt;. In short, R’s default PDF writer doesn’t know how to embed fonts and will panic if you make it try. R can use a different PDF-writing engine named Cairo that embeds fonts just fine, though, so you need to tell &lt;code&gt;ggsave()&lt;/code&gt; to use it:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggsave(filename = &amp;quot;figures/a_cool_plot.pdf&amp;quot;, plot = a_cool_plot,
+       width = 6, height = 4.5, units = &amp;quot;in&amp;quot;, device = cairo_pdf)&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Uncertainty</title>
+      <link>/lesson/06-lesson/</link>
+      <pubDate>Mon, 18 May 2020 00:00:00 +0000</pubDate>
+      <guid>/lesson/06-lesson/</guid>
+      <description>
+&lt;script src=&#34;/rmarkdown-libs/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
+
+&lt;div id=&#34;TOC&#34;&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#histograms&#34;&gt;Histograms&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#density-plots&#34;&gt;Density plots&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#boxes-violins-and-dots&#34;&gt;Boxes, violins, and dots&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Throughout this lesson, you’ll use the built-in &lt;code&gt;mpg&lt;/code&gt; dataset to make histograms, density plots, box plots, violin plots, and other graphics that show uncertainty.&lt;/p&gt;
+&lt;p&gt;Sorry if &lt;code&gt;mpg&lt;/code&gt; is getting repetitive! For short interactive things like this, it’s easier to use built-in and easy-to-load datasets like &lt;code&gt;mpg&lt;/code&gt; and &lt;code&gt;gapminder&lt;/code&gt; instead of loading CSV files, hence our constant reuse of the dataset. This is fairly normal too—the majority of examples in R help pages (and in peoples’ blog posts) use things like &lt;code&gt;mpg&lt;/code&gt; or&lt;code&gt;gapminder&lt;/code&gt;, or even &lt;code&gt;iris&lt;/code&gt;, which measures the lengths and widths of a bunch of iris flowers in the 1930s (fun fact! I don’t like using &lt;code&gt;iris&lt;/code&gt; because the data was originally used in an article in the &lt;em&gt;Annals of Eugenics&lt;/em&gt; (😬) in 1936, and the data was collected to advance eugenics, and &lt;a href=&#34;https://armchairecology.blog/iris-dataset/&#34;&gt;there’s no good reason to use data like that in 2020&lt;/a&gt;.)&lt;/p&gt;
+&lt;p&gt;So we work with cars instead of racist flower data.&lt;/p&gt;
+&lt;p&gt;The &lt;code&gt;mpg&lt;/code&gt; dataset is available in R as soon as you load ggplot2 (or tidyverse). Yu don’t have to run &lt;code&gt;read_csv()&lt;/code&gt; or anything—it’s just there in the background already.&lt;/p&gt;
+&lt;p&gt;As a reminder, here are the first few rows of the &lt;code&gt;mpg&lt;/code&gt; dataset:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;head(mpg)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 6 x 11
+##   manufacturer model displ  year   cyl trans      drv     cty   hwy fl    class 
+##   &amp;lt;chr&amp;gt;        &amp;lt;chr&amp;gt; &amp;lt;dbl&amp;gt; &amp;lt;int&amp;gt; &amp;lt;int&amp;gt; &amp;lt;chr&amp;gt;      &amp;lt;chr&amp;gt; &amp;lt;int&amp;gt; &amp;lt;int&amp;gt; &amp;lt;chr&amp;gt; &amp;lt;chr&amp;gt; 
+## 1 audi         a4      1.8  1999     4 auto(l5)   f        18    29 p     compa…
+## 2 audi         a4      1.8  1999     4 manual(m5) f        21    29 p     compa…
+## 3 audi         a4      2    2008     4 manual(m6) f        20    31 p     compa…
+## 4 audi         a4      2    2008     4 auto(av)   f        21    30 p     compa…
+## 5 audi         a4      2.8  1999     6 auto(l5)   f        16    26 p     compa…
+## 6 audi         a4      2.8  1999     6 manual(m5) f        18    26 p     compa…&lt;/code&gt;&lt;/pre&gt;
+&lt;div id=&#34;histograms&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Histograms&lt;/h2&gt;
+&lt;p&gt;When working with histograms, you &lt;em&gt;always&lt;/em&gt; need to think about the bin width. Histograms calculate the counts of rows within specific ranges of data, and the shape of the histogram will change depending on how wide or narrow these ranges (or bins, or buckets) are.&lt;/p&gt;
+&lt;div class=&#34;puzzle&#34;&gt;
+&lt;p&gt;&lt;strong&gt;Your turn&lt;/strong&gt;: Change this code to add a specific bin width for city miles per gallon &lt;code&gt;cty&lt;/code&gt; (hint: &lt;code&gt;binwidth&lt;/code&gt;). Play around with different widths until you find one that represents the data well.&lt;/p&gt;
+&lt;/div&gt;
+&lt;iframe style=&#34;margin:0 auto; min-width: 100%;&#34; id=&#34;learnr-06-lesson-uncertainty1&#34; class=&#34;interactive&#34; src=&#34;https://andrewheiss.shinyapps.io/datavizm20_06-uncertainty-1/&#34; scrolling=&#34;no&#34; frameborder=&#34;no&#34; onload=&#39;iFrameResize({}, &#34;#learnr-06-lesson-uncertainty1&#34;)&#39;&gt;&lt;/iframe&gt;
+
+&lt;p&gt;By default, histograms are filled with a dark grey color and the bars have no borders. Additionally, R places the center of the bars at specific numbers: if you have a bin width of 5, for instance, a bar will show the range from 7.5 to 12.5 instead of 5-10 or 10-15.&lt;/p&gt;
+&lt;div class=&#34;puzzle&#34;&gt;
+&lt;p&gt;&lt;strong&gt;Your turn&lt;/strong&gt;: Do the following:&lt;/p&gt;
+&lt;ol style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;Add a specific bin width&lt;/li&gt;
+&lt;li&gt;Add a white border (hint: &lt;code&gt;color&lt;/code&gt;)&lt;/li&gt;
+&lt;li&gt;Fill with &lt;span style=&#34;color: #E16462&#34;&gt;#E16462&lt;/span&gt;&lt;/li&gt;
+&lt;li&gt;Make it so the bars start at whole numbers like 10 or 20 (hint: &lt;code&gt;boundary&lt;/code&gt;)&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;
+&lt;iframe style=&#34;margin:0 auto; min-width: 100%;&#34; id=&#34;learnr-06-lesson-uncertainty2&#34; class=&#34;interactive&#34; src=&#34;https://andrewheiss.shinyapps.io/datavizm20_06-uncertainty-2/&#34; scrolling=&#34;no&#34; frameborder=&#34;no&#34; onload=&#39;iFrameResize({}, &#34;#learnr-06-lesson-uncertainty2&#34;)&#39;&gt;&lt;/iframe&gt;
+
+&lt;p&gt;You can add extra aesthetics to encode additional information about the distribution of variables across categories.&lt;/p&gt;
+&lt;div class=&#34;puzzle&#34;&gt;
+&lt;p&gt;&lt;strong&gt;Your turn&lt;/strong&gt;: Make a histogram of &lt;code&gt;cty&lt;/code&gt; and fill by &lt;code&gt;drv&lt;/code&gt; (drive: front, rear, and 4-wheel). Make sure you specify a good bin width.&lt;/p&gt;
+&lt;/div&gt;
+&lt;iframe style=&#34;margin:0 auto; min-width: 100%;&#34; id=&#34;learnr-06-lesson-uncertainty3&#34; class=&#34;interactive&#34; src=&#34;https://andrewheiss.shinyapps.io/datavizm20_06-uncertainty-3/&#34; scrolling=&#34;no&#34; frameborder=&#34;no&#34; onload=&#39;iFrameResize({}, &#34;#learnr-06-lesson-uncertainty3&#34;)&#39;&gt;&lt;/iframe&gt;
+
+&lt;p&gt;That’s too much information! Instead of only filling, you can separate the data into multiple plots.&lt;/p&gt;
+&lt;div class=&#34;puzzle&#34;&gt;
+&lt;p&gt;&lt;strong&gt;Your turn&lt;/strong&gt;: Make a histogram of &lt;code&gt;cty&lt;/code&gt; fill &lt;em&gt;and&lt;/em&gt; facet by &lt;code&gt;drv&lt;/code&gt;. Make sure you specify a good bin width. Make sure you specify a good bin width.&lt;/p&gt;
+&lt;/div&gt;
+&lt;iframe style=&#34;margin:0 auto; min-width: 100%;&#34; id=&#34;learnr-06-lesson-uncertainty4&#34; class=&#34;interactive&#34; src=&#34;https://andrewheiss.shinyapps.io/datavizm20_06-uncertainty-4/&#34; scrolling=&#34;no&#34; frameborder=&#34;no&#34; onload=&#39;iFrameResize({}, &#34;#learnr-06-lesson-uncertainty4&#34;)&#39;&gt;&lt;/iframe&gt;
+
+&lt;/div&gt;
+&lt;div id=&#34;density-plots&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Density plots&lt;/h2&gt;
+&lt;p&gt;When working with density plots &lt;em&gt;in this class&lt;/em&gt; you don’t need to worry too much about the calculus behind the scenes that creates the curves. But you can change those settings if you really want.&lt;/p&gt;
+&lt;div class=&#34;puzzle&#34;&gt;
+&lt;p&gt;&lt;strong&gt;Your turn&lt;/strong&gt;: Do the following:&lt;/p&gt;
+&lt;ol style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;Fill this density plot with &lt;span style=&#34;color: #E16462&#34;&gt;#E16462&lt;/span&gt;&lt;/li&gt;
+&lt;li&gt;Add a border (hint: &lt;code&gt;color&lt;/code&gt;) using &lt;span style=&#34;color: #9C3836&#34;&gt;#9C3836&lt;/span&gt;, with size = 1&lt;/li&gt;
+&lt;li&gt;Change the bandwidth (hint: &lt;code&gt;bw&lt;/code&gt;) to 0.5, then 1, then 10&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;
+&lt;iframe style=&#34;margin:0 auto; min-width: 100%;&#34; id=&#34;learnr-06-lesson-uncertainty5&#34; class=&#34;interactive&#34; src=&#34;https://andrewheiss.shinyapps.io/datavizm20_06-uncertainty-5/&#34; scrolling=&#34;no&#34; frameborder=&#34;no&#34; onload=&#39;iFrameResize({}, &#34;#learnr-06-lesson-uncertainty5&#34;)&#39;&gt;&lt;/iframe&gt;
+
+&lt;p&gt;Like histograms, you can map other variables onto the plot. It’s often a good idea to make the curves semi-transparent so you can see the different distributions.&lt;/p&gt;
+&lt;div class=&#34;puzzle&#34;&gt;
+&lt;p&gt;&lt;strong&gt;Your turn&lt;/strong&gt;: Do the following:&lt;/p&gt;
+&lt;ol style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;Fill this plot using the &lt;code&gt;drv&lt;/code&gt; variable&lt;/li&gt;
+&lt;li&gt;Make the density plots 50% transparent&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;
+&lt;iframe style=&#34;margin:0 auto; min-width: 100%;&#34; id=&#34;learnr-06-lesson-uncertainty6&#34; class=&#34;interactive&#34; src=&#34;https://andrewheiss.shinyapps.io/datavizm20_06-uncertainty-6/&#34; scrolling=&#34;no&#34; frameborder=&#34;no&#34; onload=&#39;iFrameResize({}, &#34;#learnr-06-lesson-uncertainty6&#34;)&#39;&gt;&lt;/iframe&gt;
+
+&lt;p&gt;Even with transparency, it’s often difficult to interpret density plots like this. As an alternative, you can use the &lt;a href=&#34;https://cran.r-project.org/web/packages/ggridges/vignettes/introduction.html&#34;&gt;&lt;strong&gt;ggridges&lt;/strong&gt; package&lt;/a&gt; to make ridge plots. Look at the &lt;a href=&#34;https://cran.r-project.org/web/packages/ggridges/vignettes/introduction.html&#34;&gt;documentation and examples for &lt;strong&gt;ggridges&lt;/strong&gt;&lt;/a&gt; for lots of details about different plots you can make.&lt;/p&gt;
+&lt;div class=&#34;puzzle&#34;&gt;
+&lt;p&gt;&lt;strong&gt;Your turn&lt;/strong&gt;: Convert this plot into a ridge plot.&lt;/p&gt;
+&lt;/div&gt;
+&lt;iframe style=&#34;margin:0 auto; min-width: 100%;&#34; id=&#34;learnr-06-lesson-uncertainty7&#34; class=&#34;interactive&#34; src=&#34;https://andrewheiss.shinyapps.io/datavizm20_06-uncertainty-7/&#34; scrolling=&#34;no&#34; frameborder=&#34;no&#34; onload=&#39;iFrameResize({}, &#34;#learnr-06-lesson-uncertainty7&#34;)&#39;&gt;&lt;/iframe&gt;
+
+&lt;/div&gt;
+&lt;div id=&#34;boxes-violins-and-dots&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Boxes, violins, and dots&lt;/h2&gt;
+&lt;p&gt;Finally, you can use things like boxplots and violin plots to show the distribution of variables, either by themselves or across categories.&lt;/p&gt;
+&lt;p&gt;Box plots show the distribution of a variable by highlighting specific details, like the 25th, 50th (median) and 75th percentile, as well as the assumed minimum, assumed maximum, and outliers:&lt;/p&gt;
+&lt;div class=&#34;figure&#34;&gt;
+&lt;img src=&#34;/slides/06-slides_files/figure-html/boxplot-explanation-1.png&#34; alt=&#34;&#34; /&gt;
+&lt;p class=&#34;caption&#34;&gt;Anatomy of a boxplot&lt;/p&gt;
+&lt;/div&gt;
+&lt;p&gt;When making boxplots with ggplot, you need to map the variable of interest to the &lt;code&gt;x&lt;/code&gt; aesthetic (or &lt;code&gt;y&lt;/code&gt; if you want a vertical boxplot), and you can optionally map a second categorical variable to the &lt;code&gt;y&lt;/code&gt; aesthetic (or &lt;code&gt;x&lt;/code&gt; if you want a vertical boxplot).&lt;/p&gt;
+&lt;p&gt;You can adjust the fill and color of the plot, and you can change what counts as outliers with the &lt;code&gt;coef&lt;/code&gt; argument. By default outliers are any point that is beyond the 75th percentile + 1.5 × the interquartile range (or below the 25th percentile + 1.5 × IQR), but that’s adjustable.&lt;/p&gt;
+&lt;div class=&#34;puzzle&#34;&gt;
+&lt;p&gt;&lt;strong&gt;Your turn&lt;/strong&gt;: Do the following:&lt;/p&gt;
+&lt;ol style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;Fill the boxplot with &lt;span style=&#34;color: #E6AD3C&#34;&gt;#E6AD3C&lt;/span&gt;&lt;/li&gt;
+&lt;li&gt;Color the boxplot with &lt;span style=&#34;color: #5ABD51&#34;&gt;#5ABD51&lt;/span&gt;&lt;/li&gt;
+&lt;li&gt;Change the definition of outliers to be 5 times the IQR&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;
+&lt;iframe style=&#34;margin:0 auto; min-width: 100%;&#34; id=&#34;learnr-06-lesson-uncertainty8&#34; class=&#34;interactive&#34; src=&#34;https://andrewheiss.shinyapps.io/datavizm20_06-uncertainty-8/&#34; scrolling=&#34;no&#34; frameborder=&#34;no&#34; onload=&#39;iFrameResize({}, &#34;#learnr-06-lesson-uncertainty8&#34;)&#39;&gt;&lt;/iframe&gt;
+
+&lt;p&gt;You can also use violin plots instead of boxplot, which show the mirrored density distribution. When doing this, it’s often helpful to add other geoms like jittered points to show more of the data&lt;/p&gt;
+&lt;div class=&#34;puzzle&#34;&gt;
+&lt;p&gt;&lt;strong&gt;Your turn&lt;/strong&gt;: Do the following&lt;/p&gt;
+&lt;ol style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;Change this boxplot to use violins instead&lt;/li&gt;
+&lt;li&gt;Add jittered points with a jittering width of 0.1 and sized at 0.5&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;
+&lt;iframe style=&#34;margin:0 auto; min-width: 100%;&#34; id=&#34;learnr-06-lesson-uncertainty9&#34; class=&#34;interactive&#34; src=&#34;https://andrewheiss.shinyapps.io/datavizm20_06-uncertainty-9/&#34; scrolling=&#34;no&#34; frameborder=&#34;no&#34; onload=&#39;iFrameResize({}, &#34;#learnr-06-lesson-uncertainty9&#34;)&#39;&gt;&lt;/iframe&gt;
+
+&lt;/div&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Relationships</title>
+      <link>/lesson/07-lesson/</link>
+      <pubDate>Tue, 19 May 2020 00:00:00 +0000</pubDate>
+      <guid>/lesson/07-lesson/</guid>
+      <description>
+&lt;script src=&#34;/rmarkdown-libs/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
+
+
+&lt;p&gt;There isn’t really a lesson for today, and as we get further into the semester, the need for lessons will continue to decrease. Now that each section is focused on a few specific geoms and how to apply them, you don’t need to go through interactive tutorials so much, since you should (hopefully!) be getting the hang of how ggplot works. (IF NOT, please reach out for help on Slack or via e-mail! I’m more than happy and ready to help!)&lt;/p&gt;
+&lt;p&gt;For the lesson, &lt;a href=&#34;/example/07-example/&#34;&gt;read through the code examples in the example&lt;/a&gt; to see how to make dual y-axes, scatterplot matrices, coefficient plots, and marginal effects plots.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Comparisons</title>
+      <link>/lesson/08-lesson/</link>
+      <pubDate>Wed, 20 May 2020 00:00:00 +0000</pubDate>
+      <guid>/lesson/08-lesson/</guid>
+      <description>
+&lt;script src=&#34;/rmarkdown-libs/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
+
+
+&lt;p&gt;Like yesterday, there isn’t really a lesson today. You’re not learning how to use any new functions—you’re learning how to apply the geoms you already know in cool and exciting ways. But don’t worry! You’ll have a lesson for session 9!&lt;/p&gt;
+&lt;p&gt;For the lesson, &lt;a href=&#34;/example/08-example/&#34;&gt;read through the code examples in the example&lt;/a&gt; to see how to make small multiples, sparklines, geofacets, and slopegraphs.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Annotations</title>
+      <link>/lesson/09-lesson/</link>
+      <pubDate>Thu, 21 May 2020 00:00:00 +0000</pubDate>
+      <guid>/lesson/09-lesson/</guid>
+      <description>
+&lt;script src=&#34;/rmarkdown-libs/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
+
+
+&lt;p&gt;Ha, so in the video I said there would be interactive lessons, but &lt;em&gt;I changed my mind!&lt;/em&gt; You’re only working with a few new functions this session (&lt;code&gt;annotate()&lt;/code&gt;, &lt;code&gt;geom_text()&lt;/code&gt;, &lt;code&gt;geom_label()&lt;/code&gt;, &lt;code&gt;geom_text_repel()&lt;/code&gt;, and &lt;code&gt;geom_label_repel()&lt;/code&gt;), and the best way to figure out how to use them is to use them!&lt;/p&gt;
+&lt;p&gt;There are some helpful blog posts and other resources online with examples and explanations. Read through these in addition to the documentation for &lt;a href=&#34;https://ggplot2.tidyverse.org/reference/annotate.html&#34;&gt;&lt;code&gt;annotate()&lt;/code&gt;&lt;/a&gt;, &lt;a href=&#34;https://ggplot2.tidyverse.org/reference/geom_text.html&#34;&gt;&lt;code&gt;geom_text()/geom_label()&lt;/code&gt;&lt;/a&gt; and &lt;a href=&#34;&#34;&gt;&lt;strong&gt;ggrepel&lt;/strong&gt;&lt;/a&gt;&lt;a href=&#34;https://cran.r-project.org/web/packages/ggrepel/vignettes/ggrepel.html&#34; class=&#34;uri&#34;&gt;https://cran.r-project.org/web/packages/ggrepel/vignettes/ggrepel.html&lt;/a&gt;:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;i class=&#34;fas fa-external-link-square-alt&#34;&gt;&lt;/i&gt; &lt;a href=&#34;https://www.r-graph-gallery.com/233-add-annotations-on-ggplot2-chart.html&#34;&gt;“Add shapes with &lt;code&gt;annotate()&lt;/code&gt;”&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;i class=&#34;fas fa-external-link-square-alt&#34;&gt;&lt;/i&gt; &lt;a href=&#34;https://ggplot2-book.org/annotations.html&#34;&gt;“Annotations”&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Interactivity</title>
+      <link>/lesson/10-lesson/</link>
+      <pubDate>Fri, 22 May 2020 00:00:00 +0000</pubDate>
+      <guid>/lesson/10-lesson/</guid>
+      <description>
+&lt;script src=&#34;/rmarkdown-libs/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
+
+
+&lt;p&gt;Again, there’s no lesson for this. The only way to learn how to use &lt;code&gt;ggplotly()&lt;/code&gt; and create dashboards with &lt;strong&gt;flexdashboard&lt;/strong&gt; is to try them out in RStudio, not in a mini browser-based R session here.&lt;/p&gt;
+&lt;p&gt;So &lt;a href=&#34;/assignment/10-exercise/&#34;&gt;head over to the exercise&lt;/a&gt; to get started!&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Time</title>
+      <link>/lesson/11-lesson/</link>
+      <pubDate>Tue, 26 May 2020 00:00:00 +0000</pubDate>
+      <guid>/lesson/11-lesson/</guid>
+      <description>
+&lt;script src=&#34;/rmarkdown-libs/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
+
+
+&lt;p&gt;Once again, there’s no lesson this time. You’re all understanding the basics of R and ggplot and dplyr &lt;em&gt;really well&lt;/em&gt; (I’m seriously so impressed and proud of you all!).&lt;/p&gt;
+&lt;p&gt;In your exercise today you’ll visualize trends in time using one of three different real-world datasets. &lt;a href=&#34;/example/11-example/&#34;&gt;In the example&lt;/a&gt; I demonstrate how to remove seasonality from time series data, which is a useful skill, but &lt;em&gt;not always applicable&lt;/em&gt; to every time series dataset. If there’s no seasonality in your data, you don’t need to remove it.&lt;/p&gt;
+&lt;p&gt;So head over to &lt;a href=&#34;/example/11-example/&#34;&gt;the example&lt;/a&gt; or &lt;a href=&#34;/assignment/11-exercise/&#34;&gt;the exercise&lt;/a&gt; to get started!&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Space</title>
+      <link>/lesson/12-lesson/</link>
+      <pubDate>Wed, 27 May 2020 00:00:00 +0000</pubDate>
+      <guid>/lesson/12-lesson/</guid>
+      <description>
+&lt;script src=&#34;/rmarkdown-libs/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
+
+&lt;div id=&#34;TOC&#34;&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#combining-datasets-vertically&#34;&gt;Combining datasets vertically&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#combining-datasets-horizontally&#34;&gt;Combining datasets horizontally&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#inner_join&#34;&gt;&lt;code&gt;inner_join()&lt;/code&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#left_join&#34;&gt;&lt;code&gt;left_join()&lt;/code&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#common-column-names&#34;&gt;Common column names&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#right_join&#34;&gt;&lt;code&gt;right_join()&lt;/code&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+
+&lt;p&gt;There &lt;em&gt;is&lt;/em&gt; a short lesson today! You’ll learn the basics of joining two different datasets together, both vertically and horizontally.&lt;/p&gt;
+&lt;p&gt;There are a few imaginary datasets I’ve created for you to play with:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;x&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 3 x 2
+##      id some_variable
+##   &amp;lt;dbl&amp;gt; &amp;lt;chr&amp;gt;        
+## 1     1 x1           
+## 2     2 x2           
+## 3     3 x3&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;y&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 3 x 2
+##      id some_other_variable
+##   &amp;lt;dbl&amp;gt; &amp;lt;chr&amp;gt;              
+## 1     1 y1                 
+## 2     2 y2                 
+## 3     4 y4&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;national_data&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 9 x 5
+##   state  year unemployment inflation population
+##   &amp;lt;chr&amp;gt; &amp;lt;dbl&amp;gt;        &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt;      &amp;lt;dbl&amp;gt;
+## 1 GA     2018          5         2          100
+## 2 GA     2019          5.3       1.8        200
+## 3 GA     2020          5.2       2.5        300
+## 4 NC     2018          6.1       1.8        350
+## 5 NC     2019          5.9       1.6        375
+## 6 NC     2020          5.3       1.8        400
+## 7 CO     2018          4.7       2.7        200
+## 8 CO     2019          4.4       2.6        300
+## 9 CO     2020          5.1       2.5        400&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;national_data_2019&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 3 x 4
+##   state unemployment inflation population
+##   &amp;lt;chr&amp;gt;        &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt;      &amp;lt;dbl&amp;gt;
+## 1 GA             5.3       1.8        200
+## 2 NC             5.9       1.6        375
+## 3 CO             4.4       2.6        300&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;national_libraries&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 6 x 4
+##   state  year libraries schools
+##   &amp;lt;chr&amp;gt; &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt;   &amp;lt;dbl&amp;gt;
+## 1 CO     2018       230     470
+## 2 CO     2019       240     440
+## 3 CO     2020       270     510
+## 4 NC     2018       200     610
+## 5 NC     2019       210     590
+## 6 NC     2020       220     530&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;national_libraries_2019&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 2 x 3
+##   state libraries schools
+##   &amp;lt;chr&amp;gt;     &amp;lt;dbl&amp;gt;   &amp;lt;dbl&amp;gt;
+## 1 CO          240     440
+## 2 NC          210     590&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;puerto_rico_data&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 3 x 4
+##   state unemployment population  year
+##   &amp;lt;chr&amp;gt;        &amp;lt;dbl&amp;gt;      &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt;
+## 1 PR             3.1        150  2018
+## 2 PR             3.2        250  2019
+## 3 PR             3.3        350  2020&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;state_regions&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 51 x 2
+##    region    state
+##    &amp;lt;chr&amp;gt;     &amp;lt;chr&amp;gt;
+##  1 West      AK   
+##  2 South     AL   
+##  3 South     AR   
+##  4 West      AZ   
+##  5 West      CA   
+##  6 West      CO   
+##  7 Northeast CT   
+##  8 South     DC   
+##  9 South     DE   
+## 10 South     FL   
+## # … with 41 more rows&lt;/code&gt;&lt;/pre&gt;
+&lt;div id=&#34;combining-datasets-vertically&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Combining datasets vertically&lt;/h2&gt;
+&lt;p&gt;Recall from the &lt;a href=&#34;/assignment/03-exercise/&#34;&gt;Lord of the Rings data in exercise 3&lt;/a&gt; that you had to combine three different CSV files into dataset. You used &lt;code&gt;bind_rows()&lt;/code&gt; to stack each of these on top of each other.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;lotr &amp;lt;- bind_rows(fellowship, tt, rotk)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;That worked well because each of the individual data frames had the same columns in them, and R was able to line up the matching columns. If columns were missing, R would have placed &lt;code&gt;NA&lt;/code&gt; in the appropriate locations.&lt;/p&gt;
+&lt;div class=&#34;puzzle&#34;&gt;
+&lt;p&gt;&lt;strong&gt;Your turn&lt;/strong&gt;: Combine &lt;code&gt;national_data&lt;/code&gt; and &lt;code&gt;puerto_rico_data&lt;/code&gt; into a single dataset named &lt;code&gt;us_data&lt;/code&gt; using &lt;code&gt;bind_rows&lt;/code&gt;. Pay attention to what happens with the inflation column. Also notice that the columns in the Puerto Rico data are in a different order.&lt;/p&gt;
+&lt;/div&gt;
+&lt;iframe style=&#34;margin:0 auto; min-width: 100%;&#34; id=&#34;learnr-12-lesson-joining1&#34; class=&#34;interactive&#34; src=&#34;https://andrewheiss.shinyapps.io/datavizm20_12-joining-1/&#34; scrolling=&#34;no&#34; frameborder=&#34;no&#34; onload=&#39;iFrameResize({}, &#34;#learnr-12-lesson-joining1&#34;)&#39;&gt;&lt;/iframe&gt;
+
+&lt;/div&gt;
+&lt;div id=&#34;combining-datasets-horizontally&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Combining datasets horizontally&lt;/h2&gt;
+&lt;p&gt;Binding rows vertically is the easiest way to combine two datasets, but most often you won’t be doing that. You’ll only do this if you’re combining datasets that come from the same source, like if a state offers separate CSV files of the same data for each county.&lt;/p&gt;
+&lt;p&gt;In most cases, though, you’ll need to combine completely different datasets, bringing one or more columns from one into another. With vertical combining, R needs column names with the same names in order to figure out where the data lines up. With horizontal combining, R needs values inside one or more columns to be the same in order to figure out where the data lines up.&lt;/p&gt;
+&lt;p&gt;There is technically a function named &lt;code&gt;bind_cols()&lt;/code&gt;, but you’ll rarely want to use it. It doesn’t attempt to match any rows—it just glues two datasets together:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;bind_cols(national_data, 
+          # Repeat PR 3 times so that it has the same number of rows as national_data
+          bind_rows(puerto_rico_data, puerto_rico_data, puerto_rico_data))&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 9 x 9
+##   state  year unemployment inflation population state1 unemployment1 population1
+##   &amp;lt;chr&amp;gt; &amp;lt;dbl&amp;gt;        &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt;      &amp;lt;dbl&amp;gt; &amp;lt;chr&amp;gt;          &amp;lt;dbl&amp;gt;       &amp;lt;dbl&amp;gt;
+## 1 GA     2018          5         2          100 PR               3.1         150
+## 2 GA     2019          5.3       1.8        200 PR               3.2         250
+## 3 GA     2020          5.2       2.5        300 PR               3.3         350
+## 4 NC     2018          6.1       1.8        350 PR               3.1         150
+## 5 NC     2019          5.9       1.6        375 PR               3.2         250
+## 6 NC     2020          5.3       1.8        400 PR               3.3         350
+## 7 CO     2018          4.7       2.7        200 PR               3.1         150
+## 8 CO     2019          4.4       2.6        300 PR               3.2         250
+## 9 CO     2020          5.1       2.5        400 PR               3.3         350
+## # … with 1 more variable: year1 &amp;lt;dbl&amp;gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;That’s… not great.&lt;/p&gt;
+&lt;p&gt;Instead, we need to use a function that is more careful about bringing in data. Fortunately there are a few good options:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;inner_join()&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;left_join()&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;right_join()&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;The &lt;strong&gt;most&lt;/strong&gt; helpful way of understanding these different functions &lt;a href=&#34;https://github.com/gadenbuie/tidyexplain#mutating-joins&#34;&gt;is to go here and stare at the animations for a little while&lt;/a&gt; to see which pieces of which dataset go where. (There are lots of others, like &lt;code&gt;full_join()&lt;/code&gt;, &lt;code&gt;semi_join()&lt;/code&gt;, and &lt;code&gt;anti_join()&lt;/code&gt;, and they have helpful animations, but I rarely use those.)&lt;/p&gt;
+&lt;p&gt;For each of these functions, &lt;strong&gt;you need at least one common ID column in both datasets&lt;/strong&gt; in order for R to know where things line up.&lt;/p&gt;
+&lt;p&gt;Let’s practice how these all work and see what the differences between them are.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;inner_join&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;&lt;code&gt;inner_join()&lt;/code&gt;&lt;/h2&gt;
+&lt;p&gt;First, &lt;a href=&#34;https://github.com/gadenbuie/tidyexplain#inner-join&#34; target=&#34;_blank&#34;&gt;go to this page in a new tab&lt;/a&gt; and stare at the mesmerizing animation.&lt;/p&gt;
+&lt;p&gt;Let’s look at two datasets, &lt;code&gt;x&lt;/code&gt; and &lt;code&gt;y&lt;/code&gt;:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;x&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 3 x 2
+##      id some_variable
+##   &amp;lt;dbl&amp;gt; &amp;lt;chr&amp;gt;        
+## 1     1 x1           
+## 2     2 x2           
+## 3     3 x3&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;y&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 3 x 2
+##      id some_other_variable
+##   &amp;lt;dbl&amp;gt; &amp;lt;chr&amp;gt;              
+## 1     1 y1                 
+## 2     2 y2                 
+## 3     4 y4&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Both datasets have an &lt;code&gt;id&lt;/code&gt; column that is the same across each (though the values aren’t necessarily the same). Because there’s a shared column, we can join these two based on that column.&lt;/p&gt;
+&lt;p&gt;If we use &lt;code&gt;inner_join()&lt;/code&gt;, the resulting dataset will only keep the rows from the first where there are matching values from the second:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;inner_join(x, y, by = &amp;quot;id&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 2 x 3
+##      id some_variable some_other_variable
+##   &amp;lt;dbl&amp;gt; &amp;lt;chr&amp;gt;         &amp;lt;chr&amp;gt;              
+## 1     1 x1            y1                 
+## 2     2 x2            y2&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Notice how it got rid of the row with &lt;code&gt;id = 3&lt;/code&gt; from the first and the row with &lt;code&gt;id = 4&lt;/code&gt; from the second.&lt;/p&gt;
+&lt;p&gt;You can also write this with pipes, which is really common when working with &lt;strong&gt;dplyr&lt;/strong&gt;:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;x %&amp;gt;% 
+  inner_join(y, by = &amp;quot;id&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 2 x 3
+##      id some_variable some_other_variable
+##   &amp;lt;dbl&amp;gt; &amp;lt;chr&amp;gt;         &amp;lt;chr&amp;gt;              
+## 1     1 x1            y1                 
+## 2     2 x2            y2&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Let’s say we have two datasets: &lt;code&gt;national_data_2019&lt;/code&gt; and &lt;code&gt;national_libraries_2019&lt;/code&gt;:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;national_data_2019&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 3 x 4
+##   state unemployment inflation population
+##   &amp;lt;chr&amp;gt;        &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt;      &amp;lt;dbl&amp;gt;
+## 1 GA             5.3       1.8        200
+## 2 NC             5.9       1.6        375
+## 3 CO             4.4       2.6        300&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;national_libraries_2019&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 2 x 3
+##   state libraries schools
+##   &amp;lt;chr&amp;gt;     &amp;lt;dbl&amp;gt;   &amp;lt;dbl&amp;gt;
+## 1 CO          240     440
+## 2 NC          210     590&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;We want to bring the libraries and schools columns into the general national data. Notice how both datasets have a state column.&lt;/p&gt;
+&lt;div class=&#34;puzzle&#34;&gt;
+&lt;p&gt;&lt;strong&gt;Your turn&lt;/strong&gt;: Create a new dataset named &lt;code&gt;combined_data&lt;/code&gt; that uses &lt;code&gt;inner_join()&lt;/code&gt; to merge &lt;code&gt;national_data_2019&lt;/code&gt; and &lt;code&gt;national_libraries_2019&lt;/code&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;iframe style=&#34;margin:0 auto; min-width: 100%;&#34; id=&#34;learnr-12-lesson-joining2&#34; class=&#34;interactive&#34; src=&#34;https://andrewheiss.shinyapps.io/datavizm20_12-joining-2/&#34; scrolling=&#34;no&#34; frameborder=&#34;no&#34; onload=&#39;iFrameResize({}, &#34;#learnr-12-lesson-joining2&#34;)&#39;&gt;&lt;/iframe&gt;
+
+&lt;/div&gt;
+&lt;div id=&#34;left_join&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;&lt;code&gt;left_join()&lt;/code&gt;&lt;/h2&gt;
+&lt;p&gt;Again, &lt;a href=&#34;https://github.com/gadenbuie/tidyexplain#left-join&#34; target=&#34;_blank&#34;&gt;go to this page in a new tab&lt;/a&gt; and stare at the animation.&lt;/p&gt;
+&lt;p&gt;Left joining is less destructive than inner joining. With left joining, any rows in the first dataset that don’t have matches in the second &lt;em&gt;don’t&lt;/em&gt; get thrown away and instead are filled with &lt;code&gt;NA&lt;/code&gt;:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;left_join(x, y, by = &amp;quot;id&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 3 x 3
+##      id some_variable some_other_variable
+##   &amp;lt;dbl&amp;gt; &amp;lt;chr&amp;gt;         &amp;lt;chr&amp;gt;              
+## 1     1 x1            y1                 
+## 2     2 x2            y2                 
+## 3     3 x3            &amp;lt;NA&amp;gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Notice how the row with &lt;code&gt;id = 4&lt;/code&gt; from the second dataset is gone, but the row with &lt;code&gt;id = 3&lt;/code&gt; from the first is still there, with &lt;code&gt;NA&lt;/code&gt; for &lt;code&gt;some_other_variable&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;I find this much more useful when combining data. I often have a larger dataset with all the main variables I care about, perhaps with every combination of country and year over 20 years and 180 countries. If I find another dataset I want to join, and it has missing data for some of the years or countries, I don’t want the combined data to throw away all the rows from the main big dataset that don’t match! I still want those!&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;(&lt;a href=&#34;https://stats.andrewheiss.com/canary-ngos/01_get-merge-data.html#final_clean_combined_data&#34;&gt;Look at this for a real life example&lt;/a&gt;: I create a dataset I name &lt;code&gt;panel_skeleton&lt;/code&gt; that is just all the combinations of countries and years (Afghanistan 1990, Afghanistan 1991, etc.), and then I bring in all sorts of other datasets that match the same countries and years. When there aren’t matches, nothing in the skeleton gets thrown away—R just adds missing values instead.)&lt;/em&gt;&lt;/p&gt;
+&lt;div class=&#34;puzzle&#34;&gt;
+&lt;p&gt;&lt;strong&gt;Your turn&lt;/strong&gt;: Create a new dataset named &lt;code&gt;combined_data&lt;/code&gt; that uses &lt;code&gt;left_join()&lt;/code&gt; to merge &lt;code&gt;national_data_2019&lt;/code&gt; and &lt;code&gt;national_libraries_2019&lt;/code&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;iframe style=&#34;margin:0 auto; min-width: 100%;&#34; id=&#34;learnr-12-lesson-joining5&#34; class=&#34;interactive&#34; src=&#34;https://andrewheiss.shinyapps.io/datavizm20_12-joining-5/&#34; scrolling=&#34;no&#34; frameborder=&#34;no&#34; onload=&#39;iFrameResize({}, &#34;#learnr-12-lesson-joining5&#34;)&#39;&gt;&lt;/iframe&gt;
+
+&lt;p&gt;Left joining is also often surprisingly helpful for recoding lots of variables. Right now in our fake national data, we have a column for state, but it would be nice if we could have a column for region so we could facet or fill or color by region in a plot. Hunting around on the internet, you find this dataset that has a column for state and a column for abbreviations:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;state_regions&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 51 x 2
+##    region    state
+##    &amp;lt;chr&amp;gt;     &amp;lt;chr&amp;gt;
+##  1 West      AK   
+##  2 South     AL   
+##  3 South     AR   
+##  4 West      AZ   
+##  5 West      CA   
+##  6 West      CO   
+##  7 Northeast CT   
+##  8 South     DC   
+##  9 South     DE   
+## 10 South     FL   
+## # … with 41 more rows&lt;/code&gt;&lt;/pre&gt;
+&lt;div class=&#34;puzzle&#34;&gt;
+&lt;p&gt;&lt;strong&gt;Your turn&lt;/strong&gt;: Create a new dataset named &lt;code&gt;national_data_with_region&lt;/code&gt; that uses &lt;code&gt;left_join()&lt;/code&gt; to combine &lt;code&gt;national_data_2019&lt;/code&gt; with &lt;code&gt;state_regions&lt;/code&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;iframe style=&#34;margin:0 auto; min-width: 100%;&#34; id=&#34;learnr-12-lesson-joining3&#34; class=&#34;interactive&#34; src=&#34;https://andrewheiss.shinyapps.io/datavizm20_12-joining-3/&#34; scrolling=&#34;no&#34; frameborder=&#34;no&#34; onload=&#39;iFrameResize({}, &#34;#learnr-12-lesson-joining3&#34;)&#39;&gt;&lt;/iframe&gt;
+
+&lt;p&gt;Because &lt;code&gt;left_join()&lt;/code&gt; only keeps rows from the second dataset that match the first, we don’t actually bring in all 50 rows from the &lt;code&gt;state_regions&lt;/code&gt; data—only the rows that match the first dataset (&lt;code&gt;national_data_2019&lt;/code&gt;) come over. We could have done with if some massive recoding (&lt;code&gt;mutate(region = ifelse(state == &#34;GA&#34; | state == &#34;NC&#34;, &#34;South&#34;, ifelse(state == &#34;CO&#34;), &#34;West&#34;, NA))&lt;/code&gt;), but that’s awful. Left joining is far easier here.&lt;/p&gt;
+&lt;p&gt;You can also join by multiple columns. So far we’ve been working with just &lt;code&gt;national_data_2019&lt;/code&gt;, but if you look at &lt;code&gt;national_data&lt;/code&gt;, you’ll see there are rows for different years across these states:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;national_data&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 9 x 5
+##   state  year unemployment inflation population
+##   &amp;lt;chr&amp;gt; &amp;lt;dbl&amp;gt;        &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt;      &amp;lt;dbl&amp;gt;
+## 1 GA     2018          5         2          100
+## 2 GA     2019          5.3       1.8        200
+## 3 GA     2020          5.2       2.5        300
+## 4 NC     2018          6.1       1.8        350
+## 5 NC     2019          5.9       1.6        375
+## 6 NC     2020          5.3       1.8        400
+## 7 CO     2018          4.7       2.7        200
+## 8 CO     2019          4.4       2.6        300
+## 9 CO     2020          5.1       2.5        400&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Previously, we’ve been specifying the ID column with &lt;code&gt;by = &#34;state&#34;&lt;/code&gt;, but now we have two ID columns: &lt;code&gt;state&lt;/code&gt; and &lt;code&gt;year&lt;/code&gt;. We can specify both with &lt;code&gt;by = c(&#34;state&#34;, &#34;year&#34;)&lt;/code&gt;.&lt;/p&gt;
+&lt;div class=&#34;puzzle&#34;&gt;
+&lt;p&gt;&lt;strong&gt;Your turn&lt;/strong&gt;: Create a new dataset named &lt;code&gt;national_data_combined&lt;/code&gt; that uses &lt;code&gt;left_join()&lt;/code&gt; to combine &lt;code&gt;national_data&lt;/code&gt; with &lt;code&gt;national_libraries&lt;/code&gt; by state and year.&lt;/p&gt;
+&lt;/div&gt;
+&lt;iframe style=&#34;margin:0 auto; min-width: 100%;&#34; id=&#34;learnr-12-lesson-joining4&#34; class=&#34;interactive&#34; src=&#34;https://andrewheiss.shinyapps.io/datavizm20_12-joining-4/&#34; scrolling=&#34;no&#34; frameborder=&#34;no&#34; onload=&#39;iFrameResize({}, &#34;#learnr-12-lesson-joining4&#34;)&#39;&gt;&lt;/iframe&gt;
+
+&lt;p&gt;If one dataset has things like state and year, but another only has state, &lt;code&gt;left_join()&lt;/code&gt; will still work, but it will only join where the state is the same. For instance, here’s what happens when we join the region data to the yearly national data:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;national_data_with_region &amp;lt;- national_data %&amp;gt;% 
+  left_join(state_regions, by = &amp;quot;state&amp;quot;)
+national_data_with_region&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 9 x 6
+##   state  year unemployment inflation population region
+##   &amp;lt;chr&amp;gt; &amp;lt;dbl&amp;gt;        &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt;      &amp;lt;dbl&amp;gt; &amp;lt;chr&amp;gt; 
+## 1 GA     2018          5         2          100 South 
+## 2 GA     2019          5.3       1.8        200 South 
+## 3 GA     2020          5.2       2.5        300 South 
+## 4 NC     2018          6.1       1.8        350 South 
+## 5 NC     2019          5.9       1.6        375 South 
+## 6 NC     2020          5.3       1.8        400 South 
+## 7 CO     2018          4.7       2.7        200 West  
+## 8 CO     2019          4.4       2.6        300 West  
+## 9 CO     2020          5.1       2.5        400 West&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The “South” region gets added to every row where the state is “GA” and “NC”, even though those rows only appear once in &lt;code&gt;state_regions&lt;/code&gt;. &lt;code&gt;left_join()&lt;/code&gt; will still match all the values even if states are repeated. Magic!&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;common-column-names&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Common column names&lt;/h2&gt;
+&lt;p&gt;So far, the column names in both datasets have been the same, which has greatly simplified life. In fact, if the columns have the same name, we can technically leave out the &lt;code&gt;by&lt;/code&gt; argument and R will guess:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;national_data %&amp;gt;% 
+  left_join(national_libraries)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Joining, by = c(&amp;quot;state&amp;quot;, &amp;quot;year&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 9 x 7
+##   state  year unemployment inflation population libraries schools
+##   &amp;lt;chr&amp;gt; &amp;lt;dbl&amp;gt;        &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt;      &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt;   &amp;lt;dbl&amp;gt;
+## 1 GA     2018          5         2          100        NA      NA
+## 2 GA     2019          5.3       1.8        200        NA      NA
+## 3 GA     2020          5.2       2.5        300        NA      NA
+## 4 NC     2018          6.1       1.8        350       200     610
+## 5 NC     2019          5.9       1.6        375       210     590
+## 6 NC     2020          5.3       1.8        400       220     530
+## 7 CO     2018          4.7       2.7        200       230     470
+## 8 CO     2019          4.4       2.6        300       240     440
+## 9 CO     2020          5.1       2.5        400       270     510&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;It’s good practice to be specific about the columns you want and actually use &lt;code&gt;by&lt;/code&gt;, but I will often run &lt;code&gt;left_join()&lt;/code&gt; without it and then copy the message that it generates (“&lt;code&gt;by = c(&#34;state&#34;, &#34;year&#34;)&lt;/code&gt;”) and paste it into my code.&lt;/p&gt;
+&lt;p&gt;But what if the column names don’t match? Let’s rename the state column in our state/region table for fun:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;state_regions_different &amp;lt;- state_regions %&amp;gt;% 
+  rename(ST = state)
+state_regions_different&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 51 x 2
+##    region    ST   
+##    &amp;lt;chr&amp;gt;     &amp;lt;chr&amp;gt;
+##  1 West      AK   
+##  2 South     AL   
+##  3 South     AR   
+##  4 West      AZ   
+##  5 West      CA   
+##  6 West      CO   
+##  7 Northeast CT   
+##  8 South     DC   
+##  9 South     DE   
+## 10 South     FL   
+## # … with 41 more rows&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Now watch what happens when we try to join the datasets:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;national_data %&amp;gt;% 
+  left_join(state_regions_different)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Error: `by` required, because the data sources have no common variables&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;There are no common variables, so we get an error. The &lt;code&gt;state&lt;/code&gt; and &lt;code&gt;ST&lt;/code&gt; columns really are common variables, but R doesn’t know that.&lt;/p&gt;
+&lt;p&gt;We have two options:&lt;/p&gt;
+&lt;ol style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;Rename one of the columns so it matches (either change &lt;code&gt;state&lt;/code&gt; to &lt;code&gt;ST&lt;/code&gt; or change &lt;code&gt;ST&lt;/code&gt; to &lt;code&gt;state&lt;/code&gt;)&lt;/li&gt;
+&lt;li&gt;Tell &lt;code&gt;left_join()&lt;/code&gt; which columns are the same&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;We can do option two by modifying the &lt;code&gt;by&lt;/code&gt; argument like so:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;national_data %&amp;gt;% 
+  left_join(state_regions_different, by = c(&amp;quot;state&amp;quot; = &amp;quot;ST&amp;quot;))&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 9 x 6
+##   state  year unemployment inflation population region
+##   &amp;lt;chr&amp;gt; &amp;lt;dbl&amp;gt;        &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt;      &amp;lt;dbl&amp;gt; &amp;lt;chr&amp;gt; 
+## 1 GA     2018          5         2          100 South 
+## 2 GA     2019          5.3       1.8        200 South 
+## 3 GA     2020          5.2       2.5        300 South 
+## 4 NC     2018          6.1       1.8        350 South 
+## 5 NC     2019          5.9       1.6        375 South 
+## 6 NC     2020          5.3       1.8        400 South 
+## 7 CO     2018          4.7       2.7        200 West  
+## 8 CO     2019          4.4       2.6        300 West  
+## 9 CO     2020          5.1       2.5        400 West&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;right_join&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;&lt;code&gt;right_join()&lt;/code&gt;&lt;/h2&gt;
+&lt;p&gt;Once again, &lt;a href=&#34;https://github.com/gadenbuie/tidyexplain#right-join&#34; target=&#34;_blank&#34;&gt;go to this page in a new tab&lt;/a&gt; and watch the animation.&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;right_join()&lt;/code&gt; works exactly like &lt;code&gt;left_join()&lt;/code&gt;, but in reverse. The &lt;em&gt;second&lt;/em&gt; dataset is the base data. Any rows in the second dataset that don’t match in the first will be kept, and any rows from the first that don’t match will get thrown away.&lt;/p&gt;
+&lt;p&gt;Watch what happens if we right join &lt;code&gt;national_data&lt;/code&gt; and &lt;code&gt;state_regions&lt;/code&gt;:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;national_data %&amp;gt;% 
+  right_join(state_regions, by = &amp;quot;state&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 57 x 6
+##    state  year unemployment inflation population region   
+##    &amp;lt;chr&amp;gt; &amp;lt;dbl&amp;gt;        &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt;      &amp;lt;dbl&amp;gt; &amp;lt;chr&amp;gt;    
+##  1 AK       NA         NA        NA           NA West     
+##  2 AL       NA         NA        NA           NA South    
+##  3 AR       NA         NA        NA           NA South    
+##  4 AZ       NA         NA        NA           NA West     
+##  5 CA       NA         NA        NA           NA West     
+##  6 CO     2018          4.7       2.7        200 West     
+##  7 CO     2019          4.4       2.6        300 West     
+##  8 CO     2020          5.1       2.5        400 West     
+##  9 CT       NA         NA        NA           NA Northeast
+## 10 DC       NA         NA        NA           NA South    
+## # … with 47 more rows&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Yikes. R kept all the rows in &lt;code&gt;state_regions&lt;/code&gt;, brought in the columns from &lt;code&gt;national_data&lt;/code&gt; and filled most of the new columns with &lt;code&gt;NA&lt;/code&gt;, and then repeated Colorado (and NC and GA) three times for each of the years from &lt;code&gt;national_data&lt;/code&gt;. That’s a mess.&lt;/p&gt;
+&lt;p&gt;If we reverse the order, we’ll get the correct merged data:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;state_regions %&amp;gt;% 
+  right_join(national_data, by = &amp;quot;state&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 9 x 6
+##   region state  year unemployment inflation population
+##   &amp;lt;chr&amp;gt;  &amp;lt;chr&amp;gt; &amp;lt;dbl&amp;gt;        &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt;      &amp;lt;dbl&amp;gt;
+## 1 South  GA     2018          5         2          100
+## 2 South  GA     2019          5.3       1.8        200
+## 3 South  GA     2020          5.2       2.5        300
+## 4 South  NC     2018          6.1       1.8        350
+## 5 South  NC     2019          5.9       1.6        375
+## 6 South  NC     2020          5.3       1.8        400
+## 7 West   CO     2018          4.7       2.7        200
+## 8 West   CO     2019          4.4       2.6        300
+## 9 West   CO     2020          5.1       2.5        400&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;I rarely use &lt;code&gt;right_join()&lt;/code&gt; because I find it more intuitive to just use &lt;code&gt;left_join()&lt;/code&gt; since in my head, I’m taking a dataset and stacking columns onto the end of it. If you want to right join instead, neat—just remember to order things correctly.&lt;/p&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Text</title>
+      <link>/lesson/13-lesson/</link>
+      <pubDate>Thu, 28 May 2020 00:00:00 +0000</pubDate>
+      <guid>/lesson/13-lesson/</guid>
+      <description>
+&lt;script src=&#34;/rmarkdown-libs/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
+
+
+&lt;p&gt;There’s no lesson for this session. In your exercise today you’ll visualize text data using &lt;a href=&#34;https://www.tidytextmining.com/&#34;&gt;&lt;strong&gt;tidytext&lt;/strong&gt;&lt;/a&gt;, and the best way to figure that out is to just play with data.&lt;/p&gt;
+&lt;p&gt;So head over to &lt;a href=&#34;/example/13-example/&#34;&gt;the example&lt;/a&gt; to see how it’s done, or &lt;a href=&#34;/assignment/13-exercise/&#34;&gt;the exercise&lt;/a&gt; to get started!&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Enhancing graphics</title>
+      <link>/lesson/14-lesson/</link>
+      <pubDate>Fri, 29 May 2020 00:00:00 +0000</pubDate>
+      <guid>/lesson/14-lesson/</guid>
+      <description>
+&lt;script src=&#34;/rmarkdown-libs/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
+
+
+&lt;p&gt;There’s no lesson for this session. In your exercise today you’ll export a plot from ggplot, open it in a vector editor like &lt;a href=&#34;https://www.adobe.com/products/illustrator.html&#34;&gt;Illustrator&lt;/a&gt;, &lt;a href=&#34;https://inkscape.org/&#34;&gt;Inkscape&lt;/a&gt;, or &lt;a href=&#34;https://www.designer.io/en/&#34;&gt;Gravit Designer&lt;/a&gt;, and make it extra pretty and well-designed. The best way to learn this is by actually doing it.&lt;/p&gt;
+&lt;p&gt;So head over to &lt;a href=&#34;/example/14-example/&#34;&gt;the example&lt;/a&gt; to see how it’s done, or &lt;a href=&#34;/assignment/14-exercise/&#34;&gt;the exercise&lt;/a&gt; to get started!&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Truth, beauty, and data revisited</title>
+      <link>/lesson/15-lesson/</link>
+      <pubDate>Mon, 01 Jun 2020 00:00:00 +0000</pubDate>
+      <guid>/lesson/15-lesson/</guid>
+      <description>
+&lt;script src=&#34;/rmarkdown-libs/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
+
+
+&lt;p&gt;There’s no lesson for this session. You made it to the end of the course! Congratulations!&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

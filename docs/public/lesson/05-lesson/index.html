@@ -1,0 +1,1035 @@
+<!DOCTYPE html>
+<html lang="en-us" 
+      xmlns:og="http://ogp.me/ns#" 
+      xmlns:fb="https://www.facebook.com/2008/fbml">
+
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="generator" content="Source Themes Academic 4.8.0">
+
+  
+
+  
+  
+  
+  
+  
+    
+    
+    
+  
+  
+
+  <meta name="author" content="Ben Bushong">
+
+  
+  
+  
+    
+  
+  <meta name="description" content="Complete ggplot themes Modifying plot elements with theme()  Deal with general plot elements Disable elements completely with element_blank() Deal with borders and backgrounds with element_rect() Deal with lines with element_line() Deal with text with element_text()  Important note about ordering Fonts Reusing themes Saving plots   Complete ggplot themes There are many built-in complete themes that have a good combination of all the different theme() options already set for you.">
+
+  
+  <link rel="alternate" hreflang="en-us" href="/lesson/05-lesson/">
+
+  
+
+
+  
+  
+  
+  <meta name="theme-color" content="#18453B">
+  
+
+  
+  
+  
+  <script src="/js/mathjax-config.js"></script>
+  
+
+  
+  
+  
+  
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/academicons/1.8.6/css/academicons.min.css" integrity="sha256-uFVgMKfistnJAfoCUQigIl+JfUaP47GrRKjf6CTPVmw=" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.0-1/css/all.min.css" integrity="sha256-4w9DunooKSr3MFXHXWyFER38WmPdm361bQS/2KUWZbU=" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+
+    
+    
+    
+      
+    
+    
+      
+      
+        
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/styles/github.min.css" crossorigin="anonymous" title="hl-light">
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/styles/dracula.min.css" crossorigin="anonymous" title="hl-dark" disabled>
+        
+      
+    
+
+    
+
+    
+
+    
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/lazysizes/5.1.2/lazysizes.min.js" integrity="sha256-Md1qLToewPeKjfAHU1zyPwOutccPAm5tahnaw7Osw0A=" crossorigin="anonymous" async></script>
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" integrity="" crossorigin="anonymous" async></script>
+      
+    
+      
+
+      
+      
+
+      
+    
+
+  
+
+  
+  
+  
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Fira+Sans+Condensed:400,400i,700,700i%7COverpass:400,400i,700,700i&display=swap">
+  
+
+  
+  
+  
+  
+  <link rel="stylesheet" href="/css/academic.css">
+
+  
+
+
+
+
+  
+
+
+  
+  
+
+  
+
+  <link rel="manifest" href="/index.webmanifest">
+  <link rel="icon" type="image/png" href="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_32x32_fill_lanczos_center_2.png">
+  <link rel="apple-touch-icon" type="image/png" href="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_192x192_fill_lanczos_center_2.png">
+
+  <link rel="canonical" href="/lesson/05-lesson/">
+
+  
+  
+  
+  
+  
+  
+  
+    
+  
+  
+  <meta property="twitter:card" content="summary_large_image">
+  
+  <meta property="twitter:site" content="@benbushong">
+  <meta property="twitter:creator" content="@benbushong">
+  
+  <meta property="og:site_name" content="Data Analytics">
+  <meta property="og:url" content="/lesson/05-lesson/">
+  <meta property="og:title" content="Themes | Data Analytics">
+  <meta property="og:description" content="Complete ggplot themes Modifying plot elements with theme()  Deal with general plot elements Disable elements completely with element_blank() Deal with borders and backgrounds with element_rect() Deal with lines with element_line() Deal with text with element_text()  Important note about ordering Fonts Reusing themes Saving plots   Complete ggplot themes There are many built-in complete themes that have a good combination of all the different theme() options already set for you."><meta property="og:image" content="/img/social-image.png">
+  <meta property="twitter:image" content="/img/social-image.png"><meta property="og:locale" content="en-us">
+  
+    
+      <meta property="article:published_time" content="2020-05-15T00:00:00&#43;00:00">
+    
+    <meta property="article:modified_time" content="2020-05-15T00:00:00&#43;00:00">
+  
+
+  
+
+
+
+  
+
+
+  
+
+
+  <link rel="shortcut icon" href="/favicon.ico" />
+  <link rel="apple-touch-icon-precomposed" sizes="57x57" href="/img/apple-touch-icon-57x57.png" />
+  <link rel="apple-touch-icon-precomposed" sizes="114x114" href="/img/apple-touch-icon-114x114.png" />
+  <link rel="apple-touch-icon-precomposed" sizes="72x72" href="/img/apple-touch-icon-72x72.png" />
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/img/apple-touch-icon-144x144.png" />
+  <link rel="apple-touch-icon-precomposed" sizes="120x120" href="/img/apple-touch-icon-120x120.png" />
+  <link rel="apple-touch-icon-precomposed" sizes="152x152" href="/img/apple-touch-icon-152x152.png" />
+  <link rel="icon" type="image/png" href="/img/favicon-32x32.png" sizes="32x32" />
+  <link rel="icon" type="image/png" href="/img/favicon-16x16.png" sizes="16x16" />
+  <meta name="application-name" content="SSC 442: Data Analytics" />
+  <meta name="msapplication-TileColor" content="#FFFFFF" />
+  <meta name="msapplication-TileImage" content="/img/mstile-144x144.png" />
+
+
+  <title>Themes | Data Analytics</title>
+
+</head>
+
+
+<body id="top" data-spy="scroll" data-offset="70"
+    data-target="#TableOfContents"
+    >
+
+    <aside class="search-results" id="search">
+  <div class="container">
+    <section class="search-header">
+
+      <div class="row no-gutters justify-content-between mb-3">
+        <div class="col-6">
+          <h1>Search</h1>
+        </div>
+        <div class="col-6 col-search-close">
+          <a class="js-search" href="#"><i class="fas fa-times-circle text-muted" aria-hidden="true"></i></a>
+        </div>
+      </div>
+
+      <div id="search-box">
+        
+        
+        
+      </div>
+
+    </section>
+    <section class="section-search-results">
+
+      <div id="search-hits">
+        
+      </div>
+
+    </section>
+  </div>
+</aside>
+
+
+    
+
+
+
+
+
+
+
+<nav class="navbar navbar-expand-lg navbar-light compensate-for-scrollbar" id="navbar-main">
+  <div class="container">
+
+    
+    <div class="d-none d-lg-inline-flex">
+      <a class="navbar-brand" href="/">Data Analytics</a>
+    </div>
+    
+
+    
+    <button type="button" class="navbar-toggler" data-toggle="collapse"
+            data-target="#navbar-content" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
+    <span><i class="fas fa-bars"></i></span>
+    </button>
+    
+
+    
+    <div class="navbar-brand-mobile-wrapper d-inline-flex d-lg-none">
+      <a class="navbar-brand" href="/">Data Analytics</a>
+    </div>
+    
+
+    
+    
+    <div class="navbar-collapse main-menu-item collapse justify-content-end" id="navbar-content">
+
+      
+      <ul class="navbar-nav d-md-inline-flex">
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/syllabus/"><span>Syllabus</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/schedule/"><span>Schedule</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/content/"><span>Content</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link  active" href="/lesson/"><span>Lessons</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/assignment/"><span>Assignments</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+            
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="https://gsudatavizm2020.slack.com" target="_blank" rel="noopener"><span><i class="fab fa-slack"></i></span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+            
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="https://rstudio.cloud/" target="_blank" rel="noopener"><span><i class="fab fa-r-project"></i></span></a>
+        </li>
+
+        
+        
+
+      
+
+        
+      </ul>
+    </div>
+
+    <ul class="nav-icons navbar-nav flex-row ml-auto d-flex pl-md-2">
+      
+
+      
+
+      
+
+    </ul>
+
+  </div>
+</nav>
+
+
+    
+
+<div class="container-fluid docs">
+    <div class="row flex-xl-nowrap">
+        <div class="col-12 col-md-3 col-xl-2 docs-sidebar">
+            
+
+
+
+
+
+  
+    
+  
+
+
+
+
+<form class="docs-search d-flex align-items-center">
+  <button class="btn docs-toggle d-md-none p-0 mr-3" type="button" data-toggle="collapse" data-target="#docs-nav" aria-controls="docs-nav" aria-expanded="false" aria-label="Toggle section navigation">
+    <span><i class="fas fa-bars"></i></span>
+  </button>
+
+  
+</form>
+
+<nav class="collapse docs-links" id="docs-nav">
+  
+
+  
+  
+  
+  
+  <div class="docs-toc-item">
+    <a class="docs-toc-link" href="/lesson/">Overview</a>
+    <ul class="nav docs-sidenav">
+      
+      <li >
+        <a href="/lesson/">Interactive lessons</a>
+      </li>
+      
+    </ul>
+    
+
+  </div>
+  
+  <div class="docs-toc-item">
+    <a class="docs-toc-link" href="/lesson/01-lesson/">Lessons</a>
+    <ul class="nav docs-sidenav">
+      
+      <li >
+        <a href="/lesson/01-lesson/">1: Introduction to R and the tidyverse</a>
+      </li>
+      
+      <li >
+        <a href="/lesson/02-lesson/">2: Graphic design</a>
+      </li>
+      
+      <li >
+        <a href="/lesson/03-lesson/">3: Mapping data to graphics</a>
+      </li>
+      
+      <li >
+        <a href="/lesson/04-lesson/">4: Amounts and proportions</a>
+      </li>
+      
+      <li class="active">
+        <a href="/lesson/05-lesson/">5: Themes</a>
+      </li>
+      
+      <li >
+        <a href="/lesson/06-lesson/">6: Uncertainty</a>
+      </li>
+      
+      <li >
+        <a href="/lesson/07-lesson/">7: Relationships</a>
+      </li>
+      
+      <li >
+        <a href="/lesson/08-lesson/">8: Comparisons</a>
+      </li>
+      
+      <li >
+        <a href="/lesson/09-lesson/">9: Annotations</a>
+      </li>
+      
+      <li >
+        <a href="/lesson/10-lesson/">10: Interactivity</a>
+      </li>
+      
+      <li >
+        <a href="/lesson/11-lesson/">11: Time</a>
+      </li>
+      
+      <li >
+        <a href="/lesson/12-lesson/">12: Space</a>
+      </li>
+      
+      <li >
+        <a href="/lesson/13-lesson/">13: Text</a>
+      </li>
+      
+      <li >
+        <a href="/lesson/14-lesson/">14: Enhancing graphics</a>
+      </li>
+      
+      <li >
+        <a href="/lesson/15-lesson/">15: Truth, beauty, and data revisited</a>
+      </li>
+      
+    </ul>
+    
+
+  </div>
+  
+  
+</nav>
+
+        </div>
+
+        
+
+        <main class="col-12 col-md-9 col-xl-8 py-md-3 pl-md-5 docs-content" role="main">
+
+            <article class="article">
+
+                <div class="docs-article-container">
+                    <h1>Themes</h1>
+
+                    
+
+                    
+
+                    
+                    <div class="due-date p-2 mb-3 bg-class text-white">
+                        Lesson for Friday, May 15, 2020
+                    </div>
+                    
+
+                    <div class="article-style">
+                        
+<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+
+<div id="TOC">
+<ul>
+<li><a href="#complete-ggplot-themes">Complete ggplot themes</a></li>
+<li><a href="#modifying-plot-elements-with-theme">Modifying plot elements with <code>theme()</code></a>
+<ul>
+<li><a href="#deal-with-general-plot-elements">Deal with general plot elements</a></li>
+<li><a href="#disable-elements-completely-with-element_blank">Disable elements completely with <code>element_blank()</code></a></li>
+<li><a href="#deal-with-borders-and-backgrounds-with-element_rect">Deal with borders and backgrounds with <code>element_rect()</code></a></li>
+<li><a href="#deal-with-lines-with-element_line">Deal with lines with <code>element_line()</code></a></li>
+<li><a href="#deal-with-text-with-element_text">Deal with text with <code>element_text()</code></a></li>
+</ul></li>
+<li><a href="#important-note-about-ordering">Important note about ordering</a></li>
+<li><a href="#fonts">Fonts</a></li>
+<li><a href="#reusing-themes">Reusing themes</a></li>
+<li><a href="#saving-plots">Saving plots</a></li>
+</ul>
+</div>
+
+<div id="complete-ggplot-themes" class="section level2">
+<h2>Complete ggplot themes</h2>
+<p>There are many built-in complete themes that have a good combination of all the different <code>theme()</code> options already set for you. By default, ggplot uses <code>theme_gray()</code> (also spelled <code>theme_grey()</code> for UK English; because the first developer of ggplot (Hadley Wickham) is from New Zealand, British spelling works throughout (e.g. you can use <code>colour</code> instead of <code>color</code>))</p>
+<div class="puzzle">
+<p><strong>Your turn</strong>: Add <code>theme_minimal()</code> to this plot:</p>
+</div>
+<iframe style="margin:0 auto; min-width: 100%;" id="learnr-05-lesson-theme1" class="interactive" src="https://andrewheiss.shinyapps.io/datavizm20_05-themes-1/" scrolling="no" frameborder="no" onload='iFrameResize({}, "#learnr-05-lesson-theme1")'></iframe>
+
+<p>Hopefully that was easy!</p>
+<p>If you look at <a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">the documentation for the different theme functions</a>, you’ll notice that there are a few optional arguments, like <code>base_size</code> and <code>base_family</code>. The <code>base_size</code> argument changes the base font size for the text in the plot, and it is 11 by default. Changing it to something like 20 will not make all the text in the plot be sized at 20—functions like <code>theme_minimal()</code> set the size of plot elements based on the <code>base_size</code>. For instance, in <code>theme_minimal()</code>, the plot title is set to be 120% of <code>base_size</code>, while the caption is 80%. Changing <code>base_size</code> will resize all the different elements accordingly.</p>
+<div class="puzzle">
+<p><strong>Your turn</strong>: Modify this plot to use <code>theme_minimal()</code> with a base size of 16:</p>
+</div>
+<iframe style="margin:0 auto; min-width: 100%;" id="learnr-05-lesson-theme2" class="interactive" src="https://andrewheiss.shinyapps.io/datavizm20_05-themes-2/" scrolling="no" frameborder="no" onload='iFrameResize({}, "#learnr-05-lesson-theme2")'></iframe>
+
+<p>Hopefully that was also fairly straightforward!</p>
+</div>
+<div id="modifying-plot-elements-with-theme" class="section level2">
+<h2>Modifying plot elements with <code>theme()</code></h2>
+<p>Using a complete theme like <code>theme_minimal()</code> or <code>theme_bw()</code> is a great starting point for getting a nice, clean, well designed plot. You’ll often need to make adjustments to smaller, more specific parts of the plot though. To do this, you can use the <code>theme()</code> function.</p>
+<p><code>theme()</code> is a massive function and has perhaps the most possible arguments of any function in R. It is impossible to remember everything it can possibly do. Fortunately its documentation is incredible. Run <code>?theme</code> in your R console to see the help page, or <a href="https://ggplot2.tidyverse.org/reference/theme.html">go to this page online</a>.</p>
+<div id="deal-with-general-plot-elements" class="section level3">
+<h3>Deal with general plot elements</h3>
+<p>A few arguments to <code>theme()</code> don’t use any special function—you can just specify settings with text like <code>"bottom"</code> or <code>"right"</code></p>
+<div class="puzzle">
+<p><strong>Your turn</strong>: Look at the <a href="https://ggplot2.tidyverse.org/reference/theme.html">documentation for <code>theme()</code> online</a>. Make this plot’s legend appear on the bottom instead of the left.</p>
+</div>
+<iframe style="margin:0 auto; min-width: 100%;" id="learnr-05-lesson-theme3" class="interactive" src="https://andrewheiss.shinyapps.io/datavizm20_05-themes-3/" scrolling="no" frameborder="no" onload='iFrameResize({}, "#learnr-05-lesson-theme3")'></iframe>
+
+</div>
+<div id="disable-elements-completely-with-element_blank" class="section level3">
+<h3>Disable elements completely with <code>element_blank()</code></h3>
+<p>Any plot element can be disabled by using <code>element_blank()</code>. For instance, if you want to remove the axis ticks, you can use <code>theme(axis.ticks = element_blank())</code>.</p>
+<div class="puzzle">
+<p><strong>Your turn</strong>: Look at the <a href="https://ggplot2.tidyverse.org/reference/theme.html">documentation for <code>theme()</code> online</a>. Disable the panel grid in this plot.</p>
+</div>
+<iframe style="margin:0 auto; min-width: 100%;" id="learnr-05-lesson-theme4" class="interactive" src="https://andrewheiss.shinyapps.io/datavizm20_05-themes-4/" scrolling="no" frameborder="no" onload='iFrameResize({}, "#learnr-05-lesson-theme4")'></iframe>
+
+<p>You can also target more specific plot elements. You can specify something like <code>axis.text</code>, which applies to all axis text, or you can use <code>axis.text.y</code> to only target the text on the y-axis.</p>
+<div class="puzzle">
+<p><strong>Your turn</strong>: Look at the <a href="https://ggplot2.tidyverse.org/reference/theme.html">documentation for <code>theme()</code> online</a>. Make the following changes to this plot:</p>
+<ul>
+<li>Disable the major panel grid for the x-axis</li>
+<li>Disable the minor panel grid for the x-axis</li>
+<li>Disable the minor panel grid for the y-axis.</li>
+</ul>
+<p>You should only have three horizontal lines for the grid.</p>
+</div>
+<iframe style="margin:0 auto; min-width: 100%;" id="learnr-05-lesson-theme5" class="interactive" src="https://andrewheiss.shinyapps.io/datavizm20_05-themes-5/" scrolling="no" frameborder="no" onload='iFrameResize({}, "#learnr-05-lesson-theme5")'></iframe>
+
+<hr />
+<p>Almost every other plot element fits into one of three categories: a rectangle, a line, or text. Changing the settings on these elements requires specific functions that correspond to these categories.</p>
+</div>
+<div id="deal-with-borders-and-backgrounds-with-element_rect" class="section level3">
+<h3>Deal with borders and backgrounds with <code>element_rect()</code></h3>
+<p>Things like the plot background or the panel background or the legend background are rectangles and can be manipulated with <code>element_rect()</code>. If you want the legend box to be yellow with a thin black border, you would use <code>theme(legend.box.background = element_rect(fill = "yellow", color = "black", size = 1)</code>.</p>
+<div class="puzzle">
+<p><strong>Your turn</strong>: Look at the <a href="https://ggplot2.tidyverse.org/reference/theme.html">documentation for <code>theme()</code></a> and the <a href="https://ggplot2.tidyverse.org/reference/element.html">documentation for <code>element()</code></a> online. Make the following changes to this plot:</p>
+<ul>
+<li>Fill the plot background with <span style="color: #F2D8CE">#F2D8CE</span></li>
+<li>Fill the panel background with <span style="color: #608BA6">#608BA6</span>, and make the border <span style="color: #184759">#184759</span> with size = 5</li>
+</ul>
+<p>This will be a fairly ugly plot.</p>
+</div>
+<iframe style="margin:0 auto; min-width: 100%;" id="learnr-05-lesson-theme6" class="interactive" src="https://andrewheiss.shinyapps.io/datavizm20_05-themes-6/" scrolling="no" frameborder="no" onload='iFrameResize({}, "#learnr-05-lesson-theme6")'></iframe>
+
+</div>
+<div id="deal-with-lines-with-element_line" class="section level3">
+<h3>Deal with lines with <code>element_line()</code></h3>
+<p>Things like the panel grid, tick marks, and axis lines are all lines and can be manipulated with <code>element_line()</code>. If you want the x-axis line to be a dotted orange like, you would use <code>theme(axis.line.x = element_line(color = "orange", linetype = "dotted")</code>.</p>
+<div class="puzzle">
+<p><strong>Your turn</strong>: Look at the <a href="https://ggplot2.tidyverse.org/reference/theme.html">documentation for <code>theme()</code></a> and the <a href="https://ggplot2.tidyverse.org/reference/element.html">documentation for <code>element()</code></a> online. Make the following changes to this plot:</p>
+<ul>
+<li>Make the major panel gridlines blue and dashed with size = 1</li>
+</ul>
+<p>This will also be a fairly ugly plot.</p>
+</div>
+<iframe style="margin:0 auto; min-width: 100%;" id="learnr-05-lesson-theme7" class="interactive" src="https://andrewheiss.shinyapps.io/datavizm20_05-themes-7/" scrolling="no" frameborder="no" onload='iFrameResize({}, "#learnr-05-lesson-theme7")'></iframe>
+
+</div>
+<div id="deal-with-text-with-element_text" class="section level3">
+<h3>Deal with text with <code>element_text()</code></h3>
+<p>Finally, anything with text can be manipulated with <code>element_text()</code>, and you can specify all sorts of things, including font family (<code>family</code>), font weight (<code>face</code>), color (<code>color</code>), horizontal justification (<code>hjust</code>), angle (<code>angle</code>), and a bunch of other options. If you want the x-axis text to be italicized and rotated at a 45º angle, you would use <code>theme(axis.text.x = element_text(face = "italic", angle = 45))</code>.</p>
+<div class="puzzle">
+<p><strong>Your turn</strong>: Look at the <a href="https://ggplot2.tidyverse.org/reference/theme.html">documentation for <code>theme()</code></a> and the <a href="https://ggplot2.tidyverse.org/reference/element.html">documentation for <code>element()</code></a> online. Make the following changes to this plot:</p>
+<ul>
+<li>Make the y-axis text italic</li>
+<li>Make the plot title right aligned, bold, and colored with <span style="color: #8C7811">#8C7811</span></li>
+<li>Make the plot subtitle right aligned</li>
+</ul>
+</div>
+<iframe style="margin:0 auto; min-width: 100%;" id="learnr-05-lesson-theme8" class="interactive" src="https://andrewheiss.shinyapps.io/datavizm20_05-themes-8/" scrolling="no" frameborder="no" onload='iFrameResize({}, "#learnr-05-lesson-theme8")'></iframe>
+
+</div>
+</div>
+<div id="important-note-about-ordering" class="section level2">
+<h2>Important note about ordering</h2>
+<p>Things like <code>theme_grey()</code> or <code>theme_minimal()</code> are really just collections of changes to <code>theme()</code>, so the order is important when using a complete theme. If you do something like this to turn off the gridlines in the plot panel:</p>
+<pre class="r"><code>ggplot(...) +
+  geom_point(...) +
+  theme(panel.grid = element_blank()) +
+  theme_bw()</code></pre>
+<p>…you’ll still have panel gridlines! That’s because <code>theme_bw()</code> turns them on, and you typed it after you turned it off. If you want to use both <code>theme_bw()</code> and remove the gridlines, you need to make sure any theme adjustments come after <code>theme_bw()</code>:</p>
+<pre class="r"><code>ggplot(...) +
+  geom_point(...) +
+  theme_bw() +
+  theme(panel.grid = element_blank())</code></pre>
+</div>
+<div id="fonts" class="section level2">
+<h2>Fonts</h2>
+<p>You can use <code>theme()</code> to change the fonts as well, though sometimes it’s a little tricky to get R to see the fonts on your computer—especially if you use Windows. <a href="https://www.andrewheiss.com/blog/2017/09/27/working-with-r-cairo-graphics-custom-fonts-and-ggplot/">This detailed blog post</a> explains how to work with custom fonts in ggplot and shows how to get it set up on Windows. It should Just Work™ on macOS.</p>
+<p>In short, as long as you load the fonts correctly, you can specify different fonts either in a complete theme like <code>theme_minimal(base_family = "Comic Sans MS")</code> or in <code>theme()</code> like <code>theme(plot.title = element_text(family = "Papyrus"))</code>.</p>
+</div>
+<div id="reusing-themes" class="section level2">
+<h2>Reusing themes</h2>
+<p>If you want to repeat specific theme settings throughout a document, you can save yourself a ton of typing by storing the results of <code>theme()</code> to an object and reusing it. For instance, suppose you want your plots to be based on theme_minimal, have right aligned title and subtitle text, have the legend at the bottom, and have no minor gridlines. You can save all of that into an object named <code>my_neato_theme</code> or something, and then reuse it:</p>
+<pre class="r"><code>my_neato_theme &lt;- theme_minimal() +
+  theme(plot.title = element_text(hjust = 1),
+        plot.subtitle = element_text(hjust = 1),
+        legend.position = &quot;bottom&quot;,
+        panel.grid.minor = element_blank())
+
+# Make one plot
+ggplot(data = mpg,
+       mapping = aes(x = displ, y = hwy, color = drv)) +
+  geom_point(size = 3) +
+  labs(title = &quot;Engine displacement and highway MPG&quot;,
+       subtitle = &quot;Heavier cars get worse mileage&quot;) +
+  my_neato_theme</code></pre>
+<p><img src="/lesson/05-lesson_files/figure-html/saved-theme-1.png" width="576" style="display: block; margin: auto;" /></p>
+<pre class="r"><code># Make another plot
+ggplot(data = mpg,
+       mapping = aes(x = displ, y = hwy, color = cty)) +
+  geom_point(size = 3) +
+  labs(title = &quot;Engine displacement and highway MPG&quot;,
+       subtitle = &quot;Points colored by city MPG&quot;) +
+  my_neato_theme</code></pre>
+<p><img src="/lesson/05-lesson_files/figure-html/saved-theme-2.png" width="576" style="display: block; margin: auto;" /></p>
+</div>
+<div id="saving-plots" class="section level2">
+<h2>Saving plots</h2>
+<p>So far, all your plots have ended up either in RStudio or in a knitted HTML, Word, or PDF document. But what if you want to save just the plot to your computer so you can send it out to the world?! You could take a screenshot, but that won’t provide the highest resolution, and that will only save the plot as a bitmap-based PNG, not an infinitely resizable vector-based PDF!</p>
+<p>Fortunately it’s pretty easy to save a plot using the special <code>ggsave()</code> function. You can specify whatever dimensions you want and whatever file type you want and save the standalone plot to your computer. You should look at the <a href="https://ggplot2.tidyverse.org/reference/ggsave.html">documentation for <code>ggsave()</code></a> for complete details of all the different options and arguments it can take. Typically, you do something like this.</p>
+<p>First create a plot and store it as an object. We haven’t done that yet in this lesson—so far we’ve just run <code>ggplot()</code> and seen the output immediately. If you save the output of <code>ggplot()</code> to an object, you actually won’t see anything until you run the name of the object.</p>
+<pre class="r"><code>a_cool_plot &lt;- ggplot(data = mpg,
+                      mapping = aes(x = displ, y = hwy, color = drv)) +
+  geom_point(size = 3) +
+  labs(title = &quot;Engine displacement and highway MPG&quot;,
+       subtitle = &quot;Heavier cars get worse mileage&quot;)
+
+# Make sure you run this so you can see the plot
+a_cool_plot</code></pre>
+<p><img src="/lesson/05-lesson_files/figure-html/ggsave-example-1.png" width="576" style="display: block; margin: auto;" /></p>
+<p>Next you can feed your saved plot to <code>ggsave()</code> to save it. It will automatically determine how to save it based on the filename you provide. If you tell it to be <code>something.png</code>, R will make a PNG; if you tell it to be <code>something.pdf</code>, R will make a PDF, and so on. Common types are PDF, PNG, JPEG (ew though), SVG, TIFF, and others.</p>
+<p>You can also save the plot as multiple files. I typically make PNG and PDF versions of any plots I export like so:</p>
+<pre class="r"><code>ggsave(filename = &quot;a_cool_plot.pdf&quot;, plot = a_cool_plot,
+       width = 6, height = 4.5, units = &quot;in&quot;)
+
+ggsave(filename = &quot;a_cool_plot.png&quot;, plot = a_cool_plot,
+       width = 6, height = 4.5, units = &quot;in&quot;)</code></pre>
+<p>From a file management perspective, it often makes sense to store all your output in a separate folder in your project, like <code>output</code> or <code>figures</code> or something. If you want to put saved images in a subfolder, include the name in the file name:</p>
+<pre class="r"><code>ggsave(filename = &quot;figures/a_cool_plot.png&quot;, plot = a_cool_plot,
+       width = 6, height = 4.5, units = &quot;in&quot;)</code></pre>
+<p>And finally, if you’re using custom fonts, you need to add one bit of wizardry to get the fonts to embed correctly in PDFs. This is something you just have to memorize or copy and paste a lot—if you want to know the full details, <a href="https://www.andrewheiss.com/blog/2017/09/27/working-with-r-cairo-graphics-custom-fonts-and-ggplot/">see this blog post</a>. In short, R’s default PDF writer doesn’t know how to embed fonts and will panic if you make it try. R can use a different PDF-writing engine named Cairo that embeds fonts just fine, though, so you need to tell <code>ggsave()</code> to use it:</p>
+<pre class="r"><code>ggsave(filename = &quot;figures/a_cool_plot.pdf&quot;, plot = a_cool_plot,
+       width = 6, height = 4.5, units = &quot;in&quot;, device = cairo_pdf)</code></pre>
+</div>
+
+                    </div>
+
+                    
+
+
+
+                    
+                </div>
+
+                <div class="body-footer">
+                    <p>Last updated on May 15, 2020</p>
+
+                    
+
+
+                    
+
+                </div>
+
+            </article>
+
+            <footer>
+    <hr>
+
+    <div class="row course-info">
+        <div class="col-md-7">
+            <p>
+                <strong>SSC 442: Data Analytics (Fall Semester 2020)</strong><br>
+
+                <a href="https://www.msu.edu" target="_blank" rel="noopener">Michigan State University</a> &emsp;&emsp;
+                <a href="https://socialscience.msu.edu/" target="_blank" rel="noopener">College of Social Science</a>
+            </p>
+
+            <p>
+                <a href="https://www.benbushong.com" target="_blank" rel="noopener"><i class="fas fa-user"></i>
+                    Prof. Ben Bushjong</a> &emsp;&emsp;
+                <a href="mailto:bbushong@msu.edu"><i class="fas fa-envelope"></i>
+                    bbushong@msu.edu</a>
+            </p>
+
+            <p>
+                <i class="far fa-calendar-alt"></i> Tuesday and Thursday &emsp;&emsp;
+                <i class="far fa-clock"></i> Whenever 
+                
+            </p>
+        </div>
+
+        <div class="col-md-5 credits">
+            <p>All content licensed under a <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" rel="noopener">Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International License</a>.</p>
+            
+            <p>Content <i class="fab fa-creative-commons"></i> 2020 <a href="https://www.benbushong.com" target="_blank" rel="noopener">Ben Bushong</a></p>
+        
+            <p>This site created with the <a href="https://sourcethemes.com/academic/" target="_blank" rel="noopener">Academic theme</a> in <a href="https://bookdown.org/yihui/blogdown/" target="_blank" rel="noopener">blogdown</a> and <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a>. </p>
+            
+            <p><a href="https://github.com/" target="_blank" rel="noopener"><i class="fab fa-github"></i> View the source at GitHub.</a></p>
+        </div>
+    </div>
+</footer>
+
+
+        </main>
+    </div>
+</div>
+
+        
+
+    
+    
+    
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/4.1.4/imagesloaded.pkgd.min.js" integrity="sha256-lqvxZrPLtfffUl2G/e7szqSvPBILGbwmsGE1MKlOi0Q=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.6/isotope.pkgd.min.js" integrity="sha256-CBrpuqrMhXwcLLUd5tvQ4euBHCdh7wGlDfNz8vbu/iI=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+
+      
+
+      
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/highlight.min.js" integrity="sha256-eOgo0OtLL4cdq7RdwRUiGKLX9XsIJ7nGhWEKbohmVAQ=" crossorigin="anonymous"></script>
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/languages/r.min.js"></script>
+        
+      
+
+    
+
+    
+    
+
+    
+    
+    <script>const code_highlighting = true;</script>
+    
+
+    
+    
+    <script>const isSiteThemeDark = false;</script>
+    
+
+    
+
+    
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/anchor-js/4.1.1/anchor.min.js" integrity="sha256-pB/deHc9CGfFpJRjC43imB29Rse8tak+5eXqntO94ck=" crossorigin="anonymous"></script>
+    <script>
+      anchors.add();
+    </script>
+    
+
+    
+
+    
+    
+
+    
+    
+
+    
+    
+
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <script src="/js/academic.min.6f7ce8be710290b8c431bbc97f405d15.js"></script>
+
+    
+<script src="https://cdnjs.cloudflare.com/ajax/libs/iframe-resizer/3.5.16/iframeResizer.min.js" type="text/javascript"></script>
+
+
+
+
+    
+    
+
+    
+<div id="modal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Cite</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <pre><code class="tex hljs"></code></pre>
+      </div>
+      <div class="modal-footer">
+        <a class="btn btn-outline-primary my-1 js-copy-cite" href="#" target="_blank">
+          <i class="fas fa-copy"></i> Copy
+        </a>
+        <a class="btn btn-outline-primary my-1 js-download-cite" href="#" target="_blank">
+          <i class="fas fa-download"></i> Download
+        </a>
+        <div id="modal-error"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+
+</html>

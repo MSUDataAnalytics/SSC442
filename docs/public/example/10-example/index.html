@@ -1,0 +1,1019 @@
+<!DOCTYPE html>
+<html lang="en-us" 
+      xmlns:og="http://ogp.me/ns#" 
+      xmlns:fb="https://www.facebook.com/2008/fbml">
+
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="generator" content="Source Themes Academic 4.8.0">
+
+  
+
+  
+  
+  
+  
+  
+    
+    
+    
+  
+  
+
+  <meta name="author" content="Ben Bushong">
+
+  
+  
+  
+    
+  
+  <meta name="description" content="Live coding example Complete code  Get and clean data Creating a basic interactive chart Modifying the tooltip Including more information in the tooltip Making a dashboard with flexdashboard    For this example we’ll use data from the World Bank once again, which we download using the WDI package.
+If you want to skip the data downloading, you can download the data below (you’ll likely need to right click and choose “Save Link As…”):">
+
+  
+  <link rel="alternate" hreflang="en-us" href="/example/10-example/">
+
+  
+
+
+  
+  
+  
+  <meta name="theme-color" content="#18453B">
+  
+
+  
+  
+  
+  <script src="/js/mathjax-config.js"></script>
+  
+
+  
+  
+  
+  
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/academicons/1.8.6/css/academicons.min.css" integrity="sha256-uFVgMKfistnJAfoCUQigIl+JfUaP47GrRKjf6CTPVmw=" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.0-1/css/all.min.css" integrity="sha256-4w9DunooKSr3MFXHXWyFER38WmPdm361bQS/2KUWZbU=" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+
+    
+    
+    
+      
+    
+    
+      
+      
+        
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/styles/github.min.css" crossorigin="anonymous" title="hl-light">
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/styles/dracula.min.css" crossorigin="anonymous" title="hl-dark" disabled>
+        
+      
+    
+
+    
+
+    
+
+    
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/lazysizes/5.1.2/lazysizes.min.js" integrity="sha256-Md1qLToewPeKjfAHU1zyPwOutccPAm5tahnaw7Osw0A=" crossorigin="anonymous" async></script>
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" integrity="" crossorigin="anonymous" async></script>
+      
+    
+      
+
+      
+      
+
+      
+    
+
+  
+
+  
+  
+  
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Fira+Sans+Condensed:400,400i,700,700i%7COverpass:400,400i,700,700i&display=swap">
+  
+
+  
+  
+  
+  
+  <link rel="stylesheet" href="/css/academic.css">
+
+  
+
+
+
+
+  
+
+
+  
+  
+
+  
+
+  <link rel="manifest" href="/index.webmanifest">
+  <link rel="icon" type="image/png" href="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_32x32_fill_lanczos_center_2.png">
+  <link rel="apple-touch-icon" type="image/png" href="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_192x192_fill_lanczos_center_2.png">
+
+  <link rel="canonical" href="/example/10-example/">
+
+  
+  
+  
+  
+  
+  
+  
+    
+  
+  
+  <meta property="twitter:card" content="summary_large_image">
+  
+  <meta property="twitter:site" content="@benbushong">
+  <meta property="twitter:creator" content="@benbushong">
+  
+  <meta property="og:site_name" content="Data Analytics">
+  <meta property="og:url" content="/example/10-example/">
+  <meta property="og:title" content="Interactivity | Data Analytics">
+  <meta property="og:description" content="Live coding example Complete code  Get and clean data Creating a basic interactive chart Modifying the tooltip Including more information in the tooltip Making a dashboard with flexdashboard    For this example we’ll use data from the World Bank once again, which we download using the WDI package.
+If you want to skip the data downloading, you can download the data below (you’ll likely need to right click and choose “Save Link As…”):"><meta property="og:image" content="/img/social-image.png">
+  <meta property="twitter:image" content="/img/social-image.png"><meta property="og:locale" content="en-us">
+  
+    
+      <meta property="article:published_time" content="2020-05-22T00:00:00&#43;00:00">
+    
+    <meta property="article:modified_time" content="2020-05-22T00:00:00&#43;00:00">
+  
+
+  
+
+
+
+  
+
+
+  
+
+
+  <link rel="shortcut icon" href="/favicon.ico" />
+  <link rel="apple-touch-icon-precomposed" sizes="57x57" href="/img/apple-touch-icon-57x57.png" />
+  <link rel="apple-touch-icon-precomposed" sizes="114x114" href="/img/apple-touch-icon-114x114.png" />
+  <link rel="apple-touch-icon-precomposed" sizes="72x72" href="/img/apple-touch-icon-72x72.png" />
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/img/apple-touch-icon-144x144.png" />
+  <link rel="apple-touch-icon-precomposed" sizes="120x120" href="/img/apple-touch-icon-120x120.png" />
+  <link rel="apple-touch-icon-precomposed" sizes="152x152" href="/img/apple-touch-icon-152x152.png" />
+  <link rel="icon" type="image/png" href="/img/favicon-32x32.png" sizes="32x32" />
+  <link rel="icon" type="image/png" href="/img/favicon-16x16.png" sizes="16x16" />
+  <meta name="application-name" content="SSC 442: Data Analytics" />
+  <meta name="msapplication-TileColor" content="#FFFFFF" />
+  <meta name="msapplication-TileImage" content="/img/mstile-144x144.png" />
+
+
+  <title>Interactivity | Data Analytics</title>
+
+</head>
+
+
+<body id="top" data-spy="scroll" data-offset="70"
+    data-target="#TableOfContents"
+    >
+
+    <aside class="search-results" id="search">
+  <div class="container">
+    <section class="search-header">
+
+      <div class="row no-gutters justify-content-between mb-3">
+        <div class="col-6">
+          <h1>Search</h1>
+        </div>
+        <div class="col-6 col-search-close">
+          <a class="js-search" href="#"><i class="fas fa-times-circle text-muted" aria-hidden="true"></i></a>
+        </div>
+      </div>
+
+      <div id="search-box">
+        
+        
+        
+      </div>
+
+    </section>
+    <section class="section-search-results">
+
+      <div id="search-hits">
+        
+      </div>
+
+    </section>
+  </div>
+</aside>
+
+
+    
+
+
+
+
+
+
+
+<nav class="navbar navbar-expand-lg navbar-light compensate-for-scrollbar" id="navbar-main">
+  <div class="container">
+
+    
+    <div class="d-none d-lg-inline-flex">
+      <a class="navbar-brand" href="/">Data Analytics</a>
+    </div>
+    
+
+    
+    <button type="button" class="navbar-toggler" data-toggle="collapse"
+            data-target="#navbar-content" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
+    <span><i class="fas fa-bars"></i></span>
+    </button>
+    
+
+    
+    <div class="navbar-brand-mobile-wrapper d-inline-flex d-lg-none">
+      <a class="navbar-brand" href="/">Data Analytics</a>
+    </div>
+    
+
+    
+    
+    <div class="navbar-collapse main-menu-item collapse justify-content-end" id="navbar-content">
+
+      
+      <ul class="navbar-nav d-md-inline-flex">
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/syllabus/"><span>Syllabus</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/schedule/"><span>Schedule</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/content/"><span>Content</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/lesson/"><span>Lessons</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/assignment/"><span>Assignments</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+            
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="https://gsudatavizm2020.slack.com" target="_blank" rel="noopener"><span><i class="fab fa-slack"></i></span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+            
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="https://rstudio.cloud/" target="_blank" rel="noopener"><span><i class="fab fa-r-project"></i></span></a>
+        </li>
+
+        
+        
+
+      
+
+        
+      </ul>
+    </div>
+
+    <ul class="nav-icons navbar-nav flex-row ml-auto d-flex pl-md-2">
+      
+
+      
+
+      
+
+    </ul>
+
+  </div>
+</nav>
+
+
+    
+
+<div class="container-fluid docs">
+    <div class="row flex-xl-nowrap">
+        <div class="col-12 col-md-3 col-xl-2 docs-sidebar">
+            
+
+
+
+
+
+  
+    
+  
+
+
+
+
+<form class="docs-search d-flex align-items-center">
+  <button class="btn docs-toggle d-md-none p-0 mr-3" type="button" data-toggle="collapse" data-target="#docs-nav" aria-controls="docs-nav" aria-expanded="false" aria-label="Toggle section navigation">
+    <span><i class="fas fa-bars"></i></span>
+  </button>
+
+  
+</form>
+
+<nav class="collapse docs-links" id="docs-nav">
+  
+
+  
+  
+  
+  
+  <div class="docs-toc-item">
+    <a class="docs-toc-link" href="/example/">Overview</a>
+    <ul class="nav docs-sidenav">
+      
+      <li >
+        <a href="/example/">Code examples</a>
+      </li>
+      
+    </ul>
+    
+
+  </div>
+  
+  <div class="docs-toc-item">
+    <a class="docs-toc-link" href="/example/01-example/">Examples</a>
+    <ul class="nav docs-sidenav">
+      
+      <li >
+        <a href="/example/01-example/">1: Introduction to R and the tidyverse</a>
+      </li>
+      
+      <li >
+        <a href="/example/02-example/">2: Graphic design</a>
+      </li>
+      
+      <li >
+        <a href="/example/03-example/">3: Mapping data to graphics</a>
+      </li>
+      
+      <li >
+        <a href="/example/04-example/">4: Amounts and proportions</a>
+      </li>
+      
+      <li >
+        <a href="/example/05-example/">5: Themes</a>
+      </li>
+      
+      <li >
+        <a href="/example/06-example/">6: Uncertainty</a>
+      </li>
+      
+      <li >
+        <a href="/example/07-example/">7: Relationships</a>
+      </li>
+      
+      <li >
+        <a href="/example/08-example/">8: Comparisons</a>
+      </li>
+      
+      <li >
+        <a href="/example/09-example/">9: Annotations</a>
+      </li>
+      
+      <li class="active">
+        <a href="/example/10-example/">10: Interactivity</a>
+      </li>
+      
+      <li >
+        <a href="/example/11-example/">11: Time</a>
+      </li>
+      
+      <li >
+        <a href="/example/12-example/">12: Space</a>
+      </li>
+      
+      <li >
+        <a href="/example/13-example/">13: Text</a>
+      </li>
+      
+      <li >
+        <a href="/example/14-example/">14: Enhancing graphics</a>
+      </li>
+      
+      <li >
+        <a href="/example/15-example/">15: Sharing R output online</a>
+      </li>
+      
+    </ul>
+    
+
+  </div>
+  
+  
+</nav>
+
+        </div>
+
+        
+
+        <main class="col-12 col-md-9 col-xl-8 py-md-3 pl-md-5 docs-content" role="main">
+
+            <article class="article">
+
+                <div class="docs-article-container">
+                    <h1>Interactivity</h1>
+
+                    
+
+                    
+
+                    
+                    <div class="due-date p-2 mb-3 bg-class text-white">
+                        Lesson for Friday, May 22, 2020
+                    </div>
+                    
+
+                    <div class="article-style">
+                        
+<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+<script src="/rmarkdown-libs/htmlwidgets/htmlwidgets.js"></script>
+<script src="/rmarkdown-libs/pymjs/pym.v1.js"></script>
+<script src="/rmarkdown-libs/widgetframe-binding/widgetframe.js"></script>
+
+<div id="TOC">
+<ul>
+<li><a href="#live-coding-example">Live coding example</a></li>
+<li><a href="#complete-code">Complete code</a>
+<ul>
+<li><a href="#get-and-clean-data">Get and clean data</a></li>
+<li><a href="#creating-a-basic-interactive-chart">Creating a basic interactive chart</a></li>
+<li><a href="#modifying-the-tooltip">Modifying the tooltip</a></li>
+<li><a href="#including-more-information-in-the-tooltip">Including more information in the tooltip</a></li>
+<li><a href="#making-a-dashboard-with-flexdashboard">Making a dashboard with <strong>flexdashboard</strong></a></li>
+</ul></li>
+</ul>
+</div>
+
+<p>For this example we’ll use data from the <a href="https://data.worldbank.org/">World Bank</a> once again, which we download using the <a href="https://cran.r-project.org/web/packages/WDI/index.html"><strong>WDI</strong> package</a>.</p>
+<p>If you want to skip the data downloading, you can download the data below (you’ll likely need to right click and choose “Save Link As…”):</p>
+<ul>
+<li><a href="/data/wdi_parl.csv"><i class="fas fa-file-csv"></i> <code>wdi_parl.csv</code></a></li>
+</ul>
+<div id="live-coding-example" class="section level2">
+<h2>Live coding example</h2>
+<p>There is no video for this one, since it really only involves feeding a few ggplot plots fed into <code>ggplotly()</code>.</p>
+</div>
+<div id="complete-code" class="section level2">
+<h2>Complete code</h2>
+<div id="get-and-clean-data" class="section level3">
+<h3>Get and clean data</h3>
+<p>First, we load the libraries we’ll be using:</p>
+<pre class="r"><code>library(tidyverse)  # For ggplot, dplyr, and friends
+library(WDI)        # Get data from the World Bank
+library(scales)     # For nicer label formatting
+library(plotly)     # For easy interactive plots</code></pre>
+<pre class="r"><code>indicators &lt;- c(&quot;SP.POP.TOTL&quot;,     # Population
+                &quot;SG.GEN.PARL.ZS&quot;,  # Proportion of seats held by women in national parliaments (%)
+                &quot;NY.GDP.PCAP.KD&quot;)  # GDP per capita
+
+wdi_parl_raw &lt;- WDI(country = &quot;all&quot;, indicators, extra = TRUE, 
+                    start = 2000, end = 2019)</code></pre>
+<p>Then we clean the data by removing non-country countries and renaming some of the columns.</p>
+<pre class="r"><code>wdi_clean &lt;- wdi_parl_raw %&gt;% 
+  filter(region != &quot;Aggregates&quot;) %&gt;% 
+  select(iso2c, iso3c, country, year, 
+         population = SP.POP.TOTL,
+         prop_women_parl = SG.GEN.PARL.ZS, 
+         gdp_per_cap = NY.GDP.PCAP.KD, 
+         region, income)</code></pre>
+</div>
+<div id="creating-a-basic-interactive-chart" class="section level3">
+<h3>Creating a basic interactive chart</h3>
+<p>Let’s make a chart that shows the distribution of the proportion of women in national parliaments in 2019, by continent. We’ll use a strip plot with jittered points.</p>
+<p>First we need to make a regular static plot with ggplot:</p>
+<pre class="r"><code>wdi_2019 &lt;- wdi_clean %&gt;% 
+  filter(year == 2019) %&gt;% 
+  drop_na(prop_women_parl) %&gt;% 
+  # Scale this down from 0-100 to 0-1 so that scales::percent() can format it as
+  # an actual percent
+  mutate(prop_women_parl = prop_women_parl / 100)
+
+static_plot &lt;- ggplot(wdi_2019, 
+                      aes(y = fct_rev(region), x = prop_women_parl, color = region)) +
+  geom_point(position = position_jitter(width = 0, height = 0.15, seed = 1234)) +
+  guides(color = FALSE) +
+  scale_x_continuous(labels = percent) +
+  # I used https://medialab.github.io/iwanthue/ to generate these colors
+  scale_color_manual(values = c(&quot;#425300&quot;, &quot;#e680ff&quot;, &quot;#01bd71&quot;, &quot;#ff3aad&quot;,
+                                &quot;#9f3e00&quot;, &quot;#0146bf&quot;, &quot;#671d56&quot;)) +
+  labs(x = &quot;% women in parliament&quot;, y = NULL, caption = &quot;Source: The World Bank&quot;) +
+  theme_bw()
+static_plot</code></pre>
+<p><img src="/example/10-example_files/figure-html/strip-plot-basic-1.png" width="576" style="display: block; margin: auto;" /></p>
+<p>Great! That looks pretty good.</p>
+<p>To make it interactive, <em>all we have to do</em> is feed the <code>static_plot</code> object into <code>ggplotly()</code>. That’s it.</p>
+<pre class="r"><code>ggplotly(static_plot)</code></pre>
+<div id="htmlwidget-1" style="width:100%;height:400px;" class="widgetframe html-widget"></div>
+<script type="application/json" data-for="htmlwidget-1">{"x":{"url":"/example/10-example_files/figure-html//widgets/widget_strip-plot-basic-interactive-real.html","options":{"xdomain":"*","allowfullscreen":false,"lazyload":false}},"evals":[],"jsHooks":[]}</script>
+<p>Not <em>everything</em> translates over to JavaScript—the caption is gone now, and the legend is back (which is fine, I guess, since the legend is interactive). But still, this is magic.</p>
+</div>
+<div id="modifying-the-tooltip" class="section level3">
+<h3>Modifying the tooltip</h3>
+<p>Right now, the default tooltip you see when you hover over the points includes the actual proportion of women in parliament for each point, along with the continent, which is neat, but it’d be great if we could see the country name too. The tooltip picks up the information to include from the variables we use in <code>aes()</code>, and we never map the <code>country</code> column to any aesthetic, so it doesn’t show up.</p>
+<p>To get around this, we can add a new aesthetic for country to the points. Instead of using one of the real ggplot aesthetics like <code>color</code> or <code>fill</code>, we’ll use a fake one called <code>text</code> (we can call it whatever we want! <code>asdf</code> would also work). ggplot has no idea how to do anything with the <code>text</code> aesthetic, and it’ll give you a warning, but that’s okay. The static plot looks the same:</p>
+<pre class="r"><code>static_plot_toolip &lt;- ggplot(wdi_2019, 
+                             aes(y = fct_rev(region), x = prop_women_parl, color = region)) +
+  geom_point(aes(text = country),
+             position = position_jitter(width = 0, height = 0.15, seed = 1234)) +
+  guides(color = FALSE) +
+  scale_x_continuous(labels = percent) +
+  # I used https://medialab.github.io/iwanthue/ to generate these colors
+  scale_color_manual(values = c(&quot;#425300&quot;, &quot;#e680ff&quot;, &quot;#01bd71&quot;, &quot;#ff3aad&quot;,
+                                &quot;#9f3e00&quot;, &quot;#0146bf&quot;, &quot;#671d56&quot;)) +
+  labs(x = &quot;% women in parliament&quot;, y = NULL, caption = &quot;Source: The World Bank&quot;) +
+  theme_bw()</code></pre>
+<pre><code>## Warning: Ignoring unknown aesthetics: text</code></pre>
+<pre class="r"><code>static_plot_toolip</code></pre>
+<p><img src="/example/10-example_files/figure-html/strip-plot-text-aes-1.png" width="576" style="display: block; margin: auto;" /></p>
+<p>Now we can tell plotly to use this fake <code>text</code> aesthetic for the tooltip:</p>
+<pre class="r"><code>ggplotly(static_plot_toolip, tooltip = &quot;text&quot;)</code></pre>
+<div id="htmlwidget-2" style="width:100%;height:400px;" class="widgetframe html-widget"></div>
+<script type="application/json" data-for="htmlwidget-2">{"x":{"url":"/example/10-example_files/figure-html//widgets/widget_strip-plot-text-interactive-real.html","options":{"xdomain":"*","allowfullscreen":false,"lazyload":false}},"evals":[],"jsHooks":[]}</script>
+<p>Now we should just see the country names in the tooltips!</p>
+</div>
+<div id="including-more-information-in-the-tooltip" class="section level3">
+<h3>Including more information in the tooltip</h3>
+<p>We have country names, but we lost the values in the x-axis. Rwanda has the highest proportion of women in parliament, but what’s the exact number? It’s somewhere above 60%, but that’s all we can see now.</p>
+<p>To fix this, we can make a new column in the data with all the text we want to include in the tooltip. We’ll use <code>paste0()</code> to combine text and variable values to make the tooltip follow this format:</p>
+<pre class="text"><code>Name of country
+X% women in parliament</code></pre>
+<p>Let’s add a new column with <code>mutate()</code>. A couple things to note here:</p>
+<ul>
+<li><p>The <code>&lt;br&gt;</code> is HTML code for a line break</p></li>
+<li><p>We use the <code>percent()</code> function to format numbers as percents. The <code>accuracy</code> argument tells R how many decimal points to use. If we used <code>1</code>, it would say 12%; if we used <code>0.01</code>, it would say 12.08%; etc.</p></li>
+</ul>
+<pre class="r"><code>wdi_2019 &lt;- wdi_clean %&gt;% 
+  filter(year == 2019) %&gt;% 
+  drop_na(prop_women_parl) %&gt;% 
+  # Scale this down from 0-100 to 0-1 so that scales::percent() can format it as
+  # an actual percent
+  mutate(prop_women_parl = prop_women_parl / 100) %&gt;% 
+  mutate(fancy_label = paste0(country, &quot;&lt;br&gt;&quot;, 
+                              percent(prop_women_parl, accuracy = 0.1), 
+                              &quot; women in parliament&quot;))</code></pre>
+<p>Let’s check to see if it worked:</p>
+<pre class="r"><code>wdi_2019 %&gt;% select(country, prop_women_parl, fancy_label) %&gt;% head()</code></pre>
+<pre><code>## # A tibble: 6 x 3
+##   country              prop_women_parl fancy_label                                      
+##   &lt;chr&gt;                          &lt;dbl&gt; &lt;chr&gt;                                            
+## 1 Andorra                        0.5   Andorra&lt;br&gt;50.0% women in parliament             
+## 2 United Arab Emirates           0.225 United Arab Emirates&lt;br&gt;22.5% women in parliament
+## 3 Afghanistan                    0.279 Afghanistan&lt;br&gt;27.9% women in parliament         
+## 4 Antigua and Barbuda            0.111 Antigua and Barbuda&lt;br&gt;11.1% women in parliament 
+## 5 Albania                        0.295 Albania&lt;br&gt;29.5% women in parliament             
+## 6 Armenia                        0.242 Armenia&lt;br&gt;24.2% women in parliament</code></pre>
+<p>Now instead of using <code>text = country</code> we’ll use <code>text = fancy_label</code> to map that new column onto the plot. Again, this won’t be visible in the static plot (and you’ll get a warning), but it will show up in the interactive plot.</p>
+<pre class="r"><code>static_plot_toolip_fancy &lt;- ggplot(wdi_2019, 
+                                   aes(y = fct_rev(region), 
+                                       x = prop_women_parl, 
+                                       color = region)) +
+  geom_point(aes(text = fancy_label),
+             position = position_jitter(width = 0, height = 0.15, seed = 1234)) +
+  guides(color = FALSE) +
+  scale_x_continuous(labels = percent) +
+  # I used https://medialab.github.io/iwanthue/ to generate these colors
+  scale_color_manual(values = c(&quot;#425300&quot;, &quot;#e680ff&quot;, &quot;#01bd71&quot;, &quot;#ff3aad&quot;,
+                                &quot;#9f3e00&quot;, &quot;#0146bf&quot;, &quot;#671d56&quot;)) +
+  labs(x = &quot;% women in parliament&quot;, y = NULL, caption = &quot;Source: The World Bank&quot;) +
+  theme_bw()</code></pre>
+<pre><code>## Warning: Ignoring unknown aesthetics: text</code></pre>
+<pre class="r"><code>ggplotly(static_plot_toolip_fancy, tooltip = &quot;text&quot;)</code></pre>
+<div id="htmlwidget-3" style="width:100%;height:400px;" class="widgetframe html-widget"></div>
+<script type="application/json" data-for="htmlwidget-3">{"x":{"url":"/example/10-example_files/figure-html//widgets/widget_strip-plot-text-interactive-fancy-real.html","options":{"xdomain":"*","allowfullscreen":false,"lazyload":false}},"evals":[],"jsHooks":[]}</script>
+<p>Perfect!</p>
+<p>Finally, if we want to save this plot as a standalone self-contained HTML file, we can use the <code>saveWidget()</code> function from the <strong>htmlwidgets</strong> package.</p>
+<pre class="r"><code># This is like ggsave, but for interactive HTML plots
+interactive_plot &lt;- static_plot_toolip_fancy
+
+htmlwidgets::saveWidget(interactive_plot, &quot;fancy_plot.html&quot;)</code></pre>
+</div>
+<div id="making-a-dashboard-with-flexdashboard" class="section level3">
+<h3>Making a dashboard with <strong>flexdashboard</strong></h3>
+<p>The <a href="https://rmarkdown.rstudio.com/flexdashboard/">documentation for <strong>flexdashboard</strong> is so great and complete</a> that I’m not going to include a full example here. There is also a brief overview in <a href="https://bookdown.org/yihui/rmarkdown/dashboards.html">chapter 5 of the official R Markdown book</a>. You can also watch <a href="https://www.youtube.com/watch?v=_oDfBVr9wmQ">this really quick video here</a>. She uses a package called <strong>dimple</strong> instead of <strong>plotly</strong>, which doesn’t work with ggplot like <code>ggplotly()</code>, so <em>ignore her code</em> about <code>dimple()</code> and use your <code>ggplotly()</code> skills instead. You can search YouTube for a bunch of other short tutorial videos, too.</p>
+<p>The quickest and easiest way to get started is to install the <strong>flexdashboard</strong> package and then in RStudio go to File &gt; New File… &gt; R Markdown… &gt; From Template &gt; Flexdashboard:</p>
+<p><img src="/img/examples/flexdashboard-template.png" width="60%" style="display: block; margin: auto;" /></p>
+<p>That will give you an empty dashboard with three chart areas spread across two columns. Put static or dynamic graphs in the different chart areas, knit, and you’ll be good to go!</p>
+<p>If you’re interested in making the dashboard reactive with Shiny-like elements, <a href="https://www.andrewheiss.com/blog/2020/01/01/flexdashboard-dynamic-data/">check out this tutorial</a>.</p>
+</div>
+</div>
+
+                    </div>
+
+                    
+
+
+
+                    
+                </div>
+
+                <div class="body-footer">
+                    <p>Last updated on May 22, 2020</p>
+
+                    
+
+
+                    
+
+                </div>
+
+            </article>
+
+            <footer>
+    <hr>
+
+    <div class="row course-info">
+        <div class="col-md-7">
+            <p>
+                <strong>SSC 442: Data Analytics (Fall Semester 2020)</strong><br>
+
+                <a href="https://www.msu.edu" target="_blank" rel="noopener">Michigan State University</a> &emsp;&emsp;
+                <a href="https://socialscience.msu.edu/" target="_blank" rel="noopener">College of Social Science</a>
+            </p>
+
+            <p>
+                <a href="https://www.benbushong.com" target="_blank" rel="noopener"><i class="fas fa-user"></i>
+                    Prof. Ben Bushjong</a> &emsp;&emsp;
+                <a href="mailto:bbushong@msu.edu"><i class="fas fa-envelope"></i>
+                    bbushong@msu.edu</a>
+            </p>
+
+            <p>
+                <i class="far fa-calendar-alt"></i> Tuesday and Thursday &emsp;&emsp;
+                <i class="far fa-clock"></i> Whenever 
+                
+            </p>
+        </div>
+
+        <div class="col-md-5 credits">
+            <p>All content licensed under a <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" rel="noopener">Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International License</a>.</p>
+            
+            <p>Content <i class="fab fa-creative-commons"></i> 2020 <a href="https://www.benbushong.com" target="_blank" rel="noopener">Ben Bushong</a></p>
+        
+            <p>This site created with the <a href="https://sourcethemes.com/academic/" target="_blank" rel="noopener">Academic theme</a> in <a href="https://bookdown.org/yihui/blogdown/" target="_blank" rel="noopener">blogdown</a> and <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a>. </p>
+            
+            <p><a href="https://github.com/" target="_blank" rel="noopener"><i class="fab fa-github"></i> View the source at GitHub.</a></p>
+        </div>
+    </div>
+</footer>
+
+
+        </main>
+    </div>
+</div>
+
+        
+
+    
+    
+    
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/4.1.4/imagesloaded.pkgd.min.js" integrity="sha256-lqvxZrPLtfffUl2G/e7szqSvPBILGbwmsGE1MKlOi0Q=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.6/isotope.pkgd.min.js" integrity="sha256-CBrpuqrMhXwcLLUd5tvQ4euBHCdh7wGlDfNz8vbu/iI=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+
+      
+
+      
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/highlight.min.js" integrity="sha256-eOgo0OtLL4cdq7RdwRUiGKLX9XsIJ7nGhWEKbohmVAQ=" crossorigin="anonymous"></script>
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/languages/r.min.js"></script>
+        
+      
+
+    
+
+    
+    
+
+    
+    
+    <script>const code_highlighting = true;</script>
+    
+
+    
+    
+    <script>const isSiteThemeDark = false;</script>
+    
+
+    
+
+    
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/anchor-js/4.1.1/anchor.min.js" integrity="sha256-pB/deHc9CGfFpJRjC43imB29Rse8tak+5eXqntO94ck=" crossorigin="anonymous"></script>
+    <script>
+      anchors.add();
+    </script>
+    
+
+    
+
+    
+    
+
+    
+    
+
+    
+    
+
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <script src="/js/academic.min.6f7ce8be710290b8c431bbc97f405d15.js"></script>
+
+    
+
+
+
+    
+    
+
+    
+<div id="modal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Cite</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <pre><code class="tex hljs"></code></pre>
+      </div>
+      <div class="modal-footer">
+        <a class="btn btn-outline-primary my-1 js-copy-cite" href="#" target="_blank">
+          <i class="fas fa-copy"></i> Copy
+        </a>
+        <a class="btn btn-outline-primary my-1 js-download-cite" href="#" target="_blank">
+          <i class="fas fa-download"></i> Download
+        </a>
+        <div id="modal-error"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+
+</html>

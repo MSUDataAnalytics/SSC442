@@ -1,0 +1,1219 @@
+<!DOCTYPE html>
+<html lang="en-us" 
+      xmlns:og="http://ogp.me/ns#" 
+      xmlns:fb="https://www.facebook.com/2008/fbml">
+
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="generator" content="Source Themes Academic 4.8.0">
+
+  
+
+  
+  
+  
+  
+  
+    
+    
+    
+  
+  
+
+  <meta name="author" content="Ben Bushong">
+
+  
+  
+  
+    
+  
+  <meta name="description" content="Combining datasets vertically Combining datasets horizontally inner_join() left_join() Common column names right_join()   There is a short lesson today! You’ll learn the basics of joining two different datasets together, both vertically and horizontally.
+There are a few imaginary datasets I’ve created for you to play with:
+x ## # A tibble: 3 x 2 ## id some_variable ## &lt;dbl&gt; &lt;chr&gt; ## 1 1 x1 ## 2 2 x2 ## 3 3 x3 y ## # A tibble: 3 x 2 ## id some_other_variable ## &lt;dbl&gt; &lt;chr&gt; ## 1 1 y1 ## 2 2 y2 ## 3 4 y4 national_data ## # A tibble: 9 x 5 ## state year unemployment inflation population ## &lt;chr&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; ## 1 GA 2018 5 2 100 ## 2 GA 2019 5.">
+
+  
+  <link rel="alternate" hreflang="en-us" href="/lesson/12-lesson/">
+
+  
+
+
+  
+  
+  
+  <meta name="theme-color" content="#18453B">
+  
+
+  
+  
+  
+  <script src="/js/mathjax-config.js"></script>
+  
+
+  
+  
+  
+  
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/academicons/1.8.6/css/academicons.min.css" integrity="sha256-uFVgMKfistnJAfoCUQigIl+JfUaP47GrRKjf6CTPVmw=" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.0-1/css/all.min.css" integrity="sha256-4w9DunooKSr3MFXHXWyFER38WmPdm361bQS/2KUWZbU=" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+
+    
+    
+    
+      
+    
+    
+      
+      
+        
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/styles/github.min.css" crossorigin="anonymous" title="hl-light">
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/styles/dracula.min.css" crossorigin="anonymous" title="hl-dark" disabled>
+        
+      
+    
+
+    
+
+    
+
+    
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/lazysizes/5.1.2/lazysizes.min.js" integrity="sha256-Md1qLToewPeKjfAHU1zyPwOutccPAm5tahnaw7Osw0A=" crossorigin="anonymous" async></script>
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" integrity="" crossorigin="anonymous" async></script>
+      
+    
+      
+
+      
+      
+
+      
+    
+
+  
+
+  
+  
+  
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Fira+Sans+Condensed:400,400i,700,700i%7COverpass:400,400i,700,700i&display=swap">
+  
+
+  
+  
+  
+  
+  <link rel="stylesheet" href="/css/academic.css">
+
+  
+
+
+
+
+  
+
+
+  
+  
+
+  
+
+  <link rel="manifest" href="/index.webmanifest">
+  <link rel="icon" type="image/png" href="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_32x32_fill_lanczos_center_2.png">
+  <link rel="apple-touch-icon" type="image/png" href="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_192x192_fill_lanczos_center_2.png">
+
+  <link rel="canonical" href="/lesson/12-lesson/">
+
+  
+  
+  
+  
+  
+  
+  
+    
+  
+  
+  <meta property="twitter:card" content="summary_large_image">
+  
+  <meta property="twitter:site" content="@benbushong">
+  <meta property="twitter:creator" content="@benbushong">
+  
+  <meta property="og:site_name" content="Data Analytics">
+  <meta property="og:url" content="/lesson/12-lesson/">
+  <meta property="og:title" content="Space | Data Analytics">
+  <meta property="og:description" content="Combining datasets vertically Combining datasets horizontally inner_join() left_join() Common column names right_join()   There is a short lesson today! You’ll learn the basics of joining two different datasets together, both vertically and horizontally.
+There are a few imaginary datasets I’ve created for you to play with:
+x ## # A tibble: 3 x 2 ## id some_variable ## &lt;dbl&gt; &lt;chr&gt; ## 1 1 x1 ## 2 2 x2 ## 3 3 x3 y ## # A tibble: 3 x 2 ## id some_other_variable ## &lt;dbl&gt; &lt;chr&gt; ## 1 1 y1 ## 2 2 y2 ## 3 4 y4 national_data ## # A tibble: 9 x 5 ## state year unemployment inflation population ## &lt;chr&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; ## 1 GA 2018 5 2 100 ## 2 GA 2019 5."><meta property="og:image" content="/img/social-image.png">
+  <meta property="twitter:image" content="/img/social-image.png"><meta property="og:locale" content="en-us">
+  
+    
+      <meta property="article:published_time" content="2020-05-27T00:00:00&#43;00:00">
+    
+    <meta property="article:modified_time" content="2020-05-27T00:00:00&#43;00:00">
+  
+
+  
+
+
+
+  
+
+
+  
+
+
+  <link rel="shortcut icon" href="/favicon.ico" />
+  <link rel="apple-touch-icon-precomposed" sizes="57x57" href="/img/apple-touch-icon-57x57.png" />
+  <link rel="apple-touch-icon-precomposed" sizes="114x114" href="/img/apple-touch-icon-114x114.png" />
+  <link rel="apple-touch-icon-precomposed" sizes="72x72" href="/img/apple-touch-icon-72x72.png" />
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/img/apple-touch-icon-144x144.png" />
+  <link rel="apple-touch-icon-precomposed" sizes="120x120" href="/img/apple-touch-icon-120x120.png" />
+  <link rel="apple-touch-icon-precomposed" sizes="152x152" href="/img/apple-touch-icon-152x152.png" />
+  <link rel="icon" type="image/png" href="/img/favicon-32x32.png" sizes="32x32" />
+  <link rel="icon" type="image/png" href="/img/favicon-16x16.png" sizes="16x16" />
+  <meta name="application-name" content="SSC 442: Data Analytics" />
+  <meta name="msapplication-TileColor" content="#FFFFFF" />
+  <meta name="msapplication-TileImage" content="/img/mstile-144x144.png" />
+
+
+  <title>Space | Data Analytics</title>
+
+</head>
+
+
+<body id="top" data-spy="scroll" data-offset="70"
+    data-target="#TableOfContents"
+    >
+
+    <aside class="search-results" id="search">
+  <div class="container">
+    <section class="search-header">
+
+      <div class="row no-gutters justify-content-between mb-3">
+        <div class="col-6">
+          <h1>Search</h1>
+        </div>
+        <div class="col-6 col-search-close">
+          <a class="js-search" href="#"><i class="fas fa-times-circle text-muted" aria-hidden="true"></i></a>
+        </div>
+      </div>
+
+      <div id="search-box">
+        
+        
+        
+      </div>
+
+    </section>
+    <section class="section-search-results">
+
+      <div id="search-hits">
+        
+      </div>
+
+    </section>
+  </div>
+</aside>
+
+
+    
+
+
+
+
+
+
+
+<nav class="navbar navbar-expand-lg navbar-light compensate-for-scrollbar" id="navbar-main">
+  <div class="container">
+
+    
+    <div class="d-none d-lg-inline-flex">
+      <a class="navbar-brand" href="/">Data Analytics</a>
+    </div>
+    
+
+    
+    <button type="button" class="navbar-toggler" data-toggle="collapse"
+            data-target="#navbar-content" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
+    <span><i class="fas fa-bars"></i></span>
+    </button>
+    
+
+    
+    <div class="navbar-brand-mobile-wrapper d-inline-flex d-lg-none">
+      <a class="navbar-brand" href="/">Data Analytics</a>
+    </div>
+    
+
+    
+    
+    <div class="navbar-collapse main-menu-item collapse justify-content-end" id="navbar-content">
+
+      
+      <ul class="navbar-nav d-md-inline-flex">
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/syllabus/"><span>Syllabus</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/schedule/"><span>Schedule</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/content/"><span>Content</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link  active" href="/lesson/"><span>Lessons</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/assignment/"><span>Assignments</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+            
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="https://gsudatavizm2020.slack.com" target="_blank" rel="noopener"><span><i class="fab fa-slack"></i></span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+            
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="https://rstudio.cloud/" target="_blank" rel="noopener"><span><i class="fab fa-r-project"></i></span></a>
+        </li>
+
+        
+        
+
+      
+
+        
+      </ul>
+    </div>
+
+    <ul class="nav-icons navbar-nav flex-row ml-auto d-flex pl-md-2">
+      
+
+      
+
+      
+
+    </ul>
+
+  </div>
+</nav>
+
+
+    
+
+<div class="container-fluid docs">
+    <div class="row flex-xl-nowrap">
+        <div class="col-12 col-md-3 col-xl-2 docs-sidebar">
+            
+
+
+
+
+
+  
+    
+  
+
+
+
+
+<form class="docs-search d-flex align-items-center">
+  <button class="btn docs-toggle d-md-none p-0 mr-3" type="button" data-toggle="collapse" data-target="#docs-nav" aria-controls="docs-nav" aria-expanded="false" aria-label="Toggle section navigation">
+    <span><i class="fas fa-bars"></i></span>
+  </button>
+
+  
+</form>
+
+<nav class="collapse docs-links" id="docs-nav">
+  
+
+  
+  
+  
+  
+  <div class="docs-toc-item">
+    <a class="docs-toc-link" href="/lesson/">Overview</a>
+    <ul class="nav docs-sidenav">
+      
+      <li >
+        <a href="/lesson/">Interactive lessons</a>
+      </li>
+      
+    </ul>
+    
+
+  </div>
+  
+  <div class="docs-toc-item">
+    <a class="docs-toc-link" href="/lesson/01-lesson/">Lessons</a>
+    <ul class="nav docs-sidenav">
+      
+      <li >
+        <a href="/lesson/01-lesson/">1: Introduction to R and the tidyverse</a>
+      </li>
+      
+      <li >
+        <a href="/lesson/02-lesson/">2: Graphic design</a>
+      </li>
+      
+      <li >
+        <a href="/lesson/03-lesson/">3: Mapping data to graphics</a>
+      </li>
+      
+      <li >
+        <a href="/lesson/04-lesson/">4: Amounts and proportions</a>
+      </li>
+      
+      <li >
+        <a href="/lesson/05-lesson/">5: Themes</a>
+      </li>
+      
+      <li >
+        <a href="/lesson/06-lesson/">6: Uncertainty</a>
+      </li>
+      
+      <li >
+        <a href="/lesson/07-lesson/">7: Relationships</a>
+      </li>
+      
+      <li >
+        <a href="/lesson/08-lesson/">8: Comparisons</a>
+      </li>
+      
+      <li >
+        <a href="/lesson/09-lesson/">9: Annotations</a>
+      </li>
+      
+      <li >
+        <a href="/lesson/10-lesson/">10: Interactivity</a>
+      </li>
+      
+      <li >
+        <a href="/lesson/11-lesson/">11: Time</a>
+      </li>
+      
+      <li class="active">
+        <a href="/lesson/12-lesson/">12: Space</a>
+      </li>
+      
+      <li >
+        <a href="/lesson/13-lesson/">13: Text</a>
+      </li>
+      
+      <li >
+        <a href="/lesson/14-lesson/">14: Enhancing graphics</a>
+      </li>
+      
+      <li >
+        <a href="/lesson/15-lesson/">15: Truth, beauty, and data revisited</a>
+      </li>
+      
+    </ul>
+    
+
+  </div>
+  
+  
+</nav>
+
+        </div>
+
+        
+
+        <main class="col-12 col-md-9 col-xl-8 py-md-3 pl-md-5 docs-content" role="main">
+
+            <article class="article">
+
+                <div class="docs-article-container">
+                    <h1>Space</h1>
+
+                    
+
+                    
+
+                    
+                    <div class="due-date p-2 mb-3 bg-class text-white">
+                        Lesson for Wednesday, May 27, 2020
+                    </div>
+                    
+
+                    <div class="article-style">
+                        
+<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+
+<div id="TOC">
+<ul>
+<li><a href="#combining-datasets-vertically">Combining datasets vertically</a></li>
+<li><a href="#combining-datasets-horizontally">Combining datasets horizontally</a></li>
+<li><a href="#inner_join"><code>inner_join()</code></a></li>
+<li><a href="#left_join"><code>left_join()</code></a></li>
+<li><a href="#common-column-names">Common column names</a></li>
+<li><a href="#right_join"><code>right_join()</code></a></li>
+</ul>
+</div>
+
+<p>There <em>is</em> a short lesson today! You’ll learn the basics of joining two different datasets together, both vertically and horizontally.</p>
+<p>There are a few imaginary datasets I’ve created for you to play with:</p>
+<pre class="r"><code>x</code></pre>
+<pre><code>## # A tibble: 3 x 2
+##      id some_variable
+##   &lt;dbl&gt; &lt;chr&gt;        
+## 1     1 x1           
+## 2     2 x2           
+## 3     3 x3</code></pre>
+<pre class="r"><code>y</code></pre>
+<pre><code>## # A tibble: 3 x 2
+##      id some_other_variable
+##   &lt;dbl&gt; &lt;chr&gt;              
+## 1     1 y1                 
+## 2     2 y2                 
+## 3     4 y4</code></pre>
+<pre class="r"><code>national_data</code></pre>
+<pre><code>## # A tibble: 9 x 5
+##   state  year unemployment inflation population
+##   &lt;chr&gt; &lt;dbl&gt;        &lt;dbl&gt;     &lt;dbl&gt;      &lt;dbl&gt;
+## 1 GA     2018          5         2          100
+## 2 GA     2019          5.3       1.8        200
+## 3 GA     2020          5.2       2.5        300
+## 4 NC     2018          6.1       1.8        350
+## 5 NC     2019          5.9       1.6        375
+## 6 NC     2020          5.3       1.8        400
+## 7 CO     2018          4.7       2.7        200
+## 8 CO     2019          4.4       2.6        300
+## 9 CO     2020          5.1       2.5        400</code></pre>
+<pre class="r"><code>national_data_2019</code></pre>
+<pre><code>## # A tibble: 3 x 4
+##   state unemployment inflation population
+##   &lt;chr&gt;        &lt;dbl&gt;     &lt;dbl&gt;      &lt;dbl&gt;
+## 1 GA             5.3       1.8        200
+## 2 NC             5.9       1.6        375
+## 3 CO             4.4       2.6        300</code></pre>
+<pre class="r"><code>national_libraries</code></pre>
+<pre><code>## # A tibble: 6 x 4
+##   state  year libraries schools
+##   &lt;chr&gt; &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;
+## 1 CO     2018       230     470
+## 2 CO     2019       240     440
+## 3 CO     2020       270     510
+## 4 NC     2018       200     610
+## 5 NC     2019       210     590
+## 6 NC     2020       220     530</code></pre>
+<pre class="r"><code>national_libraries_2019</code></pre>
+<pre><code>## # A tibble: 2 x 3
+##   state libraries schools
+##   &lt;chr&gt;     &lt;dbl&gt;   &lt;dbl&gt;
+## 1 CO          240     440
+## 2 NC          210     590</code></pre>
+<pre class="r"><code>puerto_rico_data</code></pre>
+<pre><code>## # A tibble: 3 x 4
+##   state unemployment population  year
+##   &lt;chr&gt;        &lt;dbl&gt;      &lt;dbl&gt; &lt;dbl&gt;
+## 1 PR             3.1        150  2018
+## 2 PR             3.2        250  2019
+## 3 PR             3.3        350  2020</code></pre>
+<pre class="r"><code>state_regions</code></pre>
+<pre><code>## # A tibble: 51 x 2
+##    region    state
+##    &lt;chr&gt;     &lt;chr&gt;
+##  1 West      AK   
+##  2 South     AL   
+##  3 South     AR   
+##  4 West      AZ   
+##  5 West      CA   
+##  6 West      CO   
+##  7 Northeast CT   
+##  8 South     DC   
+##  9 South     DE   
+## 10 South     FL   
+## # … with 41 more rows</code></pre>
+<div id="combining-datasets-vertically" class="section level2">
+<h2>Combining datasets vertically</h2>
+<p>Recall from the <a href="/assignment/03-exercise/">Lord of the Rings data in exercise 3</a> that you had to combine three different CSV files into dataset. You used <code>bind_rows()</code> to stack each of these on top of each other.</p>
+<pre class="r"><code>lotr &lt;- bind_rows(fellowship, tt, rotk)</code></pre>
+<p>That worked well because each of the individual data frames had the same columns in them, and R was able to line up the matching columns. If columns were missing, R would have placed <code>NA</code> in the appropriate locations.</p>
+<div class="puzzle">
+<p><strong>Your turn</strong>: Combine <code>national_data</code> and <code>puerto_rico_data</code> into a single dataset named <code>us_data</code> using <code>bind_rows</code>. Pay attention to what happens with the inflation column. Also notice that the columns in the Puerto Rico data are in a different order.</p>
+</div>
+<iframe style="margin:0 auto; min-width: 100%;" id="learnr-12-lesson-joining1" class="interactive" src="https://andrewheiss.shinyapps.io/datavizm20_12-joining-1/" scrolling="no" frameborder="no" onload='iFrameResize({}, "#learnr-12-lesson-joining1")'></iframe>
+
+</div>
+<div id="combining-datasets-horizontally" class="section level2">
+<h2>Combining datasets horizontally</h2>
+<p>Binding rows vertically is the easiest way to combine two datasets, but most often you won’t be doing that. You’ll only do this if you’re combining datasets that come from the same source, like if a state offers separate CSV files of the same data for each county.</p>
+<p>In most cases, though, you’ll need to combine completely different datasets, bringing one or more columns from one into another. With vertical combining, R needs column names with the same names in order to figure out where the data lines up. With horizontal combining, R needs values inside one or more columns to be the same in order to figure out where the data lines up.</p>
+<p>There is technically a function named <code>bind_cols()</code>, but you’ll rarely want to use it. It doesn’t attempt to match any rows—it just glues two datasets together:</p>
+<pre class="r"><code>bind_cols(national_data, 
+          # Repeat PR 3 times so that it has the same number of rows as national_data
+          bind_rows(puerto_rico_data, puerto_rico_data, puerto_rico_data))</code></pre>
+<pre><code>## # A tibble: 9 x 9
+##   state  year unemployment inflation population state1 unemployment1 population1
+##   &lt;chr&gt; &lt;dbl&gt;        &lt;dbl&gt;     &lt;dbl&gt;      &lt;dbl&gt; &lt;chr&gt;          &lt;dbl&gt;       &lt;dbl&gt;
+## 1 GA     2018          5         2          100 PR               3.1         150
+## 2 GA     2019          5.3       1.8        200 PR               3.2         250
+## 3 GA     2020          5.2       2.5        300 PR               3.3         350
+## 4 NC     2018          6.1       1.8        350 PR               3.1         150
+## 5 NC     2019          5.9       1.6        375 PR               3.2         250
+## 6 NC     2020          5.3       1.8        400 PR               3.3         350
+## 7 CO     2018          4.7       2.7        200 PR               3.1         150
+## 8 CO     2019          4.4       2.6        300 PR               3.2         250
+## 9 CO     2020          5.1       2.5        400 PR               3.3         350
+## # … with 1 more variable: year1 &lt;dbl&gt;</code></pre>
+<p>That’s… not great.</p>
+<p>Instead, we need to use a function that is more careful about bringing in data. Fortunately there are a few good options:</p>
+<ul>
+<li><code>inner_join()</code></li>
+<li><code>left_join()</code></li>
+<li><code>right_join()</code></li>
+</ul>
+<p>The <strong>most</strong> helpful way of understanding these different functions <a href="https://github.com/gadenbuie/tidyexplain#mutating-joins">is to go here and stare at the animations for a little while</a> to see which pieces of which dataset go where. (There are lots of others, like <code>full_join()</code>, <code>semi_join()</code>, and <code>anti_join()</code>, and they have helpful animations, but I rarely use those.)</p>
+<p>For each of these functions, <strong>you need at least one common ID column in both datasets</strong> in order for R to know where things line up.</p>
+<p>Let’s practice how these all work and see what the differences between them are.</p>
+</div>
+<div id="inner_join" class="section level2">
+<h2><code>inner_join()</code></h2>
+<p>First, <a href="https://github.com/gadenbuie/tidyexplain#inner-join" target="_blank">go to this page in a new tab</a> and stare at the mesmerizing animation.</p>
+<p>Let’s look at two datasets, <code>x</code> and <code>y</code>:</p>
+<pre class="r"><code>x</code></pre>
+<pre><code>## # A tibble: 3 x 2
+##      id some_variable
+##   &lt;dbl&gt; &lt;chr&gt;        
+## 1     1 x1           
+## 2     2 x2           
+## 3     3 x3</code></pre>
+<pre class="r"><code>y</code></pre>
+<pre><code>## # A tibble: 3 x 2
+##      id some_other_variable
+##   &lt;dbl&gt; &lt;chr&gt;              
+## 1     1 y1                 
+## 2     2 y2                 
+## 3     4 y4</code></pre>
+<p>Both datasets have an <code>id</code> column that is the same across each (though the values aren’t necessarily the same). Because there’s a shared column, we can join these two based on that column.</p>
+<p>If we use <code>inner_join()</code>, the resulting dataset will only keep the rows from the first where there are matching values from the second:</p>
+<pre class="r"><code>inner_join(x, y, by = &quot;id&quot;)</code></pre>
+<pre><code>## # A tibble: 2 x 3
+##      id some_variable some_other_variable
+##   &lt;dbl&gt; &lt;chr&gt;         &lt;chr&gt;              
+## 1     1 x1            y1                 
+## 2     2 x2            y2</code></pre>
+<p>Notice how it got rid of the row with <code>id = 3</code> from the first and the row with <code>id = 4</code> from the second.</p>
+<p>You can also write this with pipes, which is really common when working with <strong>dplyr</strong>:</p>
+<pre class="r"><code>x %&gt;% 
+  inner_join(y, by = &quot;id&quot;)</code></pre>
+<pre><code>## # A tibble: 2 x 3
+##      id some_variable some_other_variable
+##   &lt;dbl&gt; &lt;chr&gt;         &lt;chr&gt;              
+## 1     1 x1            y1                 
+## 2     2 x2            y2</code></pre>
+<p>Let’s say we have two datasets: <code>national_data_2019</code> and <code>national_libraries_2019</code>:</p>
+<pre class="r"><code>national_data_2019</code></pre>
+<pre><code>## # A tibble: 3 x 4
+##   state unemployment inflation population
+##   &lt;chr&gt;        &lt;dbl&gt;     &lt;dbl&gt;      &lt;dbl&gt;
+## 1 GA             5.3       1.8        200
+## 2 NC             5.9       1.6        375
+## 3 CO             4.4       2.6        300</code></pre>
+<pre class="r"><code>national_libraries_2019</code></pre>
+<pre><code>## # A tibble: 2 x 3
+##   state libraries schools
+##   &lt;chr&gt;     &lt;dbl&gt;   &lt;dbl&gt;
+## 1 CO          240     440
+## 2 NC          210     590</code></pre>
+<p>We want to bring the libraries and schools columns into the general national data. Notice how both datasets have a state column.</p>
+<div class="puzzle">
+<p><strong>Your turn</strong>: Create a new dataset named <code>combined_data</code> that uses <code>inner_join()</code> to merge <code>national_data_2019</code> and <code>national_libraries_2019</code>.</p>
+</div>
+<iframe style="margin:0 auto; min-width: 100%;" id="learnr-12-lesson-joining2" class="interactive" src="https://andrewheiss.shinyapps.io/datavizm20_12-joining-2/" scrolling="no" frameborder="no" onload='iFrameResize({}, "#learnr-12-lesson-joining2")'></iframe>
+
+</div>
+<div id="left_join" class="section level2">
+<h2><code>left_join()</code></h2>
+<p>Again, <a href="https://github.com/gadenbuie/tidyexplain#left-join" target="_blank">go to this page in a new tab</a> and stare at the animation.</p>
+<p>Left joining is less destructive than inner joining. With left joining, any rows in the first dataset that don’t have matches in the second <em>don’t</em> get thrown away and instead are filled with <code>NA</code>:</p>
+<pre class="r"><code>left_join(x, y, by = &quot;id&quot;)</code></pre>
+<pre><code>## # A tibble: 3 x 3
+##      id some_variable some_other_variable
+##   &lt;dbl&gt; &lt;chr&gt;         &lt;chr&gt;              
+## 1     1 x1            y1                 
+## 2     2 x2            y2                 
+## 3     3 x3            &lt;NA&gt;</code></pre>
+<p>Notice how the row with <code>id = 4</code> from the second dataset is gone, but the row with <code>id = 3</code> from the first is still there, with <code>NA</code> for <code>some_other_variable</code>.</p>
+<p>I find this much more useful when combining data. I often have a larger dataset with all the main variables I care about, perhaps with every combination of country and year over 20 years and 180 countries. If I find another dataset I want to join, and it has missing data for some of the years or countries, I don’t want the combined data to throw away all the rows from the main big dataset that don’t match! I still want those!</p>
+<p><em>(<a href="https://stats.andrewheiss.com/canary-ngos/01_get-merge-data.html#final_clean_combined_data">Look at this for a real life example</a>: I create a dataset I name <code>panel_skeleton</code> that is just all the combinations of countries and years (Afghanistan 1990, Afghanistan 1991, etc.), and then I bring in all sorts of other datasets that match the same countries and years. When there aren’t matches, nothing in the skeleton gets thrown away—R just adds missing values instead.)</em></p>
+<div class="puzzle">
+<p><strong>Your turn</strong>: Create a new dataset named <code>combined_data</code> that uses <code>left_join()</code> to merge <code>national_data_2019</code> and <code>national_libraries_2019</code>.</p>
+</div>
+<iframe style="margin:0 auto; min-width: 100%;" id="learnr-12-lesson-joining5" class="interactive" src="https://andrewheiss.shinyapps.io/datavizm20_12-joining-5/" scrolling="no" frameborder="no" onload='iFrameResize({}, "#learnr-12-lesson-joining5")'></iframe>
+
+<p>Left joining is also often surprisingly helpful for recoding lots of variables. Right now in our fake national data, we have a column for state, but it would be nice if we could have a column for region so we could facet or fill or color by region in a plot. Hunting around on the internet, you find this dataset that has a column for state and a column for abbreviations:</p>
+<pre class="r"><code>state_regions</code></pre>
+<pre><code>## # A tibble: 51 x 2
+##    region    state
+##    &lt;chr&gt;     &lt;chr&gt;
+##  1 West      AK   
+##  2 South     AL   
+##  3 South     AR   
+##  4 West      AZ   
+##  5 West      CA   
+##  6 West      CO   
+##  7 Northeast CT   
+##  8 South     DC   
+##  9 South     DE   
+## 10 South     FL   
+## # … with 41 more rows</code></pre>
+<div class="puzzle">
+<p><strong>Your turn</strong>: Create a new dataset named <code>national_data_with_region</code> that uses <code>left_join()</code> to combine <code>national_data_2019</code> with <code>state_regions</code>.</p>
+</div>
+<iframe style="margin:0 auto; min-width: 100%;" id="learnr-12-lesson-joining3" class="interactive" src="https://andrewheiss.shinyapps.io/datavizm20_12-joining-3/" scrolling="no" frameborder="no" onload='iFrameResize({}, "#learnr-12-lesson-joining3")'></iframe>
+
+<p>Because <code>left_join()</code> only keeps rows from the second dataset that match the first, we don’t actually bring in all 50 rows from the <code>state_regions</code> data—only the rows that match the first dataset (<code>national_data_2019</code>) come over. We could have done with if some massive recoding (<code>mutate(region = ifelse(state == "GA" | state == "NC", "South", ifelse(state == "CO"), "West", NA))</code>), but that’s awful. Left joining is far easier here.</p>
+<p>You can also join by multiple columns. So far we’ve been working with just <code>national_data_2019</code>, but if you look at <code>national_data</code>, you’ll see there are rows for different years across these states:</p>
+<pre class="r"><code>national_data</code></pre>
+<pre><code>## # A tibble: 9 x 5
+##   state  year unemployment inflation population
+##   &lt;chr&gt; &lt;dbl&gt;        &lt;dbl&gt;     &lt;dbl&gt;      &lt;dbl&gt;
+## 1 GA     2018          5         2          100
+## 2 GA     2019          5.3       1.8        200
+## 3 GA     2020          5.2       2.5        300
+## 4 NC     2018          6.1       1.8        350
+## 5 NC     2019          5.9       1.6        375
+## 6 NC     2020          5.3       1.8        400
+## 7 CO     2018          4.7       2.7        200
+## 8 CO     2019          4.4       2.6        300
+## 9 CO     2020          5.1       2.5        400</code></pre>
+<p>Previously, we’ve been specifying the ID column with <code>by = "state"</code>, but now we have two ID columns: <code>state</code> and <code>year</code>. We can specify both with <code>by = c("state", "year")</code>.</p>
+<div class="puzzle">
+<p><strong>Your turn</strong>: Create a new dataset named <code>national_data_combined</code> that uses <code>left_join()</code> to combine <code>national_data</code> with <code>national_libraries</code> by state and year.</p>
+</div>
+<iframe style="margin:0 auto; min-width: 100%;" id="learnr-12-lesson-joining4" class="interactive" src="https://andrewheiss.shinyapps.io/datavizm20_12-joining-4/" scrolling="no" frameborder="no" onload='iFrameResize({}, "#learnr-12-lesson-joining4")'></iframe>
+
+<p>If one dataset has things like state and year, but another only has state, <code>left_join()</code> will still work, but it will only join where the state is the same. For instance, here’s what happens when we join the region data to the yearly national data:</p>
+<pre class="r"><code>national_data_with_region &lt;- national_data %&gt;% 
+  left_join(state_regions, by = &quot;state&quot;)
+national_data_with_region</code></pre>
+<pre><code>## # A tibble: 9 x 6
+##   state  year unemployment inflation population region
+##   &lt;chr&gt; &lt;dbl&gt;        &lt;dbl&gt;     &lt;dbl&gt;      &lt;dbl&gt; &lt;chr&gt; 
+## 1 GA     2018          5         2          100 South 
+## 2 GA     2019          5.3       1.8        200 South 
+## 3 GA     2020          5.2       2.5        300 South 
+## 4 NC     2018          6.1       1.8        350 South 
+## 5 NC     2019          5.9       1.6        375 South 
+## 6 NC     2020          5.3       1.8        400 South 
+## 7 CO     2018          4.7       2.7        200 West  
+## 8 CO     2019          4.4       2.6        300 West  
+## 9 CO     2020          5.1       2.5        400 West</code></pre>
+<p>The “South” region gets added to every row where the state is “GA” and “NC”, even though those rows only appear once in <code>state_regions</code>. <code>left_join()</code> will still match all the values even if states are repeated. Magic!</p>
+</div>
+<div id="common-column-names" class="section level2">
+<h2>Common column names</h2>
+<p>So far, the column names in both datasets have been the same, which has greatly simplified life. In fact, if the columns have the same name, we can technically leave out the <code>by</code> argument and R will guess:</p>
+<pre class="r"><code>national_data %&gt;% 
+  left_join(national_libraries)</code></pre>
+<pre><code>## Joining, by = c(&quot;state&quot;, &quot;year&quot;)</code></pre>
+<pre><code>## # A tibble: 9 x 7
+##   state  year unemployment inflation population libraries schools
+##   &lt;chr&gt; &lt;dbl&gt;        &lt;dbl&gt;     &lt;dbl&gt;      &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;
+## 1 GA     2018          5         2          100        NA      NA
+## 2 GA     2019          5.3       1.8        200        NA      NA
+## 3 GA     2020          5.2       2.5        300        NA      NA
+## 4 NC     2018          6.1       1.8        350       200     610
+## 5 NC     2019          5.9       1.6        375       210     590
+## 6 NC     2020          5.3       1.8        400       220     530
+## 7 CO     2018          4.7       2.7        200       230     470
+## 8 CO     2019          4.4       2.6        300       240     440
+## 9 CO     2020          5.1       2.5        400       270     510</code></pre>
+<p>It’s good practice to be specific about the columns you want and actually use <code>by</code>, but I will often run <code>left_join()</code> without it and then copy the message that it generates (“<code>by = c("state", "year")</code>”) and paste it into my code.</p>
+<p>But what if the column names don’t match? Let’s rename the state column in our state/region table for fun:</p>
+<pre class="r"><code>state_regions_different &lt;- state_regions %&gt;% 
+  rename(ST = state)
+state_regions_different</code></pre>
+<pre><code>## # A tibble: 51 x 2
+##    region    ST   
+##    &lt;chr&gt;     &lt;chr&gt;
+##  1 West      AK   
+##  2 South     AL   
+##  3 South     AR   
+##  4 West      AZ   
+##  5 West      CA   
+##  6 West      CO   
+##  7 Northeast CT   
+##  8 South     DC   
+##  9 South     DE   
+## 10 South     FL   
+## # … with 41 more rows</code></pre>
+<p>Now watch what happens when we try to join the datasets:</p>
+<pre class="r"><code>national_data %&gt;% 
+  left_join(state_regions_different)</code></pre>
+<pre><code>## Error: `by` required, because the data sources have no common variables</code></pre>
+<p>There are no common variables, so we get an error. The <code>state</code> and <code>ST</code> columns really are common variables, but R doesn’t know that.</p>
+<p>We have two options:</p>
+<ol style="list-style-type: decimal">
+<li>Rename one of the columns so it matches (either change <code>state</code> to <code>ST</code> or change <code>ST</code> to <code>state</code>)</li>
+<li>Tell <code>left_join()</code> which columns are the same</li>
+</ol>
+<p>We can do option two by modifying the <code>by</code> argument like so:</p>
+<pre class="r"><code>national_data %&gt;% 
+  left_join(state_regions_different, by = c(&quot;state&quot; = &quot;ST&quot;))</code></pre>
+<pre><code>## # A tibble: 9 x 6
+##   state  year unemployment inflation population region
+##   &lt;chr&gt; &lt;dbl&gt;        &lt;dbl&gt;     &lt;dbl&gt;      &lt;dbl&gt; &lt;chr&gt; 
+## 1 GA     2018          5         2          100 South 
+## 2 GA     2019          5.3       1.8        200 South 
+## 3 GA     2020          5.2       2.5        300 South 
+## 4 NC     2018          6.1       1.8        350 South 
+## 5 NC     2019          5.9       1.6        375 South 
+## 6 NC     2020          5.3       1.8        400 South 
+## 7 CO     2018          4.7       2.7        200 West  
+## 8 CO     2019          4.4       2.6        300 West  
+## 9 CO     2020          5.1       2.5        400 West</code></pre>
+</div>
+<div id="right_join" class="section level2">
+<h2><code>right_join()</code></h2>
+<p>Once again, <a href="https://github.com/gadenbuie/tidyexplain#right-join" target="_blank">go to this page in a new tab</a> and watch the animation.</p>
+<p><code>right_join()</code> works exactly like <code>left_join()</code>, but in reverse. The <em>second</em> dataset is the base data. Any rows in the second dataset that don’t match in the first will be kept, and any rows from the first that don’t match will get thrown away.</p>
+<p>Watch what happens if we right join <code>national_data</code> and <code>state_regions</code>:</p>
+<pre class="r"><code>national_data %&gt;% 
+  right_join(state_regions, by = &quot;state&quot;)</code></pre>
+<pre><code>## # A tibble: 57 x 6
+##    state  year unemployment inflation population region   
+##    &lt;chr&gt; &lt;dbl&gt;        &lt;dbl&gt;     &lt;dbl&gt;      &lt;dbl&gt; &lt;chr&gt;    
+##  1 AK       NA         NA        NA           NA West     
+##  2 AL       NA         NA        NA           NA South    
+##  3 AR       NA         NA        NA           NA South    
+##  4 AZ       NA         NA        NA           NA West     
+##  5 CA       NA         NA        NA           NA West     
+##  6 CO     2018          4.7       2.7        200 West     
+##  7 CO     2019          4.4       2.6        300 West     
+##  8 CO     2020          5.1       2.5        400 West     
+##  9 CT       NA         NA        NA           NA Northeast
+## 10 DC       NA         NA        NA           NA South    
+## # … with 47 more rows</code></pre>
+<p>Yikes. R kept all the rows in <code>state_regions</code>, brought in the columns from <code>national_data</code> and filled most of the new columns with <code>NA</code>, and then repeated Colorado (and NC and GA) three times for each of the years from <code>national_data</code>. That’s a mess.</p>
+<p>If we reverse the order, we’ll get the correct merged data:</p>
+<pre class="r"><code>state_regions %&gt;% 
+  right_join(national_data, by = &quot;state&quot;)</code></pre>
+<pre><code>## # A tibble: 9 x 6
+##   region state  year unemployment inflation population
+##   &lt;chr&gt;  &lt;chr&gt; &lt;dbl&gt;        &lt;dbl&gt;     &lt;dbl&gt;      &lt;dbl&gt;
+## 1 South  GA     2018          5         2          100
+## 2 South  GA     2019          5.3       1.8        200
+## 3 South  GA     2020          5.2       2.5        300
+## 4 South  NC     2018          6.1       1.8        350
+## 5 South  NC     2019          5.9       1.6        375
+## 6 South  NC     2020          5.3       1.8        400
+## 7 West   CO     2018          4.7       2.7        200
+## 8 West   CO     2019          4.4       2.6        300
+## 9 West   CO     2020          5.1       2.5        400</code></pre>
+<p>I rarely use <code>right_join()</code> because I find it more intuitive to just use <code>left_join()</code> since in my head, I’m taking a dataset and stacking columns onto the end of it. If you want to right join instead, neat—just remember to order things correctly.</p>
+</div>
+
+                    </div>
+
+                    
+
+
+
+                    
+                </div>
+
+                <div class="body-footer">
+                    <p>Last updated on May 27, 2020</p>
+
+                    
+
+
+                    
+
+                </div>
+
+            </article>
+
+            <footer>
+    <hr>
+
+    <div class="row course-info">
+        <div class="col-md-7">
+            <p>
+                <strong>SSC 442: Data Analytics (Fall Semester 2020)</strong><br>
+
+                <a href="https://www.msu.edu" target="_blank" rel="noopener">Michigan State University</a> &emsp;&emsp;
+                <a href="https://socialscience.msu.edu/" target="_blank" rel="noopener">College of Social Science</a>
+            </p>
+
+            <p>
+                <a href="https://www.benbushong.com" target="_blank" rel="noopener"><i class="fas fa-user"></i>
+                    Prof. Ben Bushjong</a> &emsp;&emsp;
+                <a href="mailto:bbushong@msu.edu"><i class="fas fa-envelope"></i>
+                    bbushong@msu.edu</a>
+            </p>
+
+            <p>
+                <i class="far fa-calendar-alt"></i> Tuesday and Thursday &emsp;&emsp;
+                <i class="far fa-clock"></i> Whenever 
+                
+            </p>
+        </div>
+
+        <div class="col-md-5 credits">
+            <p>All content licensed under a <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" rel="noopener">Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International License</a>.</p>
+            
+            <p>Content <i class="fab fa-creative-commons"></i> 2020 <a href="https://www.benbushong.com" target="_blank" rel="noopener">Ben Bushong</a></p>
+        
+            <p>This site created with the <a href="https://sourcethemes.com/academic/" target="_blank" rel="noopener">Academic theme</a> in <a href="https://bookdown.org/yihui/blogdown/" target="_blank" rel="noopener">blogdown</a> and <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a>. </p>
+            
+            <p><a href="https://github.com/" target="_blank" rel="noopener"><i class="fab fa-github"></i> View the source at GitHub.</a></p>
+        </div>
+    </div>
+</footer>
+
+
+        </main>
+    </div>
+</div>
+
+        
+
+    
+    
+    
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/4.1.4/imagesloaded.pkgd.min.js" integrity="sha256-lqvxZrPLtfffUl2G/e7szqSvPBILGbwmsGE1MKlOi0Q=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.6/isotope.pkgd.min.js" integrity="sha256-CBrpuqrMhXwcLLUd5tvQ4euBHCdh7wGlDfNz8vbu/iI=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+
+      
+
+      
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/highlight.min.js" integrity="sha256-eOgo0OtLL4cdq7RdwRUiGKLX9XsIJ7nGhWEKbohmVAQ=" crossorigin="anonymous"></script>
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/languages/r.min.js"></script>
+        
+      
+
+    
+
+    
+    
+
+    
+    
+    <script>const code_highlighting = true;</script>
+    
+
+    
+    
+    <script>const isSiteThemeDark = false;</script>
+    
+
+    
+
+    
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/anchor-js/4.1.1/anchor.min.js" integrity="sha256-pB/deHc9CGfFpJRjC43imB29Rse8tak+5eXqntO94ck=" crossorigin="anonymous"></script>
+    <script>
+      anchors.add();
+    </script>
+    
+
+    
+
+    
+    
+
+    
+    
+
+    
+    
+
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <script src="/js/academic.min.6f7ce8be710290b8c431bbc97f405d15.js"></script>
+
+    
+<script src="https://cdnjs.cloudflare.com/ajax/libs/iframe-resizer/3.5.16/iframeResizer.min.js" type="text/javascript"></script>
+
+
+
+
+    
+    
+
+    
+<div id="modal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Cite</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <pre><code class="tex hljs"></code></pre>
+      </div>
+      <div class="modal-footer">
+        <a class="btn btn-outline-primary my-1 js-copy-cite" href="#" target="_blank">
+          <i class="fas fa-copy"></i> Copy
+        </a>
+        <a class="btn btn-outline-primary my-1 js-download-cite" href="#" target="_blank">
+          <i class="fas fa-download"></i> Download
+        </a>
+        <div id="modal-error"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+
+</html>
