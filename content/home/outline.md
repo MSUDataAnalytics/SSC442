@@ -16,5 +16,3 @@ design:
 ---
 
 {{< courseinfo >}}
-
-{{< figure src="/img/dataviz-flowchart.png" alt="Course map" >}}
