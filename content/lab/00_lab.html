@@ -1,8 +1,6 @@
 ---
 title: "Programming Basics in R"
 linktitle: "0: Introduction to R"
-date: "2020-05-11"
-class_date: "2020-05-11"
 output:
   blogdown::html_page:
     toc: true
@@ -25,14 +23,13 @@ editor_options:
 <li><a href="#namespaces">Namespaces</a></li>
 <li><a href="#for-loops">For-loops</a></li>
 <li><a href="#vectorization">Vectorization and functionals</a></li>
-<li><a href="#exercises">Exercises</a></li>
 </ul></li>
 </ul>
 </div>
 
 <div class="fyi">
-<p><strong>NOTE</strong>
-This lab is not due for credit.</p>
+<p><strong>NOTE:</strong></p>
+<p>This lab is not due for credit. Nevertheless, if you do not have a <em>firm</em> grasp of <code>R</code>, you should work through both the entirety of this section and the exercises at the end. There are a number of tricks that will come up over and over.</p>
 </div>
 <div id="programming-basics" class="section level1">
 <h1>Programming basics</h1>
@@ -251,6 +248,7 @@ The following objects are masked from ‘package:base’:
 </div>
 <div id="for-loops" class="section level2">
 <h2>For-loops</h2>
+<p>If we had to write this section in a single sentence, it would be: Don’t use for-loops. Looping is intuitive, but <code>R</code> is designed to provide more computationally efficient solutions. For-loops should be considered a quick-and-dirty way to get an answer. But, hey, you live your own life. Below we provide a brief overview to for-looping.</p>
 <p>The formula for the sum of the series <span class="math inline">\(1+2+\dots+n\)</span> is <span class="math inline">\(n(n+1)/2\)</span>. What if we weren’t sure that was the right function? How could we check? Using what we learned about functions we can create one that computes the <span class="math inline">\(S_n\)</span>:</p>
 <pre class="r"><code>compute_s_n &lt;- function(n){
   x &lt;- 1:n
@@ -310,7 +308,7 @@ lines(n, n*(n+1)/2)
 </div>
 <div id="vectorization" class="section level2">
 <h2>Vectorization and functionals</h2>
-<p>Although for-loops are an important concept to understand, in <code>R</code> we rarely use them. As you learn more R, you will realize that <em>vectorization</em> is preferred over for-loops since it results in shorter and clearer code. We already saw examples in the Vector Arithmetic section. A <em>vectorized</em> function is a function that will apply the same operation on each of the vectors.</p>
+<p>Although for-loops are an important concept to understand, in <code>R</code> we rarely use them. As you learn more <code>R</code>, you will realize that <em>vectorization</em> is preferred over for-loops since it results in shorter and clearer code. (It’s also vastly more efficient computationally, which can matter as your data grows.) A <em>vectorized</em> function is a function that will apply the same operation on each of the vectors.</p>
 <pre class="r"><code>x &lt;- 1:10
 sqrt(x)</code></pre>
 <pre><code>##  [1] 1.000000 1.414214 1.732051 2.000000 2.236068 2.449490 2.645751 2.828427
@@ -331,10 +329,11 @@ sapply(x, sqrt)</code></pre>
 <pre class="r"><code>n &lt;- 1:25
 s_n &lt;- sapply(n, compute_s_n)</code></pre>
 <p>Other functionals are <code>apply</code>, <code>lapply</code>, <code>tapply</code>, <code>mapply</code>, <code>vapply</code>, and <code>replicate</code>. We mostly use <code>sapply</code>, <code>apply</code>, and <code>replicate</code> in this book, but we recommend familiarizing yourselves with the others as they can be very useful.</p>
-</div>
-<div id="exercises" class="section level2">
-<h2>Exercises</h2>
-<p>1. What will this conditional expression return?</p>
+<div class="fyi">
+<p><strong>EXERCISES</strong></p>
+<ol style="list-style-type: decimal">
+<li>What will this conditional expression return?</li>
+</ol>
 <pre class="r"><code>x &lt;- c(1,2,-3,4)
 
 if(all(x&gt;0)){
@@ -342,28 +341,35 @@ if(all(x&gt;0)){
 } else{
   print(&quot;Not all positives&quot;)
 }</code></pre>
-<p>2. Which of the following expressions is always <code>FALSE</code> when at least one entry of a logical vector <code>x</code> is TRUE?</p>
+<ol start="2" style="list-style-type: decimal">
+<li>Which of the following expressions is always <code>FALSE</code> when at least one entry of a logical vector <code>x</code> is TRUE?</li>
+</ol>
 <ol style="list-style-type: lower-alpha">
 <li><code>all(x)</code></li>
 <li><code>any(x)</code></li>
 <li><code>any(!x)</code></li>
 <li><code>all(!x)</code></li>
 </ol>
-<p>3. The function <code>nchar</code> tells you how many characters long a character vector is. Write a line of code that assigns to the object <code>new_names</code> the state abbreviation when the state name is longer than 8 characters.</p>
-<p>4. Create a function <code>sum_n</code> that for any given value, say <span class="math inline">\(n\)</span>, computes the sum of the integers from 1 to n (inclusive). Use the function to determine the sum of integers from 1 to 5,000.</p>
-<p>5. Create a function <code>altman_plot</code> that takes two arguments, <code>x</code> and <code>y</code>, and plots the difference against the sum.</p>
-<p>6. After running the code below, what is the value of <code>x</code>?</p>
+<ol start="3" style="list-style-type: decimal">
+<li><p>The function <code>nchar</code> tells you how many characters long a character vector is. Write a line of code that assigns to the object <code>new_names</code> the state abbreviation when the state name is longer than 8 characters.</p></li>
+<li><p>Create a function <code>sum_n</code> that for any given value, say <span class="math inline">\(n\)</span>, computes the sum of the integers from 1 to n (inclusive). Use the function to determine the sum of integers from 1 to 5,000.</p></li>
+<li><p>Create a function <code>altman_plot</code> that takes two arguments, <code>x</code> and <code>y</code>, and plots the difference against the sum.</p></li>
+<li><p>After running the code below, what is the value of <code>x</code>?</p></li>
+</ol>
 <pre class="r"><code>x &lt;- 3
 my_func &lt;- function(y){
   x &lt;- 5
   y+5
 }</code></pre>
-<p>7. Write a function <code>compute_s_n</code> that for any given <span class="math inline">\(n\)</span> computes the sum <span class="math inline">\(S_n = 1^2 + 2^2 + 3^2 + \dots n^2\)</span>. Report the value of the sum when <span class="math inline">\(n=10\)</span>.</p>
-<p>8. Define an empty numerical vector <code>s_n</code> of size 25 using <code>s_n &lt;- vector("numeric", 25)</code> and store in the results of <span class="math inline">\(S_1, S_2, \dots S_{25}\)</span> using a for-loop.</p>
-<p>9. Repeat exercise 8, but this time use <code>sapply</code>.</p>
-<p>10. Repeat exercise 8, but this time use <code>map_dbl</code>.</p>
-<p>11. Plot <span class="math inline">\(S_n\)</span> versus <span class="math inline">\(n\)</span>. Use points defined by <span class="math inline">\(n=1,\dots,25\)</span>.</p>
-<p>12. Confirm that the formula for this sum is <span class="math inline">\(S_n= n(n+1)(2n+1)/6\)</span>.</p>
+<ol start="7" style="list-style-type: decimal">
+<li><p>Write a function <code>compute_s_n</code> that for any given <span class="math inline">\(n\)</span> computes the sum <span class="math inline">\(S_n = 1^2 + 2^2 + 3^2 + \dots n^2\)</span>. Report the value of the sum when <span class="math inline">\(n=10\)</span>.</p></li>
+<li><p>Define an empty numerical vector <code>s_n</code> of size 25 using <code>s_n &lt;- vector("numeric", 25)</code> and store in the results of <span class="math inline">\(S_1, S_2, \dots S_{25}\)</span> using a for-loop.</p></li>
+<li><p>Repeat exercise 8, but this time use <code>sapply</code>.</p></li>
+<li><p>Repeat exercise 8, but this time use <code>map_dbl</code>.</p></li>
+<li><p>Plot <span class="math inline">\(S_n\)</span> versus <span class="math inline">\(n\)</span>. Use points defined by <span class="math inline">\(n=1,\dots,25\)</span>.</p></li>
+<li><p>Confirm that the formula for this sum is <span class="math inline">\(S_n= n(n+1)(2n+1)/6\)</span>.</p></li>
+</ol>
+</div>
 </div>
 </div>
 <div class="footnotes">

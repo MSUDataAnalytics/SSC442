@@ -15,7 +15,7 @@
     <item>
       <title>Programming Basics in R</title>
       <link>/lab/00_lab/</link>
-      <pubDate>Mon, 11 May 2020 00:00:00 +0000</pubDate>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       <guid>/lab/00_lab/</guid>
       <description>
 
@@ -27,14 +27,13 @@
 &lt;li&gt;&lt;a href=&#34;#namespaces&#34;&gt;Namespaces&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;#for-loops&#34;&gt;For-loops&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;#vectorization&#34;&gt;Vectorization and functionals&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;#exercises&#34;&gt;Exercises&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/div&gt;
 
 &lt;div class=&#34;fyi&#34;&gt;
-&lt;p&gt;&lt;strong&gt;NOTE&lt;/strong&gt;
-This lab is not due for credit.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;NOTE:&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;This lab is not due for credit. Nevertheless, if you do not have a &lt;em&gt;firm&lt;/em&gt; grasp of &lt;code&gt;R&lt;/code&gt;, you should work through both the entirety of this section and the exercises at the end. There are a number of tricks that will come up over and over.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;programming-basics&#34; class=&#34;section level1&#34;&gt;
 &lt;h1&gt;Programming basics&lt;/h1&gt;
@@ -253,6 +252,7 @@ The following objects are masked from ‘package:base’:
 &lt;/div&gt;
 &lt;div id=&#34;for-loops&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;For-loops&lt;/h2&gt;
+&lt;p&gt;If we had to write this section in a single sentence, it would be: Don’t use for-loops. Looping is intuitive, but &lt;code&gt;R&lt;/code&gt; is designed to provide more computationally efficient solutions. For-loops should be considered a quick-and-dirty way to get an answer. But, hey, you live your own life. Below we provide a brief overview to for-looping.&lt;/p&gt;
 &lt;p&gt;The formula for the sum of the series &lt;span class=&#34;math inline&#34;&gt;\(1+2+\dots+n\)&lt;/span&gt; is &lt;span class=&#34;math inline&#34;&gt;\(n(n+1)/2\)&lt;/span&gt;. What if we weren’t sure that was the right function? How could we check? Using what we learned about functions we can create one that computes the &lt;span class=&#34;math inline&#34;&gt;\(S_n\)&lt;/span&gt;:&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;compute_s_n &amp;lt;- function(n){
   x &amp;lt;- 1:n
@@ -312,7 +312,7 @@ lines(n, n*(n+1)/2)
 &lt;/div&gt;
 &lt;div id=&#34;vectorization&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Vectorization and functionals&lt;/h2&gt;
-&lt;p&gt;Although for-loops are an important concept to understand, in &lt;code&gt;R&lt;/code&gt; we rarely use them. As you learn more R, you will realize that &lt;em&gt;vectorization&lt;/em&gt; is preferred over for-loops since it results in shorter and clearer code. We already saw examples in the Vector Arithmetic section. A &lt;em&gt;vectorized&lt;/em&gt; function is a function that will apply the same operation on each of the vectors.&lt;/p&gt;
+&lt;p&gt;Although for-loops are an important concept to understand, in &lt;code&gt;R&lt;/code&gt; we rarely use them. As you learn more &lt;code&gt;R&lt;/code&gt;, you will realize that &lt;em&gt;vectorization&lt;/em&gt; is preferred over for-loops since it results in shorter and clearer code. (It’s also vastly more efficient computationally, which can matter as your data grows.) A &lt;em&gt;vectorized&lt;/em&gt; function is a function that will apply the same operation on each of the vectors.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;x &amp;lt;- 1:10
 sqrt(x)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;##  [1] 1.000000 1.414214 1.732051 2.000000 2.236068 2.449490 2.645751 2.828427
@@ -333,10 +333,11 @@ sapply(x, sqrt)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;n &amp;lt;- 1:25
 s_n &amp;lt;- sapply(n, compute_s_n)&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Other functionals are &lt;code&gt;apply&lt;/code&gt;, &lt;code&gt;lapply&lt;/code&gt;, &lt;code&gt;tapply&lt;/code&gt;, &lt;code&gt;mapply&lt;/code&gt;, &lt;code&gt;vapply&lt;/code&gt;, and &lt;code&gt;replicate&lt;/code&gt;. We mostly use &lt;code&gt;sapply&lt;/code&gt;, &lt;code&gt;apply&lt;/code&gt;, and &lt;code&gt;replicate&lt;/code&gt; in this book, but we recommend familiarizing yourselves with the others as they can be very useful.&lt;/p&gt;
-&lt;/div&gt;
-&lt;div id=&#34;exercises&#34; class=&#34;section level2&#34;&gt;
-&lt;h2&gt;Exercises&lt;/h2&gt;
-&lt;p&gt;1. What will this conditional expression return?&lt;/p&gt;
+&lt;div class=&#34;fyi&#34;&gt;
+&lt;p&gt;&lt;strong&gt;EXERCISES&lt;/strong&gt;&lt;/p&gt;
+&lt;ol style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;What will this conditional expression return?&lt;/li&gt;
+&lt;/ol&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;x &amp;lt;- c(1,2,-3,4)
 
 if(all(x&amp;gt;0)){
@@ -344,28 +345,35 @@ if(all(x&amp;gt;0)){
 } else{
   print(&amp;quot;Not all positives&amp;quot;)
 }&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;2. Which of the following expressions is always &lt;code&gt;FALSE&lt;/code&gt; when at least one entry of a logical vector &lt;code&gt;x&lt;/code&gt; is TRUE?&lt;/p&gt;
+&lt;ol start=&#34;2&#34; style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;Which of the following expressions is always &lt;code&gt;FALSE&lt;/code&gt; when at least one entry of a logical vector &lt;code&gt;x&lt;/code&gt; is TRUE?&lt;/li&gt;
+&lt;/ol&gt;
 &lt;ol style=&#34;list-style-type: lower-alpha&#34;&gt;
 &lt;li&gt;&lt;code&gt;all(x)&lt;/code&gt;&lt;/li&gt;
 &lt;li&gt;&lt;code&gt;any(x)&lt;/code&gt;&lt;/li&gt;
 &lt;li&gt;&lt;code&gt;any(!x)&lt;/code&gt;&lt;/li&gt;
 &lt;li&gt;&lt;code&gt;all(!x)&lt;/code&gt;&lt;/li&gt;
 &lt;/ol&gt;
-&lt;p&gt;3. The function &lt;code&gt;nchar&lt;/code&gt; tells you how many characters long a character vector is. Write a line of code that assigns to the object &lt;code&gt;new_names&lt;/code&gt; the state abbreviation when the state name is longer than 8 characters.&lt;/p&gt;
-&lt;p&gt;4. Create a function &lt;code&gt;sum_n&lt;/code&gt; that for any given value, say &lt;span class=&#34;math inline&#34;&gt;\(n\)&lt;/span&gt;, computes the sum of the integers from 1 to n (inclusive). Use the function to determine the sum of integers from 1 to 5,000.&lt;/p&gt;
-&lt;p&gt;5. Create a function &lt;code&gt;altman_plot&lt;/code&gt; that takes two arguments, &lt;code&gt;x&lt;/code&gt; and &lt;code&gt;y&lt;/code&gt;, and plots the difference against the sum.&lt;/p&gt;
-&lt;p&gt;6. After running the code below, what is the value of &lt;code&gt;x&lt;/code&gt;?&lt;/p&gt;
+&lt;ol start=&#34;3&#34; style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;&lt;p&gt;The function &lt;code&gt;nchar&lt;/code&gt; tells you how many characters long a character vector is. Write a line of code that assigns to the object &lt;code&gt;new_names&lt;/code&gt; the state abbreviation when the state name is longer than 8 characters.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Create a function &lt;code&gt;sum_n&lt;/code&gt; that for any given value, say &lt;span class=&#34;math inline&#34;&gt;\(n\)&lt;/span&gt;, computes the sum of the integers from 1 to n (inclusive). Use the function to determine the sum of integers from 1 to 5,000.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Create a function &lt;code&gt;altman_plot&lt;/code&gt; that takes two arguments, &lt;code&gt;x&lt;/code&gt; and &lt;code&gt;y&lt;/code&gt;, and plots the difference against the sum.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;After running the code below, what is the value of &lt;code&gt;x&lt;/code&gt;?&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;x &amp;lt;- 3
 my_func &amp;lt;- function(y){
   x &amp;lt;- 5
   y+5
 }&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;7. Write a function &lt;code&gt;compute_s_n&lt;/code&gt; that for any given &lt;span class=&#34;math inline&#34;&gt;\(n\)&lt;/span&gt; computes the sum &lt;span class=&#34;math inline&#34;&gt;\(S_n = 1^2 + 2^2 + 3^2 + \dots n^2\)&lt;/span&gt;. Report the value of the sum when &lt;span class=&#34;math inline&#34;&gt;\(n=10\)&lt;/span&gt;.&lt;/p&gt;
-&lt;p&gt;8. Define an empty numerical vector &lt;code&gt;s_n&lt;/code&gt; of size 25 using &lt;code&gt;s_n &amp;lt;- vector(&#34;numeric&#34;, 25)&lt;/code&gt; and store in the results of &lt;span class=&#34;math inline&#34;&gt;\(S_1, S_2, \dots S_{25}\)&lt;/span&gt; using a for-loop.&lt;/p&gt;
-&lt;p&gt;9. Repeat exercise 8, but this time use &lt;code&gt;sapply&lt;/code&gt;.&lt;/p&gt;
-&lt;p&gt;10. Repeat exercise 8, but this time use &lt;code&gt;map_dbl&lt;/code&gt;.&lt;/p&gt;
-&lt;p&gt;11. Plot &lt;span class=&#34;math inline&#34;&gt;\(S_n\)&lt;/span&gt; versus &lt;span class=&#34;math inline&#34;&gt;\(n\)&lt;/span&gt;. Use points defined by &lt;span class=&#34;math inline&#34;&gt;\(n=1,\dots,25\)&lt;/span&gt;.&lt;/p&gt;
-&lt;p&gt;12. Confirm that the formula for this sum is &lt;span class=&#34;math inline&#34;&gt;\(S_n= n(n+1)(2n+1)/6\)&lt;/span&gt;.&lt;/p&gt;
+&lt;ol start=&#34;7&#34; style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;&lt;p&gt;Write a function &lt;code&gt;compute_s_n&lt;/code&gt; that for any given &lt;span class=&#34;math inline&#34;&gt;\(n\)&lt;/span&gt; computes the sum &lt;span class=&#34;math inline&#34;&gt;\(S_n = 1^2 + 2^2 + 3^2 + \dots n^2\)&lt;/span&gt;. Report the value of the sum when &lt;span class=&#34;math inline&#34;&gt;\(n=10\)&lt;/span&gt;.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Define an empty numerical vector &lt;code&gt;s_n&lt;/code&gt; of size 25 using &lt;code&gt;s_n &amp;lt;- vector(&#34;numeric&#34;, 25)&lt;/code&gt; and store in the results of &lt;span class=&#34;math inline&#34;&gt;\(S_1, S_2, \dots S_{25}\)&lt;/span&gt; using a for-loop.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Repeat exercise 8, but this time use &lt;code&gt;sapply&lt;/code&gt;.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Repeat exercise 8, but this time use &lt;code&gt;map_dbl&lt;/code&gt;.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Plot &lt;span class=&#34;math inline&#34;&gt;\(S_n\)&lt;/span&gt; versus &lt;span class=&#34;math inline&#34;&gt;\(n\)&lt;/span&gt;. Use points defined by &lt;span class=&#34;math inline&#34;&gt;\(n=1,\dots,25\)&lt;/span&gt;.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Confirm that the formula for this sum is &lt;span class=&#34;math inline&#34;&gt;\(S_n= n(n+1)(2n+1)/6\)&lt;/span&gt;.&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;div class=&#34;footnotes&#34;&gt;
