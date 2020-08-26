@@ -1,6 +1,6 @@
 ---
-title: "Introduction to the tidyverse and Data Visualization"
-linktitle: "1: Tidyverse and Visualization"
+title: "Introduction to the tidyverse"
+linktitle: "1: The Tidyverse"
 date: "2020-09-10"
 read_date: "2020-09-10"
 menu:
@@ -8,8 +8,6 @@ menu:
     parent: Course content
     weight: 1
 type: docs
-bibliography: "../../static/bib/references.bib"
-csl: "../../static/bib/chicago-fullnote-bibliography-no-bib.csl"
 slides: "01-slides"
 output:
   blogdown::html_page:
@@ -32,8 +30,16 @@ For future lectures, the guiding questions will be more pointed and at a higher 
 
 ## Slides
 
-There are no slides for this lesson; the content below is intended to serve as a refresher for those who may have forgotten some of the basics of `R`. This content will form the first week of the course and will include the Example 0.
+The slides below are a much broader overview about goals for the class and thinking about relationships that we might explore with data. The technical aspects of this lecture will be explored in greater detail in the Thursday practical lecture.
 
+```{r show-slide-tabs, echo=FALSE, results="asis"}
+source(here::here("R", "slide_tabs.R"))
+sections <- tibble::tribble(
+  ~name, ~slide, ~active,
+  "Overview", "Overview", TRUE,
+)
+slide_tabs(sections, "/slides/01-slides.html")
+```
 
 :::fyi
 **NOTE**
@@ -90,26 +96,25 @@ The same information is provided, but there are two important differences in the
 
 Although not immediately obvious, as you go through the book you will start to appreciate the advantages of working in a framework in which functions use tidy formats for both inputs and outputs. You will see how this permits the data analyst to focus on more important aspects of the analysis rather than the format of the data.
 
-## Exercises
+:::fyi
 
+**TRY IT**
 
-1\. Examine the built-in dataset `co2`. Which of the following is true:
+1. Examine the built-in dataset `co2`. Which of the following is true:
 
 a. `co2` is tidy data: it has one year for each row.
 b. `co2` is not tidy: we need at least one column with a character vector.
 c. `co2` is not tidy:  it is a matrix instead of a data frame.
 d. `co2` is not tidy: to be tidy we would have to wrangle it to have three columns (year, month and value), then each co2 observation would have a row.
 
-
-2\. Examine the built-in dataset  `ChickWeight`. Which of the following is true:
+2. Examine the built-in dataset  `ChickWeight`. Which of the following is true:
 
 a.  `ChickWeight` is not tidy: each chick has more than one row.
 b.  `ChickWeight` is tidy: each observation (a weight) is represented by one row. The chick from which this measurement came is one of the variables.
 c.  `ChickWeight` is not tidy: we are missing the year column.
 d.  `ChickWeight` is tidy: it is stored in a data frame.
 
-
-3\. Examine the built-in dataset `BOD`. Which of the following is true:
+3. Examine the built-in dataset `BOD`. Which of the following is true:
 
 a. `BOD` is not tidy: it only has six rows.
 b. `BOD` is not tidy: the first column is just an index.
@@ -117,7 +122,7 @@ c. `BOD` is tidy: each row is an observation with two values (time and demand)
 d. `BOD` is tidy: all small datasets are tidy by definition.
 
 
-4\. Which of the following built-in datasets is tidy (you can pick more than one):
+4. Which of the following built-in datasets is tidy (you can pick more than one):
 
 a. `BJsales`
 b. `EuStockMarkets`
@@ -126,6 +131,7 @@ d. `Formaldehyde`
 e. `Orange`
 f. `UCBAdmissions`
 
+:::
 
 ## Manipulating data frames
 
@@ -161,7 +167,6 @@ Now suppose that we want to filter the data table to only show the entries for w
 filter(murders, rate <= 0.71)
 ```
 
-
 ### Selecting columns with `select`
 
 Although our data table only has six columns, some data tables include hundreds. If we want to view just a few, we can use the __dplyr__ `select` function. In the code below we select three columns, assign this to a new object and then filter the new object:
@@ -173,9 +178,11 @@ filter(new_table, rate <= 0.71)
 
 In the call to `select`, the first argument `murders` is an object, but `state`, `region`, and `rate` are variable names.
 
-## Exercises
+:::fyi
 
-1\. Load the __dplyr__ package and the murders dataset.
+**TRY IT**
+
+1. Load the __dplyr__ package and the murders dataset.
 
 ```{r, eval=FALSE}
 library(dplyr)
@@ -185,7 +192,6 @@ data(murders)
 
 You can add columns using the __dplyr__ function `mutate`. This function is aware of the column names and inside the function you can call them unquoted:
 
-
 ```{r, eval=FALSE}
 murders <- mutate(murders, population_in_millions = population / 10^6)
 ```
@@ -194,11 +200,9 @@ We can write `population` rather than `murders$population`. The function `mutate
 
 Use the function `mutate` to add a murders column named `rate` with the per 100,000 murder rate as in the example code above. Make sure you redefine `murders` as done in the example code above ( murders <- [your code]) so we can keep using this variable.
 
-2\. If `rank(x)` gives you the ranks of `x` from lowest to highest, `rank(-x)` gives you the ranks from highest to lowest. Use the function `mutate` to add a column `rank` containing the rank, from highest to lowest murder rate. Make sure you redefine `murders` so we can keep using this variable.
+2. If `rank(x)` gives you the ranks of `x` from lowest to highest, `rank(-x)` gives you the ranks from highest to lowest. Use the function `mutate` to add a column `rank` containing the rank, from highest to lowest murder rate. Make sure you redefine `murders` so we can keep using this variable.
 
-
-
-3\. With __dplyr__, we can use `select` to show only certain columns. For example, with this code we would only show the states and population sizes:
+3. With __dplyr__, we can use `select` to show only certain columns. For example, with this code we would only show the states and population sizes:
 
 ```{r, eval=FALSE}
 select(murders, state, population) %>% head()
@@ -207,7 +211,7 @@ select(murders, state, population) %>% head()
 Use `select` to show the state names and abbreviations in `murders`. Do not redefine `murders`, just show the results.
 
 
-4\. The __dplyr__ function `filter` is used to choose specific rows of the data frame to keep. Unlike `select` which is for columns, `filter` is for rows. For example, you can show just the New York row like this:
+4. The __dplyr__ function `filter` is used to choose specific rows of the data frame to keep. Unlike `select` which is for columns, `filter` is for rows. For example, you can show just the New York row like this:
 
 ```{r, eval=FALSE}
 filter(murders, state == "New York")
@@ -218,7 +222,7 @@ You can use other logical vectors to filter rows.
 Use `filter` to show the top 5 states with the highest murder rates. After we add murder rate and rank, do not change the murders dataset, just show the result. Remember that you can filter based on the `rank` column.
 
 
-5\. We can remove rows using the `!=` operator. For example, to remove Florida, we would do this:
+5. We can remove rows using the `!=` operator. For example, to remove Florida, we would do this:
 
 ```{r, eval=FALSE}
 no_florida <- filter(murders, state != "Florida")
@@ -227,7 +231,7 @@ no_florida <- filter(murders, state != "Florida")
 Create a new data frame called `no_south` that removes states from the South region. How many states are in this category? You can use the function `nrow` for this.
 
 
-6\. We can also use `%in%` to filter with __dplyr__. You can therefore see the data from New York and Texas like this:
+6. We can also use `%in%` to filter with __dplyr__. You can therefore see the data from New York and Texas like this:
 
 ```{r, eval=FALSE}
 filter(murders, state %in% c("New York", "Texas"))
@@ -236,13 +240,15 @@ filter(murders, state %in% c("New York", "Texas"))
 Create a new data frame called `murders_nw` with only the states from the Northeast and the West.  How many states are in this category?
 
 
-7\. Suppose you want to live in the Northeast or West **and** want the murder rate to be less than 1. We want to see the data for the states satisfying these options. Note that you can use logical operators with `filter`. Here is an example in which we filter to keep only small states in the Northeast region.
+7. Suppose you want to live in the Northeast or West **and** want the murder rate to be less than 1. We want to see the data for the states satisfying these options. Note that you can use logical operators with `filter`. Here is an example in which we filter to keep only small states in the Northeast region.
 
 ```{r, eval=FALSE}
 filter(murders, population < 5000000 & region == "Northeast")
 ```
 
 Make sure `murders` has been defined with `rate` and `rank` and still has all states. Create a table called `my_states` that contains rows for states satisfying both the conditions: it is in the Northeast or West and the murder rate is less than 1.  Use `select` to show only the state name, the rate, and the rank.
+
+:::
 
 ## The pipe: `%>%`
 
@@ -290,9 +296,11 @@ murders %>% select(state, region, rate) %>% filter(rate <= 0.71)
 
 Note that the pipe works well with functions where the first argument is the input data. Functions in __tidyverse__ packages like __dplyr__ have this format and can be used easily with the pipe.
 
-## Exercises
+:::fyi
 
-1\. The pipe `%>%` can be used to perform operations sequentially without having to define intermediate objects. Start by redefining murder to include rate and rank.
+**TRY IT**
+
+1. The pipe `%>%` can be used to perform operations sequentially without having to define intermediate objects. Start by redefining murder to include rate and rank.
 
 ```{r, eval=FALSE}
 murders <- mutate(murders, rate =  total / population * 100000,
@@ -319,7 +327,7 @@ Notice that `select` no longer has a data frame as the first argument. The first
 
 Repeat the previous exercise, but now instead of creating a new object, show the result and only include the state, rate, and rank columns. Use a pipe `%>%` to do this in just one line.
 
-2\. Reset `murders` to the original table by using `data(murders)`. Use a pipe to create a new data frame called `my_states` that considers only states in the Northeast or West which have a murder rate lower than 1, and contains only the state, rate and rank columns. The pipe should also have four components separated by three `%>%`. The code should look something like this:
+2. Reset `murders` to the original table by using `data(murders)`. Use a pipe to create a new data frame called `my_states` that considers only states in the Northeast or West which have a murder rate lower than 1, and contains only the state, rate and rank columns. The pipe should also have four components separated by three `%>%`. The code should look something like this:
 
 ```{r, eval=FALSE}
 my_states <- murders %>%
@@ -327,10 +335,11 @@ my_states <- murders %>%
   filter SOMETHING %>%
   select SOMETHING
 ```
+:::
 
 ## Summarizing data
 
-An important part of exploratory data analysis is summarizing data. The average and standard deviation are two examples of widely used summary statistics. More informative summaries can often be achieved by first splitting data into groups. In this section, we cover two new __dplyr__ verbs that make these computations easier: `summarize` and `group_by`. We learn to access resulting values using the `pull` function.  
+An important part of exploratory data analysis is summarizing data. The average and standard deviation are two examples of widely used summary statistics. More informative summaries can often be achieved by first splitting data into groups. In this section, we cover two new __dplyr__ verbs that make these computations easier: `summarize` and `group_by`. We learn to access resulting values using the `pull` function.
 
 ```{r, message=FALSE, echo=FALSE}
 library(tidyverse)
@@ -515,7 +524,9 @@ Note that rows are not sorted by `rate`, only filtered. If we want to sort, we n
 Note that if the third argument is left blank, `top_n` filters by the last column.
 
 
-## Exercises
+:::fyi
+
+**TRY IT**
 
 For these exercises, we will be using the data from the survey collected by the United States National Center for Health Statistics (NCHS). This center has conducted a series of health and nutrition surveys since the 1960’s. Starting in 1999, about 5,000 individuals of all ages have been interviewed every year and they complete the health examination component of the survey. Part of the data is made available via the __NHANES__ package. Once you install the __NHANES__ package, you can load the data like this:
 
@@ -542,25 +553,25 @@ sd(na_example, na.rm = TRUE)
 
 Let's now explore the NHANES data.
 
-1\. We will provide some basic facts about blood pressure. First let's select a group to set the standard. We will use 20-to-29-year-old females. `AgeDecade` is a categorical variable with these ages. Note that the category is coded like " 20-29", with a space in front! What is the average and standard deviation of systolic blood pressure as saved in the `BPSysAve` variable? Save it to a variable called `ref`.
+1. We will provide some basic facts about blood pressure. First let's select a group to set the standard. We will use 20-to-29-year-old females. `AgeDecade` is a categorical variable with these ages. Note that the category is coded like " 20-29", with a space in front! What is the average and standard deviation of systolic blood pressure as saved in the `BPSysAve` variable? Save it to a variable called `ref`.
 
 Hint: Use `filter` and `summarize` and use the `na.rm = TRUE` argument when computing the average and standard deviation. You can also filter the NA values using `filter`.
 
 
-2\. Using a pipe, assign the average to a numeric variable `ref_avg`. Hint: Use the code similar to above and then `pull`.
+2. Using a pipe, assign the average to a numeric variable `ref_avg`. Hint: Use the code similar to above and then `pull`.
 
 
-3\. Now report the min and max values for the same group.
+3. Now report the min and max values for the same group.
 
 
-4\. Compute the average and standard deviation for females, but for each age group separately rather than a selected decade as in question 1. Note that the age groups are defined by `AgeDecade`. Hint: rather than filtering by age and gender, filter by `Gender` and then use `group_by`.
+4. Compute the average and standard deviation for females, but for each age group separately rather than a selected decade as in question 1. Note that the age groups are defined by `AgeDecade`. Hint: rather than filtering by age and gender, filter by `Gender` and then use `group_by`.
 
-5\. Repeat exercise 4 for males.
+5. Repeat exercise 4 for males.
 
-6\. We can actually combine both summaries for exercises 4 and 5 into one line of code. This is because `group_by` permits us to group by more than one variable. Obtain one big summary table using `group_by(AgeDecade, Gender)`.
+6. We can actually combine both summaries for exercises 4 and 5 into one line of code. This is because `group_by` permits us to group by more than one variable. Obtain one big summary table using `group_by(AgeDecade, Gender)`.
 
-7\. For males between the ages of 40-49, compare systolic blood pressure across race as reported in the `Race1` variable. Order the resulting table from lowest to highest average systolic blood pressure.
-
+7. For males between the ages of 40-49, compare systolic blood pressure across race as reported in the `Race1` variable. Order the resulting table from lowest to highest average systolic blood pressure.
+:::
 
 
 ## Tibbles
@@ -636,7 +647,7 @@ The function `group_by` returns a special kind of tibble: a grouped tibble. This
 
 ### Create a tibble using `tibble` instead of `data.frame`
 
-It is sometimes useful for us to create our own data frames. To create a data frame in the tibble format, you can do this by using the `tibble` function.   
+It is sometimes useful for us to create our own data frames. To create a data frame in the tibble format, you can do this by using the `tibble` function.
 
 ```{r}
 grades <- tibble(names = c("John", "Juan", "Jean", "Yao"),
@@ -852,20 +863,22 @@ However, this can become cumbersome, especially within the tidyverse approach. T
 between(x, a, b)
 ```
 
-## Exercises
+:::fyi
 
-1\. Load the `murders` dataset. Which of the following is true?
+**EXERCISES**
+
+1. Load the `murders` dataset. Which of the following is true?
 
 a. `murders` is in tidy format and is stored in a tibble.
 b. `murders` is in tidy format and is stored in a data frame.
 c. `murders` is not in tidy format and is stored in a tibble.
 d. `murders` is not in tidy format and is stored in a data frame.
 
-2\. Use `as_tibble` to convert the `murders` data table into a tibble and save it in an object called `murders_tibble`.
+2. Use `as_tibble` to convert the `murders` data table into a tibble and save it in an object called `murders_tibble`.
 
-3\. Use the `group_by` function to convert `murders` into a tibble that is grouped by region.
+3. Use the `group_by` function to convert `murders` into a tibble that is grouped by region.
 
-4\. Write tidyverse code that is equivalent to this code:
+4. Write tidyverse code that is equivalent to this code:
 
 ```{r, eval=FALSE}
 exp(mean(log(murders$population)))
@@ -873,11 +886,9 @@ exp(mean(log(murders$population)))
 
 Write it using the pipe so that each function is called without arguments. Use the dot operator to access the population. Hint: The code should start with `murders %>%`.
 
-5\. Use the `map_df` to create a data frame with three columns named `n`, `s_n`, and `s_n_2`. The first column should contain the numbers 1 through 100. The second and third columns should each contain the sum of 1 through $n$ with $n$ the row number.  
-
+5. Use the `map_df` to create a data frame with three columns named `n`, `s_n`, and `s_n_2`. The first column should contain the numbers 1 through 100. The second and third columns should each contain the sum of 1 through $n$ with $n$ the row number.
+:::
 
 ## Videos
 
-Videos for each section of the lecture are [available at this YouTube playlist](https://www.youtube.com/playlist?list=PLS6tnpTr39sHom5NPjrZAeMTYS5orTl9c).
-
-- [Introduction](https://www.youtube.com/watch?v=tVcomh6jQ2Y&list=PLS6tnpTr39sHom5NPjrZAeMTYS5orTl9c)
+Videos for each section of the lecture are [available at this YouTube playlist].

@@ -8,8 +8,6 @@ menu:
     parent: Course content
     weight: 1
 type: docs
-bibliography: "../../static/bib/references.bib"
-csl: "../../static/bib/chicago-fullnote-bibliography-no-bib.csl"
 slides: "00-slides"
 output:
   blogdown::html_page:
@@ -34,8 +32,17 @@ For future lectures, the guiding questions will be more pointed and at a higher 
 
 ## Slides
 
-There are no slides for this lesson; the content below is intended to serve as a refresher for those who may have forgotten some of the basics of `R`. This content will form the first week of the course and will include the Example 0.
+There are no direct slides for this lesson; the content below is intended to serve as a refresher for those who may have forgotten some of the basics of `R`. This content will form the first week of the course and will include the Example 0. The slides below cover introductory material from the first lecture; some kinks to be worked out.
 
+
+```{r show-slide-tabs, echo=FALSE, results="asis"}
+source(here::here("R", "slide_tabs.R"))
+sections <- tibble::tribble(
+  ~name, ~slide, ~active,
+  "Introduction", "Introduction", TRUE,
+)
+slide_tabs(sections, "/slides/00-slides.html")
+```
 
 :::fyi
 **ALERT**
@@ -101,7 +108,7 @@ dat <- tibble(country = toupper(c("United States", "Canada", "Portugal", "Irelan
 
 dat %>%
   mutate(country = reorder(country, count)) %>%
-  ggplot(aes(country, count, label = count)) +   
+  ggplot(aes(country, count, label = count)) +
   geom_bar(stat = "identity", fill = "darkred", width = 0.5) +
   geom_text(nudge_y = 0.2,  size = 3) +
   xlab("") + ylab("") +
@@ -212,7 +219,7 @@ ls()
 
 We should see  `a`, `b`, and `c`. If you try to recover the value of a variable that is not in your workspace, you receive an error. For example, if you type `x` you will receive the following message: `Error: object 'x' not found`.
 
-Now since these values are saved in variables, to obtain a solution to our equation, we use the quadratic formula:  
+Now since these values are saved in variables, to obtain a solution to our equation, we use the quadratic formula:
 
 ```{r}
 (-b + sqrt(b^2 - 4*a*c) ) / ( 2*a )
@@ -572,7 +579,7 @@ levels(region)
 
 The new order is in agreement with the fact that the Northeast has the least murders and the South has the most.
 
-**Warning**: Factors can be a source of confusion since sometimes they behave like characters and sometimes they do not. As a result, confusing factors and characters are a common source of bugs.  
+**Warning**: Factors can be a source of confusion since sometimes they behave like characters and sometimes they do not. As a result, confusing factors and characters are a common source of bugs.
 
 ### Lists
 
@@ -1044,7 +1051,7 @@ Use the `rank` function to determine the population rank of each state from smal
 7. The `na_example` vector represents a series of counts. You can quickly examine the object using:
 
 ```{r}
-data("na_example")  
+data("na_example")
 str(na_example)
 ```
 
@@ -1147,7 +1154,7 @@ temp <- c(35, 88, 42, 84, 81, 30)
 city <- c("Beijing", "Lagos", "Paris", "Rio de Janeiro",
           "San Juan", "Toronto")
 city_temps <- data.frame(name = city, temperature = temp)
-```     
+```
 
 Remake the data frame using the code above, but add a line that converts the temperature from Fahrenheit to Celsius. The conversion is $C = \frac{5}{9} \times (F - 32)$.
 

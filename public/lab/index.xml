@@ -385,5 +385,150 @@ my_func &amp;lt;- function(y){
 </description>
     </item>
     
+    <item>
+      <title>Final project</title>
+      <link>/lab/final-project/</link>
+      <pubDate>Mon, 14 Dec 2020 00:00:00 +0000</pubDate>
+      <guid>/lab/final-project/</guid>
+      <description>
+
+&lt;div id=&#34;TOC&#34;&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#resources&#34;&gt;Resources&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#suggested-outline&#34;&gt;Suggested outline&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#introduction&#34;&gt;Introduction&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#program-overview&#34;&gt;Program overview&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#program-theory-and-implementation&#34;&gt;Program theory and implementation&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#outcome-and-causation&#34;&gt;Outcome and causation&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#data-and-methods&#34;&gt;Data and methods&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#synthetic-analysis&#34;&gt;Synthetic analysis&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#conclusion&#34;&gt;Conclusion&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Evaluation research is tricky and costly. If you begin an intervention or launch a study prematurely, you can waste time and money—and potentially lives.&lt;/p&gt;
+&lt;p&gt;Even if you have a well designed program with an impeccable logic model and a perfect DAG, you might discover (too late!) that you forgot to collect some critical variables or realize that your identification strategy will not work.&lt;/p&gt;
+&lt;p&gt;From a more cynical perspective, you might (unethically) engage in the practice of &lt;a href=&#34;https://theconversation.com/one-reason-so-many-scientific-studies-may-be-wrong-66384&#34;&gt;p-hacking&lt;/a&gt;—running all sorts of different model specifications until you find the results you want, and then claim in your report that you had intended to run that model all along.&lt;/p&gt;
+&lt;p&gt;One increasingly popular method for (1) ensuring that your data and methods work before launching a study or intervention, and (2) declaring and committing to your hypotheses and methods and models before analyzing your data is to &lt;a href=&#34;https://blogs.plos.org/plos/2019/11/preregistration-can-bring-science-back-to-its-roots/&#34;&gt;&lt;em&gt;pre-register&lt;/em&gt; your research or evaluation&lt;/a&gt;. A &lt;a href=&#34;https://www.sciencemag.org/news/2018/09/more-and-more-scientists-are-preregistering-their-studies-should-you&#34;&gt;pre-registered study&lt;/a&gt; contains all the background work—an introduction, literature review, theory, hypotheses, and proposed analysis—but without the actual data. Authors post their expectations and hypotheses publicly so they can be held publicly accountable for any deviations from their proposed design.&lt;a href=&#34;#fn1&#34; class=&#34;footnote-ref&#34; id=&#34;fnref1&#34;&gt;&lt;sup&gt;1&lt;/sup&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;The best preregistered studies use simulated data that has the same structure as the data that will be collected (i.e. same columns, sometimes the same correlations and relationships researchers expect to see in the collected data, etc.). Because there’s no data yet (or just fake data), you have more freedom when developing a preregistered study. You can experiment with different models, play with different approaches, manipulate data in different ways, and so on. If you realize that you need a new variable, or that you need to rearrange questions on a survey, or make any other kinds of changes, you can—you haven’t collected the data yet!&lt;/p&gt;
+&lt;p&gt;Once you finalize your plan and know all the data you need to collect, and once you’ve written out the different models you’ll run, all you have to do is collect the real data, plop it into your script (replacing the fake data you’d been using), and run the analysis script again to generate the actual, real results. In the results section, you get to either say “As predicted, we found…”, or “Contrary to expectations, we found that…”.&lt;/p&gt;
+&lt;p&gt;For your final project in this class, you will write a pre-registered analysis of a public or nonprofit social program that you’re interested in. You don’t need to worry about collecting data—you’ll create a synthetic dataset for your pre-analysis.&lt;/p&gt;
+&lt;p&gt;You will submit &lt;strong&gt;three things&lt;/strong&gt; via D2L:&lt;/p&gt;
+&lt;ol style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;A PDF of your preregistered report (see the outline below for details of what this needs to contain). You should compile this with R Markdown. You might want to write the prose-heavy sections in a word processor like Word or Google Docs and copy/paste the text into your R Markdown document, since RStudio doesn’t have a nice spell checker or grammar checker. This should have &lt;em&gt;no visible R code, warnings, or messages in it&lt;/em&gt; (set &lt;code&gt;echo = FALSE&lt;/code&gt; at the beginning of your document before you knit).&lt;/li&gt;
+&lt;li&gt;The same PDF as above, but with all the R code in it (set &lt;code&gt;echo = TRUE&lt;/code&gt; at the beginning of your document and reknit the file).&lt;/li&gt;
+&lt;li&gt;A CSV file of your fake data.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;This project is due by &lt;strong&gt;7:00 PM on Monday, December 14, 2020.&lt;/strong&gt; &lt;span style=&#34;color: #81056F; font-weight: bold&#34;&gt; No late work will be accepted.&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;You can either run the analysis in RStudio locally on your computer (highly recommended(!!), since you won’t have to worry about keeping all your work on RStudio’s servers), or use an RStudio.cloud project. You can make a copy of this RStudio.cloud project—it doesn’t have anything in it, but I have preinstalled all the packages we’ve used over the course of the semester, so you don’t have to.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;del&gt;&lt;a href=&#34;#&#34;&gt;&lt;i class=&#34;fas fa-external-link-square-alt&#34;&gt;&lt;/i&gt; Empty RStudio.cloud project&lt;/a&gt;&lt;/del&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;/files/final-project.zip&#34;&gt;&lt;i class=&#34;fas fa-file-archive&#34;&gt;&lt;/i&gt; Empty RStudio project you can download and unzip on your computer&lt;/a&gt; (doesn’t include any packages, since you’re responsible for installing those)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div id=&#34;resources&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Resources&lt;/h2&gt;
+&lt;p&gt;Most importantly, &lt;strong&gt;do not hesitate&lt;/strong&gt; to work with classmates. You all must choose different programs, but you can work in groups of up to 4 people on your own projects. Also, &lt;strong&gt;absolutely do not hesitate&lt;/strong&gt; to ask me questions! I’m here to help!&lt;/p&gt;
+&lt;p&gt;You might find this evaluation (and its proposal) of a truancy program in the Provo School District in Utah helpful as an example for the first half of this assignment (program overview, theory, implementation, threats to validity, and outcomes). The PSD evaluation doesn’t have DAGs or fancy econometrics models like RCTs, diff-in-diff, RDD, IVs, or anything like that, so you can’t use it as an example of that part, but these should provide a good template for the program-specific sections. &lt;em&gt;This is longer than expected for this class&lt;/em&gt;. I provide suggested word counts in the outline below.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;/files/psd-proposal-2011.pdf&#34;&gt;&lt;i class=&#34;fas fa-file-pdf&#34;&gt;&lt;/i&gt; &lt;code&gt;psd-proposal-2011&lt;/code&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;/files/psd-final-report-2012.pdf&#34;&gt;&lt;i class=&#34;fas fa-file-pdf&#34;&gt;&lt;/i&gt; &lt;code&gt;psd-final-report-2012&lt;/code&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;div id=&#34;suggested-outline&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Suggested outline&lt;/h2&gt;
+&lt;p&gt;Here’s an outline of what you’ll need to do. You did lots of this work in your evaluation assignments. Please don’t just copy/paste those assignments as is into this final project—you’ll want to polish it up for this final report. You can download this as an RMarkdown file and change the text if you want. I’ve also included this as an RMarkdown file in the empty RStudio.cloud project.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;/projects/final-project/final-project-template.Rmd&#34;&gt;&lt;i class=&#34;fab fa-r-project&#34;&gt;&lt;/i&gt; &lt;code&gt;final-project-template.Rmd&lt;/code&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr /&gt;
+&lt;div id=&#34;introduction&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Introduction&lt;/h3&gt;
+&lt;p&gt;Describe the motivation for this evaluation, briefly describe the program to be evaluated, and explain why it matters for society. (&lt;strong&gt;≈150 words&lt;/strong&gt;)&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;program-overview&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Program overview&lt;/h3&gt;
+&lt;p&gt;Provide in-depth background about the program. Include details about (1) when it was started, (2) why it was started, (3) what it was designed to address in society. If the program hasn’t started yet, explain why it’s under consideration. (&lt;strong&gt;≈300 words&lt;/strong&gt;)&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;program-theory-and-implementation&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Program theory and implementation&lt;/h3&gt;
+&lt;div id=&#34;program-theory-and-impact-theory-graph&#34; class=&#34;section level4&#34;&gt;
+&lt;h4&gt;Program theory and impact theory graph&lt;/h4&gt;
+&lt;p&gt;Explain and explore the program’s underlying theory. Sometimes programs will explain why they exist in a mission statement, but often they don’t and you have to infer the theory from what the program looks like when implemented. What did the program designers plan on occurring? Was this theory based on existing research? If so, cite it. (&lt;strong&gt;≈300 words&lt;/strong&gt;)&lt;/p&gt;
+&lt;p&gt;Include a simple impact theory graph showing the program’s basic activities and outcomes. Recall from class and your reading that this is focused primarily on the theory and mechanisms, not on the implementation of the program.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;logic-model&#34; class=&#34;section level4&#34;&gt;
+&lt;h4&gt;Logic model&lt;/h4&gt;
+&lt;p&gt;Describe the program’s inputs, activities, outputs, and outcomes. Pay careful attention to how they are linked—remember that every input needs to flow into an activity and every output must flow out of an activity. (&lt;strong&gt;≈150 words&lt;/strong&gt;)&lt;/p&gt;
+&lt;p&gt;Use flowchart software to connect the inputs, activities, outputs, and outcomes and create a complete logic model. Include this as a figure.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;outcome-and-causation&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Outcome and causation&lt;/h3&gt;
+&lt;div id=&#34;main-outcome&#34; class=&#34;section level4&#34;&gt;
+&lt;h4&gt;Main outcome&lt;/h4&gt;
+&lt;p&gt;Select one of the program’s outcomes to evaluate. Explain why you’ve chosen this (is it the most important? easiest to measure? has the greatest impact on society?) (&lt;strong&gt;≈50 words&lt;/strong&gt;)&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;measurement&#34; class=&#34;section level4&#34;&gt;
+&lt;h4&gt;Measurement&lt;/h4&gt;
+&lt;p&gt;Using the concept of the “ladder of abstraction” that we discussed in class (e.g. identifying a witch, measuring poverty, etc.), make a list of all the possible attributes of the outcome. Narrow this list down to 3-4 key attributes. Discuss how you decided to narrow the concepts and justify why you think these attributes capture the outcome. Then, for each of these attributes, answer these questions:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;em&gt;Measurable definition&lt;/em&gt;: How would you specifically define this attribute? (i.e. if the attribute is “reduced crime”, define it as “The percent change in crime in a specific neighborhood during a certain time frame” or something similar)&lt;/li&gt;
+&lt;li&gt;&lt;em&gt;Ideal measurement&lt;/em&gt;: How would you measure this attribute in an ideal world?&lt;/li&gt;
+&lt;li&gt;&lt;em&gt;Feasible measurement&lt;/em&gt;: How would you measure this given reality and given limitations in budget, time, etc.?&lt;/li&gt;
+&lt;li&gt;&lt;em&gt;Measurement of program effect&lt;/em&gt;: How would to connect this measure to people in the program? How would you check to see if the program itself had an effect?&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;(&lt;strong&gt;≈150 words&lt;/strong&gt; in this section)&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;causal-theory&#34; class=&#34;section level4&#34;&gt;
+&lt;h4&gt;Causal theory&lt;/h4&gt;
+&lt;p&gt;Given your measurement approach, describe and draw a causal diagram (DAG) that shows how your program causes the outcome. Note that this is not the same thing as the logic model—you’ll likely have nodes in the DAG that aren’t related to the program at all (like socioeconomic status, gender, experience, or other factors). The logic model provides the framework for the actual implementation of your program and connects all the moving parts to the outcomes. The DAG is how you can prove causation with statistical approaches. (&lt;strong&gt;≈150 words&lt;/strong&gt;)&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;hypotheses&#34; class=&#34;section level4&#34;&gt;
+&lt;h4&gt;Hypotheses&lt;/h4&gt;
+&lt;p&gt;Make predictions of your program’s effect. Declare what you think will happen. (&lt;strong&gt;≈50 words&lt;/strong&gt;)&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;data-and-methods&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Data and methods&lt;/h3&gt;
+&lt;div id=&#34;identification-strategy&#34; class=&#34;section level4&#34;&gt;
+&lt;h4&gt;Identification strategy&lt;/h4&gt;
+&lt;p&gt;How will you measure the actual program effect? Will you rely on an RCT? Differences-in-differences? Regression discontinuity? Instrumental variables? How does your approach account for selection bias and endogeneity? How does your approach isolate the causal effect of the program on the outcome?&lt;/p&gt;
+&lt;p&gt;Also briefly describe what kinds of threats to internal and external validity you face in your study.&lt;/p&gt;
+&lt;p&gt;(&lt;strong&gt;≈300 words&lt;/strong&gt;)&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;data&#34; class=&#34;section level4&#34;&gt;
+&lt;h4&gt;Data&lt;/h4&gt;
+&lt;p&gt;Given your measurement approach, limits on feasibility, and identification strategy, describe the data you will use. Will you rely on administrative data collected by a government agency or nonprofit? Will you collect your own data? If so, what variables will you measure, and how? Will you conduct a survey or rely on outside observers or do something else? What does this data look like? What variables does it (or should it) include?&lt;/p&gt;
+&lt;p&gt;(&lt;strong&gt;≈100 words&lt;/strong&gt;)&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;synthetic-analysis&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Synthetic analysis&lt;/h3&gt;
+&lt;p&gt;Generate a synthetic (fake) dataset in R with all the variables you’ll need for the real life analysis. Analyze the data using your identification strategy. For instance:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;If you’re relying on observational data, close all the backdoors with matching or inverse probability weighting, don’t adjust for colliders, and make a strong argument for isolation of the causal effect in the absence of treatment/control groups&lt;/li&gt;
+&lt;li&gt;If you’re doing an RCT, test the differences in means in the treatment and control groups (and follow all other best practices listed in the World Bank book, checking for balance across groups, etc.)&lt;/li&gt;
+&lt;li&gt;If you’re doing diff-in-diff, run a regression model with an interaction term to show the diff-in-diff&lt;/li&gt;
+&lt;li&gt;If you’re doing regression discontinuity, check for a jump in the outcome variable at the cutoff in the running variable&lt;/li&gt;
+&lt;li&gt;If you’re using instrumental variables, check the validity of your instrument and run a 2SLS model&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Include robustness checks to ensure the validity of your effect (i.e. if you’re doing regression discontinuity, test different bandwidths and kernel types; etc.)&lt;/p&gt;
+&lt;p&gt;(&lt;strong&gt;As many words as you need to fully describe your analysis and results&lt;/strong&gt;)&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;conclusion&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Conclusion&lt;/h3&gt;
+&lt;p&gt;What would the findings from this analysis mean for your selected program? What would it mean if you found an effect? What would it mean if you didn’t find an effect? Why does any of this matter? (&lt;strong&gt;≈75 words&lt;/strong&gt;)&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&#34;footnotes&#34;&gt;
+&lt;hr /&gt;
+&lt;ol&gt;
+&lt;li id=&#34;fn1&#34;&gt;&lt;p&gt;See the &lt;a href=&#34;https://cos.io/prereg/&#34;&gt;Center for Open Science’s directory of preregistrations&lt;/a&gt;, or &lt;a href=&#34;https://aspredicted.org/&#34;&gt;AsPredicted list&lt;/a&gt; for examples of this in real life. &lt;a href=&#34;https://osf.io/hsbyd&#34;&gt;Here’s one by me!&lt;/a&gt;&lt;a href=&#34;#fnref1&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    
   </channel>
 </rss>
