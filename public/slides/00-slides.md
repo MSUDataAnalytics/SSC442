@@ -1,8 +1,13 @@
 <!-- slide -->
-# Introduction
+# Introduction to SSC442
 
+
+$~$
 > I keep saying that the sexy job in the next 10 years will be statisticians. And I'm not kidding.
 
+
+
+$~$
 ### Hal Varian, Chief Economist, Google
 
 <!-- slide -->
