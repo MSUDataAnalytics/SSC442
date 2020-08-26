@@ -2,7 +2,7 @@
 
 # Randomness and Data Analytics
 
-### The importance of probabilities and why we must embrace mathematics
+### (and the fabulous importance of probabilistic inference)
 
 <!-- slide -->
 
