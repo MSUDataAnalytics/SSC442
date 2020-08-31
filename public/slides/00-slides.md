@@ -40,7 +40,11 @@ My research: occasionally touches the topics in the course, but mostly utilizes 
 - desired graduation year and semester
 - interest in this course on a 10-point scale (1: not at all interested; 10: helllllll yeah)
 
-You **must** spend 5 minutes telling me a little bit about your interests before the end of the week.
+You **must** spend 5 minutes emailing me a little bit about your interests before the next class.
+
+<!-- slide -->
+
+### https://ssc442.netlify.app
 
 <!-- slide -->
 
@@ -51,12 +55,12 @@ The syllabus is posted on the course website. I'll walk through highlights now, 
 
 	Syllabus highlights:
 
-- Grade is composed of problem sets, exams, and a written assignment.
-  - Attendance and Participation: 30\%
-  - Exams: 20\%
-  - Labs and Final Project: 50\%
+- Grade is composed of weekly writings, labs, and projects.
+  - Weekly writings: 24\%
+  - Labs: 30\%
+  - Projects: 46\%
 
-- Although exams are given a relatively low weight, you must attempt both exams to pass the course.
+- This structure is designed to give ~56\% "for free". Success on the projects will require real work.
 - Labs consist of a practical implementation of something we've covered in the course (e.g., code your own Recommender System).
 
 <!-- slide -->
@@ -65,19 +69,17 @@ The syllabus is posted on the course website. I'll walk through highlights now, 
 
 Grading: **come to class.**
 
-If you are the type of student that doesn't generally enjoy coming to class, this is not the course for you.
+**If** you complete all assignments and attend all class dates, I suspect you will do very well. Given the way the syllabus is structured, I conjecture that the following is a loose guide to grades:
 
-I suspect the exams will be much like my exams in my other course. Students have described those exams as ``painfully difficult". You are only *entitled* to the rubric on the previous slide.
+`4.0` Turned in all assignments with good effort, worked hard on the projects and was proud of final product.
 
-**If** you complete all assignments and attend all class dates, I will utilize the following curve for grading:
+`3.5` Turned in all assignments with good effort, worked a bit on the projects and was indifferent to final product.
 
-`4.0` Came to class regularly, contributed substantive comments to discussions, did modestly well on exams, turned in all assignments.
+`3.0` Turned in all assignments with some effort, worked a bit on the projects and was shy about final product.
 
-`3.5` Came to class regularly, said some stuff (sometimes interesting), did modestly poorly on exams, turned in all assignments.
+`< 3.0` Very little effort, or did not turn in all assignments, worked very little on the projects and was embarassed by final product.
 
-`3.0` Came to class regularly and said some stuff (mostly uninteresting), did very poorly on exams, turned in all assignments.
-
-`< 3.0` Didn't come to class regularly or didn't turn in all assignments.
+...of course, failing to turn in assignments can lead to a grade dramatically **lower** than just a 3.0.
 
 <!-- slide -->
 
@@ -85,12 +87,13 @@ I suspect the exams will be much like my exams in my other course. Students have
 
 There are sort of three texts for this course and sort of zero.
 
-The main text is free and available online (see syllabus or Google it). The secondary text is substantially more difficult, but also free online. The third text costs about \$25.
+The "main text" is free and available online. The secondary text is substantially more difficult, but also free online. The third text costs about \$25. Assigned readings can be found on the course website under "Content".
 
-**Please please please please please:** Ask questions during class.
-- Some of the material is quite hard.
+**Please please please please please:** Ask questions during class via chat.
+- Most ideas will be new.
 - Sometimes (often?) the material itself will be confusing or interesting---or both!
-- Think of your role as similar to a participant in a focus group.
+- Teaching online is incredibly challenging (no feedback) and chat is vital to success.
+- **Note:** If I find that attendance is terrible, I may have to shift to Zoom + Cameras On.
 
 Return of the Please: If there is some topic that you really want to learn about, ask. If you are uncomfortable asking in front of the whole group, please see me during office hours.
 
@@ -149,9 +152,9 @@ This course should be applicable broadly, but many of the examples will lean on 
 
 # Last Intro Slide
 
-Your "assignment": read syllabus and Lab 0.
+Your assignment: read syllabus the content from Week 0.
 
-Things to stress from syllabus and Lab 0:
+Things to stress from syllabus:
 
 - E-mail isn't the ideal solution for technical problems
 - No appointments necessary for regularly scheduled office hours; or by appointment.
@@ -168,7 +171,6 @@ How do **you** define "data analytics"?  (Not a rhetorical question!)
 
 - This course will avoid this nomenclature. It is confusing and imprecise. But you signed up (suckers) and I owe an explanation of what this course will cover.
 
-
 Some "data analytics" topics we will cover:
 
 - Linear regression: *il classico*.
@@ -180,7 +182,9 @@ Some "data analytics" topics we will cover:
 <!-- slide -->
 ## Starting point for this course
 
-Better utilizing existing data can improve our predictive power whilst providing interpretable outputs for making policies.
+Better utilizing existing data can improve our predictive power whilst providing interpretable outputs for considering new policies.
+
+**WARNING:** Causation is tough and we will spend the entire course warning you to avoid making causal claims!
 
 <!-- slide -->
 
