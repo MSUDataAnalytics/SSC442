@@ -39,9 +39,8 @@ If you fail to report your team, then you will be added to the "willing to be ra
 <!-- slide -->
 # More on Teams
 
-- Your team must come up with a name and a Github site for your project and labs.
 - Your team will earn the same scores on all projects.
-- Teams will only submit one write-up.
+- Teams will only submit one write-up for the two mini-projects and the final project. 
 
 To combat additional freeloading, we will use a reporting system. See the course website for more details.
 
