@@ -107,6 +107,9 @@
 &lt;div id=&#34;tidy-data&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Tidy data&lt;/h2&gt;
 &lt;p&gt;We say that a data table is in &lt;em&gt;tidy&lt;/em&gt; format if each row represents one observation and columns represent the different variables available for each of these observations. The &lt;code&gt;murders&lt;/code&gt; dataset is an example of a tidy data frame.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(dslabs)
+data(murders)
+head(murders)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;##        state abb region population total
 ## 1    Alabama  AL  South    4779736   135
 ## 2     Alaska  AK   West     710231    19
@@ -116,6 +119,12 @@
 ## 6   Colorado  CO   West    5029196    65&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Each row represent a state with each of the five columns providing a different variable related to these states: name, abbreviation, region, population, and total murders.&lt;/p&gt;
 &lt;p&gt;To see how the same information can be provided in different formats, consider the following example:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(dslabs)
+data(&amp;quot;gapminder&amp;quot;)
+tidy_data &amp;lt;- gapminder %&amp;gt;%
+  filter(country %in% c(&amp;quot;South Korea&amp;quot;, &amp;quot;Germany&amp;quot;) &amp;amp; !is.na(fertility)) %&amp;gt;%
+  select(country, year, fertility)
+head(tidy_data, 6)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;##       country year fertility
 ## 1     Germany 1960      2.41
 ## 2 South Korea 1960      6.16

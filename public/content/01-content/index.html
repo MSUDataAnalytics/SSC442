@@ -699,6 +699,9 @@
 <div id="tidy-data" class="section level2">
 <h2>Tidy data</h2>
 <p>We say that a data table is in <em>tidy</em> format if each row represents one observation and columns represent the different variables available for each of these observations. The <code>murders</code> dataset is an example of a tidy data frame.</p>
+<pre class="r"><code>library(dslabs)
+data(murders)
+head(murders)</code></pre>
 <pre><code>##        state abb region population total
 ## 1    Alabama  AL  South    4779736   135
 ## 2     Alaska  AK   West     710231    19
@@ -708,6 +711,12 @@
 ## 6   Colorado  CO   West    5029196    65</code></pre>
 <p>Each row represent a state with each of the five columns providing a different variable related to these states: name, abbreviation, region, population, and total murders.</p>
 <p>To see how the same information can be provided in different formats, consider the following example:</p>
+<pre class="r"><code>library(dslabs)
+data(&quot;gapminder&quot;)
+tidy_data &lt;- gapminder %&gt;%
+  filter(country %in% c(&quot;South Korea&quot;, &quot;Germany&quot;) &amp; !is.na(fertility)) %&gt;%
+  select(country, year, fertility)
+head(tidy_data, 6)</code></pre>
 <pre><code>##       country year fertility
 ## 1     Germany 1960      2.41
 ## 2 South Korea 1960      6.16
