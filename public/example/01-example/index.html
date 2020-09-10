@@ -247,7 +247,7 @@ library(dslabs) data(murders) head(murders) ## state abb region population total
   <meta property="twitter:image" content="/img/social-image.png"><meta property="og:locale" content="en-us">
   
     
-    <meta property="article:modified_time" content="2020-09-07T13:59:30-04:00">
+    <meta property="article:modified_time" content="2020-09-10T12:00:03-04:00">
   
 
   
@@ -630,6 +630,25 @@ head(murders)</code></pre>
 ## 5 California  CA   West   37253956  1257
 ## 6   Colorado  CO   West    5029196    65</code></pre>
 <p>What do you learn from staring at this table? Even though it is a relatively straightforward table, we can’t <strong>learn</strong> anything. For starters, it is grossly abbreviated, though you could scroll through. In doing so, how quickly might you be able to determine which states have the largest populations? Which states have the smallest? How populous is a typical state? Is there a relationship between population size and total murders? How do murder rates vary across regions of the country? For most folks, it is quite difficult to extract this information just by looking at the numbers. In contrast, the answer to the questions above are readily available from examining this plot:</p>
+<pre class="r"><code>library(tidyverse)
+library(ggthemes)
+library(ggrepel)
+
+r &lt;- murders %&gt;%
+  summarize(pop=sum(population), tot=sum(total)) %&gt;%
+  mutate(rate = tot/pop*10^6) %&gt;% pull(rate)
+
+murders %&gt;% ggplot(aes(x = population/10^6, y = total, label = abb)) +
+  geom_abline(intercept = log10(r), lty=2, col=&quot;darkgrey&quot;) +
+  geom_point(aes(color=region), size = 3) +
+  geom_text_repel() +
+  scale_x_log10() +
+  scale_y_log10() +
+  xlab(&quot;Populations in millions (log scale)&quot;) +
+  ylab(&quot;Total number of murders (log scale)&quot;) +
+  ggtitle(&quot;US Gun Murders in 2010&quot;) +
+  scale_color_discrete(name=&quot;Region&quot;) +
+  theme_economist_white()</code></pre>
 <p><img src="/example/01-example_files/figure-html/ggplot-example-plot-0-1.png" width="672" /></p>
 <p>We are reminded of the saying: “A picture is worth a thousand words”. Data visualization provides a powerful way to communicate a data-driven finding. In some cases, the visualization is so convincing that no follow-up analysis is required. You should consider visualization the most potent tool in your data analytics arsenal.</p>
 <p>The growing availability of informative datasets and software tools has led to increased reliance on data visualizations across many industries, academia, and government. A salient example is news organizations, which are increasingly embracing <em>data journalism</em> and including effective <em>infographics</em> as part of their reporting.</p>
@@ -702,7 +721,7 @@ Turning tables into graphs. The American Statistician 56:121-130.</li>
                 </div>
 
                 <div class="body-footer">
-                    <p>Last updated on September 7, 2020</p>
+                    <p>Last updated on September 10, 2020</p>
 
                     
 

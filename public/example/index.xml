@@ -160,6 +160,25 @@ head(murders)&lt;/code&gt;&lt;/pre&gt;
 ## 5 California  CA   West   37253956  1257
 ## 6   Colorado  CO   West    5029196    65&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;What do you learn from staring at this table? Even though it is a relatively straightforward table, we can’t &lt;strong&gt;learn&lt;/strong&gt; anything. For starters, it is grossly abbreviated, though you could scroll through. In doing so, how quickly might you be able to determine which states have the largest populations? Which states have the smallest? How populous is a typical state? Is there a relationship between population size and total murders? How do murder rates vary across regions of the country? For most folks, it is quite difficult to extract this information just by looking at the numbers. In contrast, the answer to the questions above are readily available from examining this plot:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(tidyverse)
+library(ggthemes)
+library(ggrepel)
+
+r &amp;lt;- murders %&amp;gt;%
+  summarize(pop=sum(population), tot=sum(total)) %&amp;gt;%
+  mutate(rate = tot/pop*10^6) %&amp;gt;% pull(rate)
+
+murders %&amp;gt;% ggplot(aes(x = population/10^6, y = total, label = abb)) +
+  geom_abline(intercept = log10(r), lty=2, col=&amp;quot;darkgrey&amp;quot;) +
+  geom_point(aes(color=region), size = 3) +
+  geom_text_repel() +
+  scale_x_log10() +
+  scale_y_log10() +
+  xlab(&amp;quot;Populations in millions (log scale)&amp;quot;) +
+  ylab(&amp;quot;Total number of murders (log scale)&amp;quot;) +
+  ggtitle(&amp;quot;US Gun Murders in 2010&amp;quot;) +
+  scale_color_discrete(name=&amp;quot;Region&amp;quot;) +
+  theme_economist_white()&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;img src=&#34;/example/01-example_files/figure-html/ggplot-example-plot-0-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;We are reminded of the saying: “A picture is worth a thousand words”. Data visualization provides a powerful way to communicate a data-driven finding. In some cases, the visualization is so convincing that no follow-up analysis is required. You should consider visualization the most potent tool in your data analytics arsenal.&lt;/p&gt;
 &lt;p&gt;The growing availability of informative datasets and software tools has led to increased reliance on data visualizations across many industries, academia, and government. A salient example is news organizations, which are increasingly embracing &lt;em&gt;data journalism&lt;/em&gt; and including effective &lt;em&gt;infographics&lt;/em&gt; as part of their reporting.&lt;/p&gt;
