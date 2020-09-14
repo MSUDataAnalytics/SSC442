@@ -1980,6 +1980,1261 @@ mpg %&amp;gt;%
     </item>
     
     <item>
+      <title>Effective Visualizations</title>
+      <link>/content/02-content/</link>
+      <pubDate>Tue, 15 Sep 2020 00:00:00 +0000</pubDate>
+      <guid>/content/02-content/</guid>
+      <description>
+&lt;script src=&#34;/rmarkdown-libs/kePrint/kePrint.js&#34;&gt;&lt;/script&gt;
+
+&lt;div id=&#34;TOC&#34;&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#readings&#34;&gt;Readings&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#guiding-questions&#34;&gt;Guiding Questions&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#slides&#34;&gt;Slides&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#distributions&#34;&gt;Visualizing data distributions&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#variable-types&#34;&gt;Variable types&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#case-study-describing-student-heights&#34;&gt;Case study: describing student heights&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#distribution-function&#34;&gt;Distribution function&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#cdf-intro&#34;&gt;Cumulative distribution functions&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#histograms&#34;&gt;Histograms&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#smoothed-density&#34;&gt;Smoothed density&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#interpreting-the-y-axis&#34;&gt;Interpreting the y-axis&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#densities-permit-stratification&#34;&gt;Densities permit stratification&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#normal-distribution&#34;&gt;The normal distribution&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#standard-units&#34;&gt;Standard units&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#quantile-quantile-plots&#34;&gt;Quantile-quantile plots&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#percentiles&#34;&gt;Percentiles&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#boxplots&#34;&gt;Boxplots&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#stratification&#34;&gt;Stratification&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#student-height-cont&#34;&gt;Case study: describing student heights (continued)&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#other-geometries&#34;&gt;ggplot2 geometries&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#barplots&#34;&gt;Barplots&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#histograms-1&#34;&gt;Histograms&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#density-plots&#34;&gt;Density plots&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#boxplots-1&#34;&gt;Boxplots&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#qq-plots&#34;&gt;QQ-plots&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#images&#34;&gt;Images&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#data-visualization-principles&#34;&gt;Data visualization principles&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#encoding-data-using-visual-cues&#34;&gt;Encoding data using visual cues&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#know-when-to-include-0&#34;&gt;Know when to include 0&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#do-not-distort-quantities&#34;&gt;Do not distort quantities&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#order-categories-by-a-meaningful-value&#34;&gt;Order categories by a meaningful value&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#show-the-data&#34;&gt;Show the data&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#ease-comparisons&#34;&gt;Ease comparisons&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#use-common-axes&#34;&gt;Use common axes&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#align-plots-vertically-to-see-horizontal-changes-and-horizontally-to-see-vertical-changes&#34;&gt;Align plots vertically to see horizontal changes and horizontally to see vertical changes&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#consider-transformations&#34;&gt;Consider transformations&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#visual-cues-to-be-compared-should-be-adjacent&#34;&gt;Visual cues to be compared should be adjacent&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#use-color&#34;&gt;Use color&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#think-of-the-color-blind&#34;&gt;Think of the color blind&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#plots-for-two-variables&#34;&gt;Plots for two variables&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#slope-charts&#34;&gt;Slope charts&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#bland-altman-plot&#34;&gt;Bland-Altman plot&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#encoding-a-third-variable&#34;&gt;Encoding a third variable&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#avoid-pseudo-three-dimensional-plots&#34;&gt;Avoid pseudo-three-dimensional plots&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#avoid-too-many-significant-digits&#34;&gt;Avoid too many significant digits&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#know-your-audience&#34;&gt;Know your audience&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+
+&lt;div id=&#34;readings&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Readings&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;This page.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div id=&#34;guiding-questions&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Guiding Questions&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;What makes a visual compelling?&lt;/li&gt;
+&lt;li&gt;What are the worst visuals that are frequently used?&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;div id=&#34;slides&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Slides&lt;/h3&gt;
+&lt;p&gt;As with last week’s content, the technical aspects of this lecture will be explored in greater detail in the Thursday practical lecture. Today, we will focus on some principles. We will also avoid slides entirely.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;distributions&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Visualizing data distributions&lt;/h1&gt;
+&lt;p&gt;Throughout your education, you may have noticed that numerical data is often summarized with the &lt;em&gt;average&lt;/em&gt; value. For example, the quality of a high school is sometimes summarized with one number: the average score on a standardized test. Occasionally, a second number is reported: the &lt;em&gt;standard deviation&lt;/em&gt;. For example, you might read a report stating that scores were 680 plus or minus 50 (the standard deviation). The report has summarized an entire vector of scores with just two numbers. Is this appropriate? Is there any important piece of information that we are missing by only looking at this summary rather than the entire list?&lt;/p&gt;
+&lt;p&gt;Our first data visualization building block is learning to summarize lists of factors or numeric vectors—the two primary data types that we encounter in data analytics. More often than not, the best way to share or explore this summary is through data visualization. The most basic statistical summary of a list of objects or numbers is its distribution. Once a vector has been summarized as a distribution, there are several data visualization techniques to effectively relay this information.&lt;/p&gt;
+&lt;p&gt;In this section, we first discuss properties of a variety of distributions and how to visualize distributions using a motivating example of student heights. We then discuss some principles of data visualizations more broadly.&lt;/p&gt;
+&lt;div id=&#34;variable-types&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Variable types&lt;/h2&gt;
+&lt;p&gt;We will be working with two types of variables: categorical and numeric. Each can be divided into two other groups: categorical can be ordinal or not, whereas numerical variables can be discrete or continuous.&lt;/p&gt;
+&lt;p&gt;When each entry in a vector comes from one of a small number of groups, we refer to the data as &lt;em&gt;categorical data&lt;/em&gt;. Two simple examples are sex (male or female) and regions (Northeast, South, North Central, West). Some categorical data can be ordered even if they are not numbers per se, such as spiciness (mild, medium, hot). In statistics textbooks, ordered categorical data are referred to as &lt;em&gt;ordinal&lt;/em&gt; data. In psychology, a number of different terms are used for this same idea.&lt;/p&gt;
+&lt;p&gt;Examples of numerical data are population sizes, murder rates, and heights. Some numerical data can be treated as ordered categorical. We can further divide numerical data into continuous and discrete. Continuous variables are those that can take any value, such as heights, if measured with enough precision. For example, a pair of twins may be 68.12 and 68.11 inches, respectively. Counts, such as population sizes, are discrete because they have to be integers—that’s how we count.&lt;a href=&#34;#fn1&#34; class=&#34;footnote-ref&#34; id=&#34;fnref1&#34;&gt;&lt;sup&gt;1&lt;/sup&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;case-study-describing-student-heights&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Case study: describing student heights&lt;/h2&gt;
+&lt;p&gt;Here we consider an artificial problem to help us illustrate the underlying concepts.&lt;/p&gt;
+&lt;p&gt;Pretend that we have to describe the heights of our classmates to ET, an extraterrestrial that has never seen humans. As a first step, we need to collect data. To do this, we ask students to report their heights in inches. We ask them to provide sex information because we know there are two different distributions by sex. We collect the data and save it in the &lt;code&gt;heights&lt;/code&gt; data frame:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(tidyverse)
+library(dslabs)
+data(heights)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;One way to convey the heights to ET is to simply send him this list of 1050 heights. But there are much more effective ways to convey this information, and understanding the concept of a distribution will help. To simplify the explanation, we first focus on male heights.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;distribution-function&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Distribution function&lt;/h2&gt;
+&lt;p&gt;It turns out that, in some cases, the average and the standard deviation are pretty much all we need to understand the data. We will learn data visualization techniques that will help us determine when this two number summary is appropriate. These same techniques will serve as an alternative for when two numbers are not enough.&lt;/p&gt;
+&lt;p&gt;The most basic statistical summary of a list of objects or numbers is its distribution. The simplest way to think of a distribution is as a compact description of a list with many entries. This concept should not be new for readers of this book. For example, with categorical data, the distribution simply describes the proportion of each unique category. The sex represented in the heights dataset is:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;## 
+##    Female      Male 
+## 0.2266667 0.7733333&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;This two-category &lt;em&gt;frequency table&lt;/em&gt; is the simplest form of a distribution. We don’t really need to visualize it since one number describes everything we need to know: 23% are females and the rest are males. When there are more categories, then a simple barplot describes the distribution. Here is an example with US state regions:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;murders %&amp;gt;% group_by(region) %&amp;gt;%
+  summarize(n = n()) %&amp;gt;%
+  mutate(Proportion = n/sum(n), 
+         region = reorder(region, Proportion)) %&amp;gt;%
+  ggplot(aes(x=region, y=Proportion, fill=region)) + 
+  geom_bar(stat = &amp;quot;identity&amp;quot;, show.legend = FALSE) + 
+  xlab(&amp;quot;&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/content/02-content_files/figure-html/state-region-distribution-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;This particular plot simply shows us four numbers, one for each category. We usually use barplots to display a few numbers. Although this particular plot does not provide much more insight than a frequency table itself, it is a first example of how we convert a vector into a plot that succinctly summarizes all the information in the vector. When the data is numerical, the task of displaying distributions is more challenging.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;cdf-intro&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Cumulative distribution functions&lt;/h2&gt;
+&lt;p&gt;Numerical data that are not categorical also have distributions. In general, when data is not categorical, reporting the frequency of each entry is not an effective summary since most entries are unique. In our case study, while several students reported a height of 68 inches, only one student reported a height of &lt;code&gt;68.503937007874&lt;/code&gt; inches and only one student reported a height &lt;code&gt;68.8976377952756&lt;/code&gt; inches. We assume that they converted from 174 and 175 centimeters, respectively.&lt;/p&gt;
+&lt;p&gt;Statistics textbooks teach us that a more useful way to define a distribution for numeric data is to define a function that reports the proportion of the data below &lt;span class=&#34;math inline&#34;&gt;\(a\)&lt;/span&gt; for all possible values of &lt;span class=&#34;math inline&#34;&gt;\(a\)&lt;/span&gt;. This function is called the cumulative distribution function (CDF). In statistics, the following notation is used:&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[ F(a) = \mbox{Pr}(x \leq a) \]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;Here is a plot of &lt;span class=&#34;math inline&#34;&gt;\(F\)&lt;/span&gt; for the male height data:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/content/02-content_files/figure-html/ecdf-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Similar to what the frequency table does for categorical data, the CDF
+defines the distribution for numerical data. From the plot, we can see that 16% of the values are below 65, since &lt;span class=&#34;math inline&#34;&gt;\(F(66)=\)&lt;/span&gt; 0.1637931, or that 84% of the values are below 72, since &lt;span class=&#34;math inline&#34;&gt;\(F(72)=\)&lt;/span&gt; 0.841133,
+and so on. In fact, we can report the proportion of values between any two heights, say &lt;span class=&#34;math inline&#34;&gt;\(a\)&lt;/span&gt; and &lt;span class=&#34;math inline&#34;&gt;\(b\)&lt;/span&gt;, by computing &lt;span class=&#34;math inline&#34;&gt;\(F(b) - F(a)\)&lt;/span&gt;. This means that if we send this plot above to ET, he will have all the information needed to reconstruct the entire list. Paraphrasing the expression “a picture is worth a thousand words”, in this case, a picture is as informative as 812 numbers.&lt;/p&gt;
+&lt;p&gt;A final note: because CDFs can be defined mathematically—and absent any data—the word &lt;em&gt;empirical&lt;/em&gt; is added to make the distinction when data is used. We therefore use the term empirical CDF (eCDF).&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;histograms&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Histograms&lt;/h2&gt;
+&lt;p&gt;Although the CDF concept is widely discussed in statistics textbooks, the plot is actually not very popular in practice. The main reason is that it does not easily convey characteristics of interest such as: at what value is the distribution centered? Is the distribution symmetric? What ranges contain 95% of the values? I doubt you can figure these out from glancing at the plot above. Histograms are much preferred because they greatly facilitate answering such questions. Histograms sacrifice just a bit of information to produce plots that are much easier to interpret.&lt;/p&gt;
+&lt;p&gt;The simplest way to make a histogram is to divide the span of our data into non-overlapping bins of the same size. Then, for each bin, we count the number of values that fall in that interval. The histogram plots these counts as bars with the base of the bar defined by the intervals. Here is the histogram for the height data splitting the range of values into one inch intervals: &lt;span class=&#34;math inline&#34;&gt;\((49.5, 50.5],(50.5, 51.5],(51.5,52.5],(52.5,53.5],...,(82.5,83.5]\)&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/content/02-content_files/figure-html/height-histogram-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;If we send this plot to some uninformed reader, she will immediately learn some important properties about our data. First, the range of the data is from 50 to 84 with the majority (more than 95%) between 63 and 75 inches. Second, the heights are close to symmetric around 69 inches. Also, by adding up counts, this reader could obtain a very good approximation of the proportion of the data in any interval. Therefore, the histogram above is not only easy to interpret, but also provides almost all the information contained in the raw list of 812 heights with about 30 bin counts.&lt;/p&gt;
+&lt;p&gt;What information do we lose? Note that all values in each interval are treated the same when computing bin heights. So, for example, the histogram does not distinguish between 64, 64.1, and 64.2 inches. Given that these differences are almost unnoticeable to the eye, the practical implications are negligible and we were able to summarize the data to just 23 numbers.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;smoothed-density&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Smoothed density&lt;/h2&gt;
+&lt;p&gt;Smooth density plots are aesthetically more appealing than histograms. Here is what a smooth density plot looks like for our heights data:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/content/02-content_files/figure-html/example-of-smoothed-density-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;In this plot, we no longer have sharp edges at the interval boundaries and many of the local peaks have been removed. Also, the scale of the y-axis changed from counts to &lt;em&gt;density&lt;/em&gt;.&lt;/p&gt;
+&lt;p&gt;To understand the smooth densities, we have to understand &lt;em&gt;estimates&lt;/em&gt;, a topic we don’t cover until later. However, we provide a heuristic explanation to help you understand the basics so you can use this useful data visualization tool.&lt;/p&gt;
+&lt;p&gt;The main new concept you must understand is that we assume that our list of observed values is a subset of a much larger list of unobserved values. In the case of heights, you can imagine that our list of 812 male students comes from a hypothetical list containing all the heights of all the male students in all the world measured very precisely. Let’s say there are 1,000,000 of these measurements. This list of values has a distribution, like any list of values, and this larger distribution is really what we want to report to ET since it is much more general. Unfortunately, we don’t get to see it.&lt;/p&gt;
+&lt;p&gt;However, we make an assumption that helps us perhaps approximate it. If we had 1,000,000 values, measured very precisely, we could make a histogram with very, very small bins. The assumption is that if we show this, the height of consecutive bins will be similar. This is what we mean by smooth: we don’t have big jumps in the heights of consecutive bins. Below we have a hypothetical histogram with bins of size 1:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/content/02-content_files/figure-html/simulated-data-histogram-1-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;The smaller we make the bins, the smoother the histogram gets. Here are the histograms with bin width of 1, 0.5, and 0.1:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/content/02-content_files/figure-html/simulated-data-histogram-2-1.png&#34; width=&#34;100%&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;The smooth density is basically the curve that goes through the top of the histogram bars when the bins are very, very small. To make the curve not depend on the hypothetical size of the hypothetical list, we compute the curve on frequencies rather than counts:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/content/02-content_files/figure-html/simulated-density-1-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Now, back to reality. We don’t have millions of measurements. In this concrete example, we have 812 and we can’t make a histogram with very small bins.&lt;/p&gt;
+&lt;p&gt;We therefore make a histogram, using bin sizes appropriate for our data and computing frequencies rather than counts, and we draw a smooth curve that goes through the tops of the histogram bars. The following plots (loosely) demonstrate the steps that the computer goes through to ultimately create a smooth density:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/content/02-content_files/figure-html/smooth-density-2-1.png&#34; width=&#34;100%&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;However, remember that &lt;em&gt;smooth&lt;/em&gt; is a relative term. We can actually control the &lt;em&gt;smoothness&lt;/em&gt; of the curve that defines the smooth density through an option in the function that computes the smooth density curve. Here are two examples using different degrees of smoothness on the same histogram:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/content/02-content_files/figure-html/densities-different-smoothness-1.png&#34; width=&#34;100%&#34; /&gt;
+We need to make this choice with care as the resulting visualizations can change our interpretation of the data. We should select a degree of smoothness that we can defend as being representative of the underlying data. In the case of height, we really do have reason to believe that the proportion of people with similar heights should be the same. For example, the proportion that is 72 inches should be more similar to the proportion that is 71 than to the proportion that is 78 or 65. This implies that the curve should be pretty smooth; that is, the curve should look more like the example on the right than on the left.&lt;/p&gt;
+&lt;p&gt;While the histogram is an assumption-free summary, the smoothed density is based on some assumptions.&lt;/p&gt;
+&lt;div id=&#34;interpreting-the-y-axis&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Interpreting the y-axis&lt;/h3&gt;
+&lt;p&gt;Note that interpreting the y-axis of a smooth density plot is not straightforward. It is scaled so that the area under the density curve adds up to 1. If you imagine we form a bin with a base 1 unit in length, the y-axis value tells us the proportion of values in that bin. However, this is only true for bins of size 1. For other size intervals, the best way to determine the proportion of data in that interval is by computing the proportion of the total area contained in that interval. For example, here are the proportion of values between 65 and 68:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/content/02-content_files/figure-html/area-under-curve-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;The proportion of this area is about
+0.3,
+meaning that about
+30%
+of male heights are between 65 and 68 inches.&lt;/p&gt;
+&lt;p&gt;By understanding this, we are ready to use the smooth density as a summary. For this dataset, we would feel quite comfortable with the smoothness assumption, and therefore with sharing this aesthetically pleasing figure with ET, which he could use to understand our male heights data:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/content/02-content_files/figure-html/example-of-smoothed-density-2-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;densities-permit-stratification&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Densities permit stratification&lt;/h3&gt;
+&lt;p&gt;As a final note, we point out that an advantage of smooth densities over histograms for visualization purposes is that densities make it easier to compare two distributions. This is in large part because the jagged edges of the histogram add clutter. Here is an example comparing male and female heights:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/content/02-content_files/figure-html/two-densities-one-plot-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;With the right argument, &lt;code&gt;ggplot&lt;/code&gt; automatically shades the intersecting region with a different color. We will show examples of &lt;strong&gt;ggplot2&lt;/strong&gt; code in the coming Example later this week.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;normal-distribution&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;The normal distribution&lt;/h2&gt;
+&lt;p&gt;Histograms and density plots provide excellent summaries of a distribution. But can we summarize even further? We often see the average and standard deviation used as summary statistics: a two-number summary! To understand what these summaries are and why they are so widely used, we need to understand the normal distribution.&lt;/p&gt;
+&lt;p&gt;The normal distribution, also known as the bell curve and as the Gaussian distribution, is one of the most famous mathematical concepts in history. A reason for this is that approximately normal distributions occur in many situations, including gambling winnings, heights, weights, blood pressure, standardized test scores, and experimental measurement errors. There are explanations for this, but we describe these later. Here we focus on how the normal distribution helps us summarize data.&lt;/p&gt;
+&lt;p&gt;Rather than using data, the normal distribution is defined with a mathematical formula. For any interval &lt;span class=&#34;math inline&#34;&gt;\((a,b)\)&lt;/span&gt;, the proportion of values in that interval can be computed using this formula:&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[\mbox{Pr}(a &amp;lt; x &amp;lt; b) = \int_a^b \frac{1}{\sqrt{2\pi}s} e^{-\frac{1}{2}\left( \frac{x-m}{s} \right)^2} \, dx\]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;You don’t need to memorize or understand the details of the formula. But note that it is completely defined by just two parameters: &lt;span class=&#34;math inline&#34;&gt;\(m\)&lt;/span&gt; and &lt;span class=&#34;math inline&#34;&gt;\(s\)&lt;/span&gt;. The rest of the symbols in the formula represent the interval ends that we determine, &lt;span class=&#34;math inline&#34;&gt;\(a\)&lt;/span&gt; and &lt;span class=&#34;math inline&#34;&gt;\(b\)&lt;/span&gt;, and known mathematical constants &lt;span class=&#34;math inline&#34;&gt;\(\pi\)&lt;/span&gt; and &lt;span class=&#34;math inline&#34;&gt;\(e\)&lt;/span&gt;. These two parameters, &lt;span class=&#34;math inline&#34;&gt;\(m\)&lt;/span&gt; and &lt;span class=&#34;math inline&#34;&gt;\(s\)&lt;/span&gt;, are referred to as the &lt;em&gt;average&lt;/em&gt; (also called the &lt;em&gt;mean&lt;/em&gt;) and the &lt;em&gt;standard deviation&lt;/em&gt; (SD) of the distribution, respectively.&lt;/p&gt;
+&lt;p&gt;The distribution is symmetric, centered at the average, and most values (about 95%) are within 2 SDs from the average. Here is what the normal distribution looks like when the average is 0 and the SD is 1:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/content/02-content_files/figure-html/normal-distribution-density-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;The fact that the distribution is defined by just two parameters implies that if a dataset is approximated by a normal distribution, all the information needed to describe the distribution can be encoded in just two numbers: the average and the standard deviation. We now define these values for an arbitrary list of numbers.&lt;/p&gt;
+&lt;p&gt;For a list of numbers contained in a vector &lt;code&gt;x&lt;/code&gt;, the average is defined as:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;m &amp;lt;- sum(x) / length(x)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;and the SD is defined as:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;s &amp;lt;- sqrt(sum((x-mu)^2) / length(x))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;which can be interpreted as the average distance between values and their average.&lt;/p&gt;
+&lt;p&gt;Let’s compute the values for the height for males which we will store in the object &lt;span class=&#34;math inline&#34;&gt;\(x\)&lt;/span&gt;:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;index &amp;lt;- heights$sex == &amp;quot;Male&amp;quot;
+x &amp;lt;- heights$height[index]&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The pre-built functions &lt;code&gt;mean&lt;/code&gt; and &lt;code&gt;sd&lt;/code&gt; (note that for reasons explained in Section &lt;a href=&#34;#data-driven-model&#34;&gt;&lt;strong&gt;??&lt;/strong&gt;&lt;/a&gt;, &lt;code&gt;sd&lt;/code&gt; divides by &lt;code&gt;length(x)-1&lt;/code&gt; rather than &lt;code&gt;length(x)&lt;/code&gt;) can be used here:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;m &amp;lt;- mean(x)
+s &amp;lt;- sd(x)
+c(average = m, sd = s)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;##   average        sd 
+## 69.314755  3.611024&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Here is a plot of the smooth density and the normal distribution with mean = 69.3 and SD = 3.6 plotted as a black line with our student height smooth density in blue:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/content/02-content_files/figure-html/data-and-normal-densities-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;The normal distribution does appear to be quite a good approximation here. We now will see how well this approximation works at predicting the proportion of values within intervals.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;standard-units&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Standard units&lt;/h2&gt;
+&lt;p&gt;For data that is approximately normally distributed, it is convenient to think in terms of &lt;em&gt;standard units&lt;/em&gt;. The standard unit of a value tells us how many standard deviations away from the average it is. Specifically, for a value &lt;code&gt;x&lt;/code&gt; from a vector &lt;code&gt;X&lt;/code&gt;, we define the value of &lt;code&gt;x&lt;/code&gt; in standard units as &lt;code&gt;z = (x - m)/s&lt;/code&gt; with &lt;code&gt;m&lt;/code&gt; and &lt;code&gt;s&lt;/code&gt; the average and standard deviation of &lt;code&gt;X&lt;/code&gt;, respectively. Why is this convenient?&lt;/p&gt;
+&lt;p&gt;First look back at the formula for the normal distribution and note that what is being exponentiated is &lt;span class=&#34;math inline&#34;&gt;\(-z^2/2\)&lt;/span&gt; with &lt;span class=&#34;math inline&#34;&gt;\(z\)&lt;/span&gt; equivalent to &lt;span class=&#34;math inline&#34;&gt;\(x\)&lt;/span&gt; in standard units. Because the maximum of &lt;span class=&#34;math inline&#34;&gt;\(e^{-z^2/2}\)&lt;/span&gt; is when &lt;span class=&#34;math inline&#34;&gt;\(z=0\)&lt;/span&gt;, this explains why the maximum of the distribution occurs at the average. It also explains the symmetry since &lt;span class=&#34;math inline&#34;&gt;\(- z^2/2\)&lt;/span&gt; is symmetric around 0. Second, note that if we convert the normally distributed data to standard units, we can quickly know if, for example, a person is about average (&lt;span class=&#34;math inline&#34;&gt;\(z=0\)&lt;/span&gt;), one of the largest (&lt;span class=&#34;math inline&#34;&gt;\(z \approx 2\)&lt;/span&gt;), one of the smallest (&lt;span class=&#34;math inline&#34;&gt;\(z \approx -2\)&lt;/span&gt;), or an extremely rare occurrence (&lt;span class=&#34;math inline&#34;&gt;\(z &amp;gt; 3\)&lt;/span&gt; or &lt;span class=&#34;math inline&#34;&gt;\(z &amp;lt; -3\)&lt;/span&gt;). Remember that it does not matter what the original units are, these rules apply to any data that is approximately normal.&lt;/p&gt;
+&lt;p&gt;In R, we can obtain standard units using the function &lt;code&gt;scale&lt;/code&gt;:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;z &amp;lt;- scale(x)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Now to see how many men are within 2 SDs from the average, we simply type:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;mean(abs(z) &amp;lt; 2)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 0.9495074&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The proportion is about 95%, which is what the normal distribution predicts! To further confirm that, in fact, the approximation is a good one, we can use quantile-quantile plots.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;quantile-quantile-plots&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Quantile-quantile plots&lt;/h2&gt;
+&lt;p&gt;A systematic way to assess how well the normal distribution fits the data is to check if the observed and predicted proportions match. In general, this is the approach of the quantile-quantile plot (QQ-plot).&lt;/p&gt;
+&lt;p&gt;First let’s define the theoretical quantiles for the normal distribution. In statistics books we use the symbol &lt;span class=&#34;math inline&#34;&gt;\(\Phi(x)\)&lt;/span&gt; to define the function that gives us the probability of a standard normal distribution being smaller than &lt;span class=&#34;math inline&#34;&gt;\(x\)&lt;/span&gt;. So, for example, &lt;span class=&#34;math inline&#34;&gt;\(\Phi(-1.96) = 0.025\)&lt;/span&gt; and &lt;span class=&#34;math inline&#34;&gt;\(\Phi(1.96) = 0.975\)&lt;/span&gt;. In R, we can evaluate &lt;span class=&#34;math inline&#34;&gt;\(\Phi\)&lt;/span&gt; using the &lt;code&gt;pnorm&lt;/code&gt; function:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;pnorm(-1.96)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 0.0249979&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The inverse function &lt;span class=&#34;math inline&#34;&gt;\(\Phi^{-1}(x)\)&lt;/span&gt; gives us the &lt;em&gt;theoretical quantiles&lt;/em&gt; for the normal distribution. So, for example, &lt;span class=&#34;math inline&#34;&gt;\(\Phi^{-1}(0.975) = 1.96\)&lt;/span&gt;. In R, we can evaluate the inverse of &lt;span class=&#34;math inline&#34;&gt;\(\Phi\)&lt;/span&gt; using the &lt;code&gt;qnorm&lt;/code&gt; function.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;qnorm(0.975)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 1.959964&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Note that these calculations are for the standard normal distribution by default (mean = 0, standard deviation = 1), but we can also define these for any normal distribution. We can do this using the &lt;code&gt;mean&lt;/code&gt; and &lt;code&gt;sd&lt;/code&gt; arguments in the &lt;code&gt;pnorm&lt;/code&gt; and &lt;code&gt;qnorm&lt;/code&gt; function. For example, we can use &lt;code&gt;qnorm&lt;/code&gt; to determine quantiles of a distribution with a specific average and standard deviation&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;qnorm(0.975, mean = 5, sd = 2)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 8.919928&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;For the normal distribution, all the calculations related to quantiles are done without data, thus the name &lt;em&gt;theoretical quantiles&lt;/em&gt;. But quantiles can be defined for any distribution, including an empirical one. So if we have data in a vector &lt;span class=&#34;math inline&#34;&gt;\(x\)&lt;/span&gt;, we can define the quantile associated with any proportion &lt;span class=&#34;math inline&#34;&gt;\(p\)&lt;/span&gt; as the &lt;span class=&#34;math inline&#34;&gt;\(q\)&lt;/span&gt; for which the proportion of values below &lt;span class=&#34;math inline&#34;&gt;\(q\)&lt;/span&gt; is &lt;span class=&#34;math inline&#34;&gt;\(p\)&lt;/span&gt;. Using R code, we can define &lt;code&gt;q&lt;/code&gt; as the value for which &lt;code&gt;mean(x &amp;lt;= q) = p&lt;/code&gt;. Notice that not all &lt;span class=&#34;math inline&#34;&gt;\(p\)&lt;/span&gt; have a &lt;span class=&#34;math inline&#34;&gt;\(q\)&lt;/span&gt; for which the proportion is exactly &lt;span class=&#34;math inline&#34;&gt;\(p\)&lt;/span&gt;. There are several ways of defining the best &lt;span class=&#34;math inline&#34;&gt;\(q\)&lt;/span&gt; as discussed in the help for the &lt;code&gt;quantile&lt;/code&gt; function.&lt;/p&gt;
+&lt;p&gt;To give a quick example, for the male heights data, we have that:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;mean(x &amp;lt;= 69.5)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 0.5147783&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;So about 50% are shorter or equal to 69 inches. This implies that if &lt;span class=&#34;math inline&#34;&gt;\(p=0.50\)&lt;/span&gt; then &lt;span class=&#34;math inline&#34;&gt;\(q=69.5\)&lt;/span&gt;.&lt;/p&gt;
+&lt;p&gt;The idea of a QQ-plot is that if your data is well approximated by normal distribution then the quantiles of your data should be similar to the quantiles of a normal distribution. To construct a QQ-plot, we do the following:&lt;/p&gt;
+&lt;ol style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;Define a vector of &lt;span class=&#34;math inline&#34;&gt;\(m\)&lt;/span&gt; proportions &lt;span class=&#34;math inline&#34;&gt;\(p_1, p_2, \dots, p_m\)&lt;/span&gt;.&lt;/li&gt;
+&lt;li&gt;Define a vector of quantiles &lt;span class=&#34;math inline&#34;&gt;\(q_1, \dots, q_m\)&lt;/span&gt; for your data for the proportions &lt;span class=&#34;math inline&#34;&gt;\(p_1, \dots, p_m\)&lt;/span&gt;. We refer to these as the &lt;em&gt;sample quantiles&lt;/em&gt;.&lt;/li&gt;
+&lt;li&gt;Define a vector of theoretical quantiles for the proportions &lt;span class=&#34;math inline&#34;&gt;\(p_1, \dots, p_m\)&lt;/span&gt; for a normal distribution with the same average and standard deviation as the data.&lt;/li&gt;
+&lt;li&gt;Plot the sample quantiles versus the theoretical quantiles.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;Let’s construct a QQ-plot using R code. Start by defining the vector of proportions.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p &amp;lt;- seq(0.05, 0.95, 0.05)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;To obtain the quantiles from the data, we can use the &lt;code&gt;quantile&lt;/code&gt; function like this:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;sample_quantiles &amp;lt;- quantile(x, p)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;To obtain the theoretical normal distribution quantiles with the corresponding average and SD, we use the &lt;code&gt;qnorm&lt;/code&gt; function:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;theoretical_quantiles &amp;lt;- qnorm(p, mean = mean(x), sd = sd(x))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;To see if they match or not, we plot them against each other and draw the identity line:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;qplot(theoretical_quantiles, sample_quantiles) + geom_abline()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/content/02-content_files/figure-html/qqplot-original-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Notice that this code becomes much cleaner if we use standard units:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;sample_quantiles &amp;lt;- quantile(z, p)
+theoretical_quantiles &amp;lt;- qnorm(p) 
+qplot(theoretical_quantiles, sample_quantiles) + geom_abline()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The above code is included to help describe QQ-plots. However, in practice it is easier to use the &lt;strong&gt;ggplot2&lt;/strong&gt; code described in Section &lt;a href=&#34;#other-geometries&#34;&gt;&lt;strong&gt;??&lt;/strong&gt;&lt;/a&gt;:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;heights %&amp;gt;% filter(sex == &amp;quot;Male&amp;quot;) %&amp;gt;%
+  ggplot(aes(sample = scale(height))) + 
+  geom_qq() +
+  geom_abline()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;While for the illustration above we used 20 quantiles, the default from the &lt;code&gt;geom_qq&lt;/code&gt; function is to use as many quantiles as data points.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;percentiles&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Percentiles&lt;/h2&gt;
+&lt;p&gt;Before we move on, let’s define some terms that are commonly used in exploratory data analysis.&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Percentiles&lt;/em&gt; are special cases of &lt;em&gt;quantiles&lt;/em&gt; that are commonly used. The percentiles are the quantiles you obtain when setting the &lt;span class=&#34;math inline&#34;&gt;\(p\)&lt;/span&gt; at &lt;span class=&#34;math inline&#34;&gt;\(0.01, 0.02, ..., 0.99\)&lt;/span&gt;. We call, for example, the case of &lt;span class=&#34;math inline&#34;&gt;\(p=0.25\)&lt;/span&gt; the 25th percentile, which gives us a number for which 25% of the data is below. The most famous percentile is the 50th, also known as the &lt;em&gt;median&lt;/em&gt;.&lt;/p&gt;
+&lt;p&gt;For the normal distribution the &lt;em&gt;median&lt;/em&gt; and average are the same, but this is generally not the case.&lt;/p&gt;
+&lt;p&gt;Another special case that receives a name are the &lt;em&gt;quartiles&lt;/em&gt;, which are obtained when setting &lt;span class=&#34;math inline&#34;&gt;\(p=0.25,0.50\)&lt;/span&gt;, and &lt;span class=&#34;math inline&#34;&gt;\(0.75\)&lt;/span&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;boxplots&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Boxplots&lt;/h2&gt;
+&lt;p&gt;To introduce boxplots we will go back to the US murder data.
+Suppose we want to summarize the murder rate distribution. Using the data visualization technique we have learned, we can quickly see that the normal approximation does not apply here:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/content/02-content_files/figure-html/hist-qqplot-non-normal-data-1.png&#34; width=&#34;100%&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;In this case, the histogram above or a smooth density plot would serve as a relatively succinct summary.&lt;/p&gt;
+&lt;p&gt;Now suppose those used to receiving just two numbers as summaries ask us for a more compact numerical summary.&lt;/p&gt;
+&lt;p&gt;Here, some of our wise predecessors have offered their advice. In short, the standard methodology is to provide a five-number summary composed of the range along with the quartiles (the 25th, 50th, and 75th percentiles). Further, ignore &lt;em&gt;outliers&lt;/em&gt; when computing the range and instead plot these as independent points.&lt;a href=&#34;#fn2&#34; class=&#34;footnote-ref&#34; id=&#34;fnref2&#34;&gt;&lt;sup&gt;2&lt;/sup&gt;&lt;/a&gt; Finally, plot these numbers as a “box” with “whiskers” like this:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/content/02-content_files/figure-html/first-boxplot-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;with the box defined by the 25% and 75% percentile and the whiskers showing the range. The distance between these two is called the &lt;em&gt;interquartile&lt;/em&gt; range. The median is shown with a horizontal line. Today, we call these &lt;em&gt;boxplots&lt;/em&gt;.&lt;/p&gt;
+&lt;p&gt;From just this simple plot, we know that the median is about 2.5, that the distribution is not symmetric, and that the range is 0 to 5 for the great majority of states with two exceptions.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;stratification&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Stratification&lt;/h2&gt;
+&lt;p&gt;In data analysis we often divide observations into groups based on the values of one or more variables associated with those observations. For example in the next section we divide the height values into groups based on a sex variable: females and males. We call this procedure &lt;em&gt;stratification&lt;/em&gt; and refer to the resulting groups as &lt;em&gt;strata&lt;/em&gt;.&lt;/p&gt;
+&lt;p&gt;Stratification is common in data visualization because we are often interested in how the distribution of variables differs across different subgroups. We will see several examples throughout this part of the book. We will revisit the concept of stratification when we learn regression in Chapter &lt;a href=&#34;#regression&#34;&gt;&lt;strong&gt;??&lt;/strong&gt;&lt;/a&gt; and in the Machine Learning part of the book.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;student-height-cont&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Case study: describing student heights (continued)&lt;/h2&gt;
+&lt;p&gt;Using the histogram, density plots, and QQ-plots, we have become convinced that the male height data is well approximated with a normal distribution. In this case, we report back to ET a very succinct summary: male heights follow a normal distribution with an average of 69.3 inches and a SD of 3.6 inches. With this information, ET will have a good idea of what to expect when he meets our male students.
+However, to provide a complete picture we need to also provide a summary of the female heights.&lt;/p&gt;
+&lt;p&gt;We learned that boxplots are useful when we want to quickly compare two or more distributions. Here are the heights for men and women:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/content/02-content_files/figure-html/female-male-boxplots-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;The plot immediately reveals that males are, on average, taller than females. The standard deviations appear to be similar. But does the normal approximation also work for the female height data collected by the survey? We expect that they will follow a normal distribution, just like males. However, exploratory plots reveal that the approximation is not as useful:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/content/02-content_files/figure-html/histogram-qqplot-female-heights-1.png&#34; width=&#34;100%&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;We see something we did not see for the males: the density plot has a second “bump”. Also, the QQ-plot shows that the highest points tend to be taller than expected by the normal distribution. Finally, we also see five points in the QQ-plot that suggest shorter than expected heights for a normal distribution. When reporting back to ET, we might need to provide a histogram rather than just the average and standard deviation for the female heights.&lt;/p&gt;
+&lt;p&gt;However, go back and read Tukey’s quote. We have noticed what we didn’t expect to see. If we look at other female height distributions, we do find that they are well approximated with a normal distribution. So why are our female students different? Is our class a requirement for the female basketball team? Are small proportions of females claiming to be taller than they are? Another, perhaps more likely, explanation is that in the form students used to enter their heights, &lt;code&gt;FEMALE&lt;/code&gt; was the default sex and some males entered their heights, but forgot to change the sex variable. In any case, data visualization has helped discover a potential flaw in our data.&lt;/p&gt;
+&lt;p&gt;Regarding the five smallest values, note that these values are:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;heights %&amp;gt;% filter(sex == &amp;quot;Female&amp;quot;) %&amp;gt;% 
+  top_n(5, desc(height)) %&amp;gt;%
+  pull(height)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 51 53 55 52 52&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Because these are reported heights, a possibility is that the student meant to enter &lt;code&gt;5&#39;1&#34;&lt;/code&gt;, &lt;code&gt;5&#39;2&#34;&lt;/code&gt;, &lt;code&gt;5&#39;3&#34;&lt;/code&gt; or &lt;code&gt;5&#39;5&#34;&lt;/code&gt;.&lt;/p&gt;
+&lt;div class=&#34;fyi&#34;&gt;
+&lt;p&gt;&lt;strong&gt;TRY IT&lt;/strong&gt;&lt;/p&gt;
+&lt;ol style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;Define variables containing the heights of males and females like this:&lt;/li&gt;
+&lt;/ol&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(dslabs)
+data(heights)
+male &amp;lt;- heights$height[heights$sex == &amp;quot;Male&amp;quot;]
+female &amp;lt;- heights$height[heights$sex == &amp;quot;Female&amp;quot;]&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;How many measurements do we have for each?&lt;/p&gt;
+&lt;ol start=&#34;2&#34; style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;&lt;p&gt;Suppose we can’t make a plot and want to compare the distributions side by side. We can’t just list all the numbers. Instead, we will look at the percentiles. Create a five row table showing &lt;code&gt;female_percentiles&lt;/code&gt; and &lt;code&gt;male_percentiles&lt;/code&gt; with the 10th, 30th, 50th, 70th, &amp;amp; 90th percentiles for each sex. Then create a data frame with these two as columns.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Study the following boxplots showing population sizes by country:&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;&lt;img src=&#34;/content/02-content_files/figure-html/boxplot-exercise-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Which continent has the country with the biggest population size?&lt;/p&gt;
+&lt;ol start=&#34;4&#34; style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;&lt;p&gt;What continent has the largest median population size?&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;What is median population size for Africa to the nearest million?&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;What proportion of countries in Europe have populations below 14 million?&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;If we use a log transformation, which continent shown above has the largest interquartile range?&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Load the height data set and create a vector &lt;code&gt;x&lt;/code&gt; with just the male heights:&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(dslabs)
+data(heights)
+x &amp;lt;- heights$height[heights$sex==&amp;quot;Male&amp;quot;]&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;What proportion of the data is between 69 and 72 inches (taller than 69, but shorter or equal to 72)? Hint: use a logical operator and &lt;code&gt;mean&lt;/code&gt;.&lt;/p&gt;
+&lt;ol start=&#34;9&#34; style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;&lt;p&gt;Suppose all you know about the data is the average and the standard deviation. Use the normal approximation to estimate the proportion you just calculated. Hint: start by computing the average and standard deviation. Then use the &lt;code&gt;pnorm&lt;/code&gt; function to predict the proportions.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Notice that the approximation calculated in question nine is very close to the exact calculation in the first question. Now perform the same task for more extreme values. Compare the exact calculation and the normal approximation for the interval (79,81]. How many times bigger is the actual proportion than the approximation?&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Approximate the distribution of adult men in the world as normally distributed with an average of 69 inches and a standard deviation of 3 inches. Using this approximation, estimate the proportion of adult men that are 7 feet tall or taller, referred to as &lt;em&gt;seven footers&lt;/em&gt;. Hint: use the &lt;code&gt;pnorm&lt;/code&gt; function.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;There are about 1 billion men between the ages of 18 and 40 in the world. Use your answer to the previous question to estimate how many of these men (18-40 year olds) are seven feet tall or taller in the world?&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;There are about 10 National Basketball Association (NBA) players that are 7 feet tall or higher. Using the answer to the previous two questions, what proportion of the world’s 18-to-40-year-old &lt;em&gt;seven footers&lt;/em&gt; are in the NBA?&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Repeat the calculations performed in the previous question for Lebron James’ height: 6 feet 8 inches. There are about 150 players that are at least that tall.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;In answering the previous questions, we found that it is not at all rare for a seven footer to become an NBA player. What would be a fair critique of our calculations:&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;ol style=&#34;list-style-type: lower-alpha&#34;&gt;
+&lt;li&gt;Practice and talent are what make a great basketball player, not height.&lt;/li&gt;
+&lt;li&gt;The normal approximation is not appropriate for heights.&lt;/li&gt;
+&lt;li&gt;As seen in question 10, the normal approximation tends to underestimate the extreme values. It’s possible that there are more seven footers than we predicted.&lt;/li&gt;
+&lt;li&gt;As seen in question 10, the normal approximation tends to overestimate the extreme values. It’s possible that there are fewer seven footers than we predicted.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;other-geometries&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;ggplot2 geometries&lt;/h2&gt;
+&lt;p&gt;Alhough we haven’t gone into detain about the &lt;strong&gt;ggplot2&lt;/strong&gt; package for data visualization, we now will briefly discuss some of the geometries involved in the plots above. We will discuss &lt;strong&gt;ggplot2&lt;/strong&gt; in (excruciating) detail later this week. For now, we will briefly demonstrate how to generate plots related to distributions.&lt;/p&gt;
+&lt;div id=&#34;barplots&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Barplots&lt;/h3&gt;
+&lt;p&gt;To generate a barplot we can use the &lt;code&gt;geom_bar&lt;/code&gt; geometry. The default is to count the number of each category and draw a bar. Here is the plot for the regions of the US.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;murders %&amp;gt;% ggplot(aes(region)) + geom_bar()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/content/02-content_files/figure-html/barplot-geom-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;We often already have a table with a distribution that we want to present as a barplot. Here is an example of such a table:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data(murders)
+tab &amp;lt;- murders %&amp;gt;% 
+  count(region) %&amp;gt;% 
+  mutate(proportion = n/sum(n))
+tab&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;##          region  n proportion
+## 1     Northeast  9  0.1764706
+## 2         South 17  0.3333333
+## 3 North Central 12  0.2352941
+## 4          West 13  0.2549020&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;We no longer want &lt;code&gt;geom_bar&lt;/code&gt; to count, but rather just plot a bar to the height provided by the &lt;code&gt;proportion&lt;/code&gt; variable. For this we need to provide &lt;code&gt;x&lt;/code&gt; (the categories) and &lt;code&gt;y&lt;/code&gt; (the values) and use the &lt;code&gt;stat=&#34;identity&#34;&lt;/code&gt; option.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;tab %&amp;gt;% ggplot(aes(region, proportion)) + geom_bar(stat = &amp;quot;identity&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/content/02-content_files/figure-html/region-freq-barplot-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;histograms-1&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Histograms&lt;/h3&gt;
+&lt;p&gt;To generate histograms we use &lt;code&gt;geom_histogram&lt;/code&gt;. By looking at the help file for this function, we learn that the only required argument is &lt;code&gt;x&lt;/code&gt;, the variable for which we will construct a histogram. We dropped the &lt;code&gt;x&lt;/code&gt; because we know it is the first argument.
+The code looks like this:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;heights %&amp;gt;% 
+  filter(sex == &amp;quot;Female&amp;quot;) %&amp;gt;% 
+  ggplot(aes(height)) + 
+  geom_histogram()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;If we run the code above, it gives us a message:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;code&gt;stat_bin()&lt;/code&gt; using &lt;code&gt;bins = 30&lt;/code&gt;. Pick better value with
+&lt;code&gt;binwidth&lt;/code&gt;.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;We previously used a bin size of 1 inch, so the code looks like this:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;heights %&amp;gt;% 
+  filter(sex == &amp;quot;Female&amp;quot;) %&amp;gt;% 
+  ggplot(aes(height)) + 
+  geom_histogram(binwidth = 1)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Finally, if for aesthetic reasons we want to add color, we use the arguments described in the help file. We also add labels and a title:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;heights %&amp;gt;% 
+  filter(sex == &amp;quot;Female&amp;quot;) %&amp;gt;% 
+  ggplot(aes(height)) +
+  geom_histogram(binwidth = 1, fill = &amp;quot;blue&amp;quot;, col = &amp;quot;black&amp;quot;) +
+  xlab(&amp;quot;Male heights in inches&amp;quot;) + 
+  ggtitle(&amp;quot;Histogram&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/content/02-content_files/figure-html/height-histogram-geom-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;density-plots&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Density plots&lt;/h3&gt;
+&lt;p&gt;To create a smooth density, we use the &lt;code&gt;geom_density&lt;/code&gt;. To make a smooth density plot with the data previously shown as a histogram we can use this code:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;heights %&amp;gt;% 
+  filter(sex == &amp;quot;Female&amp;quot;) %&amp;gt;%
+  ggplot(aes(height)) +
+  geom_density()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;To fill in with color, we can use the &lt;code&gt;fill&lt;/code&gt; argument.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;heights %&amp;gt;% 
+  filter(sex == &amp;quot;Female&amp;quot;) %&amp;gt;%
+  ggplot(aes(height)) +
+  geom_density(fill=&amp;quot;blue&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/content/02-content_files/figure-html/ggplot-density-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;To change the smoothness of the density, we use the &lt;code&gt;adjust&lt;/code&gt; argument to multiply the default value by that &lt;code&gt;adjust&lt;/code&gt;. For example, if we want the bandwidth to be twice as big we use:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;heights %&amp;gt;% 
+  filter(sex == &amp;quot;Female&amp;quot;) + 
+  geom_density(fill=&amp;quot;blue&amp;quot;, adjust = 2)&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;boxplots-1&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Boxplots&lt;/h3&gt;
+&lt;p&gt;The geometry for boxplot is &lt;code&gt;geom_boxplot&lt;/code&gt;. As discussed, boxplots are useful for comparing distributions. For example, below are the previously shown heights for women, but compared to men. For this geometry, we need arguments &lt;code&gt;x&lt;/code&gt; as the categories, and &lt;code&gt;y&lt;/code&gt; as the values.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/content/02-content_files/figure-html/female-male-boxplots-geom-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;qq-plots&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;QQ-plots&lt;/h3&gt;
+&lt;p&gt;For qq-plots we use the &lt;code&gt;geom_qq&lt;/code&gt; geometry. From the help file, we learn that we need to specify the &lt;code&gt;sample&lt;/code&gt; (we will learn about samples in a later bit of the course). Here is the qqplot for men heights.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;heights %&amp;gt;% filter(sex==&amp;quot;Male&amp;quot;) %&amp;gt;%
+  ggplot(aes(sample = height)) +
+  geom_qq()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/content/02-content_files/figure-html/ggplot-qq-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;By default, the sample variable is compared to a normal distribution with average 0 and standard deviation 1. To change this, we use the &lt;code&gt;dparams&lt;/code&gt; arguments based on the help file. Adding an identity line is as simple as assigning another layer. For straight lines, we use the &lt;code&gt;geom_abline&lt;/code&gt; function. The default line is the identity line (slope = 1, intercept = 0).&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;params &amp;lt;- heights %&amp;gt;% filter(sex==&amp;quot;Male&amp;quot;) %&amp;gt;%
+  summarize(mean = mean(height), sd = sd(height))
+
+heights %&amp;gt;% filter(sex==&amp;quot;Male&amp;quot;) %&amp;gt;%
+  ggplot(aes(sample = height)) +
+  geom_qq(dparams = params) +
+  geom_abline()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Another option here is to scale the data first and then make a qqplot against the standard normal.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;heights %&amp;gt;% 
+  filter(sex==&amp;quot;Male&amp;quot;) %&amp;gt;%
+  ggplot(aes(sample = scale(height))) + 
+  geom_qq() +
+  geom_abline()&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;images&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Images&lt;/h3&gt;
+&lt;p&gt;Images were not needed for the concepts described in this chapter, but we will use images in coming weeeks, so we introduce the two geometries used to create images: &lt;strong&gt;geom_tile&lt;/strong&gt; and &lt;strong&gt;geom_raster&lt;/strong&gt;. They behave similarly; to see how they differ, please consult the help file. To create an image in &lt;strong&gt;ggplot2&lt;/strong&gt; we need a data frame with the x and y coordinates as well as the values associated with each of these. Here is a data frame.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;x &amp;lt;- expand.grid(x = 1:12, y = 1:10) %&amp;gt;% 
+  mutate(z = 1:120) &lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Note that this is the tidy version of a matrix, &lt;code&gt;matrix(1:120, 12, 10)&lt;/code&gt;. To plot the image we use the following code:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;x %&amp;gt;% ggplot(aes(x, y, fill = z)) + 
+  geom_raster()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;With these images you will often want to change the color scale. This can be done through the &lt;code&gt;scale_fill_gradientn&lt;/code&gt; layer.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;x %&amp;gt;% ggplot(aes(x, y, fill = z)) + 
+  geom_raster() + 
+  scale_fill_gradientn(colors =  terrain.colors(10))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/content/02-content_files/figure-html/ggplot2-image-new-colors-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;data-visualization-principles&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Data visualization principles&lt;/h1&gt;
+&lt;p&gt;We have already provided some rules to follow as we created plots for our examples. Here, we aim to provide some general principles we can use as a guide for effective data visualization. Much of this section is based on a talk by Karl Broman&lt;a href=&#34;#fn3&#34; class=&#34;footnote-ref&#34; id=&#34;fnref3&#34;&gt;&lt;sup&gt;3&lt;/sup&gt;&lt;/a&gt; titled “Creating Effective Figures and Tables”&lt;a href=&#34;#fn4&#34; class=&#34;footnote-ref&#34; id=&#34;fnref4&#34;&gt;&lt;sup&gt;4&lt;/sup&gt;&lt;/a&gt; and includes some of the figures which were made with code that Karl makes available on his GitHub repository&lt;a href=&#34;#fn5&#34; class=&#34;footnote-ref&#34; id=&#34;fnref5&#34;&gt;&lt;sup&gt;5&lt;/sup&gt;&lt;/a&gt;, as well as class notes from Peter Aldhous’ Introduction to Data Visualization course&lt;a href=&#34;#fn6&#34; class=&#34;footnote-ref&#34; id=&#34;fnref6&#34;&gt;&lt;sup&gt;6&lt;/sup&gt;&lt;/a&gt;. Following Karl’s approach, we show some examples of plot styles we should avoid, explain how to improve them, and use these as motivation for a list of principles. We compare and contrast plots that follow these principles to those that don’t.&lt;/p&gt;
+&lt;p&gt;The principles are mostly based on research related to how humans detect patterns and make visual comparisons. The preferred approaches are those that best fit the way our brains process visual information. When deciding on a visualization approach, it is also important to keep our goal in mind. We may be comparing a viewable number of quantities, describing distributions for categories or numeric values, comparing the data from two groups, or describing the relationship between two variables. As a final note, we want to emphasize that for a data scientist it is important to adapt and optimize graphs to the audience. For example, an exploratory plot made for ourselves will be different than a chart intended to communicate a finding to a general audience.&lt;/p&gt;
+&lt;p&gt;We will be using these libraries:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(tidyverse)
+library(dslabs)
+library(gridExtra)&lt;/code&gt;&lt;/pre&gt;
+&lt;div id=&#34;encoding-data-using-visual-cues&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Encoding data using visual cues&lt;/h2&gt;
+&lt;p&gt;We start by describing some principles for encoding data. There are several approaches at our disposal including position, aligned lengths, angles, area, brightness, and color hue.&lt;/p&gt;
+&lt;p&gt;To illustrate how some of these strategies compare, let’s suppose we want to report the results from two hypothetical polls regarding browser preference taken in 2000 and then 2015. For each year, we are simply comparing five quantities – the five percentages. A widely used graphical representation of percentages, popularized by Microsoft Excel, is the pie chart:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/content/02-content_files/figure-html/piechart-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Here we are representing quantities with both areas and angles, since both the angle and area of each pie slice are proportional to the quantity the slice represents. This turns out to be a sub-optimal choice since, as demonstrated by perception studies, humans are not good at precisely quantifying angles and are even worse when area is the only available visual cue. The donut chart is an example of a plot that uses only area:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/content/02-content_files/figure-html/donutchart-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;To see how hard it is to quantify angles and area, note that the rankings and all the percentages in the plots above changed from 2000 to 2015. Can you determine the actual percentages and rank the browsers’ popularity? Can you see how the percentages changed from 2000 to 2015? It is not easy to tell from the plot. In fact, the &lt;code&gt;pie&lt;/code&gt; R function help file states that:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Pie charts are a very bad way of displaying information. The eye is good at judging linear measures and bad at judging relative areas. A bar chart or dot chart is a preferable way of displaying this type of data.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;In this case, simply showing the numbers is not only clearer, but would also save on printing costs if printing a paper copy:&lt;/p&gt;
+&lt;table class=&#34;table table-striped&#34; style=&#34;width: auto !important; margin-left: auto; margin-right: auto;&#34;&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th style=&#34;text-align:left;&#34;&gt;
+Browser
+&lt;/th&gt;
+&lt;th style=&#34;text-align:right;&#34;&gt;
+2000
+&lt;/th&gt;
+&lt;th style=&#34;text-align:right;&#34;&gt;
+2015
+&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+Opera
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+3
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+2
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+Safari
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+21
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+22
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+Firefox
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+23
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+21
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+Chrome
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+26
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+29
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+IE
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+28
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+27
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;The preferred way to plot these quantities is to use length and position as visual cues, since humans are much better at judging linear measures. The barplot uses this approach by using bars of length proportional to the quantities of interest. By adding horizontal lines at strategically chosen values, in this case at every multiple of 10, we ease the visual burden of quantifying through the position of the top of the bars. Compare and contrast the information we can extract from the two figures.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/content/02-content_files/figure-html/two-barplots-1.png&#34; width=&#34;100%&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Notice how much easier it is to see the differences in the barplot. In fact, we can now determine the actual percentages by following a horizontal line to the x-axis.&lt;/p&gt;
+&lt;p&gt;If for some reason you need to make a pie chart, label each pie slice with its respective percentage so viewers do not have to infer them from the angles or area:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/content/02-content_files/figure-html/excel-barplot-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;In general, when displaying quantities, position and length are preferred over angles and/or area. Brightness and color are even harder to quantify than angles. But, as we will see later, they are sometimes useful when more than two dimensions must be displayed at once.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;know-when-to-include-0&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Know when to include 0&lt;/h2&gt;
+&lt;p&gt;When using barplots, it is misinformative not to start the bars at 0. This is because, by using a barplot, we are implying the length is proportional to the quantities being displayed. By avoiding 0, relatively small differences can be made to look much bigger than they actually are. This approach is often used by politicians or media organizations trying to exaggerate a difference. Below is an illustrative example used by Peter Aldhous in this lecture: &lt;a href=&#34;http://paldhous.github.io/ucb/2016/dataviz/week2.html&#34;&gt;http://paldhous.github.io/ucb/2016/dataviz/week2.html&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/./02-content_files/class2_8.jpg&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;(Source: Fox News, via Media Matters&lt;a href=&#34;#fn7&#34; class=&#34;footnote-ref&#34; id=&#34;fnref7&#34;&gt;&lt;sup&gt;7&lt;/sup&gt;&lt;/a&gt;.)&lt;/p&gt;
+&lt;p&gt;From the plot above, it appears that apprehensions have almost tripled when, in fact, they have only increased by about 16%. Starting the graph at 0 illustrates this clearly:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/content/02-content_files/figure-html/barplot-from-zero-1-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Here is another example, described in detail in a Flowing Data blog post:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/./02-content_files/Bush-cuts.png&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;(Source: Fox News, via Flowing Data&lt;a href=&#34;#fn8&#34; class=&#34;footnote-ref&#34; id=&#34;fnref8&#34;&gt;&lt;sup&gt;8&lt;/sup&gt;&lt;/a&gt;.)&lt;/p&gt;
+&lt;p&gt;This plot makes a 13% increase look like a five fold change. Here is the appropriate plot:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/content/02-content_files/figure-html/barplot-from-zero-2-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Finally, here is an extreme example that makes a very small difference of under 2% look like a 10-100 fold change:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/./02-content_files/venezuela-election.png&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;(Source:
+Venezolana de Televisión via Pakistan Today&lt;a href=&#34;#fn9&#34; class=&#34;footnote-ref&#34; id=&#34;fnref9&#34;&gt;&lt;sup&gt;9&lt;/sup&gt;&lt;/a&gt; and Diego Mariano.)&lt;/p&gt;
+&lt;p&gt;Here is the appropriate plot:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/content/02-content_files/figure-html/barplot-from-zero-3-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;When using position rather than length, it is then not necessary to include 0. This is particularly the case when we want to compare differences between groups relative to the within-group variability. Here is an illustrative example showing country average life expectancy stratified across continents in 2012:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/content/02-content_files/figure-html/points-plot-not-from-zero-1.png&#34; width=&#34;100%&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Note that in the plot on the left, which includes 0, the space between 0 and 43 adds no information and makes it harder to compare the between and within group variability.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;do-not-distort-quantities&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Do not distort quantities&lt;/h2&gt;
+&lt;p&gt;During President Barack Obama’s 2011 State of the Union Address, the following chart was used to compare the US GDP to the GDP of four competing nations:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/./02-content_files/state-of-the-union.png&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;(Source: The 2011 State of the Union Address&lt;a href=&#34;#fn10&#34; class=&#34;footnote-ref&#34; id=&#34;fnref10&#34;&gt;&lt;sup&gt;10&lt;/sup&gt;&lt;/a&gt;)&lt;/p&gt;
+&lt;p&gt;Judging by the area of the circles, the US appears to have an economy over five times larger than China’s and over 30 times larger than France’s. However, if we look at the actual numbers, we see that this is not the case. The actual ratios are 2.6 and 5.8 times bigger than China and France, respectively. The reason for this distortion is that the radius, rather than the area, was made to be proportional to the quantity, which implies that the proportion between the areas is squared: 2.6 turns into 6.5 and 5.8 turns into 34.1. Here is a comparison of the circles we get if we make the value proportional to the radius and to the area:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;gdp &amp;lt;- c(14.6, 5.7, 5.3, 3.3, 2.5)
+gdp_data &amp;lt;- data.frame(Country = rep(c(&amp;quot;United States&amp;quot;, &amp;quot;China&amp;quot;, &amp;quot;Japan&amp;quot;, &amp;quot;Germany&amp;quot;, &amp;quot;France&amp;quot;),2),
+           y = factor(rep(c(&amp;quot;Radius&amp;quot;,&amp;quot;Area&amp;quot;),each=5), levels = c(&amp;quot;Radius&amp;quot;, &amp;quot;Area&amp;quot;)),
+           GDP= c(gdp^2/min(gdp^2), gdp/min(gdp))) %&amp;gt;%
+   mutate(Country = reorder(Country, GDP))
+gdp_data %&amp;gt;%
+  ggplot(aes(Country, y, size = GDP)) +
+  geom_point(show.legend = FALSE, color = &amp;quot;blue&amp;quot;) +
+  scale_size(range = c(2,25)) +
+  coord_flip() + ylab(&amp;quot;&amp;quot;) + xlab(&amp;quot;&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/content/02-content_files/figure-html/area-not-radius-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Not surprisingly, &lt;strong&gt;ggplot2&lt;/strong&gt; defaults to using area rather than
+radius. Of course, in this case, we really should not be using area at all since we can use position and length:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;gdp_data %&amp;gt;%
+  filter(y == &amp;quot;Area&amp;quot;) %&amp;gt;%
+  ggplot(aes(Country, GDP)) +
+  geom_bar(stat = &amp;quot;identity&amp;quot;, width = 0.5) +
+  ylab(&amp;quot;GDP in trillions of US dollars&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/content/02-content_files/figure-html/barplot-better-than-area-1.png&#34; width=&#34;50%&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;order-categories-by-a-meaningful-value&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Order categories by a meaningful value&lt;/h2&gt;
+&lt;p&gt;When one of the axes is used to show categories, as is done in barplots, the default &lt;strong&gt;ggplot2&lt;/strong&gt; behavior is to order the categories alphabetically when they are defined by character strings. If they are defined by factors, they are ordered by the factor levels. We rarely want to use alphabetical order. Instead, we should order by a meaningful quantity. In all the cases above, the barplots were ordered by the values being displayed. The exception was the graph showing barplots comparing browsers. In this case, we kept the order the same across the barplots to ease the comparison. Specifically, instead of ordering the browsers separately in the two years, we ordered both years by the average value of 2000 and 2015.&lt;/p&gt;
+&lt;p&gt;We previously learned how to use the &lt;code&gt;reorder&lt;/code&gt; function, which helps us achieve this goal.
+To appreciate how the right order can help convey a message, suppose we want to create a plot to compare the murder rate across states. We are particularly interested in the most dangerous and safest states. Note the difference when we order alphabetically (the default) versus when we order by the actual rate:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data(murders)
+p1 &amp;lt;- murders %&amp;gt;% mutate(murder_rate = total / population * 100000) %&amp;gt;%
+  ggplot(aes(state, murder_rate)) +
+  geom_bar(stat=&amp;quot;identity&amp;quot;) +
+  coord_flip() +
+  theme(axis.text.y = element_text(size = 8))  +
+  xlab(&amp;quot;&amp;quot;)
+
+p2 &amp;lt;- murders %&amp;gt;% mutate(murder_rate = total / population * 100000) %&amp;gt;%
+  mutate(state = reorder(state, murder_rate)) %&amp;gt;%
+  ggplot(aes(state, murder_rate)) +
+  geom_bar(stat=&amp;quot;identity&amp;quot;) +
+  coord_flip() +
+  theme(axis.text.y = element_text(size = 8))  +
+  xlab(&amp;quot;&amp;quot;)
+
+grid.arrange(p1, p2, ncol = 2)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/content/02-content_files/figure-html/do-not-order-alphabetically-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;We can make the second plot like this:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data(murders)
+murders %&amp;gt;% mutate(murder_rate = total / population * 100000) %&amp;gt;%
+  mutate(state = reorder(state, murder_rate)) %&amp;gt;%
+  ggplot(aes(state, murder_rate)) +
+  geom_bar(stat=&amp;quot;identity&amp;quot;) +
+  coord_flip() +
+  theme(axis.text.y = element_text(size = 6)) +
+  xlab(&amp;quot;&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The &lt;code&gt;reorder&lt;/code&gt; function lets us reorder groups as well. Earlier we saw an example related to income distributions across regions. Here are the two versions plotted against each other:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/content/02-content_files/figure-html/reorder-boxplot-example-1.png&#34; width=&#34;100%&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;The first orders the regions alphabetically, while the second orders them by the group’s median.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;show-the-data&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Show the data&lt;/h2&gt;
+&lt;p&gt;We have focused on displaying single quantities across categories. We now shift our attention to displaying data, with a focus on comparing groups.&lt;/p&gt;
+&lt;p&gt;To motivate our first principle, “show the data”, we go back to our artificial example of describing heights to ET, an extraterrestrial. This time let’s assume ET is interested in the difference in heights between males and females. A commonly seen plot used for comparisons between groups, popularized by software such as Microsoft Excel, is the dynamite plot, which shows the average and standard errors (standard errors are defined in a later chapter, but do not confuse them with the standard deviation of the data). The plot looks like this:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;## `summarise()` ungrouping output (override with `.groups` argument)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/content/02-content_files/figure-html/show-data-1-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;The average of each group is represented by the top of each bar and the antennae extend out from the average to the average plus two standard errors. If all ET receives is this plot, he will have little information on what to expect if he meets a group of human males and females. The bars go to 0: does this mean there are tiny humans measuring less than one foot? Are all males taller than the tallest females? Is there a range of heights? ET can’t answer these questions since we have provided almost no information on the height distribution.&lt;/p&gt;
+&lt;p&gt;This brings us to our first principle: show the data. This simple &lt;strong&gt;ggplot2&lt;/strong&gt; code already generates a more informative plot than the barplot by simply showing all the data points:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;heights %&amp;gt;%
+  ggplot(aes(sex, height)) +
+  geom_point()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/content/02-content_files/figure-html/show-data-2-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;For example, this plot gives us an idea of the range of the data. However, this plot has limitations as well, since we can’t really see all the 238 and 812 points plotted for females and males, respectively, and many points are plotted on top of each other. As we have previously described, visualizing the distribution is much more informative. But before doing this, we point out two ways we can improve a plot showing all the points.&lt;/p&gt;
+&lt;p&gt;The first is to add &lt;em&gt;jitter&lt;/em&gt;, which adds a small random shift to each point. In this case, adding horizontal jitter does not alter the interpretation, since the point heights do not change, but we minimize the number of points that fall on top of each other and, therefore, get a better visual sense of how the data is distributed. A second improvement comes from using &lt;em&gt;alpha blending&lt;/em&gt;: making the points somewhat transparent. The more points fall on top of each other, the darker the plot, which also helps us get a sense of how the points are distributed. Here is the same plot with jitter and alpha blending:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;heights %&amp;gt;%
+  ggplot(aes(sex, height)) +
+  geom_jitter(width = 0.1, alpha = 0.2)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/content/02-content_files/figure-html/show-points-with-jitter-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Now we start getting a sense that, on average, males are taller than females. We also note dark horizontal bands of points, demonstrating that many report values that are rounded to the nearest integer.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;ease-comparisons&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Ease comparisons&lt;/h2&gt;
+&lt;div id=&#34;use-common-axes&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Use common axes&lt;/h3&gt;
+&lt;p&gt;Since there are so many points, it is more effective to show distributions rather than individual points. We therefore show histograms for each group:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/content/02-content_files/figure-html/common-axes-histograms-wrong-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;However, from this plot it is not immediately obvious that males are, on average, taller than females. We have to look carefully to notice that the x-axis has a higher range of values in the male histogram. An important principle here is to &lt;strong&gt;keep the axes the same&lt;/strong&gt; when comparing data across two plots. Below we see how the comparison becomes easier:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/content/02-content_files/figure-html/common-axes-histograms-right-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;align-plots-vertically-to-see-horizontal-changes-and-horizontally-to-see-vertical-changes&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Align plots vertically to see horizontal changes and horizontally to see vertical changes&lt;/h3&gt;
+&lt;p&gt;In these histograms, the visual cue related to decreases or increases in height are shifts to the left or right, respectively: horizontal changes. Aligning the plots vertically helps us see this change when the axes are fixed:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/content/02-content_files/figure-html/common-axes-histograms-right-2-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;heights %&amp;gt;%
+  ggplot(aes(height, ..density..)) +
+  geom_histogram(binwidth = 1, color=&amp;quot;black&amp;quot;) +
+  facet_grid(sex~.)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;This plot makes it much easier to notice that men are, on average, taller.&lt;/p&gt;
+&lt;p&gt;If , we want the more compact summary provided by boxplots, we then align them horizontally since, by default, boxplots move up and down with changes in height. Following our &lt;em&gt;show the data&lt;/em&gt; principle, we then overlay all the data points:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/content/02-content_files/figure-html/boxplot-with-points-with-jitter-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt; heights %&amp;gt;%
+  ggplot(aes(sex, height)) +
+  geom_boxplot(coef=3) +
+  geom_jitter(width = 0.1, alpha = 0.2) +
+  ylab(&amp;quot;Height in inches&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Now contrast and compare these three plots, based on exactly the same data:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/content/02-content_files/figure-html/show-the-data-comparison-1.png&#34; width=&#34;100%&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Notice how much more we learn from the two plots on the right. Barplots are useful for showing one number, but not very useful when we want to describe distributions.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;consider-transformations&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Consider transformations&lt;/h3&gt;
+&lt;p&gt;We have motivated the use of the log transformation in cases where the changes are multiplicative. Population size was an example in which we found a log transformation to yield a more informative transformation.&lt;/p&gt;
+&lt;p&gt;The combination of an incorrectly chosen barplot and a failure to use a log transformation when one is merited can be particularly distorting. As an example, consider this barplot showing the average population sizes for each continent in 2015:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;## `summarise()` ungrouping output (override with `.groups` argument)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/content/02-content_files/figure-html/no-transformations-wrong-use-of-barplot-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;From this plot, one would conclude that countries in Asia are much more populous than in other continents. Following the &lt;em&gt;show the data&lt;/em&gt; principle, we quickly notice that this is due to two very large countries, which we assume are India and China:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/content/02-content_files/figure-html/no-transformation-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Using a log transformation here provides a much more informative plot. We compare the original barplot to a boxplot using the log scale transformation for the y-axis:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/content/02-content_files/figure-html/correct-transformation-1.png&#34; width=&#34;100%&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;With the new plot, we realize that countries in Africa actually have a larger median population size than those in Asia.&lt;/p&gt;
+&lt;p&gt;Other transformations you should consider are the logistic transformation (&lt;code&gt;logit&lt;/code&gt;), useful to better see fold changes in odds, and the square root transformation (&lt;code&gt;sqrt&lt;/code&gt;), useful for count data.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;visual-cues-to-be-compared-should-be-adjacent&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Visual cues to be compared should be adjacent&lt;/h3&gt;
+&lt;p&gt;For each continent, let’s compare income in 1970 versus 2010. When comparing income data across regions between 1970 and 2010, we made a figure similar to the one below, but this time we investigate continents rather than regions.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/content/02-content_files/figure-html/boxplots-not-adjacent-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;The default in &lt;strong&gt;ggplot2&lt;/strong&gt; is to order labels alphabetically so the labels with 1970 come before the labels with 2010, making the comparisons challenging because a continent’s distribution in 1970 is visually far from its distribution in 2010. It is much easier to make the comparison between 1970 and 2010 for each continent when the boxplots for that continent are next to each other:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/content/02-content_files/figure-html/boxplot-adjacent-comps-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;use-color&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Use color&lt;/h3&gt;
+&lt;p&gt;The comparison becomes even easier to make if we use color to denote the two things we want to compare:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/content/02-content_files/figure-html/boxplot-adjacent-comps-with-color-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;think-of-the-color-blind&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Think of the color blind&lt;/h2&gt;
+&lt;p&gt;About 10% of the population is color blind. Unfortunately, the default colors used in &lt;strong&gt;ggplot2&lt;/strong&gt; are not optimal for this group. However, &lt;strong&gt;ggplot2&lt;/strong&gt; does make it easy to change the color palette used in the plots. An example of how we can use a color blind friendly palette is described here: &lt;a href=&#34;http://www.cookbook-r.com/Graphs/Colors_(ggplot2)/#a-colorblind-friendly-palette&#34;&gt;http://www.cookbook-r.com/Graphs/Colors_(ggplot2)/#a-colorblind-friendly-palette&lt;/a&gt;:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;color_blind_friendly_cols &amp;lt;-
+  c(&amp;quot;#999999&amp;quot;, &amp;quot;#E69F00&amp;quot;, &amp;quot;#56B4E9&amp;quot;, &amp;quot;#009E73&amp;quot;,
+    &amp;quot;#F0E442&amp;quot;, &amp;quot;#0072B2&amp;quot;, &amp;quot;#D55E00&amp;quot;, &amp;quot;#CC79A7&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Here are the colors
+&lt;img src=&#34;/content/02-content_files/figure-html/color-blind-friendly-colors-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;There are several resources that can help you select colors, for example this one: &lt;a href=&#34;http://bconnelly.net/2013/10/creating-colorblind-friendly-figures/&#34;&gt;http://bconnelly.net/2013/10/creating-colorblind-friendly-figures/&lt;/a&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;plots-for-two-variables&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Plots for two variables&lt;/h2&gt;
+&lt;p&gt;In general, you should use scatterplots to visualize the relationship between two variables.
+In every single instance in which we have examined the relationship between two variables, including total murders versus population size, life expectancy versus fertility rates, and infant mortality versus income, we have used scatterplots. This is the plot we generally recommend. However, there are some exceptions and we describe two alternative plots here: the &lt;em&gt;slope chart&lt;/em&gt; and the &lt;em&gt;Bland-Altman plot&lt;/em&gt;.&lt;/p&gt;
+&lt;div id=&#34;slope-charts&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Slope charts&lt;/h3&gt;
+&lt;p&gt;One exception where another type of plot may be more informative is when you are comparing variables of the same type, but at different time points and for a relatively small number of comparisons. For example, comparing life expectancy between 2010 and 2015. In this case, we might recommend a &lt;em&gt;slope chart&lt;/em&gt;.&lt;/p&gt;
+&lt;p&gt;There is no geometry for slope charts in &lt;strong&gt;ggplot2&lt;/strong&gt;, but we can construct one using &lt;code&gt;geom_line&lt;/code&gt;. We need to do some tinkering to add labels. Below is an example comparing 2010 to 2015 for large western countries:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;west &amp;lt;- c(&amp;quot;Western Europe&amp;quot;,&amp;quot;Northern Europe&amp;quot;,&amp;quot;Southern Europe&amp;quot;,
+          &amp;quot;Northern America&amp;quot;,&amp;quot;Australia and New Zealand&amp;quot;)
+
+dat &amp;lt;- gapminder %&amp;gt;%
+  filter(year%in% c(2010, 2015) &amp;amp; region %in% west &amp;amp;
+           !is.na(life_expectancy) &amp;amp; population &amp;gt; 10^7)
+
+dat %&amp;gt;%
+  mutate(location = ifelse(year == 2010, 1, 2),
+         location = ifelse(year == 2015 &amp;amp;
+                             country %in% c(&amp;quot;United Kingdom&amp;quot;, &amp;quot;Portugal&amp;quot;),
+                           location+0.22, location),
+         hjust = ifelse(year == 2010, 1, 0)) %&amp;gt;%
+  mutate(year = as.factor(year)) %&amp;gt;%
+  ggplot(aes(year, life_expectancy, group = country)) +
+  geom_line(aes(color = country), show.legend = FALSE) +
+  geom_text(aes(x = location, label = country, hjust = hjust),
+            show.legend = FALSE) +
+  xlab(&amp;quot;&amp;quot;) + ylab(&amp;quot;Life Expectancy&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/content/02-content_files/figure-html/slope-plot-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;An advantage of the slope chart is that it permits us to quickly get an idea of changes based on the slope of the lines. Although we are using angle as the visual cue, we also have position to determine the exact values. Comparing the improvements is a bit harder with a scatterplot:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/content/02-content_files/figure-html/scatter-plot-instead-of-slope-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;In the scatterplot, we have followed the principle &lt;em&gt;use common axes&lt;/em&gt; since we are comparing these before and after. However, if we have many points, slope charts stop being useful as it becomes hard to see all the lines.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;bland-altman-plot&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Bland-Altman plot&lt;/h3&gt;
+&lt;p&gt;Since we are primarily interested in the difference, it makes sense to dedicate one of our axes to it. The Bland-Altman plot, also known as the Tukey mean-difference plot and the MA-plot, shows the difference versus the average:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(ggrepel)
+dat %&amp;gt;%
+  mutate(year = paste0(&amp;quot;life_expectancy_&amp;quot;, year)) %&amp;gt;%
+  select(country, year, life_expectancy) %&amp;gt;%
+  spread(year, life_expectancy) %&amp;gt;%
+  mutate(average = (life_expectancy_2015 + life_expectancy_2010)/2,
+         difference = life_expectancy_2015 - life_expectancy_2010) %&amp;gt;%
+  ggplot(aes(average, difference, label = country)) +
+  geom_point() +
+  geom_text_repel() +
+  geom_abline(lty = 2) +
+  xlab(&amp;quot;Average of 2010 and 2015&amp;quot;) +
+  ylab(&amp;quot;Difference between 2015 and 2010&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/content/02-content_files/figure-html/bland-altman-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Here, by simply looking at the y-axis, we quickly see which countries have shown the most improvement. We also get an idea of the overall value from the x-axis.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;encoding-a-third-variable&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Encoding a third variable&lt;/h2&gt;
+&lt;p&gt;An earlier scatterplot showed the relationship between infant survival and average income. Below is a version of this plot that encodes three variables: OPEC membership, region, and population.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/content/02-content_files/figure-html/encoding-third-variable-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;We encode categorical variables with color and shape. These shapes can be controlled with &lt;code&gt;shape&lt;/code&gt; argument. Below are the shapes available for use in R. For the last five, the color goes inside.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/content/02-content_files/figure-html/available-shapes-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;For continuous variables, we can use color, intensity, or size. We now show an example of how we do this with a case study.&lt;/p&gt;
+&lt;p&gt;When selecting colors to quantify a numeric variable, we choose between two options: sequential and diverging. Sequential colors are suited for data that goes from high to low. High values are clearly distinguished from low values. Here are some examples offered by the package &lt;code&gt;RColorBrewer&lt;/code&gt;:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(RColorBrewer)
+display.brewer.all(type=&amp;quot;seq&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/content/02-content_files/figure-html/r-color-brewer-seq-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Diverging colors are used to represent values that diverge from a center. We put equal emphasis on both ends of the data range: higher than the center and lower than the center. An example of when we would use a divergent pattern would be if we were to show height in standard deviations away from the average. Here are some examples of divergent patterns:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(RColorBrewer)
+display.brewer.all(type=&amp;quot;div&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/content/02-content_files/figure-html/r-color-brewer-div-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;avoid-pseudo-three-dimensional-plots&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Avoid pseudo-three-dimensional plots&lt;/h2&gt;
+&lt;p&gt;The figure below, taken from the scientific literature&lt;a href=&#34;#fn11&#34; class=&#34;footnote-ref&#34; id=&#34;fnref11&#34;&gt;&lt;sup&gt;11&lt;/sup&gt;&lt;/a&gt;,
+shows three variables: dose, drug type and survival. Although your screen/book page is flat and two-dimensional, the plot tries to imitate three dimensions and assigned a dimension to each variable.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/./02-content_files/fig8b.png&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;(Image courtesy of Karl Broman)&lt;/p&gt;
+&lt;p&gt;Humans are not good at seeing in three dimensions (which explains why it is hard to parallel park) and our limitation is even worse with regard to pseudo-three-dimensions. To see this, try to determine the values of the survival variable in the plot above. Can you tell when the purple ribbon intersects the red one? This is an example in which we can easily use color to represent the categorical variable instead of using a pseudo-3D:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;##First read data
+url &amp;lt;- &amp;quot;https://github.com/kbroman/Talk_Graphs/raw/master/R/fig8dat.csv&amp;quot;
+dat &amp;lt;- read.csv(url)
+
+##Now make alternative plot
+dat %&amp;gt;% gather(drug, survival, -log.dose) %&amp;gt;%
+  mutate(drug = gsub(&amp;quot;Drug.&amp;quot;,&amp;quot;&amp;quot;,drug)) %&amp;gt;%
+  ggplot(aes(log.dose, survival, color = drug)) +
+  geom_line()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/content/02-content_files/figure-html/colors-for-different-lines-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Notice how much easier it is to determine the survival values.&lt;/p&gt;
+&lt;p&gt;Pseudo-3D is sometimes used completely gratuitously: plots are made to look 3D even when the 3rd dimension does not represent a quantity. This only adds confusion and makes it harder to relay your message. Here are two examples:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/./02-content_files/fig1e.png&#34; /&gt;
+&lt;img src=&#34;/./02-content_files/fig2d.png&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;(Images courtesy of Karl Broman)&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;avoid-too-many-significant-digits&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Avoid too many significant digits&lt;/h2&gt;
+&lt;p&gt;By default, statistical software like R returns many significant digits. The default behavior in R is to show 7 significant digits. That many digits often adds no information and the added visual clutter can make it hard for the viewer to understand the message. As an example, here are the per 10,000 disease rates, computed from totals and population in R, for California across the five decades:&lt;/p&gt;
+&lt;table class=&#34;table table-striped&#34; style=&#34;width: auto !important; margin-left: auto; margin-right: auto;&#34;&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th style=&#34;text-align:left;&#34;&gt;
+state
+&lt;/th&gt;
+&lt;th style=&#34;text-align:right;&#34;&gt;
+year
+&lt;/th&gt;
+&lt;th style=&#34;text-align:right;&#34;&gt;
+Measles
+&lt;/th&gt;
+&lt;th style=&#34;text-align:right;&#34;&gt;
+Pertussis
+&lt;/th&gt;
+&lt;th style=&#34;text-align:right;&#34;&gt;
+Polio
+&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+California
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+1940
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+37.8826320
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+18.3397861
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0.8266512
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+California
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+1950
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+13.9124205
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+4.7467350
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+1.9742639
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+California
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+1960
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+14.1386471
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+NA
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0.2640419
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+California
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+1970
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0.9767889
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+NA
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+NA
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+California
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+1980
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0.3743467
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0.0515466
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+NA
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;We are reporting precision up to 0.00001 cases per 10,000, a very small value in the context of the changes that are occurring across the dates. In this case, two significant figures is more than enough and clearly makes the point that rates are decreasing:&lt;/p&gt;
+&lt;table class=&#34;table table-striped&#34; style=&#34;width: auto !important; margin-left: auto; margin-right: auto;&#34;&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th style=&#34;text-align:left;&#34;&gt;
+state
+&lt;/th&gt;
+&lt;th style=&#34;text-align:right;&#34;&gt;
+year
+&lt;/th&gt;
+&lt;th style=&#34;text-align:right;&#34;&gt;
+Measles
+&lt;/th&gt;
+&lt;th style=&#34;text-align:right;&#34;&gt;
+Pertussis
+&lt;/th&gt;
+&lt;th style=&#34;text-align:right;&#34;&gt;
+Polio
+&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+California
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+1940
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+37.9
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+18.3
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0.8
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+California
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+1950
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+13.9
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+4.7
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+2.0
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+California
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+1960
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+14.1
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+NA
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0.3
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+California
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+1970
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+1.0
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+NA
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+NA
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+California
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+1980
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0.4
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0.1
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+NA
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;Useful ways to change the number of significant digits or to round numbers are &lt;code&gt;signif&lt;/code&gt; and &lt;code&gt;round&lt;/code&gt;. You can define the number of significant digits globally by setting options like this: &lt;code&gt;options(digits = 3)&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;Another principle related to displaying tables is to place values being compared on columns rather than rows. Note that our table above is easier to read than this one:&lt;/p&gt;
+&lt;table class=&#34;table table-striped&#34; style=&#34;width: auto !important; margin-left: auto; margin-right: auto;&#34;&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th style=&#34;text-align:left;&#34;&gt;
+state
+&lt;/th&gt;
+&lt;th style=&#34;text-align:left;&#34;&gt;
+disease
+&lt;/th&gt;
+&lt;th style=&#34;text-align:right;&#34;&gt;
+1940
+&lt;/th&gt;
+&lt;th style=&#34;text-align:right;&#34;&gt;
+1950
+&lt;/th&gt;
+&lt;th style=&#34;text-align:right;&#34;&gt;
+1960
+&lt;/th&gt;
+&lt;th style=&#34;text-align:right;&#34;&gt;
+1970
+&lt;/th&gt;
+&lt;th style=&#34;text-align:right;&#34;&gt;
+1980
+&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+California
+&lt;/td&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+Measles
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+37.9
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+13.9
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+14.1
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+1
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0.4
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+California
+&lt;/td&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+Pertussis
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+18.3
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+4.7
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+NA
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+NA
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0.1
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+California
+&lt;/td&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+Polio
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0.8
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+2.0
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0.3
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+NA
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+NA
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;/div&gt;
+&lt;div id=&#34;know-your-audience&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Know your audience&lt;/h2&gt;
+&lt;p&gt;Graphs can be used for 1) our own exploratory data analysis, 2) to convey a message to experts, or 3) to help tell a story to a general audience. Make sure that the intended audience understands each element of the plot.&lt;/p&gt;
+&lt;p&gt;As a simple example, consider that for your own exploration it may be more useful to log-transform data and then plot it. However, for a general audience that is unfamiliar with converting logged values back to the original measurements, using a log-scale for the axis instead of log-transformed values will be much easier to digest.&lt;/p&gt;
+&lt;div class=&#34;fyi&#34;&gt;
+&lt;p&gt;&lt;strong&gt;TRY IT&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;For these exercises, we will be using the vaccines data in the &lt;strong&gt;dslabs&lt;/strong&gt; package:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(dslabs)
+data(us_contagious_diseases)&lt;/code&gt;&lt;/pre&gt;
+&lt;ol style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;Pie charts are appropriate:&lt;/li&gt;
+&lt;/ol&gt;
+&lt;ol style=&#34;list-style-type: lower-alpha&#34;&gt;
+&lt;li&gt;When we want to display percentages.&lt;/li&gt;
+&lt;li&gt;When &lt;strong&gt;ggplot2&lt;/strong&gt; is not available.&lt;/li&gt;
+&lt;li&gt;When I am in a bakery.&lt;/li&gt;
+&lt;li&gt;Never. Barplots and tables are always better.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;ol start=&#34;2&#34; style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;What is the problem with the plot below:&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;&lt;img src=&#34;/content/02-content_files/figure-html/baplot-not-from-zero-exercises-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;ol style=&#34;list-style-type: lower-alpha&#34;&gt;
+&lt;li&gt;The values are wrong. The final vote was 306 to 232.&lt;/li&gt;
+&lt;li&gt;The axis does not start at 0. Judging by the length, it appears Trump received 3 times as many votes when, in fact, it was about 30% more.&lt;/li&gt;
+&lt;li&gt;The colors should be the same.&lt;/li&gt;
+&lt;li&gt;Percentages should be shown as a pie chart.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;ol start=&#34;3&#34; style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;Take a look at the following two plots. They show the same information: 1928 rates of measles across the 50 states.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;&lt;img src=&#34;/content/02-content_files/figure-html/measels-exercise-1.png&#34; width=&#34;672&#34; /&gt;
+Which plot is easier to read if you are interested in determining which are the best and worst states in terms of rates, and why?&lt;/p&gt;
+&lt;ol style=&#34;list-style-type: lower-alpha&#34;&gt;
+&lt;li&gt;They provide the same information, so they are both equally as good.&lt;/li&gt;
+&lt;li&gt;The plot on the right is better because it orders the states alphabetically.&lt;/li&gt;
+&lt;li&gt;The plot on the right is better because alphabetical order has nothing to do with the disease and by ordering according to actual rate, we quickly see the states with most and least rates.&lt;/li&gt;
+&lt;li&gt;Both plots should be a pie chart.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;ol start=&#34;4&#34; style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;To make the plot on the left, we have to reorder the levels of the states’ variables.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;dat &amp;lt;- us_contagious_diseases %&amp;gt;%
+  filter(year == 1967 &amp;amp; disease==&amp;quot;Measles&amp;quot; &amp;amp; !is.na(population)) %&amp;gt;%
+  mutate(rate = count / population * 10000 * 52 / weeks_reporting)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Note what happens when we make a barplot:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;dat %&amp;gt;% ggplot(aes(state, rate)) +
+  geom_bar(stat=&amp;quot;identity&amp;quot;) +
+  coord_flip()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/content/02-content_files/figure-html/barplot-plot-exercise-example-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Define these objects:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;state &amp;lt;- dat$state
+rate &amp;lt;- dat$count/dat$population*10000*52/dat$weeks_reporting&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Redefine the &lt;code&gt;state&lt;/code&gt; object so that the levels are re-ordered. Print the new object &lt;code&gt;state&lt;/code&gt; and its levels so you can see that the vector is not re-ordered by the levels.&lt;/p&gt;
+&lt;ol start=&#34;5&#34; style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;&lt;p&gt;Now with one line of code, define the &lt;code&gt;dat&lt;/code&gt; table as done above, but change the use mutate to create a rate variable and re-order the state variable so that the levels are re-ordered by this variable. Then make a barplot using the code above, but for this new &lt;code&gt;dat&lt;/code&gt;.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Say we are interested in comparing gun homicide rates across regions of the US. We see this plot:&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(dslabs)
+data(&amp;quot;murders&amp;quot;)
+murders %&amp;gt;% mutate(rate = total/population*100000) %&amp;gt;%
+group_by(region) %&amp;gt;%
+summarize(avg = mean(rate)) %&amp;gt;%
+mutate(region = factor(region)) %&amp;gt;%
+ggplot(aes(region, avg)) +
+geom_bar(stat=&amp;quot;identity&amp;quot;) +
+ylab(&amp;quot;Murder Rate Average&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## `summarise()` ungrouping output (override with `.groups` argument)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/content/02-content_files/figure-html/us-murders-barplot-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;and decide to move to a state in the western region. What is the main problem with this interpretation?&lt;/p&gt;
+&lt;ol style=&#34;list-style-type: lower-alpha&#34;&gt;
+&lt;li&gt;The categories are ordered alphabetically.&lt;/li&gt;
+&lt;li&gt;The graph does not show standarad errors.&lt;/li&gt;
+&lt;li&gt;It does not show all the data. We do not see the variability within a region and it’s possible that the safest states are not in the West.&lt;/li&gt;
+&lt;li&gt;The Northeast has the lowest average.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;ol start=&#34;7&#34; style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;Make a boxplot of the murder rates defined as&lt;/li&gt;
+&lt;/ol&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data(&amp;quot;murders&amp;quot;)
+murders %&amp;gt;% mutate(rate = total/population*100000)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;by region, showing all the points and ordering the regions by their median rate.&lt;/p&gt;
+&lt;ol start=&#34;8&#34; style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;The plots below show three continuous variables.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;&lt;img src=&#34;/content/02-content_files/figure-html/pseudo-3d-exercise-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;The line &lt;span class=&#34;math inline&#34;&gt;\(x=2\)&lt;/span&gt; appears to separate the points. But it is actually not the case, which we can see by plotting the data in a couple of two-dimensional points.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/content/02-content_files/figure-html/pseud-3d-exercise-2-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Why is this happening?&lt;/p&gt;
+&lt;ol style=&#34;list-style-type: lower-alpha&#34;&gt;
+&lt;li&gt;Humans are not good at reading pseudo-3D plots.&lt;/li&gt;
+&lt;li&gt;There must be an error in the code.&lt;/li&gt;
+&lt;li&gt;The colors confuse us.&lt;/li&gt;
+&lt;li&gt;Scatterplots should not be used to compare two variables when we have access to 3.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&#34;footnotes&#34;&gt;
+&lt;hr /&gt;
+&lt;ol&gt;
+&lt;li id=&#34;fn1&#34;&gt;&lt;p&gt;Keep in mind that discrete numeric data can be considered ordinal. Although this is technically true, we usually reserve the term ordinal data for variables belonging to a small number of different groups, with each group having many members. In contrast, when we have many groups with few cases in each group, we typically refer to them as discrete numerical variables. So, for example, the number of packs of cigarettes a person smokes a day, rounded to the closest pack, would be considered ordinal, while the actual number of cigarettes would be considered a numerical variable. But, indeed, there are examples that can be considered both numerical and ordinal when it comes to visualizing data.&lt;a href=&#34;#fnref1&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li id=&#34;fn2&#34;&gt;&lt;p&gt;We provide a detailed explanation of outliers later.&lt;a href=&#34;#fnref2&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li id=&#34;fn3&#34;&gt;&lt;p&gt;&lt;a href=&#34;http://kbroman.org/&#34; class=&#34;uri&#34;&gt;http://kbroman.org/&lt;/a&gt;&lt;a href=&#34;#fnref3&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li id=&#34;fn4&#34;&gt;&lt;p&gt;&lt;a href=&#34;https://www.biostat.wisc.edu/~kbroman/presentations/graphs2017.pdf&#34; class=&#34;uri&#34;&gt;https://www.biostat.wisc.edu/~kbroman/presentations/graphs2017.pdf&lt;/a&gt;&lt;a href=&#34;#fnref4&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li id=&#34;fn5&#34;&gt;&lt;p&gt;&lt;a href=&#34;https://github.com/kbroman/Talk_Graphs&#34; class=&#34;uri&#34;&gt;https://github.com/kbroman/Talk_Graphs&lt;/a&gt;&lt;a href=&#34;#fnref5&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li id=&#34;fn6&#34;&gt;&lt;p&gt;&lt;a href=&#34;http://paldhous.github.io/ucb/2016/dataviz/index.html&#34; class=&#34;uri&#34;&gt;http://paldhous.github.io/ucb/2016/dataviz/index.html&lt;/a&gt;&lt;a href=&#34;#fnref6&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li id=&#34;fn7&#34;&gt;&lt;p&gt;&lt;a href=&#34;http://mediamatters.org/blog/2013/04/05/fox-news-newest-dishonest-chart-immigration-enf/193507&#34; class=&#34;uri&#34;&gt;http://mediamatters.org/blog/2013/04/05/fox-news-newest-dishonest-chart-immigration-enf/193507&lt;/a&gt;&lt;a href=&#34;#fnref7&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li id=&#34;fn8&#34;&gt;&lt;p&gt;&lt;a href=&#34;http://flowingdata.com/2012/08/06/fox-news-continues-charting-excellence/&#34; class=&#34;uri&#34;&gt;http://flowingdata.com/2012/08/06/fox-news-continues-charting-excellence/&lt;/a&gt;&lt;a href=&#34;#fnref8&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li id=&#34;fn9&#34;&gt;&lt;p&gt;&lt;a href=&#34;https://www.pakistantoday.com.pk/2018/05/18/whats-at-stake-in-venezuelan-presidential-vote&#34; class=&#34;uri&#34;&gt;https://www.pakistantoday.com.pk/2018/05/18/whats-at-stake-in-venezuelan-presidential-vote&lt;/a&gt;&lt;a href=&#34;#fnref9&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li id=&#34;fn10&#34;&gt;&lt;p&gt;&lt;a href=&#34;https://www.youtube.com/watch?v=kl2g40GoRxg&#34; class=&#34;uri&#34;&gt;https://www.youtube.com/watch?v=kl2g40GoRxg&lt;/a&gt;&lt;a href=&#34;#fnref10&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li id=&#34;fn11&#34;&gt;&lt;p&gt;&lt;a href=&#34;https://projecteuclid.org/download/pdf_1/euclid.ss/1177010488&#34; class=&#34;uri&#34;&gt;https://projecteuclid.org/download/pdf_1/euclid.ss/1177010488&lt;/a&gt;&lt;a href=&#34;#fnref11&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    
+    <item>
       <title>Introduction to the tidyverse</title>
       <link>/content/01-content/</link>
       <pubDate>Tue, 08 Sep 2020 00:00:00 +0000</pubDate>
@@ -3827,10 +5082,9 @@ data(murders)&lt;/code&gt;&lt;/pre&gt;
         &lt;tr&gt;
             &lt;td align=&#34;right&#34; style=&#34;width:18%;text-align:right&#34;&gt;Week 2&lt;/td&gt;
             &lt;td style=&#34;width:50%;text-align:left&#34;&gt;Visualization II&lt;/td&gt;
-            &lt;td align=&#34;center&#34; style=&#34;width:10%;text-align:center&#34;&gt;
-                &lt;font color=&#34;f1f1f1&#34;&gt;
-                    &lt;i class=&#34;fas fa-book-reader fa-lg&#34;&gt;&lt;/i&gt;&lt;/font&gt;
-            &lt;/td&gt;
+            &lt;td align=&#34;center&#34; style=&#34;width:10%;text-align:center&#34;&gt;&lt;a
+                    href=&#34;/content/02-content/&#34;&gt;
+                    &lt;i class=&#34;fas fa-book-reader fa-lg&#34;&gt;&lt;/i&gt;&lt;/a&gt;&lt;/td&gt;
             &lt;td align=&#34;center&#34; style=&#34;width:10%;text-align:center&#34;&gt;
                 &lt;font color=&#34;f1f1f1&#34;&gt;
                     &lt;i class=&#34;fas fa-laptop-code fa-lg&#34;&gt;&lt;/i&gt;&lt;/font&gt;
