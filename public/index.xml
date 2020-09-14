@@ -608,7 +608,7 @@ install it first.&lt;/p&gt;
 &lt;p&gt;Our primary tool for data visualization in the course will be &lt;code&gt;ggplot&lt;/code&gt;. Technically, we’re using &lt;code&gt;ggplot2&lt;/code&gt;; the o.g. version lacked some of the modern features of its big brother. &lt;code&gt;ggplot2&lt;/code&gt; implements the grammar of graphics, a coherent and relatively straightforward system for describing and building graphs. With &lt;code&gt;ggplot2&lt;/code&gt;, you can do more faster by learning one system and applying it in many places. Other languages provide more specific tools, but require you to learn a different tool for each application. In this class, we’ll dig into a single package for our visuals.&lt;/p&gt;
 &lt;div id=&#34;using-ggplot2&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Using ggplot2&lt;/h2&gt;
-&lt;p&gt;In order to get our hands dirty, we will first have to load &lt;code&gt;ggplot2&lt;/code&gt;. To do this, and to access the datasets, help pages, and functions that we will use in this chapter, we will load the so-called tidyverse by running this code:&lt;/p&gt;
+&lt;p&gt;In order to get our hands dirty, we will first have to load &lt;code&gt;ggplot2&lt;/code&gt;. To do this, and to access the datasets, help pages, and functions that we will use in this assignment, we will load the so-called tidyverse by running this code:&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;library(tidyverse)&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;If you run this code and get an error message “there is no package called ‘tidyverse’”, you’ll need to first install it, then run library() once again. To install packages in &lt;code&gt;R&lt;/code&gt;, we utilize the simple function install.packages(). In this case, we would write:&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;install.packages(&amp;quot;tidyverse&amp;quot;)
@@ -892,6 +892,473 @@ Turning tables into graphs. The American Statistician 56:121-130.&lt;/li&gt;
 &lt;li id=&#34;fn4&#34;&gt;&lt;p&gt;&lt;a href=&#34;https://en.wikipedia.org/wiki/John_Tukey&#34; class=&#34;uri&#34;&gt;https://en.wikipedia.org/wiki/John_Tukey&lt;/a&gt;&lt;a href=&#34;#fnref4&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
 &lt;li id=&#34;fn5&#34;&gt;&lt;p&gt;&lt;a href=&#34;https://www.ted.com/talks/hans_rosling_reveals_new_insights_on_poverty?language=en&#34; class=&#34;uri&#34;&gt;https://www.ted.com/talks/hans_rosling_reveals_new_insights_on_poverty?language=en&lt;/a&gt;&lt;a href=&#34;#fnref5&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
 &lt;li id=&#34;fn6&#34;&gt;&lt;p&gt;&lt;a href=&#34;https://www.ted.com/talks/hans_rosling_shows_the_best_stats_you_ve_ever_seen&#34; class=&#34;uri&#34;&gt;https://www.ted.com/talks/hans_rosling_shows_the_best_stats_you_ve_ever_seen&lt;/a&gt;&lt;a href=&#34;#fnref6&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Applying ggplot2 to Real Data</title>
+      <link>/assignment/02-assignment/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>/assignment/02-assignment/</guid>
+      <description>
+
+&lt;div id=&#34;TOC&#34;&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#preliminaries&#34;&gt;Preliminaries&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#background&#34;&gt;Background&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#r-markdown&#34;&gt;R Markdown&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#turning-everything-in&#34;&gt;Turning everything in&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+
+&lt;div class=&#34;fyi&#34;&gt;
+&lt;p&gt;&lt;strong&gt;NOTE&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;You must turn in a PDF document of your &lt;code&gt;R markdown&lt;/code&gt; code. Submit this to D2L by 11:59 PM on Monday.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;preliminaries&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Preliminaries&lt;/h2&gt;
+&lt;p&gt;As always, we will first have to load &lt;code&gt;ggplot2&lt;/code&gt;. To do this, we will load the tidyverse by running this code:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;library(tidyverse)&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;background&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Background&lt;/h2&gt;
+&lt;p&gt;The New York City Department of Buildings (DOB) maintains a list of construction sites that have been categorized as “essential” during the city’s shelter-in-place pandemic order. They’ve provided &lt;a href=&#34;https://www1.nyc.gov/assets/buildings/html/essential-active-construction.html&#34;&gt;an interactive map here&lt;/a&gt; where you can see the different projects. There’s also a link there to download the complete dataset.&lt;/p&gt;
+&lt;p&gt;For this exercise, you’re going to use this data to visualize the amounts or proportions of different types of essential projects in the five boroughs of New York City (Brooklyn, Manhattan, the Bronx, Queens, and Staten Island).&lt;/p&gt;
+&lt;p&gt;As you hopefully figured out by now, you’ll be doing all your &lt;code&gt;R&lt;/code&gt; work in &lt;code&gt;R Markdown&lt;/code&gt;. You can use an RStudio Project to keep your files well organized (either on your computer or on RStudio.cloud), but this is optional. If you decide to do so, either create a new project for this exercise only, or make a project for all your work in this class.&lt;/p&gt;
+&lt;p&gt;You’ll need to download one CSV file and put it somewhere on your computer or upload it to RStudio.cloud—preferably in a folder named &lt;code&gt;data&lt;/code&gt; in your project folder. You can download the data from &lt;a href=&#34;https://www1.nyc.gov/assets/buildings/html/essential-active-construction.html&#34;&gt;the DOB’s map&lt;/a&gt;, or use this link to get it directly:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;/projects/02-lab/data/EssentialConstruction.csv&#34;&gt;&lt;i class=&#34;fas fa-file-csv&#34;&gt;&lt;/i&gt; &lt;code&gt;EssentialConstruction.csv&lt;/code&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;To help you, I’ve created a skeleton &lt;code&gt;R Markdown&lt;/code&gt; file with a template for this exercise, along with some code to help you clean and summarize the data. Download that here and use it to begin your lab this week.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;/projects/02-lab/02-lab.Rmd&#34;&gt;&lt;i class=&#34;fab fa-r-project&#34;&gt;&lt;/i&gt; &lt;code&gt;04-exercise.Rmd&lt;/code&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div id=&#34;r-markdown&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;R Markdown&lt;/h3&gt;
+&lt;p&gt;(We learned after the first assignment the following.) Many of you have not worked with &lt;code&gt;R Markdown&lt;/code&gt; before. That’s okay—we’ll teach you. Importantly, there are resources &lt;a href=&#34;/resource/&#34;&gt;here&lt;/a&gt; to help.&lt;/p&gt;
+&lt;p&gt;Writing regular text with &lt;code&gt;R Markdown&lt;/code&gt; follows the rules of Markdown. You can make lists; different-size headers, etc. This should be relatively straightfoward; consult the resouces for more information.&lt;/p&gt;
+&lt;p&gt;You’ll also need to insert your own code chunks where needed. Rather than typing them by hand (that’s tedious and you might miscount the number of backticks!), use the “Insert” button at the top of the editing window, or type &lt;kbd&gt;ctrl&lt;/kbd&gt; + &lt;kbd&gt;alt&lt;/kbd&gt; + &lt;kbd&gt;i&lt;/kbd&gt; on Windows, or &lt;kbd&gt;⌘&lt;/kbd&gt; + &lt;kbd&gt;⌥&lt;/kbd&gt; + &lt;kbd&gt;i&lt;/kbd&gt; on macOS.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/img/assignments/insert-chunk-button.png&#34; width=&#34;19%&#34; /&gt;&lt;/p&gt;
+&lt;div class=&#34;fyi&#34;&gt;
+&lt;p&gt;&lt;strong&gt;Exercise 1 (the only exercise): Essential pandemic construction&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Make the following plots and briefly explain what they show. Note that the included .Rmd file above provides some intial guidance.&lt;/p&gt;
+&lt;ol style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;&lt;p&gt;Show the count or proportion of approved projects by borough using a bar chart.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Show the count or proportion of approved projects by category using a lollipop chart&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Show the proportion of approved projects by borough and category simultaneously using a heatmap&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;You don’t need to make these super fancy, but if you’re feeling brave, experiment with adding a &lt;code&gt;labs()&lt;/code&gt; layer or changing fill colors with &lt;code&gt;scale_fill_manual()&lt;/code&gt; or with palettes.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Bonus&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Overlay the data from Part 1 above onto a map of NYC. For double bonus, color the boroughs.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;turning-everything-in&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Turning everything in&lt;/h2&gt;
+&lt;p&gt;When you’re all done, click on the “Knit” button at the top of the editing window and create a PDF. If you haven’t already &lt;a href=&#34;/resource/install/#install-tinytex&#34;&gt;install &lt;strong&gt;tinytex&lt;/strong&gt;&lt;/a&gt;) to ensure that works. Upload the PDF file to D2L.&lt;/p&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>ggplot2: Everything you ever wanted to know</title>
+      <link>/example/02-example/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>/example/02-example/</guid>
+      <description>
+
+&lt;div id=&#34;TOC&#34;&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#ggplot2&#34;&gt;ggplot2&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#the-components-of-a-graph&#34;&gt;The components of a graph&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#ggplot-objects&#34;&gt;&lt;code&gt;ggplot&lt;/code&gt; objects&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#geometries&#34;&gt;Geometries&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#aesthetic-mappings&#34;&gt;Aesthetic mappings&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#layers&#34;&gt;Layers&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#tinkering-with-arguments&#34;&gt;Tinkering with arguments&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#global-versus-local-aesthetic-mappings&#34;&gt;Global versus local aesthetic mappings&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#scales&#34;&gt;Scales&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#labels-and-titles&#34;&gt;Labels and titles&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#categories-as-colors&#34;&gt;Categories as colors&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#annotation-shapes-and-adjustments&#34;&gt;Annotation, shapes, and adjustments&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#add-on-packages&#34;&gt;Add-on packages&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#putting-it-all-together&#34;&gt;Putting it all together&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#qplot&#34;&gt;Quick plots with &lt;code&gt;qplot&lt;/code&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#grids-of-plots&#34;&gt;Grids of plots&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+
+&lt;div id=&#34;ggplot2&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;ggplot2&lt;/h1&gt;
+&lt;p&gt;Exploratory data visualization is perhaps the greatest strength of &lt;code&gt;R&lt;/code&gt;. One can quickly go from idea to data to plot with a unique balance of flexibility and ease. For example, Excel may be easier than &lt;code&gt;R&lt;/code&gt; for some plots, but it is nowhere near as flexible. &lt;code&gt;D3.js&lt;/code&gt; may be more flexible and powerful than &lt;code&gt;R&lt;/code&gt;, but it takes much longer to generate a plot. One of the reasons we use &lt;code&gt;R&lt;/code&gt; is its incredible flexibility &lt;strong&gt;and&lt;/strong&gt; ease.&lt;/p&gt;
+&lt;p&gt;Throughout the book, we will be creating plots using the &lt;strong&gt;ggplot2&lt;/strong&gt;&lt;a href=&#34;#fn1&#34; class=&#34;footnote-ref&#34; id=&#34;fnref1&#34;&gt;&lt;sup&gt;1&lt;/sup&gt;&lt;/a&gt; package.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(dplyr)
+library(ggplot2)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Many other approaches are available for creating plots in &lt;code&gt;R&lt;/code&gt;. In fact, the plotting capabilities that come with a basic installation of &lt;code&gt;R&lt;/code&gt; are already quite powerful. There are also other packages for creating graphics such as &lt;strong&gt;grid&lt;/strong&gt; and &lt;strong&gt;lattice&lt;/strong&gt;. We chose to use &lt;strong&gt;ggplot2&lt;/strong&gt; in this book because it breaks plots into components in a way that permits beginners to create relatively complex and aesthetically pleasing plots using syntax that is intuitive and comparatively easy to remember.&lt;/p&gt;
+&lt;p&gt;One reason &lt;strong&gt;ggplot2&lt;/strong&gt; is generally more intuitive for beginners is that it uses a so-called “grammar of graphics”&lt;a href=&#34;#fn2&#34; class=&#34;footnote-ref&#34; id=&#34;fnref2&#34;&gt;&lt;sup&gt;2&lt;/sup&gt;&lt;/a&gt;, the letters &lt;em&gt;gg&lt;/em&gt; in &lt;strong&gt;ggplot2&lt;/strong&gt;. This is analogous to the way learning grammar can help a beginner construct hundreds of different sentences by learning just a handful of verbs, nouns and adjectives without having to memorize each specific sentence. Similarly, by learning a handful of &lt;strong&gt;ggplot2&lt;/strong&gt; building blocks and its grammar, you will be able to create hundreds of different plots.&lt;/p&gt;
+&lt;p&gt;Another reason &lt;strong&gt;ggplot2&lt;/strong&gt; is easy for beginners is that its default behavior is carefully chosen to satisfy the great majority of cases and is visually pleasing. As a result, it is possible to create informative and elegant graphs with relatively simple and readable code.&lt;/p&gt;
+&lt;p&gt;One limitation is that &lt;strong&gt;ggplot2&lt;/strong&gt; is designed to work exclusively with data tables in tidy format (where rows are observations and columns are variables). However, a substantial percentage of datasets that beginners work with are in, or can be converted into, this format. An advantage of this approach is that, assuming that our data is tidy, &lt;strong&gt;ggplot2&lt;/strong&gt; simplifies plotting code and the learning of grammar for a variety of plots.&lt;/p&gt;
+&lt;p&gt;To use &lt;strong&gt;ggplot2&lt;/strong&gt; you will have to learn several functions and arguments. These are hard to memorize, so we highly recommend you have the ggplot2 cheat sheet handy. You can get a copy here: &lt;a href=&#34;https://www.rstudio.com/wp-content/uploads/2015/03/ggplot2-cheatsheet.pdf&#34;&gt;https://www.rstudio.com/wp-content/uploads/2015/03/ggplot2-cheatsheet.pdf&lt;/a&gt; or simply perform an internet search for “ggplot2 cheat sheet”.&lt;/p&gt;
+&lt;div id=&#34;the-components-of-a-graph&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;The components of a graph&lt;/h2&gt;
+&lt;p&gt;We will construct a graph that summarizes the US murders dataset that looks like this:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/example/02-example_files/figure-html/ggplot-example-plot-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;We can clearly see how much states vary across population size and the total number of murders. Not surprisingly, we also see a clear relationship between murder totals and population size. A state falling on the dashed grey line has the same murder rate as the US average. The four geographic regions are denoted with color, which depicts how most southern states have murder rates above the average.&lt;/p&gt;
+&lt;p&gt;This data visualization shows us pretty much all the information in the data table. The code needed to make this plot is relatively simple. We will learn to create the plot part by part.&lt;/p&gt;
+&lt;p&gt;The first step in learning &lt;strong&gt;ggplot2&lt;/strong&gt; is to be able to break a graph apart into components. Let’s break down the plot above and introduce some of the &lt;strong&gt;ggplot2&lt;/strong&gt; terminology. The main three components to note are:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Data&lt;/strong&gt;: The US murders data table is being summarized. We refer to this as the &lt;strong&gt;data&lt;/strong&gt; component.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Geometry&lt;/strong&gt;: The plot above is a scatterplot. This is referred to as the
+&lt;strong&gt;geometry&lt;/strong&gt; component. Other possible geometries are barplot, histogram, smooth densities, qqplot, and boxplot. We will learn more about these in the Data Visualization part of the book.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Aesthetic mapping&lt;/strong&gt;: The plot uses several visual cues to represent the information provided by the dataset. The two most important cues in this plot are the point positions on the x-axis and y-axis, which represent population size and the total number of murders, respectively. Each point represents a different observation, and we &lt;em&gt;map&lt;/em&gt; data about these observations to visual cues like x- and y-scale. Color is another visual cue that we map to region. We refer to this as the &lt;strong&gt;aesthetic mapping&lt;/strong&gt; component. How we define the mapping depends on what &lt;strong&gt;geometry&lt;/strong&gt; we are using.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;We also note that:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;The points are labeled with the state abbreviations.&lt;/li&gt;
+&lt;li&gt;The range of the x-axis and y-axis appears to be defined by the range of the data. They are both on log-scales.&lt;/li&gt;
+&lt;li&gt;There are labels, a title, a legend, and we use the style of The Economist magazine.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;We will now construct the plot piece by piece.&lt;/p&gt;
+&lt;p&gt;We start by loading the dataset:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(dslabs)
+data(murders)&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;ggplot-objects&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;&lt;code&gt;ggplot&lt;/code&gt; objects&lt;/h2&gt;
+&lt;p&gt;The first step in creating a &lt;strong&gt;ggplot2&lt;/strong&gt; graph is to define a &lt;code&gt;ggplot&lt;/code&gt; object. We do this with the function &lt;code&gt;ggplot&lt;/code&gt;, which initializes the graph. If we read the help file for this function, we see that the first argument is used to specify what data is associated with this object:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(data = murders)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;We can also pipe the data in as the first argument. So this line of code is equivalent to the one above:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;murders %&amp;gt;% ggplot()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/example/02-example_files/figure-html/ggplot-example-2-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;It renders a plot, in this case a blank slate since no geometry has been defined. The only style choice we see is a grey background.&lt;/p&gt;
+&lt;p&gt;What has happened above is that the object was created and, because it was not assigned, it was automatically evaluated. But we can assign our plot to an object, for example like this:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p &amp;lt;- ggplot(data = murders)
+class(p)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;gg&amp;quot;     &amp;quot;ggplot&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;To render the plot associated with this object, we simply print the object &lt;code&gt;p&lt;/code&gt;. The following two lines of code each produce the same plot we see above:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;print(p)
+p&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;geometries&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Geometries&lt;/h2&gt;
+&lt;p&gt;In &lt;code&gt;ggplot2&lt;/code&gt; we create graphs by adding &lt;em&gt;layers&lt;/em&gt;. Layers can define geometries, compute summary statistics, define what scales to use, or even change styles.
+To add layers, we use the symbol &lt;code&gt;+&lt;/code&gt;. In general, a line of code will look like this:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;DATA %&amp;gt;% &lt;code&gt;ggplot()&lt;/code&gt; + LAYER 1 + LAYER 2 + … + LAYER N&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Usually, the first added layer defines the geometry. We want to make a scatterplot. What geometry do we use?&lt;/p&gt;
+&lt;p&gt;Taking a quick look at the cheat sheet, we see that the function used to create plots with this geometry is &lt;code&gt;geom_point&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/example/02-example_files/ggplot2-cheatsheeta.png&#34; /&gt;
+&lt;img src=&#34;/example/02-example_files/ggplot2-cheatsheetb.png&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;(Image courtesy of RStudio&lt;a href=&#34;#fn3&#34; class=&#34;footnote-ref&#34; id=&#34;fnref3&#34;&gt;&lt;sup&gt;3&lt;/sup&gt;&lt;/a&gt;. CC-BY-4.0 license&lt;a href=&#34;#fn4&#34; class=&#34;footnote-ref&#34; id=&#34;fnref4&#34;&gt;&lt;sup&gt;4&lt;/sup&gt;&lt;/a&gt;.)&lt;/p&gt;
+&lt;!--(Source: [RStudio](https://github.com/rstudio/cheatsheets/raw/master/data-visualization-2.1.pdf))--&gt;
+&lt;p&gt;Geometry function names follow the pattern: &lt;code&gt;geom_X&lt;/code&gt; where X is the name of some specific geometry. Some examples include &lt;code&gt;geom_point&lt;/code&gt;, &lt;code&gt;geom_bar&lt;/code&gt;, and &lt;code&gt;geom_histogram&lt;/code&gt;. You’ve already seen a few of these.&lt;/p&gt;
+&lt;p&gt;For &lt;code&gt;geom_point&lt;/code&gt; to run properly we need to provide data and a mapping. We have already connected the object &lt;code&gt;p&lt;/code&gt; with the &lt;code&gt;murders&lt;/code&gt; data table, and if we add the layer &lt;code&gt;geom_point&lt;/code&gt; it defaults to using this data. To find out what mappings are expected, we read the &lt;strong&gt;Aesthetics&lt;/strong&gt; section of the help file &lt;code&gt;geom_point&lt;/code&gt; help file:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;gt; Aesthetics
+&amp;gt; 
+&amp;gt; geom_point understands the following aesthetics (required aesthetics are in bold):
+&amp;gt;
+&amp;gt; x
+&amp;gt;
+&amp;gt; y
+&amp;gt; 
+&amp;gt; alpha
+&amp;gt;
+&amp;gt; colour&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;and—although it does not show in bold above—we see that at least two arguments are required: &lt;code&gt;x&lt;/code&gt; and &lt;code&gt;y&lt;/code&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;aesthetic-mappings&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Aesthetic mappings&lt;/h2&gt;
+&lt;p&gt;&lt;strong&gt;Aesthetic mappings&lt;/strong&gt; describe how properties of the data connect with features of the graph, such as distance along an axis, size, or color. The &lt;code&gt;aes&lt;/code&gt; function connects data with what we see on the graph by defining aesthetic mappings and will be one of the functions you use most often when plotting. The outcome of the &lt;code&gt;aes&lt;/code&gt; function is often used as the argument of a geometry function. This example produces a scatterplot of total murders versus population in millions:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;murders %&amp;gt;% ggplot() + 
+  geom_point(aes(x = population/10^6, y = total))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;We can drop the &lt;code&gt;x =&lt;/code&gt; and &lt;code&gt;y =&lt;/code&gt; if we wanted to since these are the first and second expected arguments, as seen in the help page.&lt;/p&gt;
+&lt;p&gt;Instead of defining our plot from scratch, we can also add a layer to the &lt;code&gt;p&lt;/code&gt; object that was defined above as &lt;code&gt;p &amp;lt;- ggplot(data = murders)&lt;/code&gt;:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p + geom_point(aes(population/10^6, total))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/example/02-example_files/figure-html/ggplot-example-3-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;The scale and labels are defined by default when adding this layer. Like &lt;strong&gt;dplyr&lt;/strong&gt; functions, &lt;code&gt;aes&lt;/code&gt; also uses the variable names from the object component: we can use &lt;code&gt;population&lt;/code&gt; and &lt;code&gt;total&lt;/code&gt; without having to call them as &lt;code&gt;murders$population&lt;/code&gt; and &lt;code&gt;murders$total&lt;/code&gt;. The behavior of recognizing the variables from the data component is quite specific to &lt;code&gt;aes&lt;/code&gt;. With most functions, if you try to access the values of &lt;code&gt;population&lt;/code&gt; or &lt;code&gt;total&lt;/code&gt; outside of &lt;code&gt;aes&lt;/code&gt; you receive an error.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;layers&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Layers&lt;/h2&gt;
+&lt;p&gt;A second layer in the plot we wish to make involves adding a label to each point to identify the state. The &lt;code&gt;geom_label&lt;/code&gt; and &lt;code&gt;geom_text&lt;/code&gt; functions permit us to add text to the plot with and without a rectangle behind the text, respectively.&lt;/p&gt;
+&lt;p&gt;Because each point (each state in this case) has a label, we need an aesthetic mapping to make the connection between points and labels. By reading the help file, we learn that we supply the mapping between point and label through the &lt;code&gt;label&lt;/code&gt; argument of &lt;code&gt;aes&lt;/code&gt;. So the code looks like this:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p + geom_point(aes(population/10^6, total)) +
+  geom_text(aes(population/10^6, total, label = abb))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/example/02-example_files/figure-html/ggplot-example-4-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;We have successfully added a second layer to the plot.&lt;/p&gt;
+&lt;p&gt;As an example of the unique behavior of &lt;code&gt;aes&lt;/code&gt; mentioned above, note that this call:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p_test &amp;lt;- p + geom_text(aes(population/10^6, total, label = abb))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;is fine, whereas this call:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p_test &amp;lt;- p + geom_text(aes(population/10^6, total), label = abb) &lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;will give you an error since &lt;code&gt;abb&lt;/code&gt; is not found because it is outside of the &lt;code&gt;aes&lt;/code&gt; function. The layer &lt;code&gt;geom_text&lt;/code&gt; does not know where to find &lt;code&gt;abb&lt;/code&gt; since it is a column name and not a global variable.&lt;/p&gt;
+&lt;div id=&#34;tinkering-with-arguments&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Tinkering with arguments&lt;/h3&gt;
+&lt;p&gt;Each geometry function has many arguments other than &lt;code&gt;aes&lt;/code&gt; and &lt;code&gt;data&lt;/code&gt;. They tend to be specific to the function. For example, in the plot we wish to make, the points are larger than the default size. In the help file we see that &lt;code&gt;size&lt;/code&gt; is an aesthetic and we can change it like this:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p + geom_point(aes(population/10^6, total), size = 3) +
+  geom_text(aes(population/10^6, total, label = abb))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/example/02-example_files/figure-html/ggplot-example-5-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;size&lt;/code&gt; is &lt;strong&gt;not&lt;/strong&gt; a mapping: whereas mappings use data from specific observations and need to be inside &lt;code&gt;aes()&lt;/code&gt;, operations we want to affect all the points the same way do not need to be included inside &lt;code&gt;aes&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;Now because the points are larger it is hard to see the labels. If we read the help file for &lt;code&gt;geom_text&lt;/code&gt;, we see the &lt;code&gt;nudge_x&lt;/code&gt; argument, which moves the text slightly to the right or to the left:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p + geom_point(aes(population/10^6, total), size = 3) +
+  geom_text(aes(population/10^6, total, label = abb), nudge_x = 1.5)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/example/02-example_files/figure-html/ggplot-example-6-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;This is preferred as it makes it easier to read the text. There are alternatives, though, and we will pepper in examples with better labels as we move forward.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;global-versus-local-aesthetic-mappings&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Global versus local aesthetic mappings&lt;/h2&gt;
+&lt;p&gt;In the previous line of code, we define the mapping &lt;code&gt;aes(population/10^6, total)&lt;/code&gt; twice, once in each geometry. We can avoid this by using a &lt;em&gt;global&lt;/em&gt; aesthetic mapping. We can do this when we define the blank slate &lt;code&gt;ggplot&lt;/code&gt; object. Remember that the function &lt;code&gt;ggplot&lt;/code&gt; contains an argument that permits us to define aesthetic mappings:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;args(ggplot)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## function (data = NULL, mapping = aes(), ..., environment = parent.frame()) 
+## NULL&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;If we define a mapping in &lt;code&gt;ggplot&lt;/code&gt;, all the geometries that are added as layers will default to this mapping. We redefine &lt;code&gt;p&lt;/code&gt;:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p &amp;lt;- murders %&amp;gt;% ggplot(aes(population/10^6, total, label = abb))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;and then we can simply write the following code to produce the previous plot:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p + geom_point(size = 3) + 
+  geom_text(nudge_x = 1.5)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;We keep the &lt;code&gt;size&lt;/code&gt; and &lt;code&gt;nudge_x&lt;/code&gt; arguments in &lt;code&gt;geom_point&lt;/code&gt; and &lt;code&gt;geom_text&lt;/code&gt;, respectively, because we want to only increase the size of points and only nudge the labels. If we put those arguments in &lt;code&gt;aes&lt;/code&gt; then they would apply to both plots. Also note that the &lt;code&gt;geom_point&lt;/code&gt; function does not need a &lt;code&gt;label&lt;/code&gt; argument and therefore ignores that aesthetic.&lt;/p&gt;
+&lt;p&gt;If necessary, we can override the global mapping by defining a new mapping within each layer. These &lt;em&gt;local&lt;/em&gt; definitions override the &lt;em&gt;global&lt;/em&gt;. Here is an example:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p + geom_point(size = 3) +  
+  geom_text(aes(x = 10, y = 800, label = &amp;quot;Hello there!&amp;quot;))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/example/02-example_files/figure-html/ggplot-example-8-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Clearly, the second call to &lt;code&gt;geom_text&lt;/code&gt; does not use &lt;code&gt;population&lt;/code&gt; and &lt;code&gt;total&lt;/code&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;scales&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Scales&lt;/h2&gt;
+&lt;p&gt;First, our desired scales are in log-scale. This is not the default, so this change needs to be added through a &lt;em&gt;scales&lt;/em&gt; layer. A quick look at the cheat sheet reveals the &lt;code&gt;scale_x_continuous&lt;/code&gt; function lets us control the behavior of scales. We use them like this:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p + geom_point(size = 3) +  
+  geom_text(nudge_x = 0.05) + 
+  scale_x_continuous(trans = &amp;quot;log10&amp;quot;) +
+  scale_y_continuous(trans = &amp;quot;log10&amp;quot;) &lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/example/02-example_files/figure-html/ggplot-example-9-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Because we are in the log-scale now, the &lt;em&gt;nudge&lt;/em&gt; must be made smaller.&lt;/p&gt;
+&lt;p&gt;This particular transformation is so common that &lt;strong&gt;ggplot2&lt;/strong&gt; provides the specialized functions &lt;code&gt;scale_x_log10&lt;/code&gt; and &lt;code&gt;scale_y_log10&lt;/code&gt;, which we can use to rewrite the code like this:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p + geom_point(size = 3) +  
+  geom_text(nudge_x = 0.05) + 
+  scale_x_log10() +
+  scale_y_log10() &lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;labels-and-titles&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Labels and titles&lt;/h2&gt;
+&lt;p&gt;Similarly, the cheat sheet quickly reveals that to change labels and add a title, we use the following functions:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p + geom_point(size = 3) +  
+  geom_text(nudge_x = 0.05) + 
+  scale_x_log10() +
+  scale_y_log10() +
+  xlab(&amp;quot;Populations in millions (log scale)&amp;quot;) + 
+  ylab(&amp;quot;Total number of murders (log scale)&amp;quot;) +
+  ggtitle(&amp;quot;US Gun Murders in 2010&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/example/02-example_files/figure-html/ggplot-example-10-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;We are almost there! All we have left to do is add color, a legend, and optional changes to the style.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;categories-as-colors&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Categories as colors&lt;/h2&gt;
+&lt;p&gt;We can change the color of the points using the &lt;code&gt;col&lt;/code&gt; argument in the &lt;code&gt;geom_point&lt;/code&gt; function. To facilitate demonstration of new features, we will redefine &lt;code&gt;p&lt;/code&gt; to be everything except the points layer:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p &amp;lt;-  murders %&amp;gt;% ggplot(aes(population/10^6, total, label = abb)) +   
+  geom_text(nudge_x = 0.05) + 
+  scale_x_log10() +
+  scale_y_log10() +
+  xlab(&amp;quot;Populations in millions (log scale)&amp;quot;) + 
+  ylab(&amp;quot;Total number of murders (log scale)&amp;quot;) +
+  ggtitle(&amp;quot;US Gun Murders in 2010&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;and then test out what happens by adding different calls to &lt;code&gt;geom_point&lt;/code&gt;. We can make all the points blue by adding the &lt;code&gt;color&lt;/code&gt; argument:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p + geom_point(size = 3, color =&amp;quot;blue&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/example/02-example_files/figure-html/ggplot-example-11-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;This, of course, is not what we want. We want to assign color depending on the geographical region. A nice default behavior of &lt;strong&gt;ggplot2&lt;/strong&gt; is that if we assign a categorical variable to color, it automatically assigns a different color to each category and also adds a legend.&lt;/p&gt;
+&lt;p&gt;Since the choice of color is determined by a feature of each observation, this is an aesthetic mapping. To map each point to a color, we need to use &lt;code&gt;aes&lt;/code&gt;. We use the following code:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p + geom_point(aes(col=region), size = 3)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/example/02-example_files/figure-html/ggplot-example-12-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;The &lt;code&gt;x&lt;/code&gt; and &lt;code&gt;y&lt;/code&gt; mappings are inherited from those already defined in &lt;code&gt;p&lt;/code&gt;, so we do not redefine them. We also move &lt;code&gt;aes&lt;/code&gt; to the first argument since that is where mappings are expected in this function call.&lt;/p&gt;
+&lt;p&gt;Here we see yet another useful default behavior: &lt;strong&gt;ggplot2&lt;/strong&gt; automatically adds a legend that maps color to region. To avoid adding this legend we set the &lt;code&gt;geom_point&lt;/code&gt; argument &lt;code&gt;show.legend = FALSE&lt;/code&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;annotation-shapes-and-adjustments&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Annotation, shapes, and adjustments&lt;/h2&gt;
+&lt;p&gt;We often want to add shapes or annotation to figures that are not derived directly from the aesthetic mapping; examples include labels, boxes, shaded areas, and lines.&lt;/p&gt;
+&lt;p&gt;Here we want to add a line that represents the average murder rate for the entire country. Once we determine the per million rate to be &lt;span class=&#34;math inline&#34;&gt;\(r\)&lt;/span&gt;, this line is defined by the formula: &lt;span class=&#34;math inline&#34;&gt;\(y = r x\)&lt;/span&gt;, with &lt;span class=&#34;math inline&#34;&gt;\(y\)&lt;/span&gt; and &lt;span class=&#34;math inline&#34;&gt;\(x\)&lt;/span&gt; our axes: total murders and population in millions, respectively. In the log-scale this line turns into: &lt;span class=&#34;math inline&#34;&gt;\(\log(y) = \log(r) + \log(x)\)&lt;/span&gt;. So in our plot it’s a line with slope 1 and intercept &lt;span class=&#34;math inline&#34;&gt;\(\log(r)\)&lt;/span&gt;. To compute this value, we use our &lt;strong&gt;dplyr&lt;/strong&gt; skills:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;r &amp;lt;- murders %&amp;gt;% 
+  summarize(rate = sum(total) /  sum(population) * 10^6) %&amp;gt;% 
+  pull(rate)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;To add a line we use the &lt;code&gt;geom_abline&lt;/code&gt; function. &lt;strong&gt;ggplot2&lt;/strong&gt; uses &lt;code&gt;ab&lt;/code&gt; in the name to remind us we are supplying the intercept (&lt;code&gt;a&lt;/code&gt;) and slope (&lt;code&gt;b&lt;/code&gt;). The default line has slope 1 and intercept 0 so we only have to define the intercept:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p + geom_point(aes(col=region), size = 3) + 
+  geom_abline(intercept = log10(r))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/example/02-example_files/figure-html/ggplot-example-13-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Here &lt;code&gt;geom_abline&lt;/code&gt; does not use any information from the data object.&lt;/p&gt;
+&lt;p&gt;We can change the line type and color of the lines using arguments. Also, we draw it first so it doesn’t go over our points.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p &amp;lt;- p + geom_abline(intercept = log10(r), lty = 2, color = &amp;quot;darkgrey&amp;quot;) +
+  geom_point(aes(col=region), size = 3)  &lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Note that we have redefined &lt;code&gt;p&lt;/code&gt; and used this new &lt;code&gt;p&lt;/code&gt; below and in the next section.&lt;/p&gt;
+&lt;p&gt;The default plots created by &lt;strong&gt;ggplot2&lt;/strong&gt; are already very useful. However, we frequently need to make minor tweaks to the default behavior. Although it is not always obvious how to make these even with the cheat sheet, &lt;strong&gt;ggplot2&lt;/strong&gt; is very flexible.&lt;/p&gt;
+&lt;p&gt;For example, we can make changes to the legend via the &lt;code&gt;scale_color_discrete&lt;/code&gt; function. In our plot the word &lt;em&gt;region&lt;/em&gt; is capitalized and we can change it like this:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p &amp;lt;- p + scale_color_discrete(name = &amp;quot;Region&amp;quot;) &lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;add-on-packages&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Add-on packages&lt;/h2&gt;
+&lt;p&gt;The power of &lt;strong&gt;ggplot2&lt;/strong&gt; is augmented further due to the availability of add-on packages.
+The remaining changes needed to put the finishing touches on our plot require the &lt;strong&gt;ggthemes&lt;/strong&gt; and &lt;strong&gt;ggrepel&lt;/strong&gt; packages.&lt;/p&gt;
+&lt;p&gt;The style of a &lt;strong&gt;ggplot2&lt;/strong&gt; graph can be changed using the &lt;code&gt;theme&lt;/code&gt; functions. Several themes are included as part of the &lt;strong&gt;ggplot2&lt;/strong&gt; package. In fact, for most of the plots in this book, we use a function in the &lt;strong&gt;dslabs&lt;/strong&gt; package that automatically sets a default theme:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ds_theme_set()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Many other themes are added by the package &lt;strong&gt;ggthemes&lt;/strong&gt;. Among those are the &lt;code&gt;theme_economist&lt;/code&gt; theme that we used. After installing the package, you can change the style by adding a layer like this:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(ggthemes)
+p + theme_economist()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;You can see how some of the other themes look by simply changing the function. For instance, you might try the &lt;code&gt;theme_fivethirtyeight()&lt;/code&gt; theme instead.&lt;/p&gt;
+&lt;p&gt;The final difference has to do with the position of the labels. In our plot, some of the labels fall on top of each other. The add-on package &lt;strong&gt;ggrepel&lt;/strong&gt; includes a geometry that adds labels while ensuring that they don’t fall on top of each other. We simply change &lt;code&gt;geom_text&lt;/code&gt; with &lt;code&gt;geom_text_repel&lt;/code&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;putting-it-all-together&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Putting it all together&lt;/h2&gt;
+&lt;p&gt;Now that we are done testing, we can write one piece of code that produces our desired plot from scratch.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(ggthemes)
+library(ggrepel)
+
+r &amp;lt;- murders %&amp;gt;% 
+  summarize(rate = sum(total) /  sum(population) * 10^6) %&amp;gt;%
+  pull(rate)
+
+murders %&amp;gt;% ggplot(aes(population/10^6, total, label = abb)) +   
+  geom_abline(intercept = log10(r), lty = 2, color = &amp;quot;darkgrey&amp;quot;) +
+  geom_point(aes(col=region), size = 3) +
+  geom_text_repel() + 
+  scale_x_log10() +
+  scale_y_log10() +
+  xlab(&amp;quot;Populations in millions (log scale)&amp;quot;) + 
+  ylab(&amp;quot;Total number of murders (log scale)&amp;quot;) +
+  ggtitle(&amp;quot;US Gun Murders in 2010&amp;quot;) + 
+  scale_color_discrete(name = &amp;quot;Region&amp;quot;) +
+  theme_economist_white()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/example/02-example_files/figure-html/final-ggplot-example-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;qplot&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Quick plots with &lt;code&gt;qplot&lt;/code&gt;&lt;/h2&gt;
+&lt;p&gt;We have learned the powerful approach to generating visualization with ggplot. However, there are instances in which all we want is to make a quick plot of, for example, a histogram of the values in a vector, a scatterplot of the values in two vectors, or a boxplot using categorical and numeric vectors. We demonstrated how to generate these plots with &lt;code&gt;hist&lt;/code&gt;, &lt;code&gt;plot&lt;/code&gt;, and &lt;code&gt;boxplot&lt;/code&gt;. However, if we want to keep consistent with the ggplot style, we can use the function &lt;code&gt;qplot&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;If we have values in two vectors, say:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data(murders)
+x &amp;lt;- log10(murders$population)
+y &amp;lt;- murders$total&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;and we want to make a scatterplot with ggplot, we would have to type something like:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data.frame(x = x, y = y) %&amp;gt;% 
+  ggplot(aes(x, y)) +
+  geom_point()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;This seems like too much code for such a simple plot.
+The &lt;code&gt;qplot&lt;/code&gt; function sacrifices the flexibility provided by the &lt;code&gt;ggplot&lt;/code&gt; approach, but allows us to generate a plot quickly.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;qplot(x, y)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Although we won’t discuss &lt;code&gt;qtplot&lt;/code&gt; in much detail, you should feel free to use it in the early stages of your data exploration. Once you’re settled on a final design, then move to &lt;code&gt;ggplot&lt;/code&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;grids-of-plots&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Grids of plots&lt;/h2&gt;
+&lt;p&gt;There are often reasons to graph plots next to each other. The &lt;strong&gt;gridExtra&lt;/strong&gt; package permits us to do that:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(gridExtra)
+p1 &amp;lt;- qplot(x)
+p2 &amp;lt;- qplot(x,y)
+grid.arrange(p1, p2, ncol = 2)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/example/02-example_files/figure-html/gridExtra-example-1.png&#34; width=&#34;480&#34; /&gt;&lt;/p&gt;
+&lt;div class=&#34;fyi&#34;&gt;
+&lt;p&gt;&lt;strong&gt;TRY IT&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Start by loading the &lt;strong&gt;dplyr&lt;/strong&gt; and &lt;strong&gt;ggplot2&lt;/strong&gt; library as well as the &lt;code&gt;murders&lt;/code&gt; and &lt;code&gt;heights&lt;/code&gt; data.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(dplyr)
+library(ggplot2)
+library(dslabs)
+data(heights)
+data(murders)&lt;/code&gt;&lt;/pre&gt;
+&lt;ol style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;With &lt;strong&gt;ggplot2&lt;/strong&gt; plots can be saved as objects. For example we can associate a dataset with a plot object like this&lt;/li&gt;
+&lt;/ol&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p &amp;lt;- ggplot(data = murders)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Because &lt;code&gt;data&lt;/code&gt; is the first argument we don’t need to spell it out&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p &amp;lt;- ggplot(murders)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;and we can also use the pipe:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p &amp;lt;- murders %&amp;gt;% ggplot()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;What is class of the object &lt;code&gt;p&lt;/code&gt;?&lt;/p&gt;
+&lt;ol start=&#34;2&#34; style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;Remember that to print an object you can use the command &lt;code&gt;print&lt;/code&gt; or simply type the object.
+Print the object &lt;code&gt;p&lt;/code&gt; defined in exercise one and describe what you see.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;ol style=&#34;list-style-type: lower-alpha&#34;&gt;
+&lt;li&gt;Nothing happens.&lt;/li&gt;
+&lt;li&gt;A blank slate plot.&lt;/li&gt;
+&lt;li&gt;A scatterplot.&lt;/li&gt;
+&lt;li&gt;A histogram.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;ol start=&#34;3&#34; style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;&lt;p&gt;Using the pipe &lt;code&gt;%&amp;gt;%&lt;/code&gt;, create an object &lt;code&gt;p&lt;/code&gt; but this time associated with the &lt;code&gt;heights&lt;/code&gt; dataset instead of the &lt;code&gt;murders&lt;/code&gt; dataset.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;What is the class of the object &lt;code&gt;p&lt;/code&gt; you have just created?&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Now we are going to add a layer and the corresponding aesthetic mappings. For the murders data we plotted total murders versus population sizes. Explore the &lt;code&gt;murders&lt;/code&gt; data frame to remind yourself what are the names for these two variables and select the correct answer. &lt;strong&gt;Hint&lt;/strong&gt;: Look at &lt;code&gt;?murders&lt;/code&gt;.&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;ol style=&#34;list-style-type: lower-alpha&#34;&gt;
+&lt;li&gt;&lt;code&gt;state&lt;/code&gt; and &lt;code&gt;abb&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;total_murders&lt;/code&gt; and &lt;code&gt;population_size&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;total&lt;/code&gt; and &lt;code&gt;population&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;murders&lt;/code&gt; and &lt;code&gt;size&lt;/code&gt;.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;ol start=&#34;6&#34; style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;To create the scatterplot we add a layer with &lt;code&gt;geom_point&lt;/code&gt;. The aesthetic mappings require us to define the x-axis and y-axis variables, respectively. So the code looks like this:&lt;/li&gt;
+&lt;/ol&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;murders %&amp;gt;% ggplot(aes(x = , y = )) +
+  geom_point()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;except we have to define the two variables &lt;code&gt;x&lt;/code&gt; and &lt;code&gt;y&lt;/code&gt;. Fill this out with the correct variable names.&lt;/p&gt;
+&lt;ol start=&#34;7&#34; style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;Note that if we don’t use argument names, we can obtain the same plot by making sure we enter the variable names in the right order like this:&lt;/li&gt;
+&lt;/ol&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;murders %&amp;gt;% ggplot(aes(population, total)) +
+  geom_point()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Remake the plot but now with total in the x-axis and population in the y-axis.&lt;/p&gt;
+&lt;ol start=&#34;8&#34; style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;If instead of points we want to add text, we can use the &lt;code&gt;geom_text()&lt;/code&gt; or &lt;code&gt;geom_label()&lt;/code&gt; geometries. The following code&lt;/li&gt;
+&lt;/ol&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;murders %&amp;gt;% ggplot(aes(population, total)) + geom_label()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;will give us the error message: &lt;code&gt;Error: geom_label requires the following missing aesthetics: label&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;Why is this?&lt;/p&gt;
+&lt;ol style=&#34;list-style-type: lower-alpha&#34;&gt;
+&lt;li&gt;We need to map a character to each point through the label argument in aes.&lt;/li&gt;
+&lt;li&gt;We need to let &lt;code&gt;geom_label&lt;/code&gt; know what character to use in the plot.&lt;/li&gt;
+&lt;li&gt;The &lt;code&gt;geom_label&lt;/code&gt; geometry does not require x-axis and y-axis values.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;geom_label&lt;/code&gt; is not a ggplot2 command.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;ol start=&#34;9&#34; style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;&lt;p&gt;Rewrite the code above to use abbreviation as the label through &lt;code&gt;aes&lt;/code&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Change the color of the labels to blue. How will we do this?&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;ol style=&#34;list-style-type: lower-alpha&#34;&gt;
+&lt;li&gt;Adding a column called &lt;code&gt;blue&lt;/code&gt; to &lt;code&gt;murders&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;Because each label needs a different color we map the colors through &lt;code&gt;aes&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;Use the &lt;code&gt;color&lt;/code&gt; argument in &lt;code&gt;ggplot&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;Because we want all colors to be blue, we do not need to map colors, just use the color argument in &lt;code&gt;geom_label&lt;/code&gt;.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;ol start=&#34;11&#34; style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;&lt;p&gt;Rewrite the code above to make the labels blue.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Now suppose we want to use color to represent the different regions. In this case which of the following is most appropriate:&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;ol style=&#34;list-style-type: lower-alpha&#34;&gt;
+&lt;li&gt;Adding a column called &lt;code&gt;color&lt;/code&gt; to &lt;code&gt;murders&lt;/code&gt; with the color we want to use.&lt;/li&gt;
+&lt;li&gt;Because each label needs a different color we map the colors through the color argument of &lt;code&gt;aes&lt;/code&gt; .&lt;/li&gt;
+&lt;li&gt;Use the &lt;code&gt;color&lt;/code&gt; argument in &lt;code&gt;ggplot&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;Because we want all colors to be blue, we do not need to map colors, just use the color argument in &lt;code&gt;geom_label&lt;/code&gt;.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;ol start=&#34;13&#34; style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;&lt;p&gt;Rewrite the code above to make the labels’ color be determined by the state’s region.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Now we are going to change the x-axis to a log scale to account for the fact the distribution of population is skewed. Let’s start by defining an object &lt;code&gt;p&lt;/code&gt; holding the plot we have made up to now&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p &amp;lt;- murders %&amp;gt;% 
+  ggplot(aes(population, total, label = abb, color = region)) +
+  geom_label() &lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;To change the y-axis to a log scale we learned about the &lt;code&gt;scale_x_log10()&lt;/code&gt; function. Add this layer to the object &lt;code&gt;p&lt;/code&gt; to change the scale and render the plot.&lt;/p&gt;
+&lt;ol start=&#34;15&#34; style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;&lt;p&gt;Repeat the previous exercise but now change both axes to be in the log scale.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Now edit the code above to add the title “Gun murder data” to the plot. Hint: use the &lt;code&gt;ggtitle&lt;/code&gt; function.&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&#34;footnotes&#34;&gt;
+&lt;hr /&gt;
+&lt;ol&gt;
+&lt;li id=&#34;fn1&#34;&gt;&lt;p&gt;&lt;a href=&#34;https://ggplot2.tidyverse.org/&#34; class=&#34;uri&#34;&gt;https://ggplot2.tidyverse.org/&lt;/a&gt;&lt;a href=&#34;#fnref1&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li id=&#34;fn2&#34;&gt;&lt;p&gt;&lt;a href=&#34;http://www.springer.com/us/book/9780387245447&#34; class=&#34;uri&#34;&gt;http://www.springer.com/us/book/9780387245447&lt;/a&gt;&lt;a href=&#34;#fnref2&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li id=&#34;fn3&#34;&gt;&lt;p&gt;&lt;a href=&#34;https://github.com/rstudio/cheatsheets&#34; class=&#34;uri&#34;&gt;https://github.com/rstudio/cheatsheets&lt;/a&gt;&lt;a href=&#34;#fnref3&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li id=&#34;fn4&#34;&gt;&lt;p&gt;&lt;a href=&#34;https://github.com/rstudio/cheatsheets/blob/master/LICENSE&#34; class=&#34;uri&#34;&gt;https://github.com/rstudio/cheatsheets/blob/master/LICENSE&lt;/a&gt;&lt;a href=&#34;#fnref4&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
 &lt;/ol&gt;
 &lt;/div&gt;
 </description>
@@ -2016,7 +2483,6 @@ mpg %&amp;gt;%
 &lt;li&gt;&lt;a href=&#34;#density-plots&#34;&gt;Density plots&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;#boxplots-1&#34;&gt;Boxplots&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;#qq-plots&#34;&gt;QQ-plots&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;#images&#34;&gt;Images&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;&lt;/li&gt;
 &lt;/ul&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;#data-visualization-principles&#34;&gt;Data visualization principles&lt;/a&gt;&lt;ul&gt;
@@ -2053,13 +2519,18 @@ mpg %&amp;gt;%
 &lt;div id=&#34;guiding-questions&#34; class=&#34;section level3&#34;&gt;
 &lt;h3&gt;Guiding Questions&lt;/h3&gt;
 &lt;ul&gt;
+&lt;li&gt;Why do we create visualizations? What types of data are best suited for visuals?&lt;/li&gt;
+&lt;li&gt;How do we best visualize the variability in our data?&lt;/li&gt;
 &lt;li&gt;What makes a visual compelling?&lt;/li&gt;
-&lt;li&gt;What are the worst visuals that are frequently used?&lt;/li&gt;
+&lt;li&gt;What are the worst visuals? Which of these are most frequently used? Why?&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/div&gt;
 &lt;div id=&#34;slides&#34; class=&#34;section level3&#34;&gt;
 &lt;h3&gt;Slides&lt;/h3&gt;
 &lt;p&gt;As with last week’s content, the technical aspects of this lecture will be explored in greater detail in the Thursday practical lecture. Today, we will focus on some principles. We will also avoid slides entirely.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;“The greatest value of a picture is when it forces us to notice what we never expected to see.” – John Tukey&lt;/p&gt;
+&lt;/blockquote&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;div id=&#34;distributions&#34; class=&#34;section level1&#34;&gt;
@@ -2092,10 +2563,10 @@ data(heights)&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;This two-category &lt;em&gt;frequency table&lt;/em&gt; is the simplest form of a distribution. We don’t really need to visualize it since one number describes everything we need to know: 23% are females and the rest are males. When there are more categories, then a simple barplot describes the distribution. Here is an example with US state regions:&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;murders %&amp;gt;% group_by(region) %&amp;gt;%
   summarize(n = n()) %&amp;gt;%
-  mutate(Proportion = n/sum(n), 
+  mutate(Proportion = n/sum(n),
          region = reorder(region, Proportion)) %&amp;gt;%
-  ggplot(aes(x=region, y=Proportion, fill=region)) + 
-  geom_bar(stat = &amp;quot;identity&amp;quot;, show.legend = FALSE) + 
+  ggplot(aes(x=region, y=Proportion, fill=region)) +
+  geom_bar(stat = &amp;quot;identity&amp;quot;, show.legend = FALSE) +
   xlab(&amp;quot;&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;img src=&#34;/content/02-content_files/figure-html/state-region-distribution-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;This particular plot simply shows us four numbers, one for each category. We usually use barplots to display a few numbers. Although this particular plot does not provide much more insight than a frequency table itself, it is a first example of how we convert a vector into a plot that succinctly summarizes all the information in the vector. When the data is numerical, the task of displaying distributions is more challenging.&lt;/p&gt;
@@ -2233,11 +2704,11 @@ c(average = m, sd = s)&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;img src=&#34;/content/02-content_files/figure-html/qqplot-original-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Notice that this code becomes much cleaner if we use standard units:&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;sample_quantiles &amp;lt;- quantile(z, p)
-theoretical_quantiles &amp;lt;- qnorm(p) 
+theoretical_quantiles &amp;lt;- qnorm(p)
 qplot(theoretical_quantiles, sample_quantiles) + geom_abline()&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;The above code is included to help describe QQ-plots. However, in practice it is easier to use the &lt;strong&gt;ggplot2&lt;/strong&gt; code described in Section &lt;a href=&#34;#other-geometries&#34;&gt;&lt;strong&gt;??&lt;/strong&gt;&lt;/a&gt;:&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;heights %&amp;gt;% filter(sex == &amp;quot;Male&amp;quot;) %&amp;gt;%
-  ggplot(aes(sample = scale(height))) + 
+  ggplot(aes(sample = scale(height))) +
   geom_qq() +
   geom_abline()&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;While for the illustration above we used 20 quantiles, the default from the &lt;code&gt;geom_qq&lt;/code&gt; function is to use as many quantiles as data points.&lt;/p&gt;
@@ -2277,7 +2748,7 @@ However, to provide a complete picture we need to also provide a summary of the 
 &lt;p&gt;We see something we did not see for the males: the density plot has a second “bump”. Also, the QQ-plot shows that the highest points tend to be taller than expected by the normal distribution. Finally, we also see five points in the QQ-plot that suggest shorter than expected heights for a normal distribution. When reporting back to ET, we might need to provide a histogram rather than just the average and standard deviation for the female heights.&lt;/p&gt;
 &lt;p&gt;However, go back and read Tukey’s quote. We have noticed what we didn’t expect to see. If we look at other female height distributions, we do find that they are well approximated with a normal distribution. So why are our female students different? Is our class a requirement for the female basketball team? Are small proportions of females claiming to be taller than they are? Another, perhaps more likely, explanation is that in the form students used to enter their heights, &lt;code&gt;FEMALE&lt;/code&gt; was the default sex and some males entered their heights, but forgot to change the sex variable. In any case, data visualization has helped discover a potential flaw in our data.&lt;/p&gt;
 &lt;p&gt;Regarding the five smallest values, note that these values are:&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;heights %&amp;gt;% filter(sex == &amp;quot;Female&amp;quot;) %&amp;gt;% 
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;heights %&amp;gt;% filter(sex == &amp;quot;Female&amp;quot;) %&amp;gt;%
   top_n(5, desc(height)) %&amp;gt;%
   pull(height)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## [1] 51 53 55 52 52&lt;/code&gt;&lt;/pre&gt;
@@ -2336,8 +2807,8 @@ x &amp;lt;- heights$height[heights$sex==&amp;quot;Male&amp;quot;]&lt;/code&gt;&l
 &lt;p&gt;&lt;img src=&#34;/content/02-content_files/figure-html/barplot-geom-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;We often already have a table with a distribution that we want to present as a barplot. Here is an example of such a table:&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data(murders)
-tab &amp;lt;- murders %&amp;gt;% 
-  count(region) %&amp;gt;% 
+tab &amp;lt;- murders %&amp;gt;%
+  count(region) %&amp;gt;%
   mutate(proportion = n/sum(n))
 tab&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;##          region  n proportion
@@ -2353,9 +2824,9 @@ tab&lt;/code&gt;&lt;/pre&gt;
 &lt;h3&gt;Histograms&lt;/h3&gt;
 &lt;p&gt;To generate histograms we use &lt;code&gt;geom_histogram&lt;/code&gt;. By looking at the help file for this function, we learn that the only required argument is &lt;code&gt;x&lt;/code&gt;, the variable for which we will construct a histogram. We dropped the &lt;code&gt;x&lt;/code&gt; because we know it is the first argument.
 The code looks like this:&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;heights %&amp;gt;% 
-  filter(sex == &amp;quot;Female&amp;quot;) %&amp;gt;% 
-  ggplot(aes(height)) + 
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;heights %&amp;gt;%
+  filter(sex == &amp;quot;Female&amp;quot;) %&amp;gt;%
+  ggplot(aes(height)) +
   geom_histogram()&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;If we run the code above, it gives us a message:&lt;/p&gt;
 &lt;blockquote&gt;
@@ -2363,35 +2834,35 @@ The code looks like this:&lt;/p&gt;
 &lt;code&gt;binwidth&lt;/code&gt;.&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;p&gt;We previously used a bin size of 1 inch, so the code looks like this:&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;heights %&amp;gt;% 
-  filter(sex == &amp;quot;Female&amp;quot;) %&amp;gt;% 
-  ggplot(aes(height)) + 
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;heights %&amp;gt;%
+  filter(sex == &amp;quot;Female&amp;quot;) %&amp;gt;%
+  ggplot(aes(height)) +
   geom_histogram(binwidth = 1)&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Finally, if for aesthetic reasons we want to add color, we use the arguments described in the help file. We also add labels and a title:&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;heights %&amp;gt;% 
-  filter(sex == &amp;quot;Female&amp;quot;) %&amp;gt;% 
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;heights %&amp;gt;%
+  filter(sex == &amp;quot;Female&amp;quot;) %&amp;gt;%
   ggplot(aes(height)) +
   geom_histogram(binwidth = 1, fill = &amp;quot;blue&amp;quot;, col = &amp;quot;black&amp;quot;) +
-  xlab(&amp;quot;Male heights in inches&amp;quot;) + 
+  xlab(&amp;quot;Male heights in inches&amp;quot;) +
   ggtitle(&amp;quot;Histogram&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;img src=&#34;/content/02-content_files/figure-html/height-histogram-geom-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;density-plots&#34; class=&#34;section level3&#34;&gt;
 &lt;h3&gt;Density plots&lt;/h3&gt;
 &lt;p&gt;To create a smooth density, we use the &lt;code&gt;geom_density&lt;/code&gt;. To make a smooth density plot with the data previously shown as a histogram we can use this code:&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;heights %&amp;gt;% 
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;heights %&amp;gt;%
   filter(sex == &amp;quot;Female&amp;quot;) %&amp;gt;%
   ggplot(aes(height)) +
   geom_density()&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;To fill in with color, we can use the &lt;code&gt;fill&lt;/code&gt; argument.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;heights %&amp;gt;% 
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;heights %&amp;gt;%
   filter(sex == &amp;quot;Female&amp;quot;) %&amp;gt;%
   ggplot(aes(height)) +
   geom_density(fill=&amp;quot;blue&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;img src=&#34;/content/02-content_files/figure-html/ggplot-density-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;To change the smoothness of the density, we use the &lt;code&gt;adjust&lt;/code&gt; argument to multiply the default value by that &lt;code&gt;adjust&lt;/code&gt;. For example, if we want the bandwidth to be twice as big we use:&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;heights %&amp;gt;% 
-  filter(sex == &amp;quot;Female&amp;quot;) + 
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;heights %&amp;gt;%
+  filter(sex == &amp;quot;Female&amp;quot;) +
   geom_density(fill=&amp;quot;blue&amp;quot;, adjust = 2)&lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 &lt;div id=&#34;boxplots-1&#34; class=&#34;section level3&#34;&gt;
@@ -2415,25 +2886,11 @@ heights %&amp;gt;% filter(sex==&amp;quot;Male&amp;quot;) %&amp;gt;%
   geom_qq(dparams = params) +
   geom_abline()&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Another option here is to scale the data first and then make a qqplot against the standard normal.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;heights %&amp;gt;% 
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;heights %&amp;gt;%
   filter(sex==&amp;quot;Male&amp;quot;) %&amp;gt;%
-  ggplot(aes(sample = scale(height))) + 
+  ggplot(aes(sample = scale(height))) +
   geom_qq() +
   geom_abline()&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-&lt;div id=&#34;images&#34; class=&#34;section level3&#34;&gt;
-&lt;h3&gt;Images&lt;/h3&gt;
-&lt;p&gt;Images were not needed for the concepts described in this chapter, but we will use images in coming weeeks, so we introduce the two geometries used to create images: &lt;strong&gt;geom_tile&lt;/strong&gt; and &lt;strong&gt;geom_raster&lt;/strong&gt;. They behave similarly; to see how they differ, please consult the help file. To create an image in &lt;strong&gt;ggplot2&lt;/strong&gt; we need a data frame with the x and y coordinates as well as the values associated with each of these. Here is a data frame.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;x &amp;lt;- expand.grid(x = 1:12, y = 1:10) %&amp;gt;% 
-  mutate(z = 1:120) &lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Note that this is the tidy version of a matrix, &lt;code&gt;matrix(1:120, 12, 10)&lt;/code&gt;. To plot the image we use the following code:&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;x %&amp;gt;% ggplot(aes(x, y, fill = z)) + 
-  geom_raster()&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;With these images you will often want to change the color scale. This can be done through the &lt;code&gt;scale_fill_gradientn&lt;/code&gt; layer.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;x %&amp;gt;% ggplot(aes(x, y, fill = z)) + 
-  geom_raster() + 
-  scale_fill_gradientn(colors =  terrain.colors(10))&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/content/02-content_files/figure-html/ggplot2-image-new-colors-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
@@ -2441,7 +2898,7 @@ heights %&amp;gt;% filter(sex==&amp;quot;Male&amp;quot;) %&amp;gt;%
 &lt;h1&gt;Data visualization principles&lt;/h1&gt;
 &lt;p&gt;We have already provided some rules to follow as we created plots for our examples. Here, we aim to provide some general principles we can use as a guide for effective data visualization. Much of this section is based on a talk by Karl Broman&lt;a href=&#34;#fn3&#34; class=&#34;footnote-ref&#34; id=&#34;fnref3&#34;&gt;&lt;sup&gt;3&lt;/sup&gt;&lt;/a&gt; titled “Creating Effective Figures and Tables”&lt;a href=&#34;#fn4&#34; class=&#34;footnote-ref&#34; id=&#34;fnref4&#34;&gt;&lt;sup&gt;4&lt;/sup&gt;&lt;/a&gt; and includes some of the figures which were made with code that Karl makes available on his GitHub repository&lt;a href=&#34;#fn5&#34; class=&#34;footnote-ref&#34; id=&#34;fnref5&#34;&gt;&lt;sup&gt;5&lt;/sup&gt;&lt;/a&gt;, as well as class notes from Peter Aldhous’ Introduction to Data Visualization course&lt;a href=&#34;#fn6&#34; class=&#34;footnote-ref&#34; id=&#34;fnref6&#34;&gt;&lt;sup&gt;6&lt;/sup&gt;&lt;/a&gt;. Following Karl’s approach, we show some examples of plot styles we should avoid, explain how to improve them, and use these as motivation for a list of principles. We compare and contrast plots that follow these principles to those that don’t.&lt;/p&gt;
 &lt;p&gt;The principles are mostly based on research related to how humans detect patterns and make visual comparisons. The preferred approaches are those that best fit the way our brains process visual information. When deciding on a visualization approach, it is also important to keep our goal in mind. We may be comparing a viewable number of quantities, describing distributions for categories or numeric values, comparing the data from two groups, or describing the relationship between two variables. As a final note, we want to emphasize that for a data scientist it is important to adapt and optimize graphs to the audience. For example, an exploratory plot made for ourselves will be different than a chart intended to communicate a finding to a general audience.&lt;/p&gt;
-&lt;p&gt;We will be using these libraries:&lt;/p&gt;
+&lt;p&gt;As with the discussion above, we will be using these libraries—note the addition of &lt;strong&gt;gridExtra&lt;/strong&gt;:&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(tidyverse)
 library(dslabs)
 library(gridExtra)&lt;/code&gt;&lt;/pre&gt;
@@ -2623,7 +3080,7 @@ murders %&amp;gt;% mutate(murder_rate = total / population * 100000) %&amp;gt;%
 &lt;div id=&#34;show-the-data&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Show the data&lt;/h2&gt;
 &lt;p&gt;We have focused on displaying single quantities across categories. We now shift our attention to displaying data, with a focus on comparing groups.&lt;/p&gt;
-&lt;p&gt;To motivate our first principle, “show the data”, we go back to our artificial example of describing heights to ET, an extraterrestrial. This time let’s assume ET is interested in the difference in heights between males and females. A commonly seen plot used for comparisons between groups, popularized by software such as Microsoft Excel, is the dynamite plot, which shows the average and standard errors (standard errors are defined in a later chapter, but do not confuse them with the standard deviation of the data). The plot looks like this:&lt;/p&gt;
+&lt;p&gt;To motivate our first principle, “show the data”, we go back to our artificial example of describing heights to a person who is unaware of some basic facts about the population of interest (and is otherwise unsophisticated). This time let’s assume that this person is interested in the difference in heights between males and females. A commonly seen plot used for comparisons between groups, popularized by software such as Microsoft Excel, is the dynamite plot, which shows the average and standard errors.&lt;a href=&#34;#fn11&#34; class=&#34;footnote-ref&#34; id=&#34;fnref11&#34;&gt;&lt;sup&gt;11&lt;/sup&gt;&lt;/a&gt; The plot looks like this:&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;## `summarise()` ungrouping output (override with `.groups` argument)&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;img src=&#34;/content/02-content_files/figure-html/show-data-1-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;The average of each group is represented by the top of each bar and the antennae extend out from the average to the average plus two standard errors. If all ET receives is this plot, he will have little information on what to expect if he meets a group of human males and females. The bars go to 0: does this mean there are tiny humans measuring less than one foot? Are all males taller than the tallest females? Is there a range of heights? ET can’t answer these questions since we have provided almost no information on the height distribution.&lt;/p&gt;
@@ -2775,7 +3232,7 @@ display.brewer.all(type=&amp;quot;div&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 &lt;div id=&#34;avoid-pseudo-three-dimensional-plots&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Avoid pseudo-three-dimensional plots&lt;/h2&gt;
-&lt;p&gt;The figure below, taken from the scientific literature&lt;a href=&#34;#fn11&#34; class=&#34;footnote-ref&#34; id=&#34;fnref11&#34;&gt;&lt;sup&gt;11&lt;/sup&gt;&lt;/a&gt;,
+&lt;p&gt;The figure below, taken from the scientific literature&lt;a href=&#34;#fn12&#34; class=&#34;footnote-ref&#34; id=&#34;fnref12&#34;&gt;&lt;sup&gt;12&lt;/sup&gt;&lt;/a&gt;,
 shows three variables: dose, drug type and survival. Although your screen/book page is flat and two-dimensional, the plot tries to imitate three dimensions and assigned a dimension to each variable.&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;/./02-content_files/fig8b.png&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;(Image courtesy of Karl Broman)&lt;/p&gt;
@@ -3228,7 +3685,8 @@ murders %&amp;gt;% mutate(rate = total/population*100000)&lt;/code&gt;&lt;/pre&g
 &lt;li id=&#34;fn8&#34;&gt;&lt;p&gt;&lt;a href=&#34;http://flowingdata.com/2012/08/06/fox-news-continues-charting-excellence/&#34; class=&#34;uri&#34;&gt;http://flowingdata.com/2012/08/06/fox-news-continues-charting-excellence/&lt;/a&gt;&lt;a href=&#34;#fnref8&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
 &lt;li id=&#34;fn9&#34;&gt;&lt;p&gt;&lt;a href=&#34;https://www.pakistantoday.com.pk/2018/05/18/whats-at-stake-in-venezuelan-presidential-vote&#34; class=&#34;uri&#34;&gt;https://www.pakistantoday.com.pk/2018/05/18/whats-at-stake-in-venezuelan-presidential-vote&lt;/a&gt;&lt;a href=&#34;#fnref9&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
 &lt;li id=&#34;fn10&#34;&gt;&lt;p&gt;&lt;a href=&#34;https://www.youtube.com/watch?v=kl2g40GoRxg&#34; class=&#34;uri&#34;&gt;https://www.youtube.com/watch?v=kl2g40GoRxg&lt;/a&gt;&lt;a href=&#34;#fnref10&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
-&lt;li id=&#34;fn11&#34;&gt;&lt;p&gt;&lt;a href=&#34;https://projecteuclid.org/download/pdf_1/euclid.ss/1177010488&#34; class=&#34;uri&#34;&gt;https://projecteuclid.org/download/pdf_1/euclid.ss/1177010488&lt;/a&gt;&lt;a href=&#34;#fnref11&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li id=&#34;fn11&#34;&gt;&lt;p&gt;If you’re unfamiliar, standard errors are defined later in the course—do not confuse them with the standard deviation of the data.&lt;a href=&#34;#fnref11&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li id=&#34;fn12&#34;&gt;&lt;p&gt;&lt;a href=&#34;https://projecteuclid.org/download/pdf_1/euclid.ss/1177010488&#34; class=&#34;uri&#34;&gt;https://projecteuclid.org/download/pdf_1/euclid.ss/1177010488&lt;/a&gt;&lt;a href=&#34;#fnref12&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
 &lt;/ol&gt;
 &lt;/div&gt;
 </description>
@@ -3278,8 +3736,8 @@ murders %&amp;gt;% mutate(rate = total/population*100000)&lt;/code&gt;&lt;/pre&g
 &lt;li&gt;&lt;a href=&#34;#case_when&#34;&gt;&lt;code&gt;case_when&lt;/code&gt;&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;#between&#34;&gt;&lt;code&gt;between&lt;/code&gt;&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;#videos&#34;&gt;Videos&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#videos&#34;&gt;Videos&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/div&gt;
 
@@ -3986,14 +4444,14 @@ case_when(x &amp;lt; 0 ~ &amp;quot;Negative&amp;quot;,
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;div id=&#34;videos&#34; class=&#34;section level2&#34;&gt;
-&lt;h2&gt;Videos&lt;/h2&gt;
+&lt;/div&gt;
+&lt;div id=&#34;videos&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Videos&lt;/h1&gt;
 
 &lt;div style=&#34;position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;&#34;&gt;
   &lt;iframe src=&#34;https://www.youtube.com/embed/D6WqHA8TDWQ&#34; style=&#34;position: absolute; top: 0; left: 0; width: 100%; height: 100%; border:0;&#34; allowfullscreen title=&#34;YouTube Video&#34;&gt;&lt;/iframe&gt;
 &lt;/div&gt;
 
-&lt;/div&gt;
 &lt;/div&gt;
 &lt;div class=&#34;footnotes&#34;&gt;
 &lt;hr /&gt;

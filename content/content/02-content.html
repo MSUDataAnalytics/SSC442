@@ -45,7 +45,6 @@ output:
 <li><a href="#density-plots">Density plots</a></li>
 <li><a href="#boxplots-1">Boxplots</a></li>
 <li><a href="#qq-plots">QQ-plots</a></li>
-<li><a href="#images">Images</a></li>
 </ul></li>
 </ul></li>
 <li><a href="#data-visualization-principles">Data visualization principles</a><ul>
@@ -82,13 +81,18 @@ output:
 <div id="guiding-questions" class="section level3">
 <h3>Guiding Questions</h3>
 <ul>
+<li>Why do we create visualizations? What types of data are best suited for visuals?</li>
+<li>How do we best visualize the variability in our data?</li>
 <li>What makes a visual compelling?</li>
-<li>What are the worst visuals that are frequently used?</li>
+<li>What are the worst visuals? Which of these are most frequently used? Why?</li>
 </ul>
 </div>
 <div id="slides" class="section level3">
 <h3>Slides</h3>
 <p>As with last week’s content, the technical aspects of this lecture will be explored in greater detail in the Thursday practical lecture. Today, we will focus on some principles. We will also avoid slides entirely.</p>
+<blockquote>
+<p>“The greatest value of a picture is when it forces us to notice what we never expected to see.” – John Tukey</p>
+</blockquote>
 </div>
 </div>
 <div id="distributions" class="section level1">
@@ -121,10 +125,10 @@ data(heights)</code></pre>
 <p>This two-category <em>frequency table</em> is the simplest form of a distribution. We don’t really need to visualize it since one number describes everything we need to know: 23% are females and the rest are males. When there are more categories, then a simple barplot describes the distribution. Here is an example with US state regions:</p>
 <pre class="r"><code>murders %&gt;% group_by(region) %&gt;%
   summarize(n = n()) %&gt;%
-  mutate(Proportion = n/sum(n), 
+  mutate(Proportion = n/sum(n),
          region = reorder(region, Proportion)) %&gt;%
-  ggplot(aes(x=region, y=Proportion, fill=region)) + 
-  geom_bar(stat = &quot;identity&quot;, show.legend = FALSE) + 
+  ggplot(aes(x=region, y=Proportion, fill=region)) +
+  geom_bar(stat = &quot;identity&quot;, show.legend = FALSE) +
   xlab(&quot;&quot;)</code></pre>
 <p><img src="/content/02-content_files/figure-html/state-region-distribution-1.png" width="672" /></p>
 <p>This particular plot simply shows us four numbers, one for each category. We usually use barplots to display a few numbers. Although this particular plot does not provide much more insight than a frequency table itself, it is a first example of how we convert a vector into a plot that succinctly summarizes all the information in the vector. When the data is numerical, the task of displaying distributions is more challenging.</p>
@@ -262,11 +266,11 @@ c(average = m, sd = s)</code></pre>
 <p><img src="/content/02-content_files/figure-html/qqplot-original-1.png" width="672" /></p>
 <p>Notice that this code becomes much cleaner if we use standard units:</p>
 <pre class="r"><code>sample_quantiles &lt;- quantile(z, p)
-theoretical_quantiles &lt;- qnorm(p) 
+theoretical_quantiles &lt;- qnorm(p)
 qplot(theoretical_quantiles, sample_quantiles) + geom_abline()</code></pre>
 <p>The above code is included to help describe QQ-plots. However, in practice it is easier to use the <strong>ggplot2</strong> code described in Section <a href="#other-geometries"><strong>??</strong></a>:</p>
 <pre class="r"><code>heights %&gt;% filter(sex == &quot;Male&quot;) %&gt;%
-  ggplot(aes(sample = scale(height))) + 
+  ggplot(aes(sample = scale(height))) +
   geom_qq() +
   geom_abline()</code></pre>
 <p>While for the illustration above we used 20 quantiles, the default from the <code>geom_qq</code> function is to use as many quantiles as data points.</p>
@@ -306,7 +310,7 @@ However, to provide a complete picture we need to also provide a summary of the 
 <p>We see something we did not see for the males: the density plot has a second “bump”. Also, the QQ-plot shows that the highest points tend to be taller than expected by the normal distribution. Finally, we also see five points in the QQ-plot that suggest shorter than expected heights for a normal distribution. When reporting back to ET, we might need to provide a histogram rather than just the average and standard deviation for the female heights.</p>
 <p>However, go back and read Tukey’s quote. We have noticed what we didn’t expect to see. If we look at other female height distributions, we do find that they are well approximated with a normal distribution. So why are our female students different? Is our class a requirement for the female basketball team? Are small proportions of females claiming to be taller than they are? Another, perhaps more likely, explanation is that in the form students used to enter their heights, <code>FEMALE</code> was the default sex and some males entered their heights, but forgot to change the sex variable. In any case, data visualization has helped discover a potential flaw in our data.</p>
 <p>Regarding the five smallest values, note that these values are:</p>
-<pre class="r"><code>heights %&gt;% filter(sex == &quot;Female&quot;) %&gt;% 
+<pre class="r"><code>heights %&gt;% filter(sex == &quot;Female&quot;) %&gt;%
   top_n(5, desc(height)) %&gt;%
   pull(height)</code></pre>
 <pre><code>## [1] 51 53 55 52 52</code></pre>
@@ -365,8 +369,8 @@ x &lt;- heights$height[heights$sex==&quot;Male&quot;]</code></pre>
 <p><img src="/content/02-content_files/figure-html/barplot-geom-1.png" width="672" /></p>
 <p>We often already have a table with a distribution that we want to present as a barplot. Here is an example of such a table:</p>
 <pre class="r"><code>data(murders)
-tab &lt;- murders %&gt;% 
-  count(region) %&gt;% 
+tab &lt;- murders %&gt;%
+  count(region) %&gt;%
   mutate(proportion = n/sum(n))
 tab</code></pre>
 <pre><code>##          region  n proportion
@@ -382,9 +386,9 @@ tab</code></pre>
 <h3>Histograms</h3>
 <p>To generate histograms we use <code>geom_histogram</code>. By looking at the help file for this function, we learn that the only required argument is <code>x</code>, the variable for which we will construct a histogram. We dropped the <code>x</code> because we know it is the first argument.
 The code looks like this:</p>
-<pre class="r"><code>heights %&gt;% 
-  filter(sex == &quot;Female&quot;) %&gt;% 
-  ggplot(aes(height)) + 
+<pre class="r"><code>heights %&gt;%
+  filter(sex == &quot;Female&quot;) %&gt;%
+  ggplot(aes(height)) +
   geom_histogram()</code></pre>
 <p>If we run the code above, it gives us a message:</p>
 <blockquote>
@@ -392,35 +396,35 @@ The code looks like this:</p>
 <code>binwidth</code>.</p>
 </blockquote>
 <p>We previously used a bin size of 1 inch, so the code looks like this:</p>
-<pre class="r"><code>heights %&gt;% 
-  filter(sex == &quot;Female&quot;) %&gt;% 
-  ggplot(aes(height)) + 
+<pre class="r"><code>heights %&gt;%
+  filter(sex == &quot;Female&quot;) %&gt;%
+  ggplot(aes(height)) +
   geom_histogram(binwidth = 1)</code></pre>
 <p>Finally, if for aesthetic reasons we want to add color, we use the arguments described in the help file. We also add labels and a title:</p>
-<pre class="r"><code>heights %&gt;% 
-  filter(sex == &quot;Female&quot;) %&gt;% 
+<pre class="r"><code>heights %&gt;%
+  filter(sex == &quot;Female&quot;) %&gt;%
   ggplot(aes(height)) +
   geom_histogram(binwidth = 1, fill = &quot;blue&quot;, col = &quot;black&quot;) +
-  xlab(&quot;Male heights in inches&quot;) + 
+  xlab(&quot;Male heights in inches&quot;) +
   ggtitle(&quot;Histogram&quot;)</code></pre>
 <p><img src="/content/02-content_files/figure-html/height-histogram-geom-1.png" width="672" /></p>
 </div>
 <div id="density-plots" class="section level3">
 <h3>Density plots</h3>
 <p>To create a smooth density, we use the <code>geom_density</code>. To make a smooth density plot with the data previously shown as a histogram we can use this code:</p>
-<pre class="r"><code>heights %&gt;% 
+<pre class="r"><code>heights %&gt;%
   filter(sex == &quot;Female&quot;) %&gt;%
   ggplot(aes(height)) +
   geom_density()</code></pre>
 <p>To fill in with color, we can use the <code>fill</code> argument.</p>
-<pre class="r"><code>heights %&gt;% 
+<pre class="r"><code>heights %&gt;%
   filter(sex == &quot;Female&quot;) %&gt;%
   ggplot(aes(height)) +
   geom_density(fill=&quot;blue&quot;)</code></pre>
 <p><img src="/content/02-content_files/figure-html/ggplot-density-1.png" width="672" /></p>
 <p>To change the smoothness of the density, we use the <code>adjust</code> argument to multiply the default value by that <code>adjust</code>. For example, if we want the bandwidth to be twice as big we use:</p>
-<pre class="r"><code>heights %&gt;% 
-  filter(sex == &quot;Female&quot;) + 
+<pre class="r"><code>heights %&gt;%
+  filter(sex == &quot;Female&quot;) +
   geom_density(fill=&quot;blue&quot;, adjust = 2)</code></pre>
 </div>
 <div id="boxplots-1" class="section level3">
@@ -444,25 +448,11 @@ heights %&gt;% filter(sex==&quot;Male&quot;) %&gt;%
   geom_qq(dparams = params) +
   geom_abline()</code></pre>
 <p>Another option here is to scale the data first and then make a qqplot against the standard normal.</p>
-<pre class="r"><code>heights %&gt;% 
+<pre class="r"><code>heights %&gt;%
   filter(sex==&quot;Male&quot;) %&gt;%
-  ggplot(aes(sample = scale(height))) + 
+  ggplot(aes(sample = scale(height))) +
   geom_qq() +
   geom_abline()</code></pre>
-</div>
-<div id="images" class="section level3">
-<h3>Images</h3>
-<p>Images were not needed for the concepts described in this chapter, but we will use images in coming weeeks, so we introduce the two geometries used to create images: <strong>geom_tile</strong> and <strong>geom_raster</strong>. They behave similarly; to see how they differ, please consult the help file. To create an image in <strong>ggplot2</strong> we need a data frame with the x and y coordinates as well as the values associated with each of these. Here is a data frame.</p>
-<pre class="r"><code>x &lt;- expand.grid(x = 1:12, y = 1:10) %&gt;% 
-  mutate(z = 1:120) </code></pre>
-<p>Note that this is the tidy version of a matrix, <code>matrix(1:120, 12, 10)</code>. To plot the image we use the following code:</p>
-<pre class="r"><code>x %&gt;% ggplot(aes(x, y, fill = z)) + 
-  geom_raster()</code></pre>
-<p>With these images you will often want to change the color scale. This can be done through the <code>scale_fill_gradientn</code> layer.</p>
-<pre class="r"><code>x %&gt;% ggplot(aes(x, y, fill = z)) + 
-  geom_raster() + 
-  scale_fill_gradientn(colors =  terrain.colors(10))</code></pre>
-<p><img src="/content/02-content_files/figure-html/ggplot2-image-new-colors-1.png" width="672" /></p>
 </div>
 </div>
 </div>
@@ -470,7 +460,7 @@ heights %&gt;% filter(sex==&quot;Male&quot;) %&gt;%
 <h1>Data visualization principles</h1>
 <p>We have already provided some rules to follow as we created plots for our examples. Here, we aim to provide some general principles we can use as a guide for effective data visualization. Much of this section is based on a talk by Karl Broman<a href="#fn3" class="footnote-ref" id="fnref3"><sup>3</sup></a> titled “Creating Effective Figures and Tables”<a href="#fn4" class="footnote-ref" id="fnref4"><sup>4</sup></a> and includes some of the figures which were made with code that Karl makes available on his GitHub repository<a href="#fn5" class="footnote-ref" id="fnref5"><sup>5</sup></a>, as well as class notes from Peter Aldhous’ Introduction to Data Visualization course<a href="#fn6" class="footnote-ref" id="fnref6"><sup>6</sup></a>. Following Karl’s approach, we show some examples of plot styles we should avoid, explain how to improve them, and use these as motivation for a list of principles. We compare and contrast plots that follow these principles to those that don’t.</p>
 <p>The principles are mostly based on research related to how humans detect patterns and make visual comparisons. The preferred approaches are those that best fit the way our brains process visual information. When deciding on a visualization approach, it is also important to keep our goal in mind. We may be comparing a viewable number of quantities, describing distributions for categories or numeric values, comparing the data from two groups, or describing the relationship between two variables. As a final note, we want to emphasize that for a data scientist it is important to adapt and optimize graphs to the audience. For example, an exploratory plot made for ourselves will be different than a chart intended to communicate a finding to a general audience.</p>
-<p>We will be using these libraries:</p>
+<p>As with the discussion above, we will be using these libraries—note the addition of <strong>gridExtra</strong>:</p>
 <pre class="r"><code>library(tidyverse)
 library(dslabs)
 library(gridExtra)</code></pre>
@@ -652,7 +642,7 @@ murders %&gt;% mutate(murder_rate = total / population * 100000) %&gt;%
 <div id="show-the-data" class="section level2">
 <h2>Show the data</h2>
 <p>We have focused on displaying single quantities across categories. We now shift our attention to displaying data, with a focus on comparing groups.</p>
-<p>To motivate our first principle, “show the data”, we go back to our artificial example of describing heights to ET, an extraterrestrial. This time let’s assume ET is interested in the difference in heights between males and females. A commonly seen plot used for comparisons between groups, popularized by software such as Microsoft Excel, is the dynamite plot, which shows the average and standard errors (standard errors are defined in a later chapter, but do not confuse them with the standard deviation of the data). The plot looks like this:</p>
+<p>To motivate our first principle, “show the data”, we go back to our artificial example of describing heights to a person who is unaware of some basic facts about the population of interest (and is otherwise unsophisticated). This time let’s assume that this person is interested in the difference in heights between males and females. A commonly seen plot used for comparisons between groups, popularized by software such as Microsoft Excel, is the dynamite plot, which shows the average and standard errors.<a href="#fn11" class="footnote-ref" id="fnref11"><sup>11</sup></a> The plot looks like this:</p>
 <pre><code>## `summarise()` ungrouping output (override with `.groups` argument)</code></pre>
 <p><img src="/content/02-content_files/figure-html/show-data-1-1.png" width="672" /></p>
 <p>The average of each group is represented by the top of each bar and the antennae extend out from the average to the average plus two standard errors. If all ET receives is this plot, he will have little information on what to expect if he meets a group of human males and females. The bars go to 0: does this mean there are tiny humans measuring less than one foot? Are all males taller than the tallest females? Is there a range of heights? ET can’t answer these questions since we have provided almost no information on the height distribution.</p>
@@ -804,7 +794,7 @@ display.brewer.all(type=&quot;div&quot;)</code></pre>
 </div>
 <div id="avoid-pseudo-three-dimensional-plots" class="section level2">
 <h2>Avoid pseudo-three-dimensional plots</h2>
-<p>The figure below, taken from the scientific literature<a href="#fn11" class="footnote-ref" id="fnref11"><sup>11</sup></a>,
+<p>The figure below, taken from the scientific literature<a href="#fn12" class="footnote-ref" id="fnref12"><sup>12</sup></a>,
 shows three variables: dose, drug type and survival. Although your screen/book page is flat and two-dimensional, the plot tries to imitate three dimensions and assigned a dimension to each variable.</p>
 <p><img src="/./02-content_files/fig8b.png" /></p>
 <p>(Image courtesy of Karl Broman)</p>
@@ -1257,6 +1247,7 @@ murders %&gt;% mutate(rate = total/population*100000)</code></pre>
 <li id="fn8"><p><a href="http://flowingdata.com/2012/08/06/fox-news-continues-charting-excellence/" class="uri">http://flowingdata.com/2012/08/06/fox-news-continues-charting-excellence/</a><a href="#fnref8" class="footnote-back">↩︎</a></p></li>
 <li id="fn9"><p><a href="https://www.pakistantoday.com.pk/2018/05/18/whats-at-stake-in-venezuelan-presidential-vote" class="uri">https://www.pakistantoday.com.pk/2018/05/18/whats-at-stake-in-venezuelan-presidential-vote</a><a href="#fnref9" class="footnote-back">↩︎</a></p></li>
 <li id="fn10"><p><a href="https://www.youtube.com/watch?v=kl2g40GoRxg" class="uri">https://www.youtube.com/watch?v=kl2g40GoRxg</a><a href="#fnref10" class="footnote-back">↩︎</a></p></li>
-<li id="fn11"><p><a href="https://projecteuclid.org/download/pdf_1/euclid.ss/1177010488" class="uri">https://projecteuclid.org/download/pdf_1/euclid.ss/1177010488</a><a href="#fnref11" class="footnote-back">↩︎</a></p></li>
+<li id="fn11"><p>If you’re unfamiliar, standard errors are defined later in the course—do not confuse them with the standard deviation of the data.<a href="#fnref11" class="footnote-back">↩︎</a></p></li>
+<li id="fn12"><p><a href="https://projecteuclid.org/download/pdf_1/euclid.ss/1177010488" class="uri">https://projecteuclid.org/download/pdf_1/euclid.ss/1177010488</a><a href="#fnref12" class="footnote-back">↩︎</a></p></li>
 </ol>
 </div>
