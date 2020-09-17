@@ -276,13 +276,13 @@ Turning tables into graphs. The American Statistician 56:121-130.&lt;/li&gt;
 &lt;div id=&#34;ggplot2&#34; class=&#34;section level1&#34;&gt;
 &lt;h1&gt;ggplot2&lt;/h1&gt;
 &lt;p&gt;Exploratory data visualization is perhaps the greatest strength of &lt;code&gt;R&lt;/code&gt;. One can quickly go from idea to data to plot with a unique balance of flexibility and ease. For example, Excel may be easier than &lt;code&gt;R&lt;/code&gt; for some plots, but it is nowhere near as flexible. &lt;code&gt;D3.js&lt;/code&gt; may be more flexible and powerful than &lt;code&gt;R&lt;/code&gt;, but it takes much longer to generate a plot. One of the reasons we use &lt;code&gt;R&lt;/code&gt; is its incredible flexibility &lt;strong&gt;and&lt;/strong&gt; ease.&lt;/p&gt;
-&lt;p&gt;Throughout the book, we will be creating plots using the &lt;strong&gt;ggplot2&lt;/strong&gt;&lt;a href=&#34;#fn1&#34; class=&#34;footnote-ref&#34; id=&#34;fnref1&#34;&gt;&lt;sup&gt;1&lt;/sup&gt;&lt;/a&gt; package.&lt;/p&gt;
+&lt;p&gt;Throughout this course, we will be creating plots using the &lt;strong&gt;ggplot2&lt;/strong&gt;&lt;a href=&#34;#fn1&#34; class=&#34;footnote-ref&#34; id=&#34;fnref1&#34;&gt;&lt;sup&gt;1&lt;/sup&gt;&lt;/a&gt; package.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(dplyr)
 library(ggplot2)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Many other approaches are available for creating plots in &lt;code&gt;R&lt;/code&gt;. In fact, the plotting capabilities that come with a basic installation of &lt;code&gt;R&lt;/code&gt; are already quite powerful. There are also other packages for creating graphics such as &lt;strong&gt;grid&lt;/strong&gt; and &lt;strong&gt;lattice&lt;/strong&gt;. We chose to use &lt;strong&gt;ggplot2&lt;/strong&gt; in this book because it breaks plots into components in a way that permits beginners to create relatively complex and aesthetically pleasing plots using syntax that is intuitive and comparatively easy to remember.&lt;/p&gt;
+&lt;p&gt;Many other approaches are available for creating plots in &lt;code&gt;R&lt;/code&gt;. In fact, the plotting capabilities that come with a basic installation of &lt;code&gt;R&lt;/code&gt; are already quite powerful. There are also other packages for creating graphics such as &lt;strong&gt;grid&lt;/strong&gt; and &lt;strong&gt;lattice&lt;/strong&gt;. We chose to use &lt;strong&gt;ggplot2&lt;/strong&gt; in this course because it breaks plots into components in a way that permits beginners to create relatively complex and aesthetically pleasing plots using syntax that is intuitive and comparatively easy to remember.&lt;/p&gt;
 &lt;p&gt;One reason &lt;strong&gt;ggplot2&lt;/strong&gt; is generally more intuitive for beginners is that it uses a so-called “grammar of graphics”&lt;a href=&#34;#fn2&#34; class=&#34;footnote-ref&#34; id=&#34;fnref2&#34;&gt;&lt;sup&gt;2&lt;/sup&gt;&lt;/a&gt;, the letters &lt;em&gt;gg&lt;/em&gt; in &lt;strong&gt;ggplot2&lt;/strong&gt;. This is analogous to the way learning grammar can help a beginner construct hundreds of different sentences by learning just a handful of verbs, nouns and adjectives without having to memorize each specific sentence. Similarly, by learning a handful of &lt;strong&gt;ggplot2&lt;/strong&gt; building blocks and its grammar, you will be able to create hundreds of different plots.&lt;/p&gt;
 &lt;p&gt;Another reason &lt;strong&gt;ggplot2&lt;/strong&gt; is easy for beginners is that its default behavior is carefully chosen to satisfy the great majority of cases and is visually pleasing. As a result, it is possible to create informative and elegant graphs with relatively simple and readable code.&lt;/p&gt;
-&lt;p&gt;One limitation is that &lt;strong&gt;ggplot2&lt;/strong&gt; is designed to work exclusively with data tables in tidy format (where rows are observations and columns are variables). However, a substantial percentage of datasets that beginners work with are in, or can be converted into, this format. An advantage of this approach is that, assuming that our data is tidy, &lt;strong&gt;ggplot2&lt;/strong&gt; simplifies plotting code and the learning of grammar for a variety of plots.&lt;/p&gt;
+&lt;p&gt;One limitation is that &lt;strong&gt;ggplot2&lt;/strong&gt; is designed to work exclusively with data tables in tidy format (where rows are observations and columns are variables). However, a substantial percentage of datasets that beginners work with are in, or can be converted into, this format. An advantage of this approach is that, assuming that our data is tidy, &lt;strong&gt;ggplot2&lt;/strong&gt; simplifies plotting code and the learning of grammar for a variety of plots. You should review the previous content about tidy data if you are feeling lost.&lt;/p&gt;
 &lt;p&gt;To use &lt;strong&gt;ggplot2&lt;/strong&gt; you will have to learn several functions and arguments. These are hard to memorize, so we highly recommend you have the ggplot2 cheat sheet handy. You can get a copy here: &lt;a href=&#34;https://www.rstudio.com/wp-content/uploads/2015/03/ggplot2-cheatsheet.pdf&#34;&gt;https://www.rstudio.com/wp-content/uploads/2015/03/ggplot2-cheatsheet.pdf&lt;/a&gt; or simply perform an internet search for “ggplot2 cheat sheet”.&lt;/p&gt;
 &lt;div id=&#34;the-components-of-a-graph&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;The components of a graph&lt;/h2&gt;
@@ -340,13 +340,13 @@ To add layers, we use the symbol &lt;code&gt;+&lt;/code&gt;. In general, a line 
 &lt;p&gt;Geometry function names follow the pattern: &lt;code&gt;geom_X&lt;/code&gt; where X is the name of some specific geometry. Some examples include &lt;code&gt;geom_point&lt;/code&gt;, &lt;code&gt;geom_bar&lt;/code&gt;, and &lt;code&gt;geom_histogram&lt;/code&gt;. You’ve already seen a few of these.&lt;/p&gt;
 &lt;p&gt;For &lt;code&gt;geom_point&lt;/code&gt; to run properly we need to provide data and a mapping. We have already connected the object &lt;code&gt;p&lt;/code&gt; with the &lt;code&gt;murders&lt;/code&gt; data table, and if we add the layer &lt;code&gt;geom_point&lt;/code&gt; it defaults to using this data. To find out what mappings are expected, we read the &lt;strong&gt;Aesthetics&lt;/strong&gt; section of the help file &lt;code&gt;geom_point&lt;/code&gt; help file:&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;&amp;gt; Aesthetics
-&amp;gt; 
+&amp;gt;
 &amp;gt; geom_point understands the following aesthetics (required aesthetics are in bold):
 &amp;gt;
 &amp;gt; x
 &amp;gt;
 &amp;gt; y
-&amp;gt; 
+&amp;gt;
 &amp;gt; alpha
 &amp;gt;
 &amp;gt; colour&lt;/code&gt;&lt;/pre&gt;
@@ -355,7 +355,7 @@ To add layers, we use the symbol &lt;code&gt;+&lt;/code&gt;. In general, a line 
 &lt;div id=&#34;aesthetic-mappings&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Aesthetic mappings&lt;/h2&gt;
 &lt;p&gt;&lt;strong&gt;Aesthetic mappings&lt;/strong&gt; describe how properties of the data connect with features of the graph, such as distance along an axis, size, or color. The &lt;code&gt;aes&lt;/code&gt; function connects data with what we see on the graph by defining aesthetic mappings and will be one of the functions you use most often when plotting. The outcome of the &lt;code&gt;aes&lt;/code&gt; function is often used as the argument of a geometry function. This example produces a scatterplot of total murders versus population in millions:&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;murders %&amp;gt;% ggplot() + 
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;murders %&amp;gt;% ggplot() +
   geom_point(aes(x = population/10^6, y = total))&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;We can drop the &lt;code&gt;x =&lt;/code&gt; and &lt;code&gt;y =&lt;/code&gt; if we wanted to since these are the first and second expected arguments, as seen in the help page.&lt;/p&gt;
 &lt;p&gt;Instead of defining our plot from scratch, we can also add a layer to the &lt;code&gt;p&lt;/code&gt; object that was defined above as &lt;code&gt;p &amp;lt;- ggplot(data = murders)&lt;/code&gt;:&lt;/p&gt;
@@ -374,7 +374,7 @@ To add layers, we use the symbol &lt;code&gt;+&lt;/code&gt;. In general, a line 
 &lt;p&gt;As an example of the unique behavior of &lt;code&gt;aes&lt;/code&gt; mentioned above, note that this call:&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p_test &amp;lt;- p + geom_text(aes(population/10^6, total, label = abb))&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;is fine, whereas this call:&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p_test &amp;lt;- p + geom_text(aes(population/10^6, total), label = abb) &lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p_test &amp;lt;- p + geom_text(aes(population/10^6, total), label = abb)&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;will give you an error since &lt;code&gt;abb&lt;/code&gt; is not found because it is outside of the &lt;code&gt;aes&lt;/code&gt; function. The layer &lt;code&gt;geom_text&lt;/code&gt; does not know where to find &lt;code&gt;abb&lt;/code&gt; since it is a column name and not a global variable.&lt;/p&gt;
 &lt;div id=&#34;tinkering-with-arguments&#34; class=&#34;section level3&#34;&gt;
 &lt;h3&gt;Tinkering with arguments&lt;/h3&gt;
@@ -399,11 +399,11 @@ To add layers, we use the symbol &lt;code&gt;+&lt;/code&gt;. In general, a line 
 &lt;p&gt;If we define a mapping in &lt;code&gt;ggplot&lt;/code&gt;, all the geometries that are added as layers will default to this mapping. We redefine &lt;code&gt;p&lt;/code&gt;:&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p &amp;lt;- murders %&amp;gt;% ggplot(aes(population/10^6, total, label = abb))&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;and then we can simply write the following code to produce the previous plot:&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p + geom_point(size = 3) + 
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p + geom_point(size = 3) +
   geom_text(nudge_x = 1.5)&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;We keep the &lt;code&gt;size&lt;/code&gt; and &lt;code&gt;nudge_x&lt;/code&gt; arguments in &lt;code&gt;geom_point&lt;/code&gt; and &lt;code&gt;geom_text&lt;/code&gt;, respectively, because we want to only increase the size of points and only nudge the labels. If we put those arguments in &lt;code&gt;aes&lt;/code&gt; then they would apply to both plots. Also note that the &lt;code&gt;geom_point&lt;/code&gt; function does not need a &lt;code&gt;label&lt;/code&gt; argument and therefore ignores that aesthetic.&lt;/p&gt;
 &lt;p&gt;If necessary, we can override the global mapping by defining a new mapping within each layer. These &lt;em&gt;local&lt;/em&gt; definitions override the &lt;em&gt;global&lt;/em&gt;. Here is an example:&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p + geom_point(size = 3) +  
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p + geom_point(size = 3) +
   geom_text(aes(x = 10, y = 800, label = &amp;quot;Hello there!&amp;quot;))&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;img src=&#34;/example/02-example_files/figure-html/ggplot-example-8-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Clearly, the second call to &lt;code&gt;geom_text&lt;/code&gt; does not use &lt;code&gt;population&lt;/code&gt; and &lt;code&gt;total&lt;/code&gt;.&lt;/p&gt;
@@ -411,26 +411,26 @@ To add layers, we use the symbol &lt;code&gt;+&lt;/code&gt;. In general, a line 
 &lt;div id=&#34;scales&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Scales&lt;/h2&gt;
 &lt;p&gt;First, our desired scales are in log-scale. This is not the default, so this change needs to be added through a &lt;em&gt;scales&lt;/em&gt; layer. A quick look at the cheat sheet reveals the &lt;code&gt;scale_x_continuous&lt;/code&gt; function lets us control the behavior of scales. We use them like this:&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p + geom_point(size = 3) +  
-  geom_text(nudge_x = 0.05) + 
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p + geom_point(size = 3) +
+  geom_text(nudge_x = 0.05) +
   scale_x_continuous(trans = &amp;quot;log10&amp;quot;) +
-  scale_y_continuous(trans = &amp;quot;log10&amp;quot;) &lt;/code&gt;&lt;/pre&gt;
+  scale_y_continuous(trans = &amp;quot;log10&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;img src=&#34;/example/02-example_files/figure-html/ggplot-example-9-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Because we are in the log-scale now, the &lt;em&gt;nudge&lt;/em&gt; must be made smaller.&lt;/p&gt;
 &lt;p&gt;This particular transformation is so common that &lt;strong&gt;ggplot2&lt;/strong&gt; provides the specialized functions &lt;code&gt;scale_x_log10&lt;/code&gt; and &lt;code&gt;scale_y_log10&lt;/code&gt;, which we can use to rewrite the code like this:&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p + geom_point(size = 3) +  
-  geom_text(nudge_x = 0.05) + 
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p + geom_point(size = 3) +
+  geom_text(nudge_x = 0.05) +
   scale_x_log10() +
-  scale_y_log10() &lt;/code&gt;&lt;/pre&gt;
+  scale_y_log10()&lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 &lt;div id=&#34;labels-and-titles&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Labels and titles&lt;/h2&gt;
 &lt;p&gt;Similarly, the cheat sheet quickly reveals that to change labels and add a title, we use the following functions:&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p + geom_point(size = 3) +  
-  geom_text(nudge_x = 0.05) + 
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p + geom_point(size = 3) +
+  geom_text(nudge_x = 0.05) +
   scale_x_log10() +
   scale_y_log10() +
-  xlab(&amp;quot;Populations in millions (log scale)&amp;quot;) + 
+  xlab(&amp;quot;Populations in millions (log scale)&amp;quot;) +
   ylab(&amp;quot;Total number of murders (log scale)&amp;quot;) +
   ggtitle(&amp;quot;US Gun Murders in 2010&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;img src=&#34;/example/02-example_files/figure-html/ggplot-example-10-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
@@ -439,11 +439,11 @@ To add layers, we use the symbol &lt;code&gt;+&lt;/code&gt;. In general, a line 
 &lt;div id=&#34;categories-as-colors&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Categories as colors&lt;/h2&gt;
 &lt;p&gt;We can change the color of the points using the &lt;code&gt;col&lt;/code&gt; argument in the &lt;code&gt;geom_point&lt;/code&gt; function. To facilitate demonstration of new features, we will redefine &lt;code&gt;p&lt;/code&gt; to be everything except the points layer:&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p &amp;lt;-  murders %&amp;gt;% ggplot(aes(population/10^6, total, label = abb)) +   
-  geom_text(nudge_x = 0.05) + 
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p &amp;lt;-  murders %&amp;gt;% ggplot(aes(population/10^6, total, label = abb)) +
+  geom_text(nudge_x = 0.05) +
   scale_x_log10() +
   scale_y_log10() +
-  xlab(&amp;quot;Populations in millions (log scale)&amp;quot;) + 
+  xlab(&amp;quot;Populations in millions (log scale)&amp;quot;) +
   ylab(&amp;quot;Total number of murders (log scale)&amp;quot;) +
   ggtitle(&amp;quot;US Gun Murders in 2010&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;and then test out what happens by adding different calls to &lt;code&gt;geom_point&lt;/code&gt;. We can make all the points blue by adding the &lt;code&gt;color&lt;/code&gt; argument:&lt;/p&gt;
@@ -460,21 +460,21 @@ To add layers, we use the symbol &lt;code&gt;+&lt;/code&gt;. In general, a line 
 &lt;h2&gt;Annotation, shapes, and adjustments&lt;/h2&gt;
 &lt;p&gt;We often want to add shapes or annotation to figures that are not derived directly from the aesthetic mapping; examples include labels, boxes, shaded areas, and lines.&lt;/p&gt;
 &lt;p&gt;Here we want to add a line that represents the average murder rate for the entire country. Once we determine the per million rate to be &lt;span class=&#34;math inline&#34;&gt;\(r\)&lt;/span&gt;, this line is defined by the formula: &lt;span class=&#34;math inline&#34;&gt;\(y = r x\)&lt;/span&gt;, with &lt;span class=&#34;math inline&#34;&gt;\(y\)&lt;/span&gt; and &lt;span class=&#34;math inline&#34;&gt;\(x\)&lt;/span&gt; our axes: total murders and population in millions, respectively. In the log-scale this line turns into: &lt;span class=&#34;math inline&#34;&gt;\(\log(y) = \log(r) + \log(x)\)&lt;/span&gt;. So in our plot it’s a line with slope 1 and intercept &lt;span class=&#34;math inline&#34;&gt;\(\log(r)\)&lt;/span&gt;. To compute this value, we use our &lt;strong&gt;dplyr&lt;/strong&gt; skills:&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;r &amp;lt;- murders %&amp;gt;% 
-  summarize(rate = sum(total) /  sum(population) * 10^6) %&amp;gt;% 
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;r &amp;lt;- murders %&amp;gt;%
+  summarize(rate = sum(total) /  sum(population) * 10^6) %&amp;gt;%
   pull(rate)&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;To add a line we use the &lt;code&gt;geom_abline&lt;/code&gt; function. &lt;strong&gt;ggplot2&lt;/strong&gt; uses &lt;code&gt;ab&lt;/code&gt; in the name to remind us we are supplying the intercept (&lt;code&gt;a&lt;/code&gt;) and slope (&lt;code&gt;b&lt;/code&gt;). The default line has slope 1 and intercept 0 so we only have to define the intercept:&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p + geom_point(aes(col=region), size = 3) + 
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p + geom_point(aes(col=region), size = 3) +
   geom_abline(intercept = log10(r))&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;img src=&#34;/example/02-example_files/figure-html/ggplot-example-13-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Here &lt;code&gt;geom_abline&lt;/code&gt; does not use any information from the data object.&lt;/p&gt;
 &lt;p&gt;We can change the line type and color of the lines using arguments. Also, we draw it first so it doesn’t go over our points.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p &amp;lt;- p + geom_abline(intercept = log10(r), lty = 2, color = &amp;quot;darkgrey&amp;quot;) +
-  geom_point(aes(col=region), size = 3)  &lt;/code&gt;&lt;/pre&gt;
+  geom_point(aes(col=region), size = 3)&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Note that we have redefined &lt;code&gt;p&lt;/code&gt; and used this new &lt;code&gt;p&lt;/code&gt; below and in the next section.&lt;/p&gt;
 &lt;p&gt;The default plots created by &lt;strong&gt;ggplot2&lt;/strong&gt; are already very useful. However, we frequently need to make minor tweaks to the default behavior. Although it is not always obvious how to make these even with the cheat sheet, &lt;strong&gt;ggplot2&lt;/strong&gt; is very flexible.&lt;/p&gt;
 &lt;p&gt;For example, we can make changes to the legend via the &lt;code&gt;scale_color_discrete&lt;/code&gt; function. In our plot the word &lt;em&gt;region&lt;/em&gt; is capitalized and we can change it like this:&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p &amp;lt;- p + scale_color_discrete(name = &amp;quot;Region&amp;quot;) &lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p &amp;lt;- p + scale_color_discrete(name = &amp;quot;Region&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 &lt;div id=&#34;add-on-packages&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Add-on packages&lt;/h2&gt;
@@ -494,19 +494,19 @@ p + theme_economist()&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(ggthemes)
 library(ggrepel)
 
-r &amp;lt;- murders %&amp;gt;% 
+r &amp;lt;- murders %&amp;gt;%
   summarize(rate = sum(total) /  sum(population) * 10^6) %&amp;gt;%
   pull(rate)
 
-murders %&amp;gt;% ggplot(aes(population/10^6, total, label = abb)) +   
+murders %&amp;gt;% ggplot(aes(population/10^6, total, label = abb)) +
   geom_abline(intercept = log10(r), lty = 2, color = &amp;quot;darkgrey&amp;quot;) +
   geom_point(aes(col=region), size = 3) +
-  geom_text_repel() + 
+  geom_text_repel() +
   scale_x_log10() +
   scale_y_log10() +
-  xlab(&amp;quot;Populations in millions (log scale)&amp;quot;) + 
+  xlab(&amp;quot;Populations in millions (log scale)&amp;quot;) +
   ylab(&amp;quot;Total number of murders (log scale)&amp;quot;) +
-  ggtitle(&amp;quot;US Gun Murders in 2010&amp;quot;) + 
+  ggtitle(&amp;quot;US Gun Murders in 2010&amp;quot;) +
   scale_color_discrete(name = &amp;quot;Region&amp;quot;) +
   theme_economist_white()&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;img src=&#34;/example/02-example_files/figure-html/final-ggplot-example-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
@@ -519,7 +519,7 @@ murders %&amp;gt;% ggplot(aes(population/10^6, total, label = abb)) +
 x &amp;lt;- log10(murders$population)
 y &amp;lt;- murders$total&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;and we want to make a scatterplot with ggplot, we would have to type something like:&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data.frame(x = x, y = y) %&amp;gt;% 
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data.frame(x = x, y = y) %&amp;gt;%
   ggplot(aes(x, y)) +
   geom_point()&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;This seems like too much code for such a simple plot.
@@ -621,9 +621,9 @@ Print the object &lt;code&gt;p&lt;/code&gt; defined in exercise one and describe
 &lt;li&gt;&lt;p&gt;Rewrite the code above to make the labels’ color be determined by the state’s region.&lt;/p&gt;&lt;/li&gt;
 &lt;li&gt;&lt;p&gt;Now we are going to change the x-axis to a log scale to account for the fact the distribution of population is skewed. Let’s start by defining an object &lt;code&gt;p&lt;/code&gt; holding the plot we have made up to now&lt;/p&gt;&lt;/li&gt;
 &lt;/ol&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p &amp;lt;- murders %&amp;gt;% 
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p &amp;lt;- murders %&amp;gt;%
   ggplot(aes(population, total, label = abb, color = region)) +
-  geom_label() &lt;/code&gt;&lt;/pre&gt;
+  geom_label()&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;To change the y-axis to a log scale we learned about the &lt;code&gt;scale_x_log10()&lt;/code&gt; function. Add this layer to the object &lt;code&gt;p&lt;/code&gt; to change the scale and render the plot.&lt;/p&gt;
 &lt;ol start=&#34;15&#34; style=&#34;list-style-type: decimal&#34;&gt;
 &lt;li&gt;&lt;p&gt;Repeat the previous exercise but now change both axes to be in the log scale.&lt;/p&gt;&lt;/li&gt;
