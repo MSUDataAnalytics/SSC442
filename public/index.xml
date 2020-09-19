@@ -1365,6 +1365,258 @@ Print the object &lt;code&gt;p&lt;/code&gt; defined in exercise one and describe
     </item>
     
     <item>
+      <title>Visualizations </title>
+      <link>/example/03-example/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>/example/03-example/</guid>
+      <description>
+
+&lt;div id=&#34;TOC&#34;&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#preliminaries&#34;&gt;Preliminaries&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#complete-code&#34;&gt;Complete code&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#load-and-clean-data&#34;&gt;Load and clean data&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#small-multiples&#34;&gt;Small multiples&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#sparklines&#34;&gt;Sparklines&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#slopegraphs&#34;&gt;Slopegraphs&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#bump-charts&#34;&gt;Bump charts&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Today’s example will continue (and conclude) some of the discussion from Tuesday.&lt;/p&gt;
+&lt;div id=&#34;preliminaries&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Preliminaries&lt;/h2&gt;
+&lt;p&gt;For today’s example, we’re going to use cross-national data. But instead of using the typical &lt;code&gt;gapminder&lt;/code&gt; dataset as with the Tuuesday lecture, we’re going to collect data directly from the &lt;a href=&#34;https://data.worldbank.org/&#34;&gt;World Bank’s Open Data portal&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;If you want to skip the data downloading, you can download the data below (you’ll likely need to right click and choose “Save Link As”). However, it may be instructive for your group projects to explore the collection process. It’s not particularly hard!&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;/data/wdi_raw.csv&#34;&gt;&lt;i class=&#34;fas fa-file-csv&#34;&gt;&lt;/i&gt; &lt;code&gt;wdi_raw.csv&lt;/code&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;div id=&#34;complete-code&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Complete code&lt;/h2&gt;
+&lt;div id=&#34;load-and-clean-data&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Load and clean data&lt;/h3&gt;
+&lt;p&gt;First, we load the libraries we’ll be using. Note: there are some new packages below. You will almost surely need to add these. Moreover, these will almost surely throw an error unless you use the &lt;code&gt;dependencies = TRUE&lt;/code&gt; argument when installing.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(tidyverse)  # For ggplot, dplyr, and friends
+library(WDI)        # For getting data from the World Bank
+library(geofacet)   # For map-shaped facets
+library(scales)     # For helpful scale functions like dollar()
+library(ggrepel)    # For non-overlapping labels&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The World Bank has a ton of country-level data at &lt;a href=&#34;https://data.worldbank.org/&#34;&gt;data.worldbank.org&lt;/a&gt;. We can use &lt;a href=&#34;https://cran.r-project.org/package=WDI&#34;&gt;a package named &lt;strong&gt;WDI&lt;/strong&gt;&lt;/a&gt; (&lt;strong&gt;w&lt;/strong&gt;orld &lt;strong&gt;d&lt;/strong&gt;evelopment &lt;strong&gt;i&lt;/strong&gt;ndicators) to access their servers and download the data directly into R.&lt;/p&gt;
+&lt;p&gt;To do this, we need to find the special World Bank codes for specific variables we want to get. These codes come from the URLs of the World Bank’s website. For instance, if you search for “access to electricity” at the World Bank’s website, you’ll find &lt;a href=&#34;https://data.worldbank.org/indicator/EG.ELC.ACCS.ZS&#34;&gt;this page&lt;/a&gt;. If you look at the end of the URL, you’ll see a cryptic code: &lt;code&gt;EG.ELC.ACCS.ZS&lt;/code&gt;. That’s the World Bank’s ID code for the “Access to electricity (% of population)” indicator.&lt;/p&gt;
+&lt;p&gt;We can feed a list of ID codes to the &lt;code&gt;WDI()&lt;/code&gt; function to download data for those specific indicators. We want data from 1995-2015, so we set the start and end years accordingly. The &lt;code&gt;extra=TRUE&lt;/code&gt; argument means that it’ll also include other helpful details like region, aid status, etc. Without it, it would only download the indicators we listed.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;indicators &amp;lt;- c(&amp;quot;SP.DYN.LE00.IN&amp;quot;,  # Life expectancy
+                &amp;quot;EG.ELC.ACCS.ZS&amp;quot;,  # Access to electricity
+                &amp;quot;EN.ATM.CO2E.PC&amp;quot;,  # CO2 emissions
+                &amp;quot;NY.GDP.PCAP.KD&amp;quot;)  # GDP per capita
+wdi_raw &amp;lt;- WDI(country = &amp;quot;all&amp;quot;, indicators, extra = TRUE,
+               start = 1995, end = 2015)
+head(wdi_raw)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Downloading data from the World Bank every time you knit will get tedious and take a long time (plus if their servers are temporarily down, you won’t be able to get the data). It’s good practice to save this raw data as a CSV file and then work with that.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;write_csv(wdi_raw, &amp;quot;data/wdi_raw.csv&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Since we care about reproducibility, we still want to include the code we used to get data from the World Bank, we just don’t want it to actually run. You can include chunks but not run them by setting &lt;code&gt;eval=FALSE&lt;/code&gt; in the chunk options. In this little example, we show the code for downloading the data, but we don’t evaluate the chunk. We then include a chunk that loads the data from a CSV file with &lt;code&gt;read_csv()&lt;/code&gt;, but we don’t include it (&lt;code&gt;include=FALSE&lt;/code&gt;). That way, in the knitted file we see the &lt;code&gt;WDI()&lt;/code&gt; code, but in reality it’s loading the data from CSV. Super tricky.&lt;/p&gt;
+&lt;pre class=&#34;text&#34;&gt;&lt;code&gt;I first download data from the World Bank:
+```{r get-wdi-data, eval=FALSE}
+wdi_raw &amp;lt;- WDI(...)
+write_csv(wdi_raw, &amp;quot;data/wdi_raw.csv&amp;quot;)
+```
+```{r load-wdi-data-real, include=FALSE}
+wdi_raw &amp;lt;- read_csv(&amp;quot;data/wdi_raw.csv&amp;quot;)
+```&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Then we clean up the data a little, filtering out rows that aren’t actually countries and renaming the ugly World Bank code columns to actual words:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;wdi_clean &amp;lt;- wdi_raw %&amp;gt;%
+  filter(region != &amp;quot;Aggregates&amp;quot;) %&amp;gt;%
+  select(iso2c, country, year,
+         life_expectancy = SP.DYN.LE00.IN,
+         access_to_electricity = EG.ELC.ACCS.ZS,
+         co2_emissions = EN.ATM.CO2E.PC,
+         gdp_per_cap = NY.GDP.PCAP.KD,
+         region, income)
+head(wdi_clean)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 6 x 9
+##   iso2c country  year life_expectancy access_to_electricity co2_emissions gdp_per_cap region                income     
+##   &amp;lt;chr&amp;gt; &amp;lt;chr&amp;gt;   &amp;lt;dbl&amp;gt;           &amp;lt;dbl&amp;gt;                 &amp;lt;dbl&amp;gt;         &amp;lt;dbl&amp;gt;       &amp;lt;dbl&amp;gt; &amp;lt;chr&amp;gt;                 &amp;lt;chr&amp;gt;      
+## 1 AD    Andorra  2015              NA                   100         NA         41768. Europe &amp;amp; Central Asia High income
+## 2 AD    Andorra  2004              NA                   100          7.36      47033. Europe &amp;amp; Central Asia High income
+## 3 AD    Andorra  2001              NA                   100          7.79      41421. Europe &amp;amp; Central Asia High income
+## 4 AD    Andorra  2002              NA                   100          7.59      42396. Europe &amp;amp; Central Asia High income
+## 5 AD    Andorra  2014              NA                   100          5.83      40790. Europe &amp;amp; Central Asia High income
+## 6 AD    Andorra  1995              NA                   100          6.66      32918. Europe &amp;amp; Central Asia High income&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;small-multiples&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Small multiples&lt;/h3&gt;
+&lt;p&gt;First we can make some small multiples plots and show life expectancy over time for a handful of countries. We’ll make a list of some countries chosen at random while I scrolled through the data, and then filter our data to include only those rows. We then plot life expectancy, faceting by country.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;life_expectancy_small &amp;lt;- wdi_clean %&amp;gt;%
+  filter(country %in% c(&amp;quot;Argentina&amp;quot;, &amp;quot;Bolivia&amp;quot;, &amp;quot;Brazil&amp;quot;,
+                        &amp;quot;Belize&amp;quot;, &amp;quot;Canada&amp;quot;, &amp;quot;Chile&amp;quot;))
+ggplot(data = life_expectancy_small,
+       mapping = aes(x = year, y = life_expectancy)) +
+  geom_line(size = 1) +
+  facet_wrap(vars(country))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/example/03-example_files/figure-html/life-expectancy-small-1.png&#34; width=&#34;576&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Small multiples! That’s all we need to do.&lt;/p&gt;
+&lt;p&gt;We can do some fancier things, though. We can make this plot hyper minimalist:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(data = life_expectancy_small,
+       mapping = aes(x = year, y = life_expectancy)) +
+  geom_line(size = 1) +
+  facet_wrap(vars(country), scales = &amp;quot;free_y&amp;quot;) +
+  theme_void() +
+  theme(strip.text = element_text(face = &amp;quot;bold&amp;quot;))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/example/03-example_files/figure-html/life-expectancy-small-minimalist-1.png&#34; width=&#34;576&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;We can do a whole part of a continent (poor Iraq and Syria 😭)&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;life_expectancy_mena &amp;lt;- wdi_clean %&amp;gt;%
+  filter(region == &amp;quot;Middle East &amp;amp; North Africa&amp;quot;)
+ggplot(data = life_expectancy_mena,
+       mapping = aes(x = year, y = life_expectancy)) +
+  geom_line(size = 1) +
+  facet_wrap(vars(country), scales = &amp;quot;free_y&amp;quot;, nrow = 3) +
+  theme_void() +
+  theme(strip.text = element_text(face = &amp;quot;bold&amp;quot;))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/example/03-example_files/figure-html/life-expectancy-mena-1.png&#34; width=&#34;960&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;We can use the &lt;a href=&#34;https://hafen.github.io/geofacet/&#34;&gt;&lt;strong&gt;geofacet&lt;/strong&gt; package&lt;/a&gt; to arrange these facets by geography:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;life_expectancy_eu &amp;lt;- wdi_clean %&amp;gt;%
+  filter(region == &amp;quot;Europe &amp;amp; Central Asia&amp;quot;)
+ggplot(life_expectancy_eu, aes(x = year, y = life_expectancy)) +
+  geom_line(size = 1) +
+  facet_geo(vars(country), grid = &amp;quot;eu_grid1&amp;quot;, scales = &amp;quot;free_y&amp;quot;) +
+  labs(x = NULL, y = NULL, title = &amp;quot;Life expectancy from 1995–2015&amp;quot;,
+       caption = &amp;quot;Source: The World Bank (SP.DYN.LE00.IN)&amp;quot;) +
+  theme_minimal() +
+  theme(strip.text = element_text(face = &amp;quot;bold&amp;quot;),
+        plot.title = element_text(face = &amp;quot;bold&amp;quot;),
+        axis.text.x = element_text(angle = 45, hjust = 1))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/example/03-example_files/figure-html/life-expectancy-eu-1.png&#34; width=&#34;960&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Neat!&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;sparklines&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Sparklines&lt;/h3&gt;
+&lt;p&gt;Sparklines are just line charts (or bar charts) that are really really small.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;india_co2 &amp;lt;- wdi_clean %&amp;gt;%
+  filter(country == &amp;quot;India&amp;quot;)
+plot_india &amp;lt;- ggplot(india_co2, aes(x = year, y = co2_emissions)) +
+  geom_line() +
+  theme_void()
+plot_india&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/example/03-example_files/figure-html/india-spark-1.png&#34; width=&#34;96&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggsave(&amp;quot;india_co2.pdf&amp;quot;, plot_india, width = 1, height = 0.15, units = &amp;quot;in&amp;quot;)
+ggsave(&amp;quot;india_co2.png&amp;quot;, plot_india, width = 1, height = 0.15, units = &amp;quot;in&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;china_co2 &amp;lt;- wdi_clean %&amp;gt;%
+  filter(country == &amp;quot;China&amp;quot;)
+plot_china &amp;lt;- ggplot(china_co2, aes(x = year, y = co2_emissions)) +
+  geom_line() +
+  theme_void()
+plot_china&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/example/03-example_files/figure-html/china-spark-1.png&#34; width=&#34;96&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggsave(&amp;quot;china_co2.pdf&amp;quot;, plot_china, width = 1, heighlt = 0.15, units = &amp;quot;in&amp;quot;)
+ggsave(&amp;quot;china_co2.png&amp;quot;, plot_china, width = 1, height = 0.15, units = &amp;quot;in&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;You can then use those saved tiny plots in your text.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Both India &lt;img class=&#34;img-inline&#34; src=&#34;/example/08-example_files/figure-html/india-spark-1.png&#34; width = &#34;100&#34;/&gt; and China &lt;img class=&#34;img-inline&#34; src=&#34;/example/08-example_files/figure-html/china-spark-1.png&#34; width = &#34;100&#34;/&gt; have seen increased CO&lt;sub&gt;2&lt;/sub&gt; emissions over the past 20 years.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;/div&gt;
+&lt;div id=&#34;slopegraphs&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Slopegraphs&lt;/h3&gt;
+&lt;p&gt;We can make a slopegraph to show changes in GDP per capita between two time periods. We need to first filter our WDI to include only the start and end years (here 1995 and 2015). Then, to make sure that we’re using complete data, we’ll get rid of any country that has missing data for either 1995 or 2015. The &lt;code&gt;group_by(...) %&amp;gt;% filter(...) %&amp;gt;% ungroup()&lt;/code&gt; pipeline does this, with the &lt;code&gt;!any(is.na(gdp_per_cap))&lt;/code&gt; test keeping any rows where any of the &lt;code&gt;gdp_per_cap&lt;/code&gt; values are not missing for the whole country.&lt;/p&gt;
+&lt;p&gt;We then add a couple special columns for labels. The &lt;code&gt;paste0()&lt;/code&gt; function concatenates strings and variables together, so that &lt;code&gt;paste0(&#34;2 + 2 = &#34;, 2 + 2)&lt;/code&gt; would show “2 + 2 = 4”. Here we make labels that say either “Country name: $GDP” or “$GDP” depending on the year.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;gdp_south_asia &amp;lt;- wdi_clean %&amp;gt;%
+  filter(region == &amp;quot;South Asia&amp;quot;) %&amp;gt;%
+  filter(year %in% c(1995, 2015)) %&amp;gt;%
+  # Look at each country individually
+  group_by(country) %&amp;gt;%
+  # Remove the country if any of its gdp_per_cap values are missing
+  filter(!any(is.na(gdp_per_cap))) %&amp;gt;%
+  ungroup() %&amp;gt;%
+  # Make year a factor
+  mutate(year = factor(year)) %&amp;gt;%
+  # Make some nice label columns
+  # If the year is 1995, format it like &amp;quot;Country name: $GDP&amp;quot;. If the year is
+  # 2015, format it like &amp;quot;$GDP&amp;quot;
+  mutate(label_first = ifelse(year == 1995, paste0(country, &amp;quot;: &amp;quot;, dollar(round(gdp_per_cap))), NA),
+         label_last = ifelse(year == 2015, dollar(round(gdp_per_cap, 0)), NA))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;With the data filtered like this, we can plot it by mapping year to the x-axis, GDP per capita to the y-axis, and coloring by country. To make the lines go across the two categorical labels in the x-axis (since we made year a factor/category), we need to also specify the &lt;code&gt;group&lt;/code&gt; aesthetic.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(gdp_south_asia, aes(x = year, y = gdp_per_cap, group = country, color = country)) +
+  geom_line(size = 1.5)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/example/03-example_files/figure-html/slopegraph-sa-simple-1.png&#34; width=&#34;576&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Cool! We’re getting closer. We can definitely see different slopes, but with 7 different colors, it’s hard to see exactly which country is which. Instead, we can directly label each of these lines with &lt;code&gt;geom_text()&lt;/code&gt;:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(gdp_south_asia, aes(x = year, y = gdp_per_cap, group = country, color = country)) +
+  geom_line(size = 1.5) +
+  geom_text(aes(label = country)) +
+  guides(color = FALSE)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/example/03-example_files/figure-html/slopegraph-sa-simple-text-1.png&#34; width=&#34;576&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;That gets us a &lt;em&gt;little&lt;/em&gt; closer, but the country labels are hard to see, and we could include more information, like the actual values. Remember those &lt;code&gt;label_first&lt;/code&gt; and &lt;code&gt;label_last&lt;/code&gt; columns we made? Let’s use those instead:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(gdp_south_asia, aes(x = year, y = gdp_per_cap, group = country, color = country)) +
+  geom_line(size = 1.5) +
+  geom_text(aes(label = label_first)) +
+  geom_text(aes(label = label_last)) +
+  guides(color = FALSE)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/example/03-example_files/figure-html/slopegraph-sa-simple-text-fancier-1.png&#34; width=&#34;576&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Now we have dollar amounts and country names, but the labels are still overlapping and really hard to read. To fix this, we can make the labels repel away from each other and randomly position in a way that makes them not overlap. The &lt;a href=&#34;https://cran.r-project.org/web/packages/ggrepel/vignettes/ggrepel.html&#34;&gt;&lt;strong&gt;ggrepel&lt;/strong&gt; package&lt;/a&gt; lets us do this with &lt;code&gt;geom_text_repel()&lt;/code&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(gdp_south_asia, aes(x = year, y = gdp_per_cap, group = country, color = country)) +
+  geom_line(size = 1.5) +
+  geom_text_repel(aes(label = label_first)) +
+  geom_text_repel(aes(label = label_last)) +
+  guides(color = FALSE)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/example/03-example_files/figure-html/slopegraph-sa-getting-warmer-1.png&#34; width=&#34;576&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Now none of the labels are on top of each other, but the labels are still on top of the lines. Also, some of the labels moved inward and outward along the x-axis, but they don’t need to do that—they just need to shift up and down. We can force the labels to only move up and down by setting the &lt;code&gt;direction = &#34;y&#34;&lt;/code&gt; argument, and we can move all the labels to the left or right with the &lt;code&gt;nudge_x&lt;/code&gt; argument. The &lt;code&gt;seed&lt;/code&gt; argument makes sure that the random label placement is the same every time we run this. It can be whatever number you want—it just has to be a number.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(gdp_south_asia, aes(x = year, y = gdp_per_cap, group = country, color = country)) +
+  geom_line(size = 1.5) +
+  geom_text_repel(aes(label = label_first), direction = &amp;quot;y&amp;quot;, nudge_x = -1, seed = 1234) +
+  geom_text_repel(aes(label = label_last), direction = &amp;quot;y&amp;quot;, nudge_x = 1, seed = 1234) +
+  guides(color = FALSE)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/example/03-example_files/figure-html/slopegraph-sa-fancier-1.png&#34; width=&#34;576&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;That’s it! Let’s take the theme off completely, change the colors a little, and it should be perfect.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(gdp_south_asia, aes(x = year, y = gdp_per_cap, group = country, color = country)) +
+  geom_line(size = 1.5) +
+  geom_text_repel(aes(label = label_first), direction = &amp;quot;y&amp;quot;, nudge_x = -1, seed = 1234) +
+  geom_text_repel(aes(label = label_last), direction = &amp;quot;y&amp;quot;, nudge_x = 1, seed = 1234) +
+  guides(color = FALSE) +
+  scale_color_viridis_d(option = &amp;quot;magma&amp;quot;, end = 0.9) +
+  theme_void()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/example/03-example_files/figure-html/slopegraph-sa-done-1.png&#34; width=&#34;576&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;bump-charts&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Bump charts&lt;/h3&gt;
+&lt;p&gt;Finally, we can make a bump chart that shows changes in rankings over time. We’ll look at CO&lt;sub&gt;2&lt;/sub&gt; emissions in South Asia. First we need to calculate a new variable that shows the rank of each country within each year. We can do this if we group by year and then use the &lt;code&gt;rank()&lt;/code&gt; function to rank countries by the &lt;code&gt;co2_emissions&lt;/code&gt; column.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;sa_co2 &amp;lt;- wdi_clean %&amp;gt;%
+  filter(region == &amp;quot;South Asia&amp;quot;) %&amp;gt;%
+  filter(year &amp;gt;= 2004, year &amp;lt; 2015) %&amp;gt;%
+  group_by(year) %&amp;gt;%
+  mutate(rank = rank(co2_emissions))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;We then plot this with points and lines, reversing the y-axis so 1 is at the top:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(sa_co2, aes(x = year, y = rank, color = country)) +
+  geom_line() +
+  geom_point() +
+  scale_y_reverse(breaks = 1:8)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/example/03-example_files/figure-html/make-bump-plot-1.png&#34; width=&#34;576&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Afghanistan and Nepal switched around for the number 1 spot, while India dropped from 4 to 6, switching places with Pakistan.&lt;/p&gt;
+&lt;p&gt;As with the slopegraph, there are 8 different colors in the legend and it’s hard to line them all up with the different lines, so we can plot the text directly instead. We’ll use &lt;code&gt;geom_text()&lt;/code&gt; again. We don’t need to repel anything, since the text should fit in each row just fine. We need to change the &lt;code&gt;data&lt;/code&gt; argument in &lt;code&gt;geom_text()&lt;/code&gt; though and filter the data to only include one year, otherwise we’ll get labels on every point, which is excessive. We can also adjust the theme and colors to make it cleaner.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(sa_co2, aes(x = year, y = rank, color = country)) +
+  geom_line(size = 2) +
+  geom_point(size = 4) +
+  geom_text(data = filter(sa_co2, year == 2004),
+            aes(label = iso2c, x = 2003.25),
+            fontface = &amp;quot;bold&amp;quot;) +
+  geom_text(data = filter(sa_co2, year == 2014),
+            aes(label = iso2c, x = 2014.75),
+            fontface = &amp;quot;bold&amp;quot;) +
+  guides(color = FALSE) +
+  scale_y_reverse(breaks = 1:8) +
+  scale_x_continuous(breaks = 2004:2014) +
+  scale_color_viridis_d(option = &amp;quot;magma&amp;quot;, begin = 0.2, end = 0.9) +
+  labs(x = NULL, y = &amp;quot;Rank&amp;quot;) +
+  theme_minimal() +
+  theme(panel.grid.major.y = element_blank(),
+        panel.grid.minor.y = element_blank(),
+        panel.grid.minor.x = element_blank())&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/example/03-example_files/figure-html/bump-plot-fancier-1.png&#34; width=&#34;672&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;If you want to be &lt;em&gt;super&lt;/em&gt; fancy, you can use flags instead of country codes, but that’s a little more complicated (you need to install the &lt;a href=&#34;https://github.com/rensa/ggflags&#34;&gt;&lt;strong&gt;ggflags&lt;/strong&gt; package&lt;/a&gt;. &lt;a href=&#34;https://dominikkoch.github.io/Bump-Chart/&#34;&gt;See here for an example&lt;/a&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    
+    <item>
       <title>Design</title>
       <link>/resource/design/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
@@ -2441,6 +2693,765 @@ mpg %&amp;gt;%
 &lt;li id=&#34;fn2&#34;&gt;&lt;p&gt;Some products, of course, solve this problem a little bit. For example, Dropbox allows users to share files with ease (of any file type) and saves a (coarse) version history. However, Dropbox does not allow multiple users to work on the same file, and has no way of merging edits together.&lt;a href=&#34;#fnref2&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
 &lt;li id=&#34;fn3&#34;&gt;&lt;p&gt;This logic is also why we utilize only free software in this course. It sucks to get really good at, say, &lt;code&gt;SAS&lt;/code&gt; (as I did many years ago) only to realize that the software costs about $10000 and many firms are unwilling to spent that. We will try our best to avoid giving you dead-end skills.&lt;a href=&#34;#fnref3&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
 &lt;li id=&#34;fn4&#34;&gt;&lt;p&gt;This exercise provides you with an opportunity to identify your marketable skills and to practice them. I encourage those who will be looking for jobs soon to take this exercise seriously.&lt;a href=&#34;#fnref4&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Visualizations in Practice</title>
+      <link>/content/03-content/</link>
+      <pubDate>Tue, 22 Sep 2020 00:00:00 +0000</pubDate>
+      <guid>/content/03-content/</guid>
+      <description>
+&lt;script src=&#34;/rmarkdown-libs/kePrint/kePrint.js&#34;&gt;&lt;/script&gt;
+&lt;link href=&#34;/rmarkdown-libs/lightable/lightable.css&#34; rel=&#34;stylesheet&#34; /&gt;
+
+&lt;div id=&#34;TOC&#34;&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#required-reading&#34;&gt;Required Reading&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#supplemental-readings&#34;&gt;Supplemental Readings&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#for-fun&#34;&gt;For “Fun”&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#guiding-questions&#34;&gt;Guiding Questions&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#slides&#34;&gt;Slides&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#gapminder&#34;&gt;Data visualization in practice&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#case-study-new-insights-on-poverty&#34;&gt;Case study: new insights on poverty&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#exploring-the-data&#34;&gt;Exploring the Data&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#scatterplots&#34;&gt;Scatterplots&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#faceting&#34;&gt;Faceting&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#facet_wrap&#34;&gt;&lt;code&gt;facet_wrap&lt;/code&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#fixed-scales-for-better-comparisons&#34;&gt;Fixed scales for better comparisons&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#time-series-plots&#34;&gt;Time series plots&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#labels-instead-of-legends&#34;&gt;Labels instead of legends&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#data-transformations&#34;&gt;Data transformations&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#log-transformation&#34;&gt;Log transformation&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#which-base&#34;&gt;Which base?&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#transform-the-values-or-the-scale&#34;&gt;Transform the values or the scale?&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#visualizing-multimodal-distributions&#34;&gt;Visualizing multimodal distributions&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#comparing-multiple-distributions-with-boxplots-and-ridge-plots&#34;&gt;Comparing multiple distributions with boxplots and ridge plots&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#boxplots&#34;&gt;Boxplots&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#ridge-plots&#34;&gt;Ridge plots&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#example-1970-versus-2010-income-distributions&#34;&gt;Example: 1970 versus 2010 income distributions&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#accessing-computed-variables&#34;&gt;Accessing computed variables&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#weighted-densities&#34;&gt;Weighted densities&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#the-ecological-fallacy-and-importance-of-showing-the-data&#34;&gt;The ecological fallacy and importance of showing the data&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#logit&#34;&gt;Logistic transformation&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#show-the-data&#34;&gt;Show the data&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#vaccines&#34;&gt;Case study: vaccines and infectious diseases&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+
+&lt;div id=&#34;required-reading&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Required Reading&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;This page.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div id=&#34;supplemental-readings&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Supplemental Readings&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;i class=&#34;fas fa-book&#34;&gt;&lt;/i&gt; &lt;a href=&#34;https://serialmentor.com/dataviz/visualizing-amounts.html&#34;&gt;Chapter 6&lt;/a&gt; in Claus Wilke, &lt;em&gt;Fundamentals of Data Visualization&lt;/em&gt; &lt;span class=&#34;citation&#34;&gt;[@Wilke:2018]&lt;/span&gt;&lt;/li&gt;
+&lt;li&gt;&lt;i class=&#34;fas fa-book&#34;&gt;&lt;/i&gt; Chapter 6 in Alberto Cairo, &lt;em&gt;The Truthful Art&lt;/em&gt; &lt;span class=&#34;citation&#34;&gt;[@Cairo:2016]&lt;/span&gt;&lt;/li&gt;
+&lt;li&gt;&lt;i class=&#34;fas fa-book&#34;&gt;&lt;/i&gt; &lt;a href=&#34;https://serialmentor.com/dataviz/visualizing-proportions.html&#34;&gt;Chapter 10&lt;/a&gt; in Claus Wilke, &lt;em&gt;Fundamentals of Data Visualization&lt;/em&gt; &lt;span class=&#34;citation&#34;&gt;[@Wilke:2018]&lt;/span&gt;&lt;/li&gt;
+&lt;li&gt;&lt;i class=&#34;fas fa-external-link-square-alt&#34;&gt;&lt;/i&gt; &lt;a href=&#34;https://eagereyes.org/blog/2008/engaging-readers-with-square-pie-waffle-charts&#34;&gt;Engaging Readers with Square Pie/Waffle Charts&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;i class=&#34;fas fa-external-link-square-alt&#34;&gt;&lt;/i&gt; &lt;a href=&#34;https://eagereyes.org/techniques/pie-charts&#34;&gt;Understanding Pie Charts&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;i class=&#34;fas fa-external-link-square-alt&#34;&gt;&lt;/i&gt; &lt;a href=&#34;https://flowingdata.com/2016/07/15/square-pie-chart-beats-out-the-rest-in-perception-study/&#34;&gt;Square pie chart beats out the rest in perception study&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;i class=&#34;fab fa-twitter&#34;&gt;&lt;/i&gt; &lt;a href=&#34;https://twitter.com/janinegibson/status/1244519429825802240&#34;&gt;Twitter thread&lt;/a&gt; from John Burn-Murdoch on why the &lt;em&gt;Financial Times&lt;/em&gt; uses log scales in their COVID-19 tracking charts&lt;/li&gt;
+&lt;li&gt;&lt;i class=&#34;fab fa-twitter&#34;&gt;&lt;/i&gt; &lt;a href=&#34;https://twitter.com/jburnmurdoch/status/1238914490772701185&#34;&gt;Tweet&lt;/a&gt; and &lt;a href=&#34;https://twitter.com/jburnmurdoch/status/1242904596856614912&#34;&gt;Twitter thread&lt;/a&gt; from John Burn-Murdoch on why the &lt;em&gt;Financial Times&lt;/em&gt; doesn’t use population-adjusted numbers in their COVID-19 tracking charts&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;div id=&#34;for-fun&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;For “Fun”&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;i class=&#34;fas fa-external-link-square-alt&#34;&gt;&lt;/i&gt; &lt;a href=&#34;https://robjhyndman.com/hyndsight/logratios-covid19/&#34;&gt;See how to create your own COVID-19 tracking chart with R&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;div id=&#34;guiding-questions&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Guiding Questions&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;How do these types of visualizations help or hinder our search for truth in data?&lt;/li&gt;
+&lt;li&gt;What is the appropriate visualization technique for the pandemic? Should we use population-adjusted numbers? Why or why not?&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;div id=&#34;slides&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Slides&lt;/h3&gt;
+&lt;p&gt;As with last week’s content, the technical aspects of this lecture will be explored in greater detail in the Thursday practical lecture. Today, we will focus on some principles. We will also avoid slides entirely.&lt;/p&gt;
+&lt;p&gt;As with last week, today’s lecture will ask you to work with real data during the lecture. The requisite steps are discussed in the content below.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;gapminder&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Data visualization in practice&lt;/h1&gt;
+&lt;p&gt;In this chapter, we will demonstrate how relatively simple &lt;strong&gt;ggplot2&lt;/strong&gt; code can create insightful and aesthetically pleasing plots. As motivation we will create plots that help us better understand trends in world health and economics. We will implement what we learned in Chapters &lt;a href=&#34;#ggplot2&#34;&gt;&lt;strong&gt;??&lt;/strong&gt;&lt;/a&gt; and &lt;a href=&#34;#other-geometries&#34;&gt;&lt;strong&gt;??&lt;/strong&gt;&lt;/a&gt; and learn how to augment the code to perfect the plots. As we go through our case study, we will describe relevant general data visualization principles and learn concepts such as &lt;em&gt;faceting&lt;/em&gt;, &lt;em&gt;time series plots&lt;/em&gt;, &lt;em&gt;transformations&lt;/em&gt;, and &lt;em&gt;ridge plots&lt;/em&gt;.&lt;/p&gt;
+&lt;div id=&#34;case-study-new-insights-on-poverty&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Case study: new insights on poverty&lt;/h2&gt;
+&lt;p&gt;Hans Rosling&lt;a href=&#34;#fn1&#34; class=&#34;footnote-ref&#34; id=&#34;fnref1&#34;&gt;&lt;sup&gt;1&lt;/sup&gt;&lt;/a&gt; was the co-founder of the Gapminder Foundation&lt;a href=&#34;#fn2&#34; class=&#34;footnote-ref&#34; id=&#34;fnref2&#34;&gt;&lt;sup&gt;2&lt;/sup&gt;&lt;/a&gt;, an organization dedicated to educating the public by using data to dispel common myths about the so-called developing world. The organization uses data to show how actual trends in health and economics contradict the narratives that emanate from sensationalist media coverage of catastrophes, tragedies, and other unfortunate events. As stated in the Gapminder Foundation’s website:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Journalists and lobbyists tell dramatic stories. That’s their job. They tell stories about extraordinary events and unusual people. The piles of dramatic stories pile up in peoples’ minds into an over-dramatic worldview and strong negative stress feelings: “The world is getting worse!”, “It’s we vs. them!”, “Other people are strange!”, “The population just keeps growing!” and “Nobody cares!”&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Hans Rosling conveyed actual data-based trends in a dramatic way of his own, using effective data visualization. This section is based on two talks that exemplify this approach to education: [New Insights on Poverty]&lt;a href=&#34;#fn3&#34; class=&#34;footnote-ref&#34; id=&#34;fnref3&#34;&gt;&lt;sup&gt;3&lt;/sup&gt;&lt;/a&gt; and The Best Stats You’ve Ever Seen&lt;a href=&#34;#fn4&#34; class=&#34;footnote-ref&#34; id=&#34;fnref4&#34;&gt;&lt;sup&gt;4&lt;/sup&gt;&lt;/a&gt;. Specifically, in this section, we use data to attempt to answer the following two questions:&lt;/p&gt;
+&lt;ol style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;Is it a fair characterization of today’s world to say it is divided into western rich nations and the developing world in Africa, Asia, and Latin America?&lt;/li&gt;
+&lt;li&gt;Has income inequality across countries worsened during the last 40 years?&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;To answer these questions, we will be using the &lt;code&gt;gapminder&lt;/code&gt; dataset provided in &lt;strong&gt;dslabs&lt;/strong&gt;. This dataset was created using a number of spreadsheets available from the Gapminder Foundation. You can access the table like this:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(tidyverse)
+library(dslabs)
+library(ggrepel)
+data(gapminder)
+gapminder %&amp;gt;% as_tibble()&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 10,545 x 9
+##    country  year infant_mortality life_expectancy fertility population      gdp
+##    &amp;lt;fct&amp;gt;   &amp;lt;int&amp;gt;            &amp;lt;dbl&amp;gt;           &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt;      &amp;lt;dbl&amp;gt;    &amp;lt;dbl&amp;gt;
+##  1 Albania  1960            115.             62.9      6.19    1636054 NA      
+##  2 Algeria  1960            148.             47.5      7.65   11124892  1.38e10
+##  3 Angola   1960            208              36.0      7.32    5270844 NA      
+##  4 Antigu…  1960             NA              63.0      4.43      54681 NA      
+##  5 Argent…  1960             59.9            65.4      3.11   20619075  1.08e11
+##  6 Armenia  1960             NA              66.9      4.55    1867396 NA      
+##  7 Aruba    1960             NA              65.7      4.82      54208 NA      
+##  8 Austra…  1960             20.3            70.9      3.45   10292328  9.67e10
+##  9 Austria  1960             37.3            68.8      2.7     7065525  5.24e10
+## 10 Azerba…  1960             NA              61.3      5.57    3897889 NA      
+## # … with 10,535 more rows, and 2 more variables: continent &amp;lt;fct&amp;gt;, region &amp;lt;fct&amp;gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;div id=&#34;exploring-the-data&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Exploring the Data&lt;/h3&gt;
+&lt;p&gt;Taking an exercise from the &lt;em&gt;New Insights on Poverty&lt;/em&gt; video, we start by testing our knowledge regarding differences in child mortality across different countries. For each of the six pairs of countries below, which country do you think had the highest child mortality rates in 2015? Which pairs do you think are most similar?&lt;/p&gt;
+&lt;ol style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;Sri Lanka or Turkey&lt;/li&gt;
+&lt;li&gt;Poland or South Korea&lt;/li&gt;
+&lt;li&gt;Malaysia or Russia&lt;/li&gt;
+&lt;li&gt;Pakistan or Vietnam&lt;/li&gt;
+&lt;li&gt;Thailand or South Africa&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;When answering these questions without data, the non-European countries are typically picked as having higher child mortality rates: Sri Lanka over Turkey, South Korea over Poland, and Malaysia over Russia. It is also common to assume that countries considered to be part of the developing world: Pakistan, Vietnam, Thailand, and South Africa, have similarly high mortality rates.&lt;/p&gt;
+&lt;p&gt;To answer these questions &lt;strong&gt;with data&lt;/strong&gt;, we can use &lt;strong&gt;dplyr&lt;/strong&gt;. For example, for the first comparison we see that:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;gapminder %&amp;gt;%
+  filter(year == 2015 &amp;amp; country %in% c(&amp;quot;Sri Lanka&amp;quot;,&amp;quot;Turkey&amp;quot;)) %&amp;gt;%
+  select(country, infant_mortality)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;##     country infant_mortality
+## 1 Sri Lanka              8.4
+## 2    Turkey             11.6&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Turkey has the higher infant mortality rate.&lt;/p&gt;
+&lt;p&gt;We can use this code on all comparisons and find the following:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;## New names:
+## * country -&amp;gt; country...1
+## * infant_mortality -&amp;gt; infant_mortality...2
+## * country -&amp;gt; country...3
+## * infant_mortality -&amp;gt; infant_mortality...4&lt;/code&gt;&lt;/pre&gt;
+&lt;table class=&#34;table table-striped&#34; style=&#34;width: auto !important; margin-left: auto; margin-right: auto;&#34;&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th style=&#34;text-align:left;&#34;&gt;
+country
+&lt;/th&gt;
+&lt;th style=&#34;text-align:right;&#34;&gt;
+infant mortality
+&lt;/th&gt;
+&lt;th style=&#34;text-align:left;&#34;&gt;
+country
+&lt;/th&gt;
+&lt;th style=&#34;text-align:right;&#34;&gt;
+infant mortality
+&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+Sri Lanka
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+8.4
+&lt;/td&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+Turkey
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+11.6
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+Poland
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+4.5
+&lt;/td&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+South Korea
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+2.9
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+Malaysia
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+6.0
+&lt;/td&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+Russia
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+8.2
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+Pakistan
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+65.8
+&lt;/td&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+Vietnam
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+17.3
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+Thailand
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+10.5
+&lt;/td&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+South Africa
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+33.6
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;We see that the European countries on this list have higher child mortality rates: Poland has a higher rate than South Korea, and Russia has a higher rate than Malaysia. We also see that Pakistan has a much higher rate than Vietnam, and South Africa has a much higher rate than Thailand. It turns out that when Hans Rosling gave this quiz to educated groups of people, the average score was less than 2.5 out of 5, worse than what they would have obtained had they guessed randomly. This implies that more than ignorant, we are misinformed. In this chapter we see how data visualization helps inform us.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;scatterplots&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Scatterplots&lt;/h2&gt;
+&lt;p&gt;The reason for this stems from the preconceived notion that the world is divided into two groups: the western world (Western Europe and North America), characterized by long life spans and small families, versus the developing world (Africa, Asia, and Latin America) characterized by short life spans and large families. But do the data support this dichotomous view?&lt;/p&gt;
+&lt;p&gt;The necessary data to answer this question is also available in our &lt;code&gt;gapminder&lt;/code&gt; table. Using our newly learned data visualization skills, we will be able to tackle this challenge.&lt;/p&gt;
+&lt;p&gt;In order to analyze this world view, our first plot is a scatterplot of life expectancy versus fertility rates (average number of children per woman). We start by looking at data from about 50 years ago, when perhaps this view was first cemented in our minds.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;filter(gapminder, year == 1962) %&amp;gt;%
+  ggplot(aes(fertility, life_expectancy)) +
+  geom_point()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/content/03-content_files/figure-html/fertility-versus-life-expectancy-1962-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Most points fall into two distinct categories:&lt;/p&gt;
+&lt;ol style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;Life expectancy around 70 years and 3 or fewer children per family.&lt;/li&gt;
+&lt;li&gt;Life expectancy lower than 65 years and more than 5 children per family.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;To confirm that indeed these countries are from the regions we expect, we can use color to represent continent.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;filter(gapminder, year == 1962) %&amp;gt;%
+  ggplot( aes(fertility, life_expectancy, color = continent)) +
+  geom_point()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/content/03-content_files/figure-html/fertility-versus-life-expectancy-1962-with-color-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;In 1962, the notion of “the West versus developing world” view was grounded in some reality. Is this still the case 50 years later? How might visualizations help us learn something (and how does this compare to your prior belief)?&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;faceting&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Faceting&lt;/h2&gt;
+&lt;p&gt;We could easily plot the 2012 data in the same way we did for 1962. To make comparisons, however, side by side plots are preferable. In &lt;strong&gt;ggplot2&lt;/strong&gt;, we can achieve this by &lt;em&gt;faceting&lt;/em&gt; variables: we stratify the data by some variable and make the same plot for each strata.&lt;/p&gt;
+&lt;p&gt;To achieve faceting, we add a layer with the function &lt;code&gt;facet_grid&lt;/code&gt;, which automatically separates the plots. This function lets you facet by up to two variables using columns to represent one variable and rows to represent the other. The function expects the row and column variables to be separated by a &lt;code&gt;~&lt;/code&gt;. Here is an example of a scatterplot with &lt;code&gt;facet_grid&lt;/code&gt; added as the last layer:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;filter(gapminder, year%in%c(1962, 2012)) %&amp;gt;%
+  ggplot(aes(fertility, life_expectancy, col = continent)) +
+  geom_point() +
+  facet_grid(continent~year)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/content/03-content_files/figure-html/fertility-versus-life-expectancy-facet-1.png&#34; width=&#34;100%&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;We see a plot for each continent/year pair. However, this is just an example and more than what we want, which is simply to compare 1962 and 2012. In this case, there is just one variable and we use &lt;code&gt;.&lt;/code&gt; to let facet know that we are not using one of the variables:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;filter(gapminder, year%in%c(1962, 2012)) %&amp;gt;%
+  ggplot(aes(fertility, life_expectancy, col = continent)) +
+  geom_point() +
+  facet_grid(. ~ year)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/content/03-content_files/figure-html/fertility-versus-life-expectancy-two-years-1.png&#34; width=&#34;100%&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;This plot clearly shows that the majority of countries have moved from the &lt;em&gt;developing world&lt;/em&gt; cluster to the &lt;em&gt;western world&lt;/em&gt; one. In 2012, the western versus developing world view no longer makes sense. This is particularly clear when comparing Europe to Asia, the latter of which includes several countries that have made great improvements.&lt;/p&gt;
+&lt;div id=&#34;facet_wrap&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;&lt;code&gt;facet_wrap&lt;/code&gt;&lt;/h3&gt;
+&lt;p&gt;To explore how this transformation happened through the years, we can make the plot for several years. For example, we can add 1970, 1980, 1990, and 2000. If we do this, we will not want all the plots on the same row, the default behavior of &lt;code&gt;facet_grid&lt;/code&gt;, since they will become too thin to show the data. Instead, we will want to use multiple rows and columns. The function &lt;code&gt;facet_wrap&lt;/code&gt; permits us to do this by automatically wrapping the series of plots so that each display has viewable dimensions:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;years &amp;lt;- c(1962, 1980, 1990, 2000, 2012)
+continents &amp;lt;- c(&amp;quot;Europe&amp;quot;, &amp;quot;Asia&amp;quot;)
+gapminder %&amp;gt;%
+  filter(year %in% years &amp;amp; continent %in% continents) %&amp;gt;%
+  ggplot( aes(fertility, life_expectancy, col = continent)) +
+  geom_point() +
+  facet_wrap(~year)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/content/03-content_files/figure-html/fertility-versus-life-expectancy-five-years-1.png&#34; width=&#34;100%&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;This plot clearly shows how most Asian countries have improved at a much faster rate than European ones.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;fixed-scales-for-better-comparisons&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Fixed scales for better comparisons&lt;/h3&gt;
+&lt;p&gt;The default choice of the range of the axes is important. When not using &lt;code&gt;facet&lt;/code&gt;, this range is determined by the data shown in the plot. When using &lt;code&gt;facet&lt;/code&gt;, this range is determined by the data shown in all plots and therefore kept fixed across plots. This makes comparisons across plots much easier. For example, in the above plot, we can see that life expectancy has increased and the fertility has decreased across most countries. We see this because the cloud of points moves. This is not the case if we adjust the scales:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;filter(gapminder, year%in%c(1962, 2012)) %&amp;gt;%
+  ggplot(aes(fertility, life_expectancy, col = continent)) +
+  geom_point() +
+  facet_wrap(. ~ year, scales = &amp;quot;free&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/content/03-content_files/figure-html/facet-without-fixed-scales-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;In the plot above, we have to pay special attention to the range to notice that the plot on the right has a larger life expectancy.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;time-series-plots&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Time series plots&lt;/h2&gt;
+&lt;p&gt;The visualizations above effectively illustrate that data no longer supports the western versus developing world view. Once we see these plots, new questions emerge. For example, which countries are improving more and which ones less? Was the improvement constant during the last 50 years or was it more accelerated during certain periods? For a closer look that may help answer these questions, we introduce &lt;em&gt;time series plots&lt;/em&gt;.&lt;/p&gt;
+&lt;p&gt;Time series plots have time in the x-axis and an outcome or measurement of interest on the y-axis. For example, here is a trend plot of United States fertility rates:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;gapminder %&amp;gt;%
+  filter(country == &amp;quot;United States&amp;quot;) %&amp;gt;%
+  ggplot(aes(year, fertility)) +
+  geom_point()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/content/03-content_files/figure-html/fertility-time-series-plot-points-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;We see that the trend is not linear at all. Instead there is sharp drop during the 1960s and 1970s to below 2. Then the trend comes back to 2 and stabilizes during the 1990s.&lt;/p&gt;
+&lt;p&gt;When the points are regularly and densely spaced, as they are here, we create curves by joining the points with lines, to convey that these data are from a single series, here a country. To do this, we use the &lt;code&gt;geom_line&lt;/code&gt; function instead of &lt;code&gt;geom_point&lt;/code&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;gapminder %&amp;gt;%
+  filter(country == &amp;quot;United States&amp;quot;) %&amp;gt;%
+  ggplot(aes(year, fertility)) +
+  geom_line()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/content/03-content_files/figure-html/fertility-time-series-plot-curve-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;This is particularly helpful when we look at two countries. If we subset the data to include two countries, one from Europe and one from Asia, then adapt the code above:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;countries &amp;lt;- c(&amp;quot;South Korea&amp;quot;,&amp;quot;Germany&amp;quot;)
+
+gapminder %&amp;gt;% filter(country %in% countries) %&amp;gt;%
+  ggplot(aes(year,fertility)) +
+  geom_line()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/content/03-content_files/figure-html/wrong-time-series-plot-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Unfortunately, this is &lt;strong&gt;not&lt;/strong&gt; the plot that we want. Rather than a line for each country, the points for both countries are joined. This is actually expected since we have not told &lt;code&gt;ggplot&lt;/code&gt; anything about wanting two separate lines. To let &lt;code&gt;ggplot&lt;/code&gt; know that there are two curves that need to be made separately, we assign each point to a &lt;code&gt;group&lt;/code&gt;, one for each country:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;countries &amp;lt;- c(&amp;quot;South Korea&amp;quot;,&amp;quot;Germany&amp;quot;)
+
+gapminder %&amp;gt;% filter(country %in% countries &amp;amp; !is.na(fertility)) %&amp;gt;%
+  ggplot(aes(year, fertility, group = country)) +
+  geom_line()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/content/03-content_files/figure-html/time-series-two-curves-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;But which line goes with which country? We can assign colors to make this distinction.
+A useful side-effect of using the &lt;code&gt;color&lt;/code&gt; argument to assign different colors to the different countries is that the data is automatically grouped:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;countries &amp;lt;- c(&amp;quot;South Korea&amp;quot;,&amp;quot;Germany&amp;quot;)
+
+gapminder %&amp;gt;% filter(country %in% countries &amp;amp; !is.na(fertility)) %&amp;gt;%
+  ggplot(aes(year,fertility, col = country)) +
+  geom_line()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/content/03-content_files/figure-html/fertility-time-series-plot-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;The plot clearly shows how South Korea’s fertility rate dropped drastically during the 1960s and 1970s, and by 1990 had a similar rate to that of Germany.&lt;/p&gt;
+&lt;div id=&#34;labels-instead-of-legends&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Labels instead of legends&lt;/h3&gt;
+&lt;p&gt;For trend plots we recommend labeling the lines rather than using legends since the viewer can quickly see which line is which country. This suggestion actually applies to most plots: labeling is usually preferred over legends.&lt;/p&gt;
+&lt;p&gt;We demonstrate how we can do this using the life expectancy data. We define a data table with the label locations and then use a second mapping just for these labels:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;labels &amp;lt;- data.frame(country = countries, x = c(1975,1965), y = c(60,72))
+
+gapminder %&amp;gt;%
+  filter(country %in% countries) %&amp;gt;%
+  ggplot(aes(year, life_expectancy, col = country)) +
+  geom_line() +
+  geom_text(data = labels, aes(x, y, label = country), size = 5) +
+  theme(legend.position = &amp;quot;none&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/content/03-content_files/figure-html/labels-better-than-legends-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;The plot clearly shows how an improvement in life expectancy followed the drops in fertility rates. In 1960, Germans lived 15 years longer than South Koreans, although by 2010 the gap is completely closed. It exemplifies the improvement that many non-western countries have achieved in the last 40 years.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;data-transformations&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Data transformations&lt;/h2&gt;
+&lt;p&gt;We now shift our attention to the second question related to the commonly held notion that wealth distribution across the world has become worse during the last decades. When general audiences are asked if poor countries have become poorer and rich countries become richer, the majority answers yes. By using stratification, histograms, smooth densities, and boxplots, we will be able to understand if this is in fact the case. First we learn how transformations can sometimes help provide more informative summaries and plots.&lt;/p&gt;
+&lt;p&gt;The &lt;code&gt;gapminder&lt;/code&gt; data table includes a column with the countries’ gross domestic product (GDP). GDP measures the market value of goods and services produced by a country in a year. The GDP per person is often used as a rough summary of a country’s wealth. Here we divide this quantity by 365 to obtain the more interpretable measure &lt;em&gt;dollars per day&lt;/em&gt;. Using current US dollars as a unit, a person surviving on an income of less than $2 a day is defined to be living in &lt;em&gt;absolute poverty&lt;/em&gt;. We add this variable to the data table:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;gapminder &amp;lt;- gapminder %&amp;gt;%  mutate(dollars_per_day = gdp/population/365)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The GDP values are adjusted for inflation and represent current US dollars, so these values are meant to be comparable across the years. Of course, these are country averages and within each country there is much variability. All the graphs and insights described below relate to country averages and not to individuals.&lt;/p&gt;
+&lt;div id=&#34;log-transformation&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Log transformation&lt;/h3&gt;
+&lt;p&gt;Here is a histogram of per day incomes from 1970:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;past_year &amp;lt;- 1970
+gapminder %&amp;gt;%
+  filter(year == past_year &amp;amp; !is.na(gdp)) %&amp;gt;%
+  ggplot(aes(dollars_per_day)) +
+  geom_histogram(binwidth = 1, color = &amp;quot;black&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/content/03-content_files/figure-html/dollars-per-day-distribution-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;We use the &lt;code&gt;color = &#34;black&#34;&lt;/code&gt; argument to draw a boundary and clearly distinguish the bins.&lt;/p&gt;
+&lt;p&gt;In this plot, we see that for the majority of countries, averages are below $10 a day. However, the majority of the x-axis is dedicated to the 35 countries with averages above $10. So the plot is not very informative about countries with values below $10 a day.&lt;/p&gt;
+&lt;p&gt;It might be more informative to quickly be able to see how many countries have average daily incomes of about $1 (extremely poor), $2 (very poor), $4 (poor), $8 (middle), $16 (well off), $32 (rich), $64 (very rich) per day. These changes are multiplicative and log transformations convert multiplicative changes into additive ones: when using base 2, a doubling of a value turns into an increase by 1.&lt;/p&gt;
+&lt;p&gt;Here is the distribution if we apply a log base 2 transform:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;gapminder %&amp;gt;%
+  filter(year == past_year &amp;amp; !is.na(gdp)) %&amp;gt;%
+  ggplot(aes(log2(dollars_per_day))) +
+  geom_histogram(binwidth = 1, color = &amp;quot;black&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/content/03-content_files/figure-html/dollars-per-day-distribution-log-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;In a way this provides a &lt;em&gt;close-up&lt;/em&gt; of the mid to lower income countries.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;which-base&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Which base?&lt;/h3&gt;
+&lt;p&gt;In the case above, we used base 2 in the log transformations. Other common choices are base &lt;span class=&#34;math inline&#34;&gt;\(\mathrm{e}\)&lt;/span&gt; (the natural log) and base 10.&lt;/p&gt;
+&lt;p&gt;In general, we do not recommend using the natural log for data exploration and visualization. This is because while &lt;span class=&#34;math inline&#34;&gt;\(2^2, 2^3, 2^4, \dots\)&lt;/span&gt; or &lt;span class=&#34;math inline&#34;&gt;\(10^2, 10^3, \dots\)&lt;/span&gt; are easy to compute in our heads, the same is not true for &lt;span class=&#34;math inline&#34;&gt;\(\mathrm{e}^2, \mathrm{e}^3, \dots\)&lt;/span&gt;, so the scale is not intuitive or easy to interpret.&lt;/p&gt;
+&lt;p&gt;In the dollars per day example, we used base 2 instead of base 10 because the resulting range is easier to interpret. The range of the values being plotted is 0.3269426, 48.8852142.&lt;/p&gt;
+&lt;p&gt;In base 10, this turns into a range that includes very few integers: just 0 and 1.
+With base two, our range includes -2, -1, 0, 1, 2, 3, 4, and 5. It is easier to compute &lt;span class=&#34;math inline&#34;&gt;\(2^x\)&lt;/span&gt; and &lt;span class=&#34;math inline&#34;&gt;\(10^x\)&lt;/span&gt; when &lt;span class=&#34;math inline&#34;&gt;\(x\)&lt;/span&gt; is an integer and between -10 and 10, so we prefer to have smaller integers in the scale. Another consequence of a limited range is that choosing the binwidth is more challenging. With log base 2, we know that a binwidth of 1 will translate to a bin with range &lt;span class=&#34;math inline&#34;&gt;\(x\)&lt;/span&gt; to &lt;span class=&#34;math inline&#34;&gt;\(2x\)&lt;/span&gt;.&lt;/p&gt;
+&lt;p&gt;For an example in which base 10 makes more sense, consider population sizes. A log base 10 is preferable since the range for these is:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;filter(gapminder, year == past_year) %&amp;gt;%
+  summarize(min = min(population), max = max(population))&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;##     min       max
+## 1 46075 808510713&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Here is the histogram of the transformed values:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;gapminder %&amp;gt;%
+  filter(year == past_year) %&amp;gt;%
+  ggplot(aes(log10(population))) +
+  geom_histogram(binwidth = 0.5, color = &amp;quot;black&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/content/03-content_files/figure-html/population-histogram-log10-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;In the above, we quickly see that country populations range between ten thousand and ten billion.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;transform-the-values-or-the-scale&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Transform the values or the scale?&lt;/h3&gt;
+&lt;p&gt;There are two ways we can use log transformations in plots. We can log the values before plotting them or use log scales in the axes. Both approaches are useful and have different strengths. If we log the data, we can more easily interpret intermediate values in the scale. For example, if we see:&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;----1----x----2--------3----&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;for log transformed data, we know that the value of &lt;span class=&#34;math inline&#34;&gt;\(x\)&lt;/span&gt; is about 1.5. If the scales are logged:&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;----1----x----10------100---&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;then, to determine &lt;code&gt;x&lt;/code&gt;, we need to compute &lt;span class=&#34;math inline&#34;&gt;\(10^{1.5}\)&lt;/span&gt;, which is not easy to do in our heads. The advantage of using logged scales is that we see the original values on the axes. However, the advantage of showing logged scales is that the original values are displayed in the plot, which are easier to interpret. For example, we would see “32 dollars a day” instead of “5 log base 2 dollars a day”.&lt;/p&gt;
+&lt;p&gt;As we learned earlier, if we want to scale the axis with logs, we can use the &lt;code&gt;scale_x_continuous&lt;/code&gt; function. Instead of logging the values first, we apply this layer:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;gapminder %&amp;gt;%
+  filter(year == past_year &amp;amp; !is.na(gdp)) %&amp;gt;%
+  ggplot(aes(dollars_per_day)) +
+  geom_histogram(binwidth = 1, color = &amp;quot;black&amp;quot;) +
+  scale_x_continuous(trans = &amp;quot;log2&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/content/03-content_files/figure-html/dollars-per-day-log-scale-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Note that the log base 10 transformation has its own function: &lt;code&gt;scale_x_log10()&lt;/code&gt;, but currently base 2 does not, although we could easily define our own.&lt;/p&gt;
+&lt;p&gt;There are other transformations available through the &lt;code&gt;trans&lt;/code&gt; argument. As we learn later on, the square root (&lt;code&gt;sqrt&lt;/code&gt;) transformation is useful when considering counts. The logistic transformation (&lt;code&gt;logit&lt;/code&gt;) is useful when plotting proportions between 0 and 1. The &lt;code&gt;reverse&lt;/code&gt; transformation is useful when we want smaller values to be on the right or on top.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;visualizing-multimodal-distributions&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Visualizing multimodal distributions&lt;/h2&gt;
+&lt;p&gt;In the histogram above we see two &lt;em&gt;bumps&lt;/em&gt;: one at about 4 and another at about 32. In statistics these bumps are sometimes referred to as &lt;em&gt;modes&lt;/em&gt;. The mode of a distribution is the value with the highest frequency. The mode of the normal distribution is the average. When a distribution, like the one above, doesn’t monotonically decrease from the mode, we call the locations where it goes up and down again &lt;em&gt;local modes&lt;/em&gt; and say that the distribution has &lt;em&gt;multiple modes&lt;/em&gt;.&lt;/p&gt;
+&lt;p&gt;The histogram above suggests that the 1970 country income distribution has two modes: one at about 2 dollars per day (1 in the log 2 scale) and another at about 32 dollars per day (5 in the log 2 scale). This &lt;em&gt;bimodality&lt;/em&gt; is consistent with a dichotomous world made up of countries with average incomes less than $8 (3 in the log 2 scale) a day and countries above that.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;comparing-multiple-distributions-with-boxplots-and-ridge-plots&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Comparing multiple distributions with boxplots and ridge plots&lt;/h2&gt;
+&lt;p&gt;A histogram showed us that the 1970 income distribution values show a dichotomy. However, the histogram does not show us if the two groups of countries are &lt;em&gt;west&lt;/em&gt; versus the &lt;em&gt;developing&lt;/em&gt; world.&lt;/p&gt;
+&lt;p&gt;Let’s start by quickly examining the data by region. We reorder the regions by the median value and use a log scale.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;gapminder %&amp;gt;%
+  filter(year == past_year &amp;amp; !is.na(gdp)) %&amp;gt;%
+  mutate(region = reorder(region, dollars_per_day, FUN = median)) %&amp;gt;%
+  ggplot(aes(dollars_per_day, region)) +
+  geom_point() +
+  scale_x_continuous(trans = &amp;quot;log2&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/content/03-content_files/figure-html/unnamed-chunk-5-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;We can already see that there is indeed a “west versus the rest” dichotomy: we see two clear groups, with the rich group composed of North America, Northern and Western Europe, New Zealand and Australia. We define groups based on this observation:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;gapminder &amp;lt;- gapminder %&amp;gt;%
+  mutate(group = case_when(
+    region %in% c(&amp;quot;Western Europe&amp;quot;, &amp;quot;Northern Europe&amp;quot;,&amp;quot;Southern Europe&amp;quot;,
+                    &amp;quot;Northern America&amp;quot;,
+                  &amp;quot;Australia and New Zealand&amp;quot;) ~ &amp;quot;West&amp;quot;,
+    region %in% c(&amp;quot;Eastern Asia&amp;quot;, &amp;quot;South-Eastern Asia&amp;quot;) ~ &amp;quot;East Asia&amp;quot;,
+    region %in% c(&amp;quot;Caribbean&amp;quot;, &amp;quot;Central America&amp;quot;,
+                  &amp;quot;South America&amp;quot;) ~ &amp;quot;Latin America&amp;quot;,
+    continent == &amp;quot;Africa&amp;quot; &amp;amp;
+      region != &amp;quot;Northern Africa&amp;quot; ~ &amp;quot;Sub-Saharan&amp;quot;,
+    TRUE ~ &amp;quot;Others&amp;quot;))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;We turn this &lt;code&gt;group&lt;/code&gt; variable into a factor to control the order of the levels:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;gapminder &amp;lt;- gapminder %&amp;gt;%
+  mutate(group = factor(group, levels = c(&amp;quot;Others&amp;quot;, &amp;quot;Latin America&amp;quot;,
+                                          &amp;quot;East Asia&amp;quot;, &amp;quot;Sub-Saharan&amp;quot;,
+                                          &amp;quot;West&amp;quot;)))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;In the next section we demonstrate how to visualize and compare distributions across groups.&lt;/p&gt;
+&lt;div id=&#34;boxplots&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Boxplots&lt;/h3&gt;
+&lt;p&gt;The exploratory data analysis above has revealed two characteristics about average income distribution in 1970. Using a histogram, we found a bimodal distribution with the modes relating to poor and rich countries. We now want to compare the distribution across these five groups to confirm the “west versus the rest” dichotomy. The number of points in each category is large enough that a summary plot may be useful. We could generate five histograms or five density plots, but it may be more practical to have all the visual summaries in one plot. We therefore start by stacking boxplots next to each other. Note that we add the layer &lt;code&gt;theme(axis.text.x = element_text(angle = 90, hjust = 1))&lt;/code&gt; to turn the group labels vertical, since they do not fit if we show them horizontally, and remove the axis label to make space.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p &amp;lt;- gapminder %&amp;gt;%
+  filter(year == past_year &amp;amp; !is.na(gdp)) %&amp;gt;%
+  ggplot(aes(group, dollars_per_day)) +
+  geom_boxplot() +
+  scale_y_continuous(trans = &amp;quot;log2&amp;quot;) +
+  xlab(&amp;quot;&amp;quot;) +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+p&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/content/03-content_files/figure-html/dollars-per-day-boxplot-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Boxplots have the limitation that by summarizing the data into five numbers, we might miss important characteristics of the data. One way to avoid this is by showing the data.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p + geom_point(alpha = 0.5)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/content/03-content_files/figure-html/dollars-per-day-boxplot-with-data-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;ridge-plots&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Ridge plots&lt;/h3&gt;
+&lt;p&gt;Showing each individual point does not always reveal important characteristics of the distribution. Although not the case here, when the number of data points is so large that there is over-plotting, showing the data can be counterproductive. Boxplots help with this by providing a five-number summary, but this has limitations too. For example, boxplots will not permit us to discover bimodal distributions. To see this, note that the two plots below are summarizing the same dataset:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/content/03-content_files/figure-html/boxplot-dont-show-bimodal-1.png&#34; width=&#34;100%&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;In cases in which we are concerned that the boxplot summary is too simplistic, we can show stacked smooth densities or histograms. We refer to these as &lt;em&gt;ridge plots&lt;/em&gt;. Because we are used to visualizing densities with values in the x-axis, we stack them vertically. Also, because more space is needed in this approach, it is convenient to overlay them. The package &lt;strong&gt;ggridges&lt;/strong&gt; provides a convenient function for doing this. Here is the income data shown above with boxplots but with a &lt;em&gt;ridge plot&lt;/em&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(ggridges)
+p &amp;lt;- gapminder %&amp;gt;%
+  filter(year == past_year &amp;amp; !is.na(dollars_per_day)) %&amp;gt;%
+  ggplot(aes(dollars_per_day, group)) +
+  scale_x_continuous(trans = &amp;quot;log2&amp;quot;)
+p  + geom_density_ridges()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/content/03-content_files/figure-html/ridge-plot-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Note that we have to invert the &lt;code&gt;x&lt;/code&gt; and &lt;code&gt;y&lt;/code&gt; used for the boxplot. A useful &lt;code&gt;geom_density_ridges&lt;/code&gt; parameter is &lt;code&gt;scale&lt;/code&gt;, which lets you determine the amount of overlap, with &lt;code&gt;scale = 1&lt;/code&gt; meaning no overlap and larger values resulting in more overlap.&lt;/p&gt;
+&lt;p&gt;If the number of data points is small enough, we can add them to the ridge plot using the following code:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p + geom_density_ridges(jittered_points = TRUE)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/content/03-content_files/figure-html/ridge-plot-with-points-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;By default, the height of the points is jittered and should not be interpreted in any way. To show data points, but without using jitter we can use the following code to add what is referred to as a &lt;em&gt;rug representation&lt;/em&gt; of the data.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p + geom_density_ridges(jittered_points = TRUE,
+                        position = position_points_jitter(height = 0),
+                        point_shape = &amp;#39;|&amp;#39;, point_size = 3,
+                        point_alpha = 1, alpha = 0.7)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/content/03-content_files/figure-html/ridge-plot-with-rug-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;example-1970-versus-2010-income-distributions&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Example: 1970 versus 2010 income distributions&lt;/h3&gt;
+&lt;p&gt;Data exploration clearly shows that in 1970 there was a “west versus the rest” dichotomy. But does this dichotomy persist? Let’s use &lt;code&gt;facet_grid&lt;/code&gt; see how the distributions have changed. To start, we will focus on two groups: the west and the rest. We make four histograms.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;past_year &amp;lt;- 1970
+present_year &amp;lt;- 2010
+years &amp;lt;- c(past_year, present_year)
+gapminder %&amp;gt;%
+  filter(year %in% years &amp;amp; !is.na(gdp)) %&amp;gt;%
+  mutate(west = ifelse(group == &amp;quot;West&amp;quot;, &amp;quot;West&amp;quot;, &amp;quot;Developing&amp;quot;)) %&amp;gt;%
+  ggplot(aes(dollars_per_day)) +
+  geom_histogram(binwidth = 1, color = &amp;quot;black&amp;quot;) +
+  scale_x_continuous(trans = &amp;quot;log2&amp;quot;) +
+  facet_grid(year ~ west)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/content/03-content_files/figure-html/income-hist-west-v-developing-two-years-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Before we interpret the findings of this plot, we notice that there are more countries represented in the 2010 histograms than in 1970: the total counts are larger. One reason for this is that several countries were founded after 1970. For example, the Soviet Union divided into several countries during the 1990s. Another reason is that data was available for more countries in 2010.&lt;/p&gt;
+&lt;p&gt;We remake the plots using only countries with data available for both years. In the data wrangling part of this class (after Thanksgiving), we will learn &lt;strong&gt;tidyverse&lt;/strong&gt; tools that permit us to write efficient code for this, but here we can use simple code using the &lt;code&gt;intersect&lt;/code&gt; function:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;country_list_1 &amp;lt;- gapminder %&amp;gt;%
+  filter(year == past_year &amp;amp; !is.na(dollars_per_day)) %&amp;gt;%
+  pull(country)
+
+country_list_2 &amp;lt;- gapminder %&amp;gt;%
+  filter(year == present_year &amp;amp; !is.na(dollars_per_day)) %&amp;gt;%
+  pull(country)
+
+country_list &amp;lt;- intersect(country_list_1, country_list_2)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;These 108 account for
+86% of the world population, so this subset should be representative.&lt;/p&gt;
+&lt;p&gt;Let’s remake the plot, but only for this subset by simply adding &lt;code&gt;country %in% country_list&lt;/code&gt; to the &lt;code&gt;filter&lt;/code&gt; function:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/content/03-content_files/figure-html/income-histogram-west-v-devel-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;We now see that the rich countries have become a bit richer, but percentage-wise, the poor countries appear to have improved more. In particular, we see that the proportion of &lt;em&gt;developing&lt;/em&gt; countries earning more than $16 a day increased substantially.&lt;/p&gt;
+&lt;p&gt;To see which specific regions improved the most, we can remake the boxplots we made above, but now adding the year 2010 and then using facet to compare the two years.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;gapminder %&amp;gt;%
+  filter(year %in% years &amp;amp; country %in% country_list) %&amp;gt;%
+  ggplot(aes(group, dollars_per_day)) +
+  geom_boxplot() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  scale_y_continuous(trans = &amp;quot;log2&amp;quot;) +
+  xlab(&amp;quot;&amp;quot;) +
+  facet_grid(. ~ year)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/content/03-content_files/figure-html/income-histogram-by-region-1.png&#34; width=&#34;100%&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Here, we pause to introduce another powerful &lt;strong&gt;ggplot2&lt;/strong&gt; feature. Because we want to compare each region before and after, it would be convenient to have the 1970 boxplot next to the 2010 boxplot for each region. In general, comparisons are easier when data are plotted next to each other.&lt;/p&gt;
+&lt;p&gt;So instead of faceting, we keep the data from each year together and ask to color (or fill) them depending on the year. Note that groups are automatically separated by year and each pair of boxplots drawn next to each other. Because year is a number, we turn it into a factor since &lt;strong&gt;ggplot2&lt;/strong&gt; automatically assigns a color to each category of a factor. Note that we have to convert the year columns from numeric to factor.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;gapminder %&amp;gt;%
+  filter(year %in% years &amp;amp; country %in% country_list) %&amp;gt;%
+  mutate(year = factor(year)) %&amp;gt;%
+  ggplot(aes(group, dollars_per_day, fill = year)) +
+  geom_boxplot() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  scale_y_continuous(trans = &amp;quot;log2&amp;quot;) +
+  xlab(&amp;quot;&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/content/03-content_files/figure-html/income-histogram-west-v-devel-by-year-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Finally, we point out that if what we are most interested in is comparing before and after values, it might make more sense to plot the percentage increases. We are still not ready to learn to code this, but here is what the plot would look like:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/content/03-content_files/figure-html/income-west-v-devel-before-after-ratio-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;The previous data exploration suggested that the income gap between rich and poor countries has narrowed considerably during the last 40 years.
+We used a series of histograms and boxplots to see this. We suggest a succinct way to convey this message with just one plot.&lt;/p&gt;
+&lt;p&gt;Let’s start by noting that density plots for income distribution in 1970 and 2010 deliver the message that the gap is closing:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;gapminder %&amp;gt;%
+  filter(year %in% years &amp;amp; country %in% country_list) %&amp;gt;%
+  ggplot(aes(dollars_per_day)) +
+  geom_density(fill = &amp;quot;grey&amp;quot;) +
+  scale_x_continuous(trans = &amp;quot;log2&amp;quot;) +
+  facet_grid(. ~ year)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/content/03-content_files/figure-html/income-smooth-density-by-year-1.png&#34; width=&#34;100%&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;In the 1970 plot, we see two clear modes: poor and rich countries. In 2010, it appears that some of the poor countries have shifted towards the right, closing the gap.&lt;/p&gt;
+&lt;p&gt;The next message we need to convey is that the reason for this change in distribution is that several poor countries became richer, rather than some rich countries becoming poorer. To do this, we can assign a color to the groups we identified during data exploration.&lt;/p&gt;
+&lt;p&gt;However, we first need to learn how to make these smooth densities in a way that preserves information on the number of countries in each group. To understand why we need this, note the discrepancy in the size of each group:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;## `summarise()` ungrouping output (override with `.groups` argument)&lt;/code&gt;&lt;/pre&gt;
+&lt;table class=&#34;table table-striped&#34; style=&#34;width: auto !important; margin-left: auto; margin-right: auto;&#34;&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th style=&#34;text-align:right;&#34;&gt;
+Developing
+&lt;/th&gt;
+&lt;th style=&#34;text-align:right;&#34;&gt;
+West
+&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+87
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+21
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;But when we overlay two densities, the default is to have the area represented by each distribution add up to 1, regardless of the size of each group:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;gapminder %&amp;gt;%
+  filter(year %in% years &amp;amp; country %in% country_list) %&amp;gt;%
+  mutate(group = ifelse(group == &amp;quot;West&amp;quot;, &amp;quot;West&amp;quot;, &amp;quot;Developing&amp;quot;)) %&amp;gt;%
+  ggplot(aes(dollars_per_day, fill = group)) +
+  scale_x_continuous(trans = &amp;quot;log2&amp;quot;) +
+  geom_density(alpha = 0.2) +
+  facet_grid(year ~ .)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/content/03-content_files/figure-html/income-smooth-density-by-year-west-v-developing-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;This makes it appear as if there are the same number of countries in each group. To change this, we will need to learn to access computed variables with &lt;code&gt;geom_density&lt;/code&gt; function.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;accessing-computed-variables&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Accessing computed variables&lt;/h3&gt;
+&lt;p&gt;To have the areas of these densities be proportional to the size of the groups, we can simply multiply the y-axis values by the size of the group. From the &lt;code&gt;geom_density&lt;/code&gt; help file, we see that the functions compute a variable called &lt;code&gt;count&lt;/code&gt; that does exactly this. We want this variable to be on the y-axis rather than the density.&lt;/p&gt;
+&lt;p&gt;In &lt;strong&gt;ggplot2&lt;/strong&gt;, we access these variables by surrounding the name with two dots. We will therefore use the following mapping:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;aes(x = dollars_per_day, y = ..count..)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;We can now create the desired plot by simply changing the mapping in the previous code chunk. We will also expand the limits of the x-axis.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p &amp;lt;- gapminder %&amp;gt;%
+  filter(year %in% years &amp;amp; country %in% country_list) %&amp;gt;%
+  mutate(group = ifelse(group == &amp;quot;West&amp;quot;, &amp;quot;West&amp;quot;, &amp;quot;Developing&amp;quot;)) %&amp;gt;%
+  ggplot(aes(dollars_per_day, y = ..count.., fill = group)) +
+  scale_x_continuous(trans = &amp;quot;log2&amp;quot;, limit = c(0.125, 300))
+
+p + geom_density(alpha = 0.2) +
+  facet_grid(year ~ .)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/content/03-content_files/figure-html/income-smooth-density-counts-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;If we want the densities to be smoother, we use the &lt;code&gt;bw&lt;/code&gt; argument so that the same bandwidth is used in each density. We selected 0.75 after trying out several values.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p + geom_density(alpha = 0.2, bw = 0.75) + facet_grid(year ~ .)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/content/03-content_files/figure-html/income-smooth-density-counts-by-year-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;This plot now shows what is happening very clearly. The developing world distribution is changing. A third mode appears consisting of the countries that most narrowed the gap.&lt;/p&gt;
+&lt;p&gt;To visualize if any of the groups defined above are driving this we can quickly make a ridge plot:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;gapminder %&amp;gt;%
+  filter(year %in% years &amp;amp; !is.na(dollars_per_day)) %&amp;gt;%
+  ggplot(aes(dollars_per_day, group)) +
+  scale_x_continuous(trans = &amp;quot;log2&amp;quot;) +
+  geom_density_ridges(adjust = 1.5) +
+  facet_grid(. ~ year)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/content/03-content_files/figure-html/ridge-plot-income-five-regions-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Another way to achieve this is by stacking the densities on top of each other:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;gapminder %&amp;gt;%
+    filter(year %in% years &amp;amp; country %in% country_list) %&amp;gt;%
+  group_by(year) %&amp;gt;%
+  mutate(weight = population/sum(population)*2) %&amp;gt;%
+  ungroup() %&amp;gt;%
+  ggplot(aes(dollars_per_day, fill = group)) +
+  scale_x_continuous(trans = &amp;quot;log2&amp;quot;, limit = c(0.125, 300)) +
+  geom_density(alpha = 0.2, bw = 0.75, position = &amp;quot;stack&amp;quot;) +
+  facet_grid(year ~ .)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/content/03-content_files/figure-html/income-smooth-density-counts-by-region-and-year-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Here we can clearly see how the distributions for East Asia, Latin America, and others shift markedly to the right. While Sub-Saharan Africa remains stagnant.&lt;/p&gt;
+&lt;p&gt;Notice that we order the levels of the group so that the West’s density is plotted first, then Sub-Saharan Africa. Having the two extremes plotted first allows us to see the remaining bimodality better.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;weighted-densities&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Weighted densities&lt;/h3&gt;
+&lt;p&gt;As a final point, we note that these distributions weigh every country the same. So if most of the population is improving, but living in a very large country, such as China, we might not appreciate this. We can actually weight the smooth densities using the &lt;code&gt;weight&lt;/code&gt; mapping argument. The plot then looks like this:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/content/03-content_files/figure-html/income-smooth-density-counts-by-region-year-weighted-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;This particular figure shows very clearly how the income distribution gap is closing with most of the poor remaining in Sub-Saharan Africa.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;the-ecological-fallacy-and-importance-of-showing-the-data&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;The ecological fallacy and importance of showing the data&lt;/h2&gt;
+&lt;p&gt;Throughout this section, we have been comparing regions of the world. We have seen that, on average, some regions do better than others. In this section, we focus on describing the importance of variability within the groups when examining the relationship between a country’s infant mortality rates and average income.&lt;/p&gt;
+&lt;p&gt;We define a few more regions and compare the averages across regions:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;## `summarise()` ungrouping output (override with `.groups` argument)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/content/03-content_files/figure-html/ecological-fallacy-averages-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;The relationship between these two variables is almost perfectly linear and the graph shows a dramatic difference. While in the West less than 0.5% of infants die, in Sub-Saharan Africa the rate is higher than 6%!&lt;/p&gt;
+&lt;p&gt;Note that the plot uses a new transformation, the logistic transformation.&lt;/p&gt;
+&lt;div id=&#34;logit&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Logistic transformation&lt;/h3&gt;
+&lt;p&gt;The logistic or logit transformation for a proportion or rate &lt;span class=&#34;math inline&#34;&gt;\(p\)&lt;/span&gt; is defined as:&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[f(p) = \log \left( \frac{p}{1-p} \right)\]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;When &lt;span class=&#34;math inline&#34;&gt;\(p\)&lt;/span&gt; is a proportion or probability, the quantity that is being logged, &lt;span class=&#34;math inline&#34;&gt;\(p/(1-p)\)&lt;/span&gt;, is called the &lt;em&gt;odds&lt;/em&gt;. In this case &lt;span class=&#34;math inline&#34;&gt;\(p\)&lt;/span&gt; is the proportion of infants that survived. The odds tell us how many more infants are expected to survive than to die. The log transformation makes this symmetric. If the rates are the same, then the log odds is 0. Fold increases or decreases turn into positive and negative increments, respectively.&lt;/p&gt;
+&lt;p&gt;This scale is useful when we want to highlight differences near 0 or 1. For survival rates this is important because a survival rate of 90% is unacceptable, while a survival of 99% is relatively good. We would much prefer a survival rate closer to 99.9%. We want our scale to highlight these difference and the logit does this. Note that 99.9/0.1 is about 10 times bigger than 99/1 which is about 10 times larger than 90/10. By using the log, these fold changes turn into constant increases.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;show-the-data&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Show the data&lt;/h3&gt;
+&lt;p&gt;Now, back to our plot. Based on the plot above, do we conclude that a country with a low income is destined to have low survival rate? Do we conclude that survival rates in Sub-Saharan Africa are all lower than in Southern Asia, which in turn are lower than in the Pacific Islands, and so on?&lt;/p&gt;
+&lt;p&gt;Jumping to this conclusion based on a plot showing averages is referred to as the &lt;em&gt;ecological fallacy&lt;/em&gt;. The almost perfect relationship between survival rates and income is only observed for the averages at the region level. Once we show all the data, we see a somewhat more complicated story:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/content/03-content_files/figure-html/ecological-fallacy-all-data-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Specifically, we see that there is a large amount of variability. We see that countries from the same regions can be quite different and that countries with the same income can have different survival rates. For example, while on average Sub-Saharan Africa had the worse health and economic outcomes, there is wide variability within that group. Mauritius and Botswana are doing better than Angola and Sierra Leone, with Mauritius comparable to Western countries.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;vaccines&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Case study: vaccines and infectious diseases&lt;/h2&gt;
+&lt;p&gt;Vaccines have helped save millions of lives. In the 19th century, before herd immunization was achieved through vaccination programs, deaths from infectious diseases, such as smallpox and polio, were common. However, today vaccination programs have become somewhat controversial despite all the scientific evidence for their importance.&lt;/p&gt;
+&lt;p&gt;The controversy started with a paper&lt;a href=&#34;#fn5&#34; class=&#34;footnote-ref&#34; id=&#34;fnref5&#34;&gt;&lt;sup&gt;5&lt;/sup&gt;&lt;/a&gt; published in 1988 and led by Andrew Wakefield claiming
+there was a link between the administration of the measles, mumps, and rubella (MMR) vaccine and the appearance of autism and bowel disease.
+Despite much scientific evidence contradicting this finding, sensationalist media reports and fear-mongering from conspiracy theorists led parts of the public into believing that vaccines were harmful. As a result, many parents ceased to vaccinate their children. This dangerous practice can be potentially disastrous given that the Centers for Disease Control (CDC) estimates that vaccinations will prevent more than 21 million hospitalizations and 732,000 deaths among children born in the last 20 years (see Benefits from Immunization during the Vaccines for Children Program Era — United States, 1994-2013, MMWR&lt;a href=&#34;#fn6&#34; class=&#34;footnote-ref&#34; id=&#34;fnref6&#34;&gt;&lt;sup&gt;6&lt;/sup&gt;&lt;/a&gt;).
+The 1988 paper has since been retracted and Andrew Wakefield was eventually “struck off the UK medical register, with a statement identifying deliberate falsification in the research published in The Lancet, and was thereby barred from practicing medicine in the UK.” (source: Wikipedia&lt;a href=&#34;#fn7&#34; class=&#34;footnote-ref&#34; id=&#34;fnref7&#34;&gt;&lt;sup&gt;7&lt;/sup&gt;&lt;/a&gt;). Yet misconceptions persist, in part due to self-proclaimed activists who continue to disseminate misinformation about vaccines.&lt;/p&gt;
+&lt;p&gt;Effective communication of data is a strong antidote to misinformation and fear-mongering. Earlier we used an example provided by a Wall Street Journal article&lt;a href=&#34;#fn8&#34; class=&#34;footnote-ref&#34; id=&#34;fnref8&#34;&gt;&lt;sup&gt;8&lt;/sup&gt;&lt;/a&gt; showing data related to the impact of vaccines on battling infectious diseases. Here we reconstruct that example.&lt;/p&gt;
+&lt;p&gt;The data used for these plots were collected, organized, and distributed by the Tycho Project&lt;a href=&#34;#fn9&#34; class=&#34;footnote-ref&#34; id=&#34;fnref9&#34;&gt;&lt;sup&gt;9&lt;/sup&gt;&lt;/a&gt;. They include weekly reported counts for seven diseases from 1928 to 2011, from all fifty states. The yearly totals are helpfully included in the &lt;strong&gt;dslabs&lt;/strong&gt; package:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(tidyverse)
+library(RColorBrewer)
+library(dslabs)
+data(us_contagious_diseases)
+names(us_contagious_diseases)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;disease&amp;quot;         &amp;quot;state&amp;quot;           &amp;quot;year&amp;quot;            &amp;quot;weeks_reporting&amp;quot;
+## [5] &amp;quot;count&amp;quot;           &amp;quot;population&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;We create a temporary object &lt;code&gt;dat&lt;/code&gt; that stores only the measles data, includes a per 100,000 rate, orders states by average value of disease and removes Alaska and Hawaii since they only became states in the late 1950s. Note that there is a &lt;code&gt;weeks_reporting&lt;/code&gt; column that tells us for how many weeks of the year data was reported. We have to adjust for that value when computing the rate.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;the_disease &amp;lt;- &amp;quot;Measles&amp;quot;
+dat &amp;lt;- us_contagious_diseases %&amp;gt;%
+  filter(!state%in%c(&amp;quot;Hawaii&amp;quot;,&amp;quot;Alaska&amp;quot;) &amp;amp; disease == the_disease) %&amp;gt;%
+  mutate(rate = count / population * 10000 * 52 / weeks_reporting) %&amp;gt;%
+  mutate(state = reorder(state, rate))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;We can now easily plot disease rates per year. Here are the measles data from California:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;dat %&amp;gt;% filter(state == &amp;quot;California&amp;quot; &amp;amp; !is.na(rate)) %&amp;gt;%
+  ggplot(aes(year, rate)) +
+  geom_line() +
+  ylab(&amp;quot;Cases per 10,000&amp;quot;)  +
+  geom_vline(xintercept=1963, col = &amp;quot;blue&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/content/03-content_files/figure-html/california-measles-time-series-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;We add a vertical line at 1963 since this is when the vaccine was introduced [Control, Centers for Disease; Prevention (2014). CDC health information for international travel 2014 (the yellow book). p. 250. ISBN 9780199948505].&lt;/p&gt;
+&lt;p&gt;Now can we show data for all states in one plot? We have three variables to show: year, state, and rate. In the WSJ figure, they use the x-axis for year, the y-axis for state, and color hue to represent rates. However, the color scale they use, which goes from yellow to blue to green to orange to red, can be improved.&lt;/p&gt;
+&lt;p&gt;In our example, we want to use a sequential palette since there is no meaningful center, just low and high rates.&lt;/p&gt;
+&lt;p&gt;We use the geometry &lt;code&gt;geom_tile&lt;/code&gt; to tile the region with colors representing disease rates. We use a square root transformation to avoid having the really high counts dominate the plot. Notice that missing values are shown in grey. Note that once a disease was pretty much eradicated, some states stopped reporting cases all together. This is why we see so much grey after 1980.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;dat %&amp;gt;% ggplot(aes(year, state, fill = rate)) +
+  geom_tile(color = &amp;quot;grey50&amp;quot;) +
+  scale_x_continuous(expand=c(0,0)) +
+  scale_fill_gradientn(colors = brewer.pal(9, &amp;quot;Reds&amp;quot;), trans = &amp;quot;sqrt&amp;quot;) +
+  geom_vline(xintercept=1963, col = &amp;quot;blue&amp;quot;) +
+  theme_minimal() +
+  theme(panel.grid = element_blank(),
+        legend.position=&amp;quot;bottom&amp;quot;,
+        text = element_text(size = 8)) +
+  ggtitle(the_disease) +
+  ylab(&amp;quot;&amp;quot;) + xlab(&amp;quot;&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/content/03-content_files/figure-html/vaccines-plot-1.png&#34; width=&#34;100%&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;This plot makes a very striking argument for the contribution of vaccines. However, one limitation of this plot is that it uses color to represent quantity, which we earlier explained makes it harder to know exactly how high values are going. Position and lengths are better cues. If we are willing to lose state information, we can make a version of the plot that shows the values with position. We can also show the average for the US, which we compute like this:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;avg &amp;lt;- us_contagious_diseases %&amp;gt;%
+  filter(disease==the_disease) %&amp;gt;% group_by(year) %&amp;gt;%
+  summarize(us_rate = sum(count, na.rm = TRUE) /
+              sum(population, na.rm = TRUE) * 10000)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## `summarise()` ungrouping output (override with `.groups` argument)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Now to make the plot we simply use the &lt;code&gt;geom_line&lt;/code&gt; geometry:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;dat %&amp;gt;%
+  filter(!is.na(rate)) %&amp;gt;%
+    ggplot() +
+  geom_line(aes(year, rate, group = state),  color = &amp;quot;grey50&amp;quot;,
+            show.legend = FALSE, alpha = 0.2, size = 1) +
+  geom_line(mapping = aes(year, us_rate),  data = avg, size = 1) +
+  scale_y_continuous(trans = &amp;quot;sqrt&amp;quot;, breaks = c(5, 25, 125, 300)) +
+  ggtitle(&amp;quot;Cases per 10,000 by state&amp;quot;) +
+  xlab(&amp;quot;&amp;quot;) + ylab(&amp;quot;&amp;quot;) +
+  geom_text(data = data.frame(x = 1955, y = 50),
+            mapping = aes(x, y, label=&amp;quot;US average&amp;quot;),
+            color=&amp;quot;black&amp;quot;) +
+  geom_vline(xintercept=1963, col = &amp;quot;blue&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/content/03-content_files/figure-html/time-series-vaccines-plot-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;In theory, we could use color to represent the categorical value state, but it is hard to pick 50 distinct colors.&lt;/p&gt;
+&lt;div class=&#34;fyi&#34;&gt;
+&lt;p&gt;&lt;strong&gt;TRY IT&lt;/strong&gt;&lt;/p&gt;
+&lt;ol style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;&lt;p&gt;Reproduce the image plot we previously made but for smallpox. For this plot, do not include years in which cases were not reported in 10 or more weeks.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Now reproduce the time series plot we previously made, but this time following the instructions of the previous question for smallpox.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;For the state of California, make a time series plot showing rates for all diseases. Include only years with 10 or more weeks reporting. Use a different color for each disease.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Now do the same for the rates for the US. Hint: compute the US rate by using summarize: the total divided by total population.&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&#34;footnotes&#34;&gt;
+&lt;hr /&gt;
+&lt;ol&gt;
+&lt;li id=&#34;fn1&#34;&gt;&lt;p&gt;&lt;a href=&#34;https://en.wikipedia.org/wiki/Hans_Rosling&#34; class=&#34;uri&#34;&gt;https://en.wikipedia.org/wiki/Hans_Rosling&lt;/a&gt;&lt;a href=&#34;#fnref1&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li id=&#34;fn2&#34;&gt;&lt;p&gt;&lt;a href=&#34;http://www.gapminder.org/&#34; class=&#34;uri&#34;&gt;http://www.gapminder.org/&lt;/a&gt;&lt;a href=&#34;#fnref2&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li id=&#34;fn3&#34;&gt;&lt;p&gt;&lt;a href=&#34;https://www.ted.com/talks/hans_rosling_reveals_new_insights_on_poverty?language=en&#34; class=&#34;uri&#34;&gt;https://www.ted.com/talks/hans_rosling_reveals_new_insights_on_poverty?language=en&lt;/a&gt;&lt;a href=&#34;#fnref3&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li id=&#34;fn4&#34;&gt;&lt;p&gt;&lt;a href=&#34;https://www.ted.com/talks/hans_rosling_shows_the_best_stats_you_ve_ever_seen&#34; class=&#34;uri&#34;&gt;https://www.ted.com/talks/hans_rosling_shows_the_best_stats_you_ve_ever_seen&lt;/a&gt;&lt;a href=&#34;#fnref4&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li id=&#34;fn5&#34;&gt;&lt;p&gt;&lt;a href=&#34;http://www.thelancet.com/journals/lancet/article/PIIS0140-6736(97)11096-0/abstract&#34; class=&#34;uri&#34;&gt;http://www.thelancet.com/journals/lancet/article/PIIS0140-6736(97)11096-0/abstract&lt;/a&gt;&lt;a href=&#34;#fnref5&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li id=&#34;fn6&#34;&gt;&lt;p&gt;&lt;a href=&#34;https://www.cdc.gov/mmwr/preview/mmwrhtml/mm6316a4.htm&#34; class=&#34;uri&#34;&gt;https://www.cdc.gov/mmwr/preview/mmwrhtml/mm6316a4.htm&lt;/a&gt;&lt;a href=&#34;#fnref6&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li id=&#34;fn7&#34;&gt;&lt;p&gt;&lt;a href=&#34;https://en.wikipedia.org/wiki/Andrew_Wakefield&#34; class=&#34;uri&#34;&gt;https://en.wikipedia.org/wiki/Andrew_Wakefield&lt;/a&gt;&lt;a href=&#34;#fnref7&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li id=&#34;fn8&#34;&gt;&lt;p&gt;&lt;a href=&#34;http://graphics.wsj.com/infectious-diseases-and-vaccines/&#34; class=&#34;uri&#34;&gt;http://graphics.wsj.com/infectious-diseases-and-vaccines/&lt;/a&gt;&lt;a href=&#34;#fnref8&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li id=&#34;fn9&#34;&gt;&lt;p&gt;&lt;a href=&#34;http://www.tycho.pitt.edu/&#34; class=&#34;uri&#34;&gt;http://www.tycho.pitt.edu/&lt;/a&gt;&lt;a href=&#34;#fnref9&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
 &lt;/ol&gt;
 &lt;/div&gt;
 </description>
@@ -5556,14 +6567,11 @@ data(murders)&lt;/code&gt;&lt;/pre&gt;
         &lt;tr&gt;
             &lt;td align=&#34;right&#34; style=&#34;width:18%;text-align:right&#34;&gt;Week 3&lt;/td&gt;
             &lt;td style=&#34;width:50%;text-align:left&#34;&gt;Visualization III&lt;/td&gt;
-            &lt;td align=&#34;center&#34; style=&#34;width:10%;text-align:center&#34;&gt;
-                &lt;font color=&#34;f1f1f1&#34;&gt;
-                    &lt;i class=&#34;fas fa-book-reader fa-lg&#34;&gt;&lt;/i&gt;&lt;/font&gt;
-            &lt;/td&gt;
-            &lt;td align=&#34;center&#34; style=&#34;width:10%;text-align:center&#34;&gt;
-                &lt;font color=&#34;f1f1f1&#34;&gt;
-                    &lt;i class=&#34;fas fa-laptop-code fa-lg&#34;&gt;&lt;/i&gt;&lt;/font&gt;
-            &lt;/td&gt;
+            &lt;td align=&#34;center&#34; style=&#34;width:10%;text-align:center&#34;&gt;&lt;a
+                    href=&#34;/content/03-content/&#34;&gt;
+                    &lt;i class=&#34;fas fa-book-reader fa-lg&#34;&gt;&lt;/i&gt;&lt;/a&gt;&lt;/td&gt;
+            &lt;td align=&#34;center&#34; style=&#34;width:10%;text-align:center&#34;&gt;&lt;a href=&#34;/example/03-example/&#34;&gt;
+                    &lt;i class=&#34;fas fa-laptop-code fa-lg&#34;&gt;&lt;/i&gt;&lt;/a&gt;&lt;/td&gt;
             &lt;td align=&#34;center&#34; style=&#34;width:10%;text-align:center&#34;&gt;
                 &lt;font color=&#34;f1f1f1&#34;&gt;
                     &lt;i class=&#34;fas fa-pencil-ruler fa-lg&#34;&gt;&lt;/i&gt;&lt;/font&gt;
