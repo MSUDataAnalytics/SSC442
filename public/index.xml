@@ -2788,7 +2788,7 @@ mpg %&amp;gt;%
 &lt;/div&gt;
 &lt;div id=&#34;gapminder&#34; class=&#34;section level1&#34;&gt;
 &lt;h1&gt;Data visualization in practice&lt;/h1&gt;
-&lt;p&gt;In this chapter, we will demonstrate how relatively simple &lt;strong&gt;ggplot2&lt;/strong&gt; code can create insightful and aesthetically pleasing plots. As motivation we will create plots that help us better understand trends in world health and economics. We will implement what we learned in Chapters &lt;a href=&#34;#ggplot2&#34;&gt;&lt;strong&gt;??&lt;/strong&gt;&lt;/a&gt; and &lt;a href=&#34;#other-geometries&#34;&gt;&lt;strong&gt;??&lt;/strong&gt;&lt;/a&gt; and learn how to augment the code to perfect the plots. As we go through our case study, we will describe relevant general data visualization principles and learn concepts such as &lt;em&gt;faceting&lt;/em&gt;, &lt;em&gt;time series plots&lt;/em&gt;, &lt;em&gt;transformations&lt;/em&gt;, and &lt;em&gt;ridge plots&lt;/em&gt;.&lt;/p&gt;
+&lt;p&gt;In this chapter, we will demonstrate how relatively simple &lt;strong&gt;ggplot2&lt;/strong&gt; code can create insightful and aesthetically pleasing plots. As motivation we will create plots that help us better understand trends in world health and economics. We will implement what we learned in previous sections of the class and learn how to augment the code to perfect the plots. As we go through our case study, we will describe relevant general data visualization principles and learn concepts such as &lt;em&gt;faceting&lt;/em&gt;, &lt;em&gt;time series plots&lt;/em&gt;, &lt;em&gt;transformations&lt;/em&gt;, and &lt;em&gt;ridge plots&lt;/em&gt;.&lt;/p&gt;
 &lt;div id=&#34;case-study-new-insights-on-poverty&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Case study: new insights on poverty&lt;/h2&gt;
 &lt;p&gt;Hans Rosling&lt;a href=&#34;#fn1&#34; class=&#34;footnote-ref&#34; id=&#34;fnref1&#34;&gt;&lt;sup&gt;1&lt;/sup&gt;&lt;/a&gt; was the co-founder of the Gapminder Foundation&lt;a href=&#34;#fn2&#34; class=&#34;footnote-ref&#34; id=&#34;fnref2&#34;&gt;&lt;sup&gt;2&lt;/sup&gt;&lt;/a&gt;, an organization dedicated to educating the public by using data to dispel common myths about the so-called developing world. The organization uses data to show how actual trends in health and economics contradict the narratives that emanate from sensationalist media coverage of catastrophes, tragedies, and other unfortunate events. As stated in the Gapminder Foundation’s website:&lt;/p&gt;
@@ -2957,7 +2957,7 @@ South Africa
   ggplot( aes(fertility, life_expectancy, color = continent)) +
   geom_point()&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;img src=&#34;/content/03-content_files/figure-html/fertility-versus-life-expectancy-1962-with-color-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
-&lt;p&gt;In 1962, the notion of “the West versus developing world” view was grounded in some reality. Is this still the case 50 years later? How might visualizations help us learn something (and how does this compare to your prior belief)?&lt;/p&gt;
+&lt;p&gt;In 1962, the notion of “the West versus developing world” view was grounded in some reality. Is this still the case 50 years later? How might visualizations help us learn something? Before continuing, make a note of your prior beliefs.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;faceting&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Faceting&lt;/h2&gt;
@@ -3070,7 +3070,8 @@ gapminder %&amp;gt;%
   geom_histogram(binwidth = 1, color = &amp;quot;black&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;img src=&#34;/content/03-content_files/figure-html/dollars-per-day-distribution-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;We use the &lt;code&gt;color = &#34;black&#34;&lt;/code&gt; argument to draw a boundary and clearly distinguish the bins.&lt;/p&gt;
-&lt;p&gt;In this plot, we see that for the majority of countries, averages are below $10 a day. However, the majority of the x-axis is dedicated to the 35 countries with averages above $10. So the plot is not very informative about countries with values below $10 a day.&lt;/p&gt;
+&lt;p&gt;In this plot, we see that for the majority of countries, averages are below $10 a day.&lt;/p&gt;
+&lt;p&gt;However, the majority of the x-axis is dedicated to the &lt;code&gt;35&lt;/code&gt; countries with averages above $10. So the plot is not very informative about countries with values below $10 a day.&lt;/p&gt;
 &lt;p&gt;It might be more informative to quickly be able to see how many countries have average daily incomes of about $1 (extremely poor), $2 (very poor), $4 (poor), $8 (middle), $16 (well off), $32 (rich), $64 (very rich) per day. These changes are multiplicative and log transformations convert multiplicative changes into additive ones: when using base 2, a doubling of a value turns into an increase by 1.&lt;/p&gt;
 &lt;p&gt;Here is the distribution if we apply a log base 2 transform:&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;gapminder %&amp;gt;%

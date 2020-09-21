@@ -46,7 +46,7 @@ As with last week, today's lecture will ask you to work with real data during th
 
 # Data visualization in practice {#gapminder}
 
-In this chapter, we will demonstrate how relatively simple __ggplot2__ code can create insightful and aesthetically pleasing plots. As motivation we will create plots that help us better understand trends in world health and economics. We will implement what we learned in Chapters \@ref(ggplot2) and \@ref(other-geometries) and learn how to augment the code to perfect the plots. As we go through our case study, we will describe relevant general data visualization principles and learn concepts such as _faceting_, _time series plots_, _transformations_,  and _ridge plots_.
+In this chapter, we will demonstrate how relatively simple __ggplot2__ code can create insightful and aesthetically pleasing plots. As motivation we will create plots that help us better understand trends in world health and economics. We will implement what we learned in previous sections of the class and learn how to augment the code to perfect the plots. As we go through our case study, we will describe relevant general data visualization principles and learn concepts such as _faceting_, _time series plots_, _transformations_,  and _ridge plots_.
 
 
 ## Case study: new insights on poverty
@@ -306,7 +306,9 @@ gapminder %>%
 
 We use the `color = "black"` argument to draw a boundary and clearly distinguish the bins.
 
-In this plot, we see that for the majority of countries, averages are below \$10 a day. However, the majority of the x-axis is dedicated to the `r filter(gapminder, year == past_year & !is.na(gdp)) %>% summarise(x = sum(dollars_per_day>10)) %>% pull(x)` countries with averages above \$10. So the plot is not very informative about countries with values below \$10 a day.
+In this plot, we see that for the majority of countries, averages are below \$10 a day.
+
+However, the majority of the x-axis is dedicated to the ```r filter(gapminder, year == past_year & !is.na(gdp)) %>% summarise(x = sum(dollars_per_day>10)) %>% pull(x)``` countries with averages above \$10. So the plot is not very informative about countries with values below \$10 a day.
 
 It might be more informative to quickly be able to see how many countries have average daily incomes of about $1 (extremely poor), \$2 (very poor), \$4 (poor), \$8 (middle), \$16 (well off), \$32 (rich), \$64 (very rich) per day. These changes are multiplicative and log transformations convert multiplicative changes into additive ones: when using base 2, a doubling of a value turns into an increase by 1.
 
