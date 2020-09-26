@@ -1,0 +1,133 @@
+---
+title: "*Project 1"
+date: "2020-10-16"
+due_date: "2020-10-15"
+due_time: "11:59 PM"
+output:
+  blogdown::html_page:
+    toc: true
+menu:
+  assignment:
+    parent: Projects
+    weight: 1
+type: docs
+editor_options:
+  chunk_output_type: console
+---
+
+
+<div id="TOC">
+<ul>
+<li><a href="#part-1-rats-rats-rats.">Part 1: Rats, rats, rats.</a><ul>
+<li><a href="#instructions">Instructions</a></li>
+<li><a href="#starter-code">Starter code</a></li>
+</ul></li>
+<li><a href="#part-2-data-hunting">Part 2: Data Hunting</a></li>
+<li><a href="#evaluations">Evaluations</a></li>
+</ul>
+</div>
+
+<div id="part-1-rats-rats-rats." class="section level2">
+<h2>Part 1: Rats, rats, rats.</h2>
+<p>New York City is full of urban wildlife, and rats are one of the city’s most infamous animal mascots. Rats in NYC are plentiful, but they also deliver food, so they’re useful too.</p>
+{{% youtube "PeJUqcbool4" %}}
+<p>NYC keeps incredibly detailed data regarding animal sightings, including rats, and <a href="https://www.kaggle.com/new-york-city/nyc-rat-sightings/data">it makes this data publicly available</a>.</p>
+<p>For this first project, you will use <strong>R and ggplot2</strong> to tell an interesting story hidden in the data. You must create a story by looking carefully at the data.</p>
+<div id="instructions" class="section level3">
+<h3>Instructions</h3>
+<p>Here’s what you need to do:</p>
+<ol style="list-style-type: decimal">
+<li><p><strong>Download</strong> New York City’s database of rat sightings since 2010:</p>
+<ul>
+<li><a href="/data/Rat_sightings.csv"><i class="fas fa-file-csv"></i> <code>Rat_sightings.csv</code></a></li>
+</ul></li>
+<li><p><strong>Summarize</strong> the data somehow. The raw data has more than 100,000 rows, which means you’ll need to aggregate the data (<code>filter()</code>, <code>group_by()</code>, and <code>summarize()</code> will be your friends). Consider looking at the number of sightings per borough, per year, per dwelling type, etc., or a combination of these, like the change in the number sightings across the 5 boroughs between 2010 and 2016.</p></li>
+<li><p><strong>Create</strong> an appropriate visualization based on the data you summarized.</p></li>
+<li><p><strong>Write</strong> a memo explaining your process. We are specifically looking for a discussion of the following:</p>
+<ul>
+<li>What story are you telling with your new graphic?</li>
+<li>How have you applied reasonable standards in visual storytelling?</li>
+<li>What policy implication is there (if any)?</li>
+</ul></li>
+<li><p><strong>Upload</strong> the following outputs to D2L:</p>
+<ul>
+<li>A PDF file of your memo with your final code and graphic embedded in it.<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a> This means you’ll need to do all your coding in an <code>R</code> Markdown file and embed your code in chunks. Note that Part 2 of this project should be included in this PDF (see below).</li>
+<li>A standalone PDF version of your graphic. Use <code>ggsave(plot_name, filename = "output/blah.pdf", width = XX, height = XX)</code></li>
+</ul></li>
+</ol>
+</div>
+<div id="starter-code" class="section level3">
+<h3>Starter code</h3>
+<p>I’ve provided some starter code below. A couple comments about it:</p>
+<ul>
+<li>By default, <code>read_csv()</code> treats cells that are empty or “NA” as missing values. This rat dataset uses “N/A” to mark missing values, so we need to add that as a possible marker of missingness (hence <code>na = c("", "NA", "N/A")</code>)</li>
+<li>To make life easier, I’ve renamed some of the key variables you might work with. You can rename others if you want.</li>
+<li>I’ve also created a few date-related variables (<code>sighting_year</code>, <code>sighting_month</code>, <code>sighting_day</code>, and <code>sighting_weekday</code>). You don’t have to use them, but they’re there if you need them. The functions that create these, like <code>year()</code> and <code>wday()</code> are part of the <strong>lubridate</strong> library.</li>
+<li>The date/time variables are formatted like <code>04/03/2017 12:00:00 AM</code>, which R is not able to automatically parse as a date when reading the CSV file. You can use the <code>mdy_hms()</code> function in the <strong>lubridate</strong> library to parse dates that are structured as “month-day-year-hour-minute”. There are also a bunch of other iterations of this function, like <code>ymd()</code>, <code>dmy()</code>, etc., for other date formats.</li>
+<li>There’s one row with an unspecified borough, so I filter that out.</li>
+</ul>
+<pre class="r"><code>library(tidyverse)
+library(lubridate)
+rats_raw &lt;- read_csv(&quot;data/Rat_Sightings.csv&quot;, na = c(&quot;&quot;, &quot;NA&quot;, &quot;N/A&quot;))
+# If you get an error that says &quot;All formats failed to parse. No formats
+# found&quot;, it&#39;s because the mdy_hms function couldn&#39;t parse the date. The date
+# variable *should* be in this format: &quot;04/03/2017 12:00:00 AM&quot;, but in some
+# rare instances, it might load without the seconds as &quot;04/03/2017 12:00 AM&quot;.
+# If there are no seconds, use mdy_hm() instead of mdy_hms().
+rats_clean &lt;- rats_raw %&gt;%
+  rename(created_date = `Created Date`,
+         location_type = `Location Type`,
+         borough = Borough) %&gt;%
+  mutate(created_date = mdy_hms(created_date)) %&gt;%
+  mutate(sighting_year = year(created_date),
+         sighting_month = month(created_date),
+         sighting_day = day(created_date),
+         sighting_weekday = wday(created_date, label = TRUE, abbr = FALSE)) %&gt;%
+  filter(borough != &quot;Unspecified&quot;)</code></pre>
+<p>You’ll summarize the data with functions from <strong>dplyr</strong>, including stuff like <code>count()</code>, <code>arrange()</code>, <code>filter()</code>, <code>group_by()</code>, <code>summarize()</code>, and <code>mutate()</code>. Here are some examples of ways to summarize the data:</p>
+<pre class="r"><code># See the count of rat sightings by weekday
+rats_clean %&gt;%
+  count(sighting_weekday)
+# Assign a summarized data frame to an object to use it in a plot
+rats_by_weekday &lt;- rats_clean %&gt;%
+  count(sighting_weekday, sighting_year)
+ggplot(rats_by_weekday, aes(x = fct_rev(sighting_weekday), y = n)) +
+  geom_col() +
+  coord_flip() +
+  facet_wrap(~ sighting_year)
+# See the count of rat sightings by weekday and borough
+rats_clean %&gt;%
+  count(sighting_weekday, borough, sighting_year)
+# An alternative to count() is to specify the groups with group_by() and then
+# be explicit about how you&#39;re summarizing the groups, such as calculating the
+# mean, standard deviation, or number of observations (we do that here with
+# `n()`).
+rats_clean %&gt;%
+  group_by(sighting_weekday, borough) %&gt;%
+  summarize(n = n())</code></pre>
+</div>
+</div>
+<div id="part-2-data-hunting" class="section level2">
+<h2>Part 2: Data Hunting</h2>
+<p>For the second part of the project, your task is simple. Your group must identify three different data sources<a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a> for potential use in your final project. You are not bound to this decision.</p>
+<p>For each, you must write a single paragraph about what about this data interests you. Add this to the memo from Part 1.</p>
+</div>
+<div id="evaluations" class="section level2">
+<h2>Evaluations</h2>
+<p>I will evaluate these projects (not the TA). I will only give top marks to those groups showing initiative and cleverness. I will use the following weights for final scores:</p>
+<p><strong>Part 1</strong></p>
+<ol style="list-style-type: decimal">
+<li><p>Technical difficulty: Does the final project show mastery of the skills we’ve discussed thus far? (10 points)</p></li>
+<li><p>Appropriateness of visuals: Do the visualizations tell a clear story? Have we learned something? (10 points)</p></li>
+<li><p>Storytelling: Does your memo clearly convey what you’re doing and why? (9 points)</p></li>
+</ol>
+<p><strong>Part 2</strong></p>
+<p>Each piece of data (and description) is worth 7 points. (21 points total)</p>
+</div>
+<div class="footnotes">
+<hr />
+<ol>
+<li id="fn1"><p>You can approach this in a couple different ways—you can write the memo and then include the full figure and code at the end, <a href="https://rud.is/b/2017/09/18/mapping-fall-foliage-with-sf/">similar to this blog post</a>, or you can write the memo in an incremental way, describing the different steps of creating the figure, ultimately arriving at a clean final figure, <a href="https://rudeboybert.github.io/fivethirtyeight/articles/bechdel.html">like this blog post</a>.<a href="#fnref1" class="footnote-back">↩︎</a></p></li>
+<li id="fn2"><p>The three different sources need not be different websites or from different organizations. For example, three different tables from the US Census would be sufficient<a href="#fnref2" class="footnote-back">↩︎</a></p></li>
+</ol>
+</div>

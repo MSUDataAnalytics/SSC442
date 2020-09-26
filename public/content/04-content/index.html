@@ -1,0 +1,1306 @@
+<!DOCTYPE html>
+<html lang="en-us" 
+      xmlns:og="http://ogp.me/ns#" 
+      xmlns:fb="https://www.facebook.com/2008/fbml">
+
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="generator" content="Source Themes Academic 4.8.0">
+
+  
+
+  
+  
+  
+  
+  
+    
+    
+    
+  
+  
+
+  <meta name="author" content="Ben Bushong">
+
+  
+  
+  
+    
+  
+  <meta name="description" content="Required Reading Supplemental Readings Guiding Questions Slides  Discrete probability Relative frequency Notation Probability distributions  Monte Carlo simulations for categorical data Setting the random seed With and without replacement  Independence Conditional probabilities Addition and multiplication rules Multiplication rule Multiplication rule under independence Addition rule  Combinations and permutations Monte Carlo example  Examples Monty Hall problem Birthday problem  Infinity in practice   Required Reading  This page.">
+
+  
+  <link rel="alternate" hreflang="en-us" href="/content/04-content/">
+
+  
+
+
+  
+  
+  
+  <meta name="theme-color" content="#18453B">
+  
+
+  
+  
+  
+  <script src="/js/mathjax-config.js"></script>
+  
+
+  
+  
+  
+  
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/academicons/1.8.6/css/academicons.min.css" integrity="sha256-uFVgMKfistnJAfoCUQigIl+JfUaP47GrRKjf6CTPVmw=" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.0-1/css/all.min.css" integrity="sha256-4w9DunooKSr3MFXHXWyFER38WmPdm361bQS/2KUWZbU=" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+
+    
+    
+    
+      
+    
+    
+      
+      
+        
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/styles/github.min.css" crossorigin="anonymous" title="hl-light">
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/styles/dracula.min.css" crossorigin="anonymous" title="hl-dark" disabled>
+        
+      
+    
+
+    
+
+    
+
+    
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/lazysizes/5.1.2/lazysizes.min.js" integrity="sha256-Md1qLToewPeKjfAHU1zyPwOutccPAm5tahnaw7Osw0A=" crossorigin="anonymous" async></script>
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" integrity="" crossorigin="anonymous" async></script>
+      
+    
+      
+
+      
+      
+
+      
+    
+
+  
+
+  
+  
+  
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Fira+Sans+Condensed:400,400i,700,700i%7COverpass:400,400i,700,700i&display=swap">
+  
+
+  
+  
+  
+  
+  <link rel="stylesheet" href="/css/academic.css">
+
+  
+
+
+
+
+  
+
+
+  
+  
+
+  
+
+  <link rel="manifest" href="/index.webmanifest">
+  <link rel="icon" type="image/png" href="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_32x32_fill_lanczos_center_2.png">
+  <link rel="apple-touch-icon" type="image/png" href="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_192x192_fill_lanczos_center_2.png">
+
+  <link rel="canonical" href="/content/04-content/">
+
+  
+  
+  
+  
+  
+  
+  
+    
+  
+  
+  <meta property="twitter:card" content="summary_large_image">
+  
+  <meta property="twitter:site" content="@benbushong">
+  <meta property="twitter:creator" content="@benbushong">
+  
+  <meta property="og:site_name" content="Data Analytics">
+  <meta property="og:url" content="/content/04-content/">
+  <meta property="og:title" content="Probability and Statistics | Data Analytics">
+  <meta property="og:description" content="Required Reading Supplemental Readings Guiding Questions Slides  Discrete probability Relative frequency Notation Probability distributions  Monte Carlo simulations for categorical data Setting the random seed With and without replacement  Independence Conditional probabilities Addition and multiplication rules Multiplication rule Multiplication rule under independence Addition rule  Combinations and permutations Monte Carlo example  Examples Monty Hall problem Birthday problem  Infinity in practice   Required Reading  This page."><meta property="og:image" content="/img/social-image.png">
+  <meta property="twitter:image" content="/img/social-image.png"><meta property="og:locale" content="en-us">
+  
+    
+      <meta property="article:published_time" content="2020-09-22T00:00:00&#43;00:00">
+    
+    <meta property="article:modified_time" content="2020-07-07T10:13:55-04:00">
+  
+
+  
+
+
+
+  
+
+
+  
+
+
+  <link rel="shortcut icon" href="/favicon.ico" />
+  <link rel="apple-touch-icon-precomposed" sizes="57x57" href="/img/apple-touch-icon-57x57.png" />
+  <link rel="apple-touch-icon-precomposed" sizes="114x114" href="/img/apple-touch-icon-114x114.png" />
+  <link rel="apple-touch-icon-precomposed" sizes="72x72" href="/img/apple-touch-icon-72x72.png" />
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/img/apple-touch-icon-144x144.png" />
+  <link rel="apple-touch-icon-precomposed" sizes="120x120" href="/img/apple-touch-icon-120x120.png" />
+  <link rel="apple-touch-icon-precomposed" sizes="152x152" href="/img/apple-touch-icon-152x152.png" />
+  <link rel="icon" type="image/png" href="/img/favicon-32x32.png" sizes="32x32" />
+  <link rel="icon" type="image/png" href="/img/favicon-16x16.png" sizes="16x16" />
+  <meta name="application-name" content="SSC 442: Data Analytics" />
+  <meta name="msapplication-TileColor" content="#FFFFFF" />
+  <meta name="msapplication-TileImage" content="/img/mstile-144x144.png" />
+
+
+  <title>Probability and Statistics | Data Analytics</title>
+
+</head>
+
+
+<body id="top" data-spy="scroll" data-offset="70"
+    data-target="#TableOfContents"
+    >
+
+    <aside class="search-results" id="search">
+  <div class="container">
+    <section class="search-header">
+
+      <div class="row no-gutters justify-content-between mb-3">
+        <div class="col-6">
+          <h1>Search</h1>
+        </div>
+        <div class="col-6 col-search-close">
+          <a class="js-search" href="#"><i class="fas fa-times-circle text-muted" aria-hidden="true"></i></a>
+        </div>
+      </div>
+
+      <div id="search-box">
+        
+        
+        
+      </div>
+
+    </section>
+    <section class="section-search-results">
+
+      <div id="search-hits">
+        
+      </div>
+
+    </section>
+  </div>
+</aside>
+
+
+    
+
+
+
+
+
+
+
+<nav class="navbar navbar-expand-lg navbar-light compensate-for-scrollbar" id="navbar-main">
+  <div class="container">
+
+    
+    <div class="d-none d-lg-inline-flex">
+      <a class="navbar-brand" href="/">Data Analytics</a>
+    </div>
+    
+
+    
+    <button type="button" class="navbar-toggler" data-toggle="collapse"
+            data-target="#navbar-content" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
+    <span><i class="fas fa-bars"></i></span>
+    </button>
+    
+
+    
+    <div class="navbar-brand-mobile-wrapper d-inline-flex d-lg-none">
+      <a class="navbar-brand" href="/">Data Analytics</a>
+    </div>
+    
+
+    
+    
+    <div class="navbar-collapse main-menu-item collapse justify-content-end" id="navbar-content">
+
+      
+      <ul class="navbar-nav d-md-inline-flex">
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/syllabus/"><span>Syllabus</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/schedule/"><span>Schedule</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link  active" href="/content/"><span>Content</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/example/"><span>Examples</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/assignment/"><span>Assignments</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+            
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="https://ssc442.slack.com" target="_blank" rel="noopener"><span><i class="fab fa-slack"></i></span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+            
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="https://www.twitch.tv/benbushong" target="_blank" rel="noopener"><span><i class="fab fa-twitch"></i></span></a>
+        </li>
+
+        
+        
+
+      
+
+        
+      </ul>
+    </div>
+
+    <ul class="nav-icons navbar-nav flex-row ml-auto d-flex pl-md-2">
+      
+
+      
+
+      
+
+    </ul>
+
+  </div>
+</nav>
+
+
+    
+
+<div class="container-fluid docs">
+    <div class="row flex-xl-nowrap">
+        <div class="col-12 col-md-3 col-xl-2 docs-sidebar">
+            
+
+
+
+
+
+  
+    
+  
+
+
+
+
+<form class="docs-search d-flex align-items-center">
+  <button class="btn docs-toggle d-md-none p-0 mr-3" type="button" data-toggle="collapse" data-target="#docs-nav" aria-controls="docs-nav" aria-expanded="false" aria-label="Toggle section navigation">
+    <span><i class="fas fa-bars"></i></span>
+  </button>
+
+  
+</form>
+
+<nav class="collapse docs-links" id="docs-nav">
+  
+
+  
+  
+  
+  
+  <div class="docs-toc-item">
+    <a class="docs-toc-link" href="/content/">Readings, lectures, and videos</a>
+
+  </div>
+  
+  <div class="docs-toc-item">
+    <a class="docs-toc-link" href="/content/00-content/">Course content</a>
+    <ul class="nav docs-sidenav">
+      
+      <li >
+        <a href="/content/00-content/">0: Introduction to R</a>
+      </li>
+      
+      <li >
+        <a href="/content/01-content/">1: The Tidyverse</a>
+      </li>
+      
+      <li >
+        <a href="/content/02-content/">2: Visualization</a>
+      </li>
+      
+      <li >
+        <a href="/content/03-content/">3: Visualization II</a>
+      </li>
+      
+      <li class="active">
+        <a href="/content/04-content/">4: Probability in R</a>
+      </li>
+      
+    </ul>
+    
+
+  </div>
+  
+  
+</nav>
+
+        </div>
+
+        
+
+        <main class="col-12 col-md-9 col-xl-8 py-md-3 pl-md-5 docs-content" role="main">
+
+            <article class="article">
+
+                <div class="docs-article-container">
+                    <h1>Probability and Statistics</h1>
+
+                    
+
+                    
+                    <div class="due-date p-2 mb-3 bg-content text-white">
+                        Content for Tuesday, September 22, 2020
+                    </div>
+                    
+
+                    
+
+                    <div class="article-style">
+                        
+
+<div id="TOC">
+<ul>
+<li><a href="#required-reading">Required Reading</a><ul>
+<li><a href="#supplemental-readings">Supplemental Readings</a></li>
+<li><a href="#guiding-questions">Guiding Questions</a></li>
+<li><a href="#slides">Slides</a></li>
+</ul></li>
+<li><a href="#discrete-probability">Discrete probability</a><ul>
+<li><a href="#relative-frequency">Relative frequency</a></li>
+<li><a href="#notation">Notation</a></li>
+<li><a href="#probability-distributions">Probability distributions</a></li>
+</ul></li>
+<li><a href="#monte-carlo-simulations-for-categorical-data">Monte Carlo simulations for categorical data</a><ul>
+<li><a href="#setting-the-random-seed">Setting the random seed</a></li>
+<li><a href="#with-and-without-replacement">With and without replacement</a></li>
+</ul></li>
+<li><a href="#independence">Independence</a></li>
+<li><a href="#conditional-probabilities">Conditional probabilities</a></li>
+<li><a href="#addition-and-multiplication-rules">Addition and multiplication rules</a><ul>
+<li><a href="#multiplication-rule">Multiplication rule</a></li>
+<li><a href="#multiplication-rule-under-independence">Multiplication rule under independence</a></li>
+<li><a href="#addition-rule">Addition rule</a></li>
+</ul></li>
+<li><a href="#combinations-and-permutations">Combinations and permutations</a><ul>
+<li><a href="#monte-carlo-example">Monte Carlo example</a></li>
+</ul></li>
+<li><a href="#examples">Examples</a><ul>
+<li><a href="#monty-hall-problem">Monty Hall problem</a></li>
+<li><a href="#birthday-problem">Birthday problem</a></li>
+</ul></li>
+<li><a href="#infinity-in-practice">Infinity in practice</a></li>
+</ul>
+</div>
+
+<div id="required-reading" class="section level2">
+<h2>Required Reading</h2>
+<ul>
+<li>This page.</li>
+</ul>
+<div id="supplemental-readings" class="section level3">
+<h3>Supplemental Readings</h3>
+<ul>
+<li><i class="fas fa-external-link-square-alt"></i> <a href="https://hbr.org/2016/11/why-its-so-hard-for-us-to-visualize-uncertainty">Why It’s So Hard for Us to Visualize Uncertainty</a></li>
+<li><i class="fab fa-youtube"></i> <a href="https://www.youtube.com/watch?v=0L1tGo-DvD0">Amanda Cox’s keynote address at the 2017 OpenVis Conf</a></li>
+<li><i class="fas fa-external-link-square-alt"></i> <a href="https://eagereyes.org/blog/2017/communicating-uncertainty-when-lives-are-on-the-line">Communicating Uncertainty When Lives Are on the Line</a></li>
+<li><i class="fas fa-external-link-square-alt"></i> <a href="https://flowingdata.com/2016/11/15/showing-uncertainty-during-the-live-election-forecast/">Showing uncertainty during the live election forecast</a> &amp; <a href="https://flowingdata.com/2017/06/27/trolling-the-uncertainty-dial/">Trolling the uncertainty dial</a></li>
+</ul>
+</div>
+<div id="guiding-questions" class="section level3">
+<h3>Guiding Questions</h3>
+<ul>
+<li>Why is uncertainty inherently a major part of data analytics?</li>
+<li>How have past attempts to visualize uncertainty failed?</li>
+<li>Why do we</li>
+</ul>
+</div>
+<div id="slides" class="section level3">
+<h3>Slides</h3>
+<p>As with last week, today’s lecture will ask you to work with <code>R</code> during the lecture.</p>
+</div>
+</div>
+<div id="discrete-probability" class="section level2">
+<h2>Discrete probability</h2>
+<p>We start by covering some basic principles related to categorical data. The subset of probability is referred to as <em>discrete probability</em>. It will help us understand the probability theory we will later introduce for numeric and continuous data, which is much more common in data science applications. Discrete probability is more useful in card games and therefore we use these as examples.</p>
+<div id="relative-frequency" class="section level3">
+<h3>Relative frequency</h3>
+<p>The word probability is used in everyday language. Answering questions about probability is often hard, if not impossible. Here we discuss a mathematical definition of <em>probability</em> that does permit us to give precise answers to certain questions.</p>
+<p>For example, if I have 2 red beads and 3 blue beads inside an urn<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a> (most probability books use this archaic term, so we do too) and I pick one at random, what is the probability of picking a red one? Our intuition tells us that the answer is 2/5 or 40%. A precise definition can be given by noting that there are five possible outcomes of which two satisfy the condition necessary for the event “pick a red bead”. Since each of the five outcomes has the same chance of occurring, we conclude that the probability is .4 for red and .6 for blue.</p>
+<p>A more tangible way to think about the probability of an event is as the proportion of times the event occurs when we repeat the experiment an infinite number of times, independently, and under the same conditions.</p>
+</div>
+<div id="notation" class="section level3">
+<h3>Notation</h3>
+<p>We use the notation <span class="math inline">\(\mbox{Pr}(A)\)</span> to denote the probability of event <span class="math inline">\(A\)</span> happening. We use the very general term <em>event</em> to refer to things that can happen when something occurs by chance. In our previous example, the event was “picking a red bead”. In a political poll in which we call 100 likely voters at random, an example of an event is “calling 48 Democrats and 52 Republicans”.</p>
+<p>In data science applications, we will often deal with continuous variables. These events will often be things like “is this person taller than 6 feet”. In this case, we write events in a more mathematical form: <span class="math inline">\(X \geq 6\)</span>. We will see more of these examples later. Here we focus on categorical data.</p>
+</div>
+<div id="probability-distributions" class="section level3">
+<h3>Probability distributions</h3>
+<p>If we know the relative frequency of the different categories, defining a distribution for categorical outcomes is relatively straightforward. We simply assign a probability to each category. In cases that can be thought of as beads in an urn, for each bead type, their proportion defines the distribution.</p>
+<p>If we are randomly calling likely voters from a population that is 44% Democrat, 44% Republican, 10% undecided, and 2% Green Party, these proportions define the probability for each group. The probability distribution is:</p>
+<table>
+<tbody>
+<tr class="odd">
+<td>Pr(picking a Republican)</td>
+<td>=</td>
+<td>0.44</td>
+</tr>
+<tr class="even">
+<td>Pr(picking a Democrat)</td>
+<td>=</td>
+<td>0.44</td>
+</tr>
+<tr class="odd">
+<td>Pr(picking an undecided)</td>
+<td>=</td>
+<td>0.10</td>
+</tr>
+<tr class="even">
+<td>Pr(picking a Green)</td>
+<td>=</td>
+<td>0.02</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div id="monte-carlo-simulations-for-categorical-data" class="section level2">
+<h2>Monte Carlo simulations for categorical data</h2>
+<p>Computers provide a way to actually perform the simple random experiment described above: pick a bead at random from a bag that contains three blue beads and two red ones. Random number generators permit us to mimic the process of picking at random.</p>
+<p>An example is the <code>sample</code> function in R. We demonstrate its use in the code below. First, we use the function <code>rep</code> to generate the urn:</p>
+<pre class="r"><code>beads &lt;- rep(c(&quot;red&quot;, &quot;blue&quot;), times = c(2,3))
+beads</code></pre>
+<pre><code>## [1] &quot;red&quot;  &quot;red&quot;  &quot;blue&quot; &quot;blue&quot; &quot;blue&quot;</code></pre>
+<p>and then use <code>sample</code> to pick a bead at random:</p>
+<pre class="r"><code>sample(beads, 1)</code></pre>
+<pre><code>## [1] &quot;red&quot;</code></pre>
+<p>This line of code produces one random outcome. We want to repeat this experiment an infinite number of times, but it is impossible to repeat forever. Instead, we repeat the experiment a large enough number of times to make the results practically equivalent to repeating forever. <strong>This is an example of a <em>Monte Carlo</em> simulation</strong>.</p>
+<p>Much of what mathematical and theoretical statisticians study, which we do not cover in this class, relates to providing rigorous definitions of “practically equivalent” as well as studying how close a large number of experiments gets us to what happens in the limit. Later in this lecture, we provide a practical approach to deciding what is “large enough”.</p>
+<p>To perform our first Monte Carlo simulation, we use the <code>replicate</code> function, which permits us to repeat the same task any number of times. Here, we repeat the random event <span class="math inline">\(B =\)</span> 10,000 times:</p>
+<pre class="r"><code>B &lt;- 10000
+events &lt;- replicate(B, sample(beads, 1))</code></pre>
+<p>We can now see if our definition actually is in agreement with this Monte Carlo simulation approximation. We can use <code>table</code> to see the distribution:</p>
+<pre class="r"><code>tab &lt;- table(events)
+tab</code></pre>
+<pre><code>## events
+## blue  red 
+## 5962 4038</code></pre>
+<p>and <code>prop.table</code> gives us the proportions:</p>
+<pre class="r"><code>prop.table(tab)</code></pre>
+<pre><code>## events
+##   blue    red 
+## 0.5962 0.4038</code></pre>
+<p>The numbers above are the estimated probabilities provided by this Monte Carlo simulation. Statistical theory, not covered here, tells us that as <span class="math inline">\(B\)</span> gets larger, the estimates get closer to 3/5=.6 and 2/5=.4.</p>
+<p>Although this is a simple and not very useful example, we will use Monte Carlo simulations to estimate probabilities in cases in which it is harder to compute the exact ones. Before delving into more complex examples, we use simple ones to demonstrate the computing tools available in R.</p>
+<div id="setting-the-random-seed" class="section level3">
+<h3>Setting the random seed</h3>
+<p>Before we continue, we will briefly explain the following important line of code:</p>
+<pre class="r"><code>set.seed(1986)</code></pre>
+<p>Throughout this class, we use random number generators. This implies that many of the results presented can actually change by chance, which then suggests that a frozen version of the class may show a different result than what you obtain when you try to code as shown in the class. This is actually fine since the results are random and change from time to time. However, if you want to ensure that results are exactly the same every time you run them, you can set R’s random number generation seed to a specific number. Above we set it to 1986. We want to avoid using the same seed everytime. A popular way to pick the seed is the year - month - day. For example, we picked 1986 on December 20, 2018: <span class="math inline">\(2018 - 12 - 20 = 1986\)</span>.</p>
+<p>You can learn more about setting the seed by looking at the documentation:</p>
+<pre class="r"><code>?set.seed</code></pre>
+<p>In the exercises, we may ask you to set the seed to assure that the results you obtain are exactly what we expect them to be.</p>
+</div>
+<div id="with-and-without-replacement" class="section level3">
+<h3>With and without replacement</h3>
+<p>The function <code>sample</code> has an argument that permits us to pick more than one element from the urn. However, by default, this selection occurs <em>without replacement</em>: after a bead is selected, it is not put back in the bag. Notice what happens when we ask to randomly select five beads:</p>
+<pre class="r"><code>sample(beads, 5)</code></pre>
+<pre><code>## [1] &quot;red&quot;  &quot;blue&quot; &quot;blue&quot; &quot;blue&quot; &quot;red&quot;</code></pre>
+<pre class="r"><code>sample(beads, 5)</code></pre>
+<pre><code>## [1] &quot;red&quot;  &quot;red&quot;  &quot;blue&quot; &quot;blue&quot; &quot;blue&quot;</code></pre>
+<pre class="r"><code>sample(beads, 5)</code></pre>
+<pre><code>## [1] &quot;blue&quot; &quot;red&quot;  &quot;blue&quot; &quot;red&quot;  &quot;blue&quot;</code></pre>
+<p>This results in rearrangements that always have three blue and two red beads. If we ask that six beads be selected, we get an error:</p>
+<pre class="r"><code>sample(beads, 6)</code></pre>
+<p><code>Error in sample.int(length(x), size, replace, prob) :   cannot take a sample larger than the population when 'replace = FALSE'</code></p>
+<p>However, the <code>sample</code> function can be used directly, without the use of <code>replicate</code>, to repeat the same experiment of picking 1 out of the 5 beads, continually, under the same conditions. To do this, we sample <em>with replacement</em>: return the bead back to the urn after selecting it.
+We can tell <code>sample</code> to do this by changing the <code>replace</code> argument, which defaults to <code>FALSE</code>, to <code>replace = TRUE</code>:</p>
+<pre class="r"><code>events &lt;- sample(beads, B, replace = TRUE)
+prop.table(table(events))</code></pre>
+<pre><code>## events
+##   blue    red 
+## 0.6017 0.3983</code></pre>
+<p>Not surprisingly, we get results very similar to those previously obtained with <code>replicate</code>.</p>
+</div>
+</div>
+<div id="independence" class="section level2">
+<h2>Independence</h2>
+<p>We say two events are independent if the outcome of one does not affect the other. The classic example is coin tosses. Every time we toss a fair coin, the probability of seeing heads is 1/2 regardless of what previous tosses have revealed. The same is true when we pick beads from an urn with replacement. In the example above, the probability of red is 0.40 regardless of previous draws.</p>
+<p>Many examples of events that are not independent come from card games. When we deal the first card, the probability of getting a King is 1/13 since there are thirteen possibilities: Ace, Deuce, Three, <span class="math inline">\(\dots\)</span>, Ten, Jack, Queen, King, and Ace. Now if we deal a King for the first card, and don’t replace it into the deck, the probabilities of a second card being a King is less because there are only three Kings left: the probability is 3 out of 51. These events are therefore <strong>not independent</strong>: the first outcome affected the next one.</p>
+<p>To see an extreme case of non-independent events, consider our example of drawing five beads at random <strong>without</strong> replacement:</p>
+<pre class="r"><code>x &lt;- sample(beads, 5)</code></pre>
+<p>If you have to guess the color of the first bead, you will predict blue since blue has a 60% chance. But if I show you the result of the last four outcomes:</p>
+<pre class="r"><code>x[2:5]</code></pre>
+<pre><code>## [1] &quot;blue&quot; &quot;blue&quot; &quot;blue&quot; &quot;red&quot;</code></pre>
+<p>would you still guess blue? Of course not. Now you know that the probability of red is 1 since the only bead left is red. The events are not independent, so the probabilities change.</p>
+</div>
+<div id="conditional-probabilities" class="section level2">
+<h2>Conditional probabilities</h2>
+<p>When events are not independent, <em>conditional probabilities</em> are useful. We already saw an example of a conditional probability: we computed the probability that a second dealt card is a King given that the first was a King. In probability, we use the following notation:</p>
+<p><span class="math display">\[
+\mbox{Pr}(\mbox{Card 2 is a king} \mid \mbox{Card 1 is a king}) = 3/51
+\]</span></p>
+<p>We use the <span class="math inline">\(\mid\)</span> as shorthand for “given that” or “conditional on”.</p>
+<p>When two events, say <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span>, are independent, we have:</p>
+<p><span class="math display">\[
+\mbox{Pr}(A \mid B) = \mbox{Pr}(A)
+\]</span></p>
+<p>This is the mathematical way of saying: the fact that <span class="math inline">\(B\)</span> happened does not affect the probability of <span class="math inline">\(A\)</span> happening. In fact, this can be considered the mathematical definition of independence.</p>
+</div>
+<div id="addition-and-multiplication-rules" class="section level2">
+<h2>Addition and multiplication rules</h2>
+<div id="multiplication-rule" class="section level3">
+<h3>Multiplication rule</h3>
+<p>If we want to know the probability of two events, say <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span>, occurring, we can use the multiplication rule:</p>
+<p><span class="math display">\[
+\mbox{Pr}(A \mbox{ and } B) = \mbox{Pr}(A)\mbox{Pr}(B \mid A)
+\]</span>
+Let’s use Blackjack as an example. In Blackjack, you are assigned two random cards. After you see what you have, you can ask for more. The goal is to get closer to 21 than the dealer, without going over. Face cards are worth 10 points and Aces are worth 11 or 1 (you choose).</p>
+<p>So, in a Blackjack game, to calculate the chances of getting a 21 by drawing an Ace and then a face card, we compute the probability of the first being an Ace and multiply by the probability of drawing a face card or a 10 given that the first was an Ace: <span class="math inline">\(1/13 \times 16/51 \approx 0.025\)</span></p>
+<p>The multiplication rule also applies to more than two events. We can use induction to expand for more events:</p>
+<p><span class="math display">\[
+\mbox{Pr}(A \mbox{ and } B \mbox{ and } C) = \mbox{Pr}(A)\mbox{Pr}(B \mid A)\mbox{Pr}(C \mid A \mbox{ and } B)
+\]</span></p>
+</div>
+<div id="multiplication-rule-under-independence" class="section level3">
+<h3>Multiplication rule under independence</h3>
+<p>When we have independent events, then the multiplication rule becomes simpler:</p>
+<p><span class="math display">\[
+\mbox{Pr}(A \mbox{ and } B \mbox{ and } C) = \mbox{Pr}(A)\mbox{Pr}(B)\mbox{Pr}(C)
+\]</span></p>
+<p>But we have to be very careful before using this since assuming independence can result in very different and incorrect probability calculations when we don’t actually have independence.</p>
+<p>As an example, imagine a court case in which the suspect was described as having a mustache and a beard. The defendant has a mustache and a beard and the prosecution brings in an “expert” to testify that 1/10 men have beards and 1/5 have mustaches, so using the multiplication rule we conclude that only <span class="math inline">\(1/10 \times 1/5\)</span> or 0.02 have both.</p>
+<p>But to multiply like this we need to assume independence! Say the conditional probability of a man having a mustache conditional on him having a beard is .95. So the correct calculation probability is much higher: <span class="math inline">\(1/10 \times 95/100 = 0.095\)</span>.</p>
+<p>The multiplication rule also gives us a general formula for computing conditional probabilities:</p>
+<p><span class="math display">\[
+\mbox{Pr}(B \mid A) = \frac{\mbox{Pr}(A \mbox{ and } B)}{ \mbox{Pr}(A)}
+\]</span></p>
+<p>To illustrate how we use these formulas and concepts in practice, we will use several examples related to card games.</p>
+</div>
+<div id="addition-rule" class="section level3">
+<h3>Addition rule</h3>
+<p>The addition rule tells us that:</p>
+<p><span class="math display">\[
+\mbox{Pr}(A \mbox{ or } B) = \mbox{Pr}(A) + \mbox{Pr}(B) - \mbox{Pr}(A \mbox{ and } B)
+\]</span></p>
+<p>This rule is intuitive: think of a Venn diagram. If we simply add the probabilities, we count the intersection twice so we need to substract one instance.</p>
+<p><img src="/content/04-content_files/figure-html/venn-diagram-addition-rule-1.png" width="35%" /></p>
+</div>
+</div>
+<div id="combinations-and-permutations" class="section level2">
+<h2>Combinations and permutations</h2>
+<p>In our very first example, we imagined an urn with five beads. As a reminder, to compute the probability distribution of one draw, we simply listed out all the possibilities. There were 5 and so then, for each event, we counted how many of these possibilities were associated with the event. The resulting probability of choosing a blue bead is 3/5 because out of the five possible outcomes, three were blue.</p>
+<p>For more complicated cases, the computations are not as straightforward. For instance, what is the probability that if I draw five cards without replacement, I get all cards of the same suit, what is known as a “flush” in poker? In a discrete probability course you learn theory on how to make these computations. Here we focus on how to use R code to compute the answers.</p>
+<p>First, let’s construct a deck of cards. For this, we will use the <code>expand.grid</code> and <code>paste</code> functions. We use <code>paste</code> to create strings by joining smaller strings. To do this, we take the number and suit of a card and create the card name like this:</p>
+<pre class="r"><code>number &lt;- &quot;Three&quot;
+suit &lt;- &quot;Hearts&quot;
+paste(number, suit)</code></pre>
+<pre><code>## [1] &quot;Three Hearts&quot;</code></pre>
+<p><code>paste</code> also works on pairs of vectors performing the operation element-wise:</p>
+<pre class="r"><code>paste(letters[1:5], as.character(1:5))</code></pre>
+<pre><code>## [1] &quot;a 1&quot; &quot;b 2&quot; &quot;c 3&quot; &quot;d 4&quot; &quot;e 5&quot;</code></pre>
+<p>The function <code>expand.grid</code> gives us all the combinations of entries of two vectors. For example, if you have blue and black pants and white, grey, and plaid shirts, all your combinations are:</p>
+<pre class="r"><code>expand.grid(pants = c(&quot;blue&quot;, &quot;black&quot;), shirt = c(&quot;white&quot;, &quot;grey&quot;, &quot;plaid&quot;))</code></pre>
+<pre><code>##   pants shirt
+## 1  blue white
+## 2 black white
+## 3  blue  grey
+## 4 black  grey
+## 5  blue plaid
+## 6 black plaid</code></pre>
+<p>Here is how we generate a deck of cards:</p>
+<pre class="r"><code>suits &lt;- c(&quot;Diamonds&quot;, &quot;Clubs&quot;, &quot;Hearts&quot;, &quot;Spades&quot;)
+numbers &lt;- c(&quot;Ace&quot;, &quot;Deuce&quot;, &quot;Three&quot;, &quot;Four&quot;, &quot;Five&quot;, &quot;Six&quot;, &quot;Seven&quot;,
+             &quot;Eight&quot;, &quot;Nine&quot;, &quot;Ten&quot;, &quot;Jack&quot;, &quot;Queen&quot;, &quot;King&quot;)
+deck &lt;- expand.grid(number=numbers, suit=suits)
+deck &lt;- paste(deck$number, deck$suit)</code></pre>
+<p>With the deck constructed, we can double check that the probability of a King in the first card is 1/13 by computing the proportion of possible outcomes that satisfy our condition:</p>
+<pre class="r"><code>kings &lt;- paste(&quot;King&quot;, suits)
+mean(deck %in% kings)</code></pre>
+<pre><code>## [1] 0.07692308</code></pre>
+<p>Now, how about the conditional probability of the second card being a King given that the first was a King? Earlier, we deduced that if one King is already out of the deck and there are 51 left, then this probability is 3/51. Let’s confirm by listing out all possible outcomes.</p>
+<p>To do this, we can use the <code>permutations</code> function from the <strong>gtools</strong> package. For any list of size <code>n</code>, this function computes all the different combinations we can get when we select <code>r</code> items. Here are all the ways we can choose two numbers from a list consisting of <code>1,2,3</code>:</p>
+<pre class="r"><code>library(gtools)
+permutations(3, 2)</code></pre>
+<pre><code>##      [,1] [,2]
+## [1,]    1    2
+## [2,]    1    3
+## [3,]    2    1
+## [4,]    2    3
+## [5,]    3    1
+## [6,]    3    2</code></pre>
+<p>Notice that the order matters here: 3,1 is different than 1,3. Also, note that (1,1), (2,2), and (3,3) do not appear because once we pick a number, it can’t appear again.</p>
+<p>Optionally, we can add a vector. If you want to see five random seven digit phone numbers out of all possible phone numbers (without repeats), you can type:</p>
+<pre class="r"><code>all_phone_numbers &lt;- permutations(10, 7, v = 0:9)
+n &lt;- nrow(all_phone_numbers)
+index &lt;- sample(n, 5)
+all_phone_numbers[index,]</code></pre>
+<pre><code>##      [,1] [,2] [,3] [,4] [,5] [,6] [,7]
+## [1,]    1    3    8    0    6    7    5
+## [2,]    2    9    1    6    4    8    0
+## [3,]    5    1    6    0    9    8    2
+## [4,]    7    4    6    0    2    8    1
+## [5,]    4    6    5    9    2    8    0</code></pre>
+<p>Instead of using the numbers 1 through 10, the default, it uses what we provided through <code>v</code>: the digits 0 through 9.</p>
+<p>To compute all possible ways we can choose two cards when the order matters, we type:</p>
+<pre class="r"><code>hands &lt;- permutations(52, 2, v = deck)</code></pre>
+<p>This is a matrix with two columns and 2652 rows. With a matrix we can get the first and second cards like this:</p>
+<pre class="r"><code>first_card &lt;- hands[,1]
+second_card &lt;- hands[,2]</code></pre>
+<p>Now the cases for which the first hand was a King can be computed like this:</p>
+<pre class="r"><code>kings &lt;- paste(&quot;King&quot;, suits)
+sum(first_card %in% kings)</code></pre>
+<pre><code>## [1] 204</code></pre>
+<p>To get the conditional probability, we compute what fraction of these have a King in the second card:</p>
+<pre class="r"><code>sum(first_card%in%kings &amp; second_card%in%kings) / sum(first_card%in%kings)</code></pre>
+<pre><code>## [1] 0.05882353</code></pre>
+<p>which is exactly 3/51, as we had already deduced. Notice that the code above is equivalent to:</p>
+<pre class="r"><code>mean(first_card%in%kings &amp; second_card%in%kings) / mean(first_card%in%kings)</code></pre>
+<pre><code>## [1] 0.05882353</code></pre>
+<p>which uses <code>mean</code> instead of <code>sum</code> and is an R version of:</p>
+<p><span class="math display">\[
+\frac{\mbox{Pr}(A \mbox{ and } B)}{ \mbox{Pr}(A)}
+\]</span></p>
+<p>How about if the order doesn’t matter? For example, in Blackjack if you get an Ace and a face card in the first draw, it is called a <em>Natural 21</em> and you win automatically. If we wanted to compute the probability of this happening, we would enumerate the <em>combinations</em>, not the permutations, since the order does not matter.</p>
+<pre class="r"><code>combinations(3,2)</code></pre>
+<pre><code>##      [,1] [,2]
+## [1,]    1    2
+## [2,]    1    3
+## [3,]    2    3</code></pre>
+<p>In the second line, the outcome does not include (2,1) because (1,2) already was enumerated. The same applies to (3,1) and (3,2).</p>
+<p>So to compute the probability of a <em>Natural 21</em> in Blackjack, we can do this:</p>
+<pre class="r"><code>aces &lt;- paste(&quot;Ace&quot;, suits)
+
+facecard &lt;- c(&quot;King&quot;, &quot;Queen&quot;, &quot;Jack&quot;, &quot;Ten&quot;)
+facecard &lt;- expand.grid(number = facecard, suit = suits)
+facecard &lt;- paste(facecard$number, facecard$suit)
+
+hands &lt;- combinations(52, 2, v = deck)
+mean(hands[,1] %in% aces &amp; hands[,2] %in% facecard)</code></pre>
+<pre><code>## [1] 0.04826546</code></pre>
+<p>In the last line, we assume the Ace comes first. This is only because we know the way <code>combination</code> enumerates possibilities and it will list this case first. But to be safe, we could have written this and produced the same answer:</p>
+<pre class="r"><code>mean((hands[,1] %in% aces &amp; hands[,2] %in% facecard) |
+       (hands[,2] %in% aces &amp; hands[,1] %in% facecard))</code></pre>
+<pre><code>## [1] 0.04826546</code></pre>
+<div id="monte-carlo-example" class="section level3">
+<h3>Monte Carlo example</h3>
+<p>Instead of using <code>combinations</code> to deduce the exact probability of a Natural 21, we can use a Monte Carlo to estimate this probability. In this case, we draw two cards over and over and keep track of how many 21s we get. We can use the function sample to draw two cards without replacements:</p>
+<pre class="r"><code>hand &lt;- sample(deck, 2)
+hand</code></pre>
+<pre><code>## [1] &quot;Queen Clubs&quot;  &quot;Seven Spades&quot;</code></pre>
+<p>And then check if one card is an Ace and the other a face card or a 10. Going forward, we include 10 when we say <em>face card</em>. Now we need to check both possibilities:</p>
+<pre class="r"><code>(hands[1] %in% aces &amp; hands[2] %in% facecard) |
+  (hands[2] %in% aces &amp; hands[1] %in% facecard)</code></pre>
+<pre><code>## [1] FALSE</code></pre>
+<p>If we repeat this 10,000 times, we get a very good approximation of the probability of a Natural 21.</p>
+<p>Let’s start by writing a function that draws a hand and returns TRUE if we get a 21. The function does not need any arguments because it uses objects defined in the global environment.</p>
+<pre class="r"><code>blackjack &lt;- function(){
+   hand &lt;- sample(deck, 2)
+  (hand[1] %in% aces &amp; hand[2] %in% facecard) |
+    (hand[2] %in% aces &amp; hand[1] %in% facecard)
+}</code></pre>
+<p>Here we do have to check both possibilities: Ace first or Ace second because we are not using the <code>combinations</code> function. The function returns <code>TRUE</code> if we get a 21 and <code>FALSE</code> otherwise:</p>
+<pre class="r"><code>blackjack()</code></pre>
+<pre><code>## [1] FALSE</code></pre>
+<p>Now we can play this game, say, 10,000 times:</p>
+<pre class="r"><code>B &lt;- 10000
+results &lt;- replicate(B, blackjack())
+mean(results)</code></pre>
+<pre><code>## [1] 0.0475</code></pre>
+</div>
+</div>
+<div id="examples" class="section level2">
+<h2>Examples</h2>
+<p>In this section, we describe two discrete probability popular examples: the Monty Hall problem and the birthday problem. We use R to help illustrate the mathematical concepts.</p>
+<div id="monty-hall-problem" class="section level3">
+<h3>Monty Hall problem</h3>
+<p>In the 1970s, there was a game show called “Let’s Make a Deal” and Monty Hall was the host. At some point in the game, contestants were asked to pick one of three doors. Behind one door there was a prize. The other doors had a goat behind them to show the contestant they had lost. After the contestant picked a door, before revealing whether the chosen door contained a prize, Monty Hall would open one of the two remaining doors and show the contestant there was no prize behind that door. Then he would ask “Do you want to switch doors?” What would you do?</p>
+<p>We can use probability to show that if you stick with the original door choice, your chances of winning a prize remain 1 in 3. However, if you switch to the other door, your chances of winning double to 2 in 3! This seems counterintuitive. Many people incorrectly think both chances are 1 in 2 since you are choosing between 2 options. You can watch a detailed mathematical explanation on Khan Academy<a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a> or read one on Wikipedia<a href="#fn3" class="footnote-ref" id="fnref3"><sup>3</sup></a>. Below we use a Monte Carlo simulation to see which strategy is better. Note that this code is written longer than it should be for pedagogical purposes.</p>
+<p>Let’s start with the stick strategy:</p>
+<pre class="r"><code>B &lt;- 10000
+monty_hall &lt;- function(strategy){
+  doors &lt;- as.character(1:3)
+  prize &lt;- sample(c(&quot;car&quot;, &quot;goat&quot;, &quot;goat&quot;))
+  prize_door &lt;- doors[prize == &quot;car&quot;]
+  my_pick  &lt;- sample(doors, 1)
+  show &lt;- sample(doors[!doors %in% c(my_pick, prize_door)],1)
+  stick &lt;- my_pick
+  stick == prize_door
+  switch &lt;- doors[!doors%in%c(my_pick, show)]
+  choice &lt;- ifelse(strategy == &quot;stick&quot;, stick, switch)
+  choice == prize_door
+}
+stick &lt;- replicate(B, monty_hall(&quot;stick&quot;))
+mean(stick)</code></pre>
+<pre><code>## [1] 0.3416</code></pre>
+<pre class="r"><code>switch &lt;- replicate(B, monty_hall(&quot;switch&quot;))
+mean(switch)</code></pre>
+<pre><code>## [1] 0.6682</code></pre>
+<p>As we write the code, we note that the lines starting with <code>my_pick</code> and <code>show</code> have no influence on the last logical operation when we stick to our original choice anyway. From this we should realize that the chance is 1 in 3, what we began with. When we switch,
+the Monte Carlo estimate confirms the 2/3 calculation. This helps us gain some insight by showing that we are removing a door, <code>show</code>, that is definitely not a winner from our choices. We also see that unless we get it right when we first pick, you win: 1 - 1/3 = 2/3.</p>
+</div>
+<div id="birthday-problem" class="section level3">
+<h3>Birthday problem</h3>
+<p>Suppose you are in a classroom with 50 people. If we assume this is a randomly selected group of 50 people, what is the chance that at least two people have the same birthday? Although it is somewhat advanced, we can deduce this mathematically. We will do this later. Here we use a Monte Carlo simulation. For simplicity, we assume nobody was born on February 29. This actually doesn’t change the answer much.</p>
+<p>First, note that birthdays can be represented as numbers between 1 and 365, so a sample of 50 birthdays can be obtained like this:</p>
+<pre class="r"><code>n &lt;- 50
+bdays &lt;- sample(1:365, n, replace = TRUE)</code></pre>
+<p>To check if in this particular set of 50 people we have at least two with the same birthday, we can use the function <code>duplicated</code>, which returns <code>TRUE</code> whenever an element of a vector is a duplicate. Here is an example:</p>
+<pre class="r"><code>duplicated(c(1,2,3,1,4,3,5))</code></pre>
+<pre><code>## [1] FALSE FALSE FALSE  TRUE FALSE  TRUE FALSE</code></pre>
+<p>The second time 1 and 3 appear, we get a <code>TRUE</code>. So to check if two birthdays were the same, we simply use the <code>any</code> and <code>duplicated</code> functions like this:</p>
+<pre class="r"><code>any(duplicated(bdays))</code></pre>
+<pre><code>## [1] TRUE</code></pre>
+<p>In this case, we see that it did happen. At least two people had the same birthday.</p>
+<p>To estimate the probability of a shared birthday in the group, we repeat this experiment by sampling sets of 50 birthdays over and over:</p>
+<pre class="r"><code>B &lt;- 10000
+same_birthday &lt;- function(n){
+  bdays &lt;- sample(1:365, n, replace=TRUE)
+  any(duplicated(bdays))
+}
+results &lt;- replicate(B, same_birthday(50))
+mean(results)</code></pre>
+<pre><code>## [1] 0.9691</code></pre>
+<p>Were you expecting the probability to be this high?</p>
+<p>People tend to underestimate these probabilities. To get an intuition as to why it is so high, think about what happens when the group size is close to 365. At this stage, we run out of days and the probability is one.</p>
+<p>Say we want to use this knowledge to bet with friends about two people having the same birthday in a group of people. When are the chances larger than 50%? Larger than 75%?</p>
+<p>Let’s create a look-up table. We can quickly create a function to compute this for any group size:</p>
+<pre class="r"><code>compute_prob &lt;- function(n, B=10000){
+  results &lt;- replicate(B, same_birthday(n))
+  mean(results)
+}</code></pre>
+<p>Using the function <code>sapply</code>, we can perform element-wise operations on any function:</p>
+<pre class="r"><code>n &lt;- seq(1,60)
+prob &lt;- sapply(n, compute_prob)</code></pre>
+<p>We can now make a plot of the estimated probabilities of two people having the same birthday in a group of size <span class="math inline">\(n\)</span>:</p>
+<pre class="r"><code>library(tidyverse)
+prob &lt;- sapply(n, compute_prob)
+qplot(n, prob)</code></pre>
+<p><img src="/content/04-content_files/figure-html/birthday-problem-mc-probabilities-1.png" width="672" /></p>
+<p>Now let’s compute the exact probabilities rather than use Monte Carlo approximations. Not only do we get the exact answer using math, but the computations are much faster since we don’t have to generate experiments.</p>
+<p>To make the math simpler, instead of computing the probability of it happening, we will compute the probability of it not happening. For this, we use the multiplication rule.</p>
+<p>Let’s start with the first person. The probability that person 1 has a unique birthday is 1. The probability that person 2 has a unique birthday, given that person 1 already took one, is 364/365. Then, given that the first two people have unique birthdays, person 3 is left with 363 days to choose from. We continue this way and find the chances of all 50 people having a unique birthday is:</p>
+<p><span class="math display">\[
+1 \times \frac{364}{365}\times\frac{363}{365} \dots \frac{365-n + 1}{365}
+\]</span></p>
+<p>We can write a function that does this for any number:</p>
+<pre class="r"><code>exact_prob &lt;- function(n){
+  prob_unique &lt;- seq(365,365-n+1)/365
+  1 - prod( prob_unique)
+}
+eprob &lt;- sapply(n, exact_prob)
+qplot(n, prob) + geom_line(aes(n, eprob), col = &quot;red&quot;)</code></pre>
+<p><img src="/content/04-content_files/figure-html/birthday-problem-exact-probabilities-1.png" width="672" /></p>
+<p>This plot shows that the Monte Carlo simulation provided a very good estimate of the exact probability. Had it not been possible to compute the exact probabilities, we would have still been able to accurately estimate the probabilities.</p>
+</div>
+</div>
+<div id="infinity-in-practice" class="section level2">
+<h2>Infinity in practice</h2>
+<p>The theory described here requires repeating experiments over and over forever. In practice we can’t do this.
+In the examples above, we used <span class="math inline">\(B=10,000\)</span> Monte Carlo experiments and it turned out that this provided accurate estimates. The larger this number, the more accurate the estimate becomes until the approximaton is so good that your computer can’t tell the difference. But in more complex calculations, 10,000 may not be nearly enough. Also, for some calculations, 10,000 experiments might not be computationally feasible. In practice, we won’t know what the answer is, so we won’t know if our Monte Carlo estimate is accurate. We know that the larger <span class="math inline">\(B\)</span>, the better the approximation. But how big do we need it to be? This is actually a challenging question and answering it often requires advanced theoretical statistics training.</p>
+<p>One practical approach we will describe here is to check for the stability of the estimate. The following is an example with the birthday problem for a group of 25 people.</p>
+<pre class="r"><code>B &lt;- 10^seq(1, 5, len = 100)
+compute_prob &lt;- function(B, n=25){
+  same_day &lt;- replicate(B, same_birthday(n))
+  mean(same_day)
+}
+prob &lt;- sapply(B, compute_prob)
+qplot(log10(B), prob, geom = &quot;line&quot;)</code></pre>
+<p><img src="/content/04-content_files/figure-html/monte-carlo-convergence-1.png" width="672" /></p>
+<p>In this plot, we can see that the values start to stabilize (that is, they vary less than .01) around 1000. Note that the exact probability, which we know in this case, is 0.5686997.</p>
+<div class="fyi">
+<p><strong>TRY IT</strong></p>
+<ol style="list-style-type: decimal">
+<li><p>One ball will be drawn at random from a box containing: 3 cyan balls, 5 magenta balls, and 7 yellow balls. What is the probability that the ball will be cyan?</p></li>
+<li><p>What is the probability that the ball will not be cyan?</p></li>
+<li><p>Instead of taking just one draw, consider taking two draws. You take the second draw without returning the first draw to the box. We call this sampling <strong>without</strong> replacement. What is the probability that the first draw is cyan and that the second draw is not cyan?</p></li>
+<li><p>Now repeat the experiment, but this time, after taking the first draw and recording the color, return it to the box and shake the box. We call this sampling <strong>with</strong> replacement. What is the probability that the first draw is cyan and that the second draw is not cyan?</p></li>
+<li><p>Two events <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span> are independent if <span class="math inline">\(\mbox{Pr}(A \mbox{ and } B) = \mbox{Pr}(A) P(B)\)</span>. Under which situation are the draws independent?</p></li>
+</ol>
+<ol style="list-style-type: lower-alpha">
+<li>You don’t replace the draw.</li>
+<li>You replace the draw.</li>
+<li>Neither</li>
+<li>Both</li>
+</ol>
+<ol start="6" style="list-style-type: decimal">
+<li><p>Say you’ve drawn 5 balls from the box, with replacement, and all have been yellow. What is the probability that the next one is yellow?</p></li>
+<li><p>If you roll a 6-sided die six times, what is the probability of not seeing a 6?</p></li>
+<li><p>Two teams, say the Celtics and the Cavs, are playing a seven game series. The Cavs are a better team and have a 60% chance of winning each game. What is the probability that the Celtics win <strong>at least</strong> one game?</p></li>
+<li><p>Create a Monte Carlo simulation to confirm your answer to the previous problem. Use <code>B &lt;- 10000</code> simulations. Hint: use the following code to generate the results of the first four games:</p></li>
+</ol>
+<pre class="r"><code>celtic_wins &lt;- sample(c(0,1), 4, replace = TRUE, prob = c(0.6, 0.4))</code></pre>
+<p>The Celtics must win one of these 4 games.</p>
+<ol start="10" style="list-style-type: decimal">
+<li><p>Two teams, say the Cavs and the Warriors, are playing a seven game championship series. The first to win four games, therefore, wins the series. The teams are equally good so they each have a 50-50 chance of winning each game. If the Cavs lose the first game, what is the probability that they win the series?</p></li>
+<li><p>Confirm the results of the previous question with a Monte Carlo simulation.</p></li>
+<li><p>Two teams, <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span>, are playing a seven game series. Team <span class="math inline">\(A\)</span> is better than team <span class="math inline">\(B\)</span> and has a <span class="math inline">\(p&gt;0.5\)</span> chance of winning each game. Given a value <span class="math inline">\(p\)</span>, the probability of winning the series for the underdog team <span class="math inline">\(B\)</span> can be computed with the following function based on a Monte Carlo simulation:</p></li>
+</ol>
+<pre class="r"><code>prob_win &lt;- function(p){
+  B &lt;- 10000
+  result &lt;- replicate(B, {
+    b_win &lt;- sample(c(1,0), 7, replace = TRUE, prob = c(1-p, p))
+    sum(b_win)&gt;=4
+  })
+  mean(result)
+}</code></pre>
+<p>Use the function <code>sapply</code> to compute the probability, call it <code>Pr</code>, of winning for <code>p &lt;- seq(0.5, 0.95, 0.025)</code>. Then plot the result.</p>
+<ol start="13" style="list-style-type: decimal">
+<li>Repeat the exercise above, but now keep the probability fixed at <code>p &lt;- 0.75</code> and compute the probability for different series lengths: best of 1 game, 3 games, 5 games,… Specifically, <code>N &lt;- seq(1, 25, 2)</code>. Hint: use this function:</li>
+</ol>
+<pre class="r"><code>prob_win &lt;- function(N, p=0.75){
+  B &lt;- 10000
+  result &lt;- replicate(B, {
+    b_win &lt;- sample(c(1,0), N, replace = TRUE, prob = c(1-p, p))
+    sum(b_win)&gt;=(N+1)/2
+  })
+  mean(result)
+}</code></pre>
+</div>
+</div>
+<div class="footnotes">
+<hr />
+<ol>
+<li id="fn1"><p><a href="https://en.wikipedia.org/wiki/Urn_problem" class="uri">https://en.wikipedia.org/wiki/Urn_problem</a><a href="#fnref1" class="footnote-back">↩︎</a></p></li>
+<li id="fn2"><p><a href="https://www.khanacademy.org/math/precalculus/prob-comb/dependent-events-precalc/v/monty-hall-problem" class="uri">https://www.khanacademy.org/math/precalculus/prob-comb/dependent-events-precalc/v/monty-hall-problem</a><a href="#fnref2" class="footnote-back">↩︎</a></p></li>
+<li id="fn3"><p><a href="https://en.wikipedia.org/wiki/Monty_Hall_problem" class="uri">https://en.wikipedia.org/wiki/Monty_Hall_problem</a><a href="#fnref3" class="footnote-back">↩︎</a></p></li>
+</ol>
+</div>
+
+                    </div>
+
+                    
+
+
+
+                    
+                </div>
+
+                <div class="body-footer">
+                    <p>Last updated on July 7, 2020</p>
+
+                    
+
+
+                    
+
+                </div>
+
+            </article>
+
+            <footer>
+    <hr>
+
+    <div class="row course-info">
+        <div class="col-md-7">
+            <p>
+                <strong>SSC 442: Data Analytics (Fall Semester 2020)</strong><br>
+
+                <a href="https://www.msu.edu" target="_blank" rel="noopener">Michigan State University</a> &emsp;&emsp;
+                <a href="https://socialscience.msu.edu/" target="_blank" rel="noopener">College of Social Science</a>
+            </p>
+
+            <p>
+                <a href="https://www.benbushong.com" target="_blank" rel="noopener"><i class="fas fa-user"></i>
+                    Prof. Ben Bushong</a> &emsp;&emsp;
+                <a href="mailto:bbushong@msu.edu"><i class="fas fa-envelope"></i>
+                    bbushong@msu.edu</a>
+            </p>
+
+            <p>
+                <i class="far fa-calendar-alt"></i> Tuesday and Thursday &emsp;&emsp;
+                <i class="far fa-clock"></i> 10:20 - 11:40 AM 
+                
+            </p>
+        </div>
+
+        <div class="col-md-5 credits">
+            <p>All content licensed under a <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" rel="noopener">Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International License</a>.</p>
+            
+            <p>Content <i class="fab fa-creative-commons"></i> 2020 <a href="https://www.benbushong.com" target="_blank" rel="noopener">Ben Bushong</a></p>
+        
+            <p>This site created with the <a href="https://sourcethemes.com/academic/" target="_blank" rel="noopener">Academic theme</a> in <a href="https://bookdown.org/yihui/blogdown/" target="_blank" rel="noopener">blogdown</a> and <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a>. </p>
+            
+            <p><a href="https://github.com/" target="_blank" rel="noopener"><i class="fab fa-github"></i> View the source at GitHub.</a></p>
+        </div>
+    </div>
+</footer>
+
+
+        </main>
+    </div>
+</div>
+
+        
+
+    
+    
+    
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/4.1.4/imagesloaded.pkgd.min.js" integrity="sha256-lqvxZrPLtfffUl2G/e7szqSvPBILGbwmsGE1MKlOi0Q=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.6/isotope.pkgd.min.js" integrity="sha256-CBrpuqrMhXwcLLUd5tvQ4euBHCdh7wGlDfNz8vbu/iI=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+
+      
+
+      
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/highlight.min.js" integrity="sha256-eOgo0OtLL4cdq7RdwRUiGKLX9XsIJ7nGhWEKbohmVAQ=" crossorigin="anonymous"></script>
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/languages/r.min.js"></script>
+        
+      
+
+    
+
+    
+    
+
+    
+    
+    <script>const code_highlighting = true;</script>
+    
+
+    
+    
+    <script>const isSiteThemeDark = false;</script>
+    
+
+    
+
+    
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/anchor-js/4.1.1/anchor.min.js" integrity="sha256-pB/deHc9CGfFpJRjC43imB29Rse8tak+5eXqntO94ck=" crossorigin="anonymous"></script>
+    <script>
+      anchors.add();
+    </script>
+    
+
+    
+
+    
+    
+
+    
+    
+
+    
+    
+
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <script src="/js/academic.min.6f7ce8be710290b8c431bbc97f405d15.js"></script>
+
+    
+
+
+
+    
+    
+
+    
+<div id="modal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Cite</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <pre><code class="tex hljs"></code></pre>
+      </div>
+      <div class="modal-footer">
+        <a class="btn btn-outline-primary my-1 js-copy-cite" href="#" target="_blank">
+          <i class="fas fa-copy"></i> Copy
+        </a>
+        <a class="btn btn-outline-primary my-1 js-download-cite" href="#" target="_blank">
+          <i class="fas fa-download"></i> Download
+        </a>
+        <div id="modal-error"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+
+</html>
