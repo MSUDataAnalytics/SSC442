@@ -1705,6 +1705,226 @@ ggsave(&amp;quot;china_co2.png&amp;quot;, plot_china, width = 1, height = 0.15, 
     </item>
     
     <item>
+      <title>Visualizing Uncertainty</title>
+      <link>/example/04-example/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>/example/04-example/</guid>
+      <description>
+
+&lt;div id=&#34;TOC&#34;&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#uncertainty&#34;&gt;Uncertainty&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#preliminaries&#34;&gt;Preliminaries&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#code&#34;&gt;Code&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#load-and-clean-data&#34;&gt;Load and clean data&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#histograms&#34;&gt;Histograms&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#density-plots&#34;&gt;Density plots&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#box-violin-and-rain-cloud-plots&#34;&gt;Box, violin, and rain cloud plots&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+
+&lt;div id=&#34;uncertainty&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Uncertainty&lt;/h1&gt;
+&lt;p&gt;It is quite easy to find articles online that use probabilistic words to describe events. Here are some examples:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;“‘Highly unlikely’ State of the Union will happen amid shutdown” – The Hill
+“Tiger Woods makes Masters 15th and most improbable major” – Fox
+“Trump predicts ‘very good chance’ of China trade deal” – CNN&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Yet people don’t have a good sense of what these things mean. Uncertainty is key to data analytics: if we were certain of things, A study in the 1960s explored the perception of probabilistic words like these among NATO officers. A more modern replication of this found the following basic pattern:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/img/words.png&#34; width=&#34;80%&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;A deep, basic fact about humans: we struggle to understand probabilities. But visualizing things can help. The graphic above shows the uncertainty about uncertainty (very meta). We can convey all manner of uncertainty with clever graphics. Today’s practical example works through some of the myriad of ways to visualize variable data.&lt;/p&gt;
+&lt;div id=&#34;preliminaries&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Preliminaries&lt;/h2&gt;
+&lt;p&gt;For this example, we’re going to use historical weather data from &lt;a href=&#34;https://darksky.net/forecast/33.7546,-84.39/us12/en&#34;&gt;Dark Sky&lt;/a&gt; about wind speed and temperature trends for downtown Atlanta (&lt;a href=&#34;https://www.google.com/maps/place/33°45&amp;#39;16.4%22N+84°23&amp;#39;24.0%22W/@33.754557,-84.3921977,17z/&#34;&gt;specifically &lt;code&gt;33.754557, -84.390009&lt;/code&gt;&lt;/a&gt;) in 2019. I downloaded this data using Dark Sky’s (about-to-be-retired-because-they-were-bought-by-Apple) API using the &lt;a href=&#34;https://github.com/hrbrmstr/darksky&#34;&gt;&lt;strong&gt;darksky&lt;/strong&gt; package&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;If you want to follow along with this example, you can download the data below (you’ll likely need to right click and choose “Save Link As…”):&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;/data/atl-weather-2019.csv&#34;&gt;&lt;i class=&#34;fas fa-file-csv&#34;&gt;&lt;/i&gt; &lt;code&gt;atl-weather-2019.csv&lt;/code&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;div id=&#34;code&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Code&lt;/h2&gt;
+&lt;div id=&#34;load-and-clean-data&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Load and clean data&lt;/h3&gt;
+&lt;p&gt;First, we load the libraries we’ll be using:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(tidyverse)
+library(lubridate)
+library(ggridges)
+library(gghalves)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Then we load the data with &lt;code&gt;read_csv()&lt;/code&gt;. Here I assume that the CSV file lives in a subfolder in my project named &lt;code&gt;data&lt;/code&gt;:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;weather_atl_raw &amp;lt;- read_csv(&amp;quot;data/atl-weather-2019.csv&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;We’ll add a couple columns that we can use for faceting and filling using the &lt;code&gt;month()&lt;/code&gt; and &lt;code&gt;wday()&lt;/code&gt; functions from &lt;strong&gt;lubridate&lt;/strong&gt; for extracting parts of the date:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;weather_atl &amp;lt;- weather_atl_raw %&amp;gt;%
+  mutate(Month = month(time, label = TRUE, abbr = FALSE),
+         Day = wday(time, label = TRUE, abbr = FALSE))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Now we’re ready to go!&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;histograms&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Histograms&lt;/h3&gt;
+&lt;p&gt;We can first make a histogram of wind speed. We’ll use a bin width of 1 and color the edges of the bars white:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(weather_atl, aes(x = windSpeed)) +
+  geom_histogram(binwidth = 1, color = &amp;quot;white&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/example/04-example_files/figure-html/basic-histogram-1.png&#34; width=&#34;576&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;This is fine enough, but we can improve it by forcing the buckets/bins to start at whole numbers instead of containing ranges like 2.5–3.5. We’ll use the &lt;code&gt;boundary&lt;/code&gt; argument for that. We also add &lt;code&gt;scale_x_continuous()&lt;/code&gt; to add our own x-axis breaks instead of having things like 2.5, 5, and 7.5:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(weather_atl, aes(x = windSpeed)) +
+  geom_histogram(binwidth = 1, color = &amp;quot;white&amp;quot;, boundary = 1) +
+  scale_x_continuous(breaks = seq(0, 12, by = 1))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/example/04-example_files/figure-html/basic-histogram-better-1.png&#34; width=&#34;576&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;We can show the distribution of wind speed by month if we map the &lt;code&gt;Month&lt;/code&gt; column we made onto the fill aesthetic:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(weather_atl, aes(x = windSpeed, fill = Month)) +
+  geom_histogram(binwidth = 1, color = &amp;quot;white&amp;quot;, boundary = 1) +
+  scale_x_continuous(breaks = seq(0, 12, by = 1))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/example/04-example_files/figure-html/histogram-by-month-1.png&#34; width=&#34;576&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;This is colorful, but it’s impossible to actually interpret. Instead of only filling, we’ll also facet by month to see separate graphs for each month. We can turn off the fill legend because it’s now redundant.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(weather_atl, aes(x = windSpeed, fill = Month)) +
+  geom_histogram(binwidth = 1, color = &amp;quot;white&amp;quot;, boundary = 1) +
+  scale_x_continuous(breaks = seq(0, 12, by = 1)) +
+  guides(fill = FALSE) +
+  facet_wrap(vars(Month))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/example/04-example_files/figure-html/histogram-by-month-facet-1.png&#34; width=&#34;768&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Neat! January, March, and April appear to have the most variation in windy days, with a few wind-less days and a few very-windy days, while August was very wind-less.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;density-plots&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Density plots&lt;/h3&gt;
+&lt;p&gt;The code to create a density plot is nearly identical to what we used for the histogram—the only thing we change is the &lt;code&gt;geom&lt;/code&gt; layer:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(weather_atl, aes(x = windSpeed)) +
+  geom_density(color = &amp;quot;grey20&amp;quot;, fill = &amp;quot;grey50&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/example/04-example_files/figure-html/basic-density-1.png&#34; width=&#34;576&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;If we want, we can mess with some of the calculus options like the kernel and bandwidth:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(weather_atl, aes(x = windSpeed)) +
+  geom_density(color = &amp;quot;grey20&amp;quot;, fill = &amp;quot;grey50&amp;quot;,
+               bw = 0.1, kernel = &amp;quot;epanechnikov&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/example/04-example_files/figure-html/density-kernel-bw-1.png&#34; width=&#34;576&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;We can also fill by month. We’ll make the different layers 50% transparent so we can kind of see through the whole stack:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(weather_atl, aes(x = windSpeed, fill = Month)) +
+  geom_density(alpha = 0.5)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/example/04-example_files/figure-html/density-fill-by-month-1.png&#34; width=&#34;576&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Even with the transparency, this is really hard to interpret. We can fix this by faceting, like we did with the histograms:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(weather_atl, aes(x = windSpeed, fill = Month)) +
+  geom_density(alpha = 0.5) +
+  guides(fill = FALSE) +
+  facet_wrap(vars(Month))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/example/04-example_files/figure-html/density-facet-by-month-1.png&#34; width=&#34;768&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Or we can stack the density plots behind each other with &lt;a href=&#34;https://cran.r-project.org/web/packages/ggridges/vignettes/introduction.html&#34;&gt;&lt;strong&gt;ggridges&lt;/strong&gt;&lt;/a&gt;. For that to work, we also need to map &lt;code&gt;Month&lt;/code&gt; to the y-axis. We can reverse the y-axis so that January is at the top if we use the &lt;code&gt;fct_rev()&lt;/code&gt; function:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(weather_atl, aes(x = windSpeed, y = fct_rev(Month), fill = Month)) +
+  geom_density_ridges() +
+  guides(fill = FALSE)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/example/04-example_files/figure-html/ggridges-basic-1.png&#34; width=&#34;576&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;We can add some extra information to &lt;code&gt;geom_density_ridges()&lt;/code&gt; with some other arguments like &lt;code&gt;quantile_lines&lt;/code&gt;. We can use the &lt;code&gt;quantiles&lt;/code&gt; argument to tell the plow how many parts to be cut into. Since we just want to show the median, we’ll set that to 2 so each density plot is divided in half:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(weather_atl, aes(x = windSpeed, y = fct_rev(Month), fill = Month)) +
+  geom_density_ridges(quantile_lines = TRUE, quantiles = 2) +
+  guides(fill = FALSE)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/example/04-example_files/figure-html/ggridges-quantile-1.png&#34; width=&#34;576&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Now that we have good working code, we can easily substitute in other variables by changing the x mapping:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(weather_atl, aes(x = temperatureHigh, y = fct_rev(Month), fill = Month)) +
+  geom_density_ridges(quantile_lines = TRUE, quantiles = 2) +
+  guides(fill = FALSE)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/example/04-example_files/figure-html/ggridges-quantile-temp-1.png&#34; width=&#34;576&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;We can get extra fancy if we fill by temperature instead of filling by month. To get this to work, we need to use &lt;code&gt;geom_density_ridges_gradient()&lt;/code&gt;, and we need to change the &lt;code&gt;fill&lt;/code&gt; mapping to the strange looking &lt;code&gt;..x..&lt;/code&gt;, which is a weird ggplot trick that tells it to use the variable we mapped to the x-axis. For whatever reason, &lt;code&gt;fill = temperatureHigh&lt;/code&gt; doesn’t work 🤷:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(weather_atl, aes(x = temperatureHigh, y = fct_rev(Month), fill = ..x..)) +
+  geom_density_ridges_gradient(quantile_lines = TRUE, quantiles = 2) +
+  scale_fill_viridis_c(option = &amp;quot;plasma&amp;quot;) +
+  labs(x = &amp;quot;High temperature&amp;quot;, y = NULL, color = &amp;quot;Temp&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/example/04-example_files/figure-html/ggridges-gradient-temp-1.png&#34; width=&#34;576&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;And finally, we can get &lt;em&gt;extra&lt;/em&gt; fancy and show the distributions for both the high and low temperatures each month. To make this work, we need to manipulate the data a little. Right now there are two columns for high and low temperature: &lt;code&gt;temperatureLow&lt;/code&gt; and &lt;code&gt;temperatureHigh&lt;/code&gt;. To be able to map temperature to the x-axis and high vs. low to another aesthetic (like &lt;code&gt;linetype&lt;/code&gt;), we need a column with the temperature and a column with an indicator variable for whether it is high or low. This data needs to be tidied (since right now we have a variable (high/low) encoded in the column name). We can tidy this data using &lt;code&gt;pivot_longer()&lt;/code&gt; from &lt;strong&gt;tidyr&lt;/strong&gt;, which was already loaded with &lt;code&gt;library(tidyverse)&lt;/code&gt;. In the RStudio primers, you did this same thing with &lt;code&gt;gather()&lt;/code&gt;—&lt;code&gt;pivot_longer()&lt;/code&gt; is the newer version of &lt;code&gt;gather()&lt;/code&gt;:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;weather_atl_long &amp;lt;- weather_atl %&amp;gt;%
+  pivot_longer(cols = c(temperatureLow, temperatureHigh),
+               names_to = &amp;quot;temp_type&amp;quot;,
+               values_to = &amp;quot;temp&amp;quot;) %&amp;gt;%
+  # Clean up the new temp_type column so that &amp;quot;temperatureHigh&amp;quot; becomes &amp;quot;High&amp;quot;, etc.
+  mutate(temp_type = recode(temp_type,
+                            temperatureHigh = &amp;quot;High&amp;quot;,
+                            temperatureLow = &amp;quot;Low&amp;quot;)) %&amp;gt;%
+  # This is optional—just select a handful of columns
+  select(time, temp_type, temp, Month)
+
+# Show the first few rows
+head(weather_atl_long)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 6 x 4
+##   time                temp_type  temp Month  
+##   &amp;lt;dttm&amp;gt;              &amp;lt;chr&amp;gt;     &amp;lt;dbl&amp;gt; &amp;lt;ord&amp;gt;  
+## 1 2019-01-01 05:00:00 Low        50.6 January
+## 2 2019-01-01 05:00:00 High       63.9 January
+## 3 2019-01-02 05:00:00 Low        49.0 January
+## 4 2019-01-02 05:00:00 High       57.4 January
+## 5 2019-01-03 05:00:00 Low        53.1 January
+## 6 2019-01-03 05:00:00 High       55.3 January&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Now we have a column for the temperature (&lt;code&gt;temp&lt;/code&gt;) and a column indicating if it is high or low (&lt;code&gt;temp_type&lt;/code&gt;). The dataset is also twice as long (730 rows) because each day has two rows (high and low). Let’s plot it and map high/low to the &lt;code&gt;linetype&lt;/code&gt; aesthetic to show high/low in the border of the plots:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(weather_atl_long, aes(x = temp, y = fct_rev(Month),
+                             fill = ..x.., linetype = temp_type)) +
+  geom_density_ridges_gradient(quantile_lines = TRUE, quantiles = 2) +
+  scale_fill_viridis_c(option = &amp;quot;plasma&amp;quot;) +
+  labs(x = &amp;quot;High temperature&amp;quot;, y = NULL, color = &amp;quot;Temp&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/example/04-example_files/figure-html/ggridges-gradient-temp-high-low-1.png&#34; width=&#34;576&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;We can see much wider temperature disparities during the summer, with large gaps between high and low, and relatively equal high/low temperatures during the winter.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;box-violin-and-rain-cloud-plots&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Box, violin, and rain cloud plots&lt;/h3&gt;
+&lt;p&gt;Finally, we can look at the distribution of variables with box plots, violin plots, and other similar graphs. First, we’ll make a box plot of windspeed, filled by the &lt;code&gt;Day&lt;/code&gt; variable we made indicating weekday:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(weather_atl,
+       aes(y = windSpeed, fill = Day)) +
+  geom_boxplot()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/example/04-example_files/figure-html/basic-boxplot-1.png&#34; width=&#34;576&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;We can switch this to a violin plot by just changing the &lt;code&gt;geom&lt;/code&gt; layer and mapping &lt;code&gt;Day&lt;/code&gt; to the x-axis:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(weather_atl,
+       aes(y = windSpeed, x = Day, fill = Day)) +
+  geom_violin()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/example/04-example_files/figure-html/basic-violin-1.png&#34; width=&#34;576&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;With violin plots it’s typically good to overlay other geoms. We can add some jittered points for a strip plot:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(weather_atl,
+       aes(y = windSpeed, x = Day, fill = Day)) +
+  geom_violin() +
+  geom_point(size = 0.5, position = position_jitter(width = 0.1)) +
+  guides(fill = FALSE)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/example/04-example_files/figure-html/violin-strip-1.png&#34; width=&#34;576&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;We can also add larger points for the daily averages. We’ll use a special layer for this: &lt;code&gt;stat_summary()&lt;/code&gt;. It has a slightly different syntax, since we’re not actually mapping a column from the dataset. Instead, we’re feeding a column from a dataset into a function (here &lt;code&gt;&#34;mean&#34;&lt;/code&gt;) and then plotting that result:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(weather_atl,
+       aes(y = windSpeed, x = Day, fill = Day)) +
+  geom_violin() +
+  stat_summary(geom = &amp;quot;point&amp;quot;, fun = &amp;quot;mean&amp;quot;, size = 5, color = &amp;quot;white&amp;quot;) +
+  geom_point(size = 0.5, position = position_jitter(width = 0.1)) +
+  guides(fill = FALSE)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/example/04-example_files/figure-html/violin-strip-mean-1.png&#34; width=&#34;576&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;We can also show the mean and confidence interval at the same time by changing the summary function:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(weather_atl,
+       aes(y = windSpeed, x = Day, fill = Day)) +
+  geom_violin() +
+  stat_summary(geom = &amp;quot;pointrange&amp;quot;, fun.data = &amp;quot;mean_se&amp;quot;, size = 1, color = &amp;quot;white&amp;quot;) +
+  geom_point(size = 0.5, position = position_jitter(width = 0.1)) +
+  guides(fill = FALSE)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/example/04-example_files/figure-html/violin-strip-mean-ci-1.png&#34; width=&#34;576&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Overlaying the points directly on top of the violins shows extra information, but it’s also really crowded and hard to read. If we use &lt;a href=&#34;https://github.com/erocoar/gghalves&#34;&gt;the &lt;strong&gt;gghalves&lt;/strong&gt; package&lt;/a&gt;, we can use special halved versions of some of these geoms like so:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(weather_atl,
+       aes(x = fct_rev(Day), y = temperatureHigh)) +
+  geom_half_point(aes(color = Day), side = &amp;quot;l&amp;quot;, size = 0.5) +
+  geom_half_boxplot(aes(fill = Day), side = &amp;quot;r&amp;quot;) +
+  guides(color = FALSE, fill = FALSE)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/example/04-example_files/figure-html/gghalves-point-boxplot-1.png&#34; width=&#34;576&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Note the &lt;code&gt;side&lt;/code&gt; argument for specifying which half of the column the geom goes. We can also use &lt;code&gt;geom_half_violin()&lt;/code&gt;:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(weather_atl,
+       aes(x = fct_rev(Day), y = temperatureHigh)) +
+  geom_half_point(aes(color = Day), side = &amp;quot;l&amp;quot;, size = 0.5) +
+  geom_half_violin(aes(fill = Day), side = &amp;quot;r&amp;quot;) +
+  guides(color = FALSE, fill = FALSE)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/example/04-example_files/figure-html/gghalves-point-violon-1.png&#34; width=&#34;576&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;If we flip the plot, we can make a &lt;a href=&#34;https://micahallen.org/2018/03/15/introducing-raincloud-plots/&#34;&gt;rain cloud plot&lt;/a&gt;:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(weather_atl,
+       aes(x = fct_rev(Day), y = temperatureHigh)) +
+  geom_half_boxplot(aes(fill = Day), side = &amp;quot;l&amp;quot;, width = 0.5, nudge = 0.1) +
+  geom_half_point(aes(color = Day), side = &amp;quot;l&amp;quot;, size = 0.5) +
+  geom_half_violin(aes(fill = Day), side = &amp;quot;r&amp;quot;) +
+  guides(color = FALSE, fill = FALSE) +
+  coord_flip()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/example/04-example_files/figure-html/gghalves-rain-cloud-1.png&#34; width=&#34;768&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    
+    <item>
       <title>Design</title>
       <link>/resource/design/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
@@ -3712,6 +3932,12 @@ dat &amp;lt;- us_contagious_diseases %&amp;gt;%
 &lt;li&gt;&lt;a href=&#34;#birthday-problem&#34;&gt;Birthday problem&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;#infinity-in-practice&#34;&gt;Infinity in practice&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#theoretical-continuous-distributions&#34;&gt;Theoretical continuous distributions&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#theoretical-distributions-as-approximations&#34;&gt;Theoretical distributions as approximations&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#the-probability-density&#34;&gt;The probability density&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#monte-carlo-simulations-for-continuous-variables&#34;&gt;Monte Carlo simulations for continuous variables&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#continuous-distributions&#34;&gt;Continuous distributions&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/div&gt;
 
@@ -3806,12 +4032,12 @@ events &amp;lt;- replicate(B, sample(beads, 1))&lt;/code&gt;&lt;/pre&gt;
 tab&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## events
 ## blue  red 
-## 5962 4038&lt;/code&gt;&lt;/pre&gt;
+## 6007 3993&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;and &lt;code&gt;prop.table&lt;/code&gt; gives us the proportions:&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;prop.table(tab)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## events
 ##   blue    red 
-## 0.5962 0.4038&lt;/code&gt;&lt;/pre&gt;
+## 0.6007 0.3993&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;The numbers above are the estimated probabilities provided by this Monte Carlo simulation. Statistical theory, not covered here, tells us that as &lt;span class=&#34;math inline&#34;&gt;\(B\)&lt;/span&gt; gets larger, the estimates get closer to 3/5=.6 and 2/5=.4.&lt;/p&gt;
 &lt;p&gt;Although this is a simple and not very useful example, we will use Monte Carlo simulations to estimate probabilities in cases in which it is harder to compute the exact ones. Before delving into more complex examples, we use simple ones to demonstrate the computing tools available in R.&lt;/p&gt;
 &lt;div id=&#34;setting-the-random-seed&#34; class=&#34;section level3&#34;&gt;
@@ -4179,6 +4405,145 @@ qplot(log10(B), prob, geom = &amp;quot;line&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
   mean(result)
 }&lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
+&lt;p&gt;In previous lectures, we explained why when summarizing a list of numeric values, such as heights, it is not useful to construct a distribution that defines a proportion to each possible outcome. For example, if we measure every single person in a very large population of size &lt;span class=&#34;math inline&#34;&gt;\(n\)&lt;/span&gt; with extremely high precision, since no two people are exactly the same height, we need to assign the proportion &lt;span class=&#34;math inline&#34;&gt;\(1/n\)&lt;/span&gt; to each observed value and attain no useful summary at all. Similarly, when defining probability distributions, it is not useful to assign a very small probability to every single height.&lt;/p&gt;
+&lt;p&gt;Just as when using distributions to summarize numeric data, it is much more practical to define a function that operates on intervals rather than single values. The standard way of doing this is using the &lt;em&gt;cumulative distribution function&lt;/em&gt; (CDF).&lt;/p&gt;
+&lt;p&gt;We described empirical cumulative distribution function (eCDF) in Section &lt;a href=&#34;#cdf-intro&#34;&gt;&lt;strong&gt;??&lt;/strong&gt;&lt;/a&gt; as a basic summary of a list of numeric values. As an example, we earlier defined the height distribution for adult male students. Here, we define the vector &lt;span class=&#34;math inline&#34;&gt;\(x\)&lt;/span&gt; to contain these heights:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(tidyverse)
+library(dslabs)
+data(heights)
+x &amp;lt;- heights %&amp;gt;% filter(sex==&amp;quot;Male&amp;quot;) %&amp;gt;% pull(height)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;We defined the empirical distribution function as:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;F &amp;lt;- function(a) mean(x&amp;lt;=a)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;which, for any value &lt;code&gt;a&lt;/code&gt;, gives the proportion of values in the list &lt;code&gt;x&lt;/code&gt; that are smaller or equal than &lt;code&gt;a&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;Keep in mind that we have not yet introduced probability in the context of CDFs. Let’s do this by asking the following: if I pick one of the male students at random, what is the chance that he is taller than 70.5 inches? Because every student has the same chance of being picked, the answer to this is equivalent to the proportion of students that are taller than 70.5 inches. Using the CDF we obtain an answer by typing:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;1 - F(70)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 0.3768473&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Once a CDF is defined, we can use this to compute the probability of any subset. For instance, the probability of a student being between height &lt;code&gt;a&lt;/code&gt; and height &lt;code&gt;b&lt;/code&gt; is:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;F(b)-F(a)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Because we can compute the probability for any possible event this way, the cumulative probability function defines the probability distribution for picking a height at random from our vector of heights &lt;code&gt;x&lt;/code&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;theoretical-continuous-distributions&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Theoretical continuous distributions&lt;/h2&gt;
+&lt;p&gt;The normal distribution is a useful approximation to many naturally occurring distributions, including that of height. The cumulative distribution for the normal distribution is defined by a mathematical formula which in &lt;code&gt;R&lt;/code&gt; can be obtained with the function &lt;code&gt;pnorm&lt;/code&gt;. We say that a random quantity is normally distributed with average &lt;code&gt;m&lt;/code&gt; and standard deviation &lt;code&gt;s&lt;/code&gt; if its probability distribution is defined by:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;F(a) = pnorm(a, m, s)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;This is useful because if we are willing to use the normal approximation for, say, height, we don’t need the entire dataset to answer questions such as: what is the probability that a randomly selected student is taller then 70 inches? We just need the average height and standard deviation:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;m &amp;lt;- mean(x)
+s &amp;lt;- sd(x)
+1 - pnorm(70.5, m, s)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 0.371369&lt;/code&gt;&lt;/pre&gt;
+&lt;div id=&#34;theoretical-distributions-as-approximations&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Theoretical distributions as approximations&lt;/h3&gt;
+&lt;p&gt;The normal distribution is derived mathematically: we do not need data to define it. For practicing data scientists, almost everything we do involves data. Data is always, technically speaking, discrete. For example, we could consider our height data categorical with each specific height a unique category. The probability distribution is defined by the proportion of students reporting each height. Here is a plot of that probability distribution:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/content/04-content_files/figure-html/plot-of-height-frequencies-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;While most students rounded up their heights to the nearest inch, others reported values with more precision. One student reported his height to be 69.6850393700787, which is 177 centimeters. The probability assigned to this height is 0.0012315 or 1 in 812. The probability for 70 inches is much higher at 0.1059113, but does it really make sense to think of the probability of being exactly 70 inches as being different than 69.6850393700787? Clearly it is much more useful for data analytic purposes to treat this outcome as a continuous numeric variable, keeping in mind that very few people, or perhaps none, are exactly 70 inches, and that the reason we get more values at 70 is because people round to the nearest inch.&lt;/p&gt;
+&lt;p&gt;With continuous distributions, the probability of a singular value is not even defined. For example, it does not make sense to ask what is the probability that a normally distributed value is 70. Instead, we define probabilities for intervals. We thus could ask what is the probability that someone is between 69.5 and 70.5.&lt;/p&gt;
+&lt;p&gt;In cases like height, in which the data is rounded, the normal approximation is particularly useful if we deal with intervals that include exactly one round number. For example, the normal distribution is useful for approximating the proportion of students reporting values in intervals like the following three:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;mean(x &amp;lt;= 68.5) - mean(x &amp;lt;= 67.5)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 0.114532&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;mean(x &amp;lt;= 69.5) - mean(x &amp;lt;= 68.5)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 0.1194581&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;mean(x &amp;lt;= 70.5) - mean(x &amp;lt;= 69.5)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 0.1219212&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Note how close we get with the normal approximation:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;pnorm(68.5, m, s) - pnorm(67.5, m, s)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 0.1031077&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;pnorm(69.5, m, s) - pnorm(68.5, m, s)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 0.1097121&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;pnorm(70.5, m, s) - pnorm(69.5, m, s)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 0.1081743&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;However, the approximation is not as useful for other intervals. For instance, notice how the approximation breaks down when we try to estimate:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;mean(x &amp;lt;= 70.9) - mean(x&amp;lt;=70.1)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 0.02216749&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;with&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;pnorm(70.9, m, s) - pnorm(70.1, m, s)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 0.08359562&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;In general, we call this situation &lt;em&gt;discretization&lt;/em&gt;. Although the true height distribution is continuous, the reported heights tend to be more common at discrete values, in this case, due to rounding. As long as we are aware of how to deal with this reality, the normal approximation can still be a very useful tool.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;the-probability-density&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;The probability density&lt;/h3&gt;
+&lt;p&gt;For categorical distributions, we can define the probability of a category. For example, a roll of a die, let’s call it &lt;span class=&#34;math inline&#34;&gt;\(X\)&lt;/span&gt;, can be 1,2,3,4,5 or 6. The probability of 4 is defined as:&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
+\mbox{Pr}(X=4) = 1/6
+\]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;The CDF can then easily be defined:
+&lt;span class=&#34;math display&#34;&gt;\[
+F(4) = \mbox{Pr}(X\leq 4) =  \mbox{Pr}(X = 4) +  \mbox{Pr}(X = 3) +  \mbox{Pr}(X = 2) +  \mbox{Pr}(X = 1)
+\]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;Although for continuous distributions the probability of a single value &lt;span class=&#34;math inline&#34;&gt;\(\mbox{Pr}(X=x)\)&lt;/span&gt; is not defined, there is a theoretical definition that has a similar interpretation. The probability density at &lt;span class=&#34;math inline&#34;&gt;\(x\)&lt;/span&gt; is defined as the function &lt;span class=&#34;math inline&#34;&gt;\(f(a)\)&lt;/span&gt; such that:&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
+F(a) = \mbox{Pr}(X\leq a) = \int_{-\infty}^a f(x)\, dx
+\]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;For those that know calculus, remember that the integral is related to a sum: it is the sum of bars with widths approximating 0. If you don’t know calculus, you can think of &lt;span class=&#34;math inline&#34;&gt;\(f(x)\)&lt;/span&gt; as a curve for which the area under that curve up to the value &lt;span class=&#34;math inline&#34;&gt;\(a\)&lt;/span&gt;, gives you the probability &lt;span class=&#34;math inline&#34;&gt;\(\mbox{Pr}(X\leq a)\)&lt;/span&gt;.&lt;/p&gt;
+&lt;p&gt;For example, to use the normal approximation to estimate the probability of someone being taller than 76 inches, we use:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;1 - pnorm(76, m, s)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 0.03206008&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;which mathematically is the grey area below:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/content/04-content_files/figure-html/intergrals-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;The curve you see is the probability density for the normal distribution. In R, we get this using the function &lt;code&gt;dnorm&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;Although it may not be immediately obvious why knowing about probability densities is useful, understanding this concept will be essential to those wanting to fit models to data for which predefined functions are not available.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;monte-carlo-simulations-for-continuous-variables&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Monte Carlo simulations for continuous variables&lt;/h2&gt;
+&lt;p&gt;R provides functions to generate normally distributed outcomes. Specifically, the &lt;code&gt;rnorm&lt;/code&gt; function takes three arguments: size, average (defaults to 0), and standard deviation (defaults to 1) and produces random numbers. Here is an example of how we could generate data that looks like our reported heights:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;n &amp;lt;- length(x)
+m &amp;lt;- mean(x)
+s &amp;lt;- sd(x)
+simulated_heights &amp;lt;- rnorm(n, m, s)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Not surprisingly, the distribution looks normal:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/content/04-content_files/figure-html/simulated-heights-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;This is one of the most useful functions in R as it will permit us to generate data that mimics natural events and answers questions related to what could happen by chance by running Monte Carlo simulations.&lt;/p&gt;
+&lt;p&gt;If, for example, we pick 800 males at random, what is the distribution of the tallest person? How rare is a seven footer in a group of 800 males? The following Monte Carlo simulation helps us answer that question:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;B &amp;lt;- 10000
+tallest &amp;lt;- replicate(B, {
+  simulated_data &amp;lt;- rnorm(800, m, s)
+  max(simulated_data)
+})&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Having a seven footer is quite rare:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;mean(tallest &amp;gt;= 7*12)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 0.0172&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Here is the resulting distribution:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/content/04-content_files/figure-html/simulated-tallest-height-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Note that it does not look normal.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;continuous-distributions&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Continuous distributions&lt;/h2&gt;
+&lt;p&gt;The normal distribution is not the only useful theoretical distribution. Other continuous distributions that we may encounter are the student-t, Chi-square, exponential, gamma, beta, and beta-binomial. &lt;code&gt;R&lt;/code&gt; provides functions to compute the density, the quantiles, the cumulative distribution functions and to generate Monte Carlo simulations. &lt;code&gt;R&lt;/code&gt; uses a convention that lets us remember the names, namely using the letters &lt;code&gt;d&lt;/code&gt;, &lt;code&gt;q&lt;/code&gt;, &lt;code&gt;p&lt;/code&gt;, and &lt;code&gt;r&lt;/code&gt; in front of a shorthand for the distribution. We have already seen the functions &lt;code&gt;dnorm&lt;/code&gt;, &lt;code&gt;pnorm&lt;/code&gt;, and &lt;code&gt;rnorm&lt;/code&gt; for the normal distribution. The functions &lt;code&gt;qnorm&lt;/code&gt; gives us the quantiles. We can therefore draw a distribution like this:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;x &amp;lt;- seq(-4, 4, length.out = 100)
+qplot(x, f, geom = &amp;quot;line&amp;quot;, data = data.frame(x, f = dnorm(x)))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;For the student-t, described later as we move toward hypothesis testing, the shorthand &lt;code&gt;t&lt;/code&gt; is used so the functions are &lt;code&gt;dt&lt;/code&gt; for the density, &lt;code&gt;qt&lt;/code&gt; for the quantiles, &lt;code&gt;pt&lt;/code&gt; for the cumulative distribution function, and &lt;code&gt;rt&lt;/code&gt; for Monte Carlo simulation.&lt;/p&gt;
+&lt;p&gt;:::fyi&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;TRY IT&lt;/strong&gt;&lt;/p&gt;
+&lt;ol style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;&lt;p&gt;Assume the distribution of female heights is approximated by a normal distribution with a mean of 64 inches and a standard deviation of 3 inches. If we pick a female at random, what is the probability that she is 5 feet or shorter?&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Assume the distribution of female heights is approximated by a normal distribution with a mean of 64 inches and a standard deviation of 3 inches. If we pick a female at random, what is the probability that she is 6 feet or taller?&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Assume the distribution of female heights is approximated by a normal distribution with a mean of 64 inches and a standard deviation of 3 inches. If we pick a female at random, what is the probability that she is between 61 and 67 inches?&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Repeat the exercise above, but convert everything to centimeters. That is, multiply every height, including the standard deviation, by 2.54. What is the answer now?&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Notice that the answer to the question does not change when you change units. This makes sense since the answer to the question should not be affected by what units we use. In fact, if you look closely, you notice that 61 and 64 are both 1 SD away from the average. Compute the probability that a randomly picked, normally distributed random variable is within 1 SD from the average.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;To see the math that explains why the answers to questions 3, 4, and 5 are the same, suppose we have a random variable with average &lt;span class=&#34;math inline&#34;&gt;\(m\)&lt;/span&gt; and standard error &lt;span class=&#34;math inline&#34;&gt;\(s\)&lt;/span&gt;. Suppose we ask the probability of &lt;span class=&#34;math inline&#34;&gt;\(X\)&lt;/span&gt; being smaller or equal to &lt;span class=&#34;math inline&#34;&gt;\(a\)&lt;/span&gt;. Remember that, by definition, &lt;span class=&#34;math inline&#34;&gt;\(a\)&lt;/span&gt; is &lt;span class=&#34;math inline&#34;&gt;\((a - m)/s\)&lt;/span&gt; standard deviations &lt;span class=&#34;math inline&#34;&gt;\(s\)&lt;/span&gt; away from the average &lt;span class=&#34;math inline&#34;&gt;\(m\)&lt;/span&gt;. The probability is:&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
+\mbox{Pr}(X \leq a)
+\]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;Now we subtract &lt;span class=&#34;math inline&#34;&gt;\(\mu\)&lt;/span&gt; to both sides and then divide both sides by &lt;span class=&#34;math inline&#34;&gt;\(\sigma\)&lt;/span&gt;:&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
+\mbox{Pr}\left(\frac{X-m}{s} \leq \frac{a-m}{s} \right)
+\]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;The quantity on the left is a standard normal random variable. It has an average of 0 and a standard error of 1. We will call it &lt;span class=&#34;math inline&#34;&gt;\(Z\)&lt;/span&gt;:&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
+\mbox{Pr}\left(Z \leq \frac{a-m}{s} \right)
+\]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;So, no matter the units, the probability of &lt;span class=&#34;math inline&#34;&gt;\(X\leq a\)&lt;/span&gt; is the same as the probability of a standard normal variable being less than &lt;span class=&#34;math inline&#34;&gt;\((a - m)/s\)&lt;/span&gt;. If &lt;code&gt;mu&lt;/code&gt; is the average and &lt;code&gt;sigma&lt;/code&gt; the standard error, which of the following R code would give us the right answer in every situation:&lt;/p&gt;
+&lt;ol style=&#34;list-style-type: lower-alpha&#34;&gt;
+&lt;li&gt;&lt;code&gt;mean(X&amp;lt;=a)&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;pnorm((a - m)/s)&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;pnorm((a - m)/s, m, s)&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;pnorm(a)&lt;/code&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;ol start=&#34;7&#34; style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;&lt;p&gt;Imagine the distribution of male adults is approximately normal with an expected value of 69 and a standard deviation of 3. How tall is the male in the 99th percentile? Hint: use &lt;code&gt;qnorm&lt;/code&gt;.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;The distribution of IQ scores is approximately normally distributed. The average is 100 and the standard deviation is 15. Suppose you want to know the distribution of the highest IQ across all graduating classes if 10,000 people are born each in your school district. Run a Monte Carlo simulation with &lt;code&gt;B=1000&lt;/code&gt; generating 10,000 IQ scores and keeping the highest. Make a histogram.&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
 &lt;/div&gt;
 &lt;div class=&#34;footnotes&#34;&gt;
 &lt;hr /&gt;
