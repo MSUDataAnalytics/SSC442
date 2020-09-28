@@ -245,7 +245,7 @@
   <meta property="twitter:image" content="/img/social-image.png"><meta property="og:locale" content="en-us">
   
     
-    <meta property="article:modified_time" content="2020-09-26T16:08:59-04:00">
+    <meta property="article:modified_time" content="2020-09-28T09:40:26-04:00">
   
 
   
@@ -645,10 +645,10 @@
 </blockquote>
 <p>Yet people don’t have a good sense of what these things mean. Uncertainty is key to data analytics: if we were certain of things, A study in the 1960s explored the perception of probabilistic words like these among NATO officers. A more modern replication of this found the following basic pattern:</p>
 <p><img src="/img/words.png" width="80%" /></p>
-<p>A deep, basic fact about humans: we struggle to understand probabilities. But visualizing things can help. The graphic above shows the uncertainty about uncertainty (very meta). We can convey all manner of uncertainty with clever graphics. Today’s practical example works through some of the myriad of ways to visualize variable data.</p>
+<p>A deep, basic fact about humans is that we struggle to understand probabilities. But visualizing things can help. The graphic above shows the uncertainty about uncertainty (very meta). We can convey all manner of uncertainty with clever graphics. Today’s practical example works through some of the myriad of ways to visualize variable data. We’ll cover some territory that we’ve already hit, in hopes of locking in some key concepts.</p>
 <div id="preliminaries" class="section level2">
 <h2>Preliminaries</h2>
-<p>For this example, we’re going to use historical weather data from <a href="https://darksky.net/forecast/33.7546,-84.39/us12/en">Dark Sky</a> about wind speed and temperature trends for downtown Atlanta (<a href="https://www.google.com/maps/place/33°45&#39;16.4%22N+84°23&#39;24.0%22W/@33.754557,-84.3921977,17z/">specifically <code>33.754557, -84.390009</code></a>) in 2019. I downloaded this data using Dark Sky’s (about-to-be-retired-because-they-were-bought-by-Apple) API using the <a href="https://github.com/hrbrmstr/darksky"><strong>darksky</strong> package</a>.</p>
+<p>For this example, we’re going to use historical weather data from <a href="https://darksky.net/forecast/33.7546,-84.39/us12/en">Dark Sky</a> about wind speed and temperature trends for downtown Atlanta (<a href="https://www.google.com/maps/place/33°45&#39;16.4%22N+84°23&#39;24.0%22W/@33.754557,-84.3921977,17z/">specifically <code>33.754557, -84.390009</code></a>) in 2019. We downloaded this data using Dark Sky’s (about-to-be-retired-because-they-were-bought-by-Apple) API using the <a href="https://github.com/hrbrmstr/darksky"><strong>darksky</strong> package</a>.</p>
 <p>If you want to follow along with this example, you can download the data below (you’ll likely need to right click and choose “Save Link As…”):</p>
 <ul>
 <li><a href="/data/atl-weather-2019.csv"><i class="fas fa-file-csv"></i> <code>atl-weather-2019.csv</code></a></li>
@@ -663,7 +663,7 @@
 library(lubridate)
 library(ggridges)
 library(gghalves)</code></pre>
-<p>Then we load the data with <code>read_csv()</code>. Here I assume that the CSV file lives in a subfolder in my project named <code>data</code>:</p>
+<p>Then we load the data with <code>read_csv()</code>. Here we assume that the CSV file lives in a subfolder in my project named <code>data</code>. Naturally, you’ll need to point this to wherever you stashed the data.</p>
 <pre class="r"><code>weather_atl_raw &lt;- read_csv(&quot;data/atl-weather-2019.csv&quot;)</code></pre>
 <p>We’ll add a couple columns that we can use for faceting and filling using the <code>month()</code> and <code>wday()</code> functions from <strong>lubridate</strong> for extracting parts of the date:</p>
 <pre class="r"><code>weather_atl &lt;- weather_atl_raw %&gt;%
@@ -842,7 +842,7 @@ head(weather_atl_long)</code></pre>
                 </div>
 
                 <div class="body-footer">
-                    <p>Last updated on September 26, 2020</p>
+                    <p>Last updated on September 28, 2020</p>
 
                     
 

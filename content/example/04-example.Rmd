@@ -31,11 +31,11 @@ Yet people don't have a good sense of what these things mean. Uncertainty is key
 knitr::include_graphics("/img/words.png", error = FALSE)
 ```
 
-A deep, basic fact about humans: we struggle to understand probabilities. But visualizing things can help. The graphic above shows the uncertainty about uncertainty (very meta). We can convey all manner of uncertainty with clever graphics. Today's practical example works through some of the myriad of ways to visualize variable data.
+A deep, basic fact about humans is that we struggle to understand probabilities. But visualizing things can help. The graphic above shows the uncertainty about uncertainty (very meta). We can convey all manner of uncertainty with clever graphics. Today's practical example works through some of the myriad of ways to visualize variable data. We'll cover some territory that we've already hit, in hopes of locking in some key concepts.
 
 ## Preliminaries
 
-For this example, we're going to use historical weather data from [Dark Sky](https://darksky.net/forecast/33.7546,-84.39/us12/en) about wind speed and temperature trends for downtown Atlanta ([specifically `33.754557, -84.390009`](https://www.google.com/maps/place/33°45'16.4"N+84°23'24.0"W/@33.754557,-84.3921977,17z/)) in 2019. I downloaded this data using Dark Sky's (about-to-be-retired-because-they-were-bought-by-Apple) API using the [ **darksky** package](https://github.com/hrbrmstr/darksky).
+For this example, we're going to use historical weather data from [Dark Sky](https://darksky.net/forecast/33.7546,-84.39/us12/en) about wind speed and temperature trends for downtown Atlanta ([specifically `33.754557, -84.390009`](https://www.google.com/maps/place/33°45'16.4"N+84°23'24.0"W/@33.754557,-84.3921977,17z/)) in 2019. We downloaded this data using Dark Sky's (about-to-be-retired-because-they-were-bought-by-Apple) API using the [ **darksky** package](https://github.com/hrbrmstr/darksky).
 
 If you want to follow along with this example, you can download the data below (you'll likely need to right click and choose "Save Link As…"):
 
@@ -60,7 +60,7 @@ library(ggridges)
 library(gghalves)
 ```
 
-Then we load the data with `read_csv()`. Here I assume that the CSV file lives in a subfolder in my project named `data`:
+Then we load the data with `read_csv()`. Here we assume that the CSV file lives in a subfolder in my project named `data`. Naturally, you'll need to point this to wherever you stashed the data.
 
 ```{r load-data-fake, eval=FALSE}
 weather_atl_raw <- read_csv("data/atl-weather-2019.csv")
