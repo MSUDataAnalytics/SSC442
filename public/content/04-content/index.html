@@ -743,7 +743,7 @@ beads</code></pre>
 <pre><code>## [1] &quot;red&quot;  &quot;red&quot;  &quot;blue&quot; &quot;blue&quot; &quot;blue&quot;</code></pre>
 <p>and then use <code>sample</code> to pick a bead at random:</p>
 <pre class="r"><code>sample(beads, 1)</code></pre>
-<pre><code>## [1] &quot;red&quot;</code></pre>
+<pre><code>## [1] &quot;blue&quot;</code></pre>
 <p>This line of code produces one random outcome. We want to repeat this experiment an infinite number of times, but it is impossible to repeat forever. Instead, we repeat the experiment a large enough number of times to make the results practically equivalent to repeating forever. <strong>This is an example of a <em>Monte Carlo</em> simulation</strong>.</p>
 <p>Much of what mathematical and theoretical statisticians study, which we do not cover in this class, relates to providing rigorous definitions of “practically equivalent” as well as studying how close a large number of experiments gets us to what happens in the limit. Later in this lecture, we provide a practical approach to deciding what is “large enough”.</p>
 <p>To perform our first Monte Carlo simulation, we use the <code>replicate</code> function, which permits us to repeat the same task any number of times. Here, we repeat the random event <span class="math inline">\(B =\)</span> 10,000 times:</p>
@@ -754,12 +754,12 @@ events &lt;- replicate(B, sample(beads, 1))</code></pre>
 tab</code></pre>
 <pre><code>## events
 ## blue  red 
-## 6007 3993</code></pre>
+## 5944 4056</code></pre>
 <p>and <code>prop.table</code> gives us the proportions:</p>
 <pre class="r"><code>prop.table(tab)</code></pre>
 <pre><code>## events
 ##   blue    red 
-## 0.6007 0.3993</code></pre>
+## 0.5944 0.4056</code></pre>
 <p>The numbers above are the estimated probabilities provided by this Monte Carlo simulation. Statistical theory, not covered here, tells us that as <span class="math inline">\(B\)</span> gets larger, the estimates get closer to 3/5=.6 and 2/5=.4.</p>
 <p>Although this is a simple and not very useful example, we will use Monte Carlo simulations to estimate probabilities in cases in which it is harder to compute the exact ones. Before delving into more complex examples, we use simple ones to demonstrate the computing tools available in R.</p>
 <div id="setting-the-random-seed" class="section level3">
@@ -1234,7 +1234,7 @@ tallest &lt;- replicate(B, {
 <pre class="r"><code>x &lt;- seq(-4, 4, length.out = 100)
 qplot(x, f, geom = &quot;line&quot;, data = data.frame(x, f = dnorm(x)))</code></pre>
 <p>For the student-t, described later as we move toward hypothesis testing, the shorthand <code>t</code> is used so the functions are <code>dt</code> for the density, <code>qt</code> for the quantiles, <code>pt</code> for the cumulative distribution function, and <code>rt</code> for Monte Carlo simulation.</p>
-<p>:::fyi</p>
+<div class="fyi">
 <p><strong>TRY IT</strong></p>
 <ol style="list-style-type: decimal">
 <li><p>Assume the distribution of female heights is approximated by a normal distribution with a mean of 64 inches and a standard deviation of 3 inches. If we pick a female at random, what is the probability that she is 5 feet or shorter?</p></li>
@@ -1266,6 +1266,7 @@ qplot(x, f, geom = &quot;line&quot;, data = data.frame(x, f = dnorm(x)))</code><
 <li><p>Imagine the distribution of male adults is approximately normal with an expected value of 69 and a standard deviation of 3. How tall is the male in the 99th percentile? Hint: use <code>qnorm</code>.</p></li>
 <li><p>The distribution of IQ scores is approximately normally distributed. The average is 100 and the standard deviation is 15. Suppose you want to know the distribution of the highest IQ across all graduating classes if 10,000 people are born each in your school district. Run a Monte Carlo simulation with <code>B=1000</code> generating 10,000 IQ scores and keeping the highest. Make a histogram.</p></li>
 </ol>
+</div>
 </div>
 <div class="footnotes">
 <hr />
