@@ -1715,7 +1715,6 @@ ggsave(&amp;quot;china_co2.png&amp;quot;, plot_china, width = 1, height = 0.15, 
 
 &lt;div id=&#34;TOC&#34;&gt;
 &lt;ul&gt;
-&lt;li&gt;&lt;a href=&#34;#getting-started&#34;&gt;Getting started&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;#models&#34;&gt;Statistical models&lt;/a&gt;&lt;ul&gt;
 &lt;li&gt;&lt;a href=&#34;#poll-aggregators&#34;&gt;Poll aggregators&lt;/a&gt;&lt;ul&gt;
 &lt;li&gt;&lt;a href=&#34;#poll-data&#34;&gt;Poll data&lt;/a&gt;&lt;/li&gt;
@@ -1730,10 +1729,7 @@ ggsave(&amp;quot;china_co2.png&amp;quot;, plot_china, width = 1, height = 0.15, 
 &lt;p&gt;&lt;strong&gt;NOTE&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;You must turn in a PDF document of your &lt;code&gt;R Markdown&lt;/code&gt; code. Submit this to D2L by 11:59 PM Eastern Time on Monday, October 5.&lt;/p&gt;
 &lt;/div&gt;
-&lt;div id=&#34;getting-started&#34; class=&#34;section level1&#34;&gt;
-&lt;h1&gt;Getting started&lt;/h1&gt;
 &lt;p&gt;For this exercise you will need to ensure that you’ve carefully read this week’s content and example. We will build on both. The exercises (which you will turn in as this week’s lab) are at the bottom. Note that this week’s lab is much more theoretical than any other week in this class. This is to ensure that you have the foundations necessary to build rich statistical models and apply them to real-world data.&lt;/p&gt;
-&lt;/div&gt;
 &lt;div id=&#34;models&#34; class=&#34;section level1&#34;&gt;
 &lt;h1&gt;Statistical models&lt;/h1&gt;
 &lt;blockquote&gt;
@@ -1957,6 +1953,7 @@ round(results * 100, 1)&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Our confidence interval is wider now since it incorporates the pollster variability. It does include the election night result of 2.1%. Also, note that it was small enough not to include 0, which means we were confident Clinton would win the popular vote.&lt;/p&gt;
 &lt;div class=&#34;fyi&#34;&gt;
 &lt;p&gt;&lt;strong&gt;EXERCISES&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Note that using dollar signs &lt;code&gt;$ $&lt;/code&gt; to enclose some text is how you make the fancy math you see below. If you installed &lt;code&gt;tinytex&lt;/code&gt; or some other Latex distribution in order to render your PDFs, you should be equipped to insert mathematics directly into your .Rmd file.&lt;/p&gt;
 &lt;ol style=&#34;list-style-type: decimal&#34;&gt;
 &lt;li&gt;In this section, we talked about pollster bias. We used visualization to motivate the presence of such bias. Here we will give it a more rigorous treatment. We will consider two pollsters that conducted daily polls. We will look at national polls for the month before the election.&lt;/li&gt;
 &lt;/ol&gt;
@@ -1990,9 +1987,9 @@ Y_{i,j} = d + b_i + \varepsilon_{i,j}
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;polls %&amp;gt;%
   filter(pollster==&amp;quot;Rasmussen Reports/Pulse Opinion Research&amp;quot;) %&amp;gt;%
   summarize(N_1 = n())&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;What is the expected values &lt;span class=&#34;math inline&#34;&gt;\(\bar{Y}_1\)&lt;/span&gt;?&lt;/p&gt;
+&lt;p&gt;What is the expected value of &lt;span class=&#34;math inline&#34;&gt;\(\bar{Y}_1\)&lt;/span&gt;?&lt;/p&gt;
 &lt;ol start=&#34;4&#34; style=&#34;list-style-type: decimal&#34;&gt;
-&lt;li&gt;&lt;p&gt;What is the standard error of &lt;span class=&#34;math inline&#34;&gt;\(\bar{Y}_1\)&lt;/span&gt; ?&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;What is the standard error of &lt;span class=&#34;math inline&#34;&gt;\(\bar{Y}_1\)&lt;/span&gt;? (It may be helpful to compute the expected value and standard error of &lt;span class=&#34;math inline&#34;&gt;\(\bar{Y}_2\)&lt;/span&gt; as well.)&lt;/p&gt;&lt;/li&gt;
 &lt;li&gt;&lt;p&gt;Suppose we define &lt;span class=&#34;math inline&#34;&gt;\(\bar{Y}_2\)&lt;/span&gt; as the average of poll results from the first poll, &lt;span class=&#34;math inline&#34;&gt;\(Y_{2,1},\dots,Y_{2,N_2}\)&lt;/span&gt; with &lt;span class=&#34;math inline&#34;&gt;\(N_2\)&lt;/span&gt; the number of polls conducted by the first pollster. What is the expected value &lt;span class=&#34;math inline&#34;&gt;\(\bar{Y}_2\)&lt;/span&gt;?&lt;/p&gt;&lt;/li&gt;
 &lt;li&gt;&lt;p&gt;What does the CLT tell us about the distribution of &lt;span class=&#34;math inline&#34;&gt;\(\bar{Y}_2 - \bar{Y}_1\)&lt;/span&gt;?&lt;/p&gt;&lt;/li&gt;
 &lt;/ol&gt;

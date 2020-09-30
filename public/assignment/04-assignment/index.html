@@ -30,9 +30,9 @@
   
     
   
-  <meta name="description" content="Getting started Statistical models Poll aggregators Poll data Pollster bias  Data-driven models    NOTE
+  <meta name="description" content="Statistical models Poll aggregators Poll data Pollster bias  Data-driven models    NOTE
 You must turn in a PDF document of your R Markdown code. Submit this to D2L by 11:59 PM Eastern Time on Monday, October 5.
- Getting started For this exercise you will need to ensure that you’ve carefully read this week’s content and example. We will build on both. The exercises (which you will turn in as this week’s lab) are at the bottom.">
+ For this exercise you will need to ensure that you’ve carefully read this week’s content and example. We will build on both. The exercises (which you will turn in as this week’s lab) are at the bottom.">
 
   
   <link rel="alternate" hreflang="en-us" href="/assignment/04-assignment/">
@@ -243,13 +243,13 @@ You must turn in a PDF document of your R Markdown code. Submit this to D2L by 1
   <meta property="og:site_name" content="Data Analytics">
   <meta property="og:url" content="/assignment/04-assignment/">
   <meta property="og:title" content="Statistical Models | Data Analytics">
-  <meta property="og:description" content="Getting started Statistical models Poll aggregators Poll data Pollster bias  Data-driven models    NOTE
+  <meta property="og:description" content="Statistical models Poll aggregators Poll data Pollster bias  Data-driven models    NOTE
 You must turn in a PDF document of your R Markdown code. Submit this to D2L by 11:59 PM Eastern Time on Monday, October 5.
- Getting started For this exercise you will need to ensure that you’ve carefully read this week’s content and example. We will build on both. The exercises (which you will turn in as this week’s lab) are at the bottom."><meta property="og:image" content="/img/social-image.png">
+ For this exercise you will need to ensure that you’ve carefully read this week’s content and example. We will build on both. The exercises (which you will turn in as this week’s lab) are at the bottom."><meta property="og:image" content="/img/social-image.png">
   <meta property="twitter:image" content="/img/social-image.png"><meta property="og:locale" content="en-us">
   
     
-    <meta property="article:modified_time" content="2020-09-30T10:48:50-04:00">
+    <meta property="article:modified_time" content="2020-09-30T10:54:09-04:00">
   
 
   
@@ -642,7 +642,6 @@ You must turn in a PDF document of your R Markdown code. Submit this to D2L by 1
 
 <div id="TOC">
 <ul>
-<li><a href="#getting-started">Getting started</a></li>
 <li><a href="#models">Statistical models</a><ul>
 <li><a href="#poll-aggregators">Poll aggregators</a><ul>
 <li><a href="#poll-data">Poll data</a></li>
@@ -657,10 +656,7 @@ You must turn in a PDF document of your R Markdown code. Submit this to D2L by 1
 <p><strong>NOTE</strong></p>
 <p>You must turn in a PDF document of your <code>R Markdown</code> code. Submit this to D2L by 11:59 PM Eastern Time on Monday, October 5.</p>
 </div>
-<div id="getting-started" class="section level1">
-<h1>Getting started</h1>
 <p>For this exercise you will need to ensure that you’ve carefully read this week’s content and example. We will build on both. The exercises (which you will turn in as this week’s lab) are at the bottom. Note that this week’s lab is much more theoretical than any other week in this class. This is to ensure that you have the foundations necessary to build rich statistical models and apply them to real-world data.</p>
-</div>
 <div id="models" class="section level1">
 <h1>Statistical models</h1>
 <blockquote>
@@ -884,6 +880,7 @@ round(results * 100, 1)</code></pre>
 <p>Our confidence interval is wider now since it incorporates the pollster variability. It does include the election night result of 2.1%. Also, note that it was small enough not to include 0, which means we were confident Clinton would win the popular vote.</p>
 <div class="fyi">
 <p><strong>EXERCISES</strong></p>
+<p>Note that using dollar signs <code>$ $</code> to enclose some text is how you make the fancy math you see below. If you installed <code>tinytex</code> or some other Latex distribution in order to render your PDFs, you should be equipped to insert mathematics directly into your .Rmd file.</p>
 <ol style="list-style-type: decimal">
 <li>In this section, we talked about pollster bias. We used visualization to motivate the presence of such bias. Here we will give it a more rigorous treatment. We will consider two pollsters that conducted daily polls. We will look at national polls for the month before the election.</li>
 </ol>
@@ -917,9 +914,9 @@ Y_{i,j} = d + b_i + \varepsilon_{i,j}
 <pre class="r"><code>polls %&gt;%
   filter(pollster==&quot;Rasmussen Reports/Pulse Opinion Research&quot;) %&gt;%
   summarize(N_1 = n())</code></pre>
-<p>What is the expected values <span class="math inline">\(\bar{Y}_1\)</span>?</p>
+<p>What is the expected value of <span class="math inline">\(\bar{Y}_1\)</span>?</p>
 <ol start="4" style="list-style-type: decimal">
-<li><p>What is the standard error of <span class="math inline">\(\bar{Y}_1\)</span> ?</p></li>
+<li><p>What is the standard error of <span class="math inline">\(\bar{Y}_1\)</span>? (It may be helpful to compute the expected value and standard error of <span class="math inline">\(\bar{Y}_2\)</span> as well.)</p></li>
 <li><p>Suppose we define <span class="math inline">\(\bar{Y}_2\)</span> as the average of poll results from the first poll, <span class="math inline">\(Y_{2,1},\dots,Y_{2,N_2}\)</span> with <span class="math inline">\(N_2\)</span> the number of polls conducted by the first pollster. What is the expected value <span class="math inline">\(\bar{Y}_2\)</span>?</p></li>
 <li><p>What does the CLT tell us about the distribution of <span class="math inline">\(\bar{Y}_2 - \bar{Y}_1\)</span>?</p></li>
 </ol>
