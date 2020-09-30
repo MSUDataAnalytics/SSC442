@@ -907,8 +907,7 @@ ggsave(&amp;quot;china_co2.png&amp;quot;, plot_china, width = 1, height = 0.15, 
 
 &lt;div id=&#34;TOC&#34;&gt;
 &lt;ul&gt;
-&lt;li&gt;&lt;a href=&#34;#uncertainty&#34;&gt;Uncertainty&lt;/a&gt;&lt;ul&gt;
-&lt;li&gt;&lt;a href=&#34;#part-1-statistical-inference-and-polls&#34;&gt;Part 1: Statistical Inference and Polls&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#part-1-statistical-inference-and-polls&#34;&gt;Part 1: Statistical Inference and Polls&lt;/a&gt;&lt;ul&gt;
 &lt;li&gt;&lt;a href=&#34;#polls&#34;&gt;Polls&lt;/a&gt;&lt;ul&gt;
 &lt;li&gt;&lt;a href=&#34;#the-sampling-model-for-polls&#34;&gt;The sampling model for polls&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;&lt;/li&gt;
@@ -923,7 +922,8 @@ ggsave(&amp;quot;china_co2.png&amp;quot;, plot_china, width = 1, height = 0.15, 
 &lt;li&gt;&lt;a href=&#34;#the-spread&#34;&gt;The spread&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;#bias-why-not-run-a-very-large-poll&#34;&gt;Bias: why not run a very large poll?&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;#part-2-supplemental-additional-visualization-techniques&#34;&gt;Part 2: (Supplemental) Additional Visualization Techniques&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#part-2-supplemental-additional-visualization-techniques&#34;&gt;Part 2: (Supplemental) Additional Visualization Techniques&lt;/a&gt;&lt;ul&gt;
 &lt;li&gt;&lt;a href=&#34;#code&#34;&gt;Code&lt;/a&gt;&lt;ul&gt;
 &lt;li&gt;&lt;a href=&#34;#load-and-clean-data&#34;&gt;Load and clean data&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;#histograms&#34;&gt;Histograms&lt;/a&gt;&lt;/li&gt;
@@ -934,8 +934,6 @@ ggsave(&amp;quot;china_co2.png&amp;quot;, plot_china, width = 1, height = 0.15, 
 &lt;/ul&gt;
 &lt;/div&gt;
 
-&lt;div id=&#34;uncertainty&#34; class=&#34;section level1&#34;&gt;
-&lt;h1&gt;Uncertainty&lt;/h1&gt;
 &lt;p&gt;Probabilistic thinking is central in the human experience. How we describe that thinking is mixed, but most of the time we use (rather imprecise) language. With only a few moments of searching, one can find thousands of articles that use probabilistic words to describe events. Here are some examples:&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;“‘Highly unlikely’ State of the Union will happen amid shutdown” – The Hill&lt;/p&gt;
@@ -949,10 +947,9 @@ ggsave(&amp;quot;china_co2.png&amp;quot;, plot_china, width = 1, height = 0.15, 
 &lt;p&gt;Yet people don’t have a good sense of what these things mean. Uncertainty is key to data analytics: if we were certain of things, A study in the 1960s explored the perception of probabilistic words like these among NATO officers. A more modern replication of this found the following basic pattern:&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;/img/words.png&#34; width=&#34;80%&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;A deep, basic fact about humans is that we struggle to understand probabilities. But visualizing things can help. The graphic above shows the uncertainty about uncertainty (very meta). We can convey all manner of uncertainty with clever graphics. Today’s practical example works through some of the myriad of ways to visualize variable data. We’ll cover some territory that we’ve already hit, in hopes of locking in some key concepts.&lt;/p&gt;
-&lt;div id=&#34;part-1-statistical-inference-and-polls&#34; class=&#34;section level2&#34;&gt;
-&lt;h2&gt;Part 1: Statistical Inference and Polls&lt;/h2&gt;
+&lt;div id=&#34;part-1-statistical-inference-and-polls&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Part 1: Statistical Inference and Polls&lt;/h1&gt;
 &lt;p&gt;In this Example we will describe, in some detail, how poll aggregators such as FiveThirtyEight use data to predict election outcomes. To understand how they do this, we first need to learn the basics of &lt;em&gt;Statistical Inference&lt;/em&gt;, the part of statistics that helps distinguish patterns arising from signal from those arising from chance. Statistical inference is a broad topic and here we go over the very basics using polls as a motivating example. To describe the concepts, we complement the mathematical formulas with Monte Carlo simulations and &lt;code&gt;R&lt;/code&gt; code.&lt;/p&gt;
-&lt;/div&gt;
 &lt;div id=&#34;polls&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Polls&lt;/h2&gt;
 &lt;p&gt;Opinion polling has been conducted since the 19th century. The general goal is to describe the opinions held by a specific population on a given set of topics. In recent times, these polls have been pervasive during presidential elections. Polls are useful when interviewing every member of a particular population is logistically impossible. The general strategy is to interview a smaller group, chosen at random, and then infer the opinions of the entire population from the opinions of the smaller group. Statistical theory is used to justify the process. This theory is referred to as &lt;em&gt;inference&lt;/em&gt; and it is the main topic of this chapter.&lt;/p&gt;
@@ -1422,14 +1419,14 @@ x_hat &amp;lt;- replicate(B, {
 &lt;p&gt;One reason is that running such a poll is very expensive. Another possibly more important reason is that theory has its limitations. Polling is much more complicated than picking beads from an urn. Some people might lie to pollsters and others might not have phones. But perhaps the most important way an actual poll differs from an urn model is that we actually don’t know for sure who is in our population and who is not. How do we know who is going to vote? Are we reaching all possible voters? Hence, even if our margin of error is very small, it might not be exactly right that our expected value is &lt;span class=&#34;math inline&#34;&gt;\(p\)&lt;/span&gt;. We call this bias. Historically, we observe that polls are indeed biased, although not by that much. The typical bias appears to be about 1-2%. This makes election forecasting a bit more interesting and we will talk about how to model this shortly.&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;div id=&#34;part-2-supplemental-additional-visualization-techniques&#34; class=&#34;section level2&#34;&gt;
-&lt;h2&gt;Part 2: (Supplemental) Additional Visualization Techniques&lt;/h2&gt;
+&lt;/div&gt;
+&lt;div id=&#34;part-2-supplemental-additional-visualization-techniques&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Part 2: (Supplemental) Additional Visualization Techniques&lt;/h1&gt;
 &lt;p&gt;For this second part of the example, we’re going to use historical weather data from &lt;a href=&#34;https://darksky.net/forecast/33.7546,-84.39/us12/en&#34;&gt;Dark Sky&lt;/a&gt; about wind speed and temperature trends for downtown Atlanta (&lt;a href=&#34;https://www.google.com/maps/place/33°45&amp;#39;16.4%22N+84°23&amp;#39;24.0%22W/@33.754557,-84.3921977,17z/&#34;&gt;specifically &lt;code&gt;33.754557, -84.390009&lt;/code&gt;&lt;/a&gt;) in 2019. We downloaded this data using Dark Sky’s (about-to-be-retired-because-they-were-bought-by-Apple) API using the &lt;a href=&#34;https://github.com/hrbrmstr/darksky&#34;&gt;&lt;strong&gt;darksky&lt;/strong&gt; package&lt;/a&gt;.&lt;/p&gt;
 &lt;p&gt;If you want to follow along with this example, you can download the data below (you’ll likely need to right click and choose “Save Link As…”):&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;a href=&#34;/data/atl-weather-2019.csv&#34;&gt;&lt;i class=&#34;fas fa-file-csv&#34;&gt;&lt;/i&gt; &lt;code&gt;atl-weather-2019.csv&lt;/code&gt;&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
-&lt;/div&gt;
 &lt;div id=&#34;code&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Code&lt;/h2&gt;
 &lt;div id=&#34;load-and-clean-data&#34; class=&#34;section level3&#34;&gt;

@@ -30,7 +30,7 @@
   
     
   
-  <meta name="description" content="Uncertainty Part 1: Statistical Inference and Polls Polls The sampling model for polls  Populations, samples, parameters, and estimates The sample average Parameters Polling versus forecasting Properties of our estimate: expected value and standard error  Central Limit Theorem A Monte Carlo simulation The spread Bias: why not run a very large poll?  Part 2: (Supplemental) Additional Visualization Techniques Code Load and clean data Histograms Density plots Box, violin, and rain cloud plots     Uncertainty Probabilistic thinking is central in the human experience.">
+  <meta name="description" content="Part 1: Statistical Inference and Polls Polls The sampling model for polls  Populations, samples, parameters, and estimates The sample average Parameters Polling versus forecasting Properties of our estimate: expected value and standard error  Central Limit Theorem A Monte Carlo simulation The spread Bias: why not run a very large poll?   Part 2: (Supplemental) Additional Visualization Techniques Code Load and clean data Histograms Density plots Box, violin, and rain cloud plots     Probabilistic thinking is central in the human experience.">
 
   
   <link rel="alternate" hreflang="en-us" href="/example/04-example/">
@@ -241,11 +241,11 @@
   <meta property="og:site_name" content="Data Analytics">
   <meta property="og:url" content="/example/04-example/">
   <meta property="og:title" content="Visualizing Uncertainty | Data Analytics">
-  <meta property="og:description" content="Uncertainty Part 1: Statistical Inference and Polls Polls The sampling model for polls  Populations, samples, parameters, and estimates The sample average Parameters Polling versus forecasting Properties of our estimate: expected value and standard error  Central Limit Theorem A Monte Carlo simulation The spread Bias: why not run a very large poll?  Part 2: (Supplemental) Additional Visualization Techniques Code Load and clean data Histograms Density plots Box, violin, and rain cloud plots     Uncertainty Probabilistic thinking is central in the human experience."><meta property="og:image" content="/img/social-image.png">
+  <meta property="og:description" content="Part 1: Statistical Inference and Polls Polls The sampling model for polls  Populations, samples, parameters, and estimates The sample average Parameters Polling versus forecasting Properties of our estimate: expected value and standard error  Central Limit Theorem A Monte Carlo simulation The spread Bias: why not run a very large poll?   Part 2: (Supplemental) Additional Visualization Techniques Code Load and clean data Histograms Density plots Box, violin, and rain cloud plots     Probabilistic thinking is central in the human experience."><meta property="og:image" content="/img/social-image.png">
   <meta property="twitter:image" content="/img/social-image.png"><meta property="og:locale" content="en-us">
   
     
-    <meta property="article:modified_time" content="2020-09-30T10:01:12-04:00">
+    <meta property="article:modified_time" content="2020-09-30T10:20:27-04:00">
   
 
   
@@ -621,8 +621,7 @@
 
 <div id="TOC">
 <ul>
-<li><a href="#uncertainty">Uncertainty</a><ul>
-<li><a href="#part-1-statistical-inference-and-polls">Part 1: Statistical Inference and Polls</a></li>
+<li><a href="#part-1-statistical-inference-and-polls">Part 1: Statistical Inference and Polls</a><ul>
 <li><a href="#polls">Polls</a><ul>
 <li><a href="#the-sampling-model-for-polls">The sampling model for polls</a></li>
 </ul></li>
@@ -637,7 +636,8 @@
 <li><a href="#the-spread">The spread</a></li>
 <li><a href="#bias-why-not-run-a-very-large-poll">Bias: why not run a very large poll?</a></li>
 </ul></li>
-<li><a href="#part-2-supplemental-additional-visualization-techniques">Part 2: (Supplemental) Additional Visualization Techniques</a></li>
+</ul></li>
+<li><a href="#part-2-supplemental-additional-visualization-techniques">Part 2: (Supplemental) Additional Visualization Techniques</a><ul>
 <li><a href="#code">Code</a><ul>
 <li><a href="#load-and-clean-data">Load and clean data</a></li>
 <li><a href="#histograms">Histograms</a></li>
@@ -648,8 +648,6 @@
 </ul>
 </div>
 
-<div id="uncertainty" class="section level1">
-<h1>Uncertainty</h1>
 <p>Probabilistic thinking is central in the human experience. How we describe that thinking is mixed, but most of the time we use (rather imprecise) language. With only a few moments of searching, one can find thousands of articles that use probabilistic words to describe events. Here are some examples:</p>
 <blockquote>
 <p>“‘Highly unlikely’ State of the Union will happen amid shutdown” – The Hill</p>
@@ -663,10 +661,9 @@
 <p>Yet people don’t have a good sense of what these things mean. Uncertainty is key to data analytics: if we were certain of things, A study in the 1960s explored the perception of probabilistic words like these among NATO officers. A more modern replication of this found the following basic pattern:</p>
 <p><img src="/img/words.png" width="80%" /></p>
 <p>A deep, basic fact about humans is that we struggle to understand probabilities. But visualizing things can help. The graphic above shows the uncertainty about uncertainty (very meta). We can convey all manner of uncertainty with clever graphics. Today’s practical example works through some of the myriad of ways to visualize variable data. We’ll cover some territory that we’ve already hit, in hopes of locking in some key concepts.</p>
-<div id="part-1-statistical-inference-and-polls" class="section level2">
-<h2>Part 1: Statistical Inference and Polls</h2>
+<div id="part-1-statistical-inference-and-polls" class="section level1">
+<h1>Part 1: Statistical Inference and Polls</h1>
 <p>In this Example we will describe, in some detail, how poll aggregators such as FiveThirtyEight use data to predict election outcomes. To understand how they do this, we first need to learn the basics of <em>Statistical Inference</em>, the part of statistics that helps distinguish patterns arising from signal from those arising from chance. Statistical inference is a broad topic and here we go over the very basics using polls as a motivating example. To describe the concepts, we complement the mathematical formulas with Monte Carlo simulations and <code>R</code> code.</p>
-</div>
 <div id="polls" class="section level2">
 <h2>Polls</h2>
 <p>Opinion polling has been conducted since the 19th century. The general goal is to describe the opinions held by a specific population on a given set of topics. In recent times, these polls have been pervasive during presidential elections. Polls are useful when interviewing every member of a particular population is logistically impossible. The general strategy is to interview a smaller group, chosen at random, and then infer the opinions of the entire population from the opinions of the smaller group. Statistical theory is used to justify the process. This theory is referred to as <em>inference</em> and it is the main topic of this chapter.</p>
@@ -1136,14 +1133,14 @@ x_hat &lt;- replicate(B, {
 <p>One reason is that running such a poll is very expensive. Another possibly more important reason is that theory has its limitations. Polling is much more complicated than picking beads from an urn. Some people might lie to pollsters and others might not have phones. But perhaps the most important way an actual poll differs from an urn model is that we actually don’t know for sure who is in our population and who is not. How do we know who is going to vote? Are we reaching all possible voters? Hence, even if our margin of error is very small, it might not be exactly right that our expected value is <span class="math inline">\(p\)</span>. We call this bias. Historically, we observe that polls are indeed biased, although not by that much. The typical bias appears to be about 1-2%. This makes election forecasting a bit more interesting and we will talk about how to model this shortly.</p>
 </div>
 </div>
-<div id="part-2-supplemental-additional-visualization-techniques" class="section level2">
-<h2>Part 2: (Supplemental) Additional Visualization Techniques</h2>
+</div>
+<div id="part-2-supplemental-additional-visualization-techniques" class="section level1">
+<h1>Part 2: (Supplemental) Additional Visualization Techniques</h1>
 <p>For this second part of the example, we’re going to use historical weather data from <a href="https://darksky.net/forecast/33.7546,-84.39/us12/en">Dark Sky</a> about wind speed and temperature trends for downtown Atlanta (<a href="https://www.google.com/maps/place/33°45&#39;16.4%22N+84°23&#39;24.0%22W/@33.754557,-84.3921977,17z/">specifically <code>33.754557, -84.390009</code></a>) in 2019. We downloaded this data using Dark Sky’s (about-to-be-retired-because-they-were-bought-by-Apple) API using the <a href="https://github.com/hrbrmstr/darksky"><strong>darksky</strong> package</a>.</p>
 <p>If you want to follow along with this example, you can download the data below (you’ll likely need to right click and choose “Save Link As…”):</p>
 <ul>
 <li><a href="/data/atl-weather-2019.csv"><i class="fas fa-file-csv"></i> <code>atl-weather-2019.csv</code></a></li>
 </ul>
-</div>
 <div id="code" class="section level2">
 <h2>Code</h2>
 <div id="load-and-clean-data" class="section level3">
