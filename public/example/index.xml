@@ -918,6 +918,11 @@ ggsave(&amp;quot;china_co2.png&amp;quot;, plot_china, width = 1, height = 0.15, 
 &lt;li&gt;&lt;a href=&#34;#polling-versus-forecasting&#34;&gt;Polling versus forecasting&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;#properties-of-our-estimate-expected-value-and-standard-error&#34;&gt;Properties of our estimate: expected value and standard error&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#clt&#34;&gt;Central Limit Theorem&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#a-monte-carlo-simulation&#34;&gt;A Monte Carlo simulation&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#the-spread&#34;&gt;The spread&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#bias-why-not-run-a-very-large-poll&#34;&gt;Bias: why not run a very large poll?&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;#part-2-supplemental-additional-visualization-techniques&#34;&gt;Part 2: (Supplemental) Additional Visualization Techniques&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;#code&#34;&gt;Code&lt;/a&gt;&lt;ul&gt;
 &lt;li&gt;&lt;a href=&#34;#load-and-clean-data&#34;&gt;Load and clean data&lt;/a&gt;&lt;/li&gt;
@@ -1261,9 +1266,9 @@ Clinton +5
 &lt;/tbody&gt;
 &lt;/table&gt;
 &lt;!-- (Source: [Real Clear Politics](https://www.realclearpolitics.com/epolls/2016/president/us/general_election_trump_vs_clinton-5491.html)) --&gt;
-&lt;p&gt;Although in the United States the popular vote does not determine the result of the presidential election, we will use it as an illustrative and simple example of how well polls work. Forecasting the election is a more complex process since it involves combining results from 50 states and DC and we describe it in Section &lt;a href=&#34;#election-forecasting&#34;&gt;&lt;strong&gt;??&lt;/strong&gt;&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Although in the United States the popular vote does not determine the result of the presidential election, we will use it as an illustrative and simple example of how well polls work. Forecasting the election is a more complex process since it involves combining results from 50 states and DC and we will go into some detail on this later.&lt;/p&gt;
 &lt;p&gt;Let’s make some observations about the table above. First, note that different polls, all taken days before the election, report a different &lt;em&gt;spread&lt;/em&gt;: the estimated difference between support for the two candidates. Notice also that the reported spreads hover around what ended up being the actual result: Clinton won the popular vote by 2.1%. We also see a column titled &lt;strong&gt;MoE&lt;/strong&gt; which stands for &lt;em&gt;margin of error&lt;/em&gt;.&lt;/p&gt;
-&lt;p&gt;In this section, we will show how the probability concepts we learned in the previous chapter can be applied to develop the statistical approaches that make polls an effective tool. We will learn the statistical concepts necessary to define &lt;em&gt;estimates&lt;/em&gt; and &lt;em&gt;margins of errors&lt;/em&gt;, and show how we can use these to forecast final results relatively well and also provide an estimate of the precision of our forecast. Once we learn this, we will be able to understand two concepts that are ubiquitous in data science: &lt;em&gt;confidence intervals&lt;/em&gt; and &lt;em&gt;p-values&lt;/em&gt;. Finally, to understand probabilistic statements about the probability of a candidate winning, we will have to learn about Bayesian modeling. In the final sections, we put it all together to recreate the simplified version of the FiveThirtyEight model and apply it to the 2016 election.&lt;/p&gt;
+&lt;p&gt;In this example, we will show how the probability concepts we learned in the previous content can be applied to develop the statistical approaches that make polls an effective tool. We will learn the statistical concepts necessary to define &lt;em&gt;estimates&lt;/em&gt; and &lt;em&gt;margins of errors&lt;/em&gt;, and show how we can use these to forecast final results relatively well and also provide an estimate of the precision of our forecast. Once we learn this, we will be able to understand two concepts that are ubiquitous in data science: &lt;em&gt;confidence intervals&lt;/em&gt; and &lt;em&gt;p-values&lt;/em&gt;. Finally, to understand probabilistic statements about the probability of a candidate winning, we will have to learn about Bayesian modeling. In the final sections, we put it all together to recreate the simplified version of the FiveThirtyEight model and apply it to the 2016 election.&lt;/p&gt;
 &lt;p&gt;We start by connecting probability theory to the task of using polls to learn about a population.&lt;/p&gt;
 &lt;div id=&#34;the-sampling-model-for-polls&#34; class=&#34;section level3&#34;&gt;
 &lt;h3&gt;The sampling model for polls&lt;/h3&gt;
@@ -1321,12 +1326,105 @@ take_poll(25)&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;From the plot we see that we would need a poll of over 10,000 people to get the standard error that low. We rarely see polls of this size due in part to costs. From the Real Clear Politics table, we learn that the sample sizes in opinion polls range from 500-3,500 people. For a sample size of 1,000 and &lt;span class=&#34;math inline&#34;&gt;\(p=0.51\)&lt;/span&gt;, the standard error is:&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;sqrt(p*(1-p))/sqrt(1000)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## [1] 0.01580823&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;or 1.5 percentage points. So even with large polls, for close elections, &lt;span class=&#34;math inline&#34;&gt;\(\bar{X}\)&lt;/span&gt; can lead us astray if we don’t realize it is a random variable. Nonetheless, we can actually say more about how close we get the &lt;span class=&#34;math inline&#34;&gt;\(p\)&lt;/span&gt; and we do that in Section &lt;a href=&#34;#clt&#34;&gt;&lt;strong&gt;??&lt;/strong&gt;&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;or 1.5 percentage points. So even with large polls, for close elections, &lt;span class=&#34;math inline&#34;&gt;\(\bar{X}\)&lt;/span&gt; can lead us astray if we don’t realize it is a random variable. Nonetheless, we can actually say more about how close we get the &lt;span class=&#34;math inline&#34;&gt;\(p\)&lt;/span&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;clt&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Central Limit Theorem&lt;/h2&gt;
+&lt;p&gt;The Central Limit Theorem (CLT) tells us that the distribution function for a sum of draws is approximately normal. You also may recall that dividing a normally distributed random variable by a constant is also a normally distributed variable. This implies that the distribution of &lt;span class=&#34;math inline&#34;&gt;\(\bar{X}\)&lt;/span&gt; is approximately normal.&lt;/p&gt;
+&lt;p&gt;In summary, we have that &lt;span class=&#34;math inline&#34;&gt;\(\bar{X}\)&lt;/span&gt; has an approximately normal distribution with expected value &lt;span class=&#34;math inline&#34;&gt;\(p\)&lt;/span&gt; and standard error &lt;span class=&#34;math inline&#34;&gt;\(\sqrt{p(1-p)/N}\)&lt;/span&gt;.&lt;/p&gt;
+&lt;p&gt;Now how does this help us? Suppose we want to know what is the probability that we are within 1% from &lt;span class=&#34;math inline&#34;&gt;\(p\)&lt;/span&gt;. We are basically asking what is&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
+\mbox{Pr}(| \bar{X} - p| \leq .01)
+\]&lt;/span&gt;
+which is the same as:&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
+\mbox{Pr}(\bar{X}\leq p + .01) - \mbox{Pr}(\bar{X} \leq p - .01)
+\]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;Can we answer this question? We can use the mathematical trick we learned in the previous chapter. Subtract the expected value and divide by the standard error to get a standard normal random variable, call it &lt;span class=&#34;math inline&#34;&gt;\(Z\)&lt;/span&gt;, on the left. Since &lt;span class=&#34;math inline&#34;&gt;\(p\)&lt;/span&gt; is the expected value and &lt;span class=&#34;math inline&#34;&gt;\(\mbox{SE}(\bar{X}) = \sqrt{p(1-p)/N}\)&lt;/span&gt; is the standard error we get:&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
+\mbox{Pr}\left(Z \leq \frac{ \,.01} {\mbox{SE}(\bar{X})} \right) -
+\mbox{Pr}\left(Z \leq - \frac{ \,.01} {\mbox{SE}(\bar{X})} \right)
+\]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;One problem we have is that since we don’t know &lt;span class=&#34;math inline&#34;&gt;\(p\)&lt;/span&gt;, we don’t know &lt;span class=&#34;math inline&#34;&gt;\(\mbox{SE}(\bar{X})\)&lt;/span&gt;. But it turns out that the CLT still works if we estimate the standard error by using &lt;span class=&#34;math inline&#34;&gt;\(\bar{X}\)&lt;/span&gt; in place of &lt;span class=&#34;math inline&#34;&gt;\(p\)&lt;/span&gt;. We say that we &lt;em&gt;plug-in&lt;/em&gt; the estimate. Our estimate of the standard error is therefore:&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
+\hat{\mbox{SE}}(\bar{X})=\sqrt{\bar{X}(1-\bar{X})/N}
+\]&lt;/span&gt;
+In statistics textbooks, we use a little hat to denote estimates. The estimate can be constructed using the observed data and &lt;span class=&#34;math inline&#34;&gt;\(N\)&lt;/span&gt;.&lt;/p&gt;
+&lt;p&gt;Now we continue with our calculation, but dividing by &lt;span class=&#34;math inline&#34;&gt;\(\hat{\mbox{SE}}(\bar{X})=\sqrt{\bar{X}(1-\bar{X})/N})\)&lt;/span&gt; instead. In our first sample we had 12 blue and 13 red so &lt;span class=&#34;math inline&#34;&gt;\(\bar{X} = 0.48\)&lt;/span&gt; and our estimate of standard error is:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;x_hat &amp;lt;- 0.48
+se &amp;lt;- sqrt(x_hat*(1-x_hat)/25)
+se&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 0.09991997&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;And now we can answer the question of the probability of being close to &lt;span class=&#34;math inline&#34;&gt;\(p\)&lt;/span&gt;. The answer is:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;pnorm(0.01/se) - pnorm(-0.01/se)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 0.07971926&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Therefore, there is a small chance that we will be close. A poll of only &lt;span class=&#34;math inline&#34;&gt;\(N=25\)&lt;/span&gt; people is not really very useful, at least not for a close election.&lt;/p&gt;
+&lt;p&gt;Earlier we mentioned the &lt;em&gt;margin of error&lt;/em&gt;. Now we can define it because it is simply two times the standard error, which we can now estimate. In our case it is:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;1.96*se&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 0.1958431&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Why do we multiply by 1.96? Because if you ask what is the probability that we are within 1.96 standard errors from &lt;span class=&#34;math inline&#34;&gt;\(p\)&lt;/span&gt;, we get:&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
+\mbox{Pr}\left(Z \leq \, 1.96\,\mbox{SE}(\bar{X})  / \mbox{SE}(\bar{X}) \right) -
+\mbox{Pr}\left(Z \leq - 1.96\, \mbox{SE}(\bar{X}) / \mbox{SE}(\bar{X}) \right)
+\]&lt;/span&gt;
+which is:&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
+\mbox{Pr}\left(Z \leq 1.96 \right) -
+\mbox{Pr}\left(Z \leq - 1.96\right)
+\]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;which we know is about 95%:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;pnorm(1.96)-pnorm(-1.96)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 0.9500042&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Hence, there is a 95% probability that &lt;span class=&#34;math inline&#34;&gt;\(\bar{X}\)&lt;/span&gt; will be within &lt;span class=&#34;math inline&#34;&gt;\(1.96\times \hat{SE}(\bar{X})\)&lt;/span&gt;, in our case within about 0.2, of &lt;span class=&#34;math inline&#34;&gt;\(p\)&lt;/span&gt;. Note that 95% is somewhat of an arbitrary choice and sometimes other percentages are used, but it is the most commonly used value to define margin of error. We often round 1.96 up to 2 for simplicity of presentation.&lt;/p&gt;
+&lt;p&gt;In summary, the CLT tells us that our poll based on a sample size of &lt;span class=&#34;math inline&#34;&gt;\(25\)&lt;/span&gt; is not very useful. We don’t really learn much when the margin of error is this large. All we can really say is that the popular vote will not be won by a large margin. This is why pollsters tend to use larger sample sizes.&lt;/p&gt;
+&lt;p&gt;From the table above, we see that typical sample sizes range from 700 to 3500. To see how this gives us a much more practical result, notice that if we had obtained a &lt;span class=&#34;math inline&#34;&gt;\(\bar{X}\)&lt;/span&gt;=0.48 with a sample size of 2,000, our standard error &lt;span class=&#34;math inline&#34;&gt;\(\hat{\mbox{SE}}(\bar{X})\)&lt;/span&gt; would have been 0.0111714. So our result is an estimate of &lt;code&gt;48&lt;/code&gt;% with a margin of error of 2%. In this case, the result is much more informative and would make us think that there are more red balls than blue. Keep in mind, however, that this is hypothetical. We did not take a poll of 2,000 since we don’t want to ruin the competition.&lt;/p&gt;
+&lt;div id=&#34;a-monte-carlo-simulation&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;A Monte Carlo simulation&lt;/h3&gt;
+&lt;p&gt;Suppose we want to use a Monte Carlo simulation to corroborate the tools we have built using probability theory. To create the simulation, we would write code like this:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;B &amp;lt;- 10000
+N &amp;lt;- 1000
+x_hat &amp;lt;- replicate(B, {
+  x &amp;lt;- sample(c(0,1), size = N, replace = TRUE, prob = c(1-p, p))
+  mean(x)
+})&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The problem is, of course, we don’t know &lt;code&gt;p&lt;/code&gt;. We could construct an urn like the one pictured above and run an analog (without a computer) simulation. It would take a long time, but you could take 10,000 samples, count the beads and keep track of the proportions of blue. We can use the function &lt;code&gt;take_poll(n=1000)&lt;/code&gt; instead of drawing from an actual urn, but it would still take time to count the beads and enter the results.&lt;/p&gt;
+&lt;p&gt;One thing we therefore do to corroborate theoretical results is to pick one or several values of &lt;code&gt;p&lt;/code&gt; and run the simulations. Let’s set &lt;code&gt;p=0.45&lt;/code&gt;. We can then simulate a poll:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p &amp;lt;- 0.45
+N &amp;lt;- 1000
+
+x &amp;lt;- sample(c(0,1), size = N, replace = TRUE, prob = c(1-p, p))
+x_hat &amp;lt;- mean(x)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;In this particular sample, our estimate is &lt;code&gt;x_hat&lt;/code&gt;. We can use that code to do a Monte Carlo simulation:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;B &amp;lt;- 10000
+x_hat &amp;lt;- replicate(B, {
+  x &amp;lt;- sample(c(0,1), size = N, replace = TRUE, prob = c(1-p, p))
+  mean(x)
+})&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;To review, the theory tells us that &lt;span class=&#34;math inline&#34;&gt;\(\bar{X}\)&lt;/span&gt; is approximately normally distributed, has expected value &lt;span class=&#34;math inline&#34;&gt;\(p=\)&lt;/span&gt; 0.45 and standard error &lt;span class=&#34;math inline&#34;&gt;\(\sqrt{p(1-p)/N}\)&lt;/span&gt; = 0.0157321. The simulation confirms this:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;mean(x_hat)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 0.4500761&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;sd(x_hat)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 0.01579523&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;A histogram and qq-plot confirm that the normal approximation is accurate as well:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/example/04-example_files/figure-html/normal-approximation-for-polls-1.png&#34; width=&#34;100%&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Of course, in real life we would never be able to run such an experiment because we don’t know &lt;span class=&#34;math inline&#34;&gt;\(p\)&lt;/span&gt;. But we could run it for various values of &lt;span class=&#34;math inline&#34;&gt;\(p\)&lt;/span&gt; and &lt;span class=&#34;math inline&#34;&gt;\(N\)&lt;/span&gt; and see that the theory does indeed work well for most values. You can easily do this by re-running the code above after changing &lt;code&gt;p&lt;/code&gt; and &lt;code&gt;N&lt;/code&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;the-spread&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;The spread&lt;/h3&gt;
+&lt;p&gt;The competition is to predict the spread, not the proportion &lt;span class=&#34;math inline&#34;&gt;\(p\)&lt;/span&gt;. However, because we are assuming there are only two parties, we know that the spread is &lt;span class=&#34;math inline&#34;&gt;\(p - (1-p) = 2p - 1\)&lt;/span&gt;. As a result, everything we have done can easily be adapted to an estimate of &lt;span class=&#34;math inline&#34;&gt;\(2p - 1\)&lt;/span&gt;. Once we have our estimate &lt;span class=&#34;math inline&#34;&gt;\(\bar{X}\)&lt;/span&gt; and &lt;span class=&#34;math inline&#34;&gt;\(\hat{\mbox{SE}}(\bar{X})\)&lt;/span&gt;, we estimate the spread with &lt;span class=&#34;math inline&#34;&gt;\(2\bar{X} - 1\)&lt;/span&gt; and, since we are multiplying by 2, the standard error is &lt;span class=&#34;math inline&#34;&gt;\(2\hat{\mbox{SE}}(\bar{X})\)&lt;/span&gt;. Note that subtracting 1 does not add any variability so it does not affect the standard error.&lt;/p&gt;
+&lt;p&gt;For our 25 item sample above, our estimate &lt;span class=&#34;math inline&#34;&gt;\(p\)&lt;/span&gt; is &lt;code&gt;.48&lt;/code&gt; with margin of error &lt;code&gt;.20&lt;/code&gt; and our estimate of the spread is &lt;code&gt;0.04&lt;/code&gt; with margin of error &lt;code&gt;.40&lt;/code&gt;. Again, not a very useful sample size. However, the point is that once we have an estimate and standard error for &lt;span class=&#34;math inline&#34;&gt;\(p\)&lt;/span&gt;, we have it for the spread &lt;span class=&#34;math inline&#34;&gt;\(2p-1\)&lt;/span&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;bias-why-not-run-a-very-large-poll&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Bias: why not run a very large poll?&lt;/h3&gt;
+&lt;p&gt;For realistic values of &lt;span class=&#34;math inline&#34;&gt;\(p\)&lt;/span&gt;, say from 0.35 to 0.65, if we run a very large poll with 100,000 people, theory tells us that we would predict the election perfectly since the largest possible margin of error is around 0.3%:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/example/04-example_files/figure-html/standard-error-versus-p-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;One reason is that running such a poll is very expensive. Another possibly more important reason is that theory has its limitations. Polling is much more complicated than picking beads from an urn. Some people might lie to pollsters and others might not have phones. But perhaps the most important way an actual poll differs from an urn model is that we actually don’t know for sure who is in our population and who is not. How do we know who is going to vote? Are we reaching all possible voters? Hence, even if our margin of error is very small, it might not be exactly right that our expected value is &lt;span class=&#34;math inline&#34;&gt;\(p\)&lt;/span&gt;. We call this bias. Historically, we observe that polls are indeed biased, although not by that much. The typical bias appears to be about 1-2%. This makes election forecasting a bit more interesting and we will talk about how to model this shortly.&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;div id=&#34;part-2-supplemental-additional-visualization-techniques&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Part 2: (Supplemental) Additional Visualization Techniques&lt;/h2&gt;
-&lt;p&gt;For this example, we’re going to use historical weather data from &lt;a href=&#34;https://darksky.net/forecast/33.7546,-84.39/us12/en&#34;&gt;Dark Sky&lt;/a&gt; about wind speed and temperature trends for downtown Atlanta (&lt;a href=&#34;https://www.google.com/maps/place/33°45&amp;#39;16.4%22N+84°23&amp;#39;24.0%22W/@33.754557,-84.3921977,17z/&#34;&gt;specifically &lt;code&gt;33.754557, -84.390009&lt;/code&gt;&lt;/a&gt;) in 2019. We downloaded this data using Dark Sky’s (about-to-be-retired-because-they-were-bought-by-Apple) API using the &lt;a href=&#34;https://github.com/hrbrmstr/darksky&#34;&gt;&lt;strong&gt;darksky&lt;/strong&gt; package&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;For this second part of the example, we’re going to use historical weather data from &lt;a href=&#34;https://darksky.net/forecast/33.7546,-84.39/us12/en&#34;&gt;Dark Sky&lt;/a&gt; about wind speed and temperature trends for downtown Atlanta (&lt;a href=&#34;https://www.google.com/maps/place/33°45&amp;#39;16.4%22N+84°23&amp;#39;24.0%22W/@33.754557,-84.3921977,17z/&#34;&gt;specifically &lt;code&gt;33.754557, -84.390009&lt;/code&gt;&lt;/a&gt;) in 2019. We downloaded this data using Dark Sky’s (about-to-be-retired-because-they-were-bought-by-Apple) API using the &lt;a href=&#34;https://github.com/hrbrmstr/darksky&#34;&gt;&lt;strong&gt;darksky&lt;/strong&gt; package&lt;/a&gt;.&lt;/p&gt;
 &lt;p&gt;If you want to follow along with this example, you can download the data below (you’ll likely need to right click and choose “Save Link As…”):&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;a href=&#34;/data/atl-weather-2019.csv&#34;&gt;&lt;i class=&#34;fas fa-file-csv&#34;&gt;&lt;/i&gt; &lt;code&gt;atl-weather-2019.csv&lt;/code&gt;&lt;/a&gt;&lt;/li&gt;
