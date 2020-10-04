@@ -927,13 +927,14 @@ Y_{i,j} = d + b_i + \varepsilon_{i,j}
 <li>The data are not 0 or 1, so CLT does not apply.</li>
 </ol>
 <ol start="7" style="list-style-type: decimal">
-<li>Construct a random variable that has expected value <span class="math inline">\(b_2 - b_1\)</span>, the pollster bias difference. If our model holds, then this random variable has an approximately normal distribution and we know its standard error. The standard error depends on <span class="math inline">\(\sigma_1\)</span> and <span class="math inline">\(\sigma_2\)</span> (the variances of the <span class="math inline">\(Y\)</span> above), but we can plug the sample standard deviations. <strong>Compute those now</strong>. Now, you should be able to answer the question: is <span class="math inline">\(b_2 - b_1\)</span> different from 0?</li>
+<li>Construct a random variable that has expected value <span class="math inline">\(b_2 - b_1\)</span>, the pollster bias difference. If our model holds, then this random variable has an approximately normal distribution and we know its standard error. The standard error depends on <span class="math inline">\(\sigma_1\)</span> and <span class="math inline">\(\sigma_2\)</span> (the variances of the <span class="math inline">\(Y\)</span> above), but we can plug the sample standard deviations. <strong>Compute those now</strong>.</li>
 </ol>
 <p>The statistic formed by dividing our estimate of <span class="math inline">\(b_2-b_1\)</span> by its estimated standard error:</p>
 <p><span class="math display">\[
 \frac{\bar{Y}_2 - \bar{Y}_1}{\sqrt{s_2^2/N_2 + s_1^2/N_1}}
 \]</span></p>
-<p>is called the t-statistic. Now notice that we have more than two pollsters. We can also test for pollster effect using all pollsters, not just two. The idea is to compare the variability across polls to variability within polls. We can actually construct statistics to test for effects and approximate their distribution. The area of statistics that does this is called Analysis of Variance or ANOVA. We do not cover it here, but ANOVA provides a very useful set of tools to answer questions such as: is there a pollster effect?</p>
+<p>is called the t-statistic. Now you should be able to answer the question: is <span class="math inline">\(b_2 - b_1\)</span> different from 0?</p>
+<p>Notice that we have more than two pollsters. We can also test for pollster effect using all pollsters, not just two. The idea is to compare the variability across polls to variability within polls. We can actually construct statistics to test for effects and approximate their distribution. The area of statistics that does this is called Analysis of Variance or ANOVA. We do not cover it here, but ANOVA provides a very useful set of tools to answer questions such as: is there a pollster effect?</p>
 <p>For this exercise, create a new table:</p>
 <pre class="r"><code>polls &lt;- polls_us_election_2016 %&gt;%
   filter(enddate &gt;= &quot;2016-10-15&quot; &amp;
