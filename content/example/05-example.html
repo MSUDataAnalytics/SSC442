@@ -17,7 +17,6 @@ editor_options:
 
 <div id="TOC">
 <ul>
-<li><a href="#linear-regression-notes">Linear Regression; Notes</a><ul>
 <li><a href="#preliminaries">Preliminaries</a></li>
 <li><a href="#code">Code</a><ul>
 <li><a href="#load-and-clean-data">Load and clean data</a></li>
@@ -29,13 +28,16 @@ editor_options:
 <li><a href="#coefficient-plots">Coefficient plots</a></li>
 <li><a href="#marginal-effects-plots">Marginal effects plots</a></li>
 </ul></li>
-</ul></li>
 </ul>
 </div>
 
-<div id="linear-regression-notes" class="section level1">
-<h1>Linear Regression; Notes</h1>
-<p>Today’s example will pivot between the content from this week and the</p>
+<div class="fyi">
+<p>Today’s example will pivot between the content from this week and the example below.</p>
+<p>We will also use the Ames data again. It is linked below.</p>
+<ul>
+<li><a href="/projects/data/ames.csv"><i class="fas fa-file-csv"></i> <code>Ames.csv</code></a></li>
+</ul>
+</div>
 <div id="preliminaries" class="section level2">
 <h2>Preliminaries</h2>
 <p>For this example, we’re again going to use historical weather data from <a href="https://darksky.net/forecast/33.7546,-84.39/us12/en">Dark Sky</a> about wind speed and temperature trends for downtown Atlanta (<a href="https://www.google.com/maps/place/33°45&#39;16.4%22N+84°23&#39;24.0%22W/@33.754557,-84.3921977,17z/">specifically <code>33.754557, -84.390009</code></a>) in 2019. We downloaded this data using Dark Sky’s (about-to-be-retired-because-they-were-bought-by-Apple) API using the <a href="https://github.com/hrbrmstr/darksky"><strong>darksky</strong> package</a>.</p>
@@ -429,6 +431,5 @@ ggplot(predicted_values_fancy, aes(x = windSpeed, y = .fitted)) +
   facet_wrap(vars(cloudCover_scaled), nrow = 1)</code></pre>
 <p><img src="/example/05-example_files/figure-html/mfx-complex-1.png" width="864" style="display: block; margin: auto;" /></p>
 <p>Nice. Temperatures go down slightly as cloud cover increases. If we wanted to improve the model, we’d add an interaction term between cloud cover and windspeed so that each line would have a different slope in addition to a different intercept, but that’s beyond the scope of this class.</p>
-</div>
 </div>
 </div>
