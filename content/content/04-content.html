@@ -60,6 +60,13 @@ output:
 <li><a href="#the-expected-value-and-standard-error">The expected value and standard error</a><ul>
 <li><a href="#population-sd-versus-the-sample-sd">Population SD versus the sample SD</a></li>
 </ul></li>
+<li><a href="#central-limit-theorem">Central Limit Theorem</a><ul>
+<li><a href="#how-large-is-large-in-the-central-limit-theorem">How large is large in the Central Limit Theorem?</a></li>
+</ul></li>
+<li><a href="#statistical-properties-of-averages">Statistical properties of averages</a></li>
+<li><a href="#law-of-large-numbers">Law of large numbers</a><ul>
+<li><a href="#misinterpreting-law-of-averages">Misinterpreting law of averages</a></li>
+</ul></li>
 </ul></li>
 </ul>
 </div>
@@ -154,12 +161,12 @@ events &lt;- replicate(B, sample(beads, 1))</code></pre>
 tab</code></pre>
 <pre><code>## events
 ## blue  red 
-## 5982 4018</code></pre>
+## 5965 4035</code></pre>
 <p>and <code>prop.table</code> gives us the proportions:</p>
 <pre class="r"><code>prop.table(tab)</code></pre>
 <pre><code>## events
 ##   blue    red 
-## 0.5982 0.4018</code></pre>
+## 0.5965 0.4035</code></pre>
 <p>The numbers above are the estimated probabilities provided by this Monte Carlo simulation. Statistical theory, not covered here, tells us that as <span class="math inline">\(B\)</span> gets larger, the estimates get closer to 3/5=.6 and 2/5=.4.</p>
 <p>Although this is a simple and not very useful example, we will use Monte Carlo simulations to estimate probabilities in cases in which it is harder to compute the exact ones. Before delving into more complex examples, we use simple ones to demonstrate the computing tools available in R.</p>
 <div id="setting-the-random-seed" class="section level3">
@@ -693,7 +700,7 @@ X &lt;- ifelse(sample(beads, 1) == &quot;blue&quot;, 1, 0)</code></pre>
 <p>Suppose a very small casino hires you to consult on whether they should set up roulette wheels. To keep the example simple, we will assume that 1,000 people will play and that the only game you can play on the roulette wheel is to bet on red or black. The casino wants you to predict how much money they will make or lose. They want a range of values and, in particular, they want to know what’s the chance of losing money. If this probability is too high, they will pass on installing roulette wheels.</p>
 <p>We are going to define a random variable <span class="math inline">\(S\)</span> that will represent the casino’s total winnings. Let’s start by constructing the urn. A roulette wheel has 18 red pockets, 18 black pockets and 2 green ones. So playing a color in one game of roulette is equivalent to drawing from this urn:</p>
 <pre class="r"><code>color &lt;- rep(c(&quot;Black&quot;, &quot;Red&quot;, &quot;Green&quot;), c(18, 18, 2))</code></pre>
-<p>The 1,000 outcomes from 1,000 people playing are independent draws from this urn. If red comes up, the gambler wins and the casino loses a dollar, so we draw a -$1. Otherwise, the casino wins a dollar and we draw a $1. To construct our random variable <span class="math inline">\(S\)</span>, we can use this code:</p>
+<p>The 1,000 outcomes from 1,000 people playing are independent draws from this urn. If red comes up, the gambler wins and the casino loses a dollar, so we draw a -1. Otherwise, the casino wins a dollar and we draw a 1. To construct our random variable <span class="math inline">\(S\)</span>, we can use this code:</p>
 <pre class="r"><code>n &lt;- 1000
 X &lt;- sample(ifelse(color == &quot;Red&quot;, -1, 1),  n, replace = TRUE)
 X[1:10]</code></pre>
@@ -827,6 +834,96 @@ s-sd(x)*sqrt((n-1) / n)</code></pre>
 <p>So be careful when using the <code>sd</code> function in R. However, keep in mind that throughout the book we sometimes use the <code>sd</code> function when we really want the actual SD. This is because when the list size is big, these two are practically equivalent since <span class="math inline">\(\sqrt{(N-1)/N} \approx 1\)</span>.</p>
 </div>
 </div>
+<div id="central-limit-theorem" class="section level2">
+<h2>Central Limit Theorem</h2>
+<p>The Central Limit Theorem (CLT) tells us that when the number of draws, also called the <em>sample size</em>, is large, the probability distribution of the sum of the independent draws is approximately normal. Because sampling models are used for so many data generation processes, the CLT is considered one of the most important mathematical insights in history.</p>
+<p>Previously, we discussed that if we know that the distribution of a list of numbers is approximated by the normal distribution, all we need to describe the list are the average and standard deviation. We also know that the same applies to probability distributions. If a random variable has a probability distribution that is approximated with the normal distribution, then all we need to describe the probability distribution are the average and standard deviation, referred to as the expected value and standard error.</p>
+<p>We previously ran this Monte Carlo simulation:</p>
+<pre class="r"><code>n &lt;- 1000
+B &lt;- 10000
+roulette_winnings &lt;- function(n){
+  X &lt;- sample(c(-1,1), n, replace = TRUE, prob=c(9/19, 10/19))
+  sum(X)
+}
+S &lt;- replicate(B, roulette_winnings(n))</code></pre>
+<p>The Central Limit Theorem (CLT) tells us that the sum <span class="math inline">\(S\)</span> is approximated by a normal distribution.
+Using the formulas above, we know that the expected value and standard error are:</p>
+<pre class="r"><code>n * (20-18)/38</code></pre>
+<pre><code>## [1] 52.63158</code></pre>
+<pre class="r"><code>sqrt(n) * 2 * sqrt(90)/19</code></pre>
+<pre><code>## [1] 31.57895</code></pre>
+<p>The theoretical values above match those obtained with the Monte Carlo simulation:</p>
+<pre class="r"><code>mean(S)</code></pre>
+<pre><code>## [1] 52.2242</code></pre>
+<pre class="r"><code>sd(S)</code></pre>
+<pre><code>## [1] 31.65508</code></pre>
+<p>Using the CLT, we can skip the Monte Carlo simulation and instead compute the probability of the casino losing money using this approximation:</p>
+<pre class="r"><code>mu &lt;- n * (20-18)/38
+se &lt;-  sqrt(n) * 2 * sqrt(90)/19
+pnorm(0, mu, se)</code></pre>
+<pre><code>## [1] 0.04779035</code></pre>
+<p>which is also in very good agreement with our Monte Carlo result:</p>
+<pre class="r"><code>mean(S &lt; 0)</code></pre>
+<pre><code>## [1] 0.0458</code></pre>
+<div id="how-large-is-large-in-the-central-limit-theorem" class="section level3">
+<h3>How large is large in the Central Limit Theorem?</h3>
+<p>The CLT works when the number of draws is large. But large is a relative term. In many circumstances as few as 30 draws is enough to make the CLT useful. In some specific instances, as few as 10 is enough. However, these should not be considered general rules. Note, for example, that when the probability of success is very small, we need much larger sample sizes.</p>
+<p>By way of illustration, let’s consider the lottery. In the lottery, the chances of winning are less than 1 in a million. Thousands of people play so the number of draws is very large. Yet the number of winners, the sum of the draws, range between 0 and 4. This sum is certainly not well approximated by a normal distribution, so the CLT does not apply, even with the very large sample size. This is generally true when the probability of a success is very low. In these cases, the Poisson distribution is more appropriate.</p>
+<p>You can examine the properties of the Poisson distribution using <code>dpois</code> and <code>ppois</code>. You can generate random variables following this distribution with <code>rpois</code>. However, we do not cover the theory here. You can learn about the Poisson distribution in any probability textbook and even Wikipedia<a href="#fn7" class="footnote-ref" id="fnref7"><sup>7</sup></a></p>
+</div>
+</div>
+<div id="statistical-properties-of-averages" class="section level2">
+<h2>Statistical properties of averages</h2>
+<p>There are several useful mathematical results that we used above and often employ when working with data. We list them below.</p>
+<p>1. The expected value of the sum of random variables is the sum of each random variable’s expected value. We can write it like this:</p>
+<p><span class="math display">\[
+\mbox{E}[X_1+X_2+\dots+X_n] =  \mbox{E}[X_1] + \mbox{E}[X_2]+\dots+\mbox{E}[X_n]
+\]</span></p>
+<p>If the <span class="math inline">\(X\)</span> are independent draws from the urn, then they all have the same expected value. Let’s call it <span class="math inline">\(\mu\)</span> and thus:</p>
+<p><span class="math display">\[
+\mbox{E}[X_1+X_2+\dots+X_n]=  n\mu
+\]</span></p>
+<p>which is another way of writing the result we show above for the sum of draws.</p>
+<p>2. The expected value of a non-random constant times a random variable is the non-random constant times the expected value of a random variable. This is easier to explain with symbols:</p>
+<p><span class="math display">\[
+\mbox{E}[aX] =  a\times\mbox{E}[X]
+\]</span></p>
+<p>To see why this is intuitive, consider change of units. If we change the units of a random variable, say from dollars to cents, the expectation should change in the same way. A consequence of the above two facts is that the expected value of the average of independent draws from the same urn is the expected value of the urn, call it <span class="math inline">\(\mu\)</span> again:</p>
+<p><span class="math display">\[
+\mbox{E}[(X_1+X_2+\dots+X_n) / n]=   \mbox{E}[X_1+X_2+\dots+X_n] / n = n\mu/n = \mu
+\]</span></p>
+<p>3. The square of the standard error of the sum of <strong>independent</strong> random variables is the sum of the square of the standard error of each random variable. This one is easier to understand in math form:</p>
+<p><span class="math display">\[
+\mbox{SE}[X_1+X_2+\dots+X_n] = \sqrt{\mbox{SE}[X_1]^2 + \mbox{SE}[X_2]^2+\dots+\mbox{SE}[X_n]^2  }
+\]</span></p>
+<p>The square of the standard error is referred to as the <em>variance</em> in statistical textbooks. Note that this particular property is not as intuitive as the previous three and more in depth explanations can be found in statistics textbooks.</p>
+<p>4. The standard error of a non-random constant times a random variable is the non-random constant times the random variable’s standard error. As with the expectation:
+<span class="math display">\[
+\mbox{SE}[aX] =  a \times \mbox{SE}[X]
+\]</span></p>
+<p>To see why this is intuitive, again think of units.</p>
+<p>A consequence of 3 and 4 is that the standard error of the average of independent draws from the same urn is the standard deviation of the urn divided by the square root of <span class="math inline">\(n\)</span> (the number of draws), call it <span class="math inline">\(\sigma\)</span>:</p>
+<p><span class="math display">\[
+\begin{aligned}
+\mbox{SE}[(X_1+X_2+\dots+X_n) / n] &amp;=   \mbox{SE}[X_1+X_2+\dots+X_n]/n \\
+&amp;= \sqrt{\mbox{SE}[X_1]^2+\mbox{SE}[X_2]^2+\dots+\mbox{SE}[X_n]^2}/n \\
+&amp;= \sqrt{\sigma^2+\sigma^2+\dots+\sigma^2}/n\\
+&amp;= \sqrt{n\sigma^2}/n\\
+&amp;= \sigma / \sqrt{n}
+\end{aligned}
+\]</span></p>
+<p>5. If <span class="math inline">\(X\)</span> is a normally distributed random variable, then if <span class="math inline">\(a\)</span> and <span class="math inline">\(b\)</span> are non-random constants, <span class="math inline">\(aX + b\)</span> is also a normally distributed random variable. All we are doing is changing the units of the random variable by multiplying by <span class="math inline">\(a\)</span>, then shifting the center by <span class="math inline">\(b\)</span>.</p>
+<p>Note that statistical textbooks use the Greek letters <span class="math inline">\(\mu\)</span> and <span class="math inline">\(\sigma\)</span> to denote the expected value and standard error, respectively. This is because <span class="math inline">\(\mu\)</span> is the Greek letter for <span class="math inline">\(m\)</span>, the first letter of <em>mean</em>, which is another term used for expected value. Similarly, <span class="math inline">\(\sigma\)</span> is the Greek letter for <span class="math inline">\(s\)</span>, the first letter of standard error.</p>
+</div>
+<div id="law-of-large-numbers" class="section level2">
+<h2>Law of large numbers</h2>
+<p>An important implication of the final result is that the standard error of the average becomes smaller and smaller as <span class="math inline">\(n\)</span> grows larger. When <span class="math inline">\(n\)</span> is very large, then the standard error is practically 0 and the average of the draws converges to the average of the urn. This is known in statistical textbooks as the law of large numbers or the law of averages.</p>
+<div id="misinterpreting-law-of-averages" class="section level3">
+<h3>Misinterpreting law of averages</h3>
+<p>The law of averages is sometimes misinterpreted. For example, if you toss a coin 5 times and see a head each time, you might hear someone argue that the next toss is probably a tail because of the law of averages: on average we should see 50% heads and 50% tails. A similar argument would be to say that red “is due” on the roulette wheel after seeing black come up five times in a row. These events are independent so the chance of a coin landing heads is 50% regardless of the previous 5. This is also the case for the roulette outcome. The law of averages applies only when the number of draws is very large and not in small samples. After a million tosses, you will definitely see about 50% heads regardless of the outcome of the first five tosses.</p>
+<p>Another funny misuse of the law of averages is in sports when TV sportscasters predict a player is about to succeed because they have failed a few times in a row.</p>
+</div>
+</div>
 </div>
 <div class="footnotes">
 <hr />
@@ -837,5 +934,6 @@ s-sd(x)*sqrt((n-1) / n)</code></pre>
 <li id="fn4"><p><a href="https://en.wikipedia.org/w/index.php?title=Financial_crisis_of_2007%E2%80%932008" class="uri">https://en.wikipedia.org/w/index.php?title=Financial_crisis_of_2007%E2%80%932008</a><a href="#fnref4" class="footnote-back">↩︎</a></p></li>
 <li id="fn5"><p><a href="https://en.wikipedia.org/w/index.php?title=Security_(finance)" class="uri">https://en.wikipedia.org/w/index.php?title=Security_(finance)</a><a href="#fnref5" class="footnote-back">↩︎</a></p></li>
 <li id="fn6"><p><a href="https://en.wikipedia.org/w/index.php?title=Binomial_distribution" class="uri">https://en.wikipedia.org/w/index.php?title=Binomial_distribution</a><a href="#fnref6" class="footnote-back">↩︎</a></p></li>
+<li id="fn7"><p><a href="https://en.wikipedia.org/w/index.php?title=Poisson_distribution" class="uri">https://en.wikipedia.org/w/index.php?title=Poisson_distribution</a><a href="#fnref7" class="footnote-back">↩︎</a></p></li>
 </ol>
 </div>

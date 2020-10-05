@@ -952,7 +952,7 @@ We are going to define a random variable $S$ that will represent the casino's to
 color <- rep(c("Black", "Red", "Green"), c(18, 18, 2))
 ```
 
-The 1,000 outcomes from 1,000 people playing are independent draws from this urn. If red comes up, the gambler wins and the casino loses a dollar, so we draw a -\$1. Otherwise, the casino wins a dollar and we draw a \$1. To construct our random variable $S$, we can use this code:
+The 1,000 outcomes from 1,000 people playing are independent draws from this urn. If red comes up, the gambler wins and the casino loses a dollar, so we draw a -1. Otherwise, the casino wins a dollar and we draw a 1. To construct our random variable $S$, we can use this code:
 
 ```{r}
 n <- 1000
@@ -1188,3 +1188,135 @@ sqrt(mean((x-m)^2))
 ```
 
 So be careful when using the `sd` function in R. However, keep in mind that throughout the book we sometimes use the `sd` function when we really want the actual SD. This is because when the list size is big, these two are practically equivalent since $\sqrt{(N-1)/N} \approx 1$.
+
+## Central Limit Theorem
+
+The Central Limit Theorem (CLT) tells us that when the number of draws, also called the _sample size_, is large, the probability distribution of the sum of the independent draws is approximately normal. Because sampling models are used for so many data generation processes, the CLT is considered one of the most important mathematical insights in history.
+
+Previously, we discussed that if we know that the distribution of a list of numbers is approximated by the normal distribution, all we need to describe the list are the average and standard deviation. We also know that the same applies to probability distributions. If a random variable has a probability distribution that is approximated with the normal distribution, then all we need to describe the probability distribution are the average and standard deviation, referred to as the expected value and standard error.
+
+We previously ran this Monte Carlo simulation:
+
+```{r}
+n <- 1000
+B <- 10000
+roulette_winnings <- function(n){
+  X <- sample(c(-1,1), n, replace = TRUE, prob=c(9/19, 10/19))
+  sum(X)
+}
+S <- replicate(B, roulette_winnings(n))
+```
+
+The Central Limit Theorem (CLT) tells us that the sum $S$ is approximated by a normal distribution.
+Using the formulas above, we know that the expected value and standard error are:
+
+```{r}
+n * (20-18)/38
+sqrt(n) * 2 * sqrt(90)/19
+```
+
+The theoretical values above match those obtained with the Monte Carlo simulation:
+
+```{r}
+mean(S)
+sd(S)
+```
+
+Using the CLT, we can skip the Monte Carlo simulation and instead compute the probability of the casino losing money using this approximation:
+
+```{r}
+mu <- n * (20-18)/38
+se <-  sqrt(n) * 2 * sqrt(90)/19
+pnorm(0, mu, se)
+```
+
+which is also in very good agreement with our Monte Carlo result:
+
+```{r}
+mean(S < 0)
+```
+
+
+### How large is large in the Central Limit Theorem?
+
+The CLT works when the number of draws is large. But large is a relative term. In many circumstances as few as 30 draws is enough to make the CLT useful. In some specific instances, as few as 10 is enough. However, these should not be considered general rules. Note, for example, that when the probability of success is very small, we need much larger sample sizes.
+
+By way of illustration, let's consider the lottery. In the lottery, the chances of winning are less than 1 in a million. Thousands of people play so the number of draws is very large. Yet the number of winners, the sum of the draws, range between 0 and 4. This sum is certainly not well approximated by a normal distribution, so the CLT does not apply, even with the very large sample size. This is generally true when the probability of a success is very low. In these cases, the Poisson distribution is more appropriate.
+
+You can examine the properties of the Poisson distribution using `dpois` and `ppois`. You can generate random variables following this distribution with `rpois`. However, we do not cover the theory here. You can learn about the Poisson distribution in any probability textbook and even Wikipedia^[https://en.wikipedia.org/w/index.php?title=Poisson_distribution]
+
+
+## Statistical properties of averages
+
+There are several useful mathematical results that we used above and often employ when working with data. We list them below.
+
+1\. The expected value of the sum of random variables is the sum of each random variable's expected value. We can write it like this:
+
+$$
+\mbox{E}[X_1+X_2+\dots+X_n] =  \mbox{E}[X_1] + \mbox{E}[X_2]+\dots+\mbox{E}[X_n]
+$$
+
+If the $X$ are independent draws from the urn, then they all have the same expected value. Let's call it $\mu$ and thus:
+
+$$
+\mbox{E}[X_1+X_2+\dots+X_n]=  n\mu
+$$
+
+which is another way of writing the result we show above for the sum of draws.
+
+2\. The expected value of a non-random constant times a random variable is the non-random constant times the expected value of a random variable. This is easier to explain with symbols:
+
+$$
+\mbox{E}[aX] =  a\times\mbox{E}[X]
+$$
+
+To see why this is intuitive, consider change of units. If we change the units of a random variable, say from dollars to cents, the expectation should change in the same way. A consequence of the above two facts is that the expected value of the average of independent draws from the same urn is the expected value of the urn, call it $\mu$ again:
+
+$$
+\mbox{E}[(X_1+X_2+\dots+X_n) / n]=   \mbox{E}[X_1+X_2+\dots+X_n] / n = n\mu/n = \mu
+$$
+
+
+3\. The square of the standard error of the sum of **independent** random variables is the sum of the square of the standard error of each random variable. This one is easier to understand in math form:
+
+$$
+\mbox{SE}[X_1+X_2+\dots+X_n] = \sqrt{\mbox{SE}[X_1]^2 + \mbox{SE}[X_2]^2+\dots+\mbox{SE}[X_n]^2  }
+$$
+
+The square of the standard error is referred to as the _variance_ in statistical textbooks. Note that this particular property is not as intuitive as the previous three and more in depth explanations can be found in statistics textbooks.
+
+4\. The standard error of a non-random constant times a random variable is the non-random constant times the random variable's standard error. As with the expectation:
+$$
+\mbox{SE}[aX] =  a \times \mbox{SE}[X]
+$$
+
+To see why this is intuitive, again think of units.
+
+A consequence of 3 and 4 is that the standard error of the average of independent draws from the same urn is the standard deviation of the urn divided by the square root of $n$ (the number of draws), call it $\sigma$:
+
+$$
+\begin{aligned}
+\mbox{SE}[(X_1+X_2+\dots+X_n) / n] &=   \mbox{SE}[X_1+X_2+\dots+X_n]/n \\
+&= \sqrt{\mbox{SE}[X_1]^2+\mbox{SE}[X_2]^2+\dots+\mbox{SE}[X_n]^2}/n \\
+&= \sqrt{\sigma^2+\sigma^2+\dots+\sigma^2}/n\\
+&= \sqrt{n\sigma^2}/n\\
+&= \sigma / \sqrt{n}
+\end{aligned}
+$$
+
+
+5\. If $X$ is a normally distributed random variable, then if $a$ and $b$ are non-random constants, $aX + b$ is also a normally distributed random variable. All we are doing is changing the units of the random variable by multiplying by $a$, then shifting the center by $b$.
+
+
+Note that statistical textbooks use the Greek letters $\mu$ and $\sigma$ to denote the expected value and standard error, respectively. This is because $\mu$ is the Greek letter for $m$, the first letter of _mean_, which is another term used for expected value. Similarly, $\sigma$ is the Greek letter for $s$, the first letter of standard error.
+
+## Law of large numbers
+
+An important implication of the final result is that the standard error of the average becomes smaller and smaller as $n$ grows larger. When $n$ is very large, then the standard error is practically 0 and the average of the draws converges to the average of the urn. This is known in statistical textbooks as the law of large numbers or the law of averages.
+
+
+### Misinterpreting law of averages
+
+The law of averages is sometimes misinterpreted. For example, if you toss a coin 5 times and see a head each time, you might hear someone argue that the next toss is probably a tail because of the law of averages: on average we should see 50\% heads and 50\% tails. A similar argument would be to say that red "is due" on the roulette wheel after seeing black come up five times in a row. These events are independent so the chance of a coin landing heads is 50\% regardless of the previous 5. This is also the case for the roulette outcome. The law of averages applies only when the number of draws is very large and not in small samples. After a million tosses, you will definitely see about 50\% heads regardless of the outcome of the first five tosses.
+
+Another funny misuse of the law of averages is in sports when TV sportscasters predict a player is about to succeed because they have failed a few times in a row.
