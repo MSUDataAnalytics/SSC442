@@ -25,7 +25,6 @@ output:
 <li><a href="#relative-frequency">Relative frequency</a></li>
 <li><a href="#notation">Notation</a></li>
 <li><a href="#probability-distributions">Probability distributions</a></li>
-</ul></li>
 <li><a href="#monte-carlo-simulations-for-categorical-data">Monte Carlo simulations for categorical data</a><ul>
 <li><a href="#setting-the-random-seed">Setting the random seed</a></li>
 <li><a href="#with-and-without-replacement">With and without replacement</a></li>
@@ -51,6 +50,17 @@ output:
 </ul></li>
 <li><a href="#monte-carlo-simulations-for-continuous-variables">Monte Carlo simulations for continuous variables</a></li>
 <li><a href="#continuous-distributions">Continuous distributions</a></li>
+</ul></li>
+<li><a href="#random-variables">Random variables</a><ul>
+<li><a href="#definition-of-random-variables">Definition of Random variables</a></li>
+<li><a href="#sampling-models">Sampling models</a></li>
+<li><a href="#the-probability-distribution-of-a-random-variable">The probability distribution of a random variable</a></li>
+<li><a href="#distributions-versus-probability-distributions">Distributions versus probability distributions</a></li>
+<li><a href="#notation-for-random-variables">Notation for random variables</a></li>
+<li><a href="#the-expected-value-and-standard-error">The expected value and standard error</a><ul>
+<li><a href="#population-sd-versus-the-sample-sd">Population SD versus the sample SD</a></li>
+</ul></li>
+</ul></li>
 </ul>
 </div>
 
@@ -81,8 +91,8 @@ output:
 <p>As with last week, today’s lecture will ask you to work with <code>R</code> during the lecture.</p>
 </div>
 </div>
-<div id="discrete-probability" class="section level2">
-<h2>Discrete probability</h2>
+<div id="discrete-probability" class="section level1">
+<h1>Discrete probability</h1>
 <p>We start by covering some basic principles related to categorical data. The subset of probability is referred to as <em>discrete probability</em>. It will help us understand the probability theory we will later introduce for numeric and continuous data, which is much more common in data science applications. Discrete probability is more useful in card games and therefore we use these as examples.</p>
 <div id="relative-frequency" class="section level3">
 <h3>Relative frequency</h3>
@@ -124,7 +134,6 @@ output:
 </tbody>
 </table>
 </div>
-</div>
 <div id="monte-carlo-simulations-for-categorical-data" class="section level2">
 <h2>Monte Carlo simulations for categorical data</h2>
 <p>Computers provide a way to actually perform the simple random experiment described above: pick a bead at random from a bag that contains three blue beads and two red ones. Random number generators permit us to mimic the process of picking at random.</p>
@@ -134,7 +143,7 @@ beads</code></pre>
 <pre><code>## [1] &quot;red&quot;  &quot;red&quot;  &quot;blue&quot; &quot;blue&quot; &quot;blue&quot;</code></pre>
 <p>and then use <code>sample</code> to pick a bead at random:</p>
 <pre class="r"><code>sample(beads, 1)</code></pre>
-<pre><code>## [1] &quot;red&quot;</code></pre>
+<pre><code>## [1] &quot;blue&quot;</code></pre>
 <p>This line of code produces one random outcome. We want to repeat this experiment an infinite number of times, but it is impossible to repeat forever. Instead, we repeat the experiment a large enough number of times to make the results practically equivalent to repeating forever. <strong>This is an example of a <em>Monte Carlo</em> simulation</strong>.</p>
 <p>Much of what mathematical and theoretical statisticians study, which we do not cover in this class, relates to providing rigorous definitions of “practically equivalent” as well as studying how close a large number of experiments gets us to what happens in the limit. Later in this lecture, we provide a practical approach to deciding what is “large enough”.</p>
 <p>To perform our first Monte Carlo simulation, we use the <code>replicate</code> function, which permits us to repeat the same task any number of times. Here, we repeat the random event <span class="math inline">\(B =\)</span> 10,000 times:</p>
@@ -145,12 +154,12 @@ events &lt;- replicate(B, sample(beads, 1))</code></pre>
 tab</code></pre>
 <pre><code>## events
 ## blue  red 
-## 5938 4062</code></pre>
+## 5982 4018</code></pre>
 <p>and <code>prop.table</code> gives us the proportions:</p>
 <pre class="r"><code>prop.table(tab)</code></pre>
 <pre><code>## events
 ##   blue    red 
-## 0.5938 0.4062</code></pre>
+## 0.5982 0.4018</code></pre>
 <p>The numbers above are the estimated probabilities provided by this Monte Carlo simulation. Statistical theory, not covered here, tells us that as <span class="math inline">\(B\)</span> gets larger, the estimates get closer to 3/5=.6 and 2/5=.4.</p>
 <p>Although this is a simple and not very useful example, we will use Monte Carlo simulations to estimate probabilities in cases in which it is harder to compute the exact ones. Before delving into more complex examples, we use simple ones to demonstrate the computing tools available in R.</p>
 <div id="setting-the-random-seed" class="section level3">
@@ -520,7 +529,7 @@ qplot(log10(B), prob, geom = &quot;line&quot;)</code></pre>
 </div>
 <p>In previous lectures, we explained why when summarizing a list of numeric values, such as heights, it is not useful to construct a distribution that defines a proportion to each possible outcome. For example, if we measure every single person in a very large population of size <span class="math inline">\(n\)</span> with extremely high precision, since no two people are exactly the same height, we need to assign the proportion <span class="math inline">\(1/n\)</span> to each observed value and attain no useful summary at all. Similarly, when defining probability distributions, it is not useful to assign a very small probability to every single height.</p>
 <p>Just as when using distributions to summarize numeric data, it is much more practical to define a function that operates on intervals rather than single values. The standard way of doing this is using the <em>cumulative distribution function</em> (CDF).</p>
-<p>We described empirical cumulative distribution function (eCDF) in Section <a href="#cdf-intro"><strong>??</strong></a> as a basic summary of a list of numeric values. As an example, we earlier defined the height distribution for adult male students. Here, we define the vector <span class="math inline">\(x\)</span> to contain these heights:</p>
+<p>We described empirical cumulative distribution function (eCDF) as a basic summary of a list of numeric values. As an example, we earlier defined the height distribution for adult male students. Here, we define the vector <span class="math inline">\(x\)</span> to contain these heights:</p>
 <pre class="r"><code>library(tidyverse)
 library(dslabs)
 data(heights)
@@ -659,11 +668,174 @@ qplot(x, f, geom = &quot;line&quot;, data = data.frame(x, f = dnorm(x)))</code><
 </ol>
 </div>
 </div>
+</div>
+<div id="random-variables" class="section level1">
+<h1>Random variables</h1>
+<p>In data science, we often deal with data that is affected by chance in some way: the data comes from a random sample, the data is affected by measurement error, or the data measures some outcome that is random in nature. Being able to quantify the uncertainty introduced by randomness is one of the most important jobs of a data analyst. Statistical inference offers a framework, as well as several practical tools, for doing this. The first step is to learn how to mathematically describe random variables.</p>
+<p>In this section, we introduce random variables and their properties starting with their application to games of chance. We then describe some of the events surrounding the financial crisis of 2007-2008<a href="#fn4" class="footnote-ref" id="fnref4"><sup>4</sup></a> using probability theory. This financial crisis was in part caused by underestimating the risk of certain securities<a href="#fn5" class="footnote-ref" id="fnref5"><sup>5</sup></a> sold by financial institutions. Specifically, the risks of mortgage-backed securities (MBS) and collateralized debt obligations (CDO) were grossly underestimated. These assets were sold at prices that assumed most homeowners would make their monthly payments, and the probability of this not occurring was calculated as being low. A combination of factors resulted in many more defaults than were expected, which led to a price crash of these securities. As a consequence, banks lost so much money that they needed government bailouts to avoid closing down completely.</p>
+<div id="definition-of-random-variables" class="section level2">
+<h2>Definition of Random variables</h2>
+<p>Random variables are numeric outcomes resulting from random processes. We can easily generate random variables using some of the simple examples we have shown. For example, define <code>X</code> to be 1 if a bead is blue and red otherwise:</p>
+<pre class="r"><code>beads &lt;- rep( c(&quot;red&quot;, &quot;blue&quot;), times = c(2,3))
+X &lt;- ifelse(sample(beads, 1) == &quot;blue&quot;, 1, 0)</code></pre>
+<p>Here <code>X</code> is a random variable: every time we select a new bead the outcome changes randomly. See below:</p>
+<pre class="r"><code>ifelse(sample(beads, 1) == &quot;blue&quot;, 1, 0)</code></pre>
+<pre><code>## [1] 1</code></pre>
+<pre class="r"><code>ifelse(sample(beads, 1) == &quot;blue&quot;, 1, 0)</code></pre>
+<pre><code>## [1] 0</code></pre>
+<pre class="r"><code>ifelse(sample(beads, 1) == &quot;blue&quot;, 1, 0)</code></pre>
+<pre><code>## [1] 0</code></pre>
+<p>Sometimes it’s 1 and sometimes it’s 0.</p>
+</div>
+<div id="sampling-models" class="section level2">
+<h2>Sampling models</h2>
+<p>Many data generation procedures, those that produce the data we study, can be modeled quite well as draws from an urn. For instance, we can model the process of polling likely voters as drawing 0s (Republicans) and 1s (Democrats) from an urn containing the 0 and 1 code for all likely voters. In epidemiological studies, we often assume that the subjects in our study are a random sample from the population of interest. The data related to a specific outcome can be modeled as a random sample from an urn containing the outcome for the entire population of interest. Similarly, in experimental research, we often assume that the individual organisms we are studying, for example worms, flies, or mice, are a random sample from a larger population. Randomized experiments can also be modeled by draws from an urn given the way individuals are assigned into groups: when getting assigned, you draw your group at random. Sampling models are therefore ubiquitous in data science. Casino games offer a plethora of examples of real-world situations in which sampling models are used to answer specific questions. We will therefore start with such examples.</p>
+<p>Suppose a very small casino hires you to consult on whether they should set up roulette wheels. To keep the example simple, we will assume that 1,000 people will play and that the only game you can play on the roulette wheel is to bet on red or black. The casino wants you to predict how much money they will make or lose. They want a range of values and, in particular, they want to know what’s the chance of losing money. If this probability is too high, they will pass on installing roulette wheels.</p>
+<p>We are going to define a random variable <span class="math inline">\(S\)</span> that will represent the casino’s total winnings. Let’s start by constructing the urn. A roulette wheel has 18 red pockets, 18 black pockets and 2 green ones. So playing a color in one game of roulette is equivalent to drawing from this urn:</p>
+<pre class="r"><code>color &lt;- rep(c(&quot;Black&quot;, &quot;Red&quot;, &quot;Green&quot;), c(18, 18, 2))</code></pre>
+<p>The 1,000 outcomes from 1,000 people playing are independent draws from this urn. If red comes up, the gambler wins and the casino loses a dollar, so we draw a -$1. Otherwise, the casino wins a dollar and we draw a $1. To construct our random variable <span class="math inline">\(S\)</span>, we can use this code:</p>
+<pre class="r"><code>n &lt;- 1000
+X &lt;- sample(ifelse(color == &quot;Red&quot;, -1, 1),  n, replace = TRUE)
+X[1:10]</code></pre>
+<pre><code>##  [1] -1  1  1 -1 -1 -1  1  1  1  1</code></pre>
+<p>Because we know the proportions of 1s and -1s, we can generate the draws with one line of code, without defining <code>color</code>:</p>
+<pre class="r"><code>X &lt;- sample(c(-1,1), n, replace = TRUE, prob=c(9/19, 10/19))</code></pre>
+<p>We call this a <strong>sampling model</strong> since we are modeling the random behavior of roulette with the sampling of draws from an urn. The total winnings <span class="math inline">\(S\)</span> is simply the sum of these 1,000 independent draws:</p>
+<pre class="r"><code>X &lt;- sample(c(-1,1), n, replace = TRUE, prob=c(9/19, 10/19))
+S &lt;- sum(X)
+S</code></pre>
+<pre><code>## [1] 22</code></pre>
+</div>
+<div id="the-probability-distribution-of-a-random-variable" class="section level2">
+<h2>The probability distribution of a random variable</h2>
+<p>If you run the code above, you see that <span class="math inline">\(S\)</span> changes every time. This is, of course, because <span class="math inline">\(S\)</span> is a <strong>random variable</strong>. The probability distribution of a random variable tells us the probability of the observed value falling at any given interval. So, for example, if we want to know the probability that we lose money, we are asking the probability that <span class="math inline">\(S\)</span> is in the interval <span class="math inline">\(S&lt;0\)</span>.</p>
+<p>Note that if we can define a cumulative distribution function <span class="math inline">\(F(a) = \mbox{Pr}(S\leq a)\)</span>, then we will be able to answer any question related to the probability of events defined by our random variable <span class="math inline">\(S\)</span>, including the event <span class="math inline">\(S&lt;0\)</span>. We call this <span class="math inline">\(F\)</span> the random variable’s <em>distribution function</em>.</p>
+<p>We can estimate the distribution function for the random variable <span class="math inline">\(S\)</span> by using a Monte Carlo simulation to generate many realizations of the random variable. With this code, we run the experiment of having 1,000 people play roulette, over and over, specifically <span class="math inline">\(B = 10,000\)</span> times:</p>
+<pre class="r"><code>n &lt;- 1000
+B &lt;- 10000
+roulette_winnings &lt;- function(n){
+  X &lt;- sample(c(-1,1), n, replace = TRUE, prob=c(9/19, 10/19))
+  sum(X)
+}
+S &lt;- replicate(B, roulette_winnings(n))</code></pre>
+<p>Now we can ask the following: in our simulations, how often did we get sums less than or equal to <code>a</code>?</p>
+<pre class="r"><code>mean(S &lt;= a)</code></pre>
+<p>This will be a very good approximation of <span class="math inline">\(F(a)\)</span> and we can easily answer the casino’s question: how likely is it that we will lose money? We can see it is quite low:</p>
+<pre class="r"><code>mean(S&lt;0)</code></pre>
+<pre><code>## [1] 0.0456</code></pre>
+<p>We can visualize the distribution of <span class="math inline">\(S\)</span> by creating a histogram showing the probability <span class="math inline">\(F(b)-F(a)\)</span> for several intervals <span class="math inline">\((a,b]\)</span>:</p>
+<p><img src="/content/04-content_files/figure-html/normal-approximates-distribution-1.png" width="672" /></p>
+<p>We see that the distribution appears to be approximately normal. A qq-plot will confirm that the normal approximation is close to a perfect approximation for this distribution. If, in fact, the distribution is normal, then all we need to define the distribution is the average and the standard deviation. Because we have the original values from which the distribution is created, we can easily compute these with <code>mean(S)</code> and <code>sd(S)</code>. The blue curve you see added to the histogram above is a normal density with this average and standard deviation.</p>
+<p>This average and this standard deviation have special names. They are referred to as the <em>expected value</em> and <em>standard error</em> of the random variable <span class="math inline">\(S\)</span>. We will say more about these in the next section.</p>
+<p>Statistical theory provides a way to derive the distribution of random variables defined as independent random draws from an urn. Specifically, in our example above, we can show that <span class="math inline">\((S+n)/2\)</span> follows a binomial distribution. We therefore do not need to run for Monte Carlo simulations to know the probability distribution of <span class="math inline">\(S\)</span>. We did this for illustrative purposes.</p>
+<p>We can use the function <code>dbinom</code> and <code>pbinom</code> to compute the probabilities exactly. For example, to compute <span class="math inline">\(\mbox{Pr}(S &lt; 0)\)</span> we note that:</p>
+<p><span class="math display">\[\mbox{Pr}(S &lt; 0) = \mbox{Pr}((S+n)/2 &lt; (0+n)/2)\]</span></p>
+<p>and we can use the <code>pbinom</code> to compute <span class="math display">\[\mbox{Pr}(S \leq 0)\]</span></p>
+<pre class="r"><code>n &lt;- 1000
+pbinom(n/2, size = n, prob = 10/19)</code></pre>
+<pre><code>## [1] 0.05109794</code></pre>
+<p>Because this is a discrete probability function, to get <span class="math inline">\(\mbox{Pr}(S &lt; 0)\)</span> rather than <span class="math inline">\(\mbox{Pr}(S \leq 0)\)</span>, we write:</p>
+<pre class="r"><code>pbinom(n/2-1, size = n, prob = 10/19)</code></pre>
+<pre><code>## [1] 0.04479591</code></pre>
+<p>For the details of the binomial distribution, you can consult any basic probability book or even Wikipedia<a href="#fn6" class="footnote-ref" id="fnref6"><sup>6</sup></a>.</p>
+<p>Here we do not cover these details. Instead, we will discuss an incredibly useful approximation provided by mathematical theory that applies generally to sums and averages of draws from any urn: the Central Limit Theorem (CLT).</p>
+</div>
+<div id="distributions-versus-probability-distributions" class="section level2">
+<h2>Distributions versus probability distributions</h2>
+<p>Before we continue, let’s make an important distinction and connection between the distribution of a list of numbers and a probability distribution. In the visualization lectures, we described how any list of numbers <span class="math inline">\(x_1,\dots,x_n\)</span> has a distribution. The definition is quite straightforward. We define <span class="math inline">\(F(a)\)</span> as the function that tells us what proportion of the list is less than or equal to <span class="math inline">\(a\)</span>. Because they are useful summaries when the distribution is approximately normal, we define the average and standard deviation. These are defined with a straightforward operation of the vector containing the list of numbers <code>x</code>:</p>
+<pre class="r"><code>m &lt;- sum(x)/length(x)
+s &lt;- sqrt(sum((x - m)^2) / length(x))</code></pre>
+<p>A random variable <span class="math inline">\(X\)</span> has a distribution function. To define this, we do not need a list of numbers. It is a theoretical concept. In this case, we define the distribution as the <span class="math inline">\(F(a)\)</span> that answers the question: what is the probability that <span class="math inline">\(X\)</span> is less than or equal to <span class="math inline">\(a\)</span>? There is no list of numbers.</p>
+<p>However, if <span class="math inline">\(X\)</span> is defined by drawing from an urn with numbers in it, then there is a list: the list of numbers inside the urn. In this case, the distribution of that list is the probability distribution of <span class="math inline">\(X\)</span> and the average and standard deviation of that list are the expected value and standard error of the random variable.</p>
+<p>Another way to think about it that does not involve an urn is to run a Monte Carlo simulation and generate a very large list of outcomes of <span class="math inline">\(X\)</span>. These outcomes are a list of numbers. The distribution of this list will be a very good approximation of the probability distribution of <span class="math inline">\(X\)</span>. The longer the list, the better the approximation. The average and standard deviation of this list will approximate the expected value and standard error of the random variable.</p>
+</div>
+<div id="notation-for-random-variables" class="section level2">
+<h2>Notation for random variables</h2>
+<p>In statistical textbooks, upper case letters are used to denote random variables and we follow this convention here. Lower case letters are used for observed values. You will see some notation that includes both. For example, you will see events defined as <span class="math inline">\(X \leq x\)</span>. Here <span class="math inline">\(X\)</span> is a random variable, making it a random event, and <span class="math inline">\(x\)</span> is an arbitrary value and not random. So, for example, <span class="math inline">\(X\)</span> might represent the number on a die roll and <span class="math inline">\(x\)</span> will represent an actual value we see 1, 2, 3, 4, 5, or 6. So in this case, the probability of <span class="math inline">\(X=x\)</span> is 1/6 regardless of the observed value <span class="math inline">\(x\)</span>. This notation is a bit strange because, when we ask questions about probability, <span class="math inline">\(X\)</span> is not an observed quantity. Instead, it’s a random quantity that we will see in the future. We can talk about what we expect it to be, what values are probable, but not what it is. But once we have data, we do see a realization of <span class="math inline">\(X\)</span>. So data scientists talk of what could have been after we see what actually happened.</p>
+</div>
+<div id="the-expected-value-and-standard-error" class="section level2">
+<h2>The expected value and standard error</h2>
+<p>We have described sampling models for draws. We will now go over the mathematical theory that lets us approximate the probability distributions for the sum of draws. Once we do this, we will be able to help the casino predict how much money they will make. The same approach we use for the sum of draws will be useful for describing the distribution of averages and proportion which we will need to understand how polls work.</p>
+<p>The first important concept to learn is the <em>expected value</em>.
+In statistics books, it is common to use letter <span class="math inline">\(\mbox{E}\)</span> like this:</p>
+<p><span class="math display">\[\mbox{E}[X]\]</span></p>
+<p>to denote the expected value of the random variable <span class="math inline">\(X\)</span>.</p>
+<p>A random variable will vary around its expected value in a way that if you take the average of many, many draws, the average of the draws will approximate the expected value, getting closer and closer the more draws you take.</p>
+<p>Theoretical statistics provides techniques that facilitate the calculation of expected values in different circumstances. For example, a useful formula tells us that the <em>expected value of a random variable defined by one draw is the average of the numbers in the urn</em>. In the urn used to model betting on red in roulette, we have 20 one dollars and 18 negative one dollars. The expected value is thus:</p>
+<p><span class="math display">\[
+\mbox{E}[X] = (20 + -18)/38
+\]</span></p>
+<p>which is about 5 cents. It is a bit counterintuitive to say that <span class="math inline">\(X\)</span> varies around 0.05, when the only values it takes is 1 and -1. One way to make sense of the expected value in this context is by realizing that if we play the game over and over, the casino wins, on average, 5 cents per game. A Monte Carlo simulation confirms this:</p>
+<pre class="r"><code>B &lt;- 10^6
+x &lt;- sample(c(-1,1), B, replace = TRUE, prob=c(9/19, 10/19))
+mean(x)</code></pre>
+<pre><code>## [1] 0.05169</code></pre>
+<p>In general, if the urn has two possible outcomes, say <span class="math inline">\(a\)</span> and <span class="math inline">\(b\)</span>, with proportions <span class="math inline">\(p\)</span> and <span class="math inline">\(1-p\)</span> respectively, the average is:</p>
+<p><span class="math display">\[\mbox{E}[X] = ap + b(1-p)\]</span></p>
+<p>To see this, notice that if there are <span class="math inline">\(n\)</span> beads in the urn, then we have <span class="math inline">\(np\)</span> <span class="math inline">\(a\)</span>s and <span class="math inline">\(n(1-p)\)</span> <span class="math inline">\(b\)</span>s and because the average is the sum, <span class="math inline">\(n\times a \times p + n\times b \times (1-p)\)</span>, divided by the total <span class="math inline">\(n\)</span>, we get that the average is <span class="math inline">\(ap + b(1-p)\)</span>.</p>
+<p>Now the reason we define the expected value is because this mathematical definition turns out to be useful for approximating the probability distributions of sum, which then is useful for describing the distribution of averages and proportions. The first useful fact is that the <em>expected value of the sum of the draws</em> is:</p>
+<p><span class="math display">\[
+\mbox{}\mbox{number of draws } \times \mbox{ average of the numbers in the urn}
+\]</span></p>
+<p>So if 1,000 people play roulette, the casino expects to win, on average, about 1,000 <span class="math inline">\(\times\)</span> $0.05 = $50. But this is an expected value. How different can one observation be from the expected value? The casino really needs to know this. What is the range of possibilities? If negative numbers are too likely, they will not install roulette wheels. Statistical theory once again answers this question. The <em>standard error</em> (SE) gives us an idea of the size of the variation around the expected value. In statistics books, it’s common to use:</p>
+<p><span class="math display">\[\mbox{SE}[X]\]</span></p>
+<p>to denote the standard error of a random variable.</p>
+<p><strong>If our draws are independent</strong>, then the <em>standard error of the sum</em> is given by the equation:</p>
+<p><span class="math display">\[
+\sqrt{\mbox{number of draws }} \times \mbox{ standard deviation of the numbers in the urn}
+\]</span></p>
+<p>Using the definition of standard deviation, we can derive, with a bit of math, that if an urn contains two values <span class="math inline">\(a\)</span> and <span class="math inline">\(b\)</span> with proportions <span class="math inline">\(p\)</span> and <span class="math inline">\((1-p)\)</span>, respectively, the standard deviation is:</p>
+<p><span class="math display">\[\mid b - a \mid \sqrt{p(1-p)}.\]</span></p>
+<p>So in our roulette example, the standard deviation of the values inside the urn is: <span class="math inline">\(\mid 1 - (-1) \mid \sqrt{10/19 \times 9/19}\)</span> or:</p>
+<pre class="r"><code>2 * sqrt(90)/19</code></pre>
+<pre><code>## [1] 0.998614</code></pre>
+<p>The standard error tells us the typical difference between a random variable and its expectation. Since one draw is obviously the sum of just one draw, we can use the formula above to calculate that the random variable defined by one draw has an expected value of 0.05 and a standard error of about 1. This makes sense since we either get 1 or -1, with 1 slightly favored over -1.</p>
+<p>Using the formula above, the sum of 1,000 people playing has standard error of about $32:</p>
+<pre class="r"><code>n &lt;- 1000
+sqrt(n) * 2 * sqrt(90)/19</code></pre>
+<pre><code>## [1] 31.57895</code></pre>
+<p>As a result, when 1,000 people bet on red, the casino is expected to win $50 with a standard error of $32. It therefore seems like a safe bet. But we still haven’t answered the question: how likely is it to lose money? Here the CLT will help.</p>
+<p><strong>Advanced note</strong>: Before continuing we should point out that exact probability calculations for the casino winnings can be performed with the binomial distribution. However, here we focus on the CLT, which can be generally applied to sums of random variables in a way that the binomial distribution can’t.</p>
+<div id="population-sd-versus-the-sample-sd" class="section level3">
+<h3>Population SD versus the sample SD</h3>
+<p>The standard deviation of a list <code>x</code> (below we use heights as an example) is defined as the square root of the average of the squared differences:</p>
+<pre class="r"><code>library(dslabs)
+x &lt;- heights$height
+m &lt;- mean(x)
+s &lt;- sqrt(mean((x-m)^2))</code></pre>
+<p>Using mathematical notation we write:</p>
+<p><span class="math display">\[
+\mu = \frac{1}{n} \sum_{i=1}^n x_i \\
+\sigma =  \sqrt{\frac{1}{n} \sum_{i=1}^n (x_i - \mu)^2}
+\]</span></p>
+<p>However, be aware that the <code>sd</code> function returns a slightly different result:</p>
+<pre class="r"><code>identical(s, sd(x))</code></pre>
+<pre><code>## [1] FALSE</code></pre>
+<pre class="r"><code>s-sd(x)</code></pre>
+<pre><code>## [1] -0.001942661</code></pre>
+<p>This is because the <code>sd</code> function R does not return the <code>sd</code> of the list, but rather uses a formula that estimates standard deviations of a population from a random sample <span class="math inline">\(X_1, \dots, X_N\)</span> which, for reasons not discussed here, divide the sum of squares by the <span class="math inline">\(N-1\)</span>.</p>
+<p><span class="math display">\[
+\bar{X} = \frac{1}{N} \sum_{i=1}^N X_i, \,\,\,\,
+s =  \sqrt{\frac{1}{N-1} \sum_{i=1}^N (X_i - \bar{X})^2}
+\]</span></p>
+<p>You can see that this is the case by typing:</p>
+<pre class="r"><code>n &lt;- length(x)
+s-sd(x)*sqrt((n-1) / n)</code></pre>
+<pre><code>## [1] 0</code></pre>
+<p>For all the theory discussed here, you need to compute the actual standard deviation as defined:</p>
+<pre class="r"><code>sqrt(mean((x-m)^2))</code></pre>
+<p>So be careful when using the <code>sd</code> function in R. However, keep in mind that throughout the book we sometimes use the <code>sd</code> function when we really want the actual SD. This is because when the list size is big, these two are practically equivalent since <span class="math inline">\(\sqrt{(N-1)/N} \approx 1\)</span>.</p>
+</div>
+</div>
+</div>
 <div class="footnotes">
 <hr />
 <ol>
 <li id="fn1"><p><a href="https://en.wikipedia.org/wiki/Urn_problem" class="uri">https://en.wikipedia.org/wiki/Urn_problem</a><a href="#fnref1" class="footnote-back">↩︎</a></p></li>
 <li id="fn2"><p><a href="https://www.khanacademy.org/math/precalculus/prob-comb/dependent-events-precalc/v/monty-hall-problem" class="uri">https://www.khanacademy.org/math/precalculus/prob-comb/dependent-events-precalc/v/monty-hall-problem</a><a href="#fnref2" class="footnote-back">↩︎</a></p></li>
 <li id="fn3"><p><a href="https://en.wikipedia.org/wiki/Monty_Hall_problem" class="uri">https://en.wikipedia.org/wiki/Monty_Hall_problem</a><a href="#fnref3" class="footnote-back">↩︎</a></p></li>
+<li id="fn4"><p><a href="https://en.wikipedia.org/w/index.php?title=Financial_crisis_of_2007%E2%80%932008" class="uri">https://en.wikipedia.org/w/index.php?title=Financial_crisis_of_2007%E2%80%932008</a><a href="#fnref4" class="footnote-back">↩︎</a></p></li>
+<li id="fn5"><p><a href="https://en.wikipedia.org/w/index.php?title=Security_(finance)" class="uri">https://en.wikipedia.org/w/index.php?title=Security_(finance)</a><a href="#fnref5" class="footnote-back">↩︎</a></p></li>
+<li id="fn6"><p><a href="https://en.wikipedia.org/w/index.php?title=Binomial_distribution" class="uri">https://en.wikipedia.org/w/index.php?title=Binomial_distribution</a><a href="#fnref6" class="footnote-back">↩︎</a></p></li>
 </ol>
 </div>
