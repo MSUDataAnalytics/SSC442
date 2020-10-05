@@ -19,7 +19,7 @@ output:
 
 ### Supplemental Readings
 
-- Coming soon. 
+- Coming soon.
 
 ### Guiding Questions
 
@@ -215,7 +215,7 @@ Suppose we are asked to guess the height of a randomly selected son and we don't
 
 It turns out that if we were able to collect data from a very large number of fathers that are 72 inches, the distribution of their sons' heights would be normally distributed. This implies that the average of the distribution computed on this subset would be our best prediction.
 
-In general, we call this approach _conditioning_. The general idea is that we stratify a population into groups and compute summaries in each group. Conditioning is therefore related to the concept of stratification described in Section \@ref(stratification). To provide a mathematical description of conditioning, consider we have a population of pairs of values $(x_1,y_1),\dots,(x_n,y_n)$, for example all father and son heights in England. In the previous chapter we learned that if you take a random pair $(X,Y)$, the expected value and best predictor of $Y$ is $\mbox{E}(Y) = \mu_y$, the population average $1/n\sum_{i=1}^n y_i$. However, we are no longer interested in the general population, instead we are interested in only the subset of a population with a specific $x_i$ value, 72 inches in our example. This subset of the population, is also a population and thus the same principles and properties we have learned apply. The $y_i$ in the subpopulation have a distribution, referred to as the _conditional distribution_, and this distribution has an expected value referred to as the _conditional expectation_. In our example, the conditional expectation is the average height of all sons in England with fathers that are 72 inches. The statistical notation for the conditional expectation is
+In general, we call this approach _conditioning_. The general idea is that we stratify a population into groups and compute summaries in each group. To provide a mathematical description of conditioning, consider we have a population of pairs of values $(x_1,y_1),\dots,(x_n,y_n)$, for example all father and son heights in England. In the previous week's content, we learned that if you take a random pair $(X,Y)$, the expected value and best predictor of $Y$ is $\mbox{E}(Y) = \mu_y$, the population average $1/n\sum_{i=1}^n y_i$. However, we are no longer interested in the general population, instead we are interested in only the subset of a population with a specific $x_i$ value, 72 inches in our example. This subset of the population, is also a population and thus the same principles and properties we have learned apply. The $y_i$ in the subpopulation have a distribution, referred to as the _conditional distribution_, and this distribution has an expected value referred to as the _conditional expectation_. In our example, the conditional expectation is the average height of all sons in England with fathers that are 72 inches. The statistical notation for the conditional expectation is
 
 $$
 \mbox{E}(Y \mid X = x)
@@ -253,7 +253,7 @@ conditional_avg
 
 
 Note that a 72-inch father is taller than average -- specifically, 72 - `r round( mean(galton_heights$father),1)`/`r round(sd(galton_heights$father),1)` =
-`r round((72 -mean(galton_heights$father))/sd(galton_heights$father), 1)` standard deviations taller than the average father. Our prediction `r conditional_avg` is also taller than average, but only `r round((conditional_avg - mean(galton_heights$son)) /sd(galton_heights$son),2)` standard deviations larger than the average son. The sons of 72-inch fathers have _regressed_ some to the average height. We notice that the reduction in how many SDs taller is about 0.5, which happens to be the correlation. As we will see in a later section, this is not a coincidence.
+`r round((72 -mean(galton_heights$father))/sd(galton_heights$father), 1)` standard deviations taller than the average father. Our prediction `r conditional_avg` is also taller than average, but only `r round((conditional_avg - mean(galton_heights$son)) /sd(galton_heights$son),2)` standard deviations larger than the average son. The sons of 72-inch fathers have _regressed_ some to the average height. We notice that the reduction in how many SDs taller is about 0.5, which happens to be the correlation. As we will see in a later lecture, this is not a coincidence.
 
 If we want to make a prediction of any height, not just 72, we could apply the same approach to each strata. Stratification followed by boxplots lets us see the distribution of each group:
 
@@ -375,7 +375,7 @@ sd(regression_prediction)
 
 The regression line is therefore much more stable than the conditional mean. There is an intuitive reason for this. The conditional average is computed on a relatively small subset: the fathers that are about 72 inches tall. In fact, in some of the permutations we have no data, which is why we use `na.rm=TRUE`. The regression always uses all the data.
 
-So why not always use the regression for prediction? Because it is not always appropriate. For example, Anscombe provided cases for which the data does not have a linear relationship. So are we justified in using the regression line to predict? Galton answered this in the positive for height data. The justification, which we include in the next section, is somewhat more advanced than the rest of the chapter.
+So why not always use the regression for prediction? Because it is not always appropriate. For example, Anscombe provided cases for which the data does not have a linear relationship. So are we justified in using the regression line to predict? Galton answered this in the positive for height data. The justification, which we include in the next section, is somewhat more advanced than the rest of this reading.
 
 ### Bivariate normal distribution (advanced)
 
@@ -383,7 +383,7 @@ Correlation and the regression slope are a widely used summary statistic, but th
 
 The main way we motivate the use of correlation involves what is called the _bivariate normal distribution_.
 
-When a pair of random variables is approximated by the bivariate normal distribution, scatterplots look like ovals. As we saw in Section \@ref(corr-coef), they can be thin (high correlation) or circle-shaped (no correlation).
+When a pair of random variables is approximated by the bivariate normal distribution, scatterplots look like ovals. These ovals can be thin (high correlation) or circle-shaped (no correlation).
 
 <!--
 ```{r bivariate-ovals, echo=FALSE}

@@ -14,11 +14,9 @@ This lecture describes the following:
 
 <!-- slide -->
 
-# Practical Lectures
+# A Note On This Lecture
 
-Practical lectures---denoted with a `[ P ]` on the course website)---introduce techniques and ideas by utilizing interactivity. That is: you will need to have your computer open and ready to attempt to replicate things as we go along.
-
-Copy and paste is your friend.
+Please try to follow along. Copy and paste is your friend.
 
 Otherwise, the notes will be far less satisfying (and probably make a lot less sense).
 
