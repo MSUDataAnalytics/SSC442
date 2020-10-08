@@ -1,0 +1,135 @@
+---
+title: "Correlations and Simple Models"
+linktitle: "5: Linear Regression I"
+output:
+  blogdown::html_page:
+    toc: true
+menu:
+  assignment:
+    parent: Labs
+    weight: 2
+type: docs
+weight: 1
+editor_options:
+  chunk_output_type: console
+---
+
+:::fyi
+
+**NOTE**
+
+You must turn in a PDF document of your `R Markdown` code. Submit this to D2L by 11:59 PM Eastern Time on Monday, October 12.
+
+:::
+
+This week's lab will (hopefully) not repeat the disaster that was last week's lab.
+
+## Backstory and Set Up
+You have been recently hired to Zillow’s Zestimate product team as a junior analyst. As a part of their regular hazing, they have given you access to a small subset of their historic sales data. Your job is to present some basic predictions for housing values in a small geographic area (Ames, IA) using this historical pricing.
+
+First, let's load the data.
+
+```{r, eval=FALSE}
+ameslist <- read.table("https://msudataanalytics.github.io/SSC442/Labs/data/ames.csv",
+                 header = TRUE,
+                 sep = ",")
+```
+
+Before we proceed, let's note a few things about the (simple) code above. First, we have specified `header = TRUE` because---you guessed it---the original dataset has headers. Although simple, this is an incredibly important step because it allows `R` to do some smart `R` things. Specifically, once the headers are in, the variables are formatted as `int` and `factor` where appropriate. It is absolutely vital that we format the data correctly; otherwise, many `R` commands will whine at us.
+
+**Try it:** Run the above, but instead specifying `header = FALSE`. What data type are the various columns? Now try ommitting the line altogether. What is the default behavior of the `read.table` function?[^1]
+
+[^1]: Of course, you could find out the defaults of the function by simply using the handy `?` command. Don't forget about this tool!
+
+### Data Exploration and Processing
+
+We are not going to tell you anything about this data. This is intended to replicate a real-world experience that you will all encounter in the (possibly near) future: someone hands you data and you're expected to make sense of it. Fortunately for us, this data is (somewhat) self-contained. We'll first check the variable names to try to divine some information. Recall, we have a handy little function for that:
+
+```{r, eval=FALSE}
+names(ameslist)
+```
+
+Note that, when doing data exploration, we will sometimes choose to not save our output. This is a judgement call; here we've chosen to merely inspect the variables rather than diving in.
+
+Inspection yields some obvious truths. For example:
+
+| Variable      | Explanation           | Type  |
+| ------------- |:-------------:| -----:|
+| `ID`      | Unique identifier for each row | `int` |
+| `LotArea`    | Size of lot (**units unknown**)      |  `int`|
+| `SalePrice` | Sale price of house ($)      |    `int` |
+
+...but we face some not-so-obvious things as well. For example:
+
+| Variable      | Explanation           | Type  |
+| ------------- |:-------------:| -----:|
+| `LotShape`      | ? Something about the lot| `factor` |
+| `MSSubClass`    | ? No clue at all      |  `int`|
+| `Condition1` | ? Seems like street info      |    `factor` |
+
+It will be difficult to learn anything about the data that is of type `int` without outside documentation. However, we can learn something more about the `factor`-type variables. In order to understand these a little better, we need to review some of the values that each take on.
+
+**Try it:** Go through the variables in the dataset and make a note about your interpretation for each. Many will be obvious, but some require additional thought.
+
+We now turn to another central issue---and one that explains our nomenclature choice thus far: the data object is of type `list`. To verify this for yourself, check:
+```{r, eval=FALSE}
+typeof(ameslist)
+```
+This isn't ideal---for some visualization packages, for instance, we need data frames and not lists. We'll make a mental note of this as something to potentially clean up if we desire.
+
+Although there are some variables that would be difficult to clean, there are a few that we can address with relative ease. Consider, for instance, the variable `GarageType`. This might not be that important, but, remember, the weather in Ames, IA is pretty crummy---a detached garage might be a dealbreaker for some would-be homebuyers. Let's inspect the values:
+
+```{r, eval=FALSE}
+> unique(ameslist$GarageType)
+[1] Attchd  Detchd  BuiltIn CarPort <NA> Basment 2Types
+```
+
+With this, we could make an informed decision and create a new variable. Let's create `OutdoorGarage` to indicate, say, homes that have any type of garage that requires the homeowner to walk outdoors after parking their car. (For those who aren't familiar with different garage types, a car port is not insulated and is therefore considered outdoors. A detached garage presumably requires that the person walks outside after parking. The three other types are inside the main structure, and `2Types` we can assume includes at least one attached garage of some sort). This is going to require a bit more coding and we will have to think through each step carefully.
+
+First, let's create a new object that has indicator variables (that is, a variable whose values are either zero or one) for each of the `GarageType` values. As with everything in `R`, there's a handy function to do this for us:
+
+```{r, eval=FALSE}
+GarageTemp = model.matrix( ~ GarageType - 1, data=ameslist$GarageType )
+```
+We now have two separate objects living in our computer's memory: `ameslist` and `GarageTemp`---so named to indicate that it is a temporary object.[^4] We now need to stitch it back onto our original data; we'll use a simple concatenation and write over our old list with the new one:
+
+```{r, eval=FALSE}
+ameslist <- cbind(ameslist, GarageTemp)
+> Error in data.frame(..., check.names = FALSE) :
+  arguments imply differing number of rows: 1460, 1379
+```
+
+Huh. What's going on?
+
+**Try it:** Figure out what's going on above. Fix this code so that you have a working version.
+
+Now that we've got that working (ha!) we can generate a new variable for our outdoor garage. We'll use a somewhat gross version below because it is *verbose*; that said, this can be easily accomplished using logical indexing for those who like that approach.
+
+```{r, eval=FALSE}
+ameslist$GarageOutside <- ifelse(ameslist$GarageTypeDetchd == 1 | ameslist$GarageTypeCarPort == 1, 1, 0)
+unique(ameslist$GarageOutside)
+[1]  0  1 NA
+```
+
+This seems to have worked. The command above `ifelse()` does what it says: `if` some condition is met (here, either of two variables equals one) then it returns a one; `else` it returns a zero. Such functions are very handy, though as mentioned above, there are other ways of doing this. Also note, that while fixed the issue with `NA` above, we've got new issues: we definitely don't want `NA` outputted from this operation. Accordingly, we're going to need to deal with it somehow.
+
+**Try it:** Utilizing a similar approach to what you did above, fix this so that the only outputs are zero and one.
+
+Generally speaking, this is a persistent issue, and you will spend an extraordinary amount of time dealing with missing data or data that does not encode a variable exactly as you want it. This is expecially true if you deal with real-world data: you will need to learn how to handle `NA`s. There are a number of fixes (as always, Google is your friend) and anything that works is good. But you should spend some time thinking about this and learning at least one approach.
+
+[^4]: It's not exactly true that these objects are in memory. They are... sort of. But how `R` handles memory is complicated and silly and blah blah who cares. It's basically in memory.
+
+---
+
+**Exercise 1:**
+1. Prune the data to all of the variables that are `type = int` about which you have some reasonable intuition for what they mean. This **must** include the variable `SalePrice`. Save this new dataset as `Ames`. Produce documentation for this object in the form of a .txt file. This must describe each of the preserved variables, the values it can take (e.g., can it be negative?) and your interpretation of the variable.
+
+2. Produce a *scatterplot matrix* which includes 12 of the variables that are `type = int` in the data set. Choose those that you believe are likely to be correlated with `SalePrice`.[^2]
+3. Compute a matrix of correlations between these variables using the function `cor()`. Does this match your prior beliefs? Briefly discuss the correlation between the miscellaneous variables and `SalePrice`.
+
+4. Produce a scatterplot between `SalePrice` and `GrLivArea`. Use the `abline()` function to plot the relationship that you've found in the simple linear regression.
+    - What is the largest outlier that is above the regression line? Produce the other information about this house?
+
+**(Bonus; more challenging)** Create a visualization that shows the proliferation of air conditioning in homes in Ames.
+
+[^2]: If you are not familiar with this type of visualization, consult the book (*Introduction to Statistical Learning*), Chapters 2 and 3. Google it; it's free.
