@@ -89,7 +89,7 @@ With this, we could make an informed decision and create a new variable. Let's c
 First, let's create a new object that has indicator variables (that is, a variable whose values are either zero or one) for each of the `GarageType` values. As with everything in `R`, there's a handy function to do this for us:
 
 ```{r, eval=FALSE}
-GarageTemp = model.matrix( ~ GarageType - 1, data=ameslist$GarageType )
+GarageTemp = model.matrix( ~ GarageType - 1, data=ameslist )
 ```
 We now have two separate objects living in our computer's memory: `ameslist` and `GarageTemp`---so named to indicate that it is a temporary object.[^4] We now need to stitch it back onto our original data; we'll use a simple concatenation and write over our old list with the new one:
 

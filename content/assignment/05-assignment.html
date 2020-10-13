@@ -14,10 +14,12 @@ editor_options:
   chunk_output_type: console
 ---
 
+<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
 
 <div id="TOC">
 <ul>
-<li><a href="#backstory-and-set-up">Backstory and Set Up</a><ul>
+<li><a href="#backstory-and-set-up">Backstory and Set Up</a>
+<ul>
 <li><a href="#data-exploration-and-processing">Data Exploration and Processing</a></li>
 </ul></li>
 </ul>
@@ -106,7 +108,7 @@ editor_options:
 [1] Attchd  Detchd  BuiltIn CarPort &lt;NA&gt; Basment 2Types</code></pre>
 <p>With this, we could make an informed decision and create a new variable. Let’s create <code>OutdoorGarage</code> to indicate, say, homes that have any type of garage that requires the homeowner to walk outdoors after parking their car. (For those who aren’t familiar with different garage types, a car port is not insulated and is therefore considered outdoors. A detached garage presumably requires that the person walks outside after parking. The three other types are inside the main structure, and <code>2Types</code> we can assume includes at least one attached garage of some sort). This is going to require a bit more coding and we will have to think through each step carefully.</p>
 <p>First, let’s create a new object that has indicator variables (that is, a variable whose values are either zero or one) for each of the <code>GarageType</code> values. As with everything in <code>R</code>, there’s a handy function to do this for us:</p>
-<pre class="r"><code>GarageTemp = model.matrix( ~ GarageType - 1, data=ameslist$GarageType )</code></pre>
+<pre class="r"><code>GarageTemp = model.matrix( ~ GarageType - 1, data=ameslist )</code></pre>
 <p>We now have two separate objects living in our computer’s memory: <code>ameslist</code> and <code>GarageTemp</code>—so named to indicate that it is a temporary object.<a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a> We now need to stitch it back onto our original data; we’ll use a simple concatenation and write over our old list with the new one:</p>
 <pre class="r"><code>ameslist &lt;- cbind(ameslist, GarageTemp)
 &gt; Error in data.frame(..., check.names = FALSE) :
