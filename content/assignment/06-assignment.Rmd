@@ -1,0 +1,103 @@
+---
+title: "Model Building"
+linktitle: "6: Linear Regression II"
+output:
+  blogdown::html_page:
+    toc: true
+menu:
+  assignment:
+    parent: Labs
+    weight: 2
+type: docs
+weight: 1
+editor_options:
+  chunk_output_type: console
+---
+
+:::fyi
+
+**NOTE**
+
+You must turn in a PDF document of your `R Markdown` code. Submit this to D2L by 11:59 PM Eastern Time on Monday, October 19.
+
+:::
+
+This week's lab will extend last week's lab. The introduction is a direct repeat.
+
+## Backstory and Set Up
+You have been recently hired to Zillow’s Zestimate product team as a junior analyst. As a part of their regular hazing, they have given you access to a small subset of their historic sales data. Your job is to present some basic predictions for housing values in a small geographic area (Ames, IA) using this historical pricing.
+
+First, let's load the data.
+
+```{r, eval=FALSE}
+ameslist <- read.table("https://msudataanalytics.github.io/SSC442/Labs/data/ames.csv",
+                 header = TRUE,
+                 sep = ",")
+```
+
+## Building a Model
+
+We're now ready to start playing with a model. We will start by using the `lm()` function to fit a simple linear regression
+model, with `SalePrice` as the response and lstat as the predictor.
+
+Recall that the basic `lm()` syntax is `lm(y∼x,data)`, where `y` is the **response**, `x` is the **predictor**, and `data` is the data set in which these two variables are kept. Let's quickly run this with two variables:
+
+```{r,  eval=FALSE}
+lm.fit = lm(SalePrice ~ GrLivArea)
+```
+This yields:
+`Error in eval(expr, envir, enclos) : Object "SalePrice" not found`
+
+This command causes an error because `R` does not know where to find the variables. We can fix this by attaching the data:
+
+```{r,  eval=FALSE}
+attach(Ames)
+lm.fit = lm(SalePrice ~ GrLivArea)
+# Alternatively...
+lm.fit = lm(SalePrice ~ GrLivArea, data=Ames)
+```
+
+
+The next line tells `R` that the variables are in the object known as `Ames`. If you haven't created this object yet (as in the previous lab) you'll get an error at this stage. But once we attach `Ames`, the first line works fine because `R` now recognizes the variables. Alternatively, we could specify this within the `lm()` call using `data = Ames`. We've presented this way because it may be new to you; choose whichever you find most reasonable.
+
+If we type `lm.fit`, some basic information about the model is output. For more detailed information, we use `summary(lm.fit)`. This gives us p-values and standard errors for the coefficients, as well as the $R^2$ statistic and $F$-statistic for the entire model.[^3]
+
+[^3]: When we use the simple regression model with a single input, the $F$-stat includes the intercept term. Otherwise, it does not. See Lecture 5 for more detail.
+
+Utilizing these functions hels us see some interesting results. Note that we built (nearly) the simplest possible model:
+
+$$\text{SalePrice} = \beta_0 + \beta_1*(\text{GrLivArea}) + \epsilon.$$
+
+But even on its own, this model is instructive. It suggest that an increase in overall living area of 1 ft $^2$ is correlated with an expected increase in sales price of $107. (Note that we **cannot** make causal claims!)
+
+Saving the model as we did above is useful because we can explore other pieces of information it stores. Specifically, we can use the `names()` function in order to find out what else is stored in `lm.fit`. Although we can extract these quan- tities by name---e.g. `lm.fit$coefficients`---it is safer to use the extractor functions like `coef()` to access them. We can also use a handy tool like `plot()` applied directly to `lm.fit` to see some interesting data that is automatically stored by the model.
+
+**Try it:** Use `plot()` to explore the model above. Do you suspect that some outliers have a large influence on the data? We will explore this point specifically in the future.
+
+We can now go crazy adding variables to our model. It's as simple as appending them to the previous code---though you should be careful executing this, as it will overwrite your previous output:
+
+```{r,eval=FALSE}
+lm.fit = lm(SalePrice ~ GrLivArea + LotArea)
+```
+
+**Try it:** Does controlling for `LotArea` change the *qualitative* conclusions from the previous regression? What about the *quantitative* results? Does the direction of the change in the quantitative results make sense to you?
+
+:::fyi
+
+__EXERCISES__
+
+1. Use the `lm()` function in a **simple** linear regression (e.g., with only one predictor) with `SalePrice` as the response to determine the value of a garage.
+
+2. Use the `lm()` function to perform a multiple linear regression with `SalePrice` as the response and all other variables from your `Ames` data as the predictors. Use the `summary()` function to print the results. Comment on the output. For instance:
+    - Is there a relationship between the predictors and the response?
+    - Which predictors appear to have a statistically significant relationship to the response? (Hint: look for stars)
+    - What does the coefficient for the year variable suggest?
+
+
+3. Use the `:` symbols to fit a linear regression model with *one* well-chosen interaction effects. Why did you do this?
+
+4. Try a few (e.g., two) different transformations of the variables, such as $ln(x)$, $x^2$, $\sqrt x$. Do any of these make sense to include in a model of `SalePrice`? Comment on your findings.
+
+**(Bonus; very very challenging)** How might we build a model to estimate the elasticity of demand from this dataset?
+
+:::
