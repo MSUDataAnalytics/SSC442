@@ -4329,6 +4329,258 @@ Y = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + \beta_3 x_3 + \beta_4 x_1 x_2 + \beta_
     </item>
     
     <item>
+      <title>Linear Regression: Model Selection</title>
+      <link>/example/07-example/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>/example/07-example/</guid>
+      <description>
+&lt;script src=&#34;/rmarkdown-libs/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
+
+&lt;div id=&#34;TOC&#34;&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#model-selection&#34;&gt;Model Selection&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#assesing-model-accuracy&#34;&gt;Assesing Model Accuracy&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#model-complexity&#34;&gt;Model Complexity&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#test-train-split&#34;&gt;Test-Train Split&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#adding-flexibility-to-linear-models&#34;&gt;Adding Flexibility to Linear Models&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#choosing-a-model&#34;&gt;Choosing a Model&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+
+&lt;div class=&#34;fyi&#34;&gt;
+&lt;p&gt;Today’s example will pivot between the content from this week and the example below.&lt;/p&gt;
+&lt;p&gt;We will also use the Ames data again. Maybe some new data. Who knows. The Ames data is linked below:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;/projects/data/ames.csv&#34;&gt;&lt;i class=&#34;fas fa-file-csv&#34;&gt;&lt;/i&gt; &lt;code&gt;Ames.csv&lt;/code&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;div id=&#34;model-selection&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Model Selection&lt;/h2&gt;
+&lt;p&gt;Often when we are developing a linear regression model, part of our goal is to &lt;strong&gt;explain&lt;/strong&gt; a relationship. Now, we will ignore much of what we have learned and instead simply use regression as a tool to &lt;strong&gt;predict&lt;/strong&gt;. Instead of a model which explains relationships, we seek a model which minimizes errors.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/example/07-example_files/regression.png&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;First, note that a linear model is one of many methods used in regression.&lt;/p&gt;
+&lt;p&gt;To discuss linear models in the context of prediction, we introduce the (very boring) &lt;code&gt;Advertising&lt;/code&gt; data that is discussed in the ISL text (see supplemental readings).&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;Advertising&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 200 x 4
+##       TV Radio Newspaper Sales
+##    &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt;
+##  1 230.   37.8      69.2  22.1
+##  2  44.5  39.3      45.1  10.4
+##  3  17.2  45.9      69.3   9.3
+##  4 152.   41.3      58.5  18.5
+##  5 181.   10.8      58.4  12.9
+##  6   8.7  48.9      75     7.2
+##  7  57.5  32.8      23.5  11.8
+##  8 120.   19.6      11.6  13.2
+##  9   8.6   2.1       1     4.8
+## 10 200.    2.6      21.2  10.6
+## # … with 190 more rows&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(caret)
+featurePlot(x = Advertising[ , c(&amp;quot;TV&amp;quot;, &amp;quot;Radio&amp;quot;, &amp;quot;Newspaper&amp;quot;)], y = Advertising$Sales)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/example/07-example_files/figure-html/unnamed-chunk-3-1.png&#34; width=&#34;960&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;assesing-model-accuracy&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Assesing Model Accuracy&lt;/h2&gt;
+&lt;p&gt;There are many metrics to assess the accuracy of a regression model. Most of these measure in some way the average error that the model makes. The metric that we will be most interested in is the root-mean-square error.&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
+\text{RMSE}(\hat{f}, \text{Data}) = \sqrt{\frac{1}{n}\displaystyle\sum_{i = 1}^{n}\left(y_i - \hat{f}(\bf{x}_i)\right)^2}
+\]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;While for the sake of comparing models, the choice between RMSE and MSE is arbitrary, we have a preference for RMSE, as it has the same units as the response variable. Also, notice that in the prediction context MSE refers to an average, whereas in an ANOVA context, the denominator for MSE may not be &lt;span class=&#34;math inline&#34;&gt;\(n\)&lt;/span&gt;.&lt;/p&gt;
+&lt;p&gt;For a linear model , the estimate of &lt;span class=&#34;math inline&#34;&gt;\(f\)&lt;/span&gt;, &lt;span class=&#34;math inline&#34;&gt;\(\hat{f}\)&lt;/span&gt;, is given by the fitted regression line.&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
+\hat{y}({\bf{x}_i}) = \hat{f}({\bf{x}_i})
+\]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;We can write an &lt;code&gt;R&lt;/code&gt; function that will be useful for performing this calculation.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;rmse = function(actual, predicted) {
+  sqrt(mean((actual - predicted) ^ 2))
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;model-complexity&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Model Complexity&lt;/h2&gt;
+&lt;p&gt;Aside from how well a model predicts, we will also be very interested in the complexity (flexibility) of a model. For now, we will only consider nested linear models for simplicity. Then in that case, the more predictors that a model has, the more complex the model. For the sake of assigning a numerical value to the complexity of a linear model, we will use the number of predictors, &lt;span class=&#34;math inline&#34;&gt;\(p\)&lt;/span&gt;.&lt;/p&gt;
+&lt;p&gt;We write a simple &lt;code&gt;R&lt;/code&gt; function to extract this information from a model.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;get_complexity = function(model) {
+  length(coef(model)) - 1
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;test-train-split&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Test-Train Split&lt;/h2&gt;
+&lt;p&gt;There is an issue with fitting a model to all available data then using RMSE to determine how well the model predicts. It is essentially cheating! As a linear model becomes more complex, the RSS, thus RMSE, can never go up. It will only go down, or in very specific cases, stay the same.&lt;/p&gt;
+&lt;p&gt;This would suggest that to predict well, we should use the largest possible model! However, in reality we have hard fit to a specific dataset, but as soon as we see new data, a large model may in fact predict poorly. This is called &lt;strong&gt;overfitting&lt;/strong&gt;.&lt;/p&gt;
+&lt;p&gt;Frequently we will take a dataset of interest and split it in two. One part of the datasets will be used to fit (train) a model, which we will call the &lt;strong&gt;training&lt;/strong&gt; data. The remainder of the original data will be used to assess how well the model is predicting, which we will call the &lt;strong&gt;test&lt;/strong&gt; data. Test data should &lt;em&gt;never&lt;/em&gt; be used to train a model.&lt;/p&gt;
+&lt;p&gt;Note that sometimes the terms &lt;em&gt;evaluation set&lt;/em&gt; and &lt;em&gt;test set&lt;/em&gt; are used interchangeably. We will give somewhat specific definitions to these later. For now we will simply use a single test set for a training set.&lt;/p&gt;
+&lt;p&gt;Here we use the &lt;code&gt;sample()&lt;/code&gt; function to obtain a random sample of the rows of the original data. We then use those row numbers (and remaining row numbers) to split the data accordingly. Notice we used the &lt;code&gt;set.seed()&lt;/code&gt; function to allow use to reproduce the same random split each time we perform this analysis.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;set.seed(9)
+num_obs = nrow(Advertising)
+
+train_index = sample(num_obs, size = trunc(0.50 * num_obs))
+train_data = Advertising[train_index, ]
+test_data = Advertising[-train_index, ]&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;We will look at two measures that assess how well a model is predicting, the &lt;strong&gt;train RMSE&lt;/strong&gt; and the &lt;strong&gt;test RMSE&lt;/strong&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
+\text{RMSE}_{\text{Train}} = \text{RMSE}(\hat{f}, \text{Train Data}) = \sqrt{\frac{1}{n_{\text{Tr}}}\displaystyle\sum_{i \in \text{Train}}^{}\left(y_i - \hat{f}(\bf{x}_i)\right)^2}
+\]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;Here &lt;span class=&#34;math inline&#34;&gt;\(n_{Tr}\)&lt;/span&gt; is the number of observations in the train set. Train RMSE will still always go down (or stay the same) as the complexity of a linear model increases. That means train RMSE will not be useful for comparing models, but checking that it decreases is a useful sanity check.&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
+\text{RMSE}_{\text{Test}} = \text{RMSE}(\hat{f}, \text{Test Data}) = \sqrt{\frac{1}{n_{\text{Te}}}\displaystyle\sum_{i \in \text{Test}}^{}\left(y_i - \hat{f}(\bf{x}_i)\right)^2}
+\]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;Here &lt;span class=&#34;math inline&#34;&gt;\(n_{Te}\)&lt;/span&gt; is the number of observations in the test set. Test RMSE uses the model fit to the training data, but evaluated on the unused test data. This is a measure of how well the fitted model will predict &lt;strong&gt;in general&lt;/strong&gt;, not simply how well it fits data used to train the model, as is the case with train RMSE. What happens to test RMSE as the size of the model increases? That is what we will investigate.&lt;/p&gt;
+&lt;p&gt;We will start with the simplest possible linear model, that is, a model with no predictors.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;fit_0 = lm(Sales ~ 1, data = train_data)
+get_complexity(fit_0)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 0&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# train RMSE
+sqrt(mean((train_data$Sales - predict(fit_0, train_data)) ^ 2))&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 5.529258&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# test RMSE
+sqrt(mean((test_data$Sales - predict(fit_0, test_data)) ^ 2))&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 4.914163&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The previous two operations obtain the train and test RMSE. Since these are operations we are about to use repeatedly, we should use the function that we happen to have already written.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# train RMSE
+rmse(actual = train_data$Sales, predicted = predict(fit_0, train_data))&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 5.529258&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# test RMSE
+rmse(actual = test_data$Sales, predicted = predict(fit_0, test_data))&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 4.914163&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;This function can actually be improved for the inputs that we are using. We would like to obtain train and test RMSE for a fitted model, given a train or test dataset, and the appropriate response variable.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;get_rmse = function(model, data, response) {
+  rmse(actual = subset(data, select = response, drop = TRUE),
+       predicted = predict(model, data))
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;By using this function, our code becomes easier to read, and it is more obvious what task we are accomplishing.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;get_rmse(model = fit_0, data = train_data, response = &amp;quot;Sales&amp;quot;) # train RMSE&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 5.529258&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;get_rmse(model = fit_0, data = test_data, response = &amp;quot;Sales&amp;quot;) # test RMSE&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 4.914163&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;adding-flexibility-to-linear-models&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Adding Flexibility to Linear Models&lt;/h2&gt;
+&lt;p&gt;Each successive model we fit will be more and more flexible using both interactions and polynomial terms. We will see the training error decrease each time the model is made more flexible. We expect the test error to decrease a number of times, then eventually start going up, as a result of overfitting.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;fit_1 = lm(Sales ~ ., data = train_data)
+get_complexity(fit_1)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 3&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;get_rmse(model = fit_1, data = train_data, response = &amp;quot;Sales&amp;quot;) # train RMSE&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 1.888488&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;get_rmse(model = fit_1, data = test_data, response = &amp;quot;Sales&amp;quot;) # test RMSE&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 1.461661&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;fit_2 = lm(Sales ~ Radio * Newspaper * TV, data = train_data)
+get_complexity(fit_2)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 7&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;get_rmse(model = fit_2, data = train_data, response = &amp;quot;Sales&amp;quot;) # train RMSE&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 1.016822&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;get_rmse(model = fit_2, data = test_data, response = &amp;quot;Sales&amp;quot;) # test RMSE&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 0.9117228&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;fit_3 = lm(Sales ~ Radio * Newspaper * TV + I(TV ^ 2), data = train_data)
+get_complexity(fit_3)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 8&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;get_rmse(model = fit_3, data = train_data, response = &amp;quot;Sales&amp;quot;) # train RMSE&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 0.6553091&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;get_rmse(model = fit_3, data = test_data, response = &amp;quot;Sales&amp;quot;) # test RMSE&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 0.6633375&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;fit_4 = lm(Sales ~ Radio * Newspaper * TV +
+           I(TV ^ 2) + I(Radio ^ 2) + I(Newspaper ^ 2), data = train_data)
+get_complexity(fit_4)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 10&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;get_rmse(model = fit_4, data = train_data, response = &amp;quot;Sales&amp;quot;) # train RMSE&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 0.6421909&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;get_rmse(model = fit_4, data = test_data, response = &amp;quot;Sales&amp;quot;) # test RMSE&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 0.7465957&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;fit_5 = lm(Sales ~ Radio * Newspaper * TV +
+           I(TV ^ 2) * I(Radio ^ 2) * I(Newspaper ^ 2), data = train_data)
+get_complexity(fit_5)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 14&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;get_rmse(model = fit_5, data = train_data, response = &amp;quot;Sales&amp;quot;) # train RMSE&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 0.6120887&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;get_rmse(model = fit_5, data = test_data, response = &amp;quot;Sales&amp;quot;) # test RMSE&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 0.7864181&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;choosing-a-model&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Choosing a Model&lt;/h2&gt;
+&lt;p&gt;To better understand the relationship between train RMSE, test RMSE, and model complexity, we summarize our results, as the above is somewhat cluttered.&lt;/p&gt;
+&lt;p&gt;First, we recap the models that we have fit.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;fit_1 = lm(Sales ~ ., data = train_data)
+fit_2 = lm(Sales ~ Radio * Newspaper * TV, data = train_data)
+fit_3 = lm(Sales ~ Radio * Newspaper * TV + I(TV ^ 2), data = train_data)
+fit_4 = lm(Sales ~ Radio * Newspaper * TV +
+           I(TV ^ 2) + I(Radio ^ 2) + I(Newspaper ^ 2), data = train_data)
+fit_5 = lm(Sales ~ Radio * Newspaper * TV +
+           I(TV ^ 2) * I(Radio ^ 2) * I(Newspaper ^ 2), data = train_data)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Next, we create a list of the models fit.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;model_list = list(fit_1, fit_2, fit_3, fit_4, fit_5)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;We then obtain train RMSE, test RMSE, and model complexity for each.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;train_rmse = sapply(model_list, get_rmse, data = train_data, response = &amp;quot;Sales&amp;quot;)
+test_rmse = sapply(model_list, get_rmse, data = test_data, response = &amp;quot;Sales&amp;quot;)
+model_complexity = sapply(model_list, get_complexity)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;We then plot the results. The train RMSE can be seen in blue, while the test RMSE is given in orange.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;plot(model_complexity, train_rmse, type = &amp;quot;b&amp;quot;,
+     ylim = c(min(c(train_rmse, test_rmse)) - 0.02,
+              max(c(train_rmse, test_rmse)) + 0.02),
+     col = &amp;quot;dodgerblue&amp;quot;,
+     xlab = &amp;quot;Model Size&amp;quot;,
+     ylab = &amp;quot;RMSE&amp;quot;)
+lines(model_complexity, test_rmse, type = &amp;quot;b&amp;quot;, col = &amp;quot;darkorange&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/example/07-example_files/figure-html/unnamed-chunk-20-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;We also summarize the results as a table. &lt;code&gt;fit_1&lt;/code&gt; is the least flexible, and &lt;code&gt;fit_5&lt;/code&gt; is the most flexible. We see the Train RMSE decrease as flexibility increases. We see that the Test RMSE is smallest for &lt;code&gt;fit_3&lt;/code&gt;, thus is the model we believe will perform the best on future data not used to train the model. Note this may not be the best model, but it is the best model of the models we have seen in this example.&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr class=&#34;header&#34;&gt;
+&lt;th&gt;Model&lt;/th&gt;
+&lt;th&gt;Train RMSE&lt;/th&gt;
+&lt;th&gt;Test RMSE&lt;/th&gt;
+&lt;th&gt;Predictors&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td&gt;&lt;code&gt;fit_1&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;1.8884884&lt;/td&gt;
+&lt;td&gt;1.4616608&lt;/td&gt;
+&lt;td&gt;3&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td&gt;&lt;code&gt;fit_2&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;1.0168223&lt;/td&gt;
+&lt;td&gt;0.9117228&lt;/td&gt;
+&lt;td&gt;7&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td&gt;&lt;code&gt;fit_3&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;0.6553091&lt;/td&gt;
+&lt;td&gt;0.6633375&lt;/td&gt;
+&lt;td&gt;8&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td&gt;&lt;code&gt;fit_4&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;0.6421909&lt;/td&gt;
+&lt;td&gt;0.7465957&lt;/td&gt;
+&lt;td&gt;10&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td&gt;&lt;code&gt;fit_5&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;0.6120887&lt;/td&gt;
+&lt;td&gt;0.7864181&lt;/td&gt;
+&lt;td&gt;14&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;To summarize:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Underfitting models:&lt;/strong&gt; In general &lt;em&gt;High&lt;/em&gt; Train RMSE, &lt;em&gt;High&lt;/em&gt; Test RMSE. Seen in &lt;code&gt;fit_1&lt;/code&gt; and &lt;code&gt;fit_2&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Overfitting models:&lt;/strong&gt; In general &lt;em&gt;Low&lt;/em&gt; Train RMSE, &lt;em&gt;High&lt;/em&gt; Test RMSE. Seen in &lt;code&gt;fit_4&lt;/code&gt; and &lt;code&gt;fit_5&lt;/code&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Specifically, we say that a model is overfitting if there exists a less complex model with lower Test RMSE. Then a model is underfitting if there exists a more complex model with lower Test RMSE.&lt;/p&gt;
+&lt;p&gt;A number of notes on these results:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;The labels of under and overfitting are &lt;em&gt;relative&lt;/em&gt; to the best model we see, &lt;code&gt;fit_3&lt;/code&gt;. Any model more complex with higher Test RMSE is overfitting. Any model less complex with higher Test RMSE is underfitting.&lt;/li&gt;
+&lt;li&gt;The train RMSE is guaranteed to follow this non-increasing pattern. The same is not true of test RMSE. Here we see a nice U-shaped curve. There are theoretical reasons why we should expect this, but that is on average. Because of the randomness of one test-train split, we may not always see this result. Re-perform this analysis with a different seed value and the pattern may not hold. We will discuss why we expect this next chapter. We will discuss how we can help create this U-shape much later.&lt;/li&gt;
+&lt;li&gt;Often we expect train RMSE to be lower than test RMSE. Again, due to the randomness of the split, you may get lucky and this will not be true.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;A final note on the analysis performed here; we paid no attention whatsoever to the “assumptions” of a linear model. We only sought a model that &lt;strong&gt;predicted&lt;/strong&gt; well, and paid no attention to a model for &lt;strong&gt;explaination&lt;/strong&gt;. Hypothesis testing did not play a role in deciding the model, only prediction accuracy. Collinearity? We don’t care. Assumptions? Still don’t care. Diagnostics? Never heard of them. (These statements are a little over the top, and not completely true, but just to drive home the point that we only care about prediction. Often we latch onto methods that we have seen before, even when they are not needed.)&lt;/p&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    
+    <item>
       <title>Design</title>
       <link>/resource/design/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
@@ -5411,6 +5663,305 @@ mpg %&amp;gt;%
     </item>
     
     <item>
+      <title>Linear Regression III</title>
+      <link>/content/07-content/</link>
+      <pubDate>Tue, 20 Oct 2020 00:00:00 +0000</pubDate>
+      <guid>/content/07-content/</guid>
+      <description>
+&lt;script src=&#34;/rmarkdown-libs/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
+
+&lt;div id=&#34;TOC&#34;&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#required-reading&#34;&gt;Required Reading&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#guiding-question&#34;&gt;Guiding Question&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#slides&#34;&gt;Slides&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#association-is-not-causation&#34;&gt;Association is not causation&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#spurious-correlation&#34;&gt;Spurious correlation&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#outliers&#34;&gt;Outliers&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#reversing-cause-and-effect&#34;&gt;Reversing cause and effect&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#confounders&#34;&gt;Confounders&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#example-uc-berkeley-admissions&#34;&gt;Example: UC Berkeley admissions&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#confounding-explained-graphically&#34;&gt;Confounding explained graphically&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#average-after-stratifying&#34;&gt;Average after stratifying&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#simpsons-paradox&#34;&gt;Simpson’s paradox&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+
+&lt;div id=&#34;required-reading&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Required Reading&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;This page.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div id=&#34;guiding-question&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Guiding Question&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;When can we make causal claims about the relationship between variables?&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;div id=&#34;slides&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Slides&lt;/h3&gt;
+&lt;p&gt;Note that the slides below are from last lecture; we will reference these and they contain a lot of useful information.&lt;/p&gt;
+&lt;ul class=&#34;nav nav-tabs&#34; id=&#34;slide-tabs&#34; role=&#34;tablist&#34;&gt;
+&lt;li class=&#34;nav-item&#34;&gt;
+&lt;a class=&#34;nav-link active&#34; id=&#34;introduction-tab&#34; data-toggle=&#34;tab&#34; href=&#34;#introduction&#34; role=&#34;tab&#34; aria-controls=&#34;introduction&#34; aria-selected=&#34;true&#34;&gt;Introduction&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div id=&#34;slide-tabs&#34; class=&#34;tab-content&#34;&gt;
+&lt;div id=&#34;introduction&#34; class=&#34;tab-pane fade show active&#34; role=&#34;tabpanel&#34; aria-labelledby=&#34;introduction-tab&#34;&gt;
+&lt;div class=&#34;embed-responsive embed-responsive-16by9&#34;&gt;
+&lt;iframe class=&#34;embed-responsive-item&#34; src=&#34;/slides/06-slides.html#Introduction&#34;&gt;
+&lt;/iframe&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;As with recent weeks, we will work with real data during the lecture. Please download the following dataset and load it into &lt;code&gt;R&lt;/code&gt;.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;/projects/data/ames.csv&#34;&gt;&lt;i class=&#34;fas fa-file-csv&#34;&gt;&lt;/i&gt; &lt;code&gt;Ames.csv&lt;/code&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;association-is-not-causation&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Association is not causation&lt;/h1&gt;
+&lt;p&gt;&lt;em&gt;Association is not causation&lt;/em&gt; is perhaps the most important lesson one learns in a statistics class. &lt;em&gt;Correlation is not causation&lt;/em&gt; is another way to say this. Throughout the Statistics part of the book, we have described tools useful for quantifying associations between variables. However, we must be careful not to over-interpret these associations.&lt;/p&gt;
+&lt;p&gt;There are many reasons that a variable &lt;span class=&#34;math inline&#34;&gt;\(X\)&lt;/span&gt; can be correlated with a variable &lt;span class=&#34;math inline&#34;&gt;\(Y\)&lt;/span&gt; without having any direct effect on &lt;span class=&#34;math inline&#34;&gt;\(Y\)&lt;/span&gt;. Here we examine four common ways that can lead to misinterpreting data.&lt;/p&gt;
+&lt;div id=&#34;spurious-correlation&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Spurious correlation&lt;/h2&gt;
+&lt;p&gt;The following comical example underscores that correlation is not causation. It shows a very strong correlation between divorce rates and margarine consumption.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/content/07-content_files/figure-html/divorce-versus-margarine-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Does this mean that margarine causes divorces? Or do divorces cause people to eat more margarine? Of course the answer to both these questions is no. This is just an example of what we call a &lt;em&gt;spurious correlation&lt;/em&gt;.&lt;/p&gt;
+&lt;p&gt;You can see many more absurd examples on the Spurious Correlations website&lt;a href=&#34;#fn1&#34; class=&#34;footnote-ref&#34; id=&#34;fnref1&#34;&gt;&lt;sup&gt;1&lt;/sup&gt;&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;The cases presented in the spurious correlation site are all instances of what is generally called &lt;em&gt;data dredging&lt;/em&gt;, &lt;em&gt;data fishing&lt;/em&gt;, or &lt;em&gt;data snooping&lt;/em&gt;. It’s basically a form of what in the US they call &lt;em&gt;cherry picking&lt;/em&gt;. An example of data dredging would be if you look through many results produced by a random process and pick the one that shows a relationship that supports a theory you want to defend.&lt;/p&gt;
+&lt;p&gt;A Monte Carlo simulation can be used to show how data dredging can result in finding high correlations among uncorrelated variables. We will save the results of our simulation into a tibble:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;N &amp;lt;- 25
+g &amp;lt;- 1000000
+sim_data &amp;lt;- tibble(group = rep(1:g, each=N),
+                   x = rnorm(N * g),
+                   y = rnorm(N * g))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The first column denotes group. We created groups and for each one we generated a pair of independent vectors, &lt;span class=&#34;math inline&#34;&gt;\(X\)&lt;/span&gt; and &lt;span class=&#34;math inline&#34;&gt;\(Y\)&lt;/span&gt;, with 25 observations each, stored in the second and third columns. Because we constructed the simulation, we know that &lt;span class=&#34;math inline&#34;&gt;\(X\)&lt;/span&gt; and &lt;span class=&#34;math inline&#34;&gt;\(Y\)&lt;/span&gt; are not correlated.&lt;/p&gt;
+&lt;p&gt;Next, we compute the correlation between &lt;code&gt;X&lt;/code&gt; and &lt;code&gt;Y&lt;/code&gt; for each group and look at the max:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;res &amp;lt;- sim_data %&amp;gt;%
+  group_by(group) %&amp;gt;%
+  summarize(r = cor(x, y)) %&amp;gt;%
+  arrange(desc(r))&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## `summarise()` ungrouping output (override with `.groups` argument)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;res&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 1,000,000 x 2
+##     group     r
+##     &amp;lt;int&amp;gt; &amp;lt;dbl&amp;gt;
+##  1   4388 0.823
+##  2 190317 0.781
+##  3 965882 0.780
+##  4  73696 0.778
+##  5 463512 0.769
+##  6 377485 0.767
+##  7 815676 0.754
+##  8 615276 0.753
+##  9 916107 0.749
+## 10 803992 0.745
+## # … with 999,990 more rows&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;We see a maximum correlation of 0.8225842 and if you just plot the data from the group achieving this correlation, it shows a convincing plot that &lt;span class=&#34;math inline&#34;&gt;\(X\)&lt;/span&gt; and &lt;span class=&#34;math inline&#34;&gt;\(Y\)&lt;/span&gt; are in fact correlated:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;sim_data %&amp;gt;% filter(group == res$group[which.max(res$r)]) %&amp;gt;%
+  ggplot(aes(x, y)) +
+  geom_point() +
+  geom_smooth(method = &amp;quot;lm&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## `geom_smooth()` using formula &amp;#39;y ~ x&amp;#39;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/content/07-content_files/figure-html/dredging-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Remember that the correlation summary is a random variable. Here is the distribution generated by the Monte Carlo simulation:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;res %&amp;gt;% ggplot(aes(x=r)) + geom_histogram(binwidth = 0.1, color = &amp;quot;black&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/content/07-content_files/figure-html/null-corr-hist-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;It’s just a mathematical fact that if we observe random correlations that are expected to be 0, but have a standard error of 0.2039104, the largest one will be close to 1.&lt;/p&gt;
+&lt;p&gt;If we performed regression on this group and interpreted the p-value, we would incorrectly claim this was a statistically significant relation:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(broom)
+sim_data %&amp;gt;%
+  filter(group == res$group[which.max(res$r)]) %&amp;gt;%
+  do(tidy(lm(y ~ x, data = .))) %&amp;gt;%
+  filter(term == &amp;quot;x&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 1 x 5
+##   term  estimate std.error statistic     p.value
+##   &amp;lt;chr&amp;gt;    &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt;       &amp;lt;dbl&amp;gt;
+## 1 x        0.794     0.114      6.94 0.000000451&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;This particular form of data dredging is referred to as &lt;em&gt;p-hacking&lt;/em&gt;. P-hacking is a topic of much discussion because it is a problem in scientific publications. Because publishers tend to reward statistically significant results over negative results, there is an incentive to report significant results. In epidemiology and the social sciences, for example, researchers may look for associations between an adverse outcome and several exposures and report only the one exposure that resulted in a small p-value. Furthermore, they might try fitting several different models to account for confounding and pick the one that yields the smallest p-value. In experimental disciplines, an experiment might be repeated more than once, yet only the results of the one experiment with a small p-value reported. This does not necessarily happen due to unethical behavior, but rather as a result of statistical ignorance or wishful thinking. In advanced statistics courses, you can learn methods to adjust for these multiple comparisons.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;outliers&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Outliers&lt;/h2&gt;
+&lt;p&gt;Suppose we take measurements from two independent outcomes, &lt;span class=&#34;math inline&#34;&gt;\(X\)&lt;/span&gt; and &lt;span class=&#34;math inline&#34;&gt;\(Y\)&lt;/span&gt;, and we standardize the measurements. However, imagine we make a mistake and forget to standardize entry 23. We can simulate such data using:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;set.seed(1985)
+x &amp;lt;- rnorm(100,100,1)
+y &amp;lt;- rnorm(100,84,1)
+x[-23] &amp;lt;- scale(x[-23])
+y[-23] &amp;lt;- scale(y[-23])&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The data look like this:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;qplot(x, y)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/content/07-content_files/figure-html/outlier-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Not surprisingly, the correlation is very high:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;cor(x,y)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 0.9878382&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;But this is driven by the one outlier. If we remove this outlier, the correlation is greatly reduced to almost 0, which is what it should be:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;cor(x[-23], y[-23])&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] -0.04419032&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;In Section &lt;a href=&#34;#robust-summaries&#34;&gt;&lt;strong&gt;??&lt;/strong&gt;&lt;/a&gt; we described alternatives to the average and standard deviation that are robust to outliers. There is also an alternative to the sample correlation for estimating the population correlation that is robust to outliers. It is called &lt;em&gt;Spearman correlation&lt;/em&gt;. The idea is simple: compute the correlation on the ranks of the values. Here is a plot of the ranks plotted against each other:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;qplot(rank(x), rank(y))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/content/07-content_files/figure-html/scatter-plot-of-ranks-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;The outlier is no longer associated with a very large value and the correlation comes way down:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;cor(rank(x), rank(y))&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 0.002508251&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Spearman correlation can also be calculated like this:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;cor(x, y, method = &amp;quot;spearman&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 0.002508251&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;There are also methods for robust fitting of linear models which you can learn about in, for instance, this book: Robust Statistics: Edition 2 by Peter J. Huber &amp;amp; Elvezio M. Ronchetti.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;reversing-cause-and-effect&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Reversing cause and effect&lt;/h2&gt;
+&lt;p&gt;Another way association is confused with causation is when the cause and effect are reversed. An example of this is claiming that tutoring makes students perform worse because they test lower than peers that are not tutored. In this case, the tutoring is not causing the low test scores, but the other way around.&lt;/p&gt;
+&lt;p&gt;A form of this claim actually made it into an op-ed in the New York Times titled Parental Involvement Is Overrated&lt;a href=&#34;#fn2&#34; class=&#34;footnote-ref&#34; id=&#34;fnref2&#34;&gt;&lt;sup&gt;2&lt;/sup&gt;&lt;/a&gt;. Consider this quote from the article:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;When we examined whether regular help with homework had a positive impact on children’s academic performance, we were quite startled by what we found. Regardless of a family’s social class, racial or ethnic background, or a child’s grade level, consistent homework help almost never improved test scores or grades… Even more surprising to us was that when parents regularly helped with homework, kids usually performed worse.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;A very likely possibility is that the children needing regular parental help, receive this help because they don’t perform well in school.&lt;/p&gt;
+&lt;p&gt;We can easily construct an example of cause and effect reversal using the father and son height data. If we fit the model:&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[X_i = \beta_0 + \beta_1 y_i + \varepsilon_i, i=1, \dots, N\]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;to the father and son height data, with &lt;span class=&#34;math inline&#34;&gt;\(X_i\)&lt;/span&gt; the father height and &lt;span class=&#34;math inline&#34;&gt;\(y_i\)&lt;/span&gt; the son height, we do get a statistically significant result:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(HistData)
+data(&amp;quot;GaltonFamilies&amp;quot;)
+GaltonFamilies %&amp;gt;%
+  filter(childNum == 1 &amp;amp; gender == &amp;quot;male&amp;quot;) %&amp;gt;%
+  select(father, childHeight) %&amp;gt;%
+  rename(son = childHeight) %&amp;gt;%
+  do(tidy(lm(father ~ son, data = .)))&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 2 x 5
+##   term        estimate std.error statistic  p.value
+##   &amp;lt;chr&amp;gt;          &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt;    &amp;lt;dbl&amp;gt;
+## 1 (Intercept)   34.0      4.57        7.44 4.31e-12
+## 2 son            0.499    0.0648      7.70 9.47e-13&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The model fits the data very well. If we look at the mathematical formulation of the model above, it could easily be incorrectly interpreted so as to suggest that the son being tall caused the father to be tall. But given what we know about genetics and biology, we know it’s the other way around. The model is technically correct. The estimates and p-values were obtained correctly as well. What is wrong here is the interpretation.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;confounders&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Confounders&lt;/h2&gt;
+&lt;p&gt;Confounders are perhaps the most common reason that leads to associations begin misinterpreted.&lt;/p&gt;
+&lt;p&gt;If &lt;span class=&#34;math inline&#34;&gt;\(X\)&lt;/span&gt; and &lt;span class=&#34;math inline&#34;&gt;\(Y\)&lt;/span&gt; are correlated, we call &lt;span class=&#34;math inline&#34;&gt;\(Z\)&lt;/span&gt; a &lt;em&gt;confounder&lt;/em&gt; if changes in &lt;span class=&#34;math inline&#34;&gt;\(Z\)&lt;/span&gt; causes changes in both &lt;span class=&#34;math inline&#34;&gt;\(X\)&lt;/span&gt; and &lt;span class=&#34;math inline&#34;&gt;\(Y\)&lt;/span&gt;. Earlier, when studying baseball data, we saw how Home Runs was a confounder that resulted in a higher correlation than expected when studying the relationship between Bases on Balls and Runs. In some cases, we can use linear models to account for confounders. However, this is not always the case.&lt;/p&gt;
+&lt;p&gt;Incorrect interpretation due to confounders is ubiquitous in the lay press and they are often hard to detect. Here, we present a widely used example related to college admissions.&lt;/p&gt;
+&lt;div id=&#34;example-uc-berkeley-admissions&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Example: UC Berkeley admissions&lt;/h3&gt;
+&lt;p&gt;Admission data from six U.C. Berkeley majors, from 1973, showed that more men were being admitted than women: 44% men were admitted compared to 30% women. PJ Bickel, EA Hammel, and JW O’Connell. Science (1975). We can load the data and
+&lt;!--compute the percent of men and women that were accepted like this:
+
+
+```r
+data(admissions)
+admissions %&gt;% group_by(gender) %&gt;%
+  summarize(percentage =
+              round(sum(admitted*applicants)/sum(applicants),1))
+```
+
+```
+## `summarise()` ungrouping output (override with `.groups` argument)
+```
+
+```
+## # A tibble: 2 x 2
+##   gender percentage
+##   &lt;chr&gt;       &lt;dbl&gt;
+## 1 men          44.5
+## 2 women        30.3
+```
+--&gt;
+a statistical test, which clearly rejects the hypothesis that gender and admission are independent:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data(admissions)
+admissions %&amp;gt;% group_by(gender) %&amp;gt;%
+  summarize(total_admitted = round(sum(admitted / 100 * applicants)),
+            not_admitted = sum(applicants) - sum(total_admitted)) %&amp;gt;%
+  select(-gender) %&amp;gt;%
+  do(tidy(chisq.test(.))) %&amp;gt;% .$p.value&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## `summarise()` ungrouping output (override with `.groups` argument)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 1.055797e-21&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;But closer inspection shows a paradoxical result. Here are the percent admissions by major:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;admissions %&amp;gt;% select(major, gender, admitted) %&amp;gt;%
+  spread(gender, admitted) %&amp;gt;%
+  mutate(women_minus_men = women - men)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;##   major men women women_minus_men
+## 1     A  62    82              20
+## 2     B  63    68               5
+## 3     C  37    34              -3
+## 4     D  33    35               2
+## 5     E  28    24              -4
+## 6     F   6     7               1&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Four out of the six majors favor women. More importantly, all the differences are much smaller than the 14.2 difference that we see when examining the totals.&lt;/p&gt;
+&lt;p&gt;The paradox is that analyzing the totals suggests a dependence between admission and gender, but when the data is grouped by major, this dependence seems to disappear. What’s going on? This actually can happen if an uncounted confounder is driving most of the variability.&lt;/p&gt;
+&lt;p&gt;So let’s define three variables: &lt;span class=&#34;math inline&#34;&gt;\(X\)&lt;/span&gt; is 1 for men and 0 for women, &lt;span class=&#34;math inline&#34;&gt;\(Y\)&lt;/span&gt; is 1 for those admitted and 0 otherwise, and &lt;span class=&#34;math inline&#34;&gt;\(Z\)&lt;/span&gt; quantifies the selectivity of the major. A gender bias claim would be based on the fact that &lt;span class=&#34;math inline&#34;&gt;\(\mbox{Pr}(Y=1 | X = x)\)&lt;/span&gt; is higher for &lt;span class=&#34;math inline&#34;&gt;\(x=1\)&lt;/span&gt; than &lt;span class=&#34;math inline&#34;&gt;\(x=0\)&lt;/span&gt;. However, &lt;span class=&#34;math inline&#34;&gt;\(Z\)&lt;/span&gt; is an important confounder to consider. Clearly &lt;span class=&#34;math inline&#34;&gt;\(Z\)&lt;/span&gt; is associated with &lt;span class=&#34;math inline&#34;&gt;\(Y\)&lt;/span&gt;, as the more selective a major, the lower &lt;span class=&#34;math inline&#34;&gt;\(\mbox{Pr}(Y=1 | Z = z)\)&lt;/span&gt;. But is major selectivity &lt;span class=&#34;math inline&#34;&gt;\(Z\)&lt;/span&gt; associated with gender &lt;span class=&#34;math inline&#34;&gt;\(X\)&lt;/span&gt;?&lt;/p&gt;
+&lt;p&gt;One way to see this is to plot the total percent admitted to a major versus the percent of women that made up the applicants:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;admissions %&amp;gt;%
+  group_by(major) %&amp;gt;%
+  summarize(major_selectivity = sum(admitted * applicants)/sum(applicants),
+            percent_women_applicants = sum(applicants * (gender==&amp;quot;women&amp;quot;)) /
+                                             sum(applicants) * 100) %&amp;gt;%
+  ggplot(aes(major_selectivity, percent_women_applicants, label = major)) +
+  geom_text()&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## `summarise()` ungrouping output (override with `.groups` argument)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/content/07-content_files/figure-html/uc-berkeley-majors-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;There seems to be association. The plot suggests that women were much more likely to apply to the two “hard” majors: gender and major’s selectivity are confounded. Compare, for example, major B and major E. Major E is much harder to enter than major B and over 60% of applicants to major E were women, while less than 30% of the applicants of major B were women.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;confounding-explained-graphically&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Confounding explained graphically&lt;/h3&gt;
+&lt;p&gt;The following plot shows the number of applicants that were admitted and those that were not by:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/content/07-content_files/figure-html/confounding-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;!--
+
+```r
+admissions %&gt;%
+  mutate(percent_admitted = admitted * applicants/sum(applicants)) %&gt;%
+  ggplot(aes(gender, y = percent_admitted, fill = major)) +
+  geom_bar(stat = &#34;identity&#34;, position = &#34;stack&#34;)
+```
+
+&lt;img src=&#34;/content/07-content_files/figure-html/confounding-2-1.png&#34; width=&#34;672&#34; /&gt;
+--&gt;
+&lt;p&gt;It also breaks down the acceptances by major. This breakdown allows us to see that the majority of accepted men came from two majors: A and B. It also lets us see that few women applied to these majors.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;average-after-stratifying&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Average after stratifying&lt;/h3&gt;
+&lt;p&gt;In this plot, we can see that if we condition or stratify by major, and then look at differences, we control for the confounder and this effect goes away:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;admissions %&amp;gt;%
+  ggplot(aes(major, admitted, col = gender, size = applicants)) +
+  geom_point()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/content/07-content_files/figure-html/admission-by-major-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Now we see that major by major, there is not much difference. The size of the dot represents the number of applicants, and explains the paradox: we see large red dots and small blue dots for the easiest majors, A and B.&lt;/p&gt;
+&lt;p&gt;If we average the difference by major, we find that the percent is actually 3.5% higher for women.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;admissions %&amp;gt;%  group_by(gender) %&amp;gt;% summarize(average = mean(admitted))&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## `summarise()` ungrouping output (override with `.groups` argument)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 2 x 2
+##   gender average
+##   &amp;lt;chr&amp;gt;    &amp;lt;dbl&amp;gt;
+## 1 men       38.2
+## 2 women     41.7&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;simpsons-paradox&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Simpson’s paradox&lt;/h2&gt;
+&lt;p&gt;The case we have just covered is an example of Simpson’s paradox. It is called a paradox because we see the sign of the correlation flip when comparing the entire publication and specific strata. As an illustrative example, suppose you have three random variables &lt;span class=&#34;math inline&#34;&gt;\(X\)&lt;/span&gt;, &lt;span class=&#34;math inline&#34;&gt;\(Y\)&lt;/span&gt;, and &lt;span class=&#34;math inline&#34;&gt;\(Z\)&lt;/span&gt; and that we observe realizations of these. Here is a plot of simulated observations for &lt;span class=&#34;math inline&#34;&gt;\(X\)&lt;/span&gt; and &lt;span class=&#34;math inline&#34;&gt;\(Y\)&lt;/span&gt; along with the sample correlation:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/content/07-content_files/figure-html/simpsons-paradox-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;You can see that &lt;span class=&#34;math inline&#34;&gt;\(X\)&lt;/span&gt; and &lt;span class=&#34;math inline&#34;&gt;\(Y\)&lt;/span&gt; are negatively correlated. However, once we stratify by &lt;span class=&#34;math inline&#34;&gt;\(Z\)&lt;/span&gt; (shown in different colors below) another pattern emerges:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;## `summarise()` ungrouping output (override with `.groups` argument)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/content/07-content_files/figure-html/simpsons-paradox-explained-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;It is really &lt;span class=&#34;math inline&#34;&gt;\(Z\)&lt;/span&gt; that is negatively correlated with &lt;span class=&#34;math inline&#34;&gt;\(X\)&lt;/span&gt;. If we stratify by &lt;span class=&#34;math inline&#34;&gt;\(Z\)&lt;/span&gt;, the &lt;span class=&#34;math inline&#34;&gt;\(X\)&lt;/span&gt; and &lt;span class=&#34;math inline&#34;&gt;\(Y\)&lt;/span&gt; are actually positively correlated as seen in the plot above.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&#34;footnotes&#34;&gt;
+&lt;hr /&gt;
+&lt;ol&gt;
+&lt;li id=&#34;fn1&#34;&gt;&lt;p&gt;&lt;a href=&#34;http://tylervigen.com/spurious-correlations&#34; class=&#34;uri&#34;&gt;http://tylervigen.com/spurious-correlations&lt;/a&gt;&lt;a href=&#34;#fnref1&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li id=&#34;fn2&#34;&gt;&lt;p&gt;&lt;a href=&#34;https://opinionator.blogs.nytimes.com/2014/04/12/parental-involvement-is-overrated&#34; class=&#34;uri&#34;&gt;https://opinionator.blogs.nytimes.com/2014/04/12/parental-involvement-is-overrated&lt;/a&gt;&lt;a href=&#34;#fnref2&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    
+    <item>
       <title>Project 1</title>
       <link>/assignment/project1/</link>
       <pubDate>Fri, 16 Oct 2020 00:00:00 +0000</pubDate>
@@ -5545,371 +6096,9 @@ rats_clean %&amp;gt;%
     </item>
     
     <item>
-      <title>Introduction to Regression</title>
-      <link>/content/05-content/</link>
-      <pubDate>Tue, 06 Oct 2020 00:00:00 +0000</pubDate>
-      <guid>/content/05-content/</guid>
-      <description>
-
-&lt;div id=&#34;TOC&#34;&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;a href=&#34;#required-reading&#34;&gt;Required Reading&lt;/a&gt;&lt;ul&gt;
-&lt;li&gt;&lt;a href=&#34;#supplemental-readings&#34;&gt;Supplemental Readings&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;#guiding-questions&#34;&gt;Guiding Questions&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;#slides&#34;&gt;Slides&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;#regression&#34;&gt;Introduction to Linear Regression&lt;/a&gt;&lt;ul&gt;
-&lt;li&gt;&lt;a href=&#34;#case-study-is-height-hereditary&#34;&gt;Case study: is height hereditary?&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;#corr-coef&#34;&gt;The correlation coefficient&lt;/a&gt;&lt;ul&gt;
-&lt;li&gt;&lt;a href=&#34;#sample-correlation-is-a-random-variable&#34;&gt;Sample correlation is a random variable&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;#correlation-is-not-always-a-useful-summary&#34;&gt;Correlation is not always a useful summary&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;#conditional-expectation&#34;&gt;Conditional expectations&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;#the-regression-line&#34;&gt;The regression line&lt;/a&gt;&lt;ul&gt;
-&lt;li&gt;&lt;a href=&#34;#regression-improves-precision&#34;&gt;Regression improves precision&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;#bivariate-normal-distribution-advanced&#34;&gt;Bivariate normal distribution (advanced)&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;#variance-explained&#34;&gt;Variance explained&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;#warning-there-are-two-regression-lines&#34;&gt;Warning: there are two regression lines&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;&lt;/li&gt;
-&lt;/ul&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/div&gt;
-
-&lt;div id=&#34;required-reading&#34; class=&#34;section level2&#34;&gt;
-&lt;h2&gt;Required Reading&lt;/h2&gt;
-&lt;ul&gt;
-&lt;li&gt;This page.&lt;/li&gt;
-&lt;/ul&gt;
-&lt;div id=&#34;supplemental-readings&#34; class=&#34;section level3&#34;&gt;
-&lt;h3&gt;Supplemental Readings&lt;/h3&gt;
-&lt;ul&gt;
-&lt;li&gt;Coming soon.&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/div&gt;
-&lt;div id=&#34;guiding-questions&#34; class=&#34;section level3&#34;&gt;
-&lt;h3&gt;Guiding Questions&lt;/h3&gt;
-&lt;ul&gt;
-&lt;li&gt;Coming soon.&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/div&gt;
-&lt;div id=&#34;slides&#34; class=&#34;section level3&#34;&gt;
-&lt;h3&gt;Slides&lt;/h3&gt;
-&lt;ul class=&#34;nav nav-tabs&#34; id=&#34;slide-tabs&#34; role=&#34;tablist&#34;&gt;
-&lt;li class=&#34;nav-item&#34;&gt;
-&lt;a class=&#34;nav-link active&#34; id=&#34;introduction-tab&#34; data-toggle=&#34;tab&#34; href=&#34;#introduction&#34; role=&#34;tab&#34; aria-controls=&#34;introduction&#34; aria-selected=&#34;true&#34;&gt;Introduction&lt;/a&gt;
-&lt;/li&gt;
-&lt;/ul&gt;
-&lt;div id=&#34;slide-tabs&#34; class=&#34;tab-content&#34;&gt;
-&lt;div id=&#34;introduction&#34; class=&#34;tab-pane fade show active&#34; role=&#34;tabpanel&#34; aria-labelledby=&#34;introduction-tab&#34;&gt;
-&lt;div class=&#34;embed-responsive embed-responsive-16by9&#34;&gt;
-&lt;iframe class=&#34;embed-responsive-item&#34; src=&#34;/slides/05-slides.html#Introduction&#34;&gt;
-&lt;/iframe&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;p&gt;Today’s lecture will ask you to touch real data during the lecture. Please download the following dataset and load it into &lt;code&gt;R&lt;/code&gt;.&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;a href=&#34;/projects/data/ames.csv&#34;&gt;&lt;i class=&#34;fas fa-file-csv&#34;&gt;&lt;/i&gt; &lt;code&gt;Ames.csv&lt;/code&gt;&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;This dataset is from houses in Ames, Iowa. (Thrilling!) We will use this dataset during the lecture to illustrate some of the points discussed below.&lt;/p&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div id=&#34;regression&#34; class=&#34;section level1&#34;&gt;
-&lt;h1&gt;Introduction to Linear Regression&lt;/h1&gt;
-&lt;p&gt;Up to this point, this class has focused mainly on single variables. However, in data analytics applications, it is very common to be interested in the &lt;strong&gt;relationship&lt;/strong&gt; between two or more variables. For instance, in the coming days we will use a data-driven approach that examines the relationship between player statistics and success to guide the building of a baseball team with a limited budget. Before delving into this more complex example, we introduce necessary concepts needed to understand regression using a simpler illustration. We actually use the dataset from which regression was born.&lt;/p&gt;
-&lt;p&gt;The example is from genetics. Francis Galton&lt;a href=&#34;#fn1&#34; class=&#34;footnote-ref&#34; id=&#34;fnref1&#34;&gt;&lt;sup&gt;1&lt;/sup&gt;&lt;/a&gt; studied the variation and heredity of human traits. Among many other traits, Galton collected and studied height data from families to try to understand heredity. While doing this, he developed the concepts of correlation and regression, as well as a connection to pairs of data that follow a normal distribution. Of course, at the time this data was collected our knowledge of genetics was quite limited compared to what we know today. A very specific question Galton tried to answer was: how well can we predict a child’s height based on the parents’ height? The technique he developed to answer this question, regression, can also be applied to our baseball question. Regression can be applied in many other circumstances as well.&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;Historical note&lt;/strong&gt;: Galton made important contributions to statistics and genetics, but he was also one of the first proponents of eugenics, a scientifically flawed philosophical movement favored by many biologists of Galton’s time but with horrific historical consequences. These consequences still reverberate to this day, and form the basis for much of the Western world’s racist policies. You can read more about it here: &lt;a href=&#34;https://pged.org/history-eugenics-and-genetics/&#34;&gt;https://pged.org/history-eugenics-and-genetics/&lt;/a&gt;.&lt;/p&gt;
-&lt;div id=&#34;case-study-is-height-hereditary&#34; class=&#34;section level2&#34;&gt;
-&lt;h2&gt;Case study: is height hereditary?&lt;/h2&gt;
-&lt;p&gt;We have access to Galton’s family height data through the &lt;strong&gt;HistData&lt;/strong&gt; package. This data contains heights on several dozen families: mothers, fathers, daughters, and sons. To imitate Galton’s analysis, we will create a dataset with the heights of fathers and a randomly selected son of each family:&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(tidyverse)
-library(HistData)
-data(&amp;quot;GaltonFamilies&amp;quot;)
-
-set.seed(1983)
-galton_heights &amp;lt;- GaltonFamilies %&amp;gt;%
-  filter(gender == &amp;quot;male&amp;quot;) %&amp;gt;%
-  group_by(family) %&amp;gt;%
-  sample_n(1) %&amp;gt;%
-  ungroup() %&amp;gt;%
-  select(father, childHeight) %&amp;gt;%
-  rename(son = childHeight)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;In the exercises, we will look at other relationships including mothers and daughters.&lt;/p&gt;
-&lt;p&gt;Suppose we were asked to summarize the father and son data. Since both distributions are well approximated by the normal distribution, we could use the two averages and two standard deviations as summaries:&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;galton_heights %&amp;gt;%
-  summarize(mean(father), sd(father), mean(son), sd(son))&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## # A tibble: 1 x 4
-##   `mean(father)` `sd(father)` `mean(son)` `sd(son)`
-##            &amp;lt;dbl&amp;gt;        &amp;lt;dbl&amp;gt;       &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt;
-## 1           69.1         2.55        69.2      2.71&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;However, this summary fails to describe an important characteristic of the data: the trend that the taller the father, the taller the son.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;galton_heights %&amp;gt;% ggplot(aes(father, son)) +
-  geom_point(alpha = 0.5)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/content/05-content_files/figure-html/scatterplot-1.png&#34; width=&#34;40%&#34; /&gt;&lt;/p&gt;
-&lt;p&gt;We will learn that the correlation coefficient is an informative summary of how two variables move together and then see how this can be used to predict one variable using the other.&lt;/p&gt;
-&lt;/div&gt;
-&lt;div id=&#34;corr-coef&#34; class=&#34;section level2&#34;&gt;
-&lt;h2&gt;The correlation coefficient&lt;/h2&gt;
-&lt;p&gt;The correlation coefficient is defined for a list of pairs &lt;span class=&#34;math inline&#34;&gt;\((x_1, y_1), \dots, (x_n,y_n)\)&lt;/span&gt; as the average of the product of the standardized values:&lt;/p&gt;
-&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
-\rho = \frac{1}{n} \sum_{i=1}^n \left( \frac{x_i-\mu_x}{\sigma_x} \right)\left( \frac{y_i-\mu_y}{\sigma_y} \right)
-\]&lt;/span&gt;
-with &lt;span class=&#34;math inline&#34;&gt;\(\mu_x, \mu_y\)&lt;/span&gt; the averages of &lt;span class=&#34;math inline&#34;&gt;\(x_1,\dots, x_n\)&lt;/span&gt; and &lt;span class=&#34;math inline&#34;&gt;\(y_1, \dots, y_n\)&lt;/span&gt;, respectively, and &lt;span class=&#34;math inline&#34;&gt;\(\sigma_x, \sigma_y\)&lt;/span&gt; the standard deviations. The Greek letter &lt;span class=&#34;math inline&#34;&gt;\(\rho\)&lt;/span&gt; is commonly used in statistics books to denote the correlation. The Greek letter for &lt;span class=&#34;math inline&#34;&gt;\(r\)&lt;/span&gt;, &lt;span class=&#34;math inline&#34;&gt;\(\rho\)&lt;/span&gt;, because it is the first letter of regression. Soon we learn about the connection between correlation and regression. We can represent the formula above with R code using:&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;rho &amp;lt;- mean(scale(x) * scale(y))&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;To understand why this equation does in fact summarize how two variables move together, consider the &lt;span class=&#34;math inline&#34;&gt;\(i\)&lt;/span&gt;-th entry of &lt;span class=&#34;math inline&#34;&gt;\(x\)&lt;/span&gt; is &lt;span class=&#34;math inline&#34;&gt;\(\left( \frac{x_i-\mu_x}{\sigma_x} \right)\)&lt;/span&gt; SDs away from the average. Similarly, the &lt;span class=&#34;math inline&#34;&gt;\(y_i\)&lt;/span&gt; that is paired with &lt;span class=&#34;math inline&#34;&gt;\(x_i\)&lt;/span&gt;, is &lt;span class=&#34;math inline&#34;&gt;\(\left( \frac{y_1-\mu_y}{\sigma_y} \right)\)&lt;/span&gt; SDs away from the average &lt;span class=&#34;math inline&#34;&gt;\(y\)&lt;/span&gt;. If &lt;span class=&#34;math inline&#34;&gt;\(x\)&lt;/span&gt; and &lt;span class=&#34;math inline&#34;&gt;\(y\)&lt;/span&gt; are unrelated, the product &lt;span class=&#34;math inline&#34;&gt;\(\left( \frac{x_i-\mu_x}{\sigma_x} \right)\left( \frac{y_i-\mu_y}{\sigma_y} \right)\)&lt;/span&gt; will be positive ( &lt;span class=&#34;math inline&#34;&gt;\(+ \times +\)&lt;/span&gt; and &lt;span class=&#34;math inline&#34;&gt;\(- \times -\)&lt;/span&gt; ) as often as negative (&lt;span class=&#34;math inline&#34;&gt;\(+ \times -\)&lt;/span&gt; and &lt;span class=&#34;math inline&#34;&gt;\(- \times +\)&lt;/span&gt;) and will average out to about 0. This correlation is the average and therefore unrelated variables will have 0 correlation. If instead the quantities vary together, then we are averaging mostly positive products ( &lt;span class=&#34;math inline&#34;&gt;\(+ \times +\)&lt;/span&gt; and &lt;span class=&#34;math inline&#34;&gt;\(- \times -\)&lt;/span&gt;) and we get a positive correlation. If they vary in opposite directions, we get a negative correlation.&lt;/p&gt;
-&lt;p&gt;The correlation coefficient is always between -1 and 1. We can show this mathematically: consider that we can’t have higher correlation than when we compare a list to itself (perfect correlation) and in this case the correlation is:&lt;/p&gt;
-&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
-\rho = \frac{1}{n} \sum_{i=1}^n \left( \frac{x_i-\mu_x}{\sigma_x} \right)^2 =
-\frac{1}{\sigma_x^2} \frac{1}{n} \sum_{i=1}^n \left( x_i-\mu_x \right)^2 =
-\frac{1}{\sigma_x^2} \sigma^2_x =
-1
-\]&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;A similar derivation, but with &lt;span class=&#34;math inline&#34;&gt;\(x\)&lt;/span&gt; and its exact opposite, proves the correlation has to be bigger or equal to -1.&lt;/p&gt;
-&lt;p&gt;For other pairs, the correlation is in between -1 and 1. The correlation between father and son’s heights is about 0.5:&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;galton_heights %&amp;gt;% summarize(r = cor(father, son)) %&amp;gt;% pull(r)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## [1] 0.4334102&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;To see what data looks like for different values of &lt;span class=&#34;math inline&#34;&gt;\(\rho\)&lt;/span&gt;, here are six examples of pairs with correlations ranging from -0.9 to 0.99:&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;/content/05-content_files/figure-html/what-correlation-looks-like-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
-&lt;div id=&#34;sample-correlation-is-a-random-variable&#34; class=&#34;section level3&#34;&gt;
-&lt;h3&gt;Sample correlation is a random variable&lt;/h3&gt;
-&lt;p&gt;Before we continue connecting correlation to regression, let’s remind ourselves about random variability.&lt;/p&gt;
-&lt;p&gt;In most data science applications, we observe data that includes random variation. For example, in many cases, we do not observe data for the entire population of interest but rather for a random sample. As with the average and standard deviation, the &lt;em&gt;sample correlation&lt;/em&gt; is the most commonly used estimate of the population correlation. This implies that the correlation we compute and use as a summary is a random variable.&lt;/p&gt;
-&lt;p&gt;By way of illustration, let’s assume that the 179 pairs of fathers and sons is our entire population. A less fortunate geneticist can only afford measurements from a random sample of 25 pairs. The sample correlation can be computed with:&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;R &amp;lt;- sample_n(galton_heights, 25, replace = TRUE) %&amp;gt;%
-  summarize(r = cor(father, son)) %&amp;gt;% pull(r)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;code&gt;R&lt;/code&gt; is a random variable. We can run a Monte Carlo simulation to see its distribution:&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;B &amp;lt;- 1000
-N &amp;lt;- 25
-R &amp;lt;- replicate(B, {
-  sample_n(galton_heights, N, replace = TRUE) %&amp;gt;%
-    summarize(r=cor(father, son)) %&amp;gt;%
-    pull(r)
-})
-qplot(R, geom = &amp;quot;histogram&amp;quot;, binwidth = 0.05, color = I(&amp;quot;black&amp;quot;))&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/content/05-content_files/figure-html/sample-correlation-distribution-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
-&lt;p&gt;We see that the expected value of &lt;code&gt;R&lt;/code&gt; is the population correlation:&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;mean(R)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## [1] 0.4307393&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;and that it has a relatively high standard error relative to the range of values &lt;code&gt;R&lt;/code&gt; can take:&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;sd(R)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## [1] 0.1609393&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;So, when interpreting correlations, remember that correlations derived from samples are estimates containing uncertainty.&lt;/p&gt;
-&lt;p&gt;Also, note that because the sample correlation is an average of independent draws, the central limit actually applies. Therefore, for large enough &lt;span class=&#34;math inline&#34;&gt;\(N\)&lt;/span&gt;, the distribution of &lt;code&gt;R&lt;/code&gt; is approximately normal with expected value &lt;span class=&#34;math inline&#34;&gt;\(\rho\)&lt;/span&gt;. The standard deviation, which is somewhat complex to derive, is &lt;span class=&#34;math inline&#34;&gt;\(\sqrt{\frac{1-r^2}{N-2}}\)&lt;/span&gt;.&lt;/p&gt;
-&lt;p&gt;In our example, &lt;span class=&#34;math inline&#34;&gt;\(N=25\)&lt;/span&gt; does not seem to be large enough to make the approximation a good one:&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(aes(sample=R), data = data.frame(R)) +
-  stat_qq() +
-  geom_abline(intercept = mean(R), slope = sqrt((1-mean(R)^2)/(N-2)))&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/content/05-content_files/figure-html/small-sample-correlation-not-normal-1.png&#34; width=&#34;40%&#34; /&gt;&lt;/p&gt;
-&lt;p&gt;If you increase &lt;span class=&#34;math inline&#34;&gt;\(N\)&lt;/span&gt;, you will see the distribution converging to normal.&lt;/p&gt;
-&lt;/div&gt;
-&lt;div id=&#34;correlation-is-not-always-a-useful-summary&#34; class=&#34;section level3&#34;&gt;
-&lt;h3&gt;Correlation is not always a useful summary&lt;/h3&gt;
-&lt;p&gt;Correlation is not always a good summary of the relationship between two variables. The following four artificial datasets, referred to as Anscombe’s quartet, famously illustrate this point. All these pairs have a correlation of 0.82:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;## `geom_smooth()` using formula &amp;#39;y ~ x&amp;#39;&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/content/05-content_files/figure-html/ascombe-quartet-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
-&lt;p&gt;Correlation is only meaningful in a particular context. To help us understand when it is that correlation is meaningful as a summary statistic, we will return to the example of predicting a son’s height using his father’s height. This will help motivate and define linear regression. We start by demonstrating how correlation can be useful for prediction.&lt;/p&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div id=&#34;conditional-expectation&#34; class=&#34;section level2&#34;&gt;
-&lt;h2&gt;Conditional expectations&lt;/h2&gt;
-&lt;p&gt;Suppose we are asked to guess the height of a randomly selected son and we don’t know his father’s height. Because the distribution of sons’ heights is approximately normal, we know the average height, 69.2, is the value with the highest proportion and would be the prediction with the highest chance of minimizing the error. But what if we are told that the father is taller than average, say 72 inches tall, do we still guess 69.2 for the son?&lt;/p&gt;
-&lt;p&gt;It turns out that if we were able to collect data from a very large number of fathers that are 72 inches, the distribution of their sons’ heights would be normally distributed. This implies that the average of the distribution computed on this subset would be our best prediction.&lt;/p&gt;
-&lt;p&gt;In general, we call this approach &lt;em&gt;conditioning&lt;/em&gt;. The general idea is that we stratify a population into groups and compute summaries in each group. To provide a mathematical description of conditioning, consider we have a population of pairs of values &lt;span class=&#34;math inline&#34;&gt;\((x_1,y_1),\dots,(x_n,y_n)\)&lt;/span&gt;, for example all father and son heights in England. In the previous week’s content, we learned that if you take a random pair &lt;span class=&#34;math inline&#34;&gt;\((X,Y)\)&lt;/span&gt;, the expected value and best predictor of &lt;span class=&#34;math inline&#34;&gt;\(Y\)&lt;/span&gt; is &lt;span class=&#34;math inline&#34;&gt;\(\mbox{E}(Y) = \mu_y\)&lt;/span&gt;, the population average &lt;span class=&#34;math inline&#34;&gt;\(1/n\sum_{i=1}^n y_i\)&lt;/span&gt;. However, we are no longer interested in the general population, instead we are interested in only the subset of a population with a specific &lt;span class=&#34;math inline&#34;&gt;\(x_i\)&lt;/span&gt; value, 72 inches in our example. This subset of the population, is also a population and thus the same principles and properties we have learned apply. The &lt;span class=&#34;math inline&#34;&gt;\(y_i\)&lt;/span&gt; in the subpopulation have a distribution, referred to as the &lt;em&gt;conditional distribution&lt;/em&gt;, and this distribution has an expected value referred to as the &lt;em&gt;conditional expectation&lt;/em&gt;. In our example, the conditional expectation is the average height of all sons in England with fathers that are 72 inches. The statistical notation for the conditional expectation is&lt;/p&gt;
-&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
-\mbox{E}(Y \mid X = x)
-\]&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;with &lt;span class=&#34;math inline&#34;&gt;\(x\)&lt;/span&gt; representing the fixed value that defines that subset, for example 72 inches. Similarly, we denote the standard deviation of the strata with&lt;/p&gt;
-&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
-\mbox{SD}(Y \mid X = x) = \sqrt{\mbox{Var}(Y \mid X = x)}
-\]&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;Because the conditional expectation &lt;span class=&#34;math inline&#34;&gt;\(E(Y\mid X=x)\)&lt;/span&gt; is the best predictor for the random variable &lt;span class=&#34;math inline&#34;&gt;\(Y\)&lt;/span&gt; for an individual in the strata defined by &lt;span class=&#34;math inline&#34;&gt;\(X=x\)&lt;/span&gt;, many data science challenges reduce to estimating this quantity. The conditional standard deviation quantifies the precision of the prediction.&lt;/p&gt;
-&lt;p&gt;In the example we have been considering, we are interested in computing the average son height &lt;em&gt;conditioned&lt;/em&gt; on the father being 72 inches tall. We want to estimate &lt;span class=&#34;math inline&#34;&gt;\(E(Y|X=72)\)&lt;/span&gt; using the sample collected by Galton. We previously learned that the sample average is the preferred approach to estimating the population average. However, a challenge when using this approach to estimating conditional expectations is that for continuous data we don’t have many data points matching exactly one value in our sample. For example, we have only:&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;sum(galton_heights$father == 72)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## [1] 8&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;fathers that are exactly 72-inches. If we change the number to 72.5, we get even fewer data points:&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;sum(galton_heights$father == 72.5)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## [1] 1&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;A practical way to improve these estimates of the conditional expectations, is to define strata of with similar values of &lt;span class=&#34;math inline&#34;&gt;\(x\)&lt;/span&gt;. In our example, we can round father heights to the nearest inch and assume that they are all 72 inches. If we do this, we end up with the following prediction for the son of a father that is 72 inches tall:&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;conditional_avg &amp;lt;- galton_heights %&amp;gt;%
-  filter(round(father) == 72) %&amp;gt;%
-  summarize(avg = mean(son)) %&amp;gt;%
-  pull(avg)
-conditional_avg&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## [1] 70.5&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Note that a 72-inch father is taller than average – specifically, 72 - 69.1/2.5 =
-1.1 standard deviations taller than the average father. Our prediction 70.5 is also taller than average, but only 0.49 standard deviations larger than the average son. The sons of 72-inch fathers have &lt;em&gt;regressed&lt;/em&gt; some to the average height. We notice that the reduction in how many SDs taller is about 0.5, which happens to be the correlation. As we will see in a later lecture, this is not a coincidence.&lt;/p&gt;
-&lt;p&gt;If we want to make a prediction of any height, not just 72, we could apply the same approach to each strata. Stratification followed by boxplots lets us see the distribution of each group:&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;galton_heights %&amp;gt;% mutate(father_strata = factor(round(father))) %&amp;gt;%
-  ggplot(aes(father_strata, son)) +
-  geom_boxplot() +
-  geom_point()&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/content/05-content_files/figure-html/boxplot-1-1.png&#34; width=&#34;40%&#34; /&gt;&lt;/p&gt;
-&lt;p&gt;Not surprisingly, the centers of the groups are increasing with height.
-Furthermore, these centers appear to follow a linear relationship. Below we plot the averages of each group. If we take into account that these averages are random variables with standard errors, the data is consistent with these points following a straight line:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;## `summarise()` ungrouping output (override with `.groups` argument)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/content/05-content_files/figure-html/conditional-averages-follow-line-1.png&#34; width=&#34;40%&#34; /&gt;&lt;/p&gt;
-&lt;p&gt;The fact that these conditional averages follow a line is not a coincidence. In the next section, we explain that the line these averages follow is what we call the &lt;em&gt;regression line&lt;/em&gt;, which improves the precision of our estimates. However, it is not always appropriate to estimate conditional expectations with the regression line so we also describe Galton’s theoretical justification for using the regression line.&lt;/p&gt;
-&lt;/div&gt;
-&lt;div id=&#34;the-regression-line&#34; class=&#34;section level2&#34;&gt;
-&lt;h2&gt;The regression line&lt;/h2&gt;
-&lt;p&gt;If we are predicting a random variable &lt;span class=&#34;math inline&#34;&gt;\(Y\)&lt;/span&gt; knowing the value of another &lt;span class=&#34;math inline&#34;&gt;\(X=x\)&lt;/span&gt; using a regression line, then we predict that for every standard deviation, &lt;span class=&#34;math inline&#34;&gt;\(\sigma_X\)&lt;/span&gt;, that &lt;span class=&#34;math inline&#34;&gt;\(x\)&lt;/span&gt; increases above the average &lt;span class=&#34;math inline&#34;&gt;\(\mu_X\)&lt;/span&gt;, &lt;span class=&#34;math inline&#34;&gt;\(Y\)&lt;/span&gt; increase &lt;span class=&#34;math inline&#34;&gt;\(\rho\)&lt;/span&gt; standard deviations &lt;span class=&#34;math inline&#34;&gt;\(\sigma_Y\)&lt;/span&gt; above the average &lt;span class=&#34;math inline&#34;&gt;\(\mu_Y\)&lt;/span&gt; with &lt;span class=&#34;math inline&#34;&gt;\(\rho\)&lt;/span&gt; the correlation between &lt;span class=&#34;math inline&#34;&gt;\(X\)&lt;/span&gt; and &lt;span class=&#34;math inline&#34;&gt;\(Y\)&lt;/span&gt;. The formula for the regression is therefore:&lt;/p&gt;
-&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
-\left( \frac{Y-\mu_Y}{\sigma_Y} \right) = \rho \left( \frac{x-\mu_X}{\sigma_X} \right)
-\]&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;We can rewrite it like this:&lt;/p&gt;
-&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
-Y = \mu_Y + \rho \left( \frac{x-\mu_X}{\sigma_X} \right) \sigma_Y
-\]&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;If there is perfect correlation, the regression line predicts an increase that is the same number of SDs. If there is 0 correlation, then we don’t use &lt;span class=&#34;math inline&#34;&gt;\(x\)&lt;/span&gt; at all for the prediction and simply predict the average &lt;span class=&#34;math inline&#34;&gt;\(\mu_Y\)&lt;/span&gt;. For values between 0 and 1, the prediction is somewhere in between. If the correlation is negative, we predict a reduction instead of an increase.&lt;/p&gt;
-&lt;p&gt;Note that if the correlation is positive and lower than 1, our prediction is closer, in standard units, to the average height than the value used to predict, &lt;span class=&#34;math inline&#34;&gt;\(x\)&lt;/span&gt;, is to the average of the &lt;span class=&#34;math inline&#34;&gt;\(x\)&lt;/span&gt;s. This is why we call it &lt;em&gt;regression&lt;/em&gt;: the son regresses to the average height. In fact, the title of Galton’s paper was: &lt;em&gt;Regression toward mediocrity in hereditary stature&lt;/em&gt;. To add regression lines to plots, we will need the above formula in the form:&lt;/p&gt;
-&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
-y= b + mx \mbox{ with slope } m = \rho \frac{\sigma_y}{\sigma_x} \mbox{ and intercept } b=\mu_y - m \mu_x
-\]&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;Here we add the regression line to the original data:&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;mu_x &amp;lt;- mean(galton_heights$father)
-mu_y &amp;lt;- mean(galton_heights$son)
-s_x &amp;lt;- sd(galton_heights$father)
-s_y &amp;lt;- sd(galton_heights$son)
-r &amp;lt;- cor(galton_heights$father, galton_heights$son)
-
-galton_heights %&amp;gt;%
-  ggplot(aes(father, son)) +
-  geom_point(alpha = 0.5) +
-  geom_abline(slope = r * s_y/s_x, intercept = mu_y - r * s_y/s_x * mu_x)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/content/05-content_files/figure-html/regression-line-1.png&#34; width=&#34;40%&#34; /&gt;&lt;/p&gt;
-&lt;p&gt;The regression formula implies that if we first standardize the variables, that is subtract the average and divide by the standard deviation, then the regression line has intercept 0 and slope equal to the correlation &lt;span class=&#34;math inline&#34;&gt;\(\rho\)&lt;/span&gt;. You can make same plot, but using standard units like this:&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;galton_heights %&amp;gt;%
-  ggplot(aes(scale(father), scale(son))) +
-  geom_point(alpha = 0.5) +
-  geom_abline(intercept = 0, slope = r)&lt;/code&gt;&lt;/pre&gt;
-&lt;div id=&#34;regression-improves-precision&#34; class=&#34;section level3&#34;&gt;
-&lt;h3&gt;Regression improves precision&lt;/h3&gt;
-&lt;p&gt;Let’s compare the two approaches to prediction that we have presented:&lt;/p&gt;
-&lt;ol style=&#34;list-style-type: decimal&#34;&gt;
-&lt;li&gt;Round fathers’ heights to closest inch, stratify, and then take the average.&lt;/li&gt;
-&lt;li&gt;Compute the regression line and use it to predict.&lt;/li&gt;
-&lt;/ol&gt;
-&lt;p&gt;We use a Monte Carlo simulation sampling &lt;span class=&#34;math inline&#34;&gt;\(N=50\)&lt;/span&gt; families:&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;B &amp;lt;- 1000
-N &amp;lt;- 50
-
-set.seed(1983)
-conditional_avg &amp;lt;- replicate(B, {
-  dat &amp;lt;- sample_n(galton_heights, N)
-  dat %&amp;gt;% filter(round(father) == 72) %&amp;gt;%
-    summarize(avg = mean(son)) %&amp;gt;%
-    pull(avg)
-  })
-
-regression_prediction &amp;lt;- replicate(B, {
-  dat &amp;lt;- sample_n(galton_heights, N)
-  mu_x &amp;lt;- mean(dat$father)
-  mu_y &amp;lt;- mean(dat$son)
-  s_x &amp;lt;- sd(dat$father)
-  s_y &amp;lt;- sd(dat$son)
-  r &amp;lt;- cor(dat$father, dat$son)
-  mu_y + r*(72 - mu_x)/s_x*s_y
-})&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Although the expected value of these two random variables is about the same:&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;mean(conditional_avg, na.rm = TRUE)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## [1] 70.49368&lt;/code&gt;&lt;/pre&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;mean(regression_prediction)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## [1] 70.50941&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;The standard error for the regression prediction is substantially smaller:&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;sd(conditional_avg, na.rm = TRUE)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## [1] 0.9635814&lt;/code&gt;&lt;/pre&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;sd(regression_prediction)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## [1] 0.4520833&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;The regression line is therefore much more stable than the conditional mean. There is an intuitive reason for this. The conditional average is computed on a relatively small subset: the fathers that are about 72 inches tall. In fact, in some of the permutations we have no data, which is why we use &lt;code&gt;na.rm=TRUE&lt;/code&gt;. The regression always uses all the data.&lt;/p&gt;
-&lt;p&gt;So why not always use the regression for prediction? Because it is not always appropriate. For example, Anscombe provided cases for which the data does not have a linear relationship. So are we justified in using the regression line to predict? Galton answered this in the positive for height data. The justification, which we include in the next section, is somewhat more advanced than the rest of the chapter.&lt;/p&gt;
-&lt;/div&gt;
-&lt;div id=&#34;bivariate-normal-distribution-advanced&#34; class=&#34;section level3&#34;&gt;
-&lt;h3&gt;Bivariate normal distribution (advanced)&lt;/h3&gt;
-&lt;p&gt;Correlation and the regression slope are a widely used summary statistic, but they are often misused or misinterpreted. Anscombe’s examples provide over-simplified cases of dataset in which summarizing with correlation would be a mistake. But there are many more real-life examples.&lt;/p&gt;
-&lt;p&gt;The main way we motivate the use of correlation involves what is called the &lt;em&gt;bivariate normal distribution&lt;/em&gt;.&lt;/p&gt;
-&lt;p&gt;When a pair of random variables is approximated by the bivariate normal distribution, scatterplots look like ovals. These ovals can be thin (high correlation) or circle-shaped (no correlation).&lt;/p&gt;
-&lt;!--
-&lt;img src=&#34;/content/05-content_files/figure-html/bivariate-ovals-1.png&#34; width=&#34;672&#34; /&gt;
---&gt;
-&lt;p&gt;A more technical way to define the bivariate normal distribution is the following: if &lt;span class=&#34;math inline&#34;&gt;\(X\)&lt;/span&gt; is a normally distributed random variable, &lt;span class=&#34;math inline&#34;&gt;\(Y\)&lt;/span&gt; is also a normally distributed random variable, and the conditional distribution of &lt;span class=&#34;math inline&#34;&gt;\(Y\)&lt;/span&gt; for any &lt;span class=&#34;math inline&#34;&gt;\(X=x\)&lt;/span&gt; is approximately normal, then the pair is approximately bivariate normal.&lt;/p&gt;
-&lt;p&gt;If we think the height data is well approximated by the bivariate normal distribution, then we should see the normal approximation hold for each strata. Here we stratify the son heights by the standardized father heights and see that the assumption appears to hold:&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;galton_heights %&amp;gt;%
-  mutate(z_father = round((father - mean(father)) / sd(father))) %&amp;gt;%
-  filter(z_father %in% -2:2) %&amp;gt;%
-  ggplot() +
-  stat_qq(aes(sample = son)) +
-  facet_wrap( ~ z_father)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/content/05-content_files/figure-html/qqnorm-of-strata-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
-&lt;p&gt;Now we come back to defining correlation. Galton used mathematical statistics to demonstrate that, when two variables follow a bivariate normal distribution, computing the regression line is equivalent to computing conditional expectations. We don’t show the derivation here, but we can show that under this assumption, for any given value of &lt;span class=&#34;math inline&#34;&gt;\(x\)&lt;/span&gt;, the expected value of the &lt;span class=&#34;math inline&#34;&gt;\(Y\)&lt;/span&gt; in pairs for which &lt;span class=&#34;math inline&#34;&gt;\(X=x\)&lt;/span&gt; is:&lt;/p&gt;
-&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
-\mbox{E}(Y | X=x) = \mu_Y +  \rho \frac{X-\mu_X}{\sigma_X}\sigma_Y
-\]&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;This is the regression line, with slope &lt;span class=&#34;math display&#34;&gt;\[\rho \frac{\sigma_Y}{\sigma_X}\]&lt;/span&gt; and intercept &lt;span class=&#34;math inline&#34;&gt;\(\mu_y - m\mu_X\)&lt;/span&gt;. It is equivalent to the regression equation we showed earlier which can be written like this:&lt;/p&gt;
-&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
-\frac{\mbox{E}(Y \mid X=x)  - \mu_Y}{\sigma_Y} = \rho \frac{x-\mu_X}{\sigma_X}
-\]&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;This implies that, if our data is approximately bivariate, the regression line gives the conditional probability. Therefore, we can obtain a much more stable estimate of the conditional expectation by finding the regression line and using it to predict.&lt;/p&gt;
-&lt;p&gt;In summary, if our data is approximately bivariate, then the conditional expectation, the best prediction of &lt;span class=&#34;math inline&#34;&gt;\(Y\)&lt;/span&gt; given we know the value of &lt;span class=&#34;math inline&#34;&gt;\(X\)&lt;/span&gt;, is given by the regression line.&lt;/p&gt;
-&lt;/div&gt;
-&lt;div id=&#34;variance-explained&#34; class=&#34;section level3&#34;&gt;
-&lt;h3&gt;Variance explained&lt;/h3&gt;
-&lt;p&gt;The bivariate normal theory also tells us that the standard deviation of the &lt;em&gt;conditional&lt;/em&gt; distribution described above is:&lt;/p&gt;
-&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
-\mbox{SD}(Y \mid X=x ) = \sigma_Y \sqrt{1-\rho^2}
-\]&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;To see why this is intuitive, notice that without conditioning, &lt;span class=&#34;math inline&#34;&gt;\(\mbox{SD}(Y) = \sigma_Y\)&lt;/span&gt;, we are looking at the variability of all the sons. But once we condition, we are only looking at the variability of the sons with a tall, 72-inch, father. This group will all tend to be somewhat tall so the standard deviation is reduced.&lt;/p&gt;
-&lt;p&gt;Specifically, it is reduced to &lt;span class=&#34;math inline&#34;&gt;\(\sqrt{1-\rho^2} = \sqrt{1 - 0.25}\)&lt;/span&gt; = 0.87 of what it was originally. We could say that father heights “explain” 13% of the variability observed in son heights.&lt;/p&gt;
-&lt;p&gt;The statement “&lt;span class=&#34;math inline&#34;&gt;\(X\)&lt;/span&gt; explains such and such percent of the variability” is commonly used in academic papers. In this case, this percent actually refers to the variance (the SD squared). So if the data is bivariate normal, the variance is reduced by &lt;span class=&#34;math inline&#34;&gt;\(1-\rho^2\)&lt;/span&gt;, so we say that &lt;span class=&#34;math inline&#34;&gt;\(X\)&lt;/span&gt; explains &lt;span class=&#34;math inline&#34;&gt;\(1- (1-\rho^2)=\rho^2\)&lt;/span&gt; (the correlation squared) of the variance.&lt;/p&gt;
-&lt;p&gt;But it is important to remember that the “variance explained” statement only makes sense when the data is approximated by a bivariate normal distribution.&lt;/p&gt;
-&lt;/div&gt;
-&lt;div id=&#34;warning-there-are-two-regression-lines&#34; class=&#34;section level3&#34;&gt;
-&lt;h3&gt;Warning: there are two regression lines&lt;/h3&gt;
-&lt;p&gt;We computed a regression line to predict the son’s height from father’s height. We used these calculations:&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;mu_x &amp;lt;- mean(galton_heights$father)
-mu_y &amp;lt;- mean(galton_heights$son)
-s_x &amp;lt;- sd(galton_heights$father)
-s_y &amp;lt;- sd(galton_heights$son)
-r &amp;lt;- cor(galton_heights$father, galton_heights$son)
-m_1 &amp;lt;-  r * s_y / s_x
-b_1 &amp;lt;- mu_y - m_1*mu_x&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;which gives us the function &lt;span class=&#34;math inline&#34;&gt;\(\mbox{E}(Y\mid X=x) =\)&lt;/span&gt; 37.3 + 0.46 &lt;span class=&#34;math inline&#34;&gt;\(x\)&lt;/span&gt;.&lt;/p&gt;
-&lt;p&gt;What if we want to predict the father’s height based on the son’s? It is important to know that this is not determined by computing the inverse function:
-&lt;span class=&#34;math inline&#34;&gt;\(x = \{ \mbox{E}(Y\mid X=x) -\)&lt;/span&gt; 37.3 &lt;span class=&#34;math inline&#34;&gt;\(\} /\)&lt;/span&gt; 0.5.&lt;/p&gt;
-&lt;p&gt;We need to compute &lt;span class=&#34;math inline&#34;&gt;\(\mbox{E}(X \mid Y=y)\)&lt;/span&gt;. Since the data is approximately bivariate normal, the theory described above tells us that this conditional expectation will follow a line with slope and intercept:&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;m_2 &amp;lt;-  r * s_x / s_y
-b_2 &amp;lt;- mu_x - m_2 * mu_y&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;So we get &lt;span class=&#34;math inline&#34;&gt;\(\mbox{E}(X \mid Y=y) =\)&lt;/span&gt; 40.9 + 0.41y. Again we see regression to the average: the prediction for the father is closer to the father average than the son heights &lt;span class=&#34;math inline&#34;&gt;\(y\)&lt;/span&gt; is to the son average.&lt;/p&gt;
-&lt;p&gt;Here is a plot showing the two regression lines, with blue for the predicting son heights with father heights and red for predicting father heights with son heights:&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;galton_heights %&amp;gt;%
-  ggplot(aes(father, son)) +
-  geom_point(alpha = 0.5) +
-  geom_abline(intercept = b_1, slope = m_1, col = &amp;quot;blue&amp;quot;) +
-  geom_abline(intercept = -b_2/m_2, slope = 1/m_2, col = &amp;quot;red&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/content/05-content_files/figure-html/two-regression-lines-1.png&#34; width=&#34;40%&#34; /&gt;&lt;/p&gt;
-&lt;div class=&#34;fyi&#34;&gt;
-&lt;p&gt;&lt;strong&gt;TRY IT&lt;/strong&gt;&lt;/p&gt;
-&lt;ol style=&#34;list-style-type: decimal&#34;&gt;
-&lt;li&gt;&lt;p&gt;Load the &lt;code&gt;GaltonFamilies&lt;/code&gt; data from the &lt;strong&gt;HistData&lt;/strong&gt;. The children in each family are listed by gender and then by height. Create a dataset called &lt;code&gt;galton_heights&lt;/code&gt; by picking a male and female at random.&lt;/p&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;Make a scatterplot for heights between mothers and daughters, mothers and sons, fathers and daughters, and fathers and sons.&lt;/p&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;Compute the correlation in heights between mothers and daughters, mothers and sons, fathers and daughters, and fathers and sons.&lt;/p&gt;&lt;/li&gt;
-&lt;/ol&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class=&#34;footnotes&#34;&gt;
-&lt;hr /&gt;
-&lt;ol&gt;
-&lt;li id=&#34;fn1&#34;&gt;&lt;p&gt;&lt;a href=&#34;https://en.wikipedia.org/wiki/Francis_Galton&#34; class=&#34;uri&#34;&gt;https://en.wikipedia.org/wiki/Francis_Galton&lt;/a&gt;&lt;a href=&#34;#fnref1&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
-&lt;/ol&gt;
-&lt;/div&gt;
-</description>
-    </item>
-    
-    <item>
       <title>Linear Regression II</title>
       <link>/content/06-content/</link>
-      <pubDate>Tue, 06 Oct 2020 00:00:00 +0000</pubDate>
+      <pubDate>Tue, 13 Oct 2020 00:00:00 +0000</pubDate>
       <guid>/content/06-content/</guid>
       <description>
 &lt;script src=&#34;/rmarkdown-libs/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
@@ -7585,6 +7774,368 @@ tidy(fit)&lt;/code&gt;&lt;/pre&gt;
 &lt;li id=&#34;fn7&#34;&gt;&lt;p&gt;&lt;a href=&#34;https://creativecommons.org/licenses/by-sa/2.0&#34; class=&#34;uri&#34;&gt;https://creativecommons.org/licenses/by-sa/2.0&lt;/a&gt;&lt;a href=&#34;#fnref7&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
 &lt;li id=&#34;fn8&#34;&gt;&lt;p&gt;&lt;a href=&#34;http://www.baseball-almanac.com/awards/lou_brock_award.shtml&#34; class=&#34;uri&#34;&gt;http://www.baseball-almanac.com/awards/lou_brock_award.shtml&lt;/a&gt;&lt;a href=&#34;#fnref8&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
 &lt;li id=&#34;fn9&#34;&gt;&lt;p&gt;&lt;a href=&#34;http://www.foxsports.com/mlb/story/kris-bryant-carlos-correa-rookies-of-year-award-matt-duffy-francisco-lindor-kang-sano-120715&#34; class=&#34;uri&#34;&gt;http://www.foxsports.com/mlb/story/kris-bryant-carlos-correa-rookies-of-year-award-matt-duffy-francisco-lindor-kang-sano-120715&lt;/a&gt;&lt;a href=&#34;#fnref9&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Introduction to Regression</title>
+      <link>/content/05-content/</link>
+      <pubDate>Tue, 06 Oct 2020 00:00:00 +0000</pubDate>
+      <guid>/content/05-content/</guid>
+      <description>
+
+&lt;div id=&#34;TOC&#34;&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#required-reading&#34;&gt;Required Reading&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#supplemental-readings&#34;&gt;Supplemental Readings&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#guiding-questions&#34;&gt;Guiding Questions&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#slides&#34;&gt;Slides&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#regression&#34;&gt;Introduction to Linear Regression&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#case-study-is-height-hereditary&#34;&gt;Case study: is height hereditary?&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#corr-coef&#34;&gt;The correlation coefficient&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#sample-correlation-is-a-random-variable&#34;&gt;Sample correlation is a random variable&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#correlation-is-not-always-a-useful-summary&#34;&gt;Correlation is not always a useful summary&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#conditional-expectation&#34;&gt;Conditional expectations&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#the-regression-line&#34;&gt;The regression line&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#regression-improves-precision&#34;&gt;Regression improves precision&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#bivariate-normal-distribution-advanced&#34;&gt;Bivariate normal distribution (advanced)&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#variance-explained&#34;&gt;Variance explained&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#warning-there-are-two-regression-lines&#34;&gt;Warning: there are two regression lines&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+
+&lt;div id=&#34;required-reading&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Required Reading&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;This page.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div id=&#34;supplemental-readings&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Supplemental Readings&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;Coming soon.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;div id=&#34;guiding-questions&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Guiding Questions&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;Coming soon.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;div id=&#34;slides&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Slides&lt;/h3&gt;
+&lt;ul class=&#34;nav nav-tabs&#34; id=&#34;slide-tabs&#34; role=&#34;tablist&#34;&gt;
+&lt;li class=&#34;nav-item&#34;&gt;
+&lt;a class=&#34;nav-link active&#34; id=&#34;introduction-tab&#34; data-toggle=&#34;tab&#34; href=&#34;#introduction&#34; role=&#34;tab&#34; aria-controls=&#34;introduction&#34; aria-selected=&#34;true&#34;&gt;Introduction&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div id=&#34;slide-tabs&#34; class=&#34;tab-content&#34;&gt;
+&lt;div id=&#34;introduction&#34; class=&#34;tab-pane fade show active&#34; role=&#34;tabpanel&#34; aria-labelledby=&#34;introduction-tab&#34;&gt;
+&lt;div class=&#34;embed-responsive embed-responsive-16by9&#34;&gt;
+&lt;iframe class=&#34;embed-responsive-item&#34; src=&#34;/slides/05-slides.html#Introduction&#34;&gt;
+&lt;/iframe&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;Today’s lecture will ask you to touch real data during the lecture. Please download the following dataset and load it into &lt;code&gt;R&lt;/code&gt;.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;/projects/data/ames.csv&#34;&gt;&lt;i class=&#34;fas fa-file-csv&#34;&gt;&lt;/i&gt; &lt;code&gt;Ames.csv&lt;/code&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;This dataset is from houses in Ames, Iowa. (Thrilling!) We will use this dataset during the lecture to illustrate some of the points discussed below.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;regression&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Introduction to Linear Regression&lt;/h1&gt;
+&lt;p&gt;Up to this point, this class has focused mainly on single variables. However, in data analytics applications, it is very common to be interested in the &lt;strong&gt;relationship&lt;/strong&gt; between two or more variables. For instance, in the coming days we will use a data-driven approach that examines the relationship between player statistics and success to guide the building of a baseball team with a limited budget. Before delving into this more complex example, we introduce necessary concepts needed to understand regression using a simpler illustration. We actually use the dataset from which regression was born.&lt;/p&gt;
+&lt;p&gt;The example is from genetics. Francis Galton&lt;a href=&#34;#fn1&#34; class=&#34;footnote-ref&#34; id=&#34;fnref1&#34;&gt;&lt;sup&gt;1&lt;/sup&gt;&lt;/a&gt; studied the variation and heredity of human traits. Among many other traits, Galton collected and studied height data from families to try to understand heredity. While doing this, he developed the concepts of correlation and regression, as well as a connection to pairs of data that follow a normal distribution. Of course, at the time this data was collected our knowledge of genetics was quite limited compared to what we know today. A very specific question Galton tried to answer was: how well can we predict a child’s height based on the parents’ height? The technique he developed to answer this question, regression, can also be applied to our baseball question. Regression can be applied in many other circumstances as well.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Historical note&lt;/strong&gt;: Galton made important contributions to statistics and genetics, but he was also one of the first proponents of eugenics, a scientifically flawed philosophical movement favored by many biologists of Galton’s time but with horrific historical consequences. These consequences still reverberate to this day, and form the basis for much of the Western world’s racist policies. You can read more about it here: &lt;a href=&#34;https://pged.org/history-eugenics-and-genetics/&#34;&gt;https://pged.org/history-eugenics-and-genetics/&lt;/a&gt;.&lt;/p&gt;
+&lt;div id=&#34;case-study-is-height-hereditary&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Case study: is height hereditary?&lt;/h2&gt;
+&lt;p&gt;We have access to Galton’s family height data through the &lt;strong&gt;HistData&lt;/strong&gt; package. This data contains heights on several dozen families: mothers, fathers, daughters, and sons. To imitate Galton’s analysis, we will create a dataset with the heights of fathers and a randomly selected son of each family:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(tidyverse)
+library(HistData)
+data(&amp;quot;GaltonFamilies&amp;quot;)
+
+set.seed(1983)
+galton_heights &amp;lt;- GaltonFamilies %&amp;gt;%
+  filter(gender == &amp;quot;male&amp;quot;) %&amp;gt;%
+  group_by(family) %&amp;gt;%
+  sample_n(1) %&amp;gt;%
+  ungroup() %&amp;gt;%
+  select(father, childHeight) %&amp;gt;%
+  rename(son = childHeight)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;In the exercises, we will look at other relationships including mothers and daughters.&lt;/p&gt;
+&lt;p&gt;Suppose we were asked to summarize the father and son data. Since both distributions are well approximated by the normal distribution, we could use the two averages and two standard deviations as summaries:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;galton_heights %&amp;gt;%
+  summarize(mean(father), sd(father), mean(son), sd(son))&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 1 x 4
+##   `mean(father)` `sd(father)` `mean(son)` `sd(son)`
+##            &amp;lt;dbl&amp;gt;        &amp;lt;dbl&amp;gt;       &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt;
+## 1           69.1         2.55        69.2      2.71&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;However, this summary fails to describe an important characteristic of the data: the trend that the taller the father, the taller the son.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;galton_heights %&amp;gt;% ggplot(aes(father, son)) +
+  geom_point(alpha = 0.5)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/content/05-content_files/figure-html/scatterplot-1.png&#34; width=&#34;40%&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;We will learn that the correlation coefficient is an informative summary of how two variables move together and then see how this can be used to predict one variable using the other.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;corr-coef&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;The correlation coefficient&lt;/h2&gt;
+&lt;p&gt;The correlation coefficient is defined for a list of pairs &lt;span class=&#34;math inline&#34;&gt;\((x_1, y_1), \dots, (x_n,y_n)\)&lt;/span&gt; as the average of the product of the standardized values:&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
+\rho = \frac{1}{n} \sum_{i=1}^n \left( \frac{x_i-\mu_x}{\sigma_x} \right)\left( \frac{y_i-\mu_y}{\sigma_y} \right)
+\]&lt;/span&gt;
+with &lt;span class=&#34;math inline&#34;&gt;\(\mu_x, \mu_y\)&lt;/span&gt; the averages of &lt;span class=&#34;math inline&#34;&gt;\(x_1,\dots, x_n\)&lt;/span&gt; and &lt;span class=&#34;math inline&#34;&gt;\(y_1, \dots, y_n\)&lt;/span&gt;, respectively, and &lt;span class=&#34;math inline&#34;&gt;\(\sigma_x, \sigma_y\)&lt;/span&gt; the standard deviations. The Greek letter &lt;span class=&#34;math inline&#34;&gt;\(\rho\)&lt;/span&gt; is commonly used in statistics books to denote the correlation. The Greek letter for &lt;span class=&#34;math inline&#34;&gt;\(r\)&lt;/span&gt;, &lt;span class=&#34;math inline&#34;&gt;\(\rho\)&lt;/span&gt;, because it is the first letter of regression. Soon we learn about the connection between correlation and regression. We can represent the formula above with R code using:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;rho &amp;lt;- mean(scale(x) * scale(y))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;To understand why this equation does in fact summarize how two variables move together, consider the &lt;span class=&#34;math inline&#34;&gt;\(i\)&lt;/span&gt;-th entry of &lt;span class=&#34;math inline&#34;&gt;\(x\)&lt;/span&gt; is &lt;span class=&#34;math inline&#34;&gt;\(\left( \frac{x_i-\mu_x}{\sigma_x} \right)\)&lt;/span&gt; SDs away from the average. Similarly, the &lt;span class=&#34;math inline&#34;&gt;\(y_i\)&lt;/span&gt; that is paired with &lt;span class=&#34;math inline&#34;&gt;\(x_i\)&lt;/span&gt;, is &lt;span class=&#34;math inline&#34;&gt;\(\left( \frac{y_1-\mu_y}{\sigma_y} \right)\)&lt;/span&gt; SDs away from the average &lt;span class=&#34;math inline&#34;&gt;\(y\)&lt;/span&gt;. If &lt;span class=&#34;math inline&#34;&gt;\(x\)&lt;/span&gt; and &lt;span class=&#34;math inline&#34;&gt;\(y\)&lt;/span&gt; are unrelated, the product &lt;span class=&#34;math inline&#34;&gt;\(\left( \frac{x_i-\mu_x}{\sigma_x} \right)\left( \frac{y_i-\mu_y}{\sigma_y} \right)\)&lt;/span&gt; will be positive ( &lt;span class=&#34;math inline&#34;&gt;\(+ \times +\)&lt;/span&gt; and &lt;span class=&#34;math inline&#34;&gt;\(- \times -\)&lt;/span&gt; ) as often as negative (&lt;span class=&#34;math inline&#34;&gt;\(+ \times -\)&lt;/span&gt; and &lt;span class=&#34;math inline&#34;&gt;\(- \times +\)&lt;/span&gt;) and will average out to about 0. This correlation is the average and therefore unrelated variables will have 0 correlation. If instead the quantities vary together, then we are averaging mostly positive products ( &lt;span class=&#34;math inline&#34;&gt;\(+ \times +\)&lt;/span&gt; and &lt;span class=&#34;math inline&#34;&gt;\(- \times -\)&lt;/span&gt;) and we get a positive correlation. If they vary in opposite directions, we get a negative correlation.&lt;/p&gt;
+&lt;p&gt;The correlation coefficient is always between -1 and 1. We can show this mathematically: consider that we can’t have higher correlation than when we compare a list to itself (perfect correlation) and in this case the correlation is:&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
+\rho = \frac{1}{n} \sum_{i=1}^n \left( \frac{x_i-\mu_x}{\sigma_x} \right)^2 =
+\frac{1}{\sigma_x^2} \frac{1}{n} \sum_{i=1}^n \left( x_i-\mu_x \right)^2 =
+\frac{1}{\sigma_x^2} \sigma^2_x =
+1
+\]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;A similar derivation, but with &lt;span class=&#34;math inline&#34;&gt;\(x\)&lt;/span&gt; and its exact opposite, proves the correlation has to be bigger or equal to -1.&lt;/p&gt;
+&lt;p&gt;For other pairs, the correlation is in between -1 and 1. The correlation between father and son’s heights is about 0.5:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;galton_heights %&amp;gt;% summarize(r = cor(father, son)) %&amp;gt;% pull(r)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 0.4334102&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;To see what data looks like for different values of &lt;span class=&#34;math inline&#34;&gt;\(\rho\)&lt;/span&gt;, here are six examples of pairs with correlations ranging from -0.9 to 0.99:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/content/05-content_files/figure-html/what-correlation-looks-like-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;div id=&#34;sample-correlation-is-a-random-variable&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Sample correlation is a random variable&lt;/h3&gt;
+&lt;p&gt;Before we continue connecting correlation to regression, let’s remind ourselves about random variability.&lt;/p&gt;
+&lt;p&gt;In most data science applications, we observe data that includes random variation. For example, in many cases, we do not observe data for the entire population of interest but rather for a random sample. As with the average and standard deviation, the &lt;em&gt;sample correlation&lt;/em&gt; is the most commonly used estimate of the population correlation. This implies that the correlation we compute and use as a summary is a random variable.&lt;/p&gt;
+&lt;p&gt;By way of illustration, let’s assume that the 179 pairs of fathers and sons is our entire population. A less fortunate geneticist can only afford measurements from a random sample of 25 pairs. The sample correlation can be computed with:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;R &amp;lt;- sample_n(galton_heights, 25, replace = TRUE) %&amp;gt;%
+  summarize(r = cor(father, son)) %&amp;gt;% pull(r)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;code&gt;R&lt;/code&gt; is a random variable. We can run a Monte Carlo simulation to see its distribution:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;B &amp;lt;- 1000
+N &amp;lt;- 25
+R &amp;lt;- replicate(B, {
+  sample_n(galton_heights, N, replace = TRUE) %&amp;gt;%
+    summarize(r=cor(father, son)) %&amp;gt;%
+    pull(r)
+})
+qplot(R, geom = &amp;quot;histogram&amp;quot;, binwidth = 0.05, color = I(&amp;quot;black&amp;quot;))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/content/05-content_files/figure-html/sample-correlation-distribution-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;We see that the expected value of &lt;code&gt;R&lt;/code&gt; is the population correlation:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;mean(R)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 0.4307393&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;and that it has a relatively high standard error relative to the range of values &lt;code&gt;R&lt;/code&gt; can take:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;sd(R)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 0.1609393&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;So, when interpreting correlations, remember that correlations derived from samples are estimates containing uncertainty.&lt;/p&gt;
+&lt;p&gt;Also, note that because the sample correlation is an average of independent draws, the central limit actually applies. Therefore, for large enough &lt;span class=&#34;math inline&#34;&gt;\(N\)&lt;/span&gt;, the distribution of &lt;code&gt;R&lt;/code&gt; is approximately normal with expected value &lt;span class=&#34;math inline&#34;&gt;\(\rho\)&lt;/span&gt;. The standard deviation, which is somewhat complex to derive, is &lt;span class=&#34;math inline&#34;&gt;\(\sqrt{\frac{1-r^2}{N-2}}\)&lt;/span&gt;.&lt;/p&gt;
+&lt;p&gt;In our example, &lt;span class=&#34;math inline&#34;&gt;\(N=25\)&lt;/span&gt; does not seem to be large enough to make the approximation a good one:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(aes(sample=R), data = data.frame(R)) +
+  stat_qq() +
+  geom_abline(intercept = mean(R), slope = sqrt((1-mean(R)^2)/(N-2)))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/content/05-content_files/figure-html/small-sample-correlation-not-normal-1.png&#34; width=&#34;40%&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;If you increase &lt;span class=&#34;math inline&#34;&gt;\(N\)&lt;/span&gt;, you will see the distribution converging to normal.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;correlation-is-not-always-a-useful-summary&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Correlation is not always a useful summary&lt;/h3&gt;
+&lt;p&gt;Correlation is not always a good summary of the relationship between two variables. The following four artificial datasets, referred to as Anscombe’s quartet, famously illustrate this point. All these pairs have a correlation of 0.82:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;## `geom_smooth()` using formula &amp;#39;y ~ x&amp;#39;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/content/05-content_files/figure-html/ascombe-quartet-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Correlation is only meaningful in a particular context. To help us understand when it is that correlation is meaningful as a summary statistic, we will return to the example of predicting a son’s height using his father’s height. This will help motivate and define linear regression. We start by demonstrating how correlation can be useful for prediction.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;conditional-expectation&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Conditional expectations&lt;/h2&gt;
+&lt;p&gt;Suppose we are asked to guess the height of a randomly selected son and we don’t know his father’s height. Because the distribution of sons’ heights is approximately normal, we know the average height, 69.2, is the value with the highest proportion and would be the prediction with the highest chance of minimizing the error. But what if we are told that the father is taller than average, say 72 inches tall, do we still guess 69.2 for the son?&lt;/p&gt;
+&lt;p&gt;It turns out that if we were able to collect data from a very large number of fathers that are 72 inches, the distribution of their sons’ heights would be normally distributed. This implies that the average of the distribution computed on this subset would be our best prediction.&lt;/p&gt;
+&lt;p&gt;In general, we call this approach &lt;em&gt;conditioning&lt;/em&gt;. The general idea is that we stratify a population into groups and compute summaries in each group. To provide a mathematical description of conditioning, consider we have a population of pairs of values &lt;span class=&#34;math inline&#34;&gt;\((x_1,y_1),\dots,(x_n,y_n)\)&lt;/span&gt;, for example all father and son heights in England. In the previous week’s content, we learned that if you take a random pair &lt;span class=&#34;math inline&#34;&gt;\((X,Y)\)&lt;/span&gt;, the expected value and best predictor of &lt;span class=&#34;math inline&#34;&gt;\(Y\)&lt;/span&gt; is &lt;span class=&#34;math inline&#34;&gt;\(\mbox{E}(Y) = \mu_y\)&lt;/span&gt;, the population average &lt;span class=&#34;math inline&#34;&gt;\(1/n\sum_{i=1}^n y_i\)&lt;/span&gt;. However, we are no longer interested in the general population, instead we are interested in only the subset of a population with a specific &lt;span class=&#34;math inline&#34;&gt;\(x_i\)&lt;/span&gt; value, 72 inches in our example. This subset of the population, is also a population and thus the same principles and properties we have learned apply. The &lt;span class=&#34;math inline&#34;&gt;\(y_i\)&lt;/span&gt; in the subpopulation have a distribution, referred to as the &lt;em&gt;conditional distribution&lt;/em&gt;, and this distribution has an expected value referred to as the &lt;em&gt;conditional expectation&lt;/em&gt;. In our example, the conditional expectation is the average height of all sons in England with fathers that are 72 inches. The statistical notation for the conditional expectation is&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
+\mbox{E}(Y \mid X = x)
+\]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;with &lt;span class=&#34;math inline&#34;&gt;\(x\)&lt;/span&gt; representing the fixed value that defines that subset, for example 72 inches. Similarly, we denote the standard deviation of the strata with&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
+\mbox{SD}(Y \mid X = x) = \sqrt{\mbox{Var}(Y \mid X = x)}
+\]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;Because the conditional expectation &lt;span class=&#34;math inline&#34;&gt;\(E(Y\mid X=x)\)&lt;/span&gt; is the best predictor for the random variable &lt;span class=&#34;math inline&#34;&gt;\(Y\)&lt;/span&gt; for an individual in the strata defined by &lt;span class=&#34;math inline&#34;&gt;\(X=x\)&lt;/span&gt;, many data science challenges reduce to estimating this quantity. The conditional standard deviation quantifies the precision of the prediction.&lt;/p&gt;
+&lt;p&gt;In the example we have been considering, we are interested in computing the average son height &lt;em&gt;conditioned&lt;/em&gt; on the father being 72 inches tall. We want to estimate &lt;span class=&#34;math inline&#34;&gt;\(E(Y|X=72)\)&lt;/span&gt; using the sample collected by Galton. We previously learned that the sample average is the preferred approach to estimating the population average. However, a challenge when using this approach to estimating conditional expectations is that for continuous data we don’t have many data points matching exactly one value in our sample. For example, we have only:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;sum(galton_heights$father == 72)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 8&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;fathers that are exactly 72-inches. If we change the number to 72.5, we get even fewer data points:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;sum(galton_heights$father == 72.5)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 1&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;A practical way to improve these estimates of the conditional expectations, is to define strata of with similar values of &lt;span class=&#34;math inline&#34;&gt;\(x\)&lt;/span&gt;. In our example, we can round father heights to the nearest inch and assume that they are all 72 inches. If we do this, we end up with the following prediction for the son of a father that is 72 inches tall:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;conditional_avg &amp;lt;- galton_heights %&amp;gt;%
+  filter(round(father) == 72) %&amp;gt;%
+  summarize(avg = mean(son)) %&amp;gt;%
+  pull(avg)
+conditional_avg&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 70.5&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Note that a 72-inch father is taller than average – specifically, 72 - 69.1/2.5 =
+1.1 standard deviations taller than the average father. Our prediction 70.5 is also taller than average, but only 0.49 standard deviations larger than the average son. The sons of 72-inch fathers have &lt;em&gt;regressed&lt;/em&gt; some to the average height. We notice that the reduction in how many SDs taller is about 0.5, which happens to be the correlation. As we will see in a later lecture, this is not a coincidence.&lt;/p&gt;
+&lt;p&gt;If we want to make a prediction of any height, not just 72, we could apply the same approach to each strata. Stratification followed by boxplots lets us see the distribution of each group:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;galton_heights %&amp;gt;% mutate(father_strata = factor(round(father))) %&amp;gt;%
+  ggplot(aes(father_strata, son)) +
+  geom_boxplot() +
+  geom_point()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/content/05-content_files/figure-html/boxplot-1-1.png&#34; width=&#34;40%&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Not surprisingly, the centers of the groups are increasing with height.
+Furthermore, these centers appear to follow a linear relationship. Below we plot the averages of each group. If we take into account that these averages are random variables with standard errors, the data is consistent with these points following a straight line:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;## `summarise()` ungrouping output (override with `.groups` argument)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/content/05-content_files/figure-html/conditional-averages-follow-line-1.png&#34; width=&#34;40%&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;The fact that these conditional averages follow a line is not a coincidence. In the next section, we explain that the line these averages follow is what we call the &lt;em&gt;regression line&lt;/em&gt;, which improves the precision of our estimates. However, it is not always appropriate to estimate conditional expectations with the regression line so we also describe Galton’s theoretical justification for using the regression line.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;the-regression-line&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;The regression line&lt;/h2&gt;
+&lt;p&gt;If we are predicting a random variable &lt;span class=&#34;math inline&#34;&gt;\(Y\)&lt;/span&gt; knowing the value of another &lt;span class=&#34;math inline&#34;&gt;\(X=x\)&lt;/span&gt; using a regression line, then we predict that for every standard deviation, &lt;span class=&#34;math inline&#34;&gt;\(\sigma_X\)&lt;/span&gt;, that &lt;span class=&#34;math inline&#34;&gt;\(x\)&lt;/span&gt; increases above the average &lt;span class=&#34;math inline&#34;&gt;\(\mu_X\)&lt;/span&gt;, &lt;span class=&#34;math inline&#34;&gt;\(Y\)&lt;/span&gt; increase &lt;span class=&#34;math inline&#34;&gt;\(\rho\)&lt;/span&gt; standard deviations &lt;span class=&#34;math inline&#34;&gt;\(\sigma_Y\)&lt;/span&gt; above the average &lt;span class=&#34;math inline&#34;&gt;\(\mu_Y\)&lt;/span&gt; with &lt;span class=&#34;math inline&#34;&gt;\(\rho\)&lt;/span&gt; the correlation between &lt;span class=&#34;math inline&#34;&gt;\(X\)&lt;/span&gt; and &lt;span class=&#34;math inline&#34;&gt;\(Y\)&lt;/span&gt;. The formula for the regression is therefore:&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
+\left( \frac{Y-\mu_Y}{\sigma_Y} \right) = \rho \left( \frac{x-\mu_X}{\sigma_X} \right)
+\]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;We can rewrite it like this:&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
+Y = \mu_Y + \rho \left( \frac{x-\mu_X}{\sigma_X} \right) \sigma_Y
+\]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;If there is perfect correlation, the regression line predicts an increase that is the same number of SDs. If there is 0 correlation, then we don’t use &lt;span class=&#34;math inline&#34;&gt;\(x\)&lt;/span&gt; at all for the prediction and simply predict the average &lt;span class=&#34;math inline&#34;&gt;\(\mu_Y\)&lt;/span&gt;. For values between 0 and 1, the prediction is somewhere in between. If the correlation is negative, we predict a reduction instead of an increase.&lt;/p&gt;
+&lt;p&gt;Note that if the correlation is positive and lower than 1, our prediction is closer, in standard units, to the average height than the value used to predict, &lt;span class=&#34;math inline&#34;&gt;\(x\)&lt;/span&gt;, is to the average of the &lt;span class=&#34;math inline&#34;&gt;\(x\)&lt;/span&gt;s. This is why we call it &lt;em&gt;regression&lt;/em&gt;: the son regresses to the average height. In fact, the title of Galton’s paper was: &lt;em&gt;Regression toward mediocrity in hereditary stature&lt;/em&gt;. To add regression lines to plots, we will need the above formula in the form:&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
+y= b + mx \mbox{ with slope } m = \rho \frac{\sigma_y}{\sigma_x} \mbox{ and intercept } b=\mu_y - m \mu_x
+\]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;Here we add the regression line to the original data:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;mu_x &amp;lt;- mean(galton_heights$father)
+mu_y &amp;lt;- mean(galton_heights$son)
+s_x &amp;lt;- sd(galton_heights$father)
+s_y &amp;lt;- sd(galton_heights$son)
+r &amp;lt;- cor(galton_heights$father, galton_heights$son)
+
+galton_heights %&amp;gt;%
+  ggplot(aes(father, son)) +
+  geom_point(alpha = 0.5) +
+  geom_abline(slope = r * s_y/s_x, intercept = mu_y - r * s_y/s_x * mu_x)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/content/05-content_files/figure-html/regression-line-1.png&#34; width=&#34;40%&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;The regression formula implies that if we first standardize the variables, that is subtract the average and divide by the standard deviation, then the regression line has intercept 0 and slope equal to the correlation &lt;span class=&#34;math inline&#34;&gt;\(\rho\)&lt;/span&gt;. You can make same plot, but using standard units like this:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;galton_heights %&amp;gt;%
+  ggplot(aes(scale(father), scale(son))) +
+  geom_point(alpha = 0.5) +
+  geom_abline(intercept = 0, slope = r)&lt;/code&gt;&lt;/pre&gt;
+&lt;div id=&#34;regression-improves-precision&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Regression improves precision&lt;/h3&gt;
+&lt;p&gt;Let’s compare the two approaches to prediction that we have presented:&lt;/p&gt;
+&lt;ol style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;Round fathers’ heights to closest inch, stratify, and then take the average.&lt;/li&gt;
+&lt;li&gt;Compute the regression line and use it to predict.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;We use a Monte Carlo simulation sampling &lt;span class=&#34;math inline&#34;&gt;\(N=50\)&lt;/span&gt; families:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;B &amp;lt;- 1000
+N &amp;lt;- 50
+
+set.seed(1983)
+conditional_avg &amp;lt;- replicate(B, {
+  dat &amp;lt;- sample_n(galton_heights, N)
+  dat %&amp;gt;% filter(round(father) == 72) %&amp;gt;%
+    summarize(avg = mean(son)) %&amp;gt;%
+    pull(avg)
+  })
+
+regression_prediction &amp;lt;- replicate(B, {
+  dat &amp;lt;- sample_n(galton_heights, N)
+  mu_x &amp;lt;- mean(dat$father)
+  mu_y &amp;lt;- mean(dat$son)
+  s_x &amp;lt;- sd(dat$father)
+  s_y &amp;lt;- sd(dat$son)
+  r &amp;lt;- cor(dat$father, dat$son)
+  mu_y + r*(72 - mu_x)/s_x*s_y
+})&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Although the expected value of these two random variables is about the same:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;mean(conditional_avg, na.rm = TRUE)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 70.49368&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;mean(regression_prediction)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 70.50941&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The standard error for the regression prediction is substantially smaller:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;sd(conditional_avg, na.rm = TRUE)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 0.9635814&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;sd(regression_prediction)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 0.4520833&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The regression line is therefore much more stable than the conditional mean. There is an intuitive reason for this. The conditional average is computed on a relatively small subset: the fathers that are about 72 inches tall. In fact, in some of the permutations we have no data, which is why we use &lt;code&gt;na.rm=TRUE&lt;/code&gt;. The regression always uses all the data.&lt;/p&gt;
+&lt;p&gt;So why not always use the regression for prediction? Because it is not always appropriate. For example, Anscombe provided cases for which the data does not have a linear relationship. So are we justified in using the regression line to predict? Galton answered this in the positive for height data. The justification, which we include in the next section, is somewhat more advanced than the rest of the chapter.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;bivariate-normal-distribution-advanced&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Bivariate normal distribution (advanced)&lt;/h3&gt;
+&lt;p&gt;Correlation and the regression slope are a widely used summary statistic, but they are often misused or misinterpreted. Anscombe’s examples provide over-simplified cases of dataset in which summarizing with correlation would be a mistake. But there are many more real-life examples.&lt;/p&gt;
+&lt;p&gt;The main way we motivate the use of correlation involves what is called the &lt;em&gt;bivariate normal distribution&lt;/em&gt;.&lt;/p&gt;
+&lt;p&gt;When a pair of random variables is approximated by the bivariate normal distribution, scatterplots look like ovals. These ovals can be thin (high correlation) or circle-shaped (no correlation).&lt;/p&gt;
+&lt;!--
+&lt;img src=&#34;/content/05-content_files/figure-html/bivariate-ovals-1.png&#34; width=&#34;672&#34; /&gt;
+--&gt;
+&lt;p&gt;A more technical way to define the bivariate normal distribution is the following: if &lt;span class=&#34;math inline&#34;&gt;\(X\)&lt;/span&gt; is a normally distributed random variable, &lt;span class=&#34;math inline&#34;&gt;\(Y\)&lt;/span&gt; is also a normally distributed random variable, and the conditional distribution of &lt;span class=&#34;math inline&#34;&gt;\(Y\)&lt;/span&gt; for any &lt;span class=&#34;math inline&#34;&gt;\(X=x\)&lt;/span&gt; is approximately normal, then the pair is approximately bivariate normal.&lt;/p&gt;
+&lt;p&gt;If we think the height data is well approximated by the bivariate normal distribution, then we should see the normal approximation hold for each strata. Here we stratify the son heights by the standardized father heights and see that the assumption appears to hold:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;galton_heights %&amp;gt;%
+  mutate(z_father = round((father - mean(father)) / sd(father))) %&amp;gt;%
+  filter(z_father %in% -2:2) %&amp;gt;%
+  ggplot() +
+  stat_qq(aes(sample = son)) +
+  facet_wrap( ~ z_father)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/content/05-content_files/figure-html/qqnorm-of-strata-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Now we come back to defining correlation. Galton used mathematical statistics to demonstrate that, when two variables follow a bivariate normal distribution, computing the regression line is equivalent to computing conditional expectations. We don’t show the derivation here, but we can show that under this assumption, for any given value of &lt;span class=&#34;math inline&#34;&gt;\(x\)&lt;/span&gt;, the expected value of the &lt;span class=&#34;math inline&#34;&gt;\(Y\)&lt;/span&gt; in pairs for which &lt;span class=&#34;math inline&#34;&gt;\(X=x\)&lt;/span&gt; is:&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
+\mbox{E}(Y | X=x) = \mu_Y +  \rho \frac{X-\mu_X}{\sigma_X}\sigma_Y
+\]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;This is the regression line, with slope &lt;span class=&#34;math display&#34;&gt;\[\rho \frac{\sigma_Y}{\sigma_X}\]&lt;/span&gt; and intercept &lt;span class=&#34;math inline&#34;&gt;\(\mu_y - m\mu_X\)&lt;/span&gt;. It is equivalent to the regression equation we showed earlier which can be written like this:&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
+\frac{\mbox{E}(Y \mid X=x)  - \mu_Y}{\sigma_Y} = \rho \frac{x-\mu_X}{\sigma_X}
+\]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;This implies that, if our data is approximately bivariate, the regression line gives the conditional probability. Therefore, we can obtain a much more stable estimate of the conditional expectation by finding the regression line and using it to predict.&lt;/p&gt;
+&lt;p&gt;In summary, if our data is approximately bivariate, then the conditional expectation, the best prediction of &lt;span class=&#34;math inline&#34;&gt;\(Y\)&lt;/span&gt; given we know the value of &lt;span class=&#34;math inline&#34;&gt;\(X\)&lt;/span&gt;, is given by the regression line.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;variance-explained&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Variance explained&lt;/h3&gt;
+&lt;p&gt;The bivariate normal theory also tells us that the standard deviation of the &lt;em&gt;conditional&lt;/em&gt; distribution described above is:&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
+\mbox{SD}(Y \mid X=x ) = \sigma_Y \sqrt{1-\rho^2}
+\]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;To see why this is intuitive, notice that without conditioning, &lt;span class=&#34;math inline&#34;&gt;\(\mbox{SD}(Y) = \sigma_Y\)&lt;/span&gt;, we are looking at the variability of all the sons. But once we condition, we are only looking at the variability of the sons with a tall, 72-inch, father. This group will all tend to be somewhat tall so the standard deviation is reduced.&lt;/p&gt;
+&lt;p&gt;Specifically, it is reduced to &lt;span class=&#34;math inline&#34;&gt;\(\sqrt{1-\rho^2} = \sqrt{1 - 0.25}\)&lt;/span&gt; = 0.87 of what it was originally. We could say that father heights “explain” 13% of the variability observed in son heights.&lt;/p&gt;
+&lt;p&gt;The statement “&lt;span class=&#34;math inline&#34;&gt;\(X\)&lt;/span&gt; explains such and such percent of the variability” is commonly used in academic papers. In this case, this percent actually refers to the variance (the SD squared). So if the data is bivariate normal, the variance is reduced by &lt;span class=&#34;math inline&#34;&gt;\(1-\rho^2\)&lt;/span&gt;, so we say that &lt;span class=&#34;math inline&#34;&gt;\(X\)&lt;/span&gt; explains &lt;span class=&#34;math inline&#34;&gt;\(1- (1-\rho^2)=\rho^2\)&lt;/span&gt; (the correlation squared) of the variance.&lt;/p&gt;
+&lt;p&gt;But it is important to remember that the “variance explained” statement only makes sense when the data is approximated by a bivariate normal distribution.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;warning-there-are-two-regression-lines&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Warning: there are two regression lines&lt;/h3&gt;
+&lt;p&gt;We computed a regression line to predict the son’s height from father’s height. We used these calculations:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;mu_x &amp;lt;- mean(galton_heights$father)
+mu_y &amp;lt;- mean(galton_heights$son)
+s_x &amp;lt;- sd(galton_heights$father)
+s_y &amp;lt;- sd(galton_heights$son)
+r &amp;lt;- cor(galton_heights$father, galton_heights$son)
+m_1 &amp;lt;-  r * s_y / s_x
+b_1 &amp;lt;- mu_y - m_1*mu_x&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;which gives us the function &lt;span class=&#34;math inline&#34;&gt;\(\mbox{E}(Y\mid X=x) =\)&lt;/span&gt; 37.3 + 0.46 &lt;span class=&#34;math inline&#34;&gt;\(x\)&lt;/span&gt;.&lt;/p&gt;
+&lt;p&gt;What if we want to predict the father’s height based on the son’s? It is important to know that this is not determined by computing the inverse function:
+&lt;span class=&#34;math inline&#34;&gt;\(x = \{ \mbox{E}(Y\mid X=x) -\)&lt;/span&gt; 37.3 &lt;span class=&#34;math inline&#34;&gt;\(\} /\)&lt;/span&gt; 0.5.&lt;/p&gt;
+&lt;p&gt;We need to compute &lt;span class=&#34;math inline&#34;&gt;\(\mbox{E}(X \mid Y=y)\)&lt;/span&gt;. Since the data is approximately bivariate normal, the theory described above tells us that this conditional expectation will follow a line with slope and intercept:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;m_2 &amp;lt;-  r * s_x / s_y
+b_2 &amp;lt;- mu_x - m_2 * mu_y&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;So we get &lt;span class=&#34;math inline&#34;&gt;\(\mbox{E}(X \mid Y=y) =\)&lt;/span&gt; 40.9 + 0.41y. Again we see regression to the average: the prediction for the father is closer to the father average than the son heights &lt;span class=&#34;math inline&#34;&gt;\(y\)&lt;/span&gt; is to the son average.&lt;/p&gt;
+&lt;p&gt;Here is a plot showing the two regression lines, with blue for the predicting son heights with father heights and red for predicting father heights with son heights:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;galton_heights %&amp;gt;%
+  ggplot(aes(father, son)) +
+  geom_point(alpha = 0.5) +
+  geom_abline(intercept = b_1, slope = m_1, col = &amp;quot;blue&amp;quot;) +
+  geom_abline(intercept = -b_2/m_2, slope = 1/m_2, col = &amp;quot;red&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/content/05-content_files/figure-html/two-regression-lines-1.png&#34; width=&#34;40%&#34; /&gt;&lt;/p&gt;
+&lt;div class=&#34;fyi&#34;&gt;
+&lt;p&gt;&lt;strong&gt;TRY IT&lt;/strong&gt;&lt;/p&gt;
+&lt;ol style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;&lt;p&gt;Load the &lt;code&gt;GaltonFamilies&lt;/code&gt; data from the &lt;strong&gt;HistData&lt;/strong&gt;. The children in each family are listed by gender and then by height. Create a dataset called &lt;code&gt;galton_heights&lt;/code&gt; by picking a male and female at random.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Make a scatterplot for heights between mothers and daughters, mothers and sons, fathers and daughters, and fathers and sons.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Compute the correlation in heights between mothers and daughters, mothers and sons, fathers and daughters, and fathers and sons.&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&#34;footnotes&#34;&gt;
+&lt;hr /&gt;
+&lt;ol&gt;
+&lt;li id=&#34;fn1&#34;&gt;&lt;p&gt;&lt;a href=&#34;https://en.wikipedia.org/wiki/Francis_Galton&#34; class=&#34;uri&#34;&gt;https://en.wikipedia.org/wiki/Francis_Galton&lt;/a&gt;&lt;a href=&#34;#fnref1&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
 &lt;/ol&gt;
 &lt;/div&gt;
 </description>
@@ -12456,28 +13007,23 @@ data(murders)&lt;/code&gt;&lt;/pre&gt;
                     &lt;i class=&#34;fas fa-pencil-ruler fa-lg&#34;&gt;&lt;/i&gt;&lt;/a&gt;&lt;/td&gt;
         &lt;/tr&gt;
         &lt;tr&gt;
+            &lt;td align=&#34;right&#34; style=&#34;width:18%;text-align:right&#34;&gt;Week 7&lt;/td&gt;
+            &lt;td style=&#34;width:50%;text-align:left&#34;&gt;Linear Regression III&lt;/td&gt;
+            &lt;td align=&#34;center&#34; style=&#34;width:10%;text-align:center&#34;&gt;&lt;a
+                    href=&#34;/content/07-content/&#34;&gt;
+                    &lt;i class=&#34;fas fa-book-reader fa-lg&#34;&gt;&lt;/i&gt;&lt;/a&gt;&lt;/td&gt;
+            &lt;td align=&#34;center&#34; style=&#34;width:10%;text-align:center&#34;&gt;&lt;a href=&#34;/example/07-example/&#34;&gt;
+                    &lt;i class=&#34;fas fa-laptop-code fa-lg&#34;&gt;&lt;/i&gt;&lt;/a&gt;&lt;/td&gt;
+            &lt;td align=&#34;center&#34; style=&#34;width:10%;text-align:center&#34;&gt;&lt;a href=&#34;/assignment/07-assignment/&#34;&gt;
+                    &lt;i class=&#34;fas fa-pencil-ruler fa-lg&#34;&gt;&lt;/i&gt;&lt;/a&gt;&lt;/td&gt;
+        &lt;/tr&gt;
+        &lt;tr&gt;
             &lt;td align=&#34;right&#34; style=&#34;width:18%;text-align:right&#34;&gt;&lt;/td&gt;
             &lt;td style=&#34;width:50%;text-align:left&#34;&gt;&lt;span class=&#34;fake-header-table&#34;&gt;Applications of Data Analysis&lt;/span&gt;&lt;/td&gt;
 
             &lt;td style=&#34;width:8%;text-align:center&#34; class=&#34;mid-table-header&#34;&gt;Content&lt;/td&gt;
             &lt;td style=&#34;width:8%;text-align:center&#34; class=&#34;mid-table-header&#34;&gt;Example&lt;/td&gt;
             &lt;td style=&#34;width:8%;text-align:center&#34; class=&#34;mid-table-header&#34;&gt;Assignment&lt;/td&gt;
-        &lt;/tr&gt;
-        &lt;tr&gt;
-            &lt;td align=&#34;right&#34; style=&#34;width:18%;text-align:right&#34;&gt;Week 7&lt;/td&gt;
-            &lt;td style=&#34;width:50%;text-align:left&#34;&gt;Non-Parametric Regression&lt;/td&gt;
-            &lt;td align=&#34;center&#34; style=&#34;width:10%;text-align:center&#34;&gt;
-                &lt;font color=&#34;f1f1f1&#34;&gt;
-                    &lt;i class=&#34;fas fa-book-reader fa-lg&#34;&gt;&lt;/i&gt;&lt;/font&gt;
-            &lt;/td&gt;
-            &lt;td align=&#34;center&#34; style=&#34;width:10%;text-align:center&#34;&gt;
-                &lt;font color=&#34;f1f1f1&#34;&gt;
-                    &lt;i class=&#34;fas fa-laptop-code fa-lg&#34;&gt;&lt;/i&gt;&lt;/font&gt;
-            &lt;/td&gt;
-            &lt;td align=&#34;center&#34; style=&#34;width:10%;text-align:center&#34;&gt;
-                &lt;font color=&#34;f1f1f1&#34;&gt;
-                    &lt;i class=&#34;fas fa-pencil-ruler fa-lg&#34;&gt;&lt;/i&gt;&lt;/font&gt;
-            &lt;/td&gt;
         &lt;/tr&gt;
         &lt;tr&gt;
             &lt;td align=&#34;right&#34; style=&#34;width:18%;text-align:right&#34;&gt;Week 8&lt;/td&gt;
