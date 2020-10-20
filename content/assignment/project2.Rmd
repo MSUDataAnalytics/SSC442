@@ -23,4 +23,170 @@ Each member of the group should submit a copy of the project to D2L (for ease of
 :::
 
 
-Coming soon.
+
+The United States has resettled more than 600,000 refugees from 60 different countries since 2006.
+
+```{r bad-example, echo=FALSE, out.width="70%", fig.align="center"}
+# Refugees welcome, by Attila Szervác, https://commons.wikimedia.org/wiki/File:Refugees_welcome.png
+knitr::include_graphics("/img/assignments/refugees_welcome.jpg", error = FALSE)
+```
+
+In this project, you will use **R, ggplot** and some form of graphics editor to explore where these refugees have come from.
+
+
+## Instructions
+
+Here's what you need to do:
+
+#. **Download** the Department of Homeland Security's annual count of people granted refugee status between 2006-2015:
+
+    [<i class="fas fa-file-csv"></i> DHS refugees, 2006-2015](/data/refugee_status.csv)
+
+    Place this in the `data` subfolder you created in step 1. You might need to right click on this link and choose "Save link as…", since your browser may try to display it as text. This data was originally [uploaded by the Department of Homeland Security to Kaggle](https://www.kaggle.com/dhs/refugee-report), and is provided with a public domain license.
+
+#. **Clean** the data using the code we've given you below. As always, this code is presented without guarantee. You may need to deal with a few issues, depending on your computer's setup.
+
+#. **Summarize** the data somehow. There is data for 60 countries over 10 years, so you'll probably need to aggregate or reshape the data somehow (unless you do a 60-country sparkline). I've included some examples down below.
+
+#. **Create** an appropriate time-based visualization based on the data. I've shown a few different ways to summarize the data so that it's plottable down below. Don't just calculate overall averages or totals per country—the visualization needs to deal with change over time. *Do as much polishing and refining in R*—make adjustments to the colors, scales, labels, grid lines, and even fonts, etc.
+
+#. **Refine and polish** the saved image, adding annotations, changing colors, and otherwise enhancing it.
+
+#. **Design and write** a poster (no word limit). Your poster should look like a polished image that you might see in a newspaper. You can (and should consider) integrating other images like national flags or arrows to convey some semantic meaning.
+
+#. **Upload** the following outputs to D2L:
+
+    - Your code (.Rmd) that generates the unpolished graphic.
+    - Your final poster, saved as a PDF.
+
+- [<i class="fas fa-file-pdf"></i> `mini-project-2-rubric.pdf`](/files/mini-project-2-rubric.pdf)
+
+For this assignment, we are less concerned with the code (that's why we gave most of it to you), and more concerned with the *design*. Choose good colors based on palettes. Choose good, clean fonts. Use the heck out of `theme()`. Add informative design elements. Make it look beautiful. Refer to [the design resources here](/resource/design/).
+
+**Please seek out help when you need it!** You know enough R (and have enough examples of code from class and your readings) to be able to do this. *You can do this,* and you'll feel like a budding dataviz witch/wizard when you're done.
+
+
+## Data cleaning code
+
+The data isn't perfectly clean and tidy, but it's real world data, so this is normal. Because the emphasis for this assignment is on design, not code, we've provided code to help you clean up the data.
+
+These are the main issues with the data:
+
+- There are non-numeric values in the data, like `-`, `X`, and `D`. The data isn't very well documented; we're assuming `-` indicates a missing value, but we're not sure what `X` and `D` mean, so for this assignment, we'll just assume they're also missing.
+
+- The data generally includes rows for dozens of countries, but there are also rows for some continents, "unknown," "other," and a total row. Because [Africa is not a country](https://twitter.com/africasacountry), and neither are the other continents, we want to exclude all non-countries.
+
+- Maintaining consistent country names across different datasets is *literally* the woooooooorst. Countries have different formal official names and datasets are never consistent in how they use those names.^[For instance, "North Korea", "Korea, North", "DPRK", "Korea, Democratic People's Republic of", and "Democratic People's Republic of Korea", and "Korea (DPRK)" are all perfectly normal versions of the country's name and you'll find them all in the wild.] It's such a tricky problem that social scientists have spent their careers just figuring out how to properly name and code countries. Really.^[See Gleditsch, Kristian S. & Michael D. Ward. 1999. ["Interstate System Membership: A Revised List of the Independent States since 1816."](https://www.tandfonline.com/doi/abs/10.1080/03050629908434958) *International Interactions* 25: 393-413; or the ["ICOW Historical State Names Data Set"](http://www.paulhensel.org/icownames.html).] There are international standards for country codes, though, like [ISO 3166-1 alpha 3](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-3) (my favorite), also known as ISO3. It's not perfect—it omits microstates (some Polynesian countries) and gray area states (Palestine, Kosovo)—but it's an international standard, so it has that going for it.
+
+- To ensure that country names are consistent in this data, we use the **countrycode** package (install it if you don't have it), which is amazing. The `countrycode()` function will take a country name in a given coding scheme and convert it to a different coding scheme using this syntax:
+
+        countrycode(variable, "current-coding-scheme", "new-coding-scheme")
+
+    It also does a farily good job at guessing and parsing inconsistent country names (e.g. it will recognize "Congo, Democratic Republic", even though it should technically be "Democratic Republic of the Congo"). Here, we use `countrycode()` to convert the inconsistent country names into ISO3 codes. We then create a cleaner version of the `origin_country` column by converting the ISO3 codes back into country names. Note that the function chokes on North Korea initially, since it's included as "Korea, North"—we use the `custom_match` argument to help the function out.
+
+- The data isn't tidy—there are individual columns for each year. `gather()` takes every column and changes it to a row. We exclude the country, region, continent, and ISO3 code from the change-into-rows transformation with `-origin_country, -iso3, -origin_region, -origin_continent`.
+
+- Currently, the year is being treated as a number, but it's helpful to also treat it as an actual date. We create a new variable named `year_date` that converts the raw number (e.g. 2009) into a date. The date needs to have at least a month, day, and year, so we actually convert it to January 1, 2009 with `ymd(paste0(year, "-01-01"))`.
+
+```{r load-libraries, message=FALSE, warning=FALSE}
+library(tidyverse)    # For ggplot, dplyr, and friends
+library(countrycode)  # For dealing with country names, abbreviations, and codes
+library(lubridate)    # For dealing with dates
+```
+
+```{r load-data-real, include=FALSE}
+refugees_raw <- read_csv(here::here("static/data/refugee_status.csv"), na = c("-", "X", "D"))
+```
+
+```{r load-data-fake, eval=FALSE}
+refugees_raw <- read_csv("data/refugee_status.csv", na = c("-", "X", "D"))
+```
+
+```{r clean-data}
+non_countries <- c("Africa", "Asia", "Europe", "North America", "Oceania",
+                   "South America", "Unknown", "Other", "Total")
+
+refugees_clean <- refugees_raw %>%
+  # Make this column name easier to work with
+  rename(origin_country = `Continent/Country of Nationality`) %>%
+  # Get rid of non-countries
+  filter(!(origin_country %in% non_countries)) %>%
+  # Convert country names to ISO3 codes
+  mutate(iso3 = countrycode(origin_country, "country.name", "iso3c",
+                            custom_match = c("Korea, North" = "PRK"))) %>%
+  # Convert ISO3 codes to country names, regions, and continents
+  mutate(origin_country = countrycode(iso3, "iso3c", "country.name"),
+         origin_region = countrycode(iso3, "iso3c", "region"),
+         origin_continent = countrycode(iso3, "iso3c", "continent")) %>%
+  # Make this data tidy
+  gather(year, number, -origin_country, -iso3, -origin_region, -origin_continent) %>%
+  # Make sure the year column is numeric + make an actual date column for years
+  mutate(year = as.numeric(year),
+         year_date = ymd(paste0(year, "-01-01")))
+```
+
+
+## Data to possibly use in your plot
+
+Here are some possible summaries of the data you might use…
+
+### Country totals over time
+
+This is just the `refugees_clean` data frame I gave you. You'll want to filter it and select specific countries, though—you won't really be able to plot 60 countries all at once unless you use sparklines.
+
+```{r show-refugees-countries, echo=FALSE}
+refugees_clean %>%
+  head()
+```
+
+### Cumulative country totals over time
+
+Note the `cumsum()` function—it calculates the cumulative sum of a column.
+
+```{r make-refugees-countries-cumulative}
+refugees_countries_cumulative <- refugees_clean %>%
+  arrange(year_date) %>%
+  group_by(origin_country) %>%
+  mutate(cumulative_total = cumsum(number))
+```
+
+```{r show-refugees-countries-cumulative, echo=FALSE}
+refugees_countries_cumulative %>%
+  arrange(origin_country) %>%
+  select(-origin_region) %>%
+  head()
+```
+
+### Continent totals over time
+
+Note the `na.rm = TRUE` argument in `sum()`. This makes R ignore any missing data when calculating the total. Without it, if R finds a missing value in the column, it will mark the final sum as `NA` too, which we don't want.
+
+```{r make-refugees-continents}
+refugees_continents <- refugees_clean %>%
+  group_by(origin_continent, year_date) %>%
+  summarize(total = sum(number, na.rm = TRUE))
+```
+
+```{r show-refugees-continents, echo=FALSE}
+refugees_continents %>%
+  head()
+```
+
+### Cumulative continent totals over time
+
+Note that there are two `group_by()` functions here. First we get the total number of refugees per continent per year, then we group by continent only to get the cumulative sum of refugees across continents.
+
+```{r make-refugees-continents-cumulative}
+refugees_continents_cumulative <- refugees_clean %>%
+  group_by(origin_continent, year_date) %>%
+  summarize(total = sum(number, na.rm = TRUE)) %>%
+  arrange(year_date) %>%
+  group_by(origin_continent) %>%
+  mutate(cumulative_total = cumsum(total))
+```
+
+```{r show-refugees-continents-cumulative, echo=FALSE}
+refugees_continents_cumulative %>%
+  arrange(origin_continent) %>%
+  head()
+```
