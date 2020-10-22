@@ -4400,7 +4400,7 @@ Y = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + \beta_3 x_3 + \beta_4 x_1 x_2 + \beta_
 &lt;/ol&gt;
 &lt;/div&gt;
 &lt;hr /&gt;
-&lt;p&gt;Weekly writing: After completing the exercise above, reflect on the process. Was this efficient? Was it enjoyable? Do you think you created an highly predictive model? Write a short paragraph.&lt;/p&gt;
+&lt;p&gt;Weekly writing: After completing the exercise above, reflect on the process. Was this efficient? Was it enjoyable? Do you think you created an highly predictive model? Write a short paragraph. As always, submit this separately into the “weekly writing” assigment on D2L.&lt;/p&gt;
 &lt;hr /&gt;
 &lt;/div&gt;
 &lt;div id=&#34;test-train-split&#34; class=&#34;section level3&#34;&gt;
@@ -4471,7 +4471,7 @@ test_rmse = c(get_rmse(fit_1, test_data, &amp;quot;SalePrice&amp;quot;),
               get_rmse(fit_3, test_data, &amp;quot;SalePrice&amp;quot;),
               get_rmse(fit_4, test_data, &amp;quot;SalePrice&amp;quot;),
               get_rmse(fit_5, test_data, &amp;quot;SalePrice&amp;quot;))&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;We can plot the results. The train RMSE can be seen in blue, while the test RMSE is given in orange.&lt;a href=&#34;#fn2&#34; class=&#34;footnote-ref&#34; id=&#34;fnref2&#34;&gt;&lt;sup&gt;2&lt;/sup&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;We can plot the results. If you execute the code below, you’ll see the train RMSE in blue, while the test RMSE is given in orange.&lt;a href=&#34;#fn2&#34; class=&#34;footnote-ref&#34; id=&#34;fnref2&#34;&gt;&lt;sup&gt;2&lt;/sup&gt;&lt;/a&gt;&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;plot(model_complexity, train_rmse, type = &amp;quot;b&amp;quot;,
      ylim = c(min(c(train_rmse, test_rmse)) - 0.02,
               max(c(train_rmse, test_rmse)) + 0.02),
@@ -4479,7 +4479,7 @@ test_rmse = c(get_rmse(fit_1, test_data, &amp;quot;SalePrice&amp;quot;),
      xlab = &amp;quot;Model Size&amp;quot;,
      ylab = &amp;quot;RMSE&amp;quot;)
 lines(model_complexity, test_rmse, type = &amp;quot;b&amp;quot;, col = &amp;quot;darkorange&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;We could also summarize the results as a table. &lt;code&gt;fit_1&lt;/code&gt; is the least flexible, and &lt;code&gt;fit_5&lt;/code&gt; is the most flexible. We see the Train RMSE decrease as flexibility increases.&lt;/p&gt;
+&lt;p&gt;We could also summarize the results as a table. &lt;code&gt;fit_1&lt;/code&gt; is the least flexible, and &lt;code&gt;fit_5&lt;/code&gt; is the most flexible. If we were to do this (see the exercise below) we would see that Train RMSE decreases as flexibility increases forever. However, this may not be the case for the Test RMSE.&lt;/p&gt;
 &lt;table&gt;
 &lt;colgroup&gt;
 &lt;col width=&#34;12%&#34; /&gt;
@@ -4516,7 +4516,6 @@ lines(model_complexity, test_rmse, type = &amp;quot;b&amp;quot;, col = &amp;quot
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
-&lt;p&gt;&lt;strong&gt;Try it:&lt;/strong&gt; When is the Test RMSE is smallest amongst the five models? Note this may not be the &lt;strong&gt;best&lt;/strong&gt; model, but it is the best model of the class of models you’ve attempted?&lt;/p&gt;
 &lt;p&gt;To summarize:&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;strong&gt;Underfitting models:&lt;/strong&gt; In general &lt;em&gt;High&lt;/em&gt; Train RMSE, &lt;em&gt;High&lt;/em&gt; Test RMSE.&lt;/li&gt;
