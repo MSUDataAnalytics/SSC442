@@ -6180,6 +6180,711 @@ admissions %&gt;%
     </item>
     
     <item>
+      <title>Nonparametric Regression</title>
+      <link>/content/08-content/</link>
+      <pubDate>Tue, 20 Oct 2020 00:00:00 +0000</pubDate>
+      <guid>/content/08-content/</guid>
+      <description>
+&lt;script src=&#34;/rmarkdown-libs/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
+&lt;script src=&#34;/rmarkdown-libs/kePrint/kePrint.js&#34;&gt;&lt;/script&gt;
+&lt;link href=&#34;/rmarkdown-libs/lightable/lightable.css&#34; rel=&#34;stylesheet&#34; /&gt;
+
+&lt;div id=&#34;TOC&#34;&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#required-reading&#34;&gt;Required Reading&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#guiding-ideas&#34;&gt;Guiding Ideas&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#nonparametric-regression&#34;&gt;Nonparametric Regression&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#r-setup&#34;&gt;R Setup&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#mathematical-setup&#34;&gt;Mathematical Setup&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#k-nearest-neighbors&#34;&gt;k-Nearest Neighbors&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#decision-trees&#34;&gt;Decision Trees&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#example-credit-card-data&#34;&gt;Example: Credit Card Data&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+
+&lt;div id=&#34;required-reading&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Required Reading&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;This page.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div id=&#34;guiding-ideas&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Guiding Ideas&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;How to use &lt;strong&gt;k-nearest neighbors&lt;/strong&gt; for regression through the use of the &lt;code&gt;knnreg()&lt;/code&gt; function from the &lt;code&gt;caret&lt;/code&gt; package&lt;/li&gt;
+&lt;li&gt;How to use &lt;strong&gt;decision trees&lt;/strong&gt; for regression through the use of the &lt;code&gt;rpart()&lt;/code&gt; function from the &lt;code&gt;rpart&lt;/code&gt; package.&lt;/li&gt;
+&lt;li&gt;How “making predictions” can be thought of as &lt;strong&gt;estimating the regression function&lt;/strong&gt;, that is, the conditional mean of the response given values of the features.&lt;/li&gt;
+&lt;li&gt;The difference between &lt;strong&gt;parametric&lt;/strong&gt; and &lt;strong&gt;nonparametric&lt;/strong&gt; methods.&lt;/li&gt;
+&lt;li&gt;The difference between &lt;strong&gt;model parameters&lt;/strong&gt; and &lt;strong&gt;tuning parameters&lt;/strong&gt; methods.&lt;/li&gt;
+&lt;li&gt;How these nonparametric methods deal with &lt;strong&gt;categorical variables&lt;/strong&gt; and &lt;strong&gt;interactions&lt;/strong&gt;.&lt;/li&gt;
+&lt;li&gt;What is &lt;strong&gt;model flexibility&lt;/strong&gt;?&lt;/li&gt;
+&lt;li&gt;What is &lt;strong&gt;overfitting&lt;/strong&gt; and how do we avoid it?&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;nonparametric-regression&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Nonparametric Regression&lt;/h1&gt;
+&lt;p&gt;In the next weeks, we will continue to explore models for making &lt;strong&gt;predictions&lt;/strong&gt;, but now we will introduce &lt;strong&gt;nonparametric models&lt;/strong&gt; that will contrast the &lt;strong&gt;parametric models&lt;/strong&gt; that we have used previously.&lt;/p&gt;
+&lt;p&gt;This content is currently &lt;strong&gt;under construction&lt;/strong&gt;. You can expect it to be a lot less polished than other sections.&lt;/p&gt;
+&lt;div id=&#34;r-setup&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;R Setup&lt;/h2&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(tibble)     # data frame printing
+library(dplyr)      # data manipulation
+
+library(caret)      # fitting knn
+library(rpart)      # fitting trees
+library(rpart.plot) # plotting trees
+
+library(knitr)      # creating tables
+library(kableExtra) # styling tables&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;mathematical-setup&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Mathematical Setup&lt;/h2&gt;
+&lt;p&gt;Let’s return to the setup we defined in the previous lectures. Consider a random variable &lt;span class=&#34;math inline&#34;&gt;\(Y\)&lt;/span&gt; which represents a &lt;strong&gt;response&lt;/strong&gt; variable, and &lt;span class=&#34;math inline&#34;&gt;\(p\)&lt;/span&gt; &lt;strong&gt;feature&lt;/strong&gt; variables &lt;span class=&#34;math inline&#34;&gt;\(\boldsymbol{X} = (X_1, X_2, \ldots, X_p)\)&lt;/span&gt;. We assume that the response variable &lt;span class=&#34;math inline&#34;&gt;\(Y\)&lt;/span&gt; is some function of the features, plus some random noise.&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
+Y = f(\boldsymbol{X}) + \epsilon
+\]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;Our goal is to find some &lt;span class=&#34;math inline&#34;&gt;\(f\)&lt;/span&gt; such that &lt;span class=&#34;math inline&#34;&gt;\(f(\boldsymbol{X})\)&lt;/span&gt; is close to &lt;span class=&#34;math inline&#34;&gt;\(Y\)&lt;/span&gt;. More specifically we want to minimize the risk under squared error loss.&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
+\mathbb{E}_{\boldsymbol{X}, Y} \left[ (Y - f(\boldsymbol{X})) ^ 2 \right] = \mathbb{E}_{\boldsymbol{X}} \mathbb{E}_{Y \mid \boldsymbol{X}} \left[ ( Y - f(\boldsymbol{X}) ) ^ 2 \mid \boldsymbol{X} = \boldsymbol{x} \right]
+\]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;We saw previously (see the slides from last two content days) that this risk is minimized by the &lt;strong&gt;conditional mean&lt;/strong&gt; of &lt;span class=&#34;math inline&#34;&gt;\(Y\)&lt;/span&gt; given &lt;span class=&#34;math inline&#34;&gt;\(\boldsymbol{X}\)&lt;/span&gt;,&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
+\mu(\boldsymbol{x}) \triangleq \mathbb{E}[Y \mid \boldsymbol{X} = \boldsymbol{x}]
+\]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;which we called the &lt;strong&gt;regression function&lt;/strong&gt;.&lt;/p&gt;
+&lt;p&gt;Our goal then is to &lt;strong&gt;estimate&lt;/strong&gt; this &lt;strong&gt;regression function&lt;/strong&gt;. Let’s use an example where we know the true probability model:&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
+Y = 1 - 2x - 3x ^ 2 + 5x ^ 3 + \epsilon
+\]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;where &lt;span class=&#34;math inline&#34;&gt;\(\epsilon \sim \text{N}(0, \sigma^2)\)&lt;/span&gt;.&lt;/p&gt;
+&lt;p&gt;Recall that this implies that the regression function is&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
+\mu(x) = \mathbb{E}[Y \mid \boldsymbol{X} = \boldsymbol{x}] = 1 - 2x - 3x ^ 2 + 5x ^ 3
+\]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;Let’s also pretend that we do not actually know this information, but instead have some data, &lt;span class=&#34;math inline&#34;&gt;\((x_i, y_i)\)&lt;/span&gt; for &lt;span class=&#34;math inline&#34;&gt;\(i = 1, 2, \ldots, n\)&lt;/span&gt;.&lt;/p&gt;
+&lt;table class=&#34;table&#34; style=&#34;width: auto !important; margin-left: auto; margin-right: auto;&#34;&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th style=&#34;text-align:right;&#34;&gt;
+x
+&lt;/th&gt;
+&lt;th style=&#34;text-align:right;&#34;&gt;
+y
+&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.4689827
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0.7174461
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.2557522
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+1.2154439
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0.1457067
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+1.6041985
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0.8164156
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0.9096322
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.5966361
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0.6573128
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0.7967794
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0.9500528
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0.8893505
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+1.1477361
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0.3215956
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0.2874057
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0.2582281
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-1.6197576
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.8764275
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-2.2977242
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.5880509
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0.0658105
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.6468865
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.4708965
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0.3740457
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-1.3769103
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.2317926
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0.7619832
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0.5396828
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0.2507367
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.0046015
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+2.3678186
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0.4352370
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.1293181
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0.9838122
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+1.2774803
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.2399296
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+1.1842963
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0.5548904
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-1.5562874
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0.8694105
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.1356129
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.5757150
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.1913002
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0.3033475
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0.1975021
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.7488898
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.1847245
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.4655587
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+1.5395212
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.2277718
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+1.0762960
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.9732193
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-4.7573427
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.2352241
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+1.9363453
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0.7393817
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0.4588894
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.3193020
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0.4812168
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;We simulated a bit more data than last time to make the “pattern” clearer to recognize.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/content/08-content_files/figure-html/unnamed-chunk-5-1.png&#34; width=&#34;576&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Recall that when we used a linear model, we first need to make an &lt;strong&gt;assumption&lt;/strong&gt; about the form of the regression function.&lt;/p&gt;
+&lt;p&gt;For example, we could assume that&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
+\mu(x) = \mathbb{E}[Y \mid \boldsymbol{X} = \boldsymbol{x}] = \beta_0 + \beta_1 x + \beta_2 x^2 + \beta_3 x^3
+\]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;which is fit in R using the &lt;code&gt;lm()&lt;/code&gt; function&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;lm(y ~ x + I(x ^ 2) + I(x ^ 3), data = sim_slr_data)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## 
+## Call:
+## lm(formula = y ~ x + I(x^2) + I(x^3), data = sim_slr_data)
+## 
+## Coefficients:
+## (Intercept)            x       I(x^2)       I(x^3)  
+##      0.8397      -2.7257      -2.3752       6.0906&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Notice that what is returned are (maximum likelihood or least squares) estimates of the unknown &lt;span class=&#34;math inline&#34;&gt;\(\beta\)&lt;/span&gt; coefficients. That is, the “learning” that takes place with a linear models is “learning” the values of the coefficients.&lt;/p&gt;
+&lt;p&gt;For this reason, we call linear regression models &lt;strong&gt;parametric&lt;/strong&gt; models. They have unknown &lt;strong&gt;model parameters&lt;/strong&gt;, in this case the &lt;span class=&#34;math inline&#34;&gt;\(\beta\)&lt;/span&gt; coefficients that must be learned from the data. The form of the regression function is assumed.&lt;/p&gt;
+&lt;p&gt;What if we don’t want to make an assumption about the form of the regression function? While in this case, you might look at the plot and arrive at a reasonable guess of assuming a third order polynomial, what if it isn’t so clear? What if you have 100 features? Making strong assumptions might not work well.&lt;/p&gt;
+&lt;p&gt;Enter &lt;strong&gt;nonparametric&lt;/strong&gt; models. We will consider two examples: &lt;strong&gt;k-nearest neighbors&lt;/strong&gt; and &lt;strong&gt;decision trees&lt;/strong&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;k-nearest-neighbors&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;k-Nearest Neighbors&lt;/h2&gt;
+&lt;p&gt;We’ll start with &lt;strong&gt;k-nearest neighbors&lt;/strong&gt; which is possibly a more intuitive procedure than linear models.&lt;a href=&#34;#fn1&#34; class=&#34;footnote-ref&#34; id=&#34;fnref1&#34;&gt;&lt;sup&gt;1&lt;/sup&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;If our goal is to estimate the mean function,&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
+\mu(x) = \mathbb{E}[Y \mid \boldsymbol{X} = \boldsymbol{x}]
+\]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;the most natural approach would be to use&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
+\text{average}(\{ y_i : x_i = x \}).
+\]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;That is, to estimate the conditional mean at &lt;span class=&#34;math inline&#34;&gt;\(x\)&lt;/span&gt;, average the &lt;span class=&#34;math inline&#34;&gt;\(y_i\)&lt;/span&gt; values for each data point where &lt;span class=&#34;math inline&#34;&gt;\(x_i = x\)&lt;/span&gt;.&lt;/p&gt;
+&lt;p&gt;While this sounds nice, it has an obvious flaw. For most values of &lt;span class=&#34;math inline&#34;&gt;\(x\)&lt;/span&gt; there will not be any &lt;span class=&#34;math inline&#34;&gt;\(x_i\)&lt;/span&gt; in the data where &lt;span class=&#34;math inline&#34;&gt;\(x_i = x\)&lt;/span&gt;!&lt;/p&gt;
+&lt;p&gt;So what’s the next best thing? Pick values of &lt;span class=&#34;math inline&#34;&gt;\(x_i\)&lt;/span&gt; that are “close” to &lt;span class=&#34;math inline&#34;&gt;\(x\)&lt;/span&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
+\text{average}( \{ y_i : x_i \text{ equal to (or very close to) x} \} ).
+\]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;This is the main idea behind many nonparametric approaches. The details often just amount to very specifically defining what “close” means.&lt;/p&gt;
+&lt;p&gt;In the case of k-nearest neighbors we use&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
+\hat{\mu}_k(x) = \frac{1}{k} \sum_{ \{i \ : \ x_i \in \mathcal{N}_k(x, \mathcal{D}) \} } y_i
+\]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;as our estimate of the regression function at &lt;span class=&#34;math inline&#34;&gt;\(x\)&lt;/span&gt;. While this looks complicated, it is actually very simple. Here, we are using an average of the &lt;span class=&#34;math inline&#34;&gt;\(y_i\)&lt;/span&gt; values of for the &lt;span class=&#34;math inline&#34;&gt;\(k\)&lt;/span&gt; nearest neighbors to &lt;span class=&#34;math inline&#34;&gt;\(x\)&lt;/span&gt;.&lt;/p&gt;
+&lt;p&gt;The &lt;span class=&#34;math inline&#34;&gt;\(k\)&lt;/span&gt; “nearest” neighbors are the &lt;span class=&#34;math inline&#34;&gt;\(k\)&lt;/span&gt; data points &lt;span class=&#34;math inline&#34;&gt;\((x_i, y_i)\)&lt;/span&gt; that have &lt;span class=&#34;math inline&#34;&gt;\(x_i\)&lt;/span&gt; values that are nearest to &lt;span class=&#34;math inline&#34;&gt;\(x\)&lt;/span&gt;. We can define “nearest” using any distance we like, but unless otherwise noted, we are referring to euclidean distance.&lt;a href=&#34;#fn2&#34; class=&#34;footnote-ref&#34; id=&#34;fnref2&#34;&gt;&lt;sup&gt;2&lt;/sup&gt;&lt;/a&gt; We are using the notation &lt;span class=&#34;math inline&#34;&gt;\(\{i \ : \ x_i \in \mathcal{N}_k(x, \mathcal{D}) \}\)&lt;/span&gt; to define the &lt;span class=&#34;math inline&#34;&gt;\(k\)&lt;/span&gt; observations that have &lt;span class=&#34;math inline&#34;&gt;\(x_i\)&lt;/span&gt; values that are nearest to the value &lt;span class=&#34;math inline&#34;&gt;\(x\)&lt;/span&gt; in a dataset &lt;span class=&#34;math inline&#34;&gt;\(\mathcal{D}\)&lt;/span&gt;, in other words, the &lt;span class=&#34;math inline&#34;&gt;\(k\)&lt;/span&gt; nearest neighbors.&lt;/p&gt;
+&lt;p&gt;The plots below begin to illustrate this idea.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/content/08-content_files/figure-html/unnamed-chunk-8-1.png&#34; width=&#34;864&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;In the left plot, to estimate the mean of &lt;span class=&#34;math inline&#34;&gt;\(Y\)&lt;/span&gt; at &lt;span class=&#34;math inline&#34;&gt;\(x = -0.5\)&lt;/span&gt; we use the three nearest neighbors, which are highlighted with green. Our estimate is the average of the &lt;span class=&#34;math inline&#34;&gt;\(y_i\)&lt;/span&gt; values of these three points indicated by the black x.&lt;/li&gt;
+&lt;li&gt;In the middle plot, to estimate the mean of &lt;span class=&#34;math inline&#34;&gt;\(Y\)&lt;/span&gt; at &lt;span class=&#34;math inline&#34;&gt;\(x = 0\)&lt;/span&gt; we use the five nearest neighbors, which are highlighted with green. Our estimate is the average of the &lt;span class=&#34;math inline&#34;&gt;\(y_i\)&lt;/span&gt; values of these five points indicated by the black x.&lt;/li&gt;
+&lt;li&gt;In the right plot, to estimate the mean of &lt;span class=&#34;math inline&#34;&gt;\(Y\)&lt;/span&gt; at &lt;span class=&#34;math inline&#34;&gt;\(x = 0.75\)&lt;/span&gt; we use the nine nearest neighbors, which are highlighted with green. Our estimate is the average of the &lt;span class=&#34;math inline&#34;&gt;\(y_i\)&lt;/span&gt; values of these nine points indicated by the black x.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;You might begin to notice a bit of an issue here. We have to do a new calculation each time we want to estimate the regression function at a different value of &lt;span class=&#34;math inline&#34;&gt;\(x\)&lt;/span&gt;! For this reason, k-nearest neighbors is often said to be “fast to train” and “slow to predict.” Training, is instant. You just memorize the data! Prediction involves finding the distance between the &lt;span class=&#34;math inline&#34;&gt;\(x\)&lt;/span&gt; considered and all &lt;span class=&#34;math inline&#34;&gt;\(x_i\)&lt;/span&gt; in the data!&lt;a href=&#34;#fn3&#34; class=&#34;footnote-ref&#34; id=&#34;fnref3&#34;&gt;&lt;sup&gt;3&lt;/sup&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;So, how then, do we choose the value of the &lt;strong&gt;tuning&lt;/strong&gt; parameter &lt;span class=&#34;math inline&#34;&gt;\(k\)&lt;/span&gt;? We &lt;em&gt;&lt;strong&gt;validate&lt;/strong&gt;&lt;/em&gt;!&lt;/p&gt;
+&lt;p&gt;First, let’s take a look at what happens with this data if we consider three different values of &lt;span class=&#34;math inline&#34;&gt;\(k\)&lt;/span&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/content/08-content_files/figure-html/unnamed-chunk-10-1.png&#34; width=&#34;1152&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;For each plot, the black dashed curve is the true mean function.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;In the left plot we use &lt;span class=&#34;math inline&#34;&gt;\(k = 25\)&lt;/span&gt;. The red “curve” is the estimate of the mean function for each &lt;span class=&#34;math inline&#34;&gt;\(x\)&lt;/span&gt; shown in the plot.&lt;/li&gt;
+&lt;li&gt;In the left plot we use &lt;span class=&#34;math inline&#34;&gt;\(k = 5\)&lt;/span&gt;. The blue “curve” is the estimate of the mean function for each &lt;span class=&#34;math inline&#34;&gt;\(x\)&lt;/span&gt; shown in the plot.&lt;/li&gt;
+&lt;li&gt;In the left plot we use &lt;span class=&#34;math inline&#34;&gt;\(k = 1\)&lt;/span&gt;. The green “curve” is the estimate of the mean function for each &lt;span class=&#34;math inline&#34;&gt;\(x\)&lt;/span&gt; shown in the plot.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Some things to notice here:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;The left plot with &lt;span class=&#34;math inline&#34;&gt;\(k = 25\)&lt;/span&gt; is performing poorly. The estimated “curve” does not “move” enough. This is an example of an &lt;strong&gt;inflexible&lt;/strong&gt; model.&lt;/li&gt;
+&lt;li&gt;The right plot with &lt;span class=&#34;math inline&#34;&gt;\(k = 1\)&lt;/span&gt; might not perform too well. The estimated “curve” seems to “move” too much. (Notice, that it goes through each point. We’ve fit to the noise.) This is an example of a &lt;strong&gt;flexible&lt;/strong&gt; model.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;While the middle plot with &lt;span class=&#34;math inline&#34;&gt;\(k = 5\)&lt;/span&gt; is not “perfect” it seems to roughly capture the “motion” of the true regression function. We can begin to see that if we generated new data, this estimated regression function would perform better than the other two.&lt;/p&gt;
+&lt;p&gt;But remember, in practice, we won’t know the true regression function, so we will need to determine how our model performs using only the available data!&lt;/p&gt;
+&lt;p&gt;This &lt;span class=&#34;math inline&#34;&gt;\(k\)&lt;/span&gt;, the number of neighbors, is an example of a &lt;strong&gt;tuning parameter&lt;/strong&gt;. Instead of being learned from the data, like model parameters such as the &lt;span class=&#34;math inline&#34;&gt;\(\beta\)&lt;/span&gt; coefficients in linear regression, a tuning parameter tells us &lt;em&gt;how&lt;/em&gt; to learn from data. It is user-specified. To determine the value of &lt;span class=&#34;math inline&#34;&gt;\(k\)&lt;/span&gt; that should be used, many models are fit to the estimation data, then evaluated on the validation. Using the information from the validation data, a value of &lt;span class=&#34;math inline&#34;&gt;\(k\)&lt;/span&gt; is chosen. (More on this in a bit.)&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Model parameters&lt;/strong&gt; are “learned” using the same data that was used to fit the model.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Tuning parameters&lt;/strong&gt; are “chosen” using data not used to fit the model.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;This tuning parameter &lt;span class=&#34;math inline&#34;&gt;\(k\)&lt;/span&gt; also defines the &lt;strong&gt;flexibility&lt;/strong&gt; of the model. In KNN, a small value of &lt;span class=&#34;math inline&#34;&gt;\(k\)&lt;/span&gt; is a flexible model, while a large value of &lt;span class=&#34;math inline&#34;&gt;\(k\)&lt;/span&gt; is inflexible.&lt;a href=&#34;#fn4&#34; class=&#34;footnote-ref&#34; id=&#34;fnref4&#34;&gt;&lt;sup&gt;4&lt;/sup&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Before moving to an example of tuning a KNN model, we will first introduce decision trees.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;decision-trees&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Decision Trees&lt;/h2&gt;
+&lt;p&gt;&lt;strong&gt;Decision trees&lt;/strong&gt; are similar to k-nearest neighbors but instead of looking for neighbors, decision trees create neighborhoods. We won’t explore the full details of trees, but just start to understand the basic concepts, as well as learn to fit them in R.&lt;/p&gt;
+&lt;p&gt;Neighborhoods are created via recursive binary partitions. In simpler terms, pick a feature and a possible cutoff value. Data that have a value less than the cutoff for the selected feature are in one neighborhood (the left) and data that have a value greater than the cutoff are in another (the right). Within these two neighborhoods, repeat this procedure until a stopping rule is satisfied. To make a prediction, check which neighborhood a new piece of data would belong to and predict the average of the &lt;span class=&#34;math inline&#34;&gt;\(y_i\)&lt;/span&gt; values of data in that neighborhood.&lt;/p&gt;
+&lt;p&gt;With the data above, which has a single feature &lt;span class=&#34;math inline&#34;&gt;\(x\)&lt;/span&gt;, consider three possible cutoffs: -0.5, 0.0, and 0.75.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/content/08-content_files/figure-html/unnamed-chunk-12-1.png&#34; width=&#34;864&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;For each plot, the black vertical line defines the neighborhoods. The green horizontal lines are the average of the &lt;span class=&#34;math inline&#34;&gt;\(y_i\)&lt;/span&gt; values for the points in the left neighborhood. The red horizontal lines are the average of the &lt;span class=&#34;math inline&#34;&gt;\(y_i\)&lt;/span&gt; values for the points in the right neighborhood.&lt;/p&gt;
+&lt;p&gt;What makes a cutoff good? Large differences in the average &lt;span class=&#34;math inline&#34;&gt;\(y_i\)&lt;/span&gt; between the two neighborhoods. More formally we want to find a cutoff value that minimizes&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
+\sum_{i \in N_L} \left( y_i - \hat{\mu}_{N_L} \right) ^ 2 + \sum_{i \in N_R} \left(y_i - \hat{\mu}_{N_R} \right) ^ 2
+\]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;where&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;span class=&#34;math inline&#34;&gt;\(N_L\)&lt;/span&gt; are the data in the left neighborhood, that is &lt;span class=&#34;math inline&#34;&gt;\(x &amp;lt; c\)&lt;/span&gt;&lt;/li&gt;
+&lt;li&gt;&lt;span class=&#34;math inline&#34;&gt;\(N_R\)&lt;/span&gt; are the data in the right neighborhood, that is &lt;span class=&#34;math inline&#34;&gt;\(x &amp;gt; c\)&lt;/span&gt;&lt;/li&gt;
+&lt;li&gt;&lt;span class=&#34;math inline&#34;&gt;\(\hat{\mu}_{N_L}\)&lt;/span&gt; is the mean of the &lt;span class=&#34;math inline&#34;&gt;\(y_i\)&lt;/span&gt; for data in the left neighborhood&lt;/li&gt;
+&lt;li&gt;&lt;span class=&#34;math inline&#34;&gt;\(\hat{\mu}_{N_R}\)&lt;/span&gt; is the mean of the &lt;span class=&#34;math inline&#34;&gt;\(y_i\)&lt;/span&gt; for data in the right neighborhood&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;This quantity is the sum of two sum of squared errors, one for the left neighborhood, and one for the right neighborhood.&lt;/p&gt;
+&lt;table class=&#34;table&#34; style=&#34;width: auto !important; margin-left: auto; margin-right: auto;&#34;&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th style=&#34;text-align:right;&#34;&gt;
+Cutoff
+&lt;/th&gt;
+&lt;th style=&#34;text-align:right;&#34;&gt;
+Total SSE
+&lt;/th&gt;
+&lt;th style=&#34;text-align:right;&#34;&gt;
+Left SSE
+&lt;/th&gt;
+&lt;th style=&#34;text-align:right;&#34;&gt;
+Right SSE
+&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.50
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+45.02
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+21.28
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+23.74
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0.00
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+58.94
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+44.68
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+14.26
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0.75
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+56.71
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+55.46
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+1.25
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;The table above summarizes the results of the three potential splits. We see that (of the splits considered, which are not exhaustive&lt;a href=&#34;#fn5&#34; class=&#34;footnote-ref&#34; id=&#34;fnref5&#34;&gt;&lt;sup&gt;5&lt;/sup&gt;&lt;/a&gt;) the split based on a cutoff of &lt;span class=&#34;math inline&#34;&gt;\(x = -0.50\)&lt;/span&gt; creates the best partitioning of the space.&lt;/p&gt;
+&lt;p&gt;Now let’s consider building a full tree.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/content/08-content_files/figure-html/unnamed-chunk-16-1.png&#34; width=&#34;672&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;In the plot above, the true regression function is the dashed black curve, and the solid orange curve is the estimated regression function using a decision tree. We see that there are two splits, which we can visualize as a tree.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/content/08-content_files/figure-html/unnamed-chunk-17-1.png&#34; width=&#34;672&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;The above “tree”&lt;a href=&#34;#fn6&#34; class=&#34;footnote-ref&#34; id=&#34;fnref6&#34;&gt;&lt;sup&gt;6&lt;/sup&gt;&lt;/a&gt; shows the splits that were made. It informs us of the variable used, the cutoff value, and some summary of the resulting neighborhood. In “tree” terminology the resulting neighborhoods are “terminal nodes” of the tree. In contrast, “internal nodes” are neighborhoods that are created, but then further split.&lt;/p&gt;
+&lt;p&gt;The “root node” is the neighborhood contains all observations, before any splitting, and can be seen at the top of the image above. We see that this node represents 100% of the data. The other number, 0.21, is the mean of the response variable, in this case, &lt;span class=&#34;math inline&#34;&gt;\(y_i\)&lt;/span&gt;.&lt;/p&gt;
+&lt;p&gt;Looking at a terminal node, for example the bottom left node, we see that 23% of the data is in this node. The average value of the &lt;span class=&#34;math inline&#34;&gt;\(y_i\)&lt;/span&gt; in this node is -1, which can be seen in the plot above.&lt;/p&gt;
+&lt;p&gt;We also see that the first split is based on the &lt;span class=&#34;math inline&#34;&gt;\(x\)&lt;/span&gt; variable, and a cutoff of &lt;span class=&#34;math inline&#34;&gt;\(x = -0.52\)&lt;/span&gt;. Note that because there is only one variable here, all splits are based on &lt;span class=&#34;math inline&#34;&gt;\(x\)&lt;/span&gt;, but in the future, we will have multiple features that can be split and neighborhoods will no longer be one-dimensional. However, this is hard to plot.&lt;/p&gt;
+&lt;p&gt;Let’s build a bigger, more flexible tree.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/content/08-content_files/figure-html/unnamed-chunk-19-1.png&#34; width=&#34;672&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/content/08-content_files/figure-html/unnamed-chunk-20-1.png&#34; width=&#34;672&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;There are two tuning parameters at play here which we will call by their names in R which we will see soon:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;cp&lt;/code&gt; or the “complexity parameter” as it is called.&lt;a href=&#34;#fn7&#34; class=&#34;footnote-ref&#34; id=&#34;fnref7&#34;&gt;&lt;sup&gt;7&lt;/sup&gt;&lt;/a&gt; This parameter determines which splits are accepted. A split must improve the performance of the tree by more than &lt;code&gt;cp&lt;/code&gt; in order to be used. When we get to R, we will see that the default value is 0.1.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;minsplit&lt;/code&gt;, the minimum number of observations in a node (neighborhood) in order to consider splitting within a neighborhood.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;There are actually many more possible tuning parameters for trees, possibly differing depending on who wrote the code you’re using. We will limit discussion to these two.&lt;a href=&#34;#fn8&#34; class=&#34;footnote-ref&#34; id=&#34;fnref8&#34;&gt;&lt;sup&gt;8&lt;/sup&gt;&lt;/a&gt; Note that they effect each other, and they effect other parameters which we are not discussing. The main takeaway should be how they effect model flexibility.&lt;/p&gt;
+&lt;p&gt;First let’s look at what happens for a fixed &lt;code&gt;minsplit&lt;/code&gt; by variable &lt;code&gt;cp&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/content/08-content_files/figure-html/unnamed-chunk-22-1.png&#34; width=&#34;1152&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;We see that as &lt;code&gt;cp&lt;/code&gt; &lt;em&gt;decreases&lt;/em&gt;, model flexibility &lt;strong&gt;increases&lt;/strong&gt;. We see more splits, because the increase in performance needed to accept a split is smaller as &lt;code&gt;cp&lt;/code&gt; is reduced.&lt;/p&gt;
+&lt;p&gt;Now the reverse, fix &lt;code&gt;cp&lt;/code&gt; and vary &lt;code&gt;minsplit&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/content/08-content_files/figure-html/unnamed-chunk-24-1.png&#34; width=&#34;1152&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;We see that as &lt;code&gt;minsplit&lt;/code&gt; &lt;em&gt;decreases&lt;/em&gt;, model flexibility &lt;strong&gt;increases&lt;/strong&gt;. By allowing splits of neighborhoods with fewer observations, we obtain more splits, which results in a more flexible model.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;example-credit-card-data&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Example: Credit Card Data&lt;/h2&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# load data, coerce to tibble
+crdt = as_tibble(ISLR::Credit)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Again, we are using the &lt;code&gt;Credit&lt;/code&gt; data form the &lt;code&gt;ISLR&lt;/code&gt; package. Note: &lt;strong&gt;this is not real data.&lt;/strong&gt; It has been simulated.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# data prep
+crdt = crdt %&amp;gt;%
+  select(-ID) %&amp;gt;%
+  select(-Rating, everything())&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;We remove the &lt;code&gt;ID&lt;/code&gt; variable as it should have no predictive power. We also move the &lt;code&gt;Rating&lt;/code&gt; variable to the last column with a clever &lt;code&gt;dplyr&lt;/code&gt; trick. This is in no way necessary, but is useful in creating some plots.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# test-train split
+set.seed(1)
+crdt_trn_idx = sample(nrow(crdt), size = 0.8 * nrow(crdt))
+crdt_trn = crdt[crdt_trn_idx, ]
+crdt_tst = crdt[-crdt_trn_idx, ]&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# estimation-validation split
+crdt_est_idx = sample(nrow(crdt_trn), size = 0.8 * nrow(crdt_trn))
+crdt_est = crdt_trn[crdt_est_idx, ]
+crdt_val = crdt_trn[-crdt_est_idx, ]&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;After train-test (with 80% of the data) and estimation-validation splitting the data, we look at the train data.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# check data
+head(crdt_trn, n = 10)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 10 x 11
+##    Income Limit Cards   Age Education Gender Student Married Ethnicity Balance
+##     &amp;lt;dbl&amp;gt; &amp;lt;int&amp;gt; &amp;lt;int&amp;gt; &amp;lt;int&amp;gt;     &amp;lt;int&amp;gt; &amp;lt;fct&amp;gt;  &amp;lt;fct&amp;gt;   &amp;lt;fct&amp;gt;   &amp;lt;fct&amp;gt;       &amp;lt;int&amp;gt;
+##  1  183.  13913     4    98        17 &amp;quot; Mal… No      Yes     Caucasian    1999
+##  2   35.7  2880     2    35        15 &amp;quot; Mal… No      No      African …       0
+##  3  123.   8376     2    89        17 &amp;quot; Mal… Yes     No      African …    1259
+##  4   20.8  2672     1    70        18 &amp;quot;Fema… No      No      African …       0
+##  5   39.1  5565     4    48        18 &amp;quot;Fema… No      Yes     Caucasian     772
+##  6   36.5  3806     2    52        13 &amp;quot; Mal… No      No      African …     188
+##  7   45.1  3762     3    80         8 &amp;quot; Mal… No      Yes     Caucasian      70
+##  8   43.5  2906     4    69        11 &amp;quot; Mal… No      No      Caucasian       0
+##  9   23.1  3476     2    50        15 &amp;quot;Fema… No      No      Caucasian     209
+## 10   53.2  4943     2    46        16 &amp;quot;Fema… No      Yes     Asian         382
+## # … with 1 more variable: Rating &amp;lt;int&amp;gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;In this simulated data, we would like to predict the &lt;code&gt;Rating&lt;/code&gt; variable. For now, let’s try to use only demographic information as predictors.&lt;a href=&#34;#fn9&#34; class=&#34;footnote-ref&#34; id=&#34;fnref9&#34;&gt;&lt;sup&gt;9&lt;/sup&gt;&lt;/a&gt; In particular, let’s focus on &lt;code&gt;Age&lt;/code&gt; (numeric), &lt;code&gt;Gender&lt;/code&gt; (categorical), and &lt;code&gt;Student&lt;/code&gt; (categorical).&lt;/p&gt;
+&lt;p&gt;Let’s fit KNN models with these features, and various values of &lt;span class=&#34;math inline&#34;&gt;\(k\)&lt;/span&gt;. To do so, we use the &lt;code&gt;knnreg()&lt;/code&gt; function from the &lt;code&gt;caret&lt;/code&gt; package.&lt;a href=&#34;#fn10&#34; class=&#34;footnote-ref&#34; id=&#34;fnref10&#34;&gt;&lt;sup&gt;10&lt;/sup&gt;&lt;/a&gt; Use &lt;code&gt;?knnreg&lt;/code&gt; for documentation and details.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;crdt_knn_01 = knnreg(Rating ~ Age + Gender + Student, data = crdt_est, k = 1)
+crdt_knn_10 = knnreg(Rating ~ Age + Gender + Student, data = crdt_est, k = 10)
+crdt_knn_25 = knnreg(Rating ~ Age + Gender + Student, data = crdt_est, k = 25)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Here, we fit three models to the estimation data. We supply the variables that will be used as features as we would with &lt;code&gt;lm()&lt;/code&gt;. We also specify how many neighbors to consider via the &lt;code&gt;k&lt;/code&gt; argument.&lt;/p&gt;
+&lt;p&gt;But wait a second, what is the distance from non-student to student? From male to female? In other words, how does KNN handle categorical variables? It doesn’t! Like &lt;code&gt;lm()&lt;/code&gt; it creates dummy variables under the hood.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Note:&lt;/strong&gt; To this point, and until we specify otherwise, we will always coerce categorical variables to be factor variables in R. We will then let modeling functions such as &lt;code&gt;lm()&lt;/code&gt; or &lt;code&gt;knnreg()&lt;/code&gt; deal with the creation of dummy variables internally.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;head(crdt_knn_10$learn$X)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;##   Age GenderFemale StudentYes
+## 1  30            0          0
+## 2  25            0          0
+## 3  44            0          0
+## 4  73            1          0
+## 5  44            0          1
+## 6  71            0          0&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Once these dummy variables have been created, we have a numeric &lt;span class=&#34;math inline&#34;&gt;\(X\)&lt;/span&gt; matrix, which makes distance calculations easy.&lt;a href=&#34;#fn11&#34; class=&#34;footnote-ref&#34; id=&#34;fnref11&#34;&gt;&lt;sup&gt;11&lt;/sup&gt;&lt;/a&gt; For example, the distance between the 3rd and 4th observation here is 29.017.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;dist(head(crdt_knn_10$learn$X))&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;##           1         2         3         4         5
+## 2  5.000000                                        
+## 3 14.000000 19.000000                              
+## 4 43.011626 48.010416 29.017236                    
+## 5 14.035669 19.026298  1.000000 29.034462          
+## 6 41.000000 46.000000 27.000000  2.236068 27.018512&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;sqrt(sum((crdt_knn_10$learn$X[3, ] - crdt_knn_10$learn$X[4, ]) ^ 2))&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 29.01724&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;What about interactions? Basically, you’d have to create them the same way as you do for linear models. We only mention this to contrast with trees in a bit.&lt;/p&gt;
+&lt;p&gt;OK, so of these three models, which one performs best? (Where for now, “best” is obtaining the lowest validation RMSE.)&lt;/p&gt;
+&lt;p&gt;First, note that we return to the &lt;code&gt;predict()&lt;/code&gt; function as we did with &lt;code&gt;lm()&lt;/code&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;predict(crdt_knn_10, crdt_val[1:5, ])&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 337.7857 356.0000 295.7692 360.8182 306.8000&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;This uses the 10-NN (10 nearest neighbors) model to make predictions (estimate the regression function) given the first five observations of the validation data. &lt;strong&gt;Note:&lt;/strong&gt; We did not name the second argument to &lt;code&gt;predict()&lt;/code&gt;. Again, you’ve been warned.&lt;/p&gt;
+&lt;p&gt;Now that we know how to use the &lt;code&gt;predict()&lt;/code&gt; function, let’s calculate the validation RMSE for each of these models.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;knn_mod_list = list(
+  crdt_knn_01 = knnreg(Rating ~ Age + Gender + Student, data = crdt_est, k = 1),
+  crdt_knn_10 = knnreg(Rating ~ Age + Gender + Student, data = crdt_est, k = 10),
+  crdt_knn_25 = knnreg(Rating ~ Age + Gender + Student, data = crdt_est, k = 25)
+)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;knn_val_pred = lapply(knn_mod_list, predict, crdt_val)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;calc_rmse = function(actual, predicted) {
+  sqrt(mean((actual - predicted) ^ 2))
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;sapply(knn_val_pred, calc_rmse, crdt_val$Rating)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## crdt_knn_01 crdt_knn_10 crdt_knn_25 
+##    182.3469    149.2172    138.6527&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;So, of these three values of &lt;span class=&#34;math inline&#34;&gt;\(k\)&lt;/span&gt;, the model with &lt;span class=&#34;math inline&#34;&gt;\(k = 25\)&lt;/span&gt; achieves the lowest validation RMSE.&lt;/p&gt;
+&lt;p&gt;This process, fitting a number of models with different values of the &lt;em&gt;tuning parameter&lt;/em&gt;, in this case &lt;span class=&#34;math inline&#34;&gt;\(k\)&lt;/span&gt;, and then finding the “best” tuning parameter value based on performance on the validation data is called &lt;strong&gt;tuning&lt;/strong&gt;. In practice, we would likely consider more values of &lt;span class=&#34;math inline&#34;&gt;\(k\)&lt;/span&gt;, but this should illustrate the point.&lt;/p&gt;
+&lt;p&gt;In the next lectures, we will discuss the details of model flexibility and model tuning, and how these concepts are tied together. However, even though we will present some theory behind this relationship, in practice, &lt;strong&gt;you must tune and validate your models&lt;/strong&gt;. There is no theory that will inform you ahead of tuning and validation which model will be the best. By teaching you &lt;em&gt;how&lt;/em&gt; to fit KNN models in R and how to calculate validation RMSE, you already have all a set of tools you can use to find a good model.&lt;/p&gt;
+&lt;p&gt;Let’s turn to decision trees which we will fit with the &lt;code&gt;rpart()&lt;/code&gt; function from the &lt;code&gt;rpart&lt;/code&gt; package. Use &lt;code&gt;?rpart&lt;/code&gt; and &lt;code&gt;?rpart.control&lt;/code&gt; for documentation and details. In particular, &lt;code&gt;?rpart.control&lt;/code&gt; will detail the many tuning parameters of this implementation of decision tree models in R.&lt;/p&gt;
+&lt;p&gt;We’ll start by using default tuning parameters.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;crdt_tree = rpart(Rating ~ Age + Gender + Student, data = crdt_est)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;crdt_tree&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## n= 256 
+## 
+## node), split, n, deviance, yval
+##       * denotes terminal node
+## 
+##  1) root 256 6667400.0 357.0781  
+##    2) Age&amp;lt; 82.5 242 5865419.0 349.3719  
+##      4) Age&amp;gt;=69.5 52 1040678.0 313.0385 *
+##      5) Age&amp;lt; 69.5 190 4737307.0 359.3158  
+##       10) Age&amp;lt; 38.5 55  700013.2 326.6000 *
+##       11) Age&amp;gt;=38.5 135 3954443.0 372.6444  
+##         22) Student=Yes 14  180764.4 297.7857 *
+##         23) Student=No 121 3686148.0 381.3058  
+##           46) Age&amp;gt;=50.5 64 1881299.0 359.2344  
+##             92) Age&amp;lt; 53.5 9   48528.0 278.3333 *
+##             93) Age&amp;gt;=53.5 55 1764228.0 372.4727 *
+##           47) Age&amp;lt; 50.5 57 1738665.0 406.0877 *
+##    3) Age&amp;gt;=82.5 14  539190.9 490.2857 *&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Above we see the resulting tree printed, however, this is difficult to read. Instead, we use the &lt;code&gt;rpart.plot()&lt;/code&gt; function from the &lt;code&gt;rpart.plot&lt;/code&gt; package to better visualize the tree.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;rpart.plot(crdt_tree)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/content/08-content_files/figure-html/unnamed-chunk-41-1.png&#34; width=&#34;672&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;At each split, the variable used to split is listed together with a condition. If the condition is true for a data point, send it to the left neighborhood. Although the &lt;code&gt;Gender&lt;/code&gt; available for creating splits, we only see splits based on &lt;code&gt;Age&lt;/code&gt; and &lt;code&gt;Student&lt;/code&gt;. This hints at the relative importance of these variables for prediction. More on this much later.&lt;/p&gt;
+&lt;p&gt;Categorical variables are split based on potential categories! This is &lt;em&gt;excellent&lt;/em&gt;. This means that trees naturally handle categorical features without needing to convert to numeric under the hood. We see a split that puts students into one neighborhood, and non-students into another.&lt;/p&gt;
+&lt;p&gt;Notice that the splits happen in order. So for example, the third terminal node (with an average rating of 298) is based on splits of:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;Age &amp;lt; 83&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Age &amp;lt; 70&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Age &amp;gt; 39&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Student = Yes&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;In other words, individuals in this terminal node are students who are between the ages of 39 and 70. (Only 5% of the data is represented here.) This is basically an interaction between &lt;code&gt;Age&lt;/code&gt; and &lt;code&gt;Student&lt;/code&gt; without any need to directly specify it! What a great feature of trees.&lt;/p&gt;
+&lt;p&gt;To recap:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Trees do not make assumptions about the form of the regression function.&lt;/li&gt;
+&lt;li&gt;Trees automatically handle categorical features.&lt;/li&gt;
+&lt;li&gt;Trees naturally incorporate interaction.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Now let’s fit another tree that is more flexible by relaxing some tuning parameters. Recall that by default, &lt;code&gt;cp = 0.1&lt;/code&gt; and &lt;code&gt;minsplit = 20&lt;/code&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;crdt_tree_big = rpart(Rating ~ Age + Gender + Student, data = crdt_est,
+                      cp = 0.0, minsplit = 20)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;rpart.plot(crdt_tree_big)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/content/08-content_files/figure-html/unnamed-chunk-43-1.png&#34; width=&#34;672&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;To make the tree even bigger, we could reduce &lt;code&gt;minsplit&lt;/code&gt;, but in practice we mostly consider the &lt;code&gt;cp&lt;/code&gt; parameter.&lt;a href=&#34;#fn12&#34; class=&#34;footnote-ref&#34; id=&#34;fnref12&#34;&gt;&lt;sup&gt;12&lt;/sup&gt;&lt;/a&gt; Since &lt;code&gt;minsplit&lt;/code&gt; has been kept the same, but &lt;code&gt;cp&lt;/code&gt; was reduced, we see the same splits as the smaller tree, but many additional splits.&lt;/p&gt;
+&lt;p&gt;Now let’s fit a bunch of trees, with different values of &lt;code&gt;cp&lt;/code&gt;, for tuning.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;tree_mod_list = list(
+  crdt_tree_0000 = rpart(Rating ~ Age + Gender + Student, data = crdt_est, cp = 0.000),
+  crdt_tree_0001 = rpart(Rating ~ Age + Gender + Student, data = crdt_est, cp = 0.001),
+  crdt_tree_0010 = rpart(Rating ~ Age + Gender + Student, data = crdt_est, cp = 0.010),
+  crdt_tree_0100 = rpart(Rating ~ Age + Gender + Student, data = crdt_est, cp = 0.100)
+)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;tree_val_pred = lapply(tree_mod_list, predict, crdt_val)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;sapply(tree_val_pred, calc_rmse, crdt_val$Rating)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## crdt_tree_0000 crdt_tree_0001 crdt_tree_0010 crdt_tree_0100 
+##       156.3527       155.4262       151.9081       140.0806&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Here we see the least flexible model, with &lt;code&gt;cp = 0.100&lt;/code&gt;, performs best.&lt;/p&gt;
+&lt;p&gt;Note that by only using these three features, we are severely limiting our models performance. Let’s quickly assess using all available predictors.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;crdt_tree_all = rpart(Rating ~ ., data = crdt_est)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;rpart.plot(crdt_tree_all)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/content/08-content_files/figure-html/unnamed-chunk-48-1.png&#34; width=&#34;672&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Notice that this model &lt;strong&gt;only&lt;/strong&gt; splits based on &lt;code&gt;Limit&lt;/code&gt; despite using all features. This should be a big hint about which variables are useful for prediction.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;calc_rmse(
+  actual = crdt_val$Rating,
+  predicted = predict(crdt_tree_all, crdt_val)
+)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 28.8498&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;This model performs much better. You should try something similar with the KNN models above. Also, consider comparing this result to results from last lectures using linear models.&lt;/p&gt;
+&lt;p&gt;Notice that we’ve been using that trusty &lt;code&gt;predict()&lt;/code&gt; function here again.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;predict(crdt_tree_all, crdt_val[1:5, ])&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;##        1        2        3        4        5 
+## 292.8182 467.5152 467.5152 467.5152 772.4000&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;What does this code do? It estimates the mean &lt;code&gt;Rating&lt;/code&gt; given the feature information (the “x” values) from the first five observations from the validation data using a decision tree model with default tuning parameters. Hopefully a theme is emerging.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&#34;footnotes&#34;&gt;
+&lt;hr /&gt;
+&lt;ol&gt;
+&lt;li id=&#34;fn1&#34;&gt;&lt;p&gt;We chose to start with linear regression because most students in STAT 432 should already be familiar.&lt;a href=&#34;#fnref1&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li id=&#34;fn2&#34;&gt;&lt;p&gt;The usual distance when you hear distance. That is, unless you drive a &lt;a href=&#34;https://en.wikipedia.org/wiki/Taxicab_geometry&#34;&gt;taxicab&lt;/a&gt;.&lt;a href=&#34;#fnref2&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li id=&#34;fn3&#34;&gt;&lt;p&gt;For this reason, KNN is often not used in practice, but it is very useful learning tool.&lt;a href=&#34;#fnref3&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li id=&#34;fn4&#34;&gt;&lt;p&gt;Many texts use the term complex instead of flexible. We feel this is confusing as complex is often associated with difficult. KNN with &lt;span class=&#34;math inline&#34;&gt;\(k = 1\)&lt;/span&gt; is actually a very simple model to understand, but it is very flexible as defined here.&lt;a href=&#34;#fnref4&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li id=&#34;fn5&#34;&gt;&lt;p&gt;To exhaust all possible splits of a variable, we would need to consider the midpoint between each of the order statistics of the variable. To exhaust all possible splits, we would need to do this for each of the feature variables.&lt;a href=&#34;#fnref5&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li id=&#34;fn6&#34;&gt;&lt;p&gt;It’s really an upside tree isn’t it?&lt;a href=&#34;#fnref6&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li id=&#34;fn7&#34;&gt;&lt;p&gt;Flexibility parameter would be a better name.&lt;a href=&#34;#fnref7&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li id=&#34;fn8&#34;&gt;&lt;p&gt;The &lt;code&gt;rpart&lt;/code&gt; function in R would allow us to use others, but we will always just leave their values as the default values.&lt;a href=&#34;#fnref8&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li id=&#34;fn9&#34;&gt;&lt;p&gt;There is a question of whether or not we &lt;em&gt;should&lt;/em&gt; use these variables. For example, should men and women be given different ratings when all other variables are the same? Using the &lt;code&gt;Gender&lt;/code&gt; variable allows for this to happen. Also, you might think, just don’t use the &lt;code&gt;Gender&lt;/code&gt; variable. Unfortunately, it’s not that easy. There is an increasingly popular field of study centered around these ideas called &lt;a href=&#34;https://en.wikipedia.org/wiki/Fairness_(machine_learning)&#34;&gt;machine learning &lt;strong&gt;fairness&lt;/strong&gt;&lt;/a&gt;.&lt;a href=&#34;#fnref9&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li id=&#34;fn10&#34;&gt;&lt;p&gt;There are many other KNN functions in &lt;code&gt;R&lt;/code&gt;. However, the operation and syntax of &lt;code&gt;knnreg()&lt;/code&gt; better matches other functions we use in this course.&lt;a href=&#34;#fnref10&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li id=&#34;fn11&#34;&gt;&lt;p&gt;Wait. Doesn’t this sort of create an arbitrary distance between the categories? Why &lt;span class=&#34;math inline&#34;&gt;\(0\)&lt;/span&gt; and &lt;span class=&#34;math inline&#34;&gt;\(1\)&lt;/span&gt; and not &lt;span class=&#34;math inline&#34;&gt;\(-42\)&lt;/span&gt; and &lt;span class=&#34;math inline&#34;&gt;\(51\)&lt;/span&gt;? Good question. This hints at the notion of pre-processing. We’re going to hold off on this for now, but, often when performing k-nearest neighbors, you should try scaling all of the features to have mean &lt;span class=&#34;math inline&#34;&gt;\(0\)&lt;/span&gt; and variance &lt;span class=&#34;math inline&#34;&gt;\(1\)&lt;/span&gt;.&lt;a href=&#34;#fnref11&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li id=&#34;fn12&#34;&gt;&lt;p&gt;If you are taking STAT 432, we will occasionally modify the &lt;code&gt;minsplit&lt;/code&gt; parameter on quizzes.&lt;a href=&#34;#fnref12&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    
+    <item>
       <title>Project 2</title>
       <link>/assignment/project2/</link>
       <pubDate>Fri, 16 Oct 2020 00:00:00 +0000</pubDate>
@@ -6189,7 +6894,11 @@ admissions %&gt;%
 
 &lt;div id=&#34;TOC&#34;&gt;
 &lt;ul&gt;
-&lt;li&gt;&lt;a href=&#34;#instructions&#34;&gt;Instructions&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#part-1-hypotheses&#34;&gt;Part 1: Hypotheses&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#past-2-instructions&#34;&gt;Past 2: Instructions&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#evaluation&#34;&gt;Evaluation&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;#data-cleaning-code&#34;&gt;Data cleaning code&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;#data-to-possibly-use-in-your-plot&#34;&gt;Data to possibly use in your plot&lt;/a&gt;
 &lt;ul&gt;
@@ -6202,19 +6911,22 @@ admissions %&gt;%
 &lt;/div&gt;
 
 &lt;div class=&#34;fyi&#34;&gt;
-&lt;p&gt;&lt;strong&gt;THIS IS CURRENTLY IN DRAFT FORM&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;Each member of the group should submit a copy of the project to D2L (for ease of evaluation and to ensure communication across the group). Please write your group number and the group members’ names across the top.&lt;/p&gt;
 &lt;/div&gt;
 &lt;p&gt;The United States has resettled more than 600,000 refugees from 60 different countries since 2006.&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;/img/assignments/refugees_welcome.jpg&#34; width=&#34;70%&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;In this project, you will use &lt;strong&gt;R, ggplot&lt;/strong&gt; and some form of graphics editor to explore where these refugees have come from.&lt;/p&gt;
-&lt;div id=&#34;instructions&#34; class=&#34;section level2&#34;&gt;
-&lt;h2&gt;Instructions&lt;/h2&gt;
+&lt;div id=&#34;part-1-hypotheses&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Part 1: Hypotheses&lt;/h2&gt;
+&lt;p&gt;For this part of the assignment, you need to provide five hypotheses about the relationship between variables in a dataset. You can (and should) consider making hypotheses about the dataset that you plan to use for your final project. However, this is not a requirement. All that is required is that you provide five hypotheses about some data. Your write-up should have an enumerated list of questions (e.g., “1. Are there more murders in states that have high unemployment.”). You will receive 2 points for each hypothesis.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;past-2-instructions&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Past 2: Instructions&lt;/h2&gt;
 &lt;p&gt;Here’s what you need to do:&lt;/p&gt;
 &lt;ol&gt;
 &lt;li&gt;&lt;p&gt;&lt;strong&gt;Download&lt;/strong&gt; the Department of Homeland Security’s annual count of people granted refugee status between 2006-2015:&lt;/p&gt;
 &lt;p&gt;&lt;a href=&#34;/data/refugee_status.csv&#34;&gt;&lt;i class=&#34;fas fa-file-csv&#34;&gt;&lt;/i&gt; DHS refugees, 2006-2015&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;Place this in the &lt;code&gt;data&lt;/code&gt; subfolder you created in step 1. You might need to right click on this link and choose “Save link as…”, since your browser may try to display it as text. This data was originally &lt;a href=&#34;https://www.kaggle.com/dhs/refugee-report&#34;&gt;uploaded by the Department of Homeland Security to Kaggle&lt;/a&gt;, and is provided with a public domain license.&lt;/p&gt;&lt;/li&gt;
+&lt;p&gt;Save this somewhere on your computer (you might need to right click on this link and choose “Save link as…”, since your browser may try to display it as text). This data was originally &lt;a href=&#34;https://www.kaggle.com/dhs/refugee-report&#34;&gt;uploaded by the Department of Homeland Security to Kaggle&lt;/a&gt;, and is provided with a public domain license.&lt;/p&gt;&lt;/li&gt;
 &lt;li&gt;&lt;p&gt;&lt;strong&gt;Clean&lt;/strong&gt; the data using the code we’ve given you below. As always, this code is presented without guarantee. You may need to deal with a few issues, depending on your computer’s setup.&lt;/p&gt;&lt;/li&gt;
 &lt;li&gt;&lt;p&gt;&lt;strong&gt;Summarize&lt;/strong&gt; the data somehow. There is data for 60 countries over 10 years, so you’ll probably need to aggregate or reshape the data somehow (unless you do a 60-country sparkline). I’ve included some examples down below.&lt;/p&gt;&lt;/li&gt;
 &lt;li&gt;&lt;p&gt;&lt;strong&gt;Create&lt;/strong&gt; an appropriate time-based visualization based on the data. I’ve shown a few different ways to summarize the data so that it’s plottable down below. Don’t just calculate overall averages or totals per country—the visualization needs to deal with change over time. &lt;em&gt;Do as much polishing and refining in R&lt;/em&gt;—make adjustments to the colors, scales, labels, grid lines, and even fonts, etc.&lt;/p&gt;&lt;/li&gt;
@@ -6228,6 +6940,18 @@ admissions %&gt;%
 &lt;/ol&gt;
 &lt;p&gt;For this assignment, we are less concerned with the code (that’s why we gave most of it to you), and more concerned with the &lt;em&gt;design&lt;/em&gt;. Choose good colors based on palettes. Choose good, clean fonts. Use the heck out of &lt;code&gt;theme()&lt;/code&gt;. Add informative design elements. Make it look beautiful. Refer to &lt;a href=&#34;/resource/design/&#34;&gt;the design resources here&lt;/a&gt;.&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;Please seek out help when you need it!&lt;/strong&gt; You know enough R (and have enough examples of code from class and your readings) to be able to do this. &lt;em&gt;You can do this,&lt;/em&gt; and you’ll feel like a budding dataviz witch/wizard when you’re done.&lt;/p&gt;
+&lt;div id=&#34;evaluation&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Evaluation&lt;/h3&gt;
+&lt;p&gt;I will evaluate these projects (not the TA). I will only give top marks to those groups showing initiative and cleverness. I will use the following weights for final scores:&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Part 1&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Each hypothesis is worth 2 points. (This is intended to be some free points for all; 10 points)&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Part 2&lt;/strong&gt;&lt;/p&gt;
+&lt;ol style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;&lt;p&gt;Technical difficulty: Does the final project show mastery of the skills we’ve discussed thus far? (15 points)&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Professionalism of visuals: Does the visualizations look like something you might see on TV or in the newspaper? (15 points)&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Poster clarity: Does your poster clearly convey some point? (10 points)&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;
 &lt;/div&gt;
 &lt;div id=&#34;data-cleaning-code&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Data cleaning code&lt;/h2&gt;
@@ -13418,19 +14142,14 @@ data(murders)&lt;/code&gt;&lt;/pre&gt;
         &lt;/tr&gt;
         &lt;tr&gt;
             &lt;td align=&#34;right&#34; style=&#34;width:18%;text-align:right&#34;&gt;Week 8&lt;/td&gt;
-            &lt;td style=&#34;width:50%;text-align:left&#34;&gt;Bias vs Variance&lt;/td&gt;
-            &lt;td align=&#34;center&#34; style=&#34;width:10%;text-align:center&#34;&gt;
-                &lt;font color=&#34;f1f1f1&#34;&gt;
-                    &lt;i class=&#34;fas fa-book-reader fa-lg&#34;&gt;&lt;/i&gt;&lt;/font&gt;
-            &lt;/td&gt;
-            &lt;td align=&#34;center&#34; style=&#34;width:10%;text-align:center&#34;&gt;
-                &lt;font color=&#34;f1f1f1&#34;&gt;
-                    &lt;i class=&#34;fas fa-laptop-code fa-lg&#34;&gt;&lt;/i&gt;&lt;/font&gt;
-            &lt;/td&gt;
-            &lt;td align=&#34;center&#34; style=&#34;width:10%;text-align:center&#34;&gt;
-                &lt;font color=&#34;f1f1f1&#34;&gt;
-                    &lt;i class=&#34;fas fa-pencil-ruler fa-lg&#34;&gt;&lt;/i&gt;&lt;/font&gt;
-            &lt;/td&gt;
+            &lt;td style=&#34;width:50%;text-align:left&#34;&gt;Nonlinear Regression&lt;/td&gt;
+            &lt;td align=&#34;center&#34; style=&#34;width:10%;text-align:center&#34;&gt;&lt;a
+                    href=&#34;/content/08-content/&#34;&gt;
+                    &lt;i class=&#34;fas fa-book-reader fa-lg&#34;&gt;&lt;/i&gt;&lt;/a&gt;&lt;/td&gt;
+            &lt;td align=&#34;center&#34; style=&#34;width:10%;text-align:center&#34;&gt;&lt;a href=&#34;/example/08-example/&#34;&gt;
+                    &lt;i class=&#34;fas fa-laptop-code fa-lg&#34;&gt;&lt;/i&gt;&lt;/a&gt;&lt;/td&gt;
+            &lt;td align=&#34;center&#34; style=&#34;width:10%;text-align:center&#34;&gt;&lt;a href=&#34;/assignment/08-assignment/&#34;&gt;
+                    &lt;i class=&#34;fas fa-pencil-ruler fa-lg&#34;&gt;&lt;/i&gt;&lt;/a&gt;&lt;/td&gt;
         &lt;/tr&gt;
         &lt;tr&gt;
             &lt;td align=&#34;right&#34; style=&#34;width:18%;text-align:right&#34;&gt;Week 9&lt;/td&gt;

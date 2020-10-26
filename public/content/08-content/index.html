@@ -1,0 +1,1510 @@
+<!DOCTYPE html>
+<html lang="en-us" 
+      xmlns:og="http://ogp.me/ns#" 
+      xmlns:fb="https://www.facebook.com/2008/fbml">
+
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="generator" content="Source Themes Academic 4.8.0">
+
+  
+
+  
+  
+  
+  
+  
+    
+    
+    
+  
+  
+
+  <meta name="author" content="Ben Bushong">
+
+  
+  
+  
+    
+  
+  <meta name="description" content="Required Reading  Guiding Ideas  Nonparametric Regression  R Setup Mathematical Setup k-Nearest Neighbors Decision Trees Example: Credit Card Data    Required Reading  This page.  Guiding Ideas  How to use k-nearest neighbors for regression through the use of the knnreg() function from the caret package How to use decision trees for regression through the use of the rpart() function from the rpart package.">
+
+  
+  <link rel="alternate" hreflang="en-us" href="/content/08-content/">
+
+  
+
+
+  
+  
+  
+  <meta name="theme-color" content="#18453B">
+  
+
+  
+  
+  
+  <script src="/js/mathjax-config.js"></script>
+  
+
+  
+  
+  
+  
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/academicons/1.8.6/css/academicons.min.css" integrity="sha256-uFVgMKfistnJAfoCUQigIl+JfUaP47GrRKjf6CTPVmw=" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.0-1/css/all.min.css" integrity="sha256-4w9DunooKSr3MFXHXWyFER38WmPdm361bQS/2KUWZbU=" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+
+    
+    
+    
+      
+    
+    
+      
+      
+        
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/styles/github.min.css" crossorigin="anonymous" title="hl-light">
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/styles/dracula.min.css" crossorigin="anonymous" title="hl-dark" disabled>
+        
+      
+    
+
+    
+
+    
+
+    
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/lazysizes/5.1.2/lazysizes.min.js" integrity="sha256-Md1qLToewPeKjfAHU1zyPwOutccPAm5tahnaw7Osw0A=" crossorigin="anonymous" async></script>
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" integrity="" crossorigin="anonymous" async></script>
+      
+    
+      
+
+      
+      
+
+      
+    
+
+  
+
+  
+  
+  
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Fira+Sans+Condensed:400,400i,700,700i%7COverpass:400,400i,700,700i&display=swap">
+  
+
+  
+  
+  
+  
+  <link rel="stylesheet" href="/css/academic.css">
+
+  
+
+
+
+
+  
+
+
+  
+  
+
+  
+
+  <link rel="manifest" href="/index.webmanifest">
+  <link rel="icon" type="image/png" href="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_32x32_fill_lanczos_center_2.png">
+  <link rel="apple-touch-icon" type="image/png" href="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_192x192_fill_lanczos_center_2.png">
+
+  <link rel="canonical" href="/content/08-content/">
+
+  
+  
+  
+  
+  
+  
+  
+    
+  
+  
+  <meta property="twitter:card" content="summary_large_image">
+  
+  <meta property="twitter:site" content="@benbushong">
+  <meta property="twitter:creator" content="@benbushong">
+  
+  <meta property="og:site_name" content="Data Analytics">
+  <meta property="og:url" content="/content/08-content/">
+  <meta property="og:title" content="Nonparametric Regression | Data Analytics">
+  <meta property="og:description" content="Required Reading  Guiding Ideas  Nonparametric Regression  R Setup Mathematical Setup k-Nearest Neighbors Decision Trees Example: Credit Card Data    Required Reading  This page.  Guiding Ideas  How to use k-nearest neighbors for regression through the use of the knnreg() function from the caret package How to use decision trees for regression through the use of the rpart() function from the rpart package."><meta property="og:image" content="/img/social-image.png">
+  <meta property="twitter:image" content="/img/social-image.png"><meta property="og:locale" content="en-us">
+  
+    
+      <meta property="article:published_time" content="2020-10-20T00:00:00&#43;00:00">
+    
+    <meta property="article:modified_time" content="2020-07-07T10:13:55-04:00">
+  
+
+  
+
+
+
+  
+
+
+  
+
+
+  <link rel="shortcut icon" href="/favicon.ico" />
+  <link rel="apple-touch-icon-precomposed" sizes="57x57" href="/img/apple-touch-icon-57x57.png" />
+  <link rel="apple-touch-icon-precomposed" sizes="114x114" href="/img/apple-touch-icon-114x114.png" />
+  <link rel="apple-touch-icon-precomposed" sizes="72x72" href="/img/apple-touch-icon-72x72.png" />
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/img/apple-touch-icon-144x144.png" />
+  <link rel="apple-touch-icon-precomposed" sizes="120x120" href="/img/apple-touch-icon-120x120.png" />
+  <link rel="apple-touch-icon-precomposed" sizes="152x152" href="/img/apple-touch-icon-152x152.png" />
+  <link rel="icon" type="image/png" href="/img/favicon-32x32.png" sizes="32x32" />
+  <link rel="icon" type="image/png" href="/img/favicon-16x16.png" sizes="16x16" />
+  <meta name="application-name" content="SSC 442: Data Analytics" />
+  <meta name="msapplication-TileColor" content="#FFFFFF" />
+  <meta name="msapplication-TileImage" content="/img/mstile-144x144.png" />
+
+
+  <title>Nonparametric Regression | Data Analytics</title>
+
+</head>
+
+
+<body id="top" data-spy="scroll" data-offset="70"
+    data-target="#TableOfContents"
+    >
+
+    <aside class="search-results" id="search">
+  <div class="container">
+    <section class="search-header">
+
+      <div class="row no-gutters justify-content-between mb-3">
+        <div class="col-6">
+          <h1>Search</h1>
+        </div>
+        <div class="col-6 col-search-close">
+          <a class="js-search" href="#"><i class="fas fa-times-circle text-muted" aria-hidden="true"></i></a>
+        </div>
+      </div>
+
+      <div id="search-box">
+        
+        
+        
+      </div>
+
+    </section>
+    <section class="section-search-results">
+
+      <div id="search-hits">
+        
+      </div>
+
+    </section>
+  </div>
+</aside>
+
+
+    
+
+
+
+
+
+
+
+<nav class="navbar navbar-expand-lg navbar-light compensate-for-scrollbar" id="navbar-main">
+  <div class="container">
+
+    
+    <div class="d-none d-lg-inline-flex">
+      <a class="navbar-brand" href="/">Data Analytics</a>
+    </div>
+    
+
+    
+    <button type="button" class="navbar-toggler" data-toggle="collapse"
+            data-target="#navbar-content" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
+    <span><i class="fas fa-bars"></i></span>
+    </button>
+    
+
+    
+    <div class="navbar-brand-mobile-wrapper d-inline-flex d-lg-none">
+      <a class="navbar-brand" href="/">Data Analytics</a>
+    </div>
+    
+
+    
+    
+    <div class="navbar-collapse main-menu-item collapse justify-content-end" id="navbar-content">
+
+      
+      <ul class="navbar-nav d-md-inline-flex">
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/syllabus/"><span>Syllabus</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/schedule/"><span>Schedule</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link  active" href="/content/"><span>Content</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/example/"><span>Examples</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/assignment/"><span>Assignments</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+            
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="https://ssc442.slack.com" target="_blank" rel="noopener"><span><i class="fab fa-slack"></i></span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+            
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="https://www.twitch.tv/benbushong" target="_blank" rel="noopener"><span><i class="fab fa-twitch"></i></span></a>
+        </li>
+
+        
+        
+
+      
+
+        
+      </ul>
+    </div>
+
+    <ul class="nav-icons navbar-nav flex-row ml-auto d-flex pl-md-2">
+      
+
+      
+
+      
+
+    </ul>
+
+  </div>
+</nav>
+
+
+    
+
+<div class="container-fluid docs">
+    <div class="row flex-xl-nowrap">
+        <div class="col-12 col-md-3 col-xl-2 docs-sidebar">
+            
+
+
+
+
+
+  
+    
+  
+
+
+
+
+<form class="docs-search d-flex align-items-center">
+  <button class="btn docs-toggle d-md-none p-0 mr-3" type="button" data-toggle="collapse" data-target="#docs-nav" aria-controls="docs-nav" aria-expanded="false" aria-label="Toggle section navigation">
+    <span><i class="fas fa-bars"></i></span>
+  </button>
+
+  
+</form>
+
+<nav class="collapse docs-links" id="docs-nav">
+  
+
+  
+  
+  
+  
+  <div class="docs-toc-item">
+    <a class="docs-toc-link" href="/content/">Readings, lectures, and videos</a>
+
+  </div>
+  
+  <div class="docs-toc-item">
+    <a class="docs-toc-link" href="/content/00-content/">Course content</a>
+    <ul class="nav docs-sidenav">
+      
+      <li >
+        <a href="/content/00-content/">0: Introduction to R</a>
+      </li>
+      
+      <li >
+        <a href="/content/01-content/">1: The Tidyverse</a>
+      </li>
+      
+      <li >
+        <a href="/content/02-content/">2: Visualization</a>
+      </li>
+      
+      <li >
+        <a href="/content/03-content/">3: Visualization II</a>
+      </li>
+      
+      <li >
+        <a href="/content/04-content/">4: Uncertainty</a>
+      </li>
+      
+      <li >
+        <a href="/content/05-content/">5: Linear Regression I</a>
+      </li>
+      
+      <li >
+        <a href="/content/06-content/">6: Linear Regression II</a>
+      </li>
+      
+      <li >
+        <a href="/content/07-content/">7: Linear Regression III</a>
+      </li>
+      
+      <li class="active">
+        <a href="/content/08-content/">8: Nonparametric Regression</a>
+      </li>
+      
+    </ul>
+    
+
+  </div>
+  
+  
+</nav>
+
+        </div>
+
+        
+
+        <main class="col-12 col-md-9 col-xl-8 py-md-3 pl-md-5 docs-content" role="main">
+
+            <article class="article">
+
+                <div class="docs-article-container">
+                    <h1>Nonparametric Regression</h1>
+
+                    
+
+                    
+                    <div class="due-date p-2 mb-3 bg-content text-white">
+                        Content for Tuesday, October 20, 2020
+                    </div>
+                    
+
+                    
+
+                    <div class="article-style">
+                        
+<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+<script src="/rmarkdown-libs/kePrint/kePrint.js"></script>
+<link href="/rmarkdown-libs/lightable/lightable.css" rel="stylesheet" />
+
+<div id="TOC">
+<ul>
+<li><a href="#required-reading">Required Reading</a>
+<ul>
+<li><a href="#guiding-ideas">Guiding Ideas</a></li>
+</ul></li>
+<li><a href="#nonparametric-regression">Nonparametric Regression</a>
+<ul>
+<li><a href="#r-setup">R Setup</a></li>
+<li><a href="#mathematical-setup">Mathematical Setup</a></li>
+<li><a href="#k-nearest-neighbors">k-Nearest Neighbors</a></li>
+<li><a href="#decision-trees">Decision Trees</a></li>
+<li><a href="#example-credit-card-data">Example: Credit Card Data</a></li>
+</ul></li>
+</ul>
+</div>
+
+<div id="required-reading" class="section level2">
+<h2>Required Reading</h2>
+<ul>
+<li>This page.</li>
+</ul>
+<div id="guiding-ideas" class="section level3">
+<h3>Guiding Ideas</h3>
+<ul>
+<li>How to use <strong>k-nearest neighbors</strong> for regression through the use of the <code>knnreg()</code> function from the <code>caret</code> package</li>
+<li>How to use <strong>decision trees</strong> for regression through the use of the <code>rpart()</code> function from the <code>rpart</code> package.</li>
+<li>How “making predictions” can be thought of as <strong>estimating the regression function</strong>, that is, the conditional mean of the response given values of the features.</li>
+<li>The difference between <strong>parametric</strong> and <strong>nonparametric</strong> methods.</li>
+<li>The difference between <strong>model parameters</strong> and <strong>tuning parameters</strong> methods.</li>
+<li>How these nonparametric methods deal with <strong>categorical variables</strong> and <strong>interactions</strong>.</li>
+<li>What is <strong>model flexibility</strong>?</li>
+<li>What is <strong>overfitting</strong> and how do we avoid it?</li>
+</ul>
+</div>
+</div>
+<div id="nonparametric-regression" class="section level1">
+<h1>Nonparametric Regression</h1>
+<p>In the next weeks, we will continue to explore models for making <strong>predictions</strong>, but now we will introduce <strong>nonparametric models</strong> that will contrast the <strong>parametric models</strong> that we have used previously.</p>
+<p>This content is currently <strong>under construction</strong>. You can expect it to be a lot less polished than other sections.</p>
+<div id="r-setup" class="section level2">
+<h2>R Setup</h2>
+<pre class="r"><code>library(tibble)     # data frame printing
+library(dplyr)      # data manipulation
+
+library(caret)      # fitting knn
+library(rpart)      # fitting trees
+library(rpart.plot) # plotting trees
+
+library(knitr)      # creating tables
+library(kableExtra) # styling tables</code></pre>
+</div>
+<div id="mathematical-setup" class="section level2">
+<h2>Mathematical Setup</h2>
+<p>Let’s return to the setup we defined in the previous lectures. Consider a random variable <span class="math inline">\(Y\)</span> which represents a <strong>response</strong> variable, and <span class="math inline">\(p\)</span> <strong>feature</strong> variables <span class="math inline">\(\boldsymbol{X} = (X_1, X_2, \ldots, X_p)\)</span>. We assume that the response variable <span class="math inline">\(Y\)</span> is some function of the features, plus some random noise.</p>
+<p><span class="math display">\[
+Y = f(\boldsymbol{X}) + \epsilon
+\]</span></p>
+<p>Our goal is to find some <span class="math inline">\(f\)</span> such that <span class="math inline">\(f(\boldsymbol{X})\)</span> is close to <span class="math inline">\(Y\)</span>. More specifically we want to minimize the risk under squared error loss.</p>
+<p><span class="math display">\[
+\mathbb{E}_{\boldsymbol{X}, Y} \left[ (Y - f(\boldsymbol{X})) ^ 2 \right] = \mathbb{E}_{\boldsymbol{X}} \mathbb{E}_{Y \mid \boldsymbol{X}} \left[ ( Y - f(\boldsymbol{X}) ) ^ 2 \mid \boldsymbol{X} = \boldsymbol{x} \right]
+\]</span></p>
+<p>We saw previously (see the slides from last two content days) that this risk is minimized by the <strong>conditional mean</strong> of <span class="math inline">\(Y\)</span> given <span class="math inline">\(\boldsymbol{X}\)</span>,</p>
+<p><span class="math display">\[
+\mu(\boldsymbol{x}) \triangleq \mathbb{E}[Y \mid \boldsymbol{X} = \boldsymbol{x}]
+\]</span></p>
+<p>which we called the <strong>regression function</strong>.</p>
+<p>Our goal then is to <strong>estimate</strong> this <strong>regression function</strong>. Let’s use an example where we know the true probability model:</p>
+<p><span class="math display">\[
+Y = 1 - 2x - 3x ^ 2 + 5x ^ 3 + \epsilon
+\]</span></p>
+<p>where <span class="math inline">\(\epsilon \sim \text{N}(0, \sigma^2)\)</span>.</p>
+<p>Recall that this implies that the regression function is</p>
+<p><span class="math display">\[
+\mu(x) = \mathbb{E}[Y \mid \boldsymbol{X} = \boldsymbol{x}] = 1 - 2x - 3x ^ 2 + 5x ^ 3
+\]</span></p>
+<p>Let’s also pretend that we do not actually know this information, but instead have some data, <span class="math inline">\((x_i, y_i)\)</span> for <span class="math inline">\(i = 1, 2, \ldots, n\)</span>.</p>
+<table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:right;">
+x
+</th>
+<th style="text-align:right;">
+y
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right;">
+-0.4689827
+</td>
+<td style="text-align:right;">
+0.7174461
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+-0.2557522
+</td>
+<td style="text-align:right;">
+1.2154439
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+0.1457067
+</td>
+<td style="text-align:right;">
+1.6041985
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+0.8164156
+</td>
+<td style="text-align:right;">
+0.9096322
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+-0.5966361
+</td>
+<td style="text-align:right;">
+0.6573128
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+0.7967794
+</td>
+<td style="text-align:right;">
+0.9500528
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+0.8893505
+</td>
+<td style="text-align:right;">
+1.1477361
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+0.3215956
+</td>
+<td style="text-align:right;">
+0.2874057
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+0.2582281
+</td>
+<td style="text-align:right;">
+-1.6197576
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+-0.8764275
+</td>
+<td style="text-align:right;">
+-2.2977242
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+-0.5880509
+</td>
+<td style="text-align:right;">
+0.0658105
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+-0.6468865
+</td>
+<td style="text-align:right;">
+-0.4708965
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+0.3740457
+</td>
+<td style="text-align:right;">
+-1.3769103
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+-0.2317926
+</td>
+<td style="text-align:right;">
+0.7619832
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+0.5396828
+</td>
+<td style="text-align:right;">
+0.2507367
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+-0.0046015
+</td>
+<td style="text-align:right;">
+2.3678186
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+0.4352370
+</td>
+<td style="text-align:right;">
+-0.1293181
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+0.9838122
+</td>
+<td style="text-align:right;">
+1.2774803
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+-0.2399296
+</td>
+<td style="text-align:right;">
+1.1842963
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+0.5548904
+</td>
+<td style="text-align:right;">
+-1.5562874
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+0.8694105
+</td>
+<td style="text-align:right;">
+-0.1356129
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+-0.5757150
+</td>
+<td style="text-align:right;">
+-0.1913002
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+0.3033475
+</td>
+<td style="text-align:right;">
+0.1975021
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+-0.7488898
+</td>
+<td style="text-align:right;">
+-0.1847245
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+-0.4655587
+</td>
+<td style="text-align:right;">
+1.5395212
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+-0.2277718
+</td>
+<td style="text-align:right;">
+1.0762960
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+-0.9732193
+</td>
+<td style="text-align:right;">
+-4.7573427
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+-0.2352241
+</td>
+<td style="text-align:right;">
+1.9363453
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+0.7393817
+</td>
+<td style="text-align:right;">
+0.4588894
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+-0.3193020
+</td>
+<td style="text-align:right;">
+0.4812168
+</td>
+</tr>
+</tbody>
+</table>
+<p>We simulated a bit more data than last time to make the “pattern” clearer to recognize.</p>
+<p><img src="/content/08-content_files/figure-html/unnamed-chunk-5-1.png" width="576" style="display: block; margin: auto;" /></p>
+<p>Recall that when we used a linear model, we first need to make an <strong>assumption</strong> about the form of the regression function.</p>
+<p>For example, we could assume that</p>
+<p><span class="math display">\[
+\mu(x) = \mathbb{E}[Y \mid \boldsymbol{X} = \boldsymbol{x}] = \beta_0 + \beta_1 x + \beta_2 x^2 + \beta_3 x^3
+\]</span></p>
+<p>which is fit in R using the <code>lm()</code> function</p>
+<pre class="r"><code>lm(y ~ x + I(x ^ 2) + I(x ^ 3), data = sim_slr_data)</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = y ~ x + I(x^2) + I(x^3), data = sim_slr_data)
+## 
+## Coefficients:
+## (Intercept)            x       I(x^2)       I(x^3)  
+##      0.8397      -2.7257      -2.3752       6.0906</code></pre>
+<p>Notice that what is returned are (maximum likelihood or least squares) estimates of the unknown <span class="math inline">\(\beta\)</span> coefficients. That is, the “learning” that takes place with a linear models is “learning” the values of the coefficients.</p>
+<p>For this reason, we call linear regression models <strong>parametric</strong> models. They have unknown <strong>model parameters</strong>, in this case the <span class="math inline">\(\beta\)</span> coefficients that must be learned from the data. The form of the regression function is assumed.</p>
+<p>What if we don’t want to make an assumption about the form of the regression function? While in this case, you might look at the plot and arrive at a reasonable guess of assuming a third order polynomial, what if it isn’t so clear? What if you have 100 features? Making strong assumptions might not work well.</p>
+<p>Enter <strong>nonparametric</strong> models. We will consider two examples: <strong>k-nearest neighbors</strong> and <strong>decision trees</strong>.</p>
+</div>
+<div id="k-nearest-neighbors" class="section level2">
+<h2>k-Nearest Neighbors</h2>
+<p>We’ll start with <strong>k-nearest neighbors</strong> which is possibly a more intuitive procedure than linear models.<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a></p>
+<p>If our goal is to estimate the mean function,</p>
+<p><span class="math display">\[
+\mu(x) = \mathbb{E}[Y \mid \boldsymbol{X} = \boldsymbol{x}]
+\]</span></p>
+<p>the most natural approach would be to use</p>
+<p><span class="math display">\[
+\text{average}(\{ y_i : x_i = x \}).
+\]</span></p>
+<p>That is, to estimate the conditional mean at <span class="math inline">\(x\)</span>, average the <span class="math inline">\(y_i\)</span> values for each data point where <span class="math inline">\(x_i = x\)</span>.</p>
+<p>While this sounds nice, it has an obvious flaw. For most values of <span class="math inline">\(x\)</span> there will not be any <span class="math inline">\(x_i\)</span> in the data where <span class="math inline">\(x_i = x\)</span>!</p>
+<p>So what’s the next best thing? Pick values of <span class="math inline">\(x_i\)</span> that are “close” to <span class="math inline">\(x\)</span>.</p>
+<p><span class="math display">\[
+\text{average}( \{ y_i : x_i \text{ equal to (or very close to) x} \} ).
+\]</span></p>
+<p>This is the main idea behind many nonparametric approaches. The details often just amount to very specifically defining what “close” means.</p>
+<p>In the case of k-nearest neighbors we use</p>
+<p><span class="math display">\[
+\hat{\mu}_k(x) = \frac{1}{k} \sum_{ \{i \ : \ x_i \in \mathcal{N}_k(x, \mathcal{D}) \} } y_i
+\]</span></p>
+<p>as our estimate of the regression function at <span class="math inline">\(x\)</span>. While this looks complicated, it is actually very simple. Here, we are using an average of the <span class="math inline">\(y_i\)</span> values of for the <span class="math inline">\(k\)</span> nearest neighbors to <span class="math inline">\(x\)</span>.</p>
+<p>The <span class="math inline">\(k\)</span> “nearest” neighbors are the <span class="math inline">\(k\)</span> data points <span class="math inline">\((x_i, y_i)\)</span> that have <span class="math inline">\(x_i\)</span> values that are nearest to <span class="math inline">\(x\)</span>. We can define “nearest” using any distance we like, but unless otherwise noted, we are referring to euclidean distance.<a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a> We are using the notation <span class="math inline">\(\{i \ : \ x_i \in \mathcal{N}_k(x, \mathcal{D}) \}\)</span> to define the <span class="math inline">\(k\)</span> observations that have <span class="math inline">\(x_i\)</span> values that are nearest to the value <span class="math inline">\(x\)</span> in a dataset <span class="math inline">\(\mathcal{D}\)</span>, in other words, the <span class="math inline">\(k\)</span> nearest neighbors.</p>
+<p>The plots below begin to illustrate this idea.</p>
+<p><img src="/content/08-content_files/figure-html/unnamed-chunk-8-1.png" width="864" style="display: block; margin: auto;" /></p>
+<ul>
+<li>In the left plot, to estimate the mean of <span class="math inline">\(Y\)</span> at <span class="math inline">\(x = -0.5\)</span> we use the three nearest neighbors, which are highlighted with green. Our estimate is the average of the <span class="math inline">\(y_i\)</span> values of these three points indicated by the black x.</li>
+<li>In the middle plot, to estimate the mean of <span class="math inline">\(Y\)</span> at <span class="math inline">\(x = 0\)</span> we use the five nearest neighbors, which are highlighted with green. Our estimate is the average of the <span class="math inline">\(y_i\)</span> values of these five points indicated by the black x.</li>
+<li>In the right plot, to estimate the mean of <span class="math inline">\(Y\)</span> at <span class="math inline">\(x = 0.75\)</span> we use the nine nearest neighbors, which are highlighted with green. Our estimate is the average of the <span class="math inline">\(y_i\)</span> values of these nine points indicated by the black x.</li>
+</ul>
+<p>You might begin to notice a bit of an issue here. We have to do a new calculation each time we want to estimate the regression function at a different value of <span class="math inline">\(x\)</span>! For this reason, k-nearest neighbors is often said to be “fast to train” and “slow to predict.” Training, is instant. You just memorize the data! Prediction involves finding the distance between the <span class="math inline">\(x\)</span> considered and all <span class="math inline">\(x_i\)</span> in the data!<a href="#fn3" class="footnote-ref" id="fnref3"><sup>3</sup></a></p>
+<p>So, how then, do we choose the value of the <strong>tuning</strong> parameter <span class="math inline">\(k\)</span>? We <em><strong>validate</strong></em>!</p>
+<p>First, let’s take a look at what happens with this data if we consider three different values of <span class="math inline">\(k\)</span>.</p>
+<p><img src="/content/08-content_files/figure-html/unnamed-chunk-10-1.png" width="1152" style="display: block; margin: auto;" /></p>
+<p>For each plot, the black dashed curve is the true mean function.</p>
+<ul>
+<li>In the left plot we use <span class="math inline">\(k = 25\)</span>. The red “curve” is the estimate of the mean function for each <span class="math inline">\(x\)</span> shown in the plot.</li>
+<li>In the left plot we use <span class="math inline">\(k = 5\)</span>. The blue “curve” is the estimate of the mean function for each <span class="math inline">\(x\)</span> shown in the plot.</li>
+<li>In the left plot we use <span class="math inline">\(k = 1\)</span>. The green “curve” is the estimate of the mean function for each <span class="math inline">\(x\)</span> shown in the plot.</li>
+</ul>
+<p>Some things to notice here:</p>
+<ul>
+<li>The left plot with <span class="math inline">\(k = 25\)</span> is performing poorly. The estimated “curve” does not “move” enough. This is an example of an <strong>inflexible</strong> model.</li>
+<li>The right plot with <span class="math inline">\(k = 1\)</span> might not perform too well. The estimated “curve” seems to “move” too much. (Notice, that it goes through each point. We’ve fit to the noise.) This is an example of a <strong>flexible</strong> model.</li>
+</ul>
+<p>While the middle plot with <span class="math inline">\(k = 5\)</span> is not “perfect” it seems to roughly capture the “motion” of the true regression function. We can begin to see that if we generated new data, this estimated regression function would perform better than the other two.</p>
+<p>But remember, in practice, we won’t know the true regression function, so we will need to determine how our model performs using only the available data!</p>
+<p>This <span class="math inline">\(k\)</span>, the number of neighbors, is an example of a <strong>tuning parameter</strong>. Instead of being learned from the data, like model parameters such as the <span class="math inline">\(\beta\)</span> coefficients in linear regression, a tuning parameter tells us <em>how</em> to learn from data. It is user-specified. To determine the value of <span class="math inline">\(k\)</span> that should be used, many models are fit to the estimation data, then evaluated on the validation. Using the information from the validation data, a value of <span class="math inline">\(k\)</span> is chosen. (More on this in a bit.)</p>
+<ul>
+<li><strong>Model parameters</strong> are “learned” using the same data that was used to fit the model.</li>
+<li><strong>Tuning parameters</strong> are “chosen” using data not used to fit the model.</li>
+</ul>
+<p>This tuning parameter <span class="math inline">\(k\)</span> also defines the <strong>flexibility</strong> of the model. In KNN, a small value of <span class="math inline">\(k\)</span> is a flexible model, while a large value of <span class="math inline">\(k\)</span> is inflexible.<a href="#fn4" class="footnote-ref" id="fnref4"><sup>4</sup></a></p>
+<p>Before moving to an example of tuning a KNN model, we will first introduce decision trees.</p>
+</div>
+<div id="decision-trees" class="section level2">
+<h2>Decision Trees</h2>
+<p><strong>Decision trees</strong> are similar to k-nearest neighbors but instead of looking for neighbors, decision trees create neighborhoods. We won’t explore the full details of trees, but just start to understand the basic concepts, as well as learn to fit them in R.</p>
+<p>Neighborhoods are created via recursive binary partitions. In simpler terms, pick a feature and a possible cutoff value. Data that have a value less than the cutoff for the selected feature are in one neighborhood (the left) and data that have a value greater than the cutoff are in another (the right). Within these two neighborhoods, repeat this procedure until a stopping rule is satisfied. To make a prediction, check which neighborhood a new piece of data would belong to and predict the average of the <span class="math inline">\(y_i\)</span> values of data in that neighborhood.</p>
+<p>With the data above, which has a single feature <span class="math inline">\(x\)</span>, consider three possible cutoffs: -0.5, 0.0, and 0.75.</p>
+<p><img src="/content/08-content_files/figure-html/unnamed-chunk-12-1.png" width="864" style="display: block; margin: auto;" /></p>
+<p>For each plot, the black vertical line defines the neighborhoods. The green horizontal lines are the average of the <span class="math inline">\(y_i\)</span> values for the points in the left neighborhood. The red horizontal lines are the average of the <span class="math inline">\(y_i\)</span> values for the points in the right neighborhood.</p>
+<p>What makes a cutoff good? Large differences in the average <span class="math inline">\(y_i\)</span> between the two neighborhoods. More formally we want to find a cutoff value that minimizes</p>
+<p><span class="math display">\[
+\sum_{i \in N_L} \left( y_i - \hat{\mu}_{N_L} \right) ^ 2 + \sum_{i \in N_R} \left(y_i - \hat{\mu}_{N_R} \right) ^ 2
+\]</span></p>
+<p>where</p>
+<ul>
+<li><span class="math inline">\(N_L\)</span> are the data in the left neighborhood, that is <span class="math inline">\(x &lt; c\)</span></li>
+<li><span class="math inline">\(N_R\)</span> are the data in the right neighborhood, that is <span class="math inline">\(x &gt; c\)</span></li>
+<li><span class="math inline">\(\hat{\mu}_{N_L}\)</span> is the mean of the <span class="math inline">\(y_i\)</span> for data in the left neighborhood</li>
+<li><span class="math inline">\(\hat{\mu}_{N_R}\)</span> is the mean of the <span class="math inline">\(y_i\)</span> for data in the right neighborhood</li>
+</ul>
+<p>This quantity is the sum of two sum of squared errors, one for the left neighborhood, and one for the right neighborhood.</p>
+<table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:right;">
+Cutoff
+</th>
+<th style="text-align:right;">
+Total SSE
+</th>
+<th style="text-align:right;">
+Left SSE
+</th>
+<th style="text-align:right;">
+Right SSE
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right;">
+-0.50
+</td>
+<td style="text-align:right;">
+45.02
+</td>
+<td style="text-align:right;">
+21.28
+</td>
+<td style="text-align:right;">
+23.74
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+0.00
+</td>
+<td style="text-align:right;">
+58.94
+</td>
+<td style="text-align:right;">
+44.68
+</td>
+<td style="text-align:right;">
+14.26
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+0.75
+</td>
+<td style="text-align:right;">
+56.71
+</td>
+<td style="text-align:right;">
+55.46
+</td>
+<td style="text-align:right;">
+1.25
+</td>
+</tr>
+</tbody>
+</table>
+<p>The table above summarizes the results of the three potential splits. We see that (of the splits considered, which are not exhaustive<a href="#fn5" class="footnote-ref" id="fnref5"><sup>5</sup></a>) the split based on a cutoff of <span class="math inline">\(x = -0.50\)</span> creates the best partitioning of the space.</p>
+<p>Now let’s consider building a full tree.</p>
+<p><img src="/content/08-content_files/figure-html/unnamed-chunk-16-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>In the plot above, the true regression function is the dashed black curve, and the solid orange curve is the estimated regression function using a decision tree. We see that there are two splits, which we can visualize as a tree.</p>
+<p><img src="/content/08-content_files/figure-html/unnamed-chunk-17-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>The above “tree”<a href="#fn6" class="footnote-ref" id="fnref6"><sup>6</sup></a> shows the splits that were made. It informs us of the variable used, the cutoff value, and some summary of the resulting neighborhood. In “tree” terminology the resulting neighborhoods are “terminal nodes” of the tree. In contrast, “internal nodes” are neighborhoods that are created, but then further split.</p>
+<p>The “root node” is the neighborhood contains all observations, before any splitting, and can be seen at the top of the image above. We see that this node represents 100% of the data. The other number, 0.21, is the mean of the response variable, in this case, <span class="math inline">\(y_i\)</span>.</p>
+<p>Looking at a terminal node, for example the bottom left node, we see that 23% of the data is in this node. The average value of the <span class="math inline">\(y_i\)</span> in this node is -1, which can be seen in the plot above.</p>
+<p>We also see that the first split is based on the <span class="math inline">\(x\)</span> variable, and a cutoff of <span class="math inline">\(x = -0.52\)</span>. Note that because there is only one variable here, all splits are based on <span class="math inline">\(x\)</span>, but in the future, we will have multiple features that can be split and neighborhoods will no longer be one-dimensional. However, this is hard to plot.</p>
+<p>Let’s build a bigger, more flexible tree.</p>
+<p><img src="/content/08-content_files/figure-html/unnamed-chunk-19-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="/content/08-content_files/figure-html/unnamed-chunk-20-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>There are two tuning parameters at play here which we will call by their names in R which we will see soon:</p>
+<ul>
+<li><code>cp</code> or the “complexity parameter” as it is called.<a href="#fn7" class="footnote-ref" id="fnref7"><sup>7</sup></a> This parameter determines which splits are accepted. A split must improve the performance of the tree by more than <code>cp</code> in order to be used. When we get to R, we will see that the default value is 0.1.</li>
+<li><code>minsplit</code>, the minimum number of observations in a node (neighborhood) in order to consider splitting within a neighborhood.</li>
+</ul>
+<p>There are actually many more possible tuning parameters for trees, possibly differing depending on who wrote the code you’re using. We will limit discussion to these two.<a href="#fn8" class="footnote-ref" id="fnref8"><sup>8</sup></a> Note that they effect each other, and they effect other parameters which we are not discussing. The main takeaway should be how they effect model flexibility.</p>
+<p>First let’s look at what happens for a fixed <code>minsplit</code> by variable <code>cp</code>.</p>
+<p><img src="/content/08-content_files/figure-html/unnamed-chunk-22-1.png" width="1152" style="display: block; margin: auto;" /></p>
+<p>We see that as <code>cp</code> <em>decreases</em>, model flexibility <strong>increases</strong>. We see more splits, because the increase in performance needed to accept a split is smaller as <code>cp</code> is reduced.</p>
+<p>Now the reverse, fix <code>cp</code> and vary <code>minsplit</code>.</p>
+<p><img src="/content/08-content_files/figure-html/unnamed-chunk-24-1.png" width="1152" style="display: block; margin: auto;" /></p>
+<p>We see that as <code>minsplit</code> <em>decreases</em>, model flexibility <strong>increases</strong>. By allowing splits of neighborhoods with fewer observations, we obtain more splits, which results in a more flexible model.</p>
+</div>
+<div id="example-credit-card-data" class="section level2">
+<h2>Example: Credit Card Data</h2>
+<pre class="r"><code># load data, coerce to tibble
+crdt = as_tibble(ISLR::Credit)</code></pre>
+<p>Again, we are using the <code>Credit</code> data form the <code>ISLR</code> package. Note: <strong>this is not real data.</strong> It has been simulated.</p>
+<pre class="r"><code># data prep
+crdt = crdt %&gt;%
+  select(-ID) %&gt;%
+  select(-Rating, everything())</code></pre>
+<p>We remove the <code>ID</code> variable as it should have no predictive power. We also move the <code>Rating</code> variable to the last column with a clever <code>dplyr</code> trick. This is in no way necessary, but is useful in creating some plots.</p>
+<pre class="r"><code># test-train split
+set.seed(1)
+crdt_trn_idx = sample(nrow(crdt), size = 0.8 * nrow(crdt))
+crdt_trn = crdt[crdt_trn_idx, ]
+crdt_tst = crdt[-crdt_trn_idx, ]</code></pre>
+<pre class="r"><code># estimation-validation split
+crdt_est_idx = sample(nrow(crdt_trn), size = 0.8 * nrow(crdt_trn))
+crdt_est = crdt_trn[crdt_est_idx, ]
+crdt_val = crdt_trn[-crdt_est_idx, ]</code></pre>
+<p>After train-test (with 80% of the data) and estimation-validation splitting the data, we look at the train data.</p>
+<pre class="r"><code># check data
+head(crdt_trn, n = 10)</code></pre>
+<pre><code>## # A tibble: 10 x 11
+##    Income Limit Cards   Age Education Gender Student Married Ethnicity Balance
+##     &lt;dbl&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt;     &lt;int&gt; &lt;fct&gt;  &lt;fct&gt;   &lt;fct&gt;   &lt;fct&gt;       &lt;int&gt;
+##  1  183.  13913     4    98        17 &quot; Mal… No      Yes     Caucasian    1999
+##  2   35.7  2880     2    35        15 &quot; Mal… No      No      African …       0
+##  3  123.   8376     2    89        17 &quot; Mal… Yes     No      African …    1259
+##  4   20.8  2672     1    70        18 &quot;Fema… No      No      African …       0
+##  5   39.1  5565     4    48        18 &quot;Fema… No      Yes     Caucasian     772
+##  6   36.5  3806     2    52        13 &quot; Mal… No      No      African …     188
+##  7   45.1  3762     3    80         8 &quot; Mal… No      Yes     Caucasian      70
+##  8   43.5  2906     4    69        11 &quot; Mal… No      No      Caucasian       0
+##  9   23.1  3476     2    50        15 &quot;Fema… No      No      Caucasian     209
+## 10   53.2  4943     2    46        16 &quot;Fema… No      Yes     Asian         382
+## # … with 1 more variable: Rating &lt;int&gt;</code></pre>
+<p>In this simulated data, we would like to predict the <code>Rating</code> variable. For now, let’s try to use only demographic information as predictors.<a href="#fn9" class="footnote-ref" id="fnref9"><sup>9</sup></a> In particular, let’s focus on <code>Age</code> (numeric), <code>Gender</code> (categorical), and <code>Student</code> (categorical).</p>
+<p>Let’s fit KNN models with these features, and various values of <span class="math inline">\(k\)</span>. To do so, we use the <code>knnreg()</code> function from the <code>caret</code> package.<a href="#fn10" class="footnote-ref" id="fnref10"><sup>10</sup></a> Use <code>?knnreg</code> for documentation and details.</p>
+<pre class="r"><code>crdt_knn_01 = knnreg(Rating ~ Age + Gender + Student, data = crdt_est, k = 1)
+crdt_knn_10 = knnreg(Rating ~ Age + Gender + Student, data = crdt_est, k = 10)
+crdt_knn_25 = knnreg(Rating ~ Age + Gender + Student, data = crdt_est, k = 25)</code></pre>
+<p>Here, we fit three models to the estimation data. We supply the variables that will be used as features as we would with <code>lm()</code>. We also specify how many neighbors to consider via the <code>k</code> argument.</p>
+<p>But wait a second, what is the distance from non-student to student? From male to female? In other words, how does KNN handle categorical variables? It doesn’t! Like <code>lm()</code> it creates dummy variables under the hood.</p>
+<p><strong>Note:</strong> To this point, and until we specify otherwise, we will always coerce categorical variables to be factor variables in R. We will then let modeling functions such as <code>lm()</code> or <code>knnreg()</code> deal with the creation of dummy variables internally.</p>
+<pre class="r"><code>head(crdt_knn_10$learn$X)</code></pre>
+<pre><code>##   Age GenderFemale StudentYes
+## 1  30            0          0
+## 2  25            0          0
+## 3  44            0          0
+## 4  73            1          0
+## 5  44            0          1
+## 6  71            0          0</code></pre>
+<p>Once these dummy variables have been created, we have a numeric <span class="math inline">\(X\)</span> matrix, which makes distance calculations easy.<a href="#fn11" class="footnote-ref" id="fnref11"><sup>11</sup></a> For example, the distance between the 3rd and 4th observation here is 29.017.</p>
+<pre class="r"><code>dist(head(crdt_knn_10$learn$X))</code></pre>
+<pre><code>##           1         2         3         4         5
+## 2  5.000000                                        
+## 3 14.000000 19.000000                              
+## 4 43.011626 48.010416 29.017236                    
+## 5 14.035669 19.026298  1.000000 29.034462          
+## 6 41.000000 46.000000 27.000000  2.236068 27.018512</code></pre>
+<pre class="r"><code>sqrt(sum((crdt_knn_10$learn$X[3, ] - crdt_knn_10$learn$X[4, ]) ^ 2))</code></pre>
+<pre><code>## [1] 29.01724</code></pre>
+<p>What about interactions? Basically, you’d have to create them the same way as you do for linear models. We only mention this to contrast with trees in a bit.</p>
+<p>OK, so of these three models, which one performs best? (Where for now, “best” is obtaining the lowest validation RMSE.)</p>
+<p>First, note that we return to the <code>predict()</code> function as we did with <code>lm()</code>.</p>
+<pre class="r"><code>predict(crdt_knn_10, crdt_val[1:5, ])</code></pre>
+<pre><code>## [1] 337.7857 356.0000 295.7692 360.8182 306.8000</code></pre>
+<p>This uses the 10-NN (10 nearest neighbors) model to make predictions (estimate the regression function) given the first five observations of the validation data. <strong>Note:</strong> We did not name the second argument to <code>predict()</code>. Again, you’ve been warned.</p>
+<p>Now that we know how to use the <code>predict()</code> function, let’s calculate the validation RMSE for each of these models.</p>
+<pre class="r"><code>knn_mod_list = list(
+  crdt_knn_01 = knnreg(Rating ~ Age + Gender + Student, data = crdt_est, k = 1),
+  crdt_knn_10 = knnreg(Rating ~ Age + Gender + Student, data = crdt_est, k = 10),
+  crdt_knn_25 = knnreg(Rating ~ Age + Gender + Student, data = crdt_est, k = 25)
+)</code></pre>
+<pre class="r"><code>knn_val_pred = lapply(knn_mod_list, predict, crdt_val)</code></pre>
+<pre class="r"><code>calc_rmse = function(actual, predicted) {
+  sqrt(mean((actual - predicted) ^ 2))
+}</code></pre>
+<pre class="r"><code>sapply(knn_val_pred, calc_rmse, crdt_val$Rating)</code></pre>
+<pre><code>## crdt_knn_01 crdt_knn_10 crdt_knn_25 
+##    182.3469    149.2172    138.6527</code></pre>
+<p>So, of these three values of <span class="math inline">\(k\)</span>, the model with <span class="math inline">\(k = 25\)</span> achieves the lowest validation RMSE.</p>
+<p>This process, fitting a number of models with different values of the <em>tuning parameter</em>, in this case <span class="math inline">\(k\)</span>, and then finding the “best” tuning parameter value based on performance on the validation data is called <strong>tuning</strong>. In practice, we would likely consider more values of <span class="math inline">\(k\)</span>, but this should illustrate the point.</p>
+<p>In the next lectures, we will discuss the details of model flexibility and model tuning, and how these concepts are tied together. However, even though we will present some theory behind this relationship, in practice, <strong>you must tune and validate your models</strong>. There is no theory that will inform you ahead of tuning and validation which model will be the best. By teaching you <em>how</em> to fit KNN models in R and how to calculate validation RMSE, you already have all a set of tools you can use to find a good model.</p>
+<p>Let’s turn to decision trees which we will fit with the <code>rpart()</code> function from the <code>rpart</code> package. Use <code>?rpart</code> and <code>?rpart.control</code> for documentation and details. In particular, <code>?rpart.control</code> will detail the many tuning parameters of this implementation of decision tree models in R.</p>
+<p>We’ll start by using default tuning parameters.</p>
+<pre class="r"><code>crdt_tree = rpart(Rating ~ Age + Gender + Student, data = crdt_est)</code></pre>
+<pre class="r"><code>crdt_tree</code></pre>
+<pre><code>## n= 256 
+## 
+## node), split, n, deviance, yval
+##       * denotes terminal node
+## 
+##  1) root 256 6667400.0 357.0781  
+##    2) Age&lt; 82.5 242 5865419.0 349.3719  
+##      4) Age&gt;=69.5 52 1040678.0 313.0385 *
+##      5) Age&lt; 69.5 190 4737307.0 359.3158  
+##       10) Age&lt; 38.5 55  700013.2 326.6000 *
+##       11) Age&gt;=38.5 135 3954443.0 372.6444  
+##         22) Student=Yes 14  180764.4 297.7857 *
+##         23) Student=No 121 3686148.0 381.3058  
+##           46) Age&gt;=50.5 64 1881299.0 359.2344  
+##             92) Age&lt; 53.5 9   48528.0 278.3333 *
+##             93) Age&gt;=53.5 55 1764228.0 372.4727 *
+##           47) Age&lt; 50.5 57 1738665.0 406.0877 *
+##    3) Age&gt;=82.5 14  539190.9 490.2857 *</code></pre>
+<p>Above we see the resulting tree printed, however, this is difficult to read. Instead, we use the <code>rpart.plot()</code> function from the <code>rpart.plot</code> package to better visualize the tree.</p>
+<pre class="r"><code>rpart.plot(crdt_tree)</code></pre>
+<p><img src="/content/08-content_files/figure-html/unnamed-chunk-41-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>At each split, the variable used to split is listed together with a condition. If the condition is true for a data point, send it to the left neighborhood. Although the <code>Gender</code> available for creating splits, we only see splits based on <code>Age</code> and <code>Student</code>. This hints at the relative importance of these variables for prediction. More on this much later.</p>
+<p>Categorical variables are split based on potential categories! This is <em>excellent</em>. This means that trees naturally handle categorical features without needing to convert to numeric under the hood. We see a split that puts students into one neighborhood, and non-students into another.</p>
+<p>Notice that the splits happen in order. So for example, the third terminal node (with an average rating of 298) is based on splits of:</p>
+<ul>
+<li><code>Age &lt; 83</code></li>
+<li><code>Age &lt; 70</code></li>
+<li><code>Age &gt; 39</code></li>
+<li><code>Student = Yes</code></li>
+</ul>
+<p>In other words, individuals in this terminal node are students who are between the ages of 39 and 70. (Only 5% of the data is represented here.) This is basically an interaction between <code>Age</code> and <code>Student</code> without any need to directly specify it! What a great feature of trees.</p>
+<p>To recap:</p>
+<ul>
+<li>Trees do not make assumptions about the form of the regression function.</li>
+<li>Trees automatically handle categorical features.</li>
+<li>Trees naturally incorporate interaction.</li>
+</ul>
+<p>Now let’s fit another tree that is more flexible by relaxing some tuning parameters. Recall that by default, <code>cp = 0.1</code> and <code>minsplit = 20</code>.</p>
+<pre class="r"><code>crdt_tree_big = rpart(Rating ~ Age + Gender + Student, data = crdt_est,
+                      cp = 0.0, minsplit = 20)</code></pre>
+<pre class="r"><code>rpart.plot(crdt_tree_big)</code></pre>
+<p><img src="/content/08-content_files/figure-html/unnamed-chunk-43-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>To make the tree even bigger, we could reduce <code>minsplit</code>, but in practice we mostly consider the <code>cp</code> parameter.<a href="#fn12" class="footnote-ref" id="fnref12"><sup>12</sup></a> Since <code>minsplit</code> has been kept the same, but <code>cp</code> was reduced, we see the same splits as the smaller tree, but many additional splits.</p>
+<p>Now let’s fit a bunch of trees, with different values of <code>cp</code>, for tuning.</p>
+<pre class="r"><code>tree_mod_list = list(
+  crdt_tree_0000 = rpart(Rating ~ Age + Gender + Student, data = crdt_est, cp = 0.000),
+  crdt_tree_0001 = rpart(Rating ~ Age + Gender + Student, data = crdt_est, cp = 0.001),
+  crdt_tree_0010 = rpart(Rating ~ Age + Gender + Student, data = crdt_est, cp = 0.010),
+  crdt_tree_0100 = rpart(Rating ~ Age + Gender + Student, data = crdt_est, cp = 0.100)
+)</code></pre>
+<pre class="r"><code>tree_val_pred = lapply(tree_mod_list, predict, crdt_val)</code></pre>
+<pre class="r"><code>sapply(tree_val_pred, calc_rmse, crdt_val$Rating)</code></pre>
+<pre><code>## crdt_tree_0000 crdt_tree_0001 crdt_tree_0010 crdt_tree_0100 
+##       156.3527       155.4262       151.9081       140.0806</code></pre>
+<p>Here we see the least flexible model, with <code>cp = 0.100</code>, performs best.</p>
+<p>Note that by only using these three features, we are severely limiting our models performance. Let’s quickly assess using all available predictors.</p>
+<pre class="r"><code>crdt_tree_all = rpart(Rating ~ ., data = crdt_est)</code></pre>
+<pre class="r"><code>rpart.plot(crdt_tree_all)</code></pre>
+<p><img src="/content/08-content_files/figure-html/unnamed-chunk-48-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Notice that this model <strong>only</strong> splits based on <code>Limit</code> despite using all features. This should be a big hint about which variables are useful for prediction.</p>
+<pre class="r"><code>calc_rmse(
+  actual = crdt_val$Rating,
+  predicted = predict(crdt_tree_all, crdt_val)
+)</code></pre>
+<pre><code>## [1] 28.8498</code></pre>
+<p>This model performs much better. You should try something similar with the KNN models above. Also, consider comparing this result to results from last lectures using linear models.</p>
+<p>Notice that we’ve been using that trusty <code>predict()</code> function here again.</p>
+<pre class="r"><code>predict(crdt_tree_all, crdt_val[1:5, ])</code></pre>
+<pre><code>##        1        2        3        4        5 
+## 292.8182 467.5152 467.5152 467.5152 772.4000</code></pre>
+<p>What does this code do? It estimates the mean <code>Rating</code> given the feature information (the “x” values) from the first five observations from the validation data using a decision tree model with default tuning parameters. Hopefully a theme is emerging.</p>
+</div>
+</div>
+<div class="footnotes">
+<hr />
+<ol>
+<li id="fn1"><p>We chose to start with linear regression because most students in STAT 432 should already be familiar.<a href="#fnref1" class="footnote-back">↩︎</a></p></li>
+<li id="fn2"><p>The usual distance when you hear distance. That is, unless you drive a <a href="https://en.wikipedia.org/wiki/Taxicab_geometry">taxicab</a>.<a href="#fnref2" class="footnote-back">↩︎</a></p></li>
+<li id="fn3"><p>For this reason, KNN is often not used in practice, but it is very useful learning tool.<a href="#fnref3" class="footnote-back">↩︎</a></p></li>
+<li id="fn4"><p>Many texts use the term complex instead of flexible. We feel this is confusing as complex is often associated with difficult. KNN with <span class="math inline">\(k = 1\)</span> is actually a very simple model to understand, but it is very flexible as defined here.<a href="#fnref4" class="footnote-back">↩︎</a></p></li>
+<li id="fn5"><p>To exhaust all possible splits of a variable, we would need to consider the midpoint between each of the order statistics of the variable. To exhaust all possible splits, we would need to do this for each of the feature variables.<a href="#fnref5" class="footnote-back">↩︎</a></p></li>
+<li id="fn6"><p>It’s really an upside tree isn’t it?<a href="#fnref6" class="footnote-back">↩︎</a></p></li>
+<li id="fn7"><p>Flexibility parameter would be a better name.<a href="#fnref7" class="footnote-back">↩︎</a></p></li>
+<li id="fn8"><p>The <code>rpart</code> function in R would allow us to use others, but we will always just leave their values as the default values.<a href="#fnref8" class="footnote-back">↩︎</a></p></li>
+<li id="fn9"><p>There is a question of whether or not we <em>should</em> use these variables. For example, should men and women be given different ratings when all other variables are the same? Using the <code>Gender</code> variable allows for this to happen. Also, you might think, just don’t use the <code>Gender</code> variable. Unfortunately, it’s not that easy. There is an increasingly popular field of study centered around these ideas called <a href="https://en.wikipedia.org/wiki/Fairness_(machine_learning)">machine learning <strong>fairness</strong></a>.<a href="#fnref9" class="footnote-back">↩︎</a></p></li>
+<li id="fn10"><p>There are many other KNN functions in <code>R</code>. However, the operation and syntax of <code>knnreg()</code> better matches other functions we use in this course.<a href="#fnref10" class="footnote-back">↩︎</a></p></li>
+<li id="fn11"><p>Wait. Doesn’t this sort of create an arbitrary distance between the categories? Why <span class="math inline">\(0\)</span> and <span class="math inline">\(1\)</span> and not <span class="math inline">\(-42\)</span> and <span class="math inline">\(51\)</span>? Good question. This hints at the notion of pre-processing. We’re going to hold off on this for now, but, often when performing k-nearest neighbors, you should try scaling all of the features to have mean <span class="math inline">\(0\)</span> and variance <span class="math inline">\(1\)</span>.<a href="#fnref11" class="footnote-back">↩︎</a></p></li>
+<li id="fn12"><p>If you are taking STAT 432, we will occasionally modify the <code>minsplit</code> parameter on quizzes.<a href="#fnref12" class="footnote-back">↩︎</a></p></li>
+</ol>
+</div>
+
+                    </div>
+
+                    
+
+
+
+                    
+                </div>
+
+                <div class="body-footer">
+                    <p>Last updated on July 7, 2020</p>
+
+                    
+
+
+                    
+
+                </div>
+
+            </article>
+
+            <footer>
+    <hr>
+
+    <div class="row course-info">
+        <div class="col-md-7">
+            <p>
+                <strong>SSC 442: Data Analytics (Fall Semester 2020)</strong><br>
+
+                <a href="https://www.msu.edu" target="_blank" rel="noopener">Michigan State University</a> &emsp;&emsp;
+                <a href="https://socialscience.msu.edu/" target="_blank" rel="noopener">College of Social Science</a>
+            </p>
+
+            <p>
+                <a href="https://www.benbushong.com" target="_blank" rel="noopener"><i class="fas fa-user"></i>
+                    Prof. Ben Bushong</a> &emsp;&emsp;
+                <a href="mailto:bbushong@msu.edu"><i class="fas fa-envelope"></i>
+                    bbushong@msu.edu</a>
+            </p>
+
+            <p>
+                <i class="far fa-calendar-alt"></i> Tuesday and Thursday &emsp;&emsp;
+                <i class="far fa-clock"></i> 10:20 - 11:40 AM 
+                
+            </p>
+        </div>
+
+        <div class="col-md-5 credits">
+            <p>All content licensed under a <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" rel="noopener">Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International License</a>.</p>
+            
+            <p>Content <i class="fab fa-creative-commons"></i> 2020 <a href="https://www.benbushong.com" target="_blank" rel="noopener">Ben Bushong</a></p>
+        
+            <p>This site created with the <a href="https://sourcethemes.com/academic/" target="_blank" rel="noopener">Academic theme</a> in <a href="https://bookdown.org/yihui/blogdown/" target="_blank" rel="noopener">blogdown</a> and <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a>. </p>
+            
+            <p><a href="https://github.com/" target="_blank" rel="noopener"><i class="fab fa-github"></i> View the source at GitHub.</a></p>
+        </div>
+    </div>
+</footer>
+
+
+        </main>
+    </div>
+</div>
+
+        
+
+    
+    
+    
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/4.1.4/imagesloaded.pkgd.min.js" integrity="sha256-lqvxZrPLtfffUl2G/e7szqSvPBILGbwmsGE1MKlOi0Q=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.6/isotope.pkgd.min.js" integrity="sha256-CBrpuqrMhXwcLLUd5tvQ4euBHCdh7wGlDfNz8vbu/iI=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+
+      
+
+      
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/highlight.min.js" integrity="sha256-eOgo0OtLL4cdq7RdwRUiGKLX9XsIJ7nGhWEKbohmVAQ=" crossorigin="anonymous"></script>
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/languages/r.min.js"></script>
+        
+      
+
+    
+
+    
+    
+
+    
+    
+    <script>const code_highlighting = true;</script>
+    
+
+    
+    
+    <script>const isSiteThemeDark = false;</script>
+    
+
+    
+
+    
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/anchor-js/4.1.1/anchor.min.js" integrity="sha256-pB/deHc9CGfFpJRjC43imB29Rse8tak+5eXqntO94ck=" crossorigin="anonymous"></script>
+    <script>
+      anchors.add();
+    </script>
+    
+
+    
+
+    
+    
+
+    
+    
+
+    
+    
+
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <script src="/js/academic.min.6f7ce8be710290b8c431bbc97f405d15.js"></script>
+
+    
+
+
+
+    
+    
+
+    
+<div id="modal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Cite</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <pre><code class="tex hljs"></code></pre>
+      </div>
+      <div class="modal-footer">
+        <a class="btn btn-outline-primary my-1 js-copy-cite" href="#" target="_blank">
+          <i class="fas fa-copy"></i> Copy
+        </a>
+        <a class="btn btn-outline-primary my-1 js-download-cite" href="#" target="_blank">
+          <i class="fas fa-download"></i> Download
+        </a>
+        <div id="modal-error"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+
+</html>
