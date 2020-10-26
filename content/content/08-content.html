@@ -83,7 +83,7 @@ Y = f(\boldsymbol{X}) + \epsilon
 <p><span class="math display">\[
 \mu(\boldsymbol{x}) \triangleq \mathbb{E}[Y \mid \boldsymbol{X} = \boldsymbol{x}]
 \]</span></p>
-<p>which we called the <strong>regression function</strong>.</p>
+<p>which we call the <strong>regression function</strong>.</p>
 <p>Our goal then is to <strong>estimate</strong> this <strong>regression function</strong>. Let’s use an example where we know the true probability model:</p>
 <p><span class="math display">\[
 Y = 1 - 2x - 3x ^ 2 + 5x ^ 3 + \epsilon
@@ -407,7 +407,7 @@ crdt_knn_25 = knnreg(Rating ~ Age + Gender + Student, data = crdt_est, k = 25)</
                       cp = 0.0, minsplit = 20)</code></pre>
 <pre class="r"><code>rpart.plot(crdt_tree_big)</code></pre>
 <p><img src="/content/08-content_files/figure-html/unnamed-chunk-42-1.png" width="672" style="display: block; margin: auto;" /></p>
-<p>To make the tree even bigger, we could reduce <code>minsplit</code>, but in practice we mostly consider the <code>cp</code> parameter.<a href="#fn12" class="footnote-ref" id="fnref12"><sup>12</sup></a> Since <code>minsplit</code> has been kept the same, but <code>cp</code> was reduced, we see the same splits as the smaller tree, but many additional splits.</p>
+<p>To make the tree even bigger, we could reduce <code>minsplit</code>, but in practice we mostly consider the <code>cp</code> parameter. Since <code>minsplit</code> has been kept the same, but <code>cp</code> was reduced, we see the same splits as the smaller tree, but many additional splits.</p>
 <p>Now let’s fit a bunch of trees, with different values of <code>cp</code>, for tuning.</p>
 <pre class="r"><code>tree_mod_list = list(
   crdt_tree_0000 = rpart(Rating ~ Age + Gender + Student, data = crdt_est, cp = 0.000),
@@ -441,7 +441,7 @@ crdt_knn_25 = knnreg(Rating ~ Age + Gender + Student, data = crdt_est, k = 25)</
 <div class="footnotes">
 <hr />
 <ol>
-<li id="fn1"><p>We chose to start with linear regression because most students in STAT 432 should already be familiar.<a href="#fnref1" class="footnote-back">↩︎</a></p></li>
+<li id="fn1"><p>We chose to start with linear regression because most students the social sciences should already be familiar with the basic notion.<a href="#fnref1" class="footnote-back">↩︎</a></p></li>
 <li id="fn2"><p>The usual distance when you hear distance. That is, unless you drive a <a href="https://en.wikipedia.org/wiki/Taxicab_geometry">taxicab</a>.<a href="#fnref2" class="footnote-back">↩︎</a></p></li>
 <li id="fn3"><p>For this reason, KNN is often not used in practice, but it is very useful learning tool.<a href="#fnref3" class="footnote-back">↩︎</a></p></li>
 <li id="fn4"><p>Many texts use the term complex instead of flexible. We feel this is confusing as complex is often associated with difficult. KNN with <span class="math inline">\(k = 1\)</span> is actually a very simple model to understand, but it is very flexible as defined here.<a href="#fnref4" class="footnote-back">↩︎</a></p></li>
@@ -452,6 +452,5 @@ crdt_knn_25 = knnreg(Rating ~ Age + Gender + Student, data = crdt_est, k = 25)</
 <li id="fn9"><p>There is a question of whether or not we <em>should</em> use these variables. For example, should men and women be given different ratings when all other variables are the same? Using the <code>Gender</code> variable allows for this to happen. Also, you might think, just don’t use the <code>Gender</code> variable. Unfortunately, it’s not that easy. There is an increasingly popular field of study centered around these ideas called <a href="https://en.wikipedia.org/wiki/Fairness_(machine_learning)">machine learning <strong>fairness</strong></a>.<a href="#fnref9" class="footnote-back">↩︎</a></p></li>
 <li id="fn10"><p>There are many other KNN functions in <code>R</code>. However, the operation and syntax of <code>knnreg()</code> better matches other functions we use in this course.<a href="#fnref10" class="footnote-back">↩︎</a></p></li>
 <li id="fn11"><p>Wait. Doesn’t this sort of create an arbitrary distance between the categories? Why <span class="math inline">\(0\)</span> and <span class="math inline">\(1\)</span> and not <span class="math inline">\(-42\)</span> and <span class="math inline">\(51\)</span>? Good question. This hints at the notion of pre-processing. We’re going to hold off on this for now, but, often when performing k-nearest neighbors, you should try scaling all of the features to have mean <span class="math inline">\(0\)</span> and variance <span class="math inline">\(1\)</span>.<a href="#fnref11" class="footnote-back">↩︎</a></p></li>
-<li id="fn12"><p>If you are taking STAT 432, we will occasionally modify the <code>minsplit</code> parameter on quizzes.<a href="#fnref12" class="footnote-back">↩︎</a></p></li>
 </ol>
 </div>

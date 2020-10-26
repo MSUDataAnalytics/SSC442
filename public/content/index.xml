@@ -88,7 +88,7 @@ Y = f(\boldsymbol{X}) + \epsilon
 &lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
 \mu(\boldsymbol{x}) \triangleq \mathbb{E}[Y \mid \boldsymbol{X} = \boldsymbol{x}]
 \]&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;which we called the &lt;strong&gt;regression function&lt;/strong&gt;.&lt;/p&gt;
+&lt;p&gt;which we call the &lt;strong&gt;regression function&lt;/strong&gt;.&lt;/p&gt;
 &lt;p&gt;Our goal then is to &lt;strong&gt;estimate&lt;/strong&gt; this &lt;strong&gt;regression function&lt;/strong&gt;. Let’s use an example where we know the true probability model:&lt;/p&gt;
 &lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
 Y = 1 - 2x - 3x ^ 2 + 5x ^ 3 + \epsilon
@@ -412,7 +412,7 @@ crdt_knn_25 = knnreg(Rating ~ Age + Gender + Student, data = crdt_est, k = 25)&l
                       cp = 0.0, minsplit = 20)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;rpart.plot(crdt_tree_big)&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;img src=&#34;/content/08-content_files/figure-html/unnamed-chunk-42-1.png&#34; width=&#34;672&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
-&lt;p&gt;To make the tree even bigger, we could reduce &lt;code&gt;minsplit&lt;/code&gt;, but in practice we mostly consider the &lt;code&gt;cp&lt;/code&gt; parameter.&lt;a href=&#34;#fn12&#34; class=&#34;footnote-ref&#34; id=&#34;fnref12&#34;&gt;&lt;sup&gt;12&lt;/sup&gt;&lt;/a&gt; Since &lt;code&gt;minsplit&lt;/code&gt; has been kept the same, but &lt;code&gt;cp&lt;/code&gt; was reduced, we see the same splits as the smaller tree, but many additional splits.&lt;/p&gt;
+&lt;p&gt;To make the tree even bigger, we could reduce &lt;code&gt;minsplit&lt;/code&gt;, but in practice we mostly consider the &lt;code&gt;cp&lt;/code&gt; parameter. Since &lt;code&gt;minsplit&lt;/code&gt; has been kept the same, but &lt;code&gt;cp&lt;/code&gt; was reduced, we see the same splits as the smaller tree, but many additional splits.&lt;/p&gt;
 &lt;p&gt;Now let’s fit a bunch of trees, with different values of &lt;code&gt;cp&lt;/code&gt;, for tuning.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;tree_mod_list = list(
   crdt_tree_0000 = rpart(Rating ~ Age + Gender + Student, data = crdt_est, cp = 0.000),
@@ -446,7 +446,7 @@ crdt_knn_25 = knnreg(Rating ~ Age + Gender + Student, data = crdt_est, k = 25)&l
 &lt;div class=&#34;footnotes&#34;&gt;
 &lt;hr /&gt;
 &lt;ol&gt;
-&lt;li id=&#34;fn1&#34;&gt;&lt;p&gt;We chose to start with linear regression because most students in STAT 432 should already be familiar.&lt;a href=&#34;#fnref1&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li id=&#34;fn1&#34;&gt;&lt;p&gt;We chose to start with linear regression because most students the social sciences should already be familiar with the basic notion.&lt;a href=&#34;#fnref1&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
 &lt;li id=&#34;fn2&#34;&gt;&lt;p&gt;The usual distance when you hear distance. That is, unless you drive a &lt;a href=&#34;https://en.wikipedia.org/wiki/Taxicab_geometry&#34;&gt;taxicab&lt;/a&gt;.&lt;a href=&#34;#fnref2&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
 &lt;li id=&#34;fn3&#34;&gt;&lt;p&gt;For this reason, KNN is often not used in practice, but it is very useful learning tool.&lt;a href=&#34;#fnref3&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
 &lt;li id=&#34;fn4&#34;&gt;&lt;p&gt;Many texts use the term complex instead of flexible. We feel this is confusing as complex is often associated with difficult. KNN with &lt;span class=&#34;math inline&#34;&gt;\(k = 1\)&lt;/span&gt; is actually a very simple model to understand, but it is very flexible as defined here.&lt;a href=&#34;#fnref4&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
@@ -457,7 +457,6 @@ crdt_knn_25 = knnreg(Rating ~ Age + Gender + Student, data = crdt_est, k = 25)&l
 &lt;li id=&#34;fn9&#34;&gt;&lt;p&gt;There is a question of whether or not we &lt;em&gt;should&lt;/em&gt; use these variables. For example, should men and women be given different ratings when all other variables are the same? Using the &lt;code&gt;Gender&lt;/code&gt; variable allows for this to happen. Also, you might think, just don’t use the &lt;code&gt;Gender&lt;/code&gt; variable. Unfortunately, it’s not that easy. There is an increasingly popular field of study centered around these ideas called &lt;a href=&#34;https://en.wikipedia.org/wiki/Fairness_(machine_learning)&#34;&gt;machine learning &lt;strong&gt;fairness&lt;/strong&gt;&lt;/a&gt;.&lt;a href=&#34;#fnref9&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
 &lt;li id=&#34;fn10&#34;&gt;&lt;p&gt;There are many other KNN functions in &lt;code&gt;R&lt;/code&gt;. However, the operation and syntax of &lt;code&gt;knnreg()&lt;/code&gt; better matches other functions we use in this course.&lt;a href=&#34;#fnref10&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
 &lt;li id=&#34;fn11&#34;&gt;&lt;p&gt;Wait. Doesn’t this sort of create an arbitrary distance between the categories? Why &lt;span class=&#34;math inline&#34;&gt;\(0\)&lt;/span&gt; and &lt;span class=&#34;math inline&#34;&gt;\(1\)&lt;/span&gt; and not &lt;span class=&#34;math inline&#34;&gt;\(-42\)&lt;/span&gt; and &lt;span class=&#34;math inline&#34;&gt;\(51\)&lt;/span&gt;? Good question. This hints at the notion of pre-processing. We’re going to hold off on this for now, but, often when performing k-nearest neighbors, you should try scaling all of the features to have mean &lt;span class=&#34;math inline&#34;&gt;\(0\)&lt;/span&gt; and variance &lt;span class=&#34;math inline&#34;&gt;\(1\)&lt;/span&gt;.&lt;a href=&#34;#fnref11&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
-&lt;li id=&#34;fn12&#34;&gt;&lt;p&gt;If you are taking STAT 432, we will occasionally modify the &lt;code&gt;minsplit&lt;/code&gt; parameter on quizzes.&lt;a href=&#34;#fnref12&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
 &lt;/ol&gt;
 &lt;/div&gt;
 </description>
