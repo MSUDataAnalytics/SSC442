@@ -1,8 +1,8 @@
 ---
 title: "Nonparametric Regression"
 linktitle: "8: Nonparametric Regression"
-date: "2020-10-20"
-read_date: "2020-10-20"
+date: "2020-10-27"
+read_date: "2020-10-27"
 menu:
   content:
     parent: Course content
@@ -74,7 +74,7 @@ $$
 \mu(\boldsymbol{x}) \triangleq \mathbb{E}[Y \mid \boldsymbol{X} = \boldsymbol{x}]
 $$
 
-which we called the **regression function**.
+which we call the **regression function**.
 
 Our goal then is to **estimate** this **regression function**. Let's use an example where we know the true probability model:
 
@@ -111,13 +111,7 @@ set.seed(1)
 sim_slr_data = gen_slr_data(sample_size = 30, mu = cubic_mean)
 ```
 
-```{r, echo = FALSE}
-sim_slr_data %>%
-  kable() %>%
-  kable_styling(full_width = FALSE)
-```
-
-We simulated a bit more data than last time to make the "pattern" clearer to recognize.
+We simulate enough data to make the "pattern" clear-ish to recognize.
 
 ```{r, fig.height = 6, fig.width = 6, echo = FALSE}
 plot(sim_slr_data, pch = 20, col = "grey", cex = 2,
@@ -125,7 +119,7 @@ plot(sim_slr_data, pch = 20, col = "grey", cex = 2,
 grid()
 ```
 
-Recall that when we used a linear model, we first need to make an **assumption** about the form of the regression function.
+When we use a linear model, we first need to make an **assumption** about the form of the regression function.
 
 For example, we could assume that
 

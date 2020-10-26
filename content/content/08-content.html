@@ -1,8 +1,8 @@
 ---
 title: "Nonparametric Regression"
 linktitle: "8: Nonparametric Regression"
-date: "2020-10-20"
-read_date: "2020-10-20"
+date: "2020-10-27"
+read_date: "2020-10-27"
 menu:
   content:
     parent: Course content
@@ -94,263 +94,9 @@ Y = 1 - 2x - 3x ^ 2 + 5x ^ 3 + \epsilon
 \mu(x) = \mathbb{E}[Y \mid \boldsymbol{X} = \boldsymbol{x}] = 1 - 2x - 3x ^ 2 + 5x ^ 3
 \]</span></p>
 <p>Let’s also pretend that we do not actually know this information, but instead have some data, <span class="math inline">\((x_i, y_i)\)</span> for <span class="math inline">\(i = 1, 2, \ldots, n\)</span>.</p>
-<table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;">
-<thead>
-<tr>
-<th style="text-align:right;">
-x
-</th>
-<th style="text-align:right;">
-y
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:right;">
--0.4689827
-</td>
-<td style="text-align:right;">
-0.7174461
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
--0.2557522
-</td>
-<td style="text-align:right;">
-1.2154439
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-0.1457067
-</td>
-<td style="text-align:right;">
-1.6041985
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-0.8164156
-</td>
-<td style="text-align:right;">
-0.9096322
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
--0.5966361
-</td>
-<td style="text-align:right;">
-0.6573128
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-0.7967794
-</td>
-<td style="text-align:right;">
-0.9500528
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-0.8893505
-</td>
-<td style="text-align:right;">
-1.1477361
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-0.3215956
-</td>
-<td style="text-align:right;">
-0.2874057
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-0.2582281
-</td>
-<td style="text-align:right;">
--1.6197576
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
--0.8764275
-</td>
-<td style="text-align:right;">
--2.2977242
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
--0.5880509
-</td>
-<td style="text-align:right;">
-0.0658105
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
--0.6468865
-</td>
-<td style="text-align:right;">
--0.4708965
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-0.3740457
-</td>
-<td style="text-align:right;">
--1.3769103
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
--0.2317926
-</td>
-<td style="text-align:right;">
-0.7619832
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-0.5396828
-</td>
-<td style="text-align:right;">
-0.2507367
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
--0.0046015
-</td>
-<td style="text-align:right;">
-2.3678186
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-0.4352370
-</td>
-<td style="text-align:right;">
--0.1293181
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-0.9838122
-</td>
-<td style="text-align:right;">
-1.2774803
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
--0.2399296
-</td>
-<td style="text-align:right;">
-1.1842963
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-0.5548904
-</td>
-<td style="text-align:right;">
--1.5562874
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-0.8694105
-</td>
-<td style="text-align:right;">
--0.1356129
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
--0.5757150
-</td>
-<td style="text-align:right;">
--0.1913002
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-0.3033475
-</td>
-<td style="text-align:right;">
-0.1975021
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
--0.7488898
-</td>
-<td style="text-align:right;">
--0.1847245
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
--0.4655587
-</td>
-<td style="text-align:right;">
-1.5395212
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
--0.2277718
-</td>
-<td style="text-align:right;">
-1.0762960
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
--0.9732193
-</td>
-<td style="text-align:right;">
--4.7573427
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
--0.2352241
-</td>
-<td style="text-align:right;">
-1.9363453
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-0.7393817
-</td>
-<td style="text-align:right;">
-0.4588894
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
--0.3193020
-</td>
-<td style="text-align:right;">
-0.4812168
-</td>
-</tr>
-</tbody>
-</table>
-<p>We simulated a bit more data than last time to make the “pattern” clearer to recognize.</p>
-<p><img src="/content/08-content_files/figure-html/unnamed-chunk-5-1.png" width="576" style="display: block; margin: auto;" /></p>
-<p>Recall that when we used a linear model, we first need to make an <strong>assumption</strong> about the form of the regression function.</p>
+<p>We simulate enough data to make the “pattern” clear-ish to recognize.</p>
+<p><img src="/content/08-content_files/figure-html/unnamed-chunk-4-1.png" width="576" style="display: block; margin: auto;" /></p>
+<p>When we use a linear model, we first need to make an <strong>assumption</strong> about the form of the regression function.</p>
 <p>For example, we could assume that</p>
 <p><span class="math display">\[
 \mu(x) = \mathbb{E}[Y \mid \boldsymbol{X} = \boldsymbol{x}] = \beta_0 + \beta_1 x + \beta_2 x^2 + \beta_3 x^3
@@ -394,7 +140,7 @@ y
 <p>as our estimate of the regression function at <span class="math inline">\(x\)</span>. While this looks complicated, it is actually very simple. Here, we are using an average of the <span class="math inline">\(y_i\)</span> values of for the <span class="math inline">\(k\)</span> nearest neighbors to <span class="math inline">\(x\)</span>.</p>
 <p>The <span class="math inline">\(k\)</span> “nearest” neighbors are the <span class="math inline">\(k\)</span> data points <span class="math inline">\((x_i, y_i)\)</span> that have <span class="math inline">\(x_i\)</span> values that are nearest to <span class="math inline">\(x\)</span>. We can define “nearest” using any distance we like, but unless otherwise noted, we are referring to euclidean distance.<a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a> We are using the notation <span class="math inline">\(\{i \ : \ x_i \in \mathcal{N}_k(x, \mathcal{D}) \}\)</span> to define the <span class="math inline">\(k\)</span> observations that have <span class="math inline">\(x_i\)</span> values that are nearest to the value <span class="math inline">\(x\)</span> in a dataset <span class="math inline">\(\mathcal{D}\)</span>, in other words, the <span class="math inline">\(k\)</span> nearest neighbors.</p>
 <p>The plots below begin to illustrate this idea.</p>
-<p><img src="/content/08-content_files/figure-html/unnamed-chunk-8-1.png" width="864" style="display: block; margin: auto;" /></p>
+<p><img src="/content/08-content_files/figure-html/unnamed-chunk-7-1.png" width="864" style="display: block; margin: auto;" /></p>
 <ul>
 <li>In the left plot, to estimate the mean of <span class="math inline">\(Y\)</span> at <span class="math inline">\(x = -0.5\)</span> we use the three nearest neighbors, which are highlighted with green. Our estimate is the average of the <span class="math inline">\(y_i\)</span> values of these three points indicated by the black x.</li>
 <li>In the middle plot, to estimate the mean of <span class="math inline">\(Y\)</span> at <span class="math inline">\(x = 0\)</span> we use the five nearest neighbors, which are highlighted with green. Our estimate is the average of the <span class="math inline">\(y_i\)</span> values of these five points indicated by the black x.</li>
@@ -403,7 +149,7 @@ y
 <p>You might begin to notice a bit of an issue here. We have to do a new calculation each time we want to estimate the regression function at a different value of <span class="math inline">\(x\)</span>! For this reason, k-nearest neighbors is often said to be “fast to train” and “slow to predict.” Training, is instant. You just memorize the data! Prediction involves finding the distance between the <span class="math inline">\(x\)</span> considered and all <span class="math inline">\(x_i\)</span> in the data!<a href="#fn3" class="footnote-ref" id="fnref3"><sup>3</sup></a></p>
 <p>So, how then, do we choose the value of the <strong>tuning</strong> parameter <span class="math inline">\(k\)</span>? We <em><strong>validate</strong></em>!</p>
 <p>First, let’s take a look at what happens with this data if we consider three different values of <span class="math inline">\(k\)</span>.</p>
-<p><img src="/content/08-content_files/figure-html/unnamed-chunk-10-1.png" width="1152" style="display: block; margin: auto;" /></p>
+<p><img src="/content/08-content_files/figure-html/unnamed-chunk-9-1.png" width="1152" style="display: block; margin: auto;" /></p>
 <p>For each plot, the black dashed curve is the true mean function.</p>
 <ul>
 <li>In the left plot we use <span class="math inline">\(k = 25\)</span>. The red “curve” is the estimate of the mean function for each <span class="math inline">\(x\)</span> shown in the plot.</li>
@@ -430,7 +176,7 @@ y
 <p><strong>Decision trees</strong> are similar to k-nearest neighbors but instead of looking for neighbors, decision trees create neighborhoods. We won’t explore the full details of trees, but just start to understand the basic concepts, as well as learn to fit them in R.</p>
 <p>Neighborhoods are created via recursive binary partitions. In simpler terms, pick a feature and a possible cutoff value. Data that have a value less than the cutoff for the selected feature are in one neighborhood (the left) and data that have a value greater than the cutoff are in another (the right). Within these two neighborhoods, repeat this procedure until a stopping rule is satisfied. To make a prediction, check which neighborhood a new piece of data would belong to and predict the average of the <span class="math inline">\(y_i\)</span> values of data in that neighborhood.</p>
 <p>With the data above, which has a single feature <span class="math inline">\(x\)</span>, consider three possible cutoffs: -0.5, 0.0, and 0.75.</p>
-<p><img src="/content/08-content_files/figure-html/unnamed-chunk-12-1.png" width="864" style="display: block; margin: auto;" /></p>
+<p><img src="/content/08-content_files/figure-html/unnamed-chunk-11-1.png" width="864" style="display: block; margin: auto;" /></p>
 <p>For each plot, the black vertical line defines the neighborhoods. The green horizontal lines are the average of the <span class="math inline">\(y_i\)</span> values for the points in the left neighborhood. The red horizontal lines are the average of the <span class="math inline">\(y_i\)</span> values for the points in the right neighborhood.</p>
 <p>What makes a cutoff good? Large differences in the average <span class="math inline">\(y_i\)</span> between the two neighborhoods. More formally we want to find a cutoff value that minimizes</p>
 <p><span class="math display">\[
@@ -508,16 +254,16 @@ Right SSE
 </table>
 <p>The table above summarizes the results of the three potential splits. We see that (of the splits considered, which are not exhaustive<a href="#fn5" class="footnote-ref" id="fnref5"><sup>5</sup></a>) the split based on a cutoff of <span class="math inline">\(x = -0.50\)</span> creates the best partitioning of the space.</p>
 <p>Now let’s consider building a full tree.</p>
-<p><img src="/content/08-content_files/figure-html/unnamed-chunk-16-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="/content/08-content_files/figure-html/unnamed-chunk-15-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>In the plot above, the true regression function is the dashed black curve, and the solid orange curve is the estimated regression function using a decision tree. We see that there are two splits, which we can visualize as a tree.</p>
-<p><img src="/content/08-content_files/figure-html/unnamed-chunk-17-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="/content/08-content_files/figure-html/unnamed-chunk-16-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>The above “tree”<a href="#fn6" class="footnote-ref" id="fnref6"><sup>6</sup></a> shows the splits that were made. It informs us of the variable used, the cutoff value, and some summary of the resulting neighborhood. In “tree” terminology the resulting neighborhoods are “terminal nodes” of the tree. In contrast, “internal nodes” are neighborhoods that are created, but then further split.</p>
 <p>The “root node” is the neighborhood contains all observations, before any splitting, and can be seen at the top of the image above. We see that this node represents 100% of the data. The other number, 0.21, is the mean of the response variable, in this case, <span class="math inline">\(y_i\)</span>.</p>
 <p>Looking at a terminal node, for example the bottom left node, we see that 23% of the data is in this node. The average value of the <span class="math inline">\(y_i\)</span> in this node is -1, which can be seen in the plot above.</p>
 <p>We also see that the first split is based on the <span class="math inline">\(x\)</span> variable, and a cutoff of <span class="math inline">\(x = -0.52\)</span>. Note that because there is only one variable here, all splits are based on <span class="math inline">\(x\)</span>, but in the future, we will have multiple features that can be split and neighborhoods will no longer be one-dimensional. However, this is hard to plot.</p>
 <p>Let’s build a bigger, more flexible tree.</p>
+<p><img src="/content/08-content_files/figure-html/unnamed-chunk-18-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p><img src="/content/08-content_files/figure-html/unnamed-chunk-19-1.png" width="672" style="display: block; margin: auto;" /></p>
-<p><img src="/content/08-content_files/figure-html/unnamed-chunk-20-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>There are two tuning parameters at play here which we will call by their names in R which we will see soon:</p>
 <ul>
 <li><code>cp</code> or the “complexity parameter” as it is called.<a href="#fn7" class="footnote-ref" id="fnref7"><sup>7</sup></a> This parameter determines which splits are accepted. A split must improve the performance of the tree by more than <code>cp</code> in order to be used. When we get to R, we will see that the default value is 0.1.</li>
@@ -525,10 +271,10 @@ Right SSE
 </ul>
 <p>There are actually many more possible tuning parameters for trees, possibly differing depending on who wrote the code you’re using. We will limit discussion to these two.<a href="#fn8" class="footnote-ref" id="fnref8"><sup>8</sup></a> Note that they effect each other, and they effect other parameters which we are not discussing. The main takeaway should be how they effect model flexibility.</p>
 <p>First let’s look at what happens for a fixed <code>minsplit</code> by variable <code>cp</code>.</p>
-<p><img src="/content/08-content_files/figure-html/unnamed-chunk-22-1.png" width="1152" style="display: block; margin: auto;" /></p>
+<p><img src="/content/08-content_files/figure-html/unnamed-chunk-21-1.png" width="1152" style="display: block; margin: auto;" /></p>
 <p>We see that as <code>cp</code> <em>decreases</em>, model flexibility <strong>increases</strong>. We see more splits, because the increase in performance needed to accept a split is smaller as <code>cp</code> is reduced.</p>
 <p>Now the reverse, fix <code>cp</code> and vary <code>minsplit</code>.</p>
-<p><img src="/content/08-content_files/figure-html/unnamed-chunk-24-1.png" width="1152" style="display: block; margin: auto;" /></p>
+<p><img src="/content/08-content_files/figure-html/unnamed-chunk-23-1.png" width="1152" style="display: block; margin: auto;" /></p>
 <p>We see that as <code>minsplit</code> <em>decreases</em>, model flexibility <strong>increases</strong>. By allowing splits of neighborhoods with fewer observations, we obtain more splits, which results in a more flexible model.</p>
 </div>
 <div id="example-credit-card-data" class="section level2">
@@ -639,7 +385,7 @@ crdt_knn_25 = knnreg(Rating ~ Age + Gender + Student, data = crdt_est, k = 25)</
 ##    3) Age&gt;=82.5 14  539190.9 490.2857 *</code></pre>
 <p>Above we see the resulting tree printed, however, this is difficult to read. Instead, we use the <code>rpart.plot()</code> function from the <code>rpart.plot</code> package to better visualize the tree.</p>
 <pre class="r"><code>rpart.plot(crdt_tree)</code></pre>
-<p><img src="/content/08-content_files/figure-html/unnamed-chunk-41-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="/content/08-content_files/figure-html/unnamed-chunk-40-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>At each split, the variable used to split is listed together with a condition. If the condition is true for a data point, send it to the left neighborhood. Although the <code>Gender</code> available for creating splits, we only see splits based on <code>Age</code> and <code>Student</code>. This hints at the relative importance of these variables for prediction. More on this much later.</p>
 <p>Categorical variables are split based on potential categories! This is <em>excellent</em>. This means that trees naturally handle categorical features without needing to convert to numeric under the hood. We see a split that puts students into one neighborhood, and non-students into another.</p>
 <p>Notice that the splits happen in order. So for example, the third terminal node (with an average rating of 298) is based on splits of:</p>
@@ -660,7 +406,7 @@ crdt_knn_25 = knnreg(Rating ~ Age + Gender + Student, data = crdt_est, k = 25)</
 <pre class="r"><code>crdt_tree_big = rpart(Rating ~ Age + Gender + Student, data = crdt_est,
                       cp = 0.0, minsplit = 20)</code></pre>
 <pre class="r"><code>rpart.plot(crdt_tree_big)</code></pre>
-<p><img src="/content/08-content_files/figure-html/unnamed-chunk-43-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="/content/08-content_files/figure-html/unnamed-chunk-42-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>To make the tree even bigger, we could reduce <code>minsplit</code>, but in practice we mostly consider the <code>cp</code> parameter.<a href="#fn12" class="footnote-ref" id="fnref12"><sup>12</sup></a> Since <code>minsplit</code> has been kept the same, but <code>cp</code> was reduced, we see the same splits as the smaller tree, but many additional splits.</p>
 <p>Now let’s fit a bunch of trees, with different values of <code>cp</code>, for tuning.</p>
 <pre class="r"><code>tree_mod_list = list(
@@ -677,7 +423,7 @@ crdt_knn_25 = knnreg(Rating ~ Age + Gender + Student, data = crdt_est, k = 25)</
 <p>Note that by only using these three features, we are severely limiting our models performance. Let’s quickly assess using all available predictors.</p>
 <pre class="r"><code>crdt_tree_all = rpart(Rating ~ ., data = crdt_est)</code></pre>
 <pre class="r"><code>rpart.plot(crdt_tree_all)</code></pre>
-<p><img src="/content/08-content_files/figure-html/unnamed-chunk-48-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="/content/08-content_files/figure-html/unnamed-chunk-47-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>Notice that this model <strong>only</strong> splits based on <code>Limit</code> despite using all features. This should be a big hint about which variables are useful for prediction.</p>
 <pre class="r"><code>calc_rmse(
   actual = crdt_val$Rating,
