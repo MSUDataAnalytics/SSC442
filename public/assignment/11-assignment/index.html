@@ -30,10 +30,11 @@
   
     
   
-  <meta name="description" content="Applications of data analytics to problems in social science.">
+  <meta name="description" content="Backstory and Set Up   You must turn in a PDF document of your R Markdown code. Submit this to D2L by 11:59 PM Eastern Time on Monday, November 9.
+ Backstory and Set Up You work for a bank. This bank is trying to predict defaults on loans (a relatively uncommon occurence, but one that costs the bank a great deal of money when it does happen.">
 
   
-  <link rel="alternate" hreflang="en-us" href="/assignment/">
+  <link rel="alternate" hreflang="en-us" href="/assignment/11-assignment/">
 
   
 
@@ -216,14 +217,12 @@
   
 
   
-  <link rel="alternate" href="/assignment/index.xml" type="application/rss+xml" title="Data Analytics">
-  
 
   <link rel="manifest" href="/index.webmanifest">
   <link rel="icon" type="image/png" href="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_32x32_fill_lanczos_center_2.png">
   <link rel="apple-touch-icon" type="image/png" href="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_192x192_fill_lanczos_center_2.png">
 
-  <link rel="canonical" href="/assignment/">
+  <link rel="canonical" href="/assignment/11-assignment/">
 
   
   
@@ -241,17 +240,21 @@
   <meta property="twitter:creator" content="@benbushong">
   
   <meta property="og:site_name" content="Data Analytics">
-  <meta property="og:url" content="/assignment/">
-  <meta property="og:title" content="Assignments and Evaluations | Data Analytics">
-  <meta property="og:description" content="Applications of data analytics to problems in social science."><meta property="og:image" content="/img/social-image.png">
+  <meta property="og:url" content="/assignment/11-assignment/">
+  <meta property="og:title" content="Applied Logistic Regression | Data Analytics">
+  <meta property="og:description" content="Backstory and Set Up   You must turn in a PDF document of your R Markdown code. Submit this to D2L by 11:59 PM Eastern Time on Monday, November 9.
+ Backstory and Set Up You work for a bank. This bank is trying to predict defaults on loans (a relatively uncommon occurence, but one that costs the bank a great deal of money when it does happen."><meta property="og:image" content="/img/social-image.png">
   <meta property="twitter:image" content="/img/social-image.png"><meta property="og:locale" content="en-us">
   
+    
     
   
 
   
 
 
+
+  
 
 
   
@@ -271,7 +274,7 @@
   <meta name="msapplication-TileImage" content="/img/mstile-144x144.png" />
 
 
-  <title>Assignments and Evaluations | Data Analytics</title>
+  <title>Applied Logistic Regression | Data Analytics</title>
 
 </head>
 
@@ -529,9 +532,9 @@
     
 
 <div class="container-fluid docs">
-  <div class="row flex-xl-nowrap">
-    <div class="col-12 col-md-3 col-xl-2 docs-sidebar">
-      
+    <div class="row flex-xl-nowrap">
+        <div class="col-12 col-md-3 col-xl-2 docs-sidebar">
+            
 
 
 
@@ -559,7 +562,7 @@
   
   
   
-  <div class="docs-toc-item active">
+  <div class="docs-toc-item">
     <a class="docs-toc-link" href="/assignment/">Assignments and Evaluations</a>
 
   </div>
@@ -572,7 +575,7 @@
         <a href="/assignment/00-assignment/">0: Introduction to R</a>
       </li>
       
-      <li >
+      <li class="active">
         <a href="/assignment/11-assignment/">11: Logistic Regression</a>
       </li>
       
@@ -637,141 +640,77 @@
   
 </nav>
 
-    </div>
+        </div>
 
-    
+        
 
-    <main class="col-12 col-md-9 col-xl-8 py-md-3 pl-md-5 docs-content" role="main">
+        <main class="col-12 col-md-9 col-xl-8 py-md-3 pl-md-5 docs-content" role="main">
 
-      <article class="article">
+            <article class="article">
 
-        <div class="docs-article-container">
-          <h1>Assignments and Evaluations</h1>
+                <div class="docs-article-container">
+                    <h1>Applied Logistic Regression</h1>
 
-          <div class="article-style">
-            
+                    
+
+                    
+
+                    
+
+                    <div class="article-style">
+                        
 <script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
 
 <div id="TOC">
 <ul>
-<li><a href="#weekly-writings">Weekly Writings</a></li>
-<li><a href="#labs">Labs</a></li>
-<li><a href="#projects">Projects</a></li>
-<li><a href="#final-project">Final project</a></li>
+<li><a href="#backstory-and-set-up">Backstory and Set Up</a></li>
 </ul>
 </div>
 
-<p>This course is the capstone of the Data Analytics Minor in the College of Social Science. Accordingly, you should—fingers crossed—enjoy data analysis. You will get the most of out this class if you:</p>
+<div class="fyi">
+<p>You must turn in a PDF document of your <code>R Markdown</code> code. Submit this to D2L by 11:59 PM Eastern Time on Monday, November 9.</p>
+</div>
+<div id="backstory-and-set-up" class="section level2">
+<h2>Backstory and Set Up</h2>
+<p>You work for a bank. This bank is trying to predict defaults on loans (a relatively uncommon occurence, but one that costs the bank a great deal of money when it does happen.) They’ve given you a dataset on defaults (encoded as the variable <code>y</code>). You’re going to try to predict this.</p>
+<p>This is some new data. The snippet below loads it.</p>
+<pre class="r"><code>bank &lt;- read.table(&quot;https://msudataanalytics.github.io/SSC442/Labs/data/bank.csv&quot;,
+                 header = TRUE,
+                 sep = &quot;,&quot;)</code></pre>
+<p>There’s not going to be a whole lot of wind-up here. You should be well-versed in doing these sorts of things by now (if not, look back at the previous lab for sample code).</p>
+<div class="fyi">
+<p><strong>EXERCISE 1</strong></p>
 <ol style="list-style-type: decimal">
-<li>Engage with the readings and lecture materials</li>
-<li>Regularly use <code>R</code> (aka engage daily or almost every day in some way)</li>
-</ol>
-<p>Each type of assignment in this class helps with one of these strategies.</p>
-<div id="weekly-writings" class="section level2">
-<h2>Weekly Writings</h2>
-<p>To encourage you to actively engage with the course content, you will write a ≈150 word memorandum about the reading or lecture each week. That’s fairly short: there are ≈250 words on a typical double-spaced page in Microsoft Word (500 when single-spaced). You must complete a total of twelve of these; there are more than twelve weeks in the course, so you have some flexibility.<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a> Your actual prompt will be assigned <strong>in class</strong>, so you must login each day to ensure you get these assignments. To keep you on your toes, we will vary whether these are assigned on Tuesdays or Thursdays.</p>
-<p>You can do a lot of different things with this memo: discuss something you learned from the course content, write about the best or worst data visualization you saw recently, connect the course content to your own work, etc. These reflections let you explore and answer some of the key questions of this course, including:</p>
-<ul>
-<li>When is a link correlational vs causal? How can we still make useful statements about non-causal things?</li>
-<li>Why do we visualize data?</li>
-<li>What makes a great data analysis? What makes a bad analysis?</li>
-<li>How do you choose which kind of analysis method to use?</li>
-<li>What is the role of the data structure in choosing an analysis? Can we be flexible?</li>
-</ul>
-<p>The course content for each day will also include a set of questions specific to that topic. <em>You do not have to answer all (or any) of these questions</em>. That would be impossible. They exist to guide your thinking and to make complex reading more digestible. The specific topic for each week will be assigned <strong>in class</strong>. (We can’t emphasize this enough.)</p>
-<p>The TA will grade these mini-exercises using a very simple system:</p>
-<ul>
-<li>✔+: (<em>11.5 points (115%) in gradebook</em>) Work shows phenomenal thought and engagement with the course content. We will not assign these often.</li>
-<li>✔: (<em>10 points (100%) in gradebook</em>) Work is thoughtful, well-written, and shows engagement with the course content. This is the expected level of performance.</li>
-<li>✔−: (<em>5 points (50%) in gradebook</em>) Work is hastily composed, too short, and/or only cursorily engages with the course content. This grade signals that you need to improve next time. I will hopefully not assign these often.</li>
-</ul>
-<p>(There is an implicit 0 above for work that is not turned in on-time). Notice that this is essentially a pass/fail or completion-based system. We’re not grading your writing ability; we’re not counting the exact number of words you’re writing; and we’re not looking for encyclopedic citations of every single reading to prove that you did indeed read everything. We are looking for thoughtful engagement. Read the material, engage with the work and you’ll get a ✓.</p>
-<p>You will turn these reflections in via D2L. You will write them using <code>R Markdown</code> and must <code>knit</code> your work to a PDF document (this will be what you turn in).</p>
-</div>
-<div id="labs" class="section level2">
-<h2>Labs</h2>
-<p>Each week of the course has <a href="/example/">fully annotated examples</a> of code that teach and demonstrate how to do specific tasks in <code>R</code>. However, without practicing these principles and making graphics on your own, you won’t remember what you learn.</p>
-<blockquote>
-<p>Practice, uh, makes, whatever.</p>
-<p>Ben Bushong</p>
-</blockquote>
-<p>For example, to practice working with <strong>ggplot2</strong> and making data-based graphics, you will complete a brief set of exercises over a few class sessions. These exercises will have 1–3 short tasks that are directly related to the topic for the week. You need to show that you made a good faith effort to work each question. There will also be a final question which requires significantly more thought and work. This will be where you get to show some creativity and stretch your abilities. Overall, labs will be graded the same check system:</p>
-<ul>
-<li>✔+: (<em>17.5 points (115%) in gradebook</em>) Exercises are complete. Every task was attempted and answered, and most answers are correct. Knitted document is clean and easy to follow. Work on the final problem shows creativity or is otherwise exceptional. We will not assign these often.</li>
-<li>✔: (<em>15 points (100%) in gradebook</em>) Exercises are complete and most answers are correct. This is the expected level of performance.</li>
-<li>✔−: (<em>7.5 points (50%) in gradebook</em>) Exercises are less than 70% complete and/or most answers are incorrect. This indicates that you need to improve next time. We will hopefully not assign these often, but subpar work can expect a ✔−.</li>
-</ul>
-<p>Note that this is also essentially a pass/fail system. As noted in the syllabus, we are not grading your coding ability. We are not checking each line of code to make sure it produces some exact final figure, and we do not expect perfection. Also note that a ✓ does not require 100% success. You will sometimes get stuck with weird errors that you can’t solve, or the demands of pandemic living might occasionally become overwhelming. We are looking for good faith effort. Try hard, engage with the task, and you’ll get a ✓.</p>
-<p>You may work together on the labs, but you must turn in your own answers. You will turn these labs in via D2L. You will write them using <code>R Markdown</code> and must <code>knit</code> your work to a PDF document.</p>
-</div>
-<div id="projects" class="section level2">
-<h2>Projects</h2>
-<p>To give you practice with the data and design principles you’ll learn in this class, you will complete two projects en route to the overarching final project of the course. <strong>Both these mini projects and the final project must be completed in groups.</strong></p>
-<p>The two (mini) projects are checkpoints to ensure you’re working on your project seriously. They will be graded using a check system:</p>
-<ul>
-<li>✔+: (<em>55 points (≈115%) in gradebook</em>) Project is phenomenally well-designed and uses advanced R techniques. The project uncovers an important story that is not readily apparent from just looking at the raw data. I will not assign these often.</li>
-<li>✔: (<em>50 points (100%) in gradebook</em>) Project is fine, follows most design principles, answers a question from the data, and uses R correctly. This is the expected level of performance.</li>
-<li>✔−: (<em>25 points (50%) in gradebook</em>) Project is missing large components, is poorly designed, does not answer a relevant question, and/or uses R incorrectly. This indicates that you need to improve next time. I will hopefully not assign these often.</li>
-</ul>
-<p>Because these mini projects give you practice for the final project, we will provide you with substantial feedback on your design and code.</p>
-</div>
-<div id="final-project" class="section level2">
-<h2>Final project</h2>
-<p>At the end of the course, you will demonstrate your skills by completing a final project. <a href="/lab/final-project">Complete details for the final project (including past examples of excellent projects) are here.</a> In brief, the final project has the following elements:</p>
-<ol style="list-style-type: decimal">
-<li>You must find existing data to analyze.<a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a> Aggregating data from multiple sources is encouraged, but is not required.</li>
-</ol>
-<ol start="2" style="list-style-type: decimal">
-<li>You must visualize (at least) three <strong>interesting</strong> features of that data. Visualizations should aid the reader in understanding something about the data that might not be readily aparent.<a href="#fn3" class="footnote-ref" id="fnref3"><sup>3</sup></a></li>
-</ol>
-<ol start="3" style="list-style-type: decimal">
-<li>You must come up with some analysis—using tools from the course—which relates your data to either a prediction or a policy conclusion. For example, if you collected data from Major League Baseball games, you could try to “predict” whether a left-hander was pitching based solely on the outcomes of the batsmen.<a href="#fn4" class="footnote-ref" id="fnref4"><sup>4</sup></a></li>
-</ol>
-<ol start="4" style="list-style-type: decimal">
-<li>You must write your analysis as if presenting to a <strong>C-suite executive</strong>. If you are not familiar with this terminology, the C-suite includes, e.g., the CEO, CFO, and COO of a given company. Generally speaking, such executives are not particularly analytically oriented, and therefore your explanations need to be clear, consise (their time is valuable) and contain actionable (or valuable) information.</li>
-</ol>
-<p><strong>There is no final exam. This project is your final exam.</strong></p>
-<p>The project will <strong><em>not</em></strong> be graded using a check system, and will be graded by me (the main instructor, not a TA). I will evaluate the following four elements of your project:</p>
-<ol style="list-style-type: decimal">
-<li>Technical skills: Was the project easy? Does it showcase mastery of data analysis?</li>
-<li>Visual design: Was the information smartly conveyed and usable? Was it beautiful?</li>
-<li>Analytic design: Was the analysis appropriate? Was it sensible, given the dataset?</li>
-<li>Story: Did we learn something?</li>
-</ol>
-<p>If you’ve engaged with the course content and completed the exercises and mini projects throughout the course, you should do just fine with the final project.</p>
-</div>
-<div class="footnotes">
-<hr />
-<ol>
-<li id="fn1"><p>Note that sometimes the writing takes the form of a very short coding assignment.<a href="#fnref1" class="footnote-back">↩︎</a></p></li>
-<li id="fn2"><p>Note that <strong>existing</strong> is taken to mean that you are not permitted to collect data by interacting with other people. That is not to say that you cannot gather data that previously has not been gathered into a single place—this sort of exercise is encouraged.<a href="#fnref2" class="footnote-back">↩︎</a></p></li>
-<li id="fn3"><p>Pie charts of any kind will result in a 25% grade deduction.<a href="#fnref3" class="footnote-back">↩︎</a></p></li>
-<li id="fn4"><p>This is an extremely dumb idea for a number of reasons. Moreover, it’s worth mentioning that sports data, while rich, can be overwhelming due to its sheer magnitude and the variety of approaches that can be applied. Use with caution.<a href="#fnref4" class="footnote-back">↩︎</a></p></li>
+<li><p>Split the data into an 80/20 train vs. test split. Make sure you explicitly set the seed for replicability, but do not share your seed with others in the class. (We may compare some results across people.)</p></li>
+<li><p>Run a series of logistic regressions with between 1 and 4 predictors.</p></li>
+<li><p>Create eight total confusion matrices: four by applying your models to the training data, and four by applying your models to the test data. Briefly discuss your findings.</p></li>
 </ol>
 </div>
+<p>For those who did not already complete the weekly writing, your assignment is to complete #1 - #5 of the second “Try It” section in the content tab for this week. (The first question begins “1. Install and load the <strong>Lahman</strong> library.”)</p>
+</div>
 
-          </div>
+                    </div>
 
-          
-
-
-
-          
-        </div>
-
-        <div class="body-footer">
-          <p>Last updated on November 9, 2020</p>
-
-          
+                    
 
 
-          
 
-        </div>
+                    
+                </div>
 
-      </article>
+                <div class="body-footer">
+                    <p>Last updated on January 1, 0001</p>
 
-      <footer>
+                    
+
+
+                    
+
+                </div>
+
+            </article>
+
+            <footer>
     <hr>
 
     <div class="row course-info">
@@ -810,10 +749,9 @@
 </footer>
 
 
-    </main>
-  </div>
+        </main>
+    </div>
 </div>
-
 
         
 
