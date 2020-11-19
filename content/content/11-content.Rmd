@@ -20,8 +20,9 @@ output:
 ### Guiding Questions
 
 - How can we reshape data into a useable `tidy` form?
+- What is a _join_ and why is it a common data wrangling maneuver? 
 - What is a _primary key_ and why is it important to think about our data in this way?
--
+- How do we deal with messy date variables?
 
 
 # Introduction to data wrangling
@@ -319,7 +320,7 @@ The data has been successfully joined and we can now, for example, make a plot t
 library(ggrepel)
 tab %>% ggplot(aes(population/10^6, ev, label = abb)) +
   geom_point() +
-  geom_text_repel() + 
+  geom_text_repel() +
   scale_x_continuous(trans = "log2") +
   scale_y_continuous(trans = "log2") +
   geom_smooth(method = "lm", se = FALSE)
@@ -333,9 +334,9 @@ In practice, it is not always the case that each row in one table has a matching
 ```{r}
 tab_1 <- slice(murders, 1:6) %>% select(state, population)
 tab_1
-tab_2 <- results_us_election_2016 %>% 
-  filter(state%in%c("Alabama", "Alaska", "Arizona", 
-                    "California", "Connecticut", "Delaware")) %>% 
+tab_2 <- results_us_election_2016 %>%
+  filter(state%in%c("Alabama", "Alaska", "Arizona",
+                    "California", "Connecticut", "Delaware")) %>%
   select(state, electoral_votes) %>% rename(ev = electoral_votes)
 tab_2
 ```
@@ -419,7 +420,7 @@ The __dplyr__ function _bind_cols_ binds two objects by making them columns in a
 bind_cols(a = 1:3, b = 4:6)
 ```
 
-This function requires that we assign names to the columns. Here we chose `a` and `b`. 
+This function requires that we assign names to the columns. Here we chose `a` and `b`.
 
 Note that there is an R-base function `cbind` with the exact same functionality. An important difference is that `cbind` can create different types of objects, while `bind_cols` always produces a data frame.
 
@@ -482,12 +483,12 @@ union(1:10, 6:15)
 union(c("a","b","c"), c("b","c","d"))
 ```
 
-The __dplyr__ package includes a version of `union` that combines all the rows of two tables with the same column names. 
+The __dplyr__ package includes a version of `union` that combines all the rows of two tables with the same column names.
 
 ```{r}
 tab_1 <- tab[1:5,]
 tab_2 <- tab[3:7,]
-dplyr::union(tab_1, tab_2) 
+dplyr::union(tab_1, tab_2)
 ```
 
 
@@ -532,7 +533,7 @@ dplyr::setequal(tab_1, tab_2)
 
 :::fyi
 
-__TRY IT__ 
+__TRY IT__
 
 1. Install and load the __Lahman__ library. This database includes data related to baseball teams. It includes summary statistics about how the players performed on offense and defense for several years. It also includes personal information about the players.
 
@@ -541,7 +542,7 @@ The `Batting` data frame contains the offensive statistics for all players for m
 ```{r, eval=FALSE}
 library(Lahman)
 
-top <- Batting %>% 
+top <- Batting %>%
   filter(yearID == 2016) %>%
   arrange(desc(HR)) %>%
   slice(1:10)
@@ -567,7 +568,7 @@ We can see column names `nameFirst` and `nameLast`. Use the `left_join` function
 
 
 ```{r, eval=FALSE}
-co2_wide <- data.frame(matrix(co2, ncol = 12, byrow = TRUE)) %>% 
+co2_wide <- data.frame(matrix(co2, ncol = 12, byrow = TRUE)) %>%
   setNames(1:12) %>%
   mutate(year = 1959:1997) %>%
   gather(month, co2, -year, convert = TRUE)
@@ -587,9 +588,9 @@ We want to see if the monthly trend is changing so we are going to remove the ye
 
 ## The date data type
 
-We have described three main types of vectors: numeric, character, and logical. In data science projects, we very often encounter variables that are dates. Although we can represent a date with a string, for example `November 2, 2017`, once we pick a reference day, referred to as the _epoch_, they can be converted to numbers by calculating the number of days since the epoch. Computer languages usually use January 1, 1970, as the epoch. So, for example, January 2, 2017 is day 1, December 31, 1969 is day -1, and November 2, 2017, is day 17,204. 
+We have described three main types of vectors: numeric, character, and logical. In data science projects, we very often encounter variables that are dates. Although we can represent a date with a string, for example `November 2, 2017`, once we pick a reference day, referred to as the _epoch_, they can be converted to numbers by calculating the number of days since the epoch. Computer languages usually use January 1, 1970, as the epoch. So, for example, January 2, 2017 is day 1, December 31, 1969 is day -1, and November 2, 2017, is day 17,204.
 
-Now how should we represent dates and times when analyzing data in R? We could just use days since the epoch, but then it is almost impossible to interpret. If I tell you it's November 2, 2017, you know what this means immediately. If I tell you it's day 17,204, you will be quite confused. Similar problems arise with times and even more complications can appear due to time zones. 
+Now how should we represent dates and times when analyzing data in R? We could just use days since the epoch, but then it is almost impossible to interpret. If I tell you it's November 2, 2017, you know what this means immediately. If I tell you it's day 17,204, you will be quite confused. Similar problems arise with times and even more complications can appear due to time zones.
 
 For this reason, `R` defines a data type just for dates and times. We saw an example in the polls data:
 
@@ -630,7 +631,7 @@ Note in particular that the month names are displayed, a very convenient feature
 
 ## The lubridate package {#lubridate}
 
-The __tidyverse__ includes functionality for dealing with dates through the __lubridate__ package. 
+The __tidyverse__ includes functionality for dealing with dates through the __lubridate__ package.
 
 ```{r, warning=FALSE, message=FALSE}
 library(lubridate)
@@ -647,7 +648,7 @@ dates
 The functions `year`, `month` and `day` extract those values:
 
 ```{r}
-tibble(date = dates, 
+tibble(date = dates,
        month = month(dates),
        day = day(dates),
        year = year(dates))
@@ -670,7 +671,7 @@ ymd(x)
 
 A further complication comes from the fact that dates often come in different formats in which the order of year, month, and day are different. The preferred format is to show year (with all four digits), month (two digits), and then day, or what is called the ISO 8601. Specifically we use YYYY-MM-DD so that if we order the string, it will be ordered by date. You can see the function `ymd` returns them in this format.
 
-But, what if you encounter dates such as "09/01/02"? This could be September 1, 2002 or January 2, 2009 or January 9, 2002. 
+But, what if you encounter dates such as "09/01/02"? This could be September 1, 2002 or January 2, 2009 or January 9, 2002.
 In these cases, examining the entire vector of dates will help you determine what format it is by process of elimination. Once you know, you can use the many parses provided by __lubridate__.
 
 For example, if the string is:
@@ -708,7 +709,7 @@ now("GMT")
 
 You can see all the available time zones with `OlsonNames()` function.
 
-We can also extract hours, minutes, and seconds: 
+We can also extract hours, minutes, and seconds:
 
 ```{r}
 now() %>% hour()
@@ -743,7 +744,7 @@ make_date(1980:1989)
 Another very useful function is the `round_date`. It can be used to _round_ dates to nearest year, quarter,  month, week, day, hour, minutes, or seconds. So if we want to group all the polls by week of the year we can do the following:
 
 ```{r poll-margin-versus-week}
-polls_us_election_2016 %>% 
+polls_us_election_2016 %>%
   mutate(week = round_date(startdate, "week")) %>%
   group_by(week) %>%
   summarize(margin = mean(rawpoll_clinton - rawpoll_trump)) %>%

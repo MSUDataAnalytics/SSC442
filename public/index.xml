@@ -6035,8 +6035,9 @@ mpg %&amp;gt;%
 &lt;h3&gt;Guiding Questions&lt;/h3&gt;
 &lt;ul&gt;
 &lt;li&gt;How can we reshape data into a useable &lt;code&gt;tidy&lt;/code&gt; form?&lt;/li&gt;
+&lt;li&gt;What is a &lt;em&gt;join&lt;/em&gt; and why is it a common data wrangling maneuver?&lt;/li&gt;
 &lt;li&gt;What is a &lt;em&gt;primary key&lt;/em&gt; and why is it important to think about our data in this way?&lt;/li&gt;
-&lt;li&gt;&lt;/li&gt;
+&lt;li&gt;How do we deal with messy date variables?&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/div&gt;
 &lt;/div&gt;
@@ -6345,7 +6346,7 @@ head(tab)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(ggrepel)
 tab %&amp;gt;% ggplot(aes(population/10^6, ev, label = abb)) +
   geom_point() +
-  geom_text_repel() + 
+  geom_text_repel() +
   scale_x_continuous(trans = &amp;quot;log2&amp;quot;) +
   scale_y_continuous(trans = &amp;quot;log2&amp;quot;) +
   geom_smooth(method = &amp;quot;lm&amp;quot;, se = FALSE)&lt;/code&gt;&lt;/pre&gt;
@@ -6361,9 +6362,9 @@ tab_1&lt;/code&gt;&lt;/pre&gt;
 ## 4   Arkansas    2915918
 ## 5 California   37253956
 ## 6   Colorado    5029196&lt;/code&gt;&lt;/pre&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;tab_2 &amp;lt;- results_us_election_2016 %&amp;gt;% 
-  filter(state%in%c(&amp;quot;Alabama&amp;quot;, &amp;quot;Alaska&amp;quot;, &amp;quot;Arizona&amp;quot;, 
-                    &amp;quot;California&amp;quot;, &amp;quot;Connecticut&amp;quot;, &amp;quot;Delaware&amp;quot;)) %&amp;gt;% 
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;tab_2 &amp;lt;- results_us_election_2016 %&amp;gt;%
+  filter(state%in%c(&amp;quot;Alabama&amp;quot;, &amp;quot;Alaska&amp;quot;, &amp;quot;Arizona&amp;quot;,
+                    &amp;quot;California&amp;quot;, &amp;quot;Connecticut&amp;quot;, &amp;quot;Delaware&amp;quot;)) %&amp;gt;%
   select(state, electoral_votes) %&amp;gt;% rename(ev = electoral_votes)
 tab_2&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;##         state ev
@@ -6520,7 +6521,7 @@ dplyr::intersect(tab_1, tab_2)&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;The &lt;strong&gt;dplyr&lt;/strong&gt; package includes a version of &lt;code&gt;union&lt;/code&gt; that combines all the rows of two tables with the same column names.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;tab_1 &amp;lt;- tab[1:5,]
 tab_2 &amp;lt;- tab[3:7,]
-dplyr::union(tab_1, tab_2) &lt;/code&gt;&lt;/pre&gt;
+dplyr::union(tab_1, tab_2)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;##         state abb    region population total ev clinton trump
 ## 1     Alabama  AL     South    4779736   135  9    34.4  62.1
 ## 2      Alaska  AK      West     710231    19  3    36.6  51.3
@@ -6564,7 +6565,7 @@ dplyr::setdiff(tab_1, tab_2)&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;The &lt;code&gt;Batting&lt;/code&gt; data frame contains the offensive statistics for all players for many years. You can see, for example, the top 10 hitters by running this code:&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(Lahman)
 
-top &amp;lt;- Batting %&amp;gt;% 
+top &amp;lt;- Batting %&amp;gt;%
   filter(yearID == 2016) %&amp;gt;%
   arrange(desc(HR)) %&amp;gt;%
   slice(1:10)
@@ -6577,7 +6578,7 @@ top %&amp;gt;% as_tibble()&lt;/code&gt;&lt;/pre&gt;
 &lt;li&gt;&lt;p&gt;Now use the &lt;code&gt;Salaries&lt;/code&gt; data frame to add each player’s salary to the table you created in exercise 1. Note that salaries are different every year so make sure to filter for the year 2016, then use &lt;code&gt;right_join&lt;/code&gt;. This time show first name, last name, team, HR, and salary.&lt;/p&gt;&lt;/li&gt;
 &lt;li&gt;&lt;p&gt;In a previous exercise, we created a tidy version of the &lt;code&gt;co2&lt;/code&gt; dataset:&lt;/p&gt;&lt;/li&gt;
 &lt;/ol&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;co2_wide &amp;lt;- data.frame(matrix(co2, ncol = 12, byrow = TRUE)) %&amp;gt;% 
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;co2_wide &amp;lt;- data.frame(matrix(co2, ncol = 12, byrow = TRUE)) %&amp;gt;%
   setNames(1:12) %&amp;gt;%
   mutate(year = 1959:1997) %&amp;gt;%
   gather(month, co2, -year, convert = TRUE)&lt;/code&gt;&lt;/pre&gt;
@@ -6630,7 +6631,7 @@ dates&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;##  [1] &amp;quot;2016-05-31&amp;quot; &amp;quot;2016-08-08&amp;quot; &amp;quot;2016-08-19&amp;quot; &amp;quot;2016-09-22&amp;quot; &amp;quot;2016-09-27&amp;quot;
 ##  [6] &amp;quot;2016-10-12&amp;quot; &amp;quot;2016-10-24&amp;quot; &amp;quot;2016-10-26&amp;quot; &amp;quot;2016-10-29&amp;quot; &amp;quot;2016-10-30&amp;quot;&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;The functions &lt;code&gt;year&lt;/code&gt;, &lt;code&gt;month&lt;/code&gt; and &lt;code&gt;day&lt;/code&gt; extract those values:&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;tibble(date = dates, 
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;tibble(date = dates,
        month = month(dates),
        day = day(dates),
        year = year(dates))&lt;/code&gt;&lt;/pre&gt;
@@ -6680,21 +6681,21 @@ In these cases, examining the entire vector of dates will help you determine wha
 &lt;p&gt;The &lt;strong&gt;lubridate&lt;/strong&gt; package is also useful for dealing with times. In R base, you can get the current time typing &lt;code&gt;Sys.time()&lt;/code&gt;. The &lt;strong&gt;lubridate&lt;/strong&gt; package provides a slightly more advanced function, &lt;code&gt;now&lt;/code&gt;, that permits you to define the time zone:&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;now()&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## Warning in with_tz(Sys.time(), tzone): Unrecognized time zone &amp;#39;&amp;#39;&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;2020-11-19 08:23:31 EST&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;2020-11-19 09:24:51 EST&amp;quot;&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;now(&amp;quot;GMT&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## Warning in with_tz(Sys.time(), tzone): Unrecognized time zone &amp;#39;GMT&amp;#39;&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;2020-11-19 13:23:31 GMT&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;2020-11-19 14:24:51 GMT&amp;quot;&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;You can see all the available time zones with &lt;code&gt;OlsonNames()&lt;/code&gt; function.&lt;/p&gt;
 &lt;p&gt;We can also extract hours, minutes, and seconds:&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;now() %&amp;gt;% hour()&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## Warning in with_tz(Sys.time(), tzone): Unrecognized time zone &amp;#39;&amp;#39;&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## [1] 8&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 9&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;now() %&amp;gt;% minute()&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## Warning in with_tz(Sys.time(), tzone): Unrecognized time zone &amp;#39;&amp;#39;&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## [1] 23&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 24&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;now() %&amp;gt;% second()&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## Warning in with_tz(Sys.time(), tzone): Unrecognized time zone &amp;#39;&amp;#39;&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## [1] 31.83726&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 51.69368&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;The package also includes a function to parse strings into times as well as parsers for time objects that include dates:&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;x &amp;lt;- c(&amp;quot;12:34:56&amp;quot;)
 hms(x)&lt;/code&gt;&lt;/pre&gt;
@@ -6711,7 +6712,7 @@ mdy_hms(x)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;##  [1] &amp;quot;1980-01-01&amp;quot; &amp;quot;1981-01-01&amp;quot; &amp;quot;1982-01-01&amp;quot; &amp;quot;1983-01-01&amp;quot; &amp;quot;1984-01-01&amp;quot;
 ##  [6] &amp;quot;1985-01-01&amp;quot; &amp;quot;1986-01-01&amp;quot; &amp;quot;1987-01-01&amp;quot; &amp;quot;1988-01-01&amp;quot; &amp;quot;1989-01-01&amp;quot;&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Another very useful function is the &lt;code&gt;round_date&lt;/code&gt;. It can be used to &lt;em&gt;round&lt;/em&gt; dates to nearest year, quarter, month, week, day, hour, minutes, or seconds. So if we want to group all the polls by week of the year we can do the following:&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;polls_us_election_2016 %&amp;gt;% 
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;polls_us_election_2016 %&amp;gt;%
   mutate(week = round_date(startdate, &amp;quot;week&amp;quot;)) %&amp;gt;%
   group_by(week) %&amp;gt;%
   summarize(margin = mean(rawpoll_clinton - rawpoll_trump)) %&amp;gt;%

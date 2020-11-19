@@ -707,8 +707,9 @@
 <h3>Guiding Questions</h3>
 <ul>
 <li>How can we reshape data into a useable <code>tidy</code> form?</li>
+<li>What is a <em>join</em> and why is it a common data wrangling maneuver?</li>
 <li>What is a <em>primary key</em> and why is it important to think about our data in this way?</li>
-<li></li>
+<li>How do we deal with messy date variables?</li>
 </ul>
 </div>
 </div>
@@ -1017,7 +1018,7 @@ head(tab)</code></pre>
 <pre class="r"><code>library(ggrepel)
 tab %&gt;% ggplot(aes(population/10^6, ev, label = abb)) +
   geom_point() +
-  geom_text_repel() + 
+  geom_text_repel() +
   scale_x_continuous(trans = &quot;log2&quot;) +
   scale_y_continuous(trans = &quot;log2&quot;) +
   geom_smooth(method = &quot;lm&quot;, se = FALSE)</code></pre>
@@ -1033,9 +1034,9 @@ tab_1</code></pre>
 ## 4   Arkansas    2915918
 ## 5 California   37253956
 ## 6   Colorado    5029196</code></pre>
-<pre class="r"><code>tab_2 &lt;- results_us_election_2016 %&gt;% 
-  filter(state%in%c(&quot;Alabama&quot;, &quot;Alaska&quot;, &quot;Arizona&quot;, 
-                    &quot;California&quot;, &quot;Connecticut&quot;, &quot;Delaware&quot;)) %&gt;% 
+<pre class="r"><code>tab_2 &lt;- results_us_election_2016 %&gt;%
+  filter(state%in%c(&quot;Alabama&quot;, &quot;Alaska&quot;, &quot;Arizona&quot;,
+                    &quot;California&quot;, &quot;Connecticut&quot;, &quot;Delaware&quot;)) %&gt;%
   select(state, electoral_votes) %&gt;% rename(ev = electoral_votes)
 tab_2</code></pre>
 <pre><code>##         state ev
@@ -1192,7 +1193,7 @@ dplyr::intersect(tab_1, tab_2)</code></pre>
 <p>The <strong>dplyr</strong> package includes a version of <code>union</code> that combines all the rows of two tables with the same column names.</p>
 <pre class="r"><code>tab_1 &lt;- tab[1:5,]
 tab_2 &lt;- tab[3:7,]
-dplyr::union(tab_1, tab_2) </code></pre>
+dplyr::union(tab_1, tab_2)</code></pre>
 <pre><code>##         state abb    region population total ev clinton trump
 ## 1     Alabama  AL     South    4779736   135  9    34.4  62.1
 ## 2      Alaska  AK      West     710231    19  3    36.6  51.3
@@ -1236,7 +1237,7 @@ dplyr::setdiff(tab_1, tab_2)</code></pre>
 <p>The <code>Batting</code> data frame contains the offensive statistics for all players for many years. You can see, for example, the top 10 hitters by running this code:</p>
 <pre class="r"><code>library(Lahman)
 
-top &lt;- Batting %&gt;% 
+top &lt;- Batting %&gt;%
   filter(yearID == 2016) %&gt;%
   arrange(desc(HR)) %&gt;%
   slice(1:10)
@@ -1249,7 +1250,7 @@ top %&gt;% as_tibble()</code></pre>
 <li><p>Now use the <code>Salaries</code> data frame to add each player’s salary to the table you created in exercise 1. Note that salaries are different every year so make sure to filter for the year 2016, then use <code>right_join</code>. This time show first name, last name, team, HR, and salary.</p></li>
 <li><p>In a previous exercise, we created a tidy version of the <code>co2</code> dataset:</p></li>
 </ol>
-<pre class="r"><code>co2_wide &lt;- data.frame(matrix(co2, ncol = 12, byrow = TRUE)) %&gt;% 
+<pre class="r"><code>co2_wide &lt;- data.frame(matrix(co2, ncol = 12, byrow = TRUE)) %&gt;%
   setNames(1:12) %&gt;%
   mutate(year = 1959:1997) %&gt;%
   gather(month, co2, -year, convert = TRUE)</code></pre>
@@ -1302,7 +1303,7 @@ dates</code></pre>
 <pre><code>##  [1] &quot;2016-05-31&quot; &quot;2016-08-08&quot; &quot;2016-08-19&quot; &quot;2016-09-22&quot; &quot;2016-09-27&quot;
 ##  [6] &quot;2016-10-12&quot; &quot;2016-10-24&quot; &quot;2016-10-26&quot; &quot;2016-10-29&quot; &quot;2016-10-30&quot;</code></pre>
 <p>The functions <code>year</code>, <code>month</code> and <code>day</code> extract those values:</p>
-<pre class="r"><code>tibble(date = dates, 
+<pre class="r"><code>tibble(date = dates,
        month = month(dates),
        day = day(dates),
        year = year(dates))</code></pre>
@@ -1352,21 +1353,21 @@ In these cases, examining the entire vector of dates will help you determine wha
 <p>The <strong>lubridate</strong> package is also useful for dealing with times. In R base, you can get the current time typing <code>Sys.time()</code>. The <strong>lubridate</strong> package provides a slightly more advanced function, <code>now</code>, that permits you to define the time zone:</p>
 <pre class="r"><code>now()</code></pre>
 <pre><code>## Warning in with_tz(Sys.time(), tzone): Unrecognized time zone &#39;&#39;</code></pre>
-<pre><code>## [1] &quot;2020-11-19 08:23:31 EST&quot;</code></pre>
+<pre><code>## [1] &quot;2020-11-19 09:24:51 EST&quot;</code></pre>
 <pre class="r"><code>now(&quot;GMT&quot;)</code></pre>
 <pre><code>## Warning in with_tz(Sys.time(), tzone): Unrecognized time zone &#39;GMT&#39;</code></pre>
-<pre><code>## [1] &quot;2020-11-19 13:23:31 GMT&quot;</code></pre>
+<pre><code>## [1] &quot;2020-11-19 14:24:51 GMT&quot;</code></pre>
 <p>You can see all the available time zones with <code>OlsonNames()</code> function.</p>
 <p>We can also extract hours, minutes, and seconds:</p>
 <pre class="r"><code>now() %&gt;% hour()</code></pre>
 <pre><code>## Warning in with_tz(Sys.time(), tzone): Unrecognized time zone &#39;&#39;</code></pre>
-<pre><code>## [1] 8</code></pre>
+<pre><code>## [1] 9</code></pre>
 <pre class="r"><code>now() %&gt;% minute()</code></pre>
 <pre><code>## Warning in with_tz(Sys.time(), tzone): Unrecognized time zone &#39;&#39;</code></pre>
-<pre><code>## [1] 23</code></pre>
+<pre><code>## [1] 24</code></pre>
 <pre class="r"><code>now() %&gt;% second()</code></pre>
 <pre><code>## Warning in with_tz(Sys.time(), tzone): Unrecognized time zone &#39;&#39;</code></pre>
-<pre><code>## [1] 31.83726</code></pre>
+<pre><code>## [1] 51.69368</code></pre>
 <p>The package also includes a function to parse strings into times as well as parsers for time objects that include dates:</p>
 <pre class="r"><code>x &lt;- c(&quot;12:34:56&quot;)
 hms(x)</code></pre>
@@ -1383,7 +1384,7 @@ mdy_hms(x)</code></pre>
 <pre><code>##  [1] &quot;1980-01-01&quot; &quot;1981-01-01&quot; &quot;1982-01-01&quot; &quot;1983-01-01&quot; &quot;1984-01-01&quot;
 ##  [6] &quot;1985-01-01&quot; &quot;1986-01-01&quot; &quot;1987-01-01&quot; &quot;1988-01-01&quot; &quot;1989-01-01&quot;</code></pre>
 <p>Another very useful function is the <code>round_date</code>. It can be used to <em>round</em> dates to nearest year, quarter, month, week, day, hour, minutes, or seconds. So if we want to group all the polls by week of the year we can do the following:</p>
-<pre class="r"><code>polls_us_election_2016 %&gt;% 
+<pre class="r"><code>polls_us_election_2016 %&gt;%
   mutate(week = round_date(startdate, &quot;week&quot;)) %&gt;%
   group_by(week) %&gt;%
   summarize(margin = mean(rawpoll_clinton - rawpoll_trump)) %&gt;%
