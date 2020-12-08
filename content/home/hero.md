@@ -5,7 +5,7 @@ headless: true
 active: true
 weight: 10
 
-title: "Data Analytics Applications"
+title: "Data Analytics Applications Spring 2021"
 
 # Hero image (optional). Enter filename of an image in the `static/img/` folder.
 hero_media: plume.png
@@ -20,7 +20,7 @@ design:
     text_color_light: true
 
 cta_note:
-  label: SSC442 • Fall 2020<br>College of Social Science<br>Michigan State University
+  label: SSC442 • Spring 2021<br>College of Social Science<br>Michigan State University
 ---
 
 ****
