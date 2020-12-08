@@ -50,9 +50,7 @@ url <- 'https://www.thetrumparchive.com/latest-tweets'
 trump_tweets <- map(2020:2020, ~sprintf(url, .x)) %>%
   map_df(jsonlite::fromJSON, simplifyDataFrame = TRUE) %>%
   filter(!isRetweet & !str_detect(text, '^"')) %>%
-  mutate(created_at = parse_date_time(date,
-                                      orders = "a b! d! H!:M!:S! z!* Y!",
-                                      tz="EST"))
+  mutate(created_at = as.Date(date))
 ```
 
 
