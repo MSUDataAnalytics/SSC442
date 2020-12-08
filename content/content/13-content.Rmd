@@ -173,13 +173,13 @@ tweet_words <- campaign_tweets %>%
 
 And we can now answer questions such as "what are the most commonly used words?":
 
-```{r}
+```{r, , eval=FALSE}
 tweet_words %>%
   count(word) %>%
   arrange(desc(n))
 ```
 
-It is not surprising that these are the top words. The top words are not informative. The _tidytext_ package has a database of these commonly used words, referred to as _stop words_, in text mining:
+Running this, we find a boring answer. But it is not surprising that these are the top words. The top words are not informative. The _tidytext_ package has a database of these commonly used words, referred to as _stop words_, in text mining:
 
 ```{r}
 stop_words
@@ -230,18 +230,18 @@ android_iphone_or <- tweet_words %>%
 
 Here are the highest odds ratios for Android
 
-```{r}
+```{r, eval=FALSE}
 android_iphone_or %>% arrange(desc(or))
 ```
 
 and the top for iPhone:
-```{r}
+```{r, eval=FALSE}
 android_iphone_or %>% arrange(or)
 ```
 
 Given that several of these words are overall low frequency words, we can impose a filter based on the total frequency like this:
 
-```{r}
+```{r, eval=FALSE}
 android_iphone_or %>% filter(Android+iPhone > 100) %>%
   arrange(desc(or))
 
@@ -309,12 +309,11 @@ sentiment_counts <- tweet_words %>%
   count(source, sentiment) %>%
   spread(source, n) %>%
   mutate(sentiment = replace_na(sentiment, replace = "none"))
-sentiment_counts
 ```
 
 For each sentiment, we can compute the odds of being in the device: proportion of words with sentiment versus proportion of words without, and then compute the odds ratio comparing the two devices.
 
-```{r}
+```{r, eval=FALSE}
 sentiment_counts %>%
   mutate(Android = Android / (sum(Android) - Android) ,
          iPhone = iPhone / (sum(iPhone) - iPhone),
