@@ -697,9 +697,7 @@ library(jsonlite)</code></pre>
 trump_tweets &lt;- map(2020:2020, ~sprintf(url, .x)) %&gt;%
   map_df(jsonlite::fromJSON, simplifyDataFrame = TRUE) %&gt;%
   filter(!isRetweet &amp; !str_detect(text, &#39;^&quot;&#39;)) %&gt;%
-  mutate(created_at = parse_date_time(date,
-                                      orders = &quot;a b! d! H!:M!:S! z!* Y!&quot;,
-                                      tz=&quot;EST&quot;))</code></pre>
+  mutate(created_at = as.Date(date))</code></pre>
 <p>You can see the data frame with information about the tweets by typing</p>
 <pre class="r"><code>data(trump_tweets)
 head(trump_tweets)</code></pre>
