@@ -38,25 +38,54 @@ output:
 <p>With the exception of labels used to represent categorical data, we have focused on numerical data. But in many applications, data starts as text. Well-known examples are spam filtering, cyber-crime prevention, counter-terrorism and sentiment analysis. In all these cases, the raw data is composed of free form text. Our task is to extract insights from these data. In this section, we learn how to generate useful numerical summaries from text data to which we can apply some of the powerful data visualization and analysis techniques we have learned.</p>
 <div id="case-study-trump-tweets" class="section level2">
 <h2>Case study: Trump tweets</h2>
-<p>During the 2016 US presidential election, then candidate Donald J. Trump used his twitter account as a way to communicate with potential voters. On August 6, 2016, Todd Vaziri tweeted<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a> about Trump that “Every non-hyperbolic tweet is from iPhone (his staff). Every hyperbolic tweet is from Android (from him).”
-Data scientist David Robinson conducted an analysis<a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a> to determine if data supported this assertion. Here, we go through David’s analysis to learn some of the basics of text mining. To learn more about text mining in R, we recommend the Text Mining with R book<a href="#fn3" class="footnote-ref" id="fnref3"><sup>3</sup></a> by Julia Silge and David Robinson.</p>
+<p>During the 2016 US presidential election, then candidate Donald J. Trump used his twitter account as a way to communicate with potential voters. On August 6, 2016, Todd Vaziri tweeted<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a> about Trump that “Every non-hyperbolic tweet is from iPhone (his staff). Every hyperbolic tweet is from Android (from him).”</p>
+<p>Data scientist David Robinson conducted an analysis<a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a> to determine if data supported this assertion. Here, we go through David’s analysis to learn some of the basics of text mining. To learn more about text mining in R, we recommend the Text Mining with R book<a href="#fn3" class="footnote-ref" id="fnref3"><sup>3</sup></a> by Julia Silge and David Robinson.</p>
 <p>We will use the following libraries:</p>
 <pre class="r"><code>library(tidyverse)
 library(lubridate)
-library(scales)</code></pre>
+library(scales)
+library(dslabs)
+library(rtweet)
+library(jsonlite)</code></pre>
 <p>In general, we can extract data directly from Twitter using the <strong>rtweet</strong> package. However, in this case, a group has already compiled data for us and made it available at <a href="http://www.trumptwitterarchive.com">http://www.trumptwitterarchive.com</a>. We can get the data from their JSON API using a script like this:</p>
-<pre class="r"><code>url &lt;- &#39;http://www.trumptwitterarchive.com/data/realdonaldtrump/%s.json&#39;
+<pre class="r"><code>url &lt;- &#39;https://www.thetrumparchive.com/latest-tweets&#39;
 trump_tweets &lt;- map(2020:2020, ~sprintf(url, .x)) %&gt;%
   map_df(jsonlite::fromJSON, simplifyDataFrame = TRUE) %&gt;%
-  filter(!is_retweet &amp; !str_detect(text, &#39;^&quot;&#39;)) %&gt;%
-  mutate(created_at = parse_date_time(created_at,
+  filter(!isRetweet &amp; !str_detect(text, &#39;^&quot;&#39;)) %&gt;%
+  mutate(created_at = parse_date_time(date,
                                       orders = &quot;a b! d! H!:M!:S! z!* Y!&quot;,
                                       tz=&quot;EST&quot;))</code></pre>
-<p>For convenience, we include the result of the code above in the <strong>dslabs</strong> package:</p>
-<pre class="r"><code>library(dslabs)
-data(&quot;trump_tweets&quot;)</code></pre>
 <p>You can see the data frame with information about the tweets by typing</p>
-<pre class="r"><code>head(trump_tweets)</code></pre>
+<pre class="r"><code>data(trump_tweets)
+head(trump_tweets)</code></pre>
+<pre><code>##               source     id_str
+## 1 Twitter Web Client 6971079756
+## 2 Twitter Web Client 6312794445
+## 3 Twitter Web Client 6090839867
+## 4 Twitter Web Client 5775731054
+## 5 Twitter Web Client 5364614040
+## 6 Twitter Web Client 5203117820
+##                                                                                                                                         text
+## 1       From Donald Trump: Wishing everyone a wonderful holiday &amp; a happy, healthy, prosperous New Year. Let’s think like champions in 2010!
+## 2 Trump International Tower in Chicago ranked 6th tallest building in world by Council on Tall Buildings &amp; Urban Habitat http://bit.ly/sqvQq
+## 3                                                                             Wishing you and yours a very Happy and Bountiful Thanksgiving!
+## 4                       Donald Trump Partners with TV1 on New Reality Series Entitled, Omarosa&#39;s Ultimate Merger: http://tinyurl.com/yk5m3lc
+## 5                         --Work has begun, ahead of schedule, to build the greatest golf course in history: Trump International – Scotland.
+## 6              --From Donald Trump: &quot;Ivanka and Jared’s wedding was spectacular, and they make a beautiful couple. I’m a very proud father.&quot;
+##            created_at retweet_count in_reply_to_user_id_str favorite_count
+## 1 2009-12-23 12:38:18            28                    &lt;NA&gt;             12
+## 2 2009-12-03 14:39:09            33                    &lt;NA&gt;              6
+## 3 2009-11-26 14:55:38            13                    &lt;NA&gt;             11
+## 4 2009-11-16 16:06:10             5                    &lt;NA&gt;              3
+## 5 2009-11-02 09:57:56             7                    &lt;NA&gt;              6
+## 6 2009-10-27 10:31:48             4                    &lt;NA&gt;              5
+##   is_retweet
+## 1      FALSE
+## 2      FALSE
+## 3      FALSE
+## 4      FALSE
+## 5      FALSE
+## 6      FALSE</code></pre>
 <p>with the following variables included:</p>
 <pre class="r"><code>names(trump_tweets)</code></pre>
 <pre><code>## [1] &quot;source&quot;                  &quot;id_str&quot;                 

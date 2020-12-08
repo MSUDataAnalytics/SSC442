@@ -6054,25 +6054,54 @@ mpg %&amp;gt;%
 &lt;p&gt;With the exception of labels used to represent categorical data, we have focused on numerical data. But in many applications, data starts as text. Well-known examples are spam filtering, cyber-crime prevention, counter-terrorism and sentiment analysis. In all these cases, the raw data is composed of free form text. Our task is to extract insights from these data. In this section, we learn how to generate useful numerical summaries from text data to which we can apply some of the powerful data visualization and analysis techniques we have learned.&lt;/p&gt;
 &lt;div id=&#34;case-study-trump-tweets&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Case study: Trump tweets&lt;/h2&gt;
-&lt;p&gt;During the 2016 US presidential election, then candidate Donald J. Trump used his twitter account as a way to communicate with potential voters. On August 6, 2016, Todd Vaziri tweeted&lt;a href=&#34;#fn1&#34; class=&#34;footnote-ref&#34; id=&#34;fnref1&#34;&gt;&lt;sup&gt;1&lt;/sup&gt;&lt;/a&gt; about Trump that “Every non-hyperbolic tweet is from iPhone (his staff). Every hyperbolic tweet is from Android (from him).”
-Data scientist David Robinson conducted an analysis&lt;a href=&#34;#fn2&#34; class=&#34;footnote-ref&#34; id=&#34;fnref2&#34;&gt;&lt;sup&gt;2&lt;/sup&gt;&lt;/a&gt; to determine if data supported this assertion. Here, we go through David’s analysis to learn some of the basics of text mining. To learn more about text mining in R, we recommend the Text Mining with R book&lt;a href=&#34;#fn3&#34; class=&#34;footnote-ref&#34; id=&#34;fnref3&#34;&gt;&lt;sup&gt;3&lt;/sup&gt;&lt;/a&gt; by Julia Silge and David Robinson.&lt;/p&gt;
+&lt;p&gt;During the 2016 US presidential election, then candidate Donald J. Trump used his twitter account as a way to communicate with potential voters. On August 6, 2016, Todd Vaziri tweeted&lt;a href=&#34;#fn1&#34; class=&#34;footnote-ref&#34; id=&#34;fnref1&#34;&gt;&lt;sup&gt;1&lt;/sup&gt;&lt;/a&gt; about Trump that “Every non-hyperbolic tweet is from iPhone (his staff). Every hyperbolic tweet is from Android (from him).”&lt;/p&gt;
+&lt;p&gt;Data scientist David Robinson conducted an analysis&lt;a href=&#34;#fn2&#34; class=&#34;footnote-ref&#34; id=&#34;fnref2&#34;&gt;&lt;sup&gt;2&lt;/sup&gt;&lt;/a&gt; to determine if data supported this assertion. Here, we go through David’s analysis to learn some of the basics of text mining. To learn more about text mining in R, we recommend the Text Mining with R book&lt;a href=&#34;#fn3&#34; class=&#34;footnote-ref&#34; id=&#34;fnref3&#34;&gt;&lt;sup&gt;3&lt;/sup&gt;&lt;/a&gt; by Julia Silge and David Robinson.&lt;/p&gt;
 &lt;p&gt;We will use the following libraries:&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(tidyverse)
 library(lubridate)
-library(scales)&lt;/code&gt;&lt;/pre&gt;
+library(scales)
+library(dslabs)
+library(rtweet)
+library(jsonlite)&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;In general, we can extract data directly from Twitter using the &lt;strong&gt;rtweet&lt;/strong&gt; package. However, in this case, a group has already compiled data for us and made it available at &lt;a href=&#34;http://www.trumptwitterarchive.com&#34;&gt;http://www.trumptwitterarchive.com&lt;/a&gt;. We can get the data from their JSON API using a script like this:&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;url &amp;lt;- &amp;#39;http://www.trumptwitterarchive.com/data/realdonaldtrump/%s.json&amp;#39;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;url &amp;lt;- &amp;#39;https://www.thetrumparchive.com/latest-tweets&amp;#39;
 trump_tweets &amp;lt;- map(2020:2020, ~sprintf(url, .x)) %&amp;gt;%
   map_df(jsonlite::fromJSON, simplifyDataFrame = TRUE) %&amp;gt;%
-  filter(!is_retweet &amp;amp; !str_detect(text, &amp;#39;^&amp;quot;&amp;#39;)) %&amp;gt;%
-  mutate(created_at = parse_date_time(created_at,
+  filter(!isRetweet &amp;amp; !str_detect(text, &amp;#39;^&amp;quot;&amp;#39;)) %&amp;gt;%
+  mutate(created_at = parse_date_time(date,
                                       orders = &amp;quot;a b! d! H!:M!:S! z!* Y!&amp;quot;,
                                       tz=&amp;quot;EST&amp;quot;))&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;For convenience, we include the result of the code above in the &lt;strong&gt;dslabs&lt;/strong&gt; package:&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(dslabs)
-data(&amp;quot;trump_tweets&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;You can see the data frame with information about the tweets by typing&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;head(trump_tweets)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data(trump_tweets)
+head(trump_tweets)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;##               source     id_str
+## 1 Twitter Web Client 6971079756
+## 2 Twitter Web Client 6312794445
+## 3 Twitter Web Client 6090839867
+## 4 Twitter Web Client 5775731054
+## 5 Twitter Web Client 5364614040
+## 6 Twitter Web Client 5203117820
+##                                                                                                                                         text
+## 1       From Donald Trump: Wishing everyone a wonderful holiday &amp;amp; a happy, healthy, prosperous New Year. Let’s think like champions in 2010!
+## 2 Trump International Tower in Chicago ranked 6th tallest building in world by Council on Tall Buildings &amp;amp; Urban Habitat http://bit.ly/sqvQq
+## 3                                                                             Wishing you and yours a very Happy and Bountiful Thanksgiving!
+## 4                       Donald Trump Partners with TV1 on New Reality Series Entitled, Omarosa&amp;#39;s Ultimate Merger: http://tinyurl.com/yk5m3lc
+## 5                         --Work has begun, ahead of schedule, to build the greatest golf course in history: Trump International – Scotland.
+## 6              --From Donald Trump: &amp;quot;Ivanka and Jared’s wedding was spectacular, and they make a beautiful couple. I’m a very proud father.&amp;quot;
+##            created_at retweet_count in_reply_to_user_id_str favorite_count
+## 1 2009-12-23 12:38:18            28                    &amp;lt;NA&amp;gt;             12
+## 2 2009-12-03 14:39:09            33                    &amp;lt;NA&amp;gt;              6
+## 3 2009-11-26 14:55:38            13                    &amp;lt;NA&amp;gt;             11
+## 4 2009-11-16 16:06:10             5                    &amp;lt;NA&amp;gt;              3
+## 5 2009-11-02 09:57:56             7                    &amp;lt;NA&amp;gt;              6
+## 6 2009-10-27 10:31:48             4                    &amp;lt;NA&amp;gt;              5
+##   is_retweet
+## 1      FALSE
+## 2      FALSE
+## 3      FALSE
+## 4      FALSE
+## 5      FALSE
+## 6      FALSE&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;with the following variables included:&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;names(trump_tweets)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## [1] &amp;quot;source&amp;quot;                  &amp;quot;id_str&amp;quot;                 

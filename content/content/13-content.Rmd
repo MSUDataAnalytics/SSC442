@@ -26,6 +26,7 @@ With the exception of labels used to represent categorical data, we have focused
 ## Case study: Trump tweets
 
 During the 2016 US presidential election, then candidate Donald J. Trump used his twitter account as a way to communicate with potential voters. On August 6, 2016, Todd Vaziri tweeted^[https://twitter.com/tvaziri/status/762005541388378112/photo/1] about Trump that "Every non-hyperbolic tweet is from iPhone (his staff). Every hyperbolic tweet is from Android (from him)."
+
 Data scientist David Robinson conducted an analysis^[http://varianceexplained.org/r/trump-tweets/] to determine if data supported this assertion. Here, we go through David's analysis to learn some of the basics of text mining. To learn more about text mining in R, we recommend the Text Mining with R book^[https://www.tidytextmining.com/] by Julia Silge and David Robinson.
 
 ```{r,echo=FALSE}
@@ -37,30 +38,28 @@ We will use the following libraries:
 library(tidyverse)
 library(lubridate)
 library(scales)
+library(dslabs)
+library(rtweet)
+library(jsonlite)
 ```
 
 In general, we can extract data directly from Twitter using the __rtweet__ package. However, in this case, a group has already compiled data for us and made it available at [http://www.trumptwitterarchive.com](http://www.trumptwitterarchive.com). We can get the data from their JSON API using a script like this:
 
 ```{r, eval=FALSE}
-url <- 'http://www.trumptwitterarchive.com/data/realdonaldtrump/%s.json'
+url <- 'https://www.thetrumparchive.com/latest-tweets'
 trump_tweets <- map(2020:2020, ~sprintf(url, .x)) %>%
   map_df(jsonlite::fromJSON, simplifyDataFrame = TRUE) %>%
-  filter(!is_retweet & !str_detect(text, '^"')) %>%
-  mutate(created_at = parse_date_time(created_at,
+  filter(!isRetweet & !str_detect(text, '^"')) %>%
+  mutate(created_at = parse_date_time(date,
                                       orders = "a b! d! H!:M!:S! z!* Y!",
                                       tz="EST"))
 ```
 
-For convenience, we include the result of the code above in the __dslabs__ package:
-
-```{r}
-library(dslabs)
-data("trump_tweets")
-```
 
 You can see the data frame with information about the tweets by typing
 
-```{r, eval=FALSE}
+```{r, eval=TRUE}
+data(trump_tweets)
 head(trump_tweets)
 ```
 
