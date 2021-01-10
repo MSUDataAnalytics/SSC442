@@ -1,8 +1,11 @@
 ---
 title: "Welcome Back to R"
 linktitle: "0: Introduction to R"
-date: "2020-09-03"
-read_date: "2020-09-03"
+date: "2020-12-30"
+read_date: "2021-01-19"
+draft: false
+publishdate: "2020-12-30"
+lastmod: "`r Sys.Date()`" 
 menu:
   content:
     parent: Course content
@@ -14,12 +17,12 @@ output:
     toc: true
 ---
 
-## Readings
+## Readings 
 
 As noted in the syllabus, your readings will be assigned each week in this area. For this initial week, please read the course content. **Read closely** the following:
 
 - The [syllabus](/syllabus/), [content](/content/), [examples](/example/), and [labs](/lab/) pages for this class.
-- This page. Yes, the whole thing.
+- This page. Yes, the whole thing.  
 
 
 ### Guiding Question
@@ -59,8 +62,8 @@ Both `R` and RStudio are free and available online.
 
 ##  Case study: US homicides by firearm
 
-Imagine you live in Europe (if only!) and are offered a job in a US company with many locations in every state. It is a great job, but headlines such as **US Gun Homicide Rate Higher Than Other Developed Countries**^[http://abcnews.go.com/blogs/headlines/2012/12/us-gun-ownership-homicide-rate-higher-than-other-developed-countries/] have you worried. Fox News runs a scary looking graphic, and charts like the one below only add to that concern:
-
+Imagine you live in Europe (if only!) and are offered a job in a US company with many locations in every state. It is a great job, but headlines such as **US Gun Homicide Rate Higher Than Other Developed Countries**^[http://abcnews.go.com/blogs/headlines/2012/12/us-gun-ownership-homicide-rate-higher-than-other-developed-countries/] have you worried. Fox News runs a scary looking graphic, and charts like the one below only add to that concern: 
+ 
 
 ```{r murder-rate-example-1, echo=FALSE, warning=FALSE, message=FALSE, out.width="70%"}
 ##from http://abcnews.go.com/images/International/homocides_g8_countries_640x360_wmain.jpg
@@ -149,7 +152,7 @@ California, for example, has a larger population than Canada, and 20 US states h
 
 ```{r echo=FALSE, out.width="60%"}
 # https://twitter.com/realdonaldtrump/status/1267246821597941764
-tweet_screenshot(tweet_url("realdonaldtrump", "1267246821597941764"))
+# tweet_screenshot(tweet_url("realdonaldtrump", "1267246821597941764"))
 ```
 
 This is a relatively simple and straightforward problem in social science: you have options of where to live, and want to determine the safety of the various states. Your "research" is clearly policy-relevant: you will eventually have to live somewhere. We will begin to tackle the problem by examining data related to gun homicides in the US during 2010 using `R`.
@@ -162,7 +165,7 @@ Before we get started with the motivating dataset, we need to cover the very bas
 
 ### Objects
 
-Suppose a relatively math unsavvy student asks us for help solving several quadratic equations of the form $ax^2+bx+c = 0$. You---a savvy student---recall that the quadratic formula gives us the solutions:
+Suppose a relatively math unsavvy student asks us for help solving several quadratic equations of the form $ax^2+bx+c = 0$. You---a savvy student---recall that the quadratic formula gives us the solutions: 
 
 $$
 \frac{-b - \sqrt{b^2 - 4ac}}{2a}\,\, \mbox{ and } \frac{-b + \sqrt{b^2 - 4ac}}{2a}
@@ -295,25 +298,25 @@ There are some exceptions to the rule that functions need the parentheses to be 
 
 You can see the arithmetic operators by typing:
 
-```{r, eval = TRUE}
+```{r, eval = FALSE}
 help("+")
 ```
 
 or
 
-```{r, eval = TRUE}
+```{r, eval = FALSE}
 ?"+"
 ```
 
 and the relational operators by typing:
 
-```{r, eval = TRUE}
+```{r, eval = FALSE}
 help(">")
 ```
 
 or
 
-```{r}
+```{r, eval = FALSE}
 ?">"
 ```
 
@@ -873,7 +876,7 @@ x
 class(x)
 ```
 
-R _coerced_ the data into characters. It guessed that because you put a character string in the vector, you meant the 1 and 3 to actually be character strings `"1"` and "`3`". The fact that not even a warning is issued is an example of how coercion can cause many unnoticed errors in `R`.
+R _coerced_ the data into characters. It guessed that because you put a character string in the vector, you meant the 1 and 3 to actually be character strings `"1"` and "`3`". The fact that not even a warning is issued is an example of how coercion can cause many unnoticed errors in `R`. 
 
 R also offers functions to change from one type to another. For example, you can turn numbers into characters with:
 

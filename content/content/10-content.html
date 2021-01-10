@@ -1,34 +1,33 @@
 ---
 title: "Classification"
-linktitle: " 10: Classification"
+linktitle: "10: Classification"
 date: "2020-11-09"
 read_date: "2020-11-09"
+lastmod: "2020-12-30"
+draft: false
+publishdate: "2021-01-15"
 menu:
   content:
     parent: Course content
-    weight: 1
+    weight: 2
 type: docs
 output:
   blogdown::html_page:
     toc: true
 ---
 
-<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
 
 <div id="TOC">
 <ul>
-<li><a href="#required-reading">Required Reading</a>
-<ul>
+<li><a href="#required-reading">Required Reading</a><ul>
 <li><a href="#guiding-questions">Guiding Questions</a></li>
 </ul></li>
-<li><a href="#classification-overview">Overview</a>
-<ul>
+<li><a href="#classification-overview">Overview</a><ul>
 <li><a href="#visualization-for-classification">Visualization for Classification</a></li>
 <li><a href="#a-simple-classifier">A Simple Classifier</a></li>
 <li><a href="#metrics-for-classification">Metrics for Classification</a></li>
 </ul></li>
-<li><a href="#logistic-regression">Logistic Regression</a>
-<ul>
+<li><a href="#logistic-regression">Logistic Regression</a><ul>
 <li><a href="#linear-regression-and-binary-responses">Linear Regression and Binary Responses</a></li>
 <li><a href="#bayes-classifier">Bayes Classifier</a></li>
 <li><a href="#logistic-regression-with-glm">Logistic Regression with <code>glm()</code></a></li>
@@ -78,7 +77,7 @@ as_tibble(Default)</code></pre>
 ##  8 No      Yes        809. 17600.
 ##  9 No      No        1161. 37469.
 ## 10 No      No           0  29275.
-## # … with 9,990 more rows</code></pre>
+## # ... with 9,990 more rows</code></pre>
 <p>Our goal is to properly classify individuals as defaulters based on student status, credit card balance, and income. Be aware that the response <code>default</code> is a factor, as is the predictor <code>student</code>.</p>
 <pre class="r"><code>is.factor(Default$default)</code></pre>
 <pre><code>## [1] TRUE</code></pre>
@@ -322,7 +321,7 @@ as_tibble(Default)</code></pre>
 ##  8 No      Yes        809. 17600.
 ##  9 No      No        1161. 37469.
 ## 10 No      No           0  29275.
-## # … with 9,990 more rows</code></pre>
+## # ... with 9,990 more rows</code></pre>
 <p>We also repeat the test-train split from above (you need not repeat this step if you have this saved).</p>
 <pre class="r"><code>set.seed(42)
 default_idx = sample(nrow(Default), 5000)

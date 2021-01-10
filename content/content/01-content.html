@@ -1,8 +1,11 @@
 ---
 title: "Introduction to the tidyverse"
 linktitle: "1: The Tidyverse"
-date: "2020-09-08"
-read_date: "2020-09-08"
+date: "2020-01-10"
+read_date: "2021-01-26"
+draft: false
+publishdate: "2021-01-20"
+lastmod: "2021-01-10"
 menu:
   content:
     parent: Course content
@@ -115,6 +118,27 @@ head(murders)</code></pre>
 ## 6   Colorado  CO   West    5029196    65</code></pre>
 <p>Each row represent a state with each of the five columns providing a different variable related to these states: name, abbreviation, region, population, and total murders.</p>
 <p>To see how the same information can be provided in different formats, consider the following example:</p>
+<pre class="r"><code>detach(&#39;package:dplyr&#39;, unload=T)</code></pre>
+<pre><code>## Warning: &#39;dplyr&#39; namespace cannot be unloaded:
+##   namespace &#39;dplyr&#39; is imported by &#39;dbplyr&#39;, &#39;broom&#39;, &#39;tidyr&#39; so cannot be unloaded</code></pre>
+<pre class="r"><code>library(dplyr)</code></pre>
+<pre><code>## 
+## Attaching package: &#39;dplyr&#39;</code></pre>
+<pre><code>## The following objects are masked from &#39;package:stats&#39;:
+## 
+##     filter, lag</code></pre>
+<pre><code>## The following objects are masked from &#39;package:raster&#39;:
+## 
+##     intersect, select, union</code></pre>
+<pre><code>## The following objects are masked from &#39;package:rgeos&#39;:
+## 
+##     intersect, setdiff, union</code></pre>
+<pre><code>## The following objects are masked from &#39;package:data.table&#39;:
+## 
+##     between, first, last</code></pre>
+<pre><code>## The following objects are masked from &#39;package:base&#39;:
+## 
+##     intersect, setdiff, setequal, union</code></pre>
 <pre class="r"><code>library(dslabs)
 data(&quot;gapminder&quot;)
 tidy_data &lt;- gapminder %&gt;%
@@ -408,7 +432,7 @@ us_murder_rate</code></pre>
 ##  8 Female     62
 ##  9 Female     66
 ## 10 Male       67
-## # … with 1,040 more rows</code></pre>
+## # ... with 1,040 more rows</code></pre>
 <p>The result does not look very different from <code>heights</code>, except we see <code>Groups: sex [2]</code> when we print the object. Although not immediately obvious from its appearance, this is now a special data frame called a <em>grouped data frame</em>, and <strong>dplyr</strong> functions, in particular <code>summarize</code>, will behave differently when acting on this object. Conceptually, you can think of this table as many tables, with the same columns but not necessarily the same number of rows, stacked together in one object. When we summarize the data after grouping, this is what happens:</p>
 <pre class="r"><code>heights %&gt;%
   group_by(sex) %&gt;%
@@ -538,7 +562,7 @@ mean(na_example)</code></pre>
 ##  8 Delaware             DE    South         897934    38  4.23
 ##  9 District of Columbia DC    South         601723    99 16.5 
 ## 10 Florida              FL    South       19687653   669  3.40
-## # … with 41 more rows</code></pre>
+## # ... with 41 more rows</code></pre>
 <p>Notice that there are no columns with this information. But, if you look closely at the output above, you see the line <code>A tibble</code> followd by dimensions. We can learn the class of the returned object using:</p>
 <pre class="r"><code>murders %&gt;% group_by(region) %&gt;% class()</code></pre>
 <pre><code>## [1] &quot;grouped_df&quot; &quot;tbl_df&quot;     &quot;tbl&quot;        &quot;data.frame&quot;</code></pre>
@@ -573,10 +597,10 @@ mean(na_example)</code></pre>
 <p>While data frame columns need to be vectors of numbers, strings, or logical values, tibbles can have more complex objects, such as lists or functions. Also, we can create tibbles with functions:</p>
 <pre class="r"><code>tibble(id = c(1, 2, 3), func = c(mean, median, sd))</code></pre>
 <pre><code>## # A tibble: 3 x 2
-##      id func  
-##   &lt;dbl&gt; &lt;list&gt;
-## 1     1 &lt;fn&gt;  
-## 2     2 &lt;fn&gt;  
+##      id func      
+##   &lt;dbl&gt; &lt;list&gt;    
+## 1     1 &lt;stndrdGn&gt;
+## 2     2 &lt;fn&gt;      
 ## 3     3 &lt;fn&gt;</code></pre>
 </div>
 <div id="tibbles-can-be-grouped" class="section level3">
@@ -594,7 +618,7 @@ mean(na_example)</code></pre>
                      exam_1 = c(95, 80, 90, 85),
                      exam_2 = c(90, 85, 85, 90))
 class(grades$names)</code></pre>
-<pre><code>## [1] &quot;factor&quot;</code></pre>
+<pre><code>## [1] &quot;character&quot;</code></pre>
 <p>To avoid this, we use the rather cumbersome argument <code>stringsAsFactors</code>:</p>
 <pre class="r"><code>grades &lt;- data.frame(names = c(&quot;John&quot;, &quot;Juan&quot;, &quot;Jean&quot;, &quot;Yao&quot;),
                      exam_1 = c(95, 80, 90, 85),

@@ -1,34 +1,32 @@
 ---
 title: "Text as Data"
-linktitle: "*12: Text as Data"
+linktitle: "12: Text as Data"
 date: "2020-12-01"
 read_date: "2020-12-01"
+draft: false
+publishdate: "2021-01-10"
 menu:
   content:
     parent: Course content
-    weight: 1
+    weight: 2
 type: docs
 output:
   blogdown::html_page:
     toc: true
 ---
 
-<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
 
 <div id="TOC">
 <ul>
-<li><a href="#required-reading">Required Reading</a>
-<ul>
+<li><a href="#required-reading">Required Reading</a><ul>
 <li><a href="#guiding-questions">Guiding Questions</a></li>
 </ul></li>
-<li><a href="#string-processing">String processing</a>
-<ul>
+<li><a href="#string-processing">String processing</a><ul>
 <li><a href="#stringr">The stringr package</a></li>
 <li><a href="#case-study-1-us-murders-data">Case study 1: US murders data</a></li>
 <li><a href="#case-study-2-self-reported-heights">Case study 2: self-reported heights</a></li>
 <li><a href="#how-to-escape-when-defining-strings">How to <em>escape</em> when defining strings</a></li>
-<li><a href="#regular-expressions">Regular expressions</a>
-<ul>
+<li><a href="#regular-expressions">Regular expressions</a><ul>
 <li><a href="#strings-are-a-regexp">Strings are a regexp</a></li>
 <li><a href="#special-characters">Special characters</a></li>
 <li><a href="#character-classes">Character classes</a></li>
@@ -39,15 +37,13 @@ output:
 <li><a href="#not">Not</a></li>
 <li><a href="#groups">Groups</a></li>
 </ul></li>
-<li><a href="#search-and-replace-with-regex">Search and replace with regex</a>
-<ul>
+<li><a href="#search-and-replace-with-regex">Search and replace with regex</a><ul>
 <li><a href="#search-and-replace-using-groups">Search and replace using groups</a></li>
 </ul></li>
 <li><a href="#testing-and-improving">Testing and improving</a></li>
 <li><a href="#trimming">Trimming</a></li>
 <li><a href="#changing-lettercase">Changing lettercase</a></li>
-<li><a href="#case-study-2-self-reported-heights-continued">Case study 2: self-reported heights (continued)</a>
-<ul>
+<li><a href="#case-study-2-self-reported-heights-continued">Case study 2: self-reported heights (continued)</a><ul>
 <li><a href="#the-extract-function">The <code>extract</code> function</a></li>
 <li><a href="#putting-it-all-together">Putting it all together</a></li>
 </ul></li>
@@ -55,8 +51,7 @@ output:
 <li><a href="#case-study-3-extracting-tables-from-a-pdf">Case study 3: extracting tables from a PDF</a></li>
 <li><a href="#recode">Recoding</a></li>
 </ul></li>
-<li><a href="#web-scraping">Web scraping</a>
-<ul>
+<li><a href="#web-scraping">Web scraping</a><ul>
 <li><a href="#html">HTML</a></li>
 <li><a href="#the-rvest-package">The rvest package</a></li>
 <li><a href="#css-selectors">CSS selectors</a></li>
@@ -375,8 +370,8 @@ head(murders_new)</code></pre>
 <pre><code>## [1] 81</code></pre>
 <p>We can see some of the entries that are not successfully converted by using <code>filter</code> to keep only the entries resulting in <code>NA</code>s:</p>
 <pre class="r"><code>reported_heights %&gt;%
-  mutate(new_height = as.numeric(height)) %&gt;%
-  filter(is.na(new_height)) %&gt;%
+  dplyr::mutate(new_height = as.numeric(height)) %&gt;%
+  dplyr::filter(is.na(new_height)) %&gt;%
   head(n=10)</code></pre>
 <pre><code>##             time_stamp    sex                 height new_height
 ## 1  2014-09-02 15:16:28   Male                  5&#39; 4&quot;         NA
@@ -399,7 +394,7 @@ head(murders_new)</code></pre>
 }</code></pre>
 <p>We apply this function and find the number of problematic entries:</p>
 <pre class="r"><code>problems &lt;- reported_heights %&gt;%
-  filter(not_inches(height)) %&gt;%
+  dplyr::filter(not_inches(height)) %&gt;%
   pull(height)
 length(problems)</code></pre>
 <pre><code>## [1] 292</code></pre>
@@ -718,7 +713,7 @@ str_replace(s, pattern_with_groups, &quot;\\1&#39;\\2&quot;)</code></pre>
 }
 
 problems &lt;- reported_heights %&gt;%
-  filter(not_inches_or_cm(height)) %&gt;%
+  dplyr::filter(not_inches_or_cm(height)) %&gt;%
   pull(height)
 length(problems)</code></pre>
 <pre><code>## [1] 200</code></pre>
@@ -861,7 +856,7 @@ tab &lt;- data.frame(x = s)</code></pre>
 ## 2    6      1</code></pre>
 <p>The <code>extract</code> function from the <strong>tidyr</strong> package lets us use regex groups to extract the desired values. Here is the equivalent to the code above using <code>separate</code> but using <code>extract</code>:</p>
 <pre class="r"><code>library(tidyr)
-tab %&gt;% extract(x, c(&quot;feet&quot;, &quot;inches&quot;), regex = &quot;(\\d)&#39;(\\d{1,2})&quot;)</code></pre>
+tab %&gt;% tidyr::extract(x, c(&quot;feet&quot;, &quot;inches&quot;), regex = &quot;(\\d)&#39;(\\d{1,2})&quot;)</code></pre>
 <pre><code>##   feet inches
 ## 1    5     10
 ## 2    6      1</code></pre>
@@ -875,7 +870,7 @@ tab &lt;- data.frame(x = s)</code></pre>
 ## 2    6      1&quot;
 ## 3    5 8inches</code></pre>
 <p>However, we can use <code>extract</code>. The regex here is a bit more complicated since we have to permit <code>'</code> with spaces and <code>feet</code>. We also do not want the <code>"</code> included in the value, so we do not include that in the group:</p>
-<pre class="r"><code>tab %&gt;% extract(x, c(&quot;feet&quot;, &quot;inches&quot;), regex = &quot;(\\d)&#39;(\\d{1,2})&quot;)</code></pre>
+<pre class="r"><code>tab %&gt;% tidyr::extract(x, c(&quot;feet&quot;, &quot;inches&quot;), regex = &quot;(\\d)&#39;(\\d{1,2})&quot;)</code></pre>
 <pre><code>##   feet inches
 ## 1    5     10
 ## 2    6      1
@@ -891,25 +886,25 @@ tab &lt;- data.frame(x = s)</code></pre>
 smallest &lt;- 50
 tallest &lt;- 84
 new_heights &lt;- reported_heights %&gt;%
-  mutate(original = height,
+  dplyr::mutate(original = height,
          height = words_to_numbers(height) %&gt;% convert_format()) %&gt;%
-  extract(height, c(&quot;feet&quot;, &quot;inches&quot;), regex = pattern, remove = FALSE) %&gt;%
-  mutate_at(c(&quot;height&quot;, &quot;feet&quot;, &quot;inches&quot;), as.numeric) %&gt;%
-  mutate(guess = 12 * feet + inches) %&gt;%
-  mutate(height = case_when(
+  tidyr::extract(height, c(&quot;feet&quot;, &quot;inches&quot;), regex = pattern, remove = FALSE) %&gt;%
+  dplyr::mutate_at(c(&quot;height&quot;, &quot;feet&quot;, &quot;inches&quot;), as.numeric) %&gt;%
+  dplyr::mutate(guess = 12 * feet + inches) %&gt;%
+  dplyr::mutate(height = case_when(
     is.na(height) ~ as.numeric(NA),
     between(height, smallest, tallest) ~ height,  #inches
     between(height/2.54, smallest, tallest) ~ height/2.54, #cm
     between(height*100/2.54, smallest, tallest) ~ height*100/2.54, #meters
     TRUE ~ as.numeric(NA))) %&gt;%
-  mutate(height = ifelse(is.na(height) &amp;
+  dplyr::mutate(height = ifelse(is.na(height) &amp;
                            inches &lt; 12 &amp; between(guess, smallest, tallest),
                          guess, height)) %&gt;%
-  select(-guess)</code></pre>
+  dplyr::select(-guess)</code></pre>
 <p>We can check all the entries we converted by typing:</p>
 <pre class="r"><code>new_heights %&gt;%
-  filter(not_inches(original)) %&gt;%
-  select(original, height) %&gt;%
+  dplyr::filter(not_inches(original)) %&gt;%
+  dplyr::select(original, height) %&gt;%
   arrange(height) %&gt;%
   View()</code></pre>
 <p>A final observation is that if we look at the shortest students in our course:</p>
@@ -1003,7 +998,7 @@ x %&gt;% as_tibble() %&gt;%
 <pre class="r"><code>library(dslabs)
 data(&quot;research_funding_rates&quot;)
 research_funding_rates %&gt;%
-  select(&quot;discipline&quot;, &quot;success_rates_men&quot;, &quot;success_rates_women&quot;)</code></pre>
+  dplyr::select(&quot;discipline&quot;, &quot;success_rates_men&quot;, &quot;success_rates_women&quot;)</code></pre>
 <pre><code>##            discipline success_rates_men success_rates_women
 ## 1   Chemical sciences              26.5                25.6
 ## 2   Physical sciences              19.3                23.1
@@ -1079,18 +1074,18 @@ the_names</code></pre>
   mutate_at(-1, parse_number)
 new_research_funding_rates %&gt;% as_tibble()</code></pre>
 <pre><code>## # A tibble: 9 x 10
-##   discipline applications_to… applications_men applications_wo… awards_total
+##   discipline applications_to~ applications_men applications_wo~ awards_total
 ##   &lt;chr&gt;                 &lt;dbl&gt;            &lt;dbl&gt;            &lt;dbl&gt;        &lt;dbl&gt;
-## 1 Chemical …              122               83               39           32
-## 2 Physical …              174              135               39           35
+## 1 Chemical ~              122               83               39           32
+## 2 Physical ~              174              135               39           35
 ## 3 Physics                  76               67                9           20
 ## 4 Humanities              396              230              166           65
-## 5 Technical…              251              189               62           43
-## 6 Interdisc…              183              105               78           29
-## 7 Earth/lif…              282              156              126           56
-## 8 Social sc…              834              425              409          112
-## 9 Medical s…              505              245              260           75
-## # … with 5 more variables: awards_men &lt;dbl&gt;, awards_women &lt;dbl&gt;,
+## 5 Technical~              251              189               62           43
+## 6 Interdisc~              183              105               78           29
+## 7 Earth/lif~              282              156              126           56
+## 8 Social sc~              834              425              409          112
+## 9 Medical s~              505              245              260           75
+## # ... with 5 more variables: awards_men &lt;dbl&gt;, awards_women &lt;dbl&gt;,
 ## #   success_rates_total &lt;dbl&gt;, success_rates_men &lt;dbl&gt;,
 ## #   success_rates_women &lt;dbl&gt;</code></pre>
 <p>We can see that the objects are identical:</p>
@@ -1105,7 +1100,7 @@ new_research_funding_rates %&gt;% as_tibble()</code></pre>
 data(&quot;gapminder&quot;)</code></pre>
 <p>Suppose we want to show life expectancy time series by country for the Caribbean:</p>
 <pre class="r"><code>gapminder %&gt;%
-  filter(region == &quot;Caribbean&quot;) %&gt;%
+  dplyr::filter(region == &quot;Caribbean&quot;) %&gt;%
   ggplot(aes(year, life_expectancy, color = country)) +
   geom_line()</code></pre>
 <p><img src="/content/12-content_files/figure-html/caribbean-1.png" width="672" /></p>
@@ -1114,8 +1109,8 @@ data(&quot;gapminder&quot;)</code></pre>
 
 ```r
 gapminder %>%
-  filter(region == "Caribbean") %>%
-  filter(str_length(country) >= 12) %>%
+  dplyr::filter(region == "Caribbean") %>%
+  dplyr::filter(str_length(country) >= 12) %>%
   distinct(country)
 ```
 
@@ -1128,7 +1123,7 @@ gapminder %>%
 ```
 -->
 We have four countries with names longer than 12 characters. These names appear once for each year in the Gapminder dataset. Once we pick nicknames, we need to change them all consistently. The <code>recode</code> function can be used to do this:</p>
-<pre class="r"><code>gapminder %&gt;% filter(region==&quot;Caribbean&quot;) %&gt;%
+<pre class="r"><code>gapminder %&gt;% dplyr::filter(region==&quot;Caribbean&quot;) %&gt;%
   mutate(country = recode(country,
                           `Antigua and Barbuda` = &quot;Barbuda&quot;,
                           `Dominican Republic` = &quot;DR&quot;,

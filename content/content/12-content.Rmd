@@ -1,12 +1,14 @@
 ---
 title: "Text as Data"
-linktitle: "*12: Text as Data"
+linktitle: "12: Text as Data"
 date: "2020-12-01"
 read_date: "2020-12-01"
+draft: false
+publishdate: "2021-01-10"
 menu:
   content:
     parent: Course content
-    weight: 1
+    weight: 2
 type: docs
 output:
   blogdown::html_page:
@@ -21,7 +23,7 @@ output:
 
 - What are some common issues with string data? 
 - What are the key ways to wrangle strings?
-- What are _regular expressions_ and why are they magic
+- What are _regular expressions_ and why are they magic 
 
 
 # String processing
@@ -118,7 +120,7 @@ library(dslabs)
 data(murders)
 ```
 
-from the raw data, which was extracted from a Wikipedia page.
+from the raw data, which was extracted from a Wikipedia page. 
 
 In general, string processing involves a string and a pattern. In R, we usually store strings in a character vector such as `murders$population`. The first three strings in this vector defined by the population variable are:
 
@@ -201,8 +203,8 @@ We can see some of the entries that are not successfully converted by using `fil
 
 ```{r, warning=FALSE}
 reported_heights %>%
-  mutate(new_height = as.numeric(height)) %>%
-  filter(is.na(new_height)) %>%
+  dplyr::mutate(new_height = as.numeric(height)) %>%
+  dplyr::filter(is.na(new_height)) %>%
   head(n=10)
 ```
 
@@ -229,12 +231,12 @@ not_inches <- function(x, smallest = 50, tallest = 84){
 We apply this function and find the number of problematic entries:
 ```{r}
 problems <- reported_heights %>%
-  filter(not_inches(height)) %>%
+  dplyr::filter(not_inches(height)) %>%
   pull(height)
 length(problems)
 ```
 
-
+ 
 We can now view all the cases by simply printing them. We don't do that here because there are `length(problems)`, but after surveying them carefully, we see that three patterns can be used to define three large groups within these exceptions.
 
 1\. A pattern of the form `x'y` or `x' y''` or `x'y"` with `x` and `y` representing feet and inches, respectively. Here are ten examples:
@@ -754,7 +756,7 @@ not_inches_or_cm <- function(x, smallest = 50, tallest = 84){
 }
 
 problems <- reported_heights %>%
-  filter(not_inches_or_cm(height)) %>%
+  dplyr::filter(not_inches_or_cm(height)) %>%
   pull(height)
 length(problems)
 ```
@@ -925,7 +927,7 @@ The `extract` function from the __tidyr__ package lets us use regex groups to ex
 
 ```{r}
 library(tidyr)
-tab %>% extract(x, c("feet", "inches"), regex = "(\\d)'(\\d{1,2})")
+tab %>% tidyr::extract(x, c("feet", "inches"), regex = "(\\d)'(\\d{1,2})")
 ```
 
 So why do we even need the new function `extract`? We have seen how small changes can throw off exact pattern matching. Groups in regex give us more flexibility. For example, if we define:
@@ -944,7 +946,7 @@ tab %>% separate(x, c("feet","inches"), sep = "'", fill = "right")
 However, we can use `extract`. The regex here is a bit more complicated since we have to permit `'` with spaces and `feet`. We also do not want the `"` included in the value, so we do not include that in the group:
 
 ```{r}
-tab %>% extract(x, c("feet", "inches"), regex = "(\\d)'(\\d{1,2})")
+tab %>% tidyr::extract(x, c("feet", "inches"), regex = "(\\d)'(\\d{1,2})")
 ```
 
 
@@ -962,29 +964,29 @@ pattern <- "^([4-7])\\s*'\\s*(\\d+\\.?\\d*)$"
 smallest <- 50
 tallest <- 84
 new_heights <- reported_heights %>%
-  mutate(original = height,
+  dplyr::mutate(original = height,
          height = words_to_numbers(height) %>% convert_format()) %>%
-  extract(height, c("feet", "inches"), regex = pattern, remove = FALSE) %>%
-  mutate_at(c("height", "feet", "inches"), as.numeric) %>%
-  mutate(guess = 12 * feet + inches) %>%
-  mutate(height = case_when(
+  tidyr::extract(height, c("feet", "inches"), regex = pattern, remove = FALSE) %>%
+  dplyr::mutate_at(c("height", "feet", "inches"), as.numeric) %>%
+  dplyr::mutate(guess = 12 * feet + inches) %>%
+  dplyr::mutate(height = case_when(
     is.na(height) ~ as.numeric(NA),
     between(height, smallest, tallest) ~ height,  #inches
     between(height/2.54, smallest, tallest) ~ height/2.54, #cm
     between(height*100/2.54, smallest, tallest) ~ height*100/2.54, #meters
     TRUE ~ as.numeric(NA))) %>%
-  mutate(height = ifelse(is.na(height) &
+  dplyr::mutate(height = ifelse(is.na(height) &
                            inches < 12 & between(guess, smallest, tallest),
                          guess, height)) %>%
-  select(-guess)
+  dplyr::select(-guess)
 ```
 
 We can check all the entries we converted by typing:
 
 ```{r, eval=FALSE}
 new_heights %>%
-  filter(not_inches(original)) %>%
-  select(original, height) %>%
+  dplyr::filter(not_inches(original)) %>%
+  dplyr::select(original, height) %>%
   arrange(height) %>%
   View()
 ```
@@ -1084,7 +1086,7 @@ One of the datasets provided in __dslabs__ shows scientific funding rates by gen
 library(dslabs)
 data("research_funding_rates")
 research_funding_rates %>%
-  select("discipline", "success_rates_men", "success_rates_women")
+  dplyr::select("discipline", "success_rates_men", "success_rates_women")
 ```
 
 
@@ -1216,7 +1218,7 @@ Suppose we want to show life expectancy time series by country for the Caribbean
 
 ```{r caribbean}
 gapminder %>%
-  filter(region == "Caribbean") %>%
+  dplyr::filter(region == "Caribbean") %>%
   ggplot(aes(year, life_expectancy, color = country)) +
   geom_line()
 ```
@@ -1225,8 +1227,8 @@ The plot is what we want, but much of the space is wasted to accommodate some of
 <!--
 ```{r}
 gapminder %>%
-  filter(region == "Caribbean") %>%
-  filter(str_length(country) >= 12) %>%
+  dplyr::filter(region == "Caribbean") %>%
+  dplyr::filter(str_length(country) >= 12) %>%
   distinct(country)
 ```
 -->
@@ -1234,7 +1236,7 @@ We have four countries with names longer than 12 characters. These names appear 
 
 
 ```{r caribbean-with-nicknames}
-gapminder %>% filter(region=="Caribbean") %>%
+gapminder %>% dplyr::filter(region=="Caribbean") %>%
   mutate(country = recode(country,
                           `Antigua and Barbuda` = "Barbuda",
                           `Dominican Republic` = "DR",
@@ -1253,7 +1255,7 @@ __TRY IT__
 
 1. Complete all lessons and exercises in the [https://regexone.com/](https://regexone.com/) online interactive tutorial.
 
-2. In the `extdata` directory of the __dslabs__ package, you will find a PDF file containing daily mortality data for Puerto Rico from Jan 1, 2015 to May 31, 2018. You can find the file like this:
+2. In the `extdata` directory of the __dslabs__ package, you will find a PDF file containing daily mortality data for Puerto Rico from Jan 1, 2015 to May 31, 2018. You can find the file like this: 
 
 ```{r, eval=FALSE}
 fn <- system.file("extdata", "RD-Mortality-Report_2015-18-180531.pdf",
@@ -1334,7 +1336,7 @@ Use the `str_which` function to find the rows with a header. Save these results 
 13. Now we are ready to remove all the non-numeric entries. Do this using regex and the `str_remove_all` function. Hint: remember that in regex, using the upper case version of a special character usually means the opposite. So `\\D` means "not a digit". Remember you also want to keep spaces.
 
 
-14. To convert the strings into a table, use the `str_split_fixed` function. Convert `s` into a data matrix with just the day and death count data. Hints: note that the separator is one or more spaces. Make the argument `n` a value that limits the number of columns to the values in the 4 columns and the last column captures all the extra stuff. Then keep only the first four columns.
+14. To convert the strings into a table, use the `str_split_fixed` function. Convert `s` into a data matrix with just the day and death count data. Hints: note that the separator is one or more spaces. Make the argument `n` a value that limits the number of columns to the values in the 4 columns and the last column captures all the extra stuff. Then keep only the first four columns. 
 
 
 15. Now you are almost ready to finish. Add column names to the matrix, including one called `day`. Also, add a column with the month. Call the resulting object `dat`. Finally, make sure the day is an integer not a character. Hint: use only the first five columns.
