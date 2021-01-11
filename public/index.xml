@@ -13,6 +13,275 @@
     </image>
     
     <item>
+      <title>Visualizations </title>
+      <link>https://datavizm20.classes.andrewheiss.com/example/03-example/</link>
+      <pubDate>Thu, 04 Feb 2021 00:00:00 +0000</pubDate>
+      <guid>https://datavizm20.classes.andrewheiss.com/example/03-example/</guid>
+      <description>
+
+&lt;div id=&#34;TOC&#34;&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#preliminaries&#34;&gt;Preliminaries&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#complete-code&#34;&gt;Complete code&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#load-and-clean-data&#34;&gt;Load and clean data&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#small-multiples&#34;&gt;Small multiples&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#sparklines&#34;&gt;Sparklines&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#slopegraphs&#34;&gt;Slopegraphs&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#bump-charts&#34;&gt;Bump charts&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Today’s example will continue (and conclude) some of the discussion from Tuesday. The code may be useful for future work.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;## 
+## Attaching package: &amp;#39;dplyr&amp;#39;&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## The following objects are masked from &amp;#39;package:raster&amp;#39;:
+## 
+##     intersect, select, union&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## The following objects are masked from &amp;#39;package:rgeos&amp;#39;:
+## 
+##     intersect, setdiff, union&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## The following objects are masked from &amp;#39;package:stats&amp;#39;:
+## 
+##     filter, lag&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## The following objects are masked from &amp;#39;package:data.table&amp;#39;:
+## 
+##     between, first, last&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## The following objects are masked from &amp;#39;package:base&amp;#39;:
+## 
+##     intersect, setdiff, setequal, union&lt;/code&gt;&lt;/pre&gt;
+&lt;div id=&#34;preliminaries&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Preliminaries&lt;/h2&gt;
+&lt;p&gt;For today’s example, we’re going to use cross-national data. But instead of using the typical &lt;code&gt;gapminder&lt;/code&gt; dataset as with the Tuuesday lecture, we’re going to collect data directly from the &lt;a href=&#34;https://data.worldbank.org/&#34;&gt;World Bank’s Open Data portal&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;If you want to skip the data downloading, you can download the data below (you’ll likely need to right click and choose “Save Link As”). However, it may be instructive for your group projects to explore the collection process. It’s not particularly hard!&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://datavizm20.classes.andrewheiss.com/data/wdi_raw.csv&#34;&gt;&lt;i class=&#34;fas fa-file-csv&#34;&gt;&lt;/i&gt; &lt;code&gt;wdi_raw.csv&lt;/code&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;div id=&#34;complete-code&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Complete code&lt;/h2&gt;
+&lt;div id=&#34;load-and-clean-data&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Load and clean data&lt;/h3&gt;
+&lt;p&gt;First, we load the libraries we’ll be using. Note: there are some new packages below. You will almost surely need to add these. Moreover, these will almost surely throw an error unless you use the &lt;code&gt;dependencies = TRUE&lt;/code&gt; argument when installing.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(tidyverse)  # For ggplot, dplyr, and friends
+library(WDI)        # For getting data from the World Bank
+library(geofacet)   # For map-shaped facets
+library(scales)     # For helpful scale functions like dollar()
+library(ggrepel)    # For non-overlapping labels&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The World Bank has a ton of country-level data at &lt;a href=&#34;https://data.worldbank.org/&#34;&gt;data.worldbank.org&lt;/a&gt;. We can use &lt;a href=&#34;https://cran.r-project.org/package=WDI&#34;&gt;a package named &lt;strong&gt;WDI&lt;/strong&gt;&lt;/a&gt; (&lt;strong&gt;w&lt;/strong&gt;orld &lt;strong&gt;d&lt;/strong&gt;evelopment &lt;strong&gt;i&lt;/strong&gt;ndicators) to access their servers and download the data directly into R.&lt;/p&gt;
+&lt;p&gt;To do this, we need to find the special World Bank codes for specific variables we want to get. These codes come from the URLs of the World Bank’s website. For instance, if you search for “access to electricity” at the World Bank’s website, you’ll find &lt;a href=&#34;https://data.worldbank.org/indicator/EG.ELC.ACCS.ZS&#34;&gt;this page&lt;/a&gt;. If you look at the end of the URL, you’ll see a cryptic code: &lt;code&gt;EG.ELC.ACCS.ZS&lt;/code&gt;. That’s the World Bank’s ID code for the “Access to electricity (% of population)” indicator.&lt;/p&gt;
+&lt;p&gt;We can feed a list of ID codes to the &lt;code&gt;WDI()&lt;/code&gt; function to download data for those specific indicators. We want data from 1995-2015, so we set the start and end years accordingly. The &lt;code&gt;extra=TRUE&lt;/code&gt; argument means that it’ll also include other helpful details like region, aid status, etc. Without it, it would only download the indicators we listed.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;indicators &amp;lt;- c(&amp;quot;SP.DYN.LE00.IN&amp;quot;,  # Life expectancy
+                &amp;quot;EG.ELC.ACCS.ZS&amp;quot;,  # Access to electricity
+                &amp;quot;EN.ATM.CO2E.PC&amp;quot;,  # CO2 emissions
+                &amp;quot;NY.GDP.PCAP.KD&amp;quot;)  # GDP per capita
+wdi_raw &amp;lt;- WDI(country = &amp;quot;all&amp;quot;, indicators, extra = TRUE,
+               start = 1995, end = 2015)
+head(wdi_raw)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Downloading data from the World Bank every time you knit will get tedious and take a long time (plus if their servers are temporarily down, you won’t be able to get the data). It’s good practice to save this raw data as a CSV file and then work with that.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;write_csv(wdi_raw, &amp;quot;data/wdi_raw.csv&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Since we care about reproducibility, we still want to include the code we used to get data from the World Bank, we just don’t want it to actually run. You can include chunks but not run them by setting &lt;code&gt;eval=FALSE&lt;/code&gt; in the chunk options. In this little example, we show the code for downloading the data, but we don’t evaluate the chunk. We then include a chunk that loads the data from a CSV file with &lt;code&gt;read_csv()&lt;/code&gt;, but we don’t include it (&lt;code&gt;include=FALSE&lt;/code&gt;). That way, in the knitted file we see the &lt;code&gt;WDI()&lt;/code&gt; code, but in reality it’s loading the data from CSV. Super tricky.&lt;/p&gt;
+&lt;pre class=&#34;text&#34;&gt;&lt;code&gt;I first download data from the World Bank:
+```{r get-wdi-data, eval=FALSE}
+wdi_raw &amp;lt;- WDI(...)
+write_csv(wdi_raw, &amp;quot;data/wdi_raw.csv&amp;quot;)
+```
+```{r load-wdi-data-real, include=FALSE}
+wdi_raw &amp;lt;- read_csv(&amp;quot;data/wdi_raw.csv&amp;quot;)
+```&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Then we clean up the data a little, filtering out rows that aren’t actually countries and renaming the ugly World Bank code columns to actual words:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;wdi_clean &amp;lt;- wdi_raw %&amp;gt;%
+  filter(region != &amp;quot;Aggregates&amp;quot;) %&amp;gt;%
+  select(iso2c, country, year,
+         life_expectancy = SP.DYN.LE00.IN,
+         access_to_electricity = EG.ELC.ACCS.ZS,
+         co2_emissions = EN.ATM.CO2E.PC,
+         gdp_per_cap = NY.GDP.PCAP.KD,
+         region, income)
+head(wdi_clean)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 6 x 9
+##   iso2c country  year life_expectancy access_to_electricity co2_emissions gdp_per_cap region                income     
+##   &amp;lt;chr&amp;gt; &amp;lt;chr&amp;gt;   &amp;lt;dbl&amp;gt;           &amp;lt;dbl&amp;gt;                 &amp;lt;dbl&amp;gt;         &amp;lt;dbl&amp;gt;       &amp;lt;dbl&amp;gt; &amp;lt;chr&amp;gt;                 &amp;lt;chr&amp;gt;      
+## 1 AD    Andorra  2015              NA                   100         NA         41768. Europe &amp;amp; Central Asia High income
+## 2 AD    Andorra  2004              NA                   100          7.36      47033. Europe &amp;amp; Central Asia High income
+## 3 AD    Andorra  2001              NA                   100          7.79      41421. Europe &amp;amp; Central Asia High income
+## 4 AD    Andorra  2002              NA                   100          7.59      42396. Europe &amp;amp; Central Asia High income
+## 5 AD    Andorra  2014              NA                   100          5.83      40790. Europe &amp;amp; Central Asia High income
+## 6 AD    Andorra  1995              NA                   100          6.66      32918. Europe &amp;amp; Central Asia High income&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;small-multiples&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Small multiples&lt;/h3&gt;
+&lt;p&gt;First we can make some small multiples plots and show life expectancy over time for a handful of countries. We’ll make a list of some countries chosen at random while I scrolled through the data, and then filter our data to include only those rows. We then plot life expectancy, faceting by country.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;life_expectancy_small &amp;lt;- wdi_clean %&amp;gt;%
+  filter(country %in% c(&amp;quot;Argentina&amp;quot;, &amp;quot;Bolivia&amp;quot;, &amp;quot;Brazil&amp;quot;,
+                        &amp;quot;Belize&amp;quot;, &amp;quot;Canada&amp;quot;, &amp;quot;Chile&amp;quot;))
+ggplot(data = life_expectancy_small,
+       mapping = aes(x = year, y = life_expectancy)) +
+  geom_line(size = 1) +
+  facet_wrap(vars(country))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/example/03-example_files/figure-html/life-expectancy-small-1.png&#34; width=&#34;576&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Small multiples! That’s all we need to do.&lt;/p&gt;
+&lt;p&gt;We can do some fancier things, though. We can make this plot hyper minimalist:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(data = life_expectancy_small,
+       mapping = aes(x = year, y = life_expectancy)) +
+  geom_line(size = 1) +
+  facet_wrap(vars(country), scales = &amp;quot;free_y&amp;quot;) +
+  theme_void() +
+  theme(strip.text = element_text(face = &amp;quot;bold&amp;quot;))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/example/03-example_files/figure-html/life-expectancy-small-minimalist-1.png&#34; width=&#34;576&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;We can do a whole part of a continent (poor Iraq and Syria 😞)&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;life_expectancy_mena &amp;lt;- wdi_clean %&amp;gt;%
+  filter(region == &amp;quot;Middle East &amp;amp; North Africa&amp;quot;)
+ggplot(data = life_expectancy_mena,
+       mapping = aes(x = year, y = life_expectancy)) +
+  geom_line(size = 1) +
+  facet_wrap(vars(country), scales = &amp;quot;free_y&amp;quot;, nrow = 3) +
+  theme_void() +
+  theme(strip.text = element_text(face = &amp;quot;bold&amp;quot;))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/example/03-example_files/figure-html/life-expectancy-mena-1.png&#34; width=&#34;960&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;We can use the &lt;a href=&#34;https://hafen.github.io/geofacet/&#34;&gt;&lt;strong&gt;geofacet&lt;/strong&gt; package&lt;/a&gt; to arrange these facets by geography:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;life_expectancy_eu &amp;lt;- wdi_clean %&amp;gt;%
+  filter(region == &amp;quot;Europe &amp;amp; Central Asia&amp;quot;)
+ggplot(life_expectancy_eu, aes(x = year, y = life_expectancy)) +
+  geom_line(size = 1) +
+  facet_geo(vars(country), grid = &amp;quot;eu_grid1&amp;quot;, scales = &amp;quot;free_y&amp;quot;) +
+  labs(x = NULL, y = NULL, title = &amp;quot;Life expectancy from 1995–2015&amp;quot;,
+       caption = &amp;quot;Source: The World Bank (SP.DYN.LE00.IN)&amp;quot;) +
+  theme_minimal() +
+  theme(strip.text = element_text(face = &amp;quot;bold&amp;quot;),
+        plot.title = element_text(face = &amp;quot;bold&amp;quot;),
+        axis.text.x = element_text(angle = 45, hjust = 1))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/example/03-example_files/figure-html/life-expectancy-eu-1.png&#34; width=&#34;960&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Neat!&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;sparklines&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Sparklines&lt;/h3&gt;
+&lt;p&gt;Sparklines are just line charts (or bar charts) that are really really small.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;india_co2 &amp;lt;- wdi_clean %&amp;gt;%
+  filter(country == &amp;quot;India&amp;quot;)
+plot_india &amp;lt;- ggplot(india_co2, aes(x = year, y = co2_emissions)) +
+  geom_line() +
+  theme_void()
+plot_india&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/example/03-example_files/figure-html/india-spark-1.png&#34; width=&#34;96&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggsave(&amp;quot;india_co2.pdf&amp;quot;, plot_india, width = 1, height = 0.15, units = &amp;quot;in&amp;quot;)
+ggsave(&amp;quot;india_co2.png&amp;quot;, plot_india, width = 1, height = 0.15, units = &amp;quot;in&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;china_co2 &amp;lt;- wdi_clean %&amp;gt;%
+  filter(country == &amp;quot;China&amp;quot;)
+plot_china &amp;lt;- ggplot(china_co2, aes(x = year, y = co2_emissions)) +
+  geom_line() +
+  theme_void()
+plot_china&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/example/03-example_files/figure-html/china-spark-1.png&#34; width=&#34;96&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggsave(&amp;quot;china_co2.pdf&amp;quot;, plot_china, width = 1, heighlt = 0.15, units = &amp;quot;in&amp;quot;)
+ggsave(&amp;quot;china_co2.png&amp;quot;, plot_china, width = 1, height = 0.15, units = &amp;quot;in&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;You can then use those saved tiny plots in your text.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Both India &lt;img class=&#34;img-inline&#34; src=&#34;https://datavizm20.classes.andrewheiss.com/example/08-example_files/figure-html/india-spark-1.png&#34; width = &#34;100&#34;/&gt; and China &lt;img class=&#34;img-inline&#34; src=&#34;https://datavizm20.classes.andrewheiss.com/example/08-example_files/figure-html/china-spark-1.png&#34; width = &#34;100&#34;/&gt; have seen increased CO&lt;sub&gt;2&lt;/sub&gt; emissions over the past 20 years.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;/div&gt;
+&lt;div id=&#34;slopegraphs&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Slopegraphs&lt;/h3&gt;
+&lt;p&gt;We can make a slopegraph to show changes in GDP per capita between two time periods. We need to first filter our WDI to include only the start and end years (here 1995 and 2015). Then, to make sure that we’re using complete data, we’ll get rid of any country that has missing data for either 1995 or 2015. The &lt;code&gt;group_by(...) %&amp;gt;% filter(...) %&amp;gt;% ungroup()&lt;/code&gt; pipeline does this, with the &lt;code&gt;!any(is.na(gdp_per_cap))&lt;/code&gt; test keeping any rows where any of the &lt;code&gt;gdp_per_cap&lt;/code&gt; values are not missing for the whole country.&lt;/p&gt;
+&lt;p&gt;We then add a couple special columns for labels. The &lt;code&gt;paste0()&lt;/code&gt; function concatenates strings and variables together, so that &lt;code&gt;paste0(&#34;2 + 2 = &#34;, 2 + 2)&lt;/code&gt; would show “2 + 2 = 4”. Here we make labels that say either “Country name: $GDP” or “$GDP” depending on the year.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;gdp_south_asia &amp;lt;- wdi_clean %&amp;gt;%
+  filter(region == &amp;quot;South Asia&amp;quot;) %&amp;gt;%
+  filter(year %in% c(1995, 2015)) %&amp;gt;%
+  # Look at each country individually
+  group_by(country) %&amp;gt;%
+  # Remove the country if any of its gdp_per_cap values are missing
+  filter(!any(is.na(gdp_per_cap))) %&amp;gt;%
+  ungroup() %&amp;gt;%
+  # Make year a factor
+  mutate(year = factor(year)) %&amp;gt;%
+  # Make some nice label columns
+  # If the year is 1995, format it like &amp;quot;Country name: $GDP&amp;quot;. If the year is
+  # 2015, format it like &amp;quot;$GDP&amp;quot;
+  mutate(label_first = ifelse(year == 1995, paste0(country, &amp;quot;: &amp;quot;, dollar(round(gdp_per_cap))), NA),
+         label_last = ifelse(year == 2015, dollar(round(gdp_per_cap, 0)), NA))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;With the data filtered like this, we can plot it by mapping year to the x-axis, GDP per capita to the y-axis, and coloring by country. To make the lines go across the two categorical labels in the x-axis (since we made year a factor/category), we need to also specify the &lt;code&gt;group&lt;/code&gt; aesthetic.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(gdp_south_asia, aes(x = year, y = gdp_per_cap, group = country, color = country)) +
+  geom_line(size = 1.5)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/example/03-example_files/figure-html/slopegraph-sa-simple-1.png&#34; width=&#34;576&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Cool! We’re getting closer. We can definitely see different slopes, but with 7 different colors, it’s hard to see exactly which country is which. Instead, we can directly label each of these lines with &lt;code&gt;geom_text()&lt;/code&gt;:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(gdp_south_asia, aes(x = year, y = gdp_per_cap, group = country, color = country)) +
+  geom_line(size = 1.5) +
+  geom_text(aes(label = country)) +
+  guides(color = FALSE)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/example/03-example_files/figure-html/slopegraph-sa-simple-text-1.png&#34; width=&#34;576&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;That gets us a &lt;em&gt;little&lt;/em&gt; closer, but the country labels are hard to see, and we could include more information, like the actual values. Remember those &lt;code&gt;label_first&lt;/code&gt; and &lt;code&gt;label_last&lt;/code&gt; columns we made? Let’s use those instead:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(gdp_south_asia, aes(x = year, y = gdp_per_cap, group = country, color = country)) +
+  geom_line(size = 1.5) +
+  geom_text(aes(label = label_first)) +
+  geom_text(aes(label = label_last)) +
+  guides(color = FALSE)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/example/03-example_files/figure-html/slopegraph-sa-simple-text-fancier-1.png&#34; width=&#34;576&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Now we have dollar amounts and country names, but the labels are still overlapping and really hard to read. To fix this, we can make the labels repel away from each other and randomly position in a way that makes them not overlap. The &lt;a href=&#34;https://cran.r-project.org/web/packages/ggrepel/vignettes/ggrepel.html&#34;&gt;&lt;strong&gt;ggrepel&lt;/strong&gt; package&lt;/a&gt; lets us do this with &lt;code&gt;geom_text_repel()&lt;/code&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(gdp_south_asia, aes(x = year, y = gdp_per_cap, group = country, color = country)) +
+  geom_line(size = 1.5) +
+  geom_text_repel(aes(label = label_first)) +
+  geom_text_repel(aes(label = label_last)) +
+  guides(color = FALSE)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/example/03-example_files/figure-html/slopegraph-sa-getting-warmer-1.png&#34; width=&#34;576&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Now none of the labels are on top of each other, but the labels are still on top of the lines. Also, some of the labels moved inward and outward along the x-axis, but they don’t need to do that—they just need to shift up and down. We can force the labels to only move up and down by setting the &lt;code&gt;direction = &#34;y&#34;&lt;/code&gt; argument, and we can move all the labels to the left or right with the &lt;code&gt;nudge_x&lt;/code&gt; argument. The &lt;code&gt;seed&lt;/code&gt; argument makes sure that the random label placement is the same every time we run this. It can be whatever number you want—it just has to be a number.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(gdp_south_asia, aes(x = year, y = gdp_per_cap, group = country, color = country)) +
+  geom_line(size = 1.5) +
+  geom_text_repel(aes(label = label_first), direction = &amp;quot;y&amp;quot;, nudge_x = -1, seed = 1234) +
+  geom_text_repel(aes(label = label_last), direction = &amp;quot;y&amp;quot;, nudge_x = 1, seed = 1234) +
+  guides(color = FALSE)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/example/03-example_files/figure-html/slopegraph-sa-fancier-1.png&#34; width=&#34;576&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;That’s it! Let’s take the theme off completely, change the colors a little, and it should be perfect.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(gdp_south_asia, aes(x = year, y = gdp_per_cap, group = country, color = country)) +
+  geom_line(size = 1.5) +
+  geom_text_repel(aes(label = label_first), direction = &amp;quot;y&amp;quot;, nudge_x = -1, seed = 1234) +
+  geom_text_repel(aes(label = label_last), direction = &amp;quot;y&amp;quot;, nudge_x = 1, seed = 1234) +
+  guides(color = FALSE) +
+  scale_color_viridis_d(option = &amp;quot;magma&amp;quot;, end = 0.9) +
+  theme_void()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/example/03-example_files/figure-html/slopegraph-sa-done-1.png&#34; width=&#34;576&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;bump-charts&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Bump charts&lt;/h3&gt;
+&lt;p&gt;Finally, we can make a bump chart that shows changes in rankings over time. We’ll look at CO&lt;sub&gt;2&lt;/sub&gt; emissions in South Asia. First we need to calculate a new variable that shows the rank of each country within each year. We can do this if we group by year and then use the &lt;code&gt;rank()&lt;/code&gt; function to rank countries by the &lt;code&gt;co2_emissions&lt;/code&gt; column.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;sa_co2 &amp;lt;- wdi_clean %&amp;gt;%
+  filter(region == &amp;quot;South Asia&amp;quot;) %&amp;gt;%
+  filter(year &amp;gt;= 2004, year &amp;lt; 2015) %&amp;gt;%
+  group_by(year) %&amp;gt;%
+  mutate(rank = rank(co2_emissions))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;We then plot this with points and lines, reversing the y-axis so 1 is at the top:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(sa_co2, aes(x = year, y = rank, color = country)) +
+  geom_line() +
+  geom_point() +
+  scale_y_reverse(breaks = 1:8)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/example/03-example_files/figure-html/make-bump-plot-1.png&#34; width=&#34;576&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Afghanistan and Nepal switched around for the number 1 spot, while India dropped from 4 to 6, switching places with Pakistan.&lt;/p&gt;
+&lt;p&gt;As with the slopegraph, there are 8 different colors in the legend and it’s hard to line them all up with the different lines, so we can plot the text directly instead. We’ll use &lt;code&gt;geom_text()&lt;/code&gt; again. We don’t need to repel anything, since the text should fit in each row just fine. We need to change the &lt;code&gt;data&lt;/code&gt; argument in &lt;code&gt;geom_text()&lt;/code&gt; though and filter the data to only include one year, otherwise we’ll get labels on every point, which is excessive. We can also adjust the theme and colors to make it cleaner.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(sa_co2, aes(x = year, y = rank, color = country)) +
+  geom_line(size = 2) +
+  geom_point(size = 4) +
+  geom_text(data = filter(sa_co2, year == 2004),
+            aes(label = iso2c, x = 2003.25),
+            fontface = &amp;quot;bold&amp;quot;) +
+  geom_text(data = filter(sa_co2, year == 2014),
+            aes(label = iso2c, x = 2014.75),
+            fontface = &amp;quot;bold&amp;quot;) +
+  guides(color = FALSE) +
+  scale_y_reverse(breaks = 1:8) +
+  scale_x_continuous(breaks = 2004:2014) +
+  scale_color_viridis_d(option = &amp;quot;magma&amp;quot;, begin = 0.2, end = 0.9) +
+  labs(x = NULL, y = &amp;quot;Rank&amp;quot;) +
+  theme_minimal() +
+  theme(panel.grid.major.y = element_blank(),
+        panel.grid.minor.y = element_blank(),
+        panel.grid.minor.x = element_blank())&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/example/03-example_files/figure-html/bump-plot-fancier-1.png&#34; width=&#34;672&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;If you want to be &lt;em&gt;super&lt;/em&gt; fancy, you can use flags instead of country codes, but that’s a little more complicated (you need to install the &lt;a href=&#34;https://github.com/rensa/ggflags&#34;&gt;&lt;strong&gt;ggflags&lt;/strong&gt; package&lt;/a&gt;. &lt;a href=&#34;https://dominikkoch.github.io/Bump-Chart/&#34;&gt;See here for an example&lt;/a&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    
+    <item>
       <title>Installing R, RStudio, tidyverse, and tinytex</title>
       <link>https://datavizm20.classes.andrewheiss.com/resource/install/</link>
       <pubDate>Fri, 01 May 2020 00:00:00 +0000</pubDate>
@@ -86,6 +355,247 @@
 &lt;ol&gt;
 &lt;li id=&#34;fn1&#34;&gt;&lt;p&gt;It’s a goofy name, but CRAN is where most &lt;code&gt;R&lt;/code&gt; packages—and R itself—lives.&lt;a href=&#34;#fnref1&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
 &lt;li id=&#34;fn2&#34;&gt;&lt;p&gt;Pronounced “lay-tek” for those who are correct; or “lah-tex” to those who love goofy nerdy pronunciation. Technically speaking, the x is the “ch” sound in “Bach”, but most people just say it as “k”. While either saying “lay” or “lah” is correct, “layteks” is frowned upon because it clearly shows you’re not cool.&lt;a href=&#34;#fnref2&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Working with R and RStudio</title>
+      <link>https://datavizm20.classes.andrewheiss.com/example/00-example/</link>
+      <pubDate>Fri, 10 Jan 2020 00:00:00 +0000</pubDate>
+      <guid>https://datavizm20.classes.andrewheiss.com/example/00-example/</guid>
+      <description>
+
+&lt;div id=&#34;TOC&#34;&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#introduction-to-examples&#34;&gt;Introduction to Examples&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#getting-started&#34;&gt;Getting started with &lt;code&gt;R&lt;/code&gt; and RStudio&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#the-r-console&#34;&gt;The &lt;code&gt;R&lt;/code&gt; console&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#scripts&#34;&gt;Scripts&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#rstudio&#34;&gt;RStudio&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#the-panes&#34;&gt;The panes&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#key-bindings&#34;&gt;Key bindings&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#running-commands-while-editing-scripts&#34;&gt;Running commands while editing scripts&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#installing-r-packages&#34;&gt;Installing &lt;code&gt;R&lt;/code&gt; packages&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#rmarkdown&#34;&gt;Rmarkdown&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+
+&lt;div id=&#34;introduction-to-examples&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Introduction to Examples&lt;/h1&gt;
+&lt;p&gt;Examples in this class are designed to be presented in-class. Accordingly, the notes here are &lt;em&gt;not&lt;/em&gt; comprehensive. Instead, they are intended to guide students through&lt;/p&gt;
+&lt;p&gt;I’m also aware that my writing is dry and lifeless. If you’re reading this online without the advantage of seeing it in person, don’t worry—I’ll be “funnier” in class.&lt;a href=&#34;#fn1&#34; class=&#34;footnote-ref&#34; id=&#34;fnref1&#34;&gt;&lt;sup&gt;1&lt;/sup&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;div id=&#34;getting-started&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Getting started with &lt;code&gt;R&lt;/code&gt; and RStudio&lt;/h2&gt;
+&lt;p&gt;&lt;code&gt;R&lt;/code&gt; is not a programming language like &lt;code&gt;C&lt;/code&gt; or &lt;code&gt;Java&lt;/code&gt;. It was not created by software engineers for software development. Instead, it was developed by statisticians as an interactive environment for data analysis. You can read the full history in the paper A Brief History of S&lt;a href=&#34;#fn2&#34; class=&#34;footnote-ref&#34; id=&#34;fnref2&#34;&gt;&lt;sup&gt;2&lt;/sup&gt;&lt;/a&gt;. The interactivity is an indispensable feature in data science because, as you will soon learn, the ability to quickly explore data is a necessity for success in this field. However, like in other programming languages, you can save your work as scripts that can be easily executed at any moment. These scripts serve as a record of the analysis you performed, a key feature that facilitates reproducible work. If you are an expert programmer, you should not expect &lt;code&gt;R&lt;/code&gt; to follow the conventions you are used—assuming this will leave you disappointed. If you are patient, you will come to appreciate the unequal power of &lt;code&gt;R&lt;/code&gt; when it comes to data analysis and data visualization.&lt;/p&gt;
+&lt;p&gt;Other attractive features of &lt;code&gt;R&lt;/code&gt; are:&lt;/p&gt;
+&lt;ol style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;&lt;code&gt;R&lt;/code&gt; is free and open source&lt;a href=&#34;#fn3&#34; class=&#34;footnote-ref&#34; id=&#34;fnref3&#34;&gt;&lt;sup&gt;3&lt;/sup&gt;&lt;/a&gt;.&lt;/li&gt;
+&lt;li&gt;It runs on all major platforms: Windows, Mac OS, UNIX/Linux.&lt;/li&gt;
+&lt;li&gt;Scripts and data objects can be shared seamlessly across platforms.&lt;/li&gt;
+&lt;li&gt;There is a large, growing, and active community of &lt;code&gt;R&lt;/code&gt; users and, as a result, there are numerous resources for learning and asking questions&lt;a href=&#34;#fn4&#34; class=&#34;footnote-ref&#34; id=&#34;fnref4&#34;&gt;&lt;sup&gt;4&lt;/sup&gt;&lt;/a&gt; &lt;a href=&#34;#fn5&#34; class=&#34;footnote-ref&#34; id=&#34;fnref5&#34;&gt;&lt;sup&gt;5&lt;/sup&gt;&lt;/a&gt; &lt;a href=&#34;#fn6&#34; class=&#34;footnote-ref&#34; id=&#34;fnref6&#34;&gt;&lt;sup&gt;6&lt;/sup&gt;&lt;/a&gt;.&lt;/li&gt;
+&lt;li&gt;It is easy for others to contribute add-ons which enables developers to share software implementations of new data science methodologies. The latest methods and tools are developed in &lt;code&gt;R&lt;/code&gt; for a wide variety of disciplines and since social science is so broad, &lt;code&gt;R&lt;/code&gt; is one of the few tools that spans the varied social sciences.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;
+&lt;div id=&#34;the-r-console&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;The &lt;code&gt;R&lt;/code&gt; console&lt;/h2&gt;
+&lt;p&gt;Interactive data analysis usually occurs on the &lt;em&gt;R console&lt;/em&gt; that executes commands as you type them. There are several ways to gain access to an &lt;code&gt;R&lt;/code&gt; console. One way is to simply start &lt;code&gt;R&lt;/code&gt; on your computer. The console looks something like this:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/img/R_console2.png&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;As a quick example, try using the console to calculate a 15% tip on a meal that cost $19.71:&lt;a href=&#34;#fn7&#34; class=&#34;footnote-ref&#34; id=&#34;fnref7&#34;&gt;&lt;sup&gt;7&lt;/sup&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;0.15 * 19.71  &lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 2.9565&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;Note that in this course (at least, on most browsers), grey boxes are used to show &lt;code&gt;R&lt;/code&gt; code typed into the &lt;code&gt;R&lt;/code&gt; console. The symbol &lt;code&gt;##&lt;/code&gt; is used to denote what the &lt;code&gt;R&lt;/code&gt; console outputs.&lt;/strong&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;scripts&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Scripts&lt;/h2&gt;
+&lt;p&gt;One of the great advantages of &lt;code&gt;R&lt;/code&gt; over point-and-click analysis software is that you can save your work as scripts. You can edit and save these scripts using a text editor. The material in this course was developed using the interactive &lt;em&gt;integrated development environment&lt;/em&gt; (IDE) RStudio&lt;a href=&#34;#fn8&#34; class=&#34;footnote-ref&#34; id=&#34;fnref8&#34;&gt;&lt;sup&gt;8&lt;/sup&gt;&lt;/a&gt;. RStudio includes an editor with many &lt;code&gt;R&lt;/code&gt; specific features, a console to execute your code, and other useful panes, including one to show figures.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/img/RStudio.png&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Most web-based &lt;code&gt;R&lt;/code&gt; consoles also provide a pane to edit scripts, but not all permit you to save the scripts for later use. On the upper-right part of this webpage you’ll see a little button with the &lt;code&gt;R&lt;/code&gt; logo. You can access a web-based console there.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;rstudio&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;RStudio&lt;/h2&gt;
+&lt;p&gt;RStudio will be our launching pad for data science projects. It not only provides an editor for us to create and edit our scripts but also provides many other useful tools. In this section, we go over some of the basics.&lt;/p&gt;
+&lt;div id=&#34;the-panes&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;The panes&lt;/h3&gt;
+&lt;p&gt;When you start RStudio for the first time, you will see three panes. The left pane shows the &lt;code&gt;R&lt;/code&gt; console. On the right, the top pane includes tabs such as &lt;em&gt;Environment&lt;/em&gt; and &lt;em&gt;History&lt;/em&gt;, while the bottom pane shows five tabs: &lt;em&gt;File&lt;/em&gt;, &lt;em&gt;Plots&lt;/em&gt;, &lt;em&gt;Packages&lt;/em&gt;, &lt;em&gt;Help&lt;/em&gt;, and &lt;em&gt;Viewer&lt;/em&gt; (these tabs may change in new versions). You can click on each tab to move across the different features.&lt;/p&gt;
+&lt;p&gt;To start a new script, you can click on File, then New File, then &lt;code&gt;R&lt;/code&gt; Script.&lt;/p&gt;
+&lt;p&gt;This starts a new pane on the left and it is here where you can start writing your script.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;key-bindings&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Key bindings&lt;/h3&gt;
+&lt;p&gt;Many tasks we perform with the mouse can be achieved with a combination of key strokes instead. These keyboard versions for performing tasks are referred to as &lt;em&gt;key bindings&lt;/em&gt;. For example, we just showed how to use the mouse to start a new script, but you can also use a key binding: Ctrl+Shift+N on Windows and command+shift+N on the Mac.&lt;/p&gt;
+&lt;p&gt;Although in this tutorial we often show how to use the mouse, &lt;strong&gt;we highly recommend that you memorize key bindings for the operations you use most&lt;/strong&gt;. RStudio provides a useful cheat sheet with the most widely used commands. You might want to keep this handy so you can look up key-bindings when you find yourself performing repetitive point-and-clicking.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;running-commands-while-editing-scripts&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Running commands while editing scripts&lt;/h3&gt;
+&lt;p&gt;There are many editors specifically made for coding. These are useful because color and indentation are automatically added to make code more readable. RStudio is one of these editors, and it was specifically developed for R. One of the main advantages provided by RStudio over other editors is that we can test our code easily as we edit our scripts. Below we show an example.&lt;/p&gt;
+&lt;p&gt;Let’s start by opening a new script as we did before. A next step is to give the script a name. We can do this through the editor by saving the current new unnamed script. To do this, click on the save icon or use the key binding Ctrl+S on Windows and command+S on the Mac.&lt;/p&gt;
+&lt;p&gt;When you ask for the document to be saved for the first time, RStudio will prompt you for a name. A good convention is to use a descriptive name, with lower case letters, no spaces, only hyphens to separate words, and then followed by the suffix &lt;em&gt;.R&lt;/em&gt;. We will call this script &lt;em&gt;my-first-script.R&lt;/em&gt;.&lt;/p&gt;
+&lt;p&gt;Now we are ready to start editing our first script. The first lines of code in an &lt;code&gt;R&lt;/code&gt; script are dedicated to loading the libraries we will use. Another useful RStudio feature is that once we type &lt;code&gt;library()&lt;/code&gt; it starts auto-completing with libraries that we have installed. Note what happens when we type &lt;code&gt;library(ti)&lt;/code&gt;:&lt;/p&gt;
+&lt;p&gt;Another feature you may have noticed is that when you type &lt;code&gt;library(&lt;/code&gt; the second parenthesis is automatically added. This will help you avoid one of the most common errors in coding: forgetting to close a parenthesis.&lt;/p&gt;
+&lt;p&gt;Now we can continue to write code. As an example, we will make a graph showing murder totals versus population totals by state. Once you are done writing the code needed to make this plot, you can try it out by &lt;em&gt;executing&lt;/em&gt; the code. To do this, click on the &lt;em&gt;Run&lt;/em&gt; button on the upper right side of the editing pane. You can also use the key binding: Ctrl+Shift+Enter on Windows or command+shift+return on the Mac.&lt;/p&gt;
+&lt;p&gt;Once you run the code, you will see it appear in the &lt;code&gt;R&lt;/code&gt; console and, in this case, the generated plot appears in the plots console. Note that the plot console has a useful interface that permits you to click back and forward across different plots, zoom in to the plot, or save the plots as files.&lt;/p&gt;
+&lt;p&gt;To run one line at a time instead of the entire script, you can use Control-Enter on Windows and command-return on the Mac.&lt;/p&gt;
+&lt;div class=&#34;fyi&#34;&gt;
+&lt;p&gt;&lt;strong&gt;SETUP TIP&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Change the option &lt;em&gt;Save workspace to .RData on exit&lt;/em&gt; to &lt;em&gt;Never&lt;/em&gt; and uncheck the &lt;em&gt;Restore .RData into workspace at start&lt;/em&gt;. By default, when you exit &lt;code&gt;R&lt;/code&gt; saves all the objects you have created into a file called .RData. This is done so that when you restart the session in the same folder, it will load these objects. I find that this causes confusion especially when sharing code with colleagues or peers.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;installing-r-packages&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Installing &lt;code&gt;R&lt;/code&gt; packages&lt;/h2&gt;
+&lt;p&gt;The functionality provided by a fresh install of &lt;code&gt;R&lt;/code&gt; is only a small fraction of what is possible. In fact, we refer to what you get after your first install as &lt;em&gt;base R&lt;/em&gt;. The extra functionality comes from add-ons available from developers. There are currently hundreds of these available from CRAN and many others shared via other repositories such as GitHub. However, because not everybody needs all available functionality, &lt;code&gt;R&lt;/code&gt; instead makes different components available via &lt;em&gt;packages&lt;/em&gt;. &lt;code&gt;R&lt;/code&gt; makes it very easy to install packages from within R. For example, to install the &lt;strong&gt;dslabs&lt;/strong&gt; package, which we use to share datasets and code related to this book, you would type:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;install.packages(&amp;quot;dslabs&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;In RStudio, you can navigate to the &lt;em&gt;Tools&lt;/em&gt; tab and select install packages. We can then load the package into our &lt;code&gt;R&lt;/code&gt; sessions using the &lt;code&gt;library&lt;/code&gt; function:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(dslabs)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;As you go through this book, you will see that we load packages without installing them. This is because once you install a package, it remains installed and only needs to be loaded with &lt;code&gt;library&lt;/code&gt;. The package remains loaded until we quit the &lt;code&gt;R&lt;/code&gt; session. If you try to load a package and get an error, it probably means you need to
+install it first.&lt;/p&gt;
+&lt;p&gt;We can install more than one package at once by feeding a character vector to this function:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;install.packages(c(&amp;quot;tidyverse&amp;quot;, &amp;quot;dslabs&amp;quot;))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;One advantage of using RStudio is that it auto-completes package names once you start typing, which is helpful when you do not remember the exact spelling of the package. Once you select your package, we recommend selecting all the defaults. Note that installing &lt;strong&gt;tidyverse&lt;/strong&gt; actually installs several packages. This commonly occurs when a package has &lt;em&gt;dependencies&lt;/em&gt;, or uses functions from other packages. When you load a package using &lt;code&gt;library&lt;/code&gt;, you also load its dependencies.&lt;/p&gt;
+&lt;p&gt;Once packages are installed, you can load them into &lt;code&gt;R&lt;/code&gt; and you do not need to install them again, unless you install a fresh version of R. Remember packages are installed in &lt;code&gt;R&lt;/code&gt; not RStudio.&lt;/p&gt;
+&lt;p&gt;It is helpful to keep a list of all the packages you need for your work in a script because if you need to perform a fresh install of R, you can re-install all your packages by simply running a script.&lt;/p&gt;
+&lt;p&gt;You can see all the packages you have installed using the following function:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;installed.packages()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;As we move through this course, we will constantly be adding to our toolbox of packages. Accordingly, you will need to keep track to ensure you have the requisite package for any given lecture.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;rmarkdown&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Rmarkdown&lt;/h2&gt;
+&lt;p&gt;Markdown is a general-purpose syntax for laying out documents. Rmarkdown is a combination of R and markdown, as the name implies. When using markdown, one can define headers and tables using specific notation, and depending on the rendering engine, the headers and tables (and a whole lot more) are customized. In fact, this whole website is built in R using Rmarkdown (and a lot of add-ons like Hugo and blogdown). In other contexts, the rendering engine may recognize that your headers are likely to be entries in a table of contents, and does so for you. The table of contents at the top of this document is built from the markdown headers.&lt;/p&gt;
+&lt;p&gt;The power of Rmarkdown is that it lets us mix formatted text with R code. That is, you can have a section of the document that understands R code, and a separate section right after that discusses the results from the R code.&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://raw.githubusercontent.com/ajkirkpatrick/FS20/Spring2021/Rmarkdown_templates/SSC442_Weekly_Writing_Template.Rmd&#34;&gt;Try it out using the Weekly Writing Template&lt;/a&gt;. If it opens in your web browser, just right-click the link and select Save As…. &lt;strong&gt;Make sure you save the file to its own folder on your hard drive&lt;/strong&gt;. In converting your Rmarkdown .Rmd file to a .pdf, your system will make multiple interim files&lt;a href=&#34;#fn9&#34; class=&#34;footnote-ref&#34; id=&#34;fnref9&#34;&gt;&lt;sup&gt;9&lt;/sup&gt;&lt;/a&gt;. It also creates folders to store the output of any plots or graphics you create with your R code.&lt;/p&gt;
+&lt;p&gt;If we have time today, let’s open the template linked above and see what happens when we select “knit to pdf”.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&#34;footnotes&#34;&gt;
+&lt;hr /&gt;
+&lt;ol&gt;
+&lt;li id=&#34;fn1&#34;&gt;&lt;p&gt;Comments from previous classes indicate that I am not, in fact, funny.&lt;a href=&#34;#fnref1&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li id=&#34;fn2&#34;&gt;&lt;p&gt;&lt;a href=&#34;https://pdfs.semanticscholar.org/9b48/46f192aa37ca122cfabb1ed1b59866d8bfda.pdf&#34; class=&#34;uri&#34;&gt;https://pdfs.semanticscholar.org/9b48/46f192aa37ca122cfabb1ed1b59866d8bfda.pdf&lt;/a&gt;&lt;a href=&#34;#fnref2&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li id=&#34;fn3&#34;&gt;&lt;p&gt;&lt;a href=&#34;https://opensource.org/history&#34; class=&#34;uri&#34;&gt;https://opensource.org/history&lt;/a&gt;&lt;a href=&#34;#fnref3&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li id=&#34;fn4&#34;&gt;&lt;p&gt;&lt;a href=&#34;https://stats.stackexchange.com/questions/138/free-resources-for-learning-r&#34; class=&#34;uri&#34;&gt;https://stats.stackexchange.com/questions/138/free-resources-for-learning-r&lt;/a&gt;&lt;a href=&#34;#fnref4&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li id=&#34;fn5&#34;&gt;&lt;p&gt;&lt;a href=&#34;https://www.r-project.org/help.html&#34; class=&#34;uri&#34;&gt;https://www.r-project.org/help.html&lt;/a&gt;&lt;a href=&#34;#fnref5&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li id=&#34;fn6&#34;&gt;&lt;p&gt;&lt;a href=&#34;https://stackoverflow.com/documentation/r/topics&#34; class=&#34;uri&#34;&gt;https://stackoverflow.com/documentation/r/topics&lt;/a&gt;&lt;a href=&#34;#fnref6&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li id=&#34;fn7&#34;&gt;&lt;p&gt;But probably tip more than 15%. Times are tough, man.&lt;a href=&#34;#fnref7&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li id=&#34;fn8&#34;&gt;&lt;p&gt;&lt;a href=&#34;https://www.rstudio.com/&#34; class=&#34;uri&#34;&gt;https://www.rstudio.com/&lt;/a&gt;&lt;a href=&#34;#fnref8&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li id=&#34;fn9&#34;&gt;&lt;p&gt;Specifically, knitr will create an intermediate .md file which is then processed with Pandoc using Latex to create a pdf. Whew!&lt;a href=&#34;#fnref9&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Introduction to Visualization</title>
+      <link>https://datavizm20.classes.andrewheiss.com/example/01-example/</link>
+      <pubDate>Fri, 10 Jan 2020 00:00:00 +0000</pubDate>
+      <guid>https://datavizm20.classes.andrewheiss.com/example/01-example/</guid>
+      <description>
+
+&lt;div id=&#34;TOC&#34;&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#introduction-to-data-visualization&#34;&gt;Introduction to data visualization&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#code&#34;&gt;Code&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#video&#34;&gt;Video&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+
+&lt;div id=&#34;introduction-to-data-visualization&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Introduction to data visualization&lt;/h1&gt;
+&lt;p&gt;Looking at the numbers and character strings that define a dataset is rarely useful. To convince yourself, print and stare at the US murders data table:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(dslabs)
+data(murders)
+head(murders)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;##        state abb region population total
+## 1    Alabama  AL  South    4779736   135
+## 2     Alaska  AK   West     710231    19
+## 3    Arizona  AZ   West    6392017   232
+## 4   Arkansas  AR  South    2915918    93
+## 5 California  CA   West   37253956  1257
+## 6   Colorado  CO   West    5029196    65&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;What do you learn from staring at this table? Even though it is a relatively straightforward table, we can’t &lt;strong&gt;learn&lt;/strong&gt; anything. For starters, it is grossly abbreviated, though you could scroll through. In doing so, how quickly might you be able to determine which states have the largest populations? Which states have the smallest? How populous is a typical state? Is there a relationship between population size and total murders? How do murder rates vary across regions of the country? For most folks, it is quite difficult to extract this information just by looking at the numbers. In contrast, the answer to the questions above are readily available from examining this plot:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(tidyverse)
+library(ggthemes)
+library(ggrepel)
+
+r &amp;lt;- murders %&amp;gt;%
+  summarize(pop=sum(population), tot=sum(total)) %&amp;gt;%
+  mutate(rate = tot/pop*10^6) %&amp;gt;% pull(rate)
+
+murders %&amp;gt;% ggplot(aes(x = population/10^6, y = total, label = abb)) +
+  geom_abline(intercept = log10(r), lty=2, col=&amp;quot;darkgrey&amp;quot;) +
+  geom_point(aes(color=region), size = 3) +
+  geom_text_repel() +
+  scale_x_log10() +
+  scale_y_log10() +
+  xlab(&amp;quot;Populations in millions (log scale)&amp;quot;) +
+  ylab(&amp;quot;Total number of murders (log scale)&amp;quot;) +
+  ggtitle(&amp;quot;US Gun Murders in 2010&amp;quot;) +
+  scale_color_discrete(name=&amp;quot;Region&amp;quot;) +
+  theme_economist_white()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/example/01-example_files/figure-html/ggplot-example-plot-0-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;We are reminded of the saying: “A picture is worth a thousand words”. Data visualization provides a powerful way to communicate a data-driven finding. In some cases, the visualization is so convincing that no follow-up analysis is required. You should consider visualization the most potent tool in your data analytics arsenal.&lt;/p&gt;
+&lt;p&gt;The growing availability of informative datasets and software tools has led to increased reliance on data visualizations across many industries, academia, and government. A salient example is news organizations, which are increasingly embracing &lt;em&gt;data journalism&lt;/em&gt; and including effective &lt;em&gt;infographics&lt;/em&gt; as part of their reporting.&lt;/p&gt;
+&lt;p&gt;A particularly salient example—given the current state of the world—is a Wall Street Journal article&lt;a href=&#34;#fn1&#34; class=&#34;footnote-ref&#34; id=&#34;fnref1&#34;&gt;&lt;sup&gt;1&lt;/sup&gt;&lt;/a&gt; showing data related to the impact of vaccines on battling infectious diseases. One of the graphs shows measles cases by US state through the years with a vertical line demonstrating when the vaccine was introduced.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/example/01-example_files/figure-html/wsj-vaccines-example-1.png&#34; width=&#34;100%&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;(Source: &lt;a href=&#34;http://graphics.wsj.com/infectious-diseases-and-vaccines/&#34;&gt;Wall Street Journal&lt;/a&gt;)&lt;/p&gt;
+&lt;p&gt;Another striking example comes from a New York Times chart&lt;a href=&#34;#fn2&#34; class=&#34;footnote-ref&#34; id=&#34;fnref2&#34;&gt;&lt;sup&gt;2&lt;/sup&gt;&lt;/a&gt;, which summarizes scores from the NYC Regents Exams. As described in
+the article&lt;a href=&#34;#fn3&#34; class=&#34;footnote-ref&#34; id=&#34;fnref3&#34;&gt;&lt;sup&gt;3&lt;/sup&gt;&lt;/a&gt;, these scores are collected for several reasons, including to determine if a student graduates from high school. In New York City you need a 65 to pass. The distribution of the test scores forces us to notice something somewhat problematic:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/example/01-example_files/figure-html/regents-exams-example-1.png&#34; width=&#34;80%&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;(Source: &lt;a href=&#34;http://graphics8.nytimes.com/images/2011/02/19/nyregion/19schoolsch/19schoolsch-popup.gif&#34;&gt;New York Times&lt;/a&gt; via Amanda Cox)&lt;/p&gt;
+&lt;p&gt;The most common test score is the minimum passing grade, with very few scores just below the threshold. This unexpected result is consistent with students close to passing having their scores bumped up.&lt;/p&gt;
+&lt;p&gt;This is an example of how data visualization can lead to discoveries which would otherwise be missed if we simply subjected the data to a battery of data analysis tools or procedures. Data visualization is the strongest tool of what we call &lt;em&gt;exploratory data analysis&lt;/em&gt; (EDA). John W. Tukey&lt;a href=&#34;#fn4&#34; class=&#34;footnote-ref&#34; id=&#34;fnref4&#34;&gt;&lt;sup&gt;4&lt;/sup&gt;&lt;/a&gt;, considered the father of EDA, once said,&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;blockquote&gt;
+&lt;p&gt;“The greatest value of a picture is when it forces us to notice what we never expected to see.”&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Many widely used data analysis tools were initiated by discoveries made via EDA. EDA is perhaps the most important part of data analysis, yet it is one that is often overlooked.&lt;/p&gt;
+&lt;p&gt;Data visualization is also now pervasive in philanthropic and educational organizations. In the talks New Insights on Poverty&lt;a href=&#34;#fn5&#34; class=&#34;footnote-ref&#34; id=&#34;fnref5&#34;&gt;&lt;sup&gt;5&lt;/sup&gt;&lt;/a&gt; and The Best Stats You’ve Ever Seen&lt;a href=&#34;#fn6&#34; class=&#34;footnote-ref&#34; id=&#34;fnref6&#34;&gt;&lt;sup&gt;6&lt;/sup&gt;&lt;/a&gt;, Hans Rosling forces us to notice the unexpected with a series of plots related to world health and economics. In his videos, he uses animated graphs to show us how the world is changing and how old narratives are no longer true.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/example/01-example_files/figure-html/gampnider-example-plot-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;It is also important to note that mistakes, biases, systematic errors and other unexpected problems often lead to data that should be handled with care. Failure to discover these problems can give rise to flawed analyses and false discoveries. As an example, consider that measurement devices sometimes fail and that most data analysis procedures are not designed to detect these. Yet these data analysis procedures will still give you an answer. The fact that it can be difficult or impossible to notice an error just from the reported results makes data visualization particularly important.&lt;/p&gt;
+&lt;p&gt;Today, we will discuss the basics of data visualization and exploratory data analysis. We will use the &lt;strong&gt;ggplot2&lt;/strong&gt; package to code. To learn the very basics, we will start with a somewhat artificial example: heights reported by students. Then we will cover the two examples mentioned above: 1) world health and economics and 2) infectious disease trends in the United States.&lt;/p&gt;
+&lt;p&gt;Of course, there is much more to data visualization than what we cover here. The following are references for those who wish to learn more:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;ER Tufte (1983) The visual display of quantitative information.
+Graphics Press.&lt;/li&gt;
+&lt;li&gt;ER Tufte (1990) Envisioning information. Graphics Press.&lt;/li&gt;
+&lt;li&gt;ER Tufte (1997) Visual explanations. Graphics Press.&lt;/li&gt;
+&lt;li&gt;WS Cleveland (1993) Visualizing data. Hobart Press.&lt;/li&gt;
+&lt;li&gt;WS Cleveland (1994) The elements of graphing data. CRC Press.&lt;/li&gt;
+&lt;li&gt;A Gelman, C Pasarica, R Dodhia (2002) Let’s practice what we preach:
+Turning tables into graphs. The American Statistician 56:121-130.&lt;/li&gt;
+&lt;li&gt;NB Robbins (2004) Creating more effective graphs. Wiley.&lt;/li&gt;
+&lt;li&gt;A Cairo (2013) The functional art: An introduction to information graphics and visualization. New Riders.&lt;/li&gt;
+&lt;li&gt;N Yau (2013) Data points: Visualization that means something. Wiley.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;We also do not cover interactive graphics, a topic that is both too advanced for this course and too unweildy. Some useful resources for those interested in learning more can be found below, and you are encouraged to draw inspiration from those websites in your projects:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://shiny.rstudio.com/&#34;&gt;https://shiny.rstudio.com/&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://d3js.org/&#34;&gt;https://d3js.org/&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div id=&#34;code&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Code&lt;/h2&gt;
+&lt;p&gt;Some of the code from today’s class will be available below &lt;em&gt;after&lt;/em&gt; the class.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;video&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Video&lt;/h2&gt;
+&lt;p&gt;Video from today’s class will be available below after the class.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;example-1-extracted-code.R&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&#34;footnotes&#34;&gt;
+&lt;hr /&gt;
+&lt;ol&gt;
+&lt;li id=&#34;fn1&#34;&gt;&lt;p&gt;&lt;a href=&#34;http://graphics.wsj.com/infectious-diseases-and-vaccines/?mc_cid=711ddeb86e&#34; class=&#34;uri&#34;&gt;http://graphics.wsj.com/infectious-diseases-and-vaccines/?mc_cid=711ddeb86e&lt;/a&gt;&lt;a href=&#34;#fnref1&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li id=&#34;fn2&#34;&gt;&lt;p&gt;&lt;a href=&#34;http://graphics8.nytimes.com/images/2011/02/19/nyregion/19schoolsch/19schoolsch-popup.gif&#34; class=&#34;uri&#34;&gt;http://graphics8.nytimes.com/images/2011/02/19/nyregion/19schoolsch/19schoolsch-popup.gif&lt;/a&gt;&lt;a href=&#34;#fnref2&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li id=&#34;fn3&#34;&gt;&lt;p&gt;&lt;a href=&#34;https://www.nytimes.com/2011/02/19/nyregion/19schools.html&#34; class=&#34;uri&#34;&gt;https://www.nytimes.com/2011/02/19/nyregion/19schools.html&lt;/a&gt;&lt;a href=&#34;#fnref3&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li id=&#34;fn4&#34;&gt;&lt;p&gt;&lt;a href=&#34;https://en.wikipedia.org/wiki/John_Tukey&#34; class=&#34;uri&#34;&gt;https://en.wikipedia.org/wiki/John_Tukey&lt;/a&gt;&lt;a href=&#34;#fnref4&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li id=&#34;fn5&#34;&gt;&lt;p&gt;&lt;a href=&#34;https://www.ted.com/talks/hans_rosling_reveals_new_insights_on_poverty?language=en&#34; class=&#34;uri&#34;&gt;https://www.ted.com/talks/hans_rosling_reveals_new_insights_on_poverty?language=en&lt;/a&gt;&lt;a href=&#34;#fnref5&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li id=&#34;fn6&#34;&gt;&lt;p&gt;&lt;a href=&#34;https://www.ted.com/talks/hans_rosling_shows_the_best_stats_you_ve_ever_seen&#34; class=&#34;uri&#34;&gt;https://www.ted.com/talks/hans_rosling_shows_the_best_stats_you_ve_ever_seen&lt;/a&gt;&lt;a href=&#34;#fnref6&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
 &lt;/ol&gt;
 &lt;/div&gt;
 </description>
@@ -485,124 +995,6 @@ my_func &amp;lt;- function(y){
     </item>
     
     <item>
-      <title>Working with R and RStudio</title>
-      <link>https://datavizm20.classes.andrewheiss.com/example/00-example/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>https://datavizm20.classes.andrewheiss.com/example/00-example/</guid>
-      <description>
-
-&lt;div id=&#34;TOC&#34;&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;a href=&#34;#introduction-to-examples&#34;&gt;Introduction to Examples&lt;/a&gt;&lt;ul&gt;
-&lt;li&gt;&lt;a href=&#34;#getting-started&#34;&gt;Getting started with &lt;code&gt;R&lt;/code&gt; and RStudio&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;#the-r-console&#34;&gt;The &lt;code&gt;R&lt;/code&gt; console&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;#scripts&#34;&gt;Scripts&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;#rstudio&#34;&gt;RStudio&lt;/a&gt;&lt;ul&gt;
-&lt;li&gt;&lt;a href=&#34;#the-panes&#34;&gt;The panes&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;#key-bindings&#34;&gt;Key bindings&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;#running-commands-while-editing-scripts&#34;&gt;Running commands while editing scripts&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;#installing-r-packages&#34;&gt;Installing &lt;code&gt;R&lt;/code&gt; packages&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/div&gt;
-
-&lt;div id=&#34;introduction-to-examples&#34; class=&#34;section level1&#34;&gt;
-&lt;h1&gt;Introduction to Examples&lt;/h1&gt;
-&lt;p&gt;Examples in this class are designed to be presented in-class. Accordingly, the notes here are &lt;em&gt;not&lt;/em&gt; comprehensive. Instead, they are intended to guide students through&lt;/p&gt;
-&lt;p&gt;I’m also aware that my writing is dry and lifeless. If you’re reading this online without the advantage of seeing it in person, don’t worry—I’ll be “funnier” in class.&lt;a href=&#34;#fn1&#34; class=&#34;footnote-ref&#34; id=&#34;fnref1&#34;&gt;&lt;sup&gt;1&lt;/sup&gt;&lt;/a&gt;&lt;/p&gt;
-&lt;div id=&#34;getting-started&#34; class=&#34;section level2&#34;&gt;
-&lt;h2&gt;Getting started with &lt;code&gt;R&lt;/code&gt; and RStudio&lt;/h2&gt;
-&lt;p&gt;&lt;code&gt;R&lt;/code&gt; is not a programming language like &lt;code&gt;C&lt;/code&gt; or &lt;code&gt;Java&lt;/code&gt;. It was not created by software engineers for software development. Instead, it was developed by statisticians as an interactive environment for data analysis. You can read the full history in the paper A Brief History of S&lt;a href=&#34;#fn2&#34; class=&#34;footnote-ref&#34; id=&#34;fnref2&#34;&gt;&lt;sup&gt;2&lt;/sup&gt;&lt;/a&gt;. The interactivity is an indispensable feature in data science because, as you will soon learn, the ability to quickly explore data is a necessity for success in this field. However, like in other programming languages, you can save your work as scripts that can be easily executed at any moment. These scripts serve as a record of the analysis you performed, a key feature that facilitates reproducible work. If you are an expert programmer, you should not expect &lt;code&gt;R&lt;/code&gt; to follow the conventions you are used—assuming this will leave you disappointed. If you are patient, you will come to appreciate the unequal power of &lt;code&gt;R&lt;/code&gt; when it comes to data analysis and data visualization.&lt;/p&gt;
-&lt;p&gt;Other attractive features of &lt;code&gt;R&lt;/code&gt; are:&lt;/p&gt;
-&lt;ol style=&#34;list-style-type: decimal&#34;&gt;
-&lt;li&gt;&lt;code&gt;R&lt;/code&gt; is free and open source&lt;a href=&#34;#fn3&#34; class=&#34;footnote-ref&#34; id=&#34;fnref3&#34;&gt;&lt;sup&gt;3&lt;/sup&gt;&lt;/a&gt;.&lt;/li&gt;
-&lt;li&gt;It runs on all major platforms: Windows, Mac OS, UNIX/Linux.&lt;/li&gt;
-&lt;li&gt;Scripts and data objects can be shared seamlessly across platforms.&lt;/li&gt;
-&lt;li&gt;There is a large, growing, and active community of &lt;code&gt;R&lt;/code&gt; users and, as a result, there are numerous resources for learning and asking questions&lt;a href=&#34;#fn4&#34; class=&#34;footnote-ref&#34; id=&#34;fnref4&#34;&gt;&lt;sup&gt;4&lt;/sup&gt;&lt;/a&gt; &lt;a href=&#34;#fn5&#34; class=&#34;footnote-ref&#34; id=&#34;fnref5&#34;&gt;&lt;sup&gt;5&lt;/sup&gt;&lt;/a&gt; &lt;a href=&#34;#fn6&#34; class=&#34;footnote-ref&#34; id=&#34;fnref6&#34;&gt;&lt;sup&gt;6&lt;/sup&gt;&lt;/a&gt;.&lt;/li&gt;
-&lt;li&gt;It is easy for others to contribute add-ons which enables developers to share software implementations of new data science methodologies. The latest methods and tools are developed in &lt;code&gt;R&lt;/code&gt; for a wide variety of disciplines and since social science is so broad, &lt;code&gt;R&lt;/code&gt; is one of the few tools that spans the varied social sciences.&lt;/li&gt;
-&lt;/ol&gt;
-&lt;/div&gt;
-&lt;div id=&#34;the-r-console&#34; class=&#34;section level2&#34;&gt;
-&lt;h2&gt;The &lt;code&gt;R&lt;/code&gt; console&lt;/h2&gt;
-&lt;p&gt;Interactive data analysis usually occurs on the &lt;em&gt;R console&lt;/em&gt; that executes commands as you type them. There are several ways to gain access to an &lt;code&gt;R&lt;/code&gt; console. One way is to simply start &lt;code&gt;R&lt;/code&gt; on your computer. The console looks something like this:&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/img/R_console2.png&#34; /&gt;&lt;/p&gt;
-&lt;p&gt;As a quick example, try using the console to calculate a 15% tip on a meal that cost $19.71:&lt;a href=&#34;#fn7&#34; class=&#34;footnote-ref&#34; id=&#34;fnref7&#34;&gt;&lt;sup&gt;7&lt;/sup&gt;&lt;/a&gt;&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;0.15 * 19.71  &lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## [1] 2.9565&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;strong&gt;Note that in this course (at least, on most browsers), grey boxes are used to show &lt;code&gt;R&lt;/code&gt; code typed into the &lt;code&gt;R&lt;/code&gt; console. The symbol &lt;code&gt;##&lt;/code&gt; is used to denote what the &lt;code&gt;R&lt;/code&gt; console outputs.&lt;/strong&gt;&lt;/p&gt;
-&lt;/div&gt;
-&lt;div id=&#34;scripts&#34; class=&#34;section level2&#34;&gt;
-&lt;h2&gt;Scripts&lt;/h2&gt;
-&lt;p&gt;One of the great advantages of &lt;code&gt;R&lt;/code&gt; over point-and-click analysis software is that you can save your work as scripts. You can edit and save these scripts using a text editor. The material in this course was developed using the interactive &lt;em&gt;integrated development environment&lt;/em&gt; (IDE) RStudio&lt;a href=&#34;#fn8&#34; class=&#34;footnote-ref&#34; id=&#34;fnref8&#34;&gt;&lt;sup&gt;8&lt;/sup&gt;&lt;/a&gt;. RStudio includes an editor with many &lt;code&gt;R&lt;/code&gt; specific features, a console to execute your code, and other useful panes, including one to show figures.&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/img/RStudio.png&#34; /&gt;&lt;/p&gt;
-&lt;p&gt;Most web-based &lt;code&gt;R&lt;/code&gt; consoles also provide a pane to edit scripts, but not all permit you to save the scripts for later use. On the upper-right part of this webpage you’ll see a little button with the &lt;code&gt;R&lt;/code&gt; logo. You can access a web-based console there.&lt;/p&gt;
-&lt;/div&gt;
-&lt;div id=&#34;rstudio&#34; class=&#34;section level2&#34;&gt;
-&lt;h2&gt;RStudio&lt;/h2&gt;
-&lt;p&gt;RStudio will be our launching pad for data science projects. It not only provides an editor for us to create and edit our scripts but also provides many other useful tools. In this section, we go over some of the basics.&lt;/p&gt;
-&lt;div id=&#34;the-panes&#34; class=&#34;section level3&#34;&gt;
-&lt;h3&gt;The panes&lt;/h3&gt;
-&lt;p&gt;When you start RStudio for the first time, you will see three panes. The left pane shows the &lt;code&gt;R&lt;/code&gt; console. On the right, the top pane includes tabs such as &lt;em&gt;Environment&lt;/em&gt; and &lt;em&gt;History&lt;/em&gt;, while the bottom pane shows five tabs: &lt;em&gt;File&lt;/em&gt;, &lt;em&gt;Plots&lt;/em&gt;, &lt;em&gt;Packages&lt;/em&gt;, &lt;em&gt;Help&lt;/em&gt;, and &lt;em&gt;Viewer&lt;/em&gt; (these tabs may change in new versions). You can click on each tab to move across the different features.&lt;/p&gt;
-&lt;p&gt;To start a new script, you can click on File, then New File, then &lt;code&gt;R&lt;/code&gt; Script.&lt;/p&gt;
-&lt;p&gt;This starts a new pane on the left and it is here where you can start writing your script.&lt;/p&gt;
-&lt;/div&gt;
-&lt;div id=&#34;key-bindings&#34; class=&#34;section level3&#34;&gt;
-&lt;h3&gt;Key bindings&lt;/h3&gt;
-&lt;p&gt;Many tasks we perform with the mouse can be achieved with a combination of key strokes instead. These keyboard versions for performing tasks are referred to as &lt;em&gt;key bindings&lt;/em&gt;. For example, we just showed how to use the mouse to start a new script, but you can also use a key binding: Ctrl+Shift+N on Windows and command+shift+N on the Mac.&lt;/p&gt;
-&lt;p&gt;Although in this tutorial we often show how to use the mouse, &lt;strong&gt;we highly recommend that you memorize key bindings for the operations you use most&lt;/strong&gt;. RStudio provides a useful cheat sheet with the most widely used commands. You might want to keep this handy so you can look up key-bindings when you find yourself performing repetitive point-and-clicking.&lt;/p&gt;
-&lt;/div&gt;
-&lt;div id=&#34;running-commands-while-editing-scripts&#34; class=&#34;section level3&#34;&gt;
-&lt;h3&gt;Running commands while editing scripts&lt;/h3&gt;
-&lt;p&gt;There are many editors specifically made for coding. These are useful because color and indentation are automatically added to make code more readable. RStudio is one of these editors, and it was specifically developed for R. One of the main advantages provided by RStudio over other editors is that we can test our code easily as we edit our scripts. Below we show an example.&lt;/p&gt;
-&lt;p&gt;Let’s start by opening a new script as we did before. A next step is to give the script a name. We can do this through the editor by saving the current new unnamed script. To do this, click on the save icon or use the key binding Ctrl+S on Windows and command+S on the Mac.&lt;/p&gt;
-&lt;p&gt;When you ask for the document to be saved for the first time, RStudio will prompt you for a name. A good convention is to use a descriptive name, with lower case letters, no spaces, only hyphens to separate words, and then followed by the suffix &lt;em&gt;.R&lt;/em&gt;. We will call this script &lt;em&gt;my-first-script.R&lt;/em&gt;.&lt;/p&gt;
-&lt;p&gt;Now we are ready to start editing our first script. The first lines of code in an &lt;code&gt;R&lt;/code&gt; script are dedicated to loading the libraries we will use. Another useful RStudio feature is that once we type &lt;code&gt;library()&lt;/code&gt; it starts auto-completing with libraries that we have installed. Note what happens when we type &lt;code&gt;library(ti)&lt;/code&gt;:&lt;/p&gt;
-&lt;p&gt;Another feature you may have noticed is that when you type &lt;code&gt;library(&lt;/code&gt; the second parenthesis is automatically added. This will help you avoid one of the most common errors in coding: forgetting to close a parenthesis.&lt;/p&gt;
-&lt;p&gt;Now we can continue to write code. As an example, we will make a graph showing murder totals versus population totals by state. Once you are done writing the code needed to make this plot, you can try it out by &lt;em&gt;executing&lt;/em&gt; the code. To do this, click on the &lt;em&gt;Run&lt;/em&gt; button on the upper right side of the editing pane. You can also use the key binding: Ctrl+Shift+Enter on Windows or command+shift+return on the Mac.&lt;/p&gt;
-&lt;p&gt;Once you run the code, you will see it appear in the &lt;code&gt;R&lt;/code&gt; console and, in this case, the generated plot appears in the plots console. Note that the plot console has a useful interface that permits you to click back and forward across different plots, zoom in to the plot, or save the plots as files.&lt;/p&gt;
-&lt;p&gt;To run one line at a time instead of the entire script, you can use Control-Enter on Windows and command-return on the Mac.&lt;/p&gt;
-&lt;div class=&#34;fyi&#34;&gt;
-&lt;p&gt;&lt;strong&gt;SETUP TIP&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;Change the option &lt;em&gt;Save workspace to .RData on exit&lt;/em&gt; to &lt;em&gt;Never&lt;/em&gt; and uncheck the &lt;em&gt;Restore .RData into workspace at start&lt;/em&gt;. By default, when you exit &lt;code&gt;R&lt;/code&gt; saves all the objects you have created into a file called .RData. This is done so that when you restart the session in the same folder, it will load these objects. I find that this causes confusion especially when sharing code with colleagues or peers.&lt;/p&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div id=&#34;installing-r-packages&#34; class=&#34;section level2&#34;&gt;
-&lt;h2&gt;Installing &lt;code&gt;R&lt;/code&gt; packages&lt;/h2&gt;
-&lt;p&gt;The functionality provided by a fresh install of &lt;code&gt;R&lt;/code&gt; is only a small fraction of what is possible. In fact, we refer to what you get after your first install as &lt;em&gt;base R&lt;/em&gt;. The extra functionality comes from add-ons available from developers. There are currently hundreds of these available from CRAN and many others shared via other repositories such as GitHub. However, because not everybody needs all available functionality, &lt;code&gt;R&lt;/code&gt; instead makes different components available via &lt;em&gt;packages&lt;/em&gt;. &lt;code&gt;R&lt;/code&gt; makes it very easy to install packages from within R. For example, to install the &lt;strong&gt;dslabs&lt;/strong&gt; package, which we use to share datasets and code related to this book, you would type:&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;install.packages(&amp;quot;dslabs&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;In RStudio, you can navigate to the &lt;em&gt;Tools&lt;/em&gt; tab and select install packages. We can then load the package into our &lt;code&gt;R&lt;/code&gt; sessions using the &lt;code&gt;library&lt;/code&gt; function:&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(dslabs)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;As you go through this book, you will see that we load packages without installing them. This is because once you install a package, it remains installed and only needs to be loaded with &lt;code&gt;library&lt;/code&gt;. The package remains loaded until we quit the &lt;code&gt;R&lt;/code&gt; session. If you try to load a package and get an error, it probably means you need to
-install it first.&lt;/p&gt;
-&lt;p&gt;We can install more than one package at once by feeding a character vector to this function:&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;install.packages(c(&amp;quot;tidyverse&amp;quot;, &amp;quot;dslabs&amp;quot;))&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;One advantage of using RStudio is that it auto-completes package names once you start typing, which is helpful when you do not remember the exact spelling of the package. Once you select your package, we recommend selecting all the defaults. Note that installing &lt;strong&gt;tidyverse&lt;/strong&gt; actually installs several packages. This commonly occurs when a package has &lt;em&gt;dependencies&lt;/em&gt;, or uses functions from other packages. When you load a package using &lt;code&gt;library&lt;/code&gt;, you also load its dependencies.&lt;/p&gt;
-&lt;p&gt;Once packages are installed, you can load them into &lt;code&gt;R&lt;/code&gt; and you do not need to install them again, unless you install a fresh version of R. Remember packages are installed in &lt;code&gt;R&lt;/code&gt; not RStudio.&lt;/p&gt;
-&lt;p&gt;It is helpful to keep a list of all the packages you need for your work in a script because if you need to perform a fresh install of R, you can re-install all your packages by simply running a script.&lt;/p&gt;
-&lt;p&gt;You can see all the packages you have installed using the following function:&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;installed.packages()&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;As we move through this course, we will constantly be adding to our toolbox of packages. Accordingly, you will need to keep track to ensure you have the requisite package for any given lecture.&lt;/p&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class=&#34;footnotes&#34;&gt;
-&lt;hr /&gt;
-&lt;ol&gt;
-&lt;li id=&#34;fn1&#34;&gt;&lt;p&gt;Comments from previous classes indicate that I am not, in fact, funny.&lt;a href=&#34;#fnref1&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
-&lt;li id=&#34;fn2&#34;&gt;&lt;p&gt;&lt;a href=&#34;https://pdfs.semanticscholar.org/9b48/46f192aa37ca122cfabb1ed1b59866d8bfda.pdf&#34; class=&#34;uri&#34;&gt;https://pdfs.semanticscholar.org/9b48/46f192aa37ca122cfabb1ed1b59866d8bfda.pdf&lt;/a&gt;&lt;a href=&#34;#fnref2&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
-&lt;li id=&#34;fn3&#34;&gt;&lt;p&gt;&lt;a href=&#34;https://opensource.org/history&#34; class=&#34;uri&#34;&gt;https://opensource.org/history&lt;/a&gt;&lt;a href=&#34;#fnref3&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
-&lt;li id=&#34;fn4&#34;&gt;&lt;p&gt;&lt;a href=&#34;https://stats.stackexchange.com/questions/138/free-resources-for-learning-r&#34; class=&#34;uri&#34;&gt;https://stats.stackexchange.com/questions/138/free-resources-for-learning-r&lt;/a&gt;&lt;a href=&#34;#fnref4&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
-&lt;li id=&#34;fn5&#34;&gt;&lt;p&gt;&lt;a href=&#34;https://www.r-project.org/help.html&#34; class=&#34;uri&#34;&gt;https://www.r-project.org/help.html&lt;/a&gt;&lt;a href=&#34;#fnref5&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
-&lt;li id=&#34;fn6&#34;&gt;&lt;p&gt;&lt;a href=&#34;https://stackoverflow.com/documentation/r/topics&#34; class=&#34;uri&#34;&gt;https://stackoverflow.com/documentation/r/topics&lt;/a&gt;&lt;a href=&#34;#fnref6&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
-&lt;li id=&#34;fn7&#34;&gt;&lt;p&gt;But probably tip more than 15%. Times are tough, man.&lt;a href=&#34;#fnref7&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
-&lt;li id=&#34;fn8&#34;&gt;&lt;p&gt;&lt;a href=&#34;https://www.rstudio.com/&#34; class=&#34;uri&#34;&gt;https://www.rstudio.com/&lt;/a&gt;&lt;a href=&#34;#fnref8&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
-&lt;/ol&gt;
-&lt;/div&gt;
-</description>
-    </item>
-    
-    <item>
       <title>Applied Logistic Regression</title>
       <link>https://datavizm20.classes.andrewheiss.com/assignment/11-assignment/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
@@ -840,119 +1232,6 @@ p + geom_point(mapping = aes(color = continent)) +
 &lt;p&gt;Note that this is your first foray into &lt;code&gt;ggplot2&lt;/code&gt;; accordingly, you should ry to make sure that you do not bite off more than you can chew. We will improve and refine our abilities as we progress through the semester.&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;/div&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>Introduction to Visualization</title>
-      <link>https://datavizm20.classes.andrewheiss.com/example/01-example/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>https://datavizm20.classes.andrewheiss.com/example/01-example/</guid>
-      <description>
-
-&lt;div id=&#34;TOC&#34;&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;a href=&#34;#introduction-to-data-visualization&#34;&gt;Introduction to data visualization&lt;/a&gt;&lt;ul&gt;
-&lt;li&gt;&lt;a href=&#34;#code&#34;&gt;Code&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;#video&#34;&gt;Video&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/div&gt;
-
-&lt;div id=&#34;introduction-to-data-visualization&#34; class=&#34;section level1&#34;&gt;
-&lt;h1&gt;Introduction to data visualization&lt;/h1&gt;
-&lt;p&gt;Looking at the numbers and character strings that define a dataset is rarely useful. To convince yourself, print and stare at the US murders data table:&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(dslabs)
-data(murders)
-head(murders)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;##        state abb region population total
-## 1    Alabama  AL  South    4779736   135
-## 2     Alaska  AK   West     710231    19
-## 3    Arizona  AZ   West    6392017   232
-## 4   Arkansas  AR  South    2915918    93
-## 5 California  CA   West   37253956  1257
-## 6   Colorado  CO   West    5029196    65&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;What do you learn from staring at this table? Even though it is a relatively straightforward table, we can’t &lt;strong&gt;learn&lt;/strong&gt; anything. For starters, it is grossly abbreviated, though you could scroll through. In doing so, how quickly might you be able to determine which states have the largest populations? Which states have the smallest? How populous is a typical state? Is there a relationship between population size and total murders? How do murder rates vary across regions of the country? For most folks, it is quite difficult to extract this information just by looking at the numbers. In contrast, the answer to the questions above are readily available from examining this plot:&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(tidyverse)
-library(ggthemes)
-library(ggrepel)
-
-r &amp;lt;- murders %&amp;gt;%
-  summarize(pop=sum(population), tot=sum(total)) %&amp;gt;%
-  mutate(rate = tot/pop*10^6) %&amp;gt;% pull(rate)
-
-murders %&amp;gt;% ggplot(aes(x = population/10^6, y = total, label = abb)) +
-  geom_abline(intercept = log10(r), lty=2, col=&amp;quot;darkgrey&amp;quot;) +
-  geom_point(aes(color=region), size = 3) +
-  geom_text_repel() +
-  scale_x_log10() +
-  scale_y_log10() +
-  xlab(&amp;quot;Populations in millions (log scale)&amp;quot;) +
-  ylab(&amp;quot;Total number of murders (log scale)&amp;quot;) +
-  ggtitle(&amp;quot;US Gun Murders in 2010&amp;quot;) +
-  scale_color_discrete(name=&amp;quot;Region&amp;quot;) +
-  theme_economist_white()&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/example/01-example_files/figure-html/ggplot-example-plot-0-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
-&lt;p&gt;We are reminded of the saying: “A picture is worth a thousand words”. Data visualization provides a powerful way to communicate a data-driven finding. In some cases, the visualization is so convincing that no follow-up analysis is required. You should consider visualization the most potent tool in your data analytics arsenal.&lt;/p&gt;
-&lt;p&gt;The growing availability of informative datasets and software tools has led to increased reliance on data visualizations across many industries, academia, and government. A salient example is news organizations, which are increasingly embracing &lt;em&gt;data journalism&lt;/em&gt; and including effective &lt;em&gt;infographics&lt;/em&gt; as part of their reporting.&lt;/p&gt;
-&lt;p&gt;A particularly salient example—given the current state of the world—is a Wall Street Journal article&lt;a href=&#34;#fn1&#34; class=&#34;footnote-ref&#34; id=&#34;fnref1&#34;&gt;&lt;sup&gt;1&lt;/sup&gt;&lt;/a&gt; showing data related to the impact of vaccines on battling infectious diseases. One of the graphs shows measles cases by US state through the years with a vertical line demonstrating when the vaccine was introduced.&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/example/01-example_files/figure-html/wsj-vaccines-example-1.png&#34; width=&#34;100%&#34; /&gt;&lt;/p&gt;
-&lt;p&gt;(Source: &lt;a href=&#34;http://graphics.wsj.com/infectious-diseases-and-vaccines/&#34;&gt;Wall Street Journal&lt;/a&gt;)&lt;/p&gt;
-&lt;p&gt;Another striking example comes from a New York Times chart&lt;a href=&#34;#fn2&#34; class=&#34;footnote-ref&#34; id=&#34;fnref2&#34;&gt;&lt;sup&gt;2&lt;/sup&gt;&lt;/a&gt;, which summarizes scores from the NYC Regents Exams. As described in
-the article&lt;a href=&#34;#fn3&#34; class=&#34;footnote-ref&#34; id=&#34;fnref3&#34;&gt;&lt;sup&gt;3&lt;/sup&gt;&lt;/a&gt;, these scores are collected for several reasons, including to determine if a student graduates from high school. In New York City you need a 65 to pass. The distribution of the test scores forces us to notice something somewhat problematic:&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/example/01-example_files/figure-html/regents-exams-example-1.png&#34; width=&#34;80%&#34; /&gt;&lt;/p&gt;
-&lt;p&gt;(Source: &lt;a href=&#34;http://graphics8.nytimes.com/images/2011/02/19/nyregion/19schoolsch/19schoolsch-popup.gif&#34;&gt;New York Times&lt;/a&gt; via Amanda Cox)&lt;/p&gt;
-&lt;p&gt;The most common test score is the minimum passing grade, with very few scores just below the threshold. This unexpected result is consistent with students close to passing having their scores bumped up.&lt;/p&gt;
-&lt;p&gt;This is an example of how data visualization can lead to discoveries which would otherwise be missed if we simply subjected the data to a battery of data analysis tools or procedures. Data visualization is the strongest tool of what we call &lt;em&gt;exploratory data analysis&lt;/em&gt; (EDA). John W. Tukey&lt;a href=&#34;#fn4&#34; class=&#34;footnote-ref&#34; id=&#34;fnref4&#34;&gt;&lt;sup&gt;4&lt;/sup&gt;&lt;/a&gt;, considered the father of EDA, once said,&lt;/p&gt;
-&lt;blockquote&gt;
-&lt;blockquote&gt;
-&lt;p&gt;“The greatest value of a picture is when it forces us to notice what we never expected to see.”&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;/blockquote&gt;
-&lt;p&gt;Many widely used data analysis tools were initiated by discoveries made via EDA. EDA is perhaps the most important part of data analysis, yet it is one that is often overlooked.&lt;/p&gt;
-&lt;p&gt;Data visualization is also now pervasive in philanthropic and educational organizations. In the talks New Insights on Poverty&lt;a href=&#34;#fn5&#34; class=&#34;footnote-ref&#34; id=&#34;fnref5&#34;&gt;&lt;sup&gt;5&lt;/sup&gt;&lt;/a&gt; and The Best Stats You’ve Ever Seen&lt;a href=&#34;#fn6&#34; class=&#34;footnote-ref&#34; id=&#34;fnref6&#34;&gt;&lt;sup&gt;6&lt;/sup&gt;&lt;/a&gt;, Hans Rosling forces us to notice the unexpected with a series of plots related to world health and economics. In his videos, he uses animated graphs to show us how the world is changing and how old narratives are no longer true.&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/example/01-example_files/figure-html/gampnider-example-plot-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
-&lt;p&gt;It is also important to note that mistakes, biases, systematic errors and other unexpected problems often lead to data that should be handled with care. Failure to discover these problems can give rise to flawed analyses and false discoveries. As an example, consider that measurement devices sometimes fail and that most data analysis procedures are not designed to detect these. Yet these data analysis procedures will still give you an answer. The fact that it can be difficult or impossible to notice an error just from the reported results makes data visualization particularly important.&lt;/p&gt;
-&lt;p&gt;Today, we will discuss the basics of data visualization and exploratory data analysis. We will use the &lt;strong&gt;ggplot2&lt;/strong&gt; package to code. To learn the very basics, we will start with a somewhat artificial example: heights reported by students. Then we will cover the two examples mentioned above: 1) world health and economics and 2) infectious disease trends in the United States.&lt;/p&gt;
-&lt;p&gt;Of course, there is much more to data visualization than what we cover here. The following are references for those who wish to learn more:&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;ER Tufte (1983) The visual display of quantitative information.
-Graphics Press.&lt;/li&gt;
-&lt;li&gt;ER Tufte (1990) Envisioning information. Graphics Press.&lt;/li&gt;
-&lt;li&gt;ER Tufte (1997) Visual explanations. Graphics Press.&lt;/li&gt;
-&lt;li&gt;WS Cleveland (1993) Visualizing data. Hobart Press.&lt;/li&gt;
-&lt;li&gt;WS Cleveland (1994) The elements of graphing data. CRC Press.&lt;/li&gt;
-&lt;li&gt;A Gelman, C Pasarica, R Dodhia (2002) Let’s practice what we preach:
-Turning tables into graphs. The American Statistician 56:121-130.&lt;/li&gt;
-&lt;li&gt;NB Robbins (2004) Creating more effective graphs. Wiley.&lt;/li&gt;
-&lt;li&gt;A Cairo (2013) The functional art: An introduction to information graphics and visualization. New Riders.&lt;/li&gt;
-&lt;li&gt;N Yau (2013) Data points: Visualization that means something. Wiley.&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;We also do not cover interactive graphics, a topic that is both too advanced for this course and too unweildy. Some useful resources for those interested in learning more can be found below, and you are encouraged to draw inspiration from those websites in your projects:&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;a href=&#34;https://shiny.rstudio.com/&#34;&gt;https://shiny.rstudio.com/&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;https://d3js.org/&#34;&gt;https://d3js.org/&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;div id=&#34;code&#34; class=&#34;section level2&#34;&gt;
-&lt;h2&gt;Code&lt;/h2&gt;
-&lt;p&gt;Some of the code from today’s class will be available below &lt;em&gt;after&lt;/em&gt; the class.&lt;/p&gt;
-&lt;/div&gt;
-&lt;div id=&#34;video&#34; class=&#34;section level2&#34;&gt;
-&lt;h2&gt;Video&lt;/h2&gt;
-&lt;p&gt;Video from today’s class will be available below after the class.&lt;/p&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class=&#34;footnotes&#34;&gt;
-&lt;hr /&gt;
-&lt;ol&gt;
-&lt;li id=&#34;fn1&#34;&gt;&lt;p&gt;&lt;a href=&#34;http://graphics.wsj.com/infectious-diseases-and-vaccines/?mc_cid=711ddeb86e&#34; class=&#34;uri&#34;&gt;http://graphics.wsj.com/infectious-diseases-and-vaccines/?mc_cid=711ddeb86e&lt;/a&gt;&lt;a href=&#34;#fnref1&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
-&lt;li id=&#34;fn2&#34;&gt;&lt;p&gt;&lt;a href=&#34;http://graphics8.nytimes.com/images/2011/02/19/nyregion/19schoolsch/19schoolsch-popup.gif&#34; class=&#34;uri&#34;&gt;http://graphics8.nytimes.com/images/2011/02/19/nyregion/19schoolsch/19schoolsch-popup.gif&lt;/a&gt;&lt;a href=&#34;#fnref2&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
-&lt;li id=&#34;fn3&#34;&gt;&lt;p&gt;&lt;a href=&#34;https://www.nytimes.com/2011/02/19/nyregion/19schools.html&#34; class=&#34;uri&#34;&gt;https://www.nytimes.com/2011/02/19/nyregion/19schools.html&lt;/a&gt;&lt;a href=&#34;#fnref3&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
-&lt;li id=&#34;fn4&#34;&gt;&lt;p&gt;&lt;a href=&#34;https://en.wikipedia.org/wiki/John_Tukey&#34; class=&#34;uri&#34;&gt;https://en.wikipedia.org/wiki/John_Tukey&lt;/a&gt;&lt;a href=&#34;#fnref4&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
-&lt;li id=&#34;fn5&#34;&gt;&lt;p&gt;&lt;a href=&#34;https://www.ted.com/talks/hans_rosling_reveals_new_insights_on_poverty?language=en&#34; class=&#34;uri&#34;&gt;https://www.ted.com/talks/hans_rosling_reveals_new_insights_on_poverty?language=en&lt;/a&gt;&lt;a href=&#34;#fnref5&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
-&lt;li id=&#34;fn6&#34;&gt;&lt;p&gt;&lt;a href=&#34;https://www.ted.com/talks/hans_rosling_shows_the_best_stats_you_ve_ever_seen&#34; class=&#34;uri&#34;&gt;https://www.ted.com/talks/hans_rosling_shows_the_best_stats_you_ve_ever_seen&lt;/a&gt;&lt;a href=&#34;#fnref6&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
-&lt;/ol&gt;
 &lt;/div&gt;
 </description>
     </item>
@@ -1509,258 +1788,6 @@ Print the object &lt;code&gt;p&lt;/code&gt; defined in exercise one and describe
 &lt;li&gt;We followed the examples in the &lt;code&gt;blscrapeR&lt;/code&gt; package and downloaded data for every state.&lt;/li&gt;
 &lt;/ol&gt;
 &lt;p&gt;Another day in the life of doing modern data science. This is an example of something you will be able to do by the end of this class. we had no idea people had written &lt;code&gt;R&lt;/code&gt; packages to access BLS data, but there are (at least) 3 packages out there. After a few minutes of tinkering, we got it working and it is relatively straightforward.&lt;/p&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>Visualizations </title>
-      <link>https://datavizm20.classes.andrewheiss.com/example/03-example/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>https://datavizm20.classes.andrewheiss.com/example/03-example/</guid>
-      <description>
-
-&lt;div id=&#34;TOC&#34;&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;a href=&#34;#preliminaries&#34;&gt;Preliminaries&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;#complete-code&#34;&gt;Complete code&lt;/a&gt;&lt;ul&gt;
-&lt;li&gt;&lt;a href=&#34;#load-and-clean-data&#34;&gt;Load and clean data&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;#small-multiples&#34;&gt;Small multiples&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;#sparklines&#34;&gt;Sparklines&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;#slopegraphs&#34;&gt;Slopegraphs&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;#bump-charts&#34;&gt;Bump charts&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/div&gt;
-
-&lt;p&gt;Today’s example will continue (and conclude) some of the discussion from Tuesday. The code may be useful for future work.&lt;/p&gt;
-&lt;div id=&#34;preliminaries&#34; class=&#34;section level2&#34;&gt;
-&lt;h2&gt;Preliminaries&lt;/h2&gt;
-&lt;p&gt;For today’s example, we’re going to use cross-national data. But instead of using the typical &lt;code&gt;gapminder&lt;/code&gt; dataset as with the Tuuesday lecture, we’re going to collect data directly from the &lt;a href=&#34;https://data.worldbank.org/&#34;&gt;World Bank’s Open Data portal&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;If you want to skip the data downloading, you can download the data below (you’ll likely need to right click and choose “Save Link As”). However, it may be instructive for your group projects to explore the collection process. It’s not particularly hard!&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;a href=&#34;https://datavizm20.classes.andrewheiss.com/data/wdi_raw.csv&#34;&gt;&lt;i class=&#34;fas fa-file-csv&#34;&gt;&lt;/i&gt; &lt;code&gt;wdi_raw.csv&lt;/code&gt;&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/div&gt;
-&lt;div id=&#34;complete-code&#34; class=&#34;section level2&#34;&gt;
-&lt;h2&gt;Complete code&lt;/h2&gt;
-&lt;div id=&#34;load-and-clean-data&#34; class=&#34;section level3&#34;&gt;
-&lt;h3&gt;Load and clean data&lt;/h3&gt;
-&lt;p&gt;First, we load the libraries we’ll be using. Note: there are some new packages below. You will almost surely need to add these. Moreover, these will almost surely throw an error unless you use the &lt;code&gt;dependencies = TRUE&lt;/code&gt; argument when installing.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(tidyverse)  # For ggplot, dplyr, and friends
-library(WDI)        # For getting data from the World Bank
-library(geofacet)   # For map-shaped facets
-library(scales)     # For helpful scale functions like dollar()
-library(ggrepel)    # For non-overlapping labels&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;The World Bank has a ton of country-level data at &lt;a href=&#34;https://data.worldbank.org/&#34;&gt;data.worldbank.org&lt;/a&gt;. We can use &lt;a href=&#34;https://cran.r-project.org/package=WDI&#34;&gt;a package named &lt;strong&gt;WDI&lt;/strong&gt;&lt;/a&gt; (&lt;strong&gt;w&lt;/strong&gt;orld &lt;strong&gt;d&lt;/strong&gt;evelopment &lt;strong&gt;i&lt;/strong&gt;ndicators) to access their servers and download the data directly into R.&lt;/p&gt;
-&lt;p&gt;To do this, we need to find the special World Bank codes for specific variables we want to get. These codes come from the URLs of the World Bank’s website. For instance, if you search for “access to electricity” at the World Bank’s website, you’ll find &lt;a href=&#34;https://data.worldbank.org/indicator/EG.ELC.ACCS.ZS&#34;&gt;this page&lt;/a&gt;. If you look at the end of the URL, you’ll see a cryptic code: &lt;code&gt;EG.ELC.ACCS.ZS&lt;/code&gt;. That’s the World Bank’s ID code for the “Access to electricity (% of population)” indicator.&lt;/p&gt;
-&lt;p&gt;We can feed a list of ID codes to the &lt;code&gt;WDI()&lt;/code&gt; function to download data for those specific indicators. We want data from 1995-2015, so we set the start and end years accordingly. The &lt;code&gt;extra=TRUE&lt;/code&gt; argument means that it’ll also include other helpful details like region, aid status, etc. Without it, it would only download the indicators we listed.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;indicators &amp;lt;- c(&amp;quot;SP.DYN.LE00.IN&amp;quot;,  # Life expectancy
-                &amp;quot;EG.ELC.ACCS.ZS&amp;quot;,  # Access to electricity
-                &amp;quot;EN.ATM.CO2E.PC&amp;quot;,  # CO2 emissions
-                &amp;quot;NY.GDP.PCAP.KD&amp;quot;)  # GDP per capita
-wdi_raw &amp;lt;- WDI(country = &amp;quot;all&amp;quot;, indicators, extra = TRUE,
-               start = 1995, end = 2015)
-head(wdi_raw)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Downloading data from the World Bank every time you knit will get tedious and take a long time (plus if their servers are temporarily down, you won’t be able to get the data). It’s good practice to save this raw data as a CSV file and then work with that.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;write_csv(wdi_raw, &amp;quot;data/wdi_raw.csv&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Since we care about reproducibility, we still want to include the code we used to get data from the World Bank, we just don’t want it to actually run. You can include chunks but not run them by setting &lt;code&gt;eval=FALSE&lt;/code&gt; in the chunk options. In this little example, we show the code for downloading the data, but we don’t evaluate the chunk. We then include a chunk that loads the data from a CSV file with &lt;code&gt;read_csv()&lt;/code&gt;, but we don’t include it (&lt;code&gt;include=FALSE&lt;/code&gt;). That way, in the knitted file we see the &lt;code&gt;WDI()&lt;/code&gt; code, but in reality it’s loading the data from CSV. Super tricky.&lt;/p&gt;
-&lt;pre class=&#34;text&#34;&gt;&lt;code&gt;I first download data from the World Bank:
-```{r get-wdi-data, eval=FALSE}
-wdi_raw &amp;lt;- WDI(...)
-write_csv(wdi_raw, &amp;quot;data/wdi_raw.csv&amp;quot;)
-```
-```{r load-wdi-data-real, include=FALSE}
-wdi_raw &amp;lt;- read_csv(&amp;quot;data/wdi_raw.csv&amp;quot;)
-```&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Then we clean up the data a little, filtering out rows that aren’t actually countries and renaming the ugly World Bank code columns to actual words:&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;wdi_clean &amp;lt;- wdi_raw %&amp;gt;%
-  filter(region != &amp;quot;Aggregates&amp;quot;) %&amp;gt;%
-  select(iso2c, country, year,
-         life_expectancy = SP.DYN.LE00.IN,
-         access_to_electricity = EG.ELC.ACCS.ZS,
-         co2_emissions = EN.ATM.CO2E.PC,
-         gdp_per_cap = NY.GDP.PCAP.KD,
-         region, income)
-head(wdi_clean)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## # A tibble: 6 x 9
-##   iso2c country  year life_expectancy access_to_electricity co2_emissions gdp_per_cap region                income     
-##   &amp;lt;chr&amp;gt; &amp;lt;chr&amp;gt;   &amp;lt;dbl&amp;gt;           &amp;lt;dbl&amp;gt;                 &amp;lt;dbl&amp;gt;         &amp;lt;dbl&amp;gt;       &amp;lt;dbl&amp;gt; &amp;lt;chr&amp;gt;                 &amp;lt;chr&amp;gt;      
-## 1 AD    Andorra  2015              NA                   100         NA         41768. Europe &amp;amp; Central Asia High income
-## 2 AD    Andorra  2004              NA                   100          7.36      47033. Europe &amp;amp; Central Asia High income
-## 3 AD    Andorra  2001              NA                   100          7.79      41421. Europe &amp;amp; Central Asia High income
-## 4 AD    Andorra  2002              NA                   100          7.59      42396. Europe &amp;amp; Central Asia High income
-## 5 AD    Andorra  2014              NA                   100          5.83      40790. Europe &amp;amp; Central Asia High income
-## 6 AD    Andorra  1995              NA                   100          6.66      32918. Europe &amp;amp; Central Asia High income&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-&lt;div id=&#34;small-multiples&#34; class=&#34;section level3&#34;&gt;
-&lt;h3&gt;Small multiples&lt;/h3&gt;
-&lt;p&gt;First we can make some small multiples plots and show life expectancy over time for a handful of countries. We’ll make a list of some countries chosen at random while I scrolled through the data, and then filter our data to include only those rows. We then plot life expectancy, faceting by country.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;life_expectancy_small &amp;lt;- wdi_clean %&amp;gt;%
-  filter(country %in% c(&amp;quot;Argentina&amp;quot;, &amp;quot;Bolivia&amp;quot;, &amp;quot;Brazil&amp;quot;,
-                        &amp;quot;Belize&amp;quot;, &amp;quot;Canada&amp;quot;, &amp;quot;Chile&amp;quot;))
-ggplot(data = life_expectancy_small,
-       mapping = aes(x = year, y = life_expectancy)) +
-  geom_line(size = 1) +
-  facet_wrap(vars(country))&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/example/03-example_files/figure-html/life-expectancy-small-1.png&#34; width=&#34;576&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
-&lt;p&gt;Small multiples! That’s all we need to do.&lt;/p&gt;
-&lt;p&gt;We can do some fancier things, though. We can make this plot hyper minimalist:&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(data = life_expectancy_small,
-       mapping = aes(x = year, y = life_expectancy)) +
-  geom_line(size = 1) +
-  facet_wrap(vars(country), scales = &amp;quot;free_y&amp;quot;) +
-  theme_void() +
-  theme(strip.text = element_text(face = &amp;quot;bold&amp;quot;))&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/example/03-example_files/figure-html/life-expectancy-small-minimalist-1.png&#34; width=&#34;576&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
-&lt;p&gt;We can do a whole part of a continent (poor Iraq and Syria 😭)&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;life_expectancy_mena &amp;lt;- wdi_clean %&amp;gt;%
-  filter(region == &amp;quot;Middle East &amp;amp; North Africa&amp;quot;)
-ggplot(data = life_expectancy_mena,
-       mapping = aes(x = year, y = life_expectancy)) +
-  geom_line(size = 1) +
-  facet_wrap(vars(country), scales = &amp;quot;free_y&amp;quot;, nrow = 3) +
-  theme_void() +
-  theme(strip.text = element_text(face = &amp;quot;bold&amp;quot;))&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/example/03-example_files/figure-html/life-expectancy-mena-1.png&#34; width=&#34;960&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
-&lt;p&gt;We can use the &lt;a href=&#34;https://hafen.github.io/geofacet/&#34;&gt;&lt;strong&gt;geofacet&lt;/strong&gt; package&lt;/a&gt; to arrange these facets by geography:&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;life_expectancy_eu &amp;lt;- wdi_clean %&amp;gt;%
-  filter(region == &amp;quot;Europe &amp;amp; Central Asia&amp;quot;)
-ggplot(life_expectancy_eu, aes(x = year, y = life_expectancy)) +
-  geom_line(size = 1) +
-  facet_geo(vars(country), grid = &amp;quot;eu_grid1&amp;quot;, scales = &amp;quot;free_y&amp;quot;) +
-  labs(x = NULL, y = NULL, title = &amp;quot;Life expectancy from 1995–2015&amp;quot;,
-       caption = &amp;quot;Source: The World Bank (SP.DYN.LE00.IN)&amp;quot;) +
-  theme_minimal() +
-  theme(strip.text = element_text(face = &amp;quot;bold&amp;quot;),
-        plot.title = element_text(face = &amp;quot;bold&amp;quot;),
-        axis.text.x = element_text(angle = 45, hjust = 1))&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/example/03-example_files/figure-html/life-expectancy-eu-1.png&#34; width=&#34;960&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
-&lt;p&gt;Neat!&lt;/p&gt;
-&lt;/div&gt;
-&lt;div id=&#34;sparklines&#34; class=&#34;section level3&#34;&gt;
-&lt;h3&gt;Sparklines&lt;/h3&gt;
-&lt;p&gt;Sparklines are just line charts (or bar charts) that are really really small.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;india_co2 &amp;lt;- wdi_clean %&amp;gt;%
-  filter(country == &amp;quot;India&amp;quot;)
-plot_india &amp;lt;- ggplot(india_co2, aes(x = year, y = co2_emissions)) +
-  geom_line() +
-  theme_void()
-plot_india&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/example/03-example_files/figure-html/india-spark-1.png&#34; width=&#34;96&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggsave(&amp;quot;india_co2.pdf&amp;quot;, plot_india, width = 1, height = 0.15, units = &amp;quot;in&amp;quot;)
-ggsave(&amp;quot;india_co2.png&amp;quot;, plot_india, width = 1, height = 0.15, units = &amp;quot;in&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;china_co2 &amp;lt;- wdi_clean %&amp;gt;%
-  filter(country == &amp;quot;China&amp;quot;)
-plot_china &amp;lt;- ggplot(china_co2, aes(x = year, y = co2_emissions)) +
-  geom_line() +
-  theme_void()
-plot_china&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/example/03-example_files/figure-html/china-spark-1.png&#34; width=&#34;96&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggsave(&amp;quot;china_co2.pdf&amp;quot;, plot_china, width = 1, heighlt = 0.15, units = &amp;quot;in&amp;quot;)
-ggsave(&amp;quot;china_co2.png&amp;quot;, plot_china, width = 1, height = 0.15, units = &amp;quot;in&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;You can then use those saved tiny plots in your text.&lt;/p&gt;
-&lt;blockquote&gt;
-&lt;p&gt;Both India &lt;img class=&#34;img-inline&#34; src=&#34;https://datavizm20.classes.andrewheiss.com/example/08-example_files/figure-html/india-spark-1.png&#34; width = &#34;100&#34;/&gt; and China &lt;img class=&#34;img-inline&#34; src=&#34;https://datavizm20.classes.andrewheiss.com/example/08-example_files/figure-html/china-spark-1.png&#34; width = &#34;100&#34;/&gt; have seen increased CO&lt;sub&gt;2&lt;/sub&gt; emissions over the past 20 years.&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;/div&gt;
-&lt;div id=&#34;slopegraphs&#34; class=&#34;section level3&#34;&gt;
-&lt;h3&gt;Slopegraphs&lt;/h3&gt;
-&lt;p&gt;We can make a slopegraph to show changes in GDP per capita between two time periods. We need to first filter our WDI to include only the start and end years (here 1995 and 2015). Then, to make sure that we’re using complete data, we’ll get rid of any country that has missing data for either 1995 or 2015. The &lt;code&gt;group_by(...) %&amp;gt;% filter(...) %&amp;gt;% ungroup()&lt;/code&gt; pipeline does this, with the &lt;code&gt;!any(is.na(gdp_per_cap))&lt;/code&gt; test keeping any rows where any of the &lt;code&gt;gdp_per_cap&lt;/code&gt; values are not missing for the whole country.&lt;/p&gt;
-&lt;p&gt;We then add a couple special columns for labels. The &lt;code&gt;paste0()&lt;/code&gt; function concatenates strings and variables together, so that &lt;code&gt;paste0(&#34;2 + 2 = &#34;, 2 + 2)&lt;/code&gt; would show “2 + 2 = 4”. Here we make labels that say either “Country name: $GDP” or “$GDP” depending on the year.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;gdp_south_asia &amp;lt;- wdi_clean %&amp;gt;%
-  filter(region == &amp;quot;South Asia&amp;quot;) %&amp;gt;%
-  filter(year %in% c(1995, 2015)) %&amp;gt;%
-  # Look at each country individually
-  group_by(country) %&amp;gt;%
-  # Remove the country if any of its gdp_per_cap values are missing
-  filter(!any(is.na(gdp_per_cap))) %&amp;gt;%
-  ungroup() %&amp;gt;%
-  # Make year a factor
-  mutate(year = factor(year)) %&amp;gt;%
-  # Make some nice label columns
-  # If the year is 1995, format it like &amp;quot;Country name: $GDP&amp;quot;. If the year is
-  # 2015, format it like &amp;quot;$GDP&amp;quot;
-  mutate(label_first = ifelse(year == 1995, paste0(country, &amp;quot;: &amp;quot;, dollar(round(gdp_per_cap))), NA),
-         label_last = ifelse(year == 2015, dollar(round(gdp_per_cap, 0)), NA))&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;With the data filtered like this, we can plot it by mapping year to the x-axis, GDP per capita to the y-axis, and coloring by country. To make the lines go across the two categorical labels in the x-axis (since we made year a factor/category), we need to also specify the &lt;code&gt;group&lt;/code&gt; aesthetic.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(gdp_south_asia, aes(x = year, y = gdp_per_cap, group = country, color = country)) +
-  geom_line(size = 1.5)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/example/03-example_files/figure-html/slopegraph-sa-simple-1.png&#34; width=&#34;576&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
-&lt;p&gt;Cool! We’re getting closer. We can definitely see different slopes, but with 7 different colors, it’s hard to see exactly which country is which. Instead, we can directly label each of these lines with &lt;code&gt;geom_text()&lt;/code&gt;:&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(gdp_south_asia, aes(x = year, y = gdp_per_cap, group = country, color = country)) +
-  geom_line(size = 1.5) +
-  geom_text(aes(label = country)) +
-  guides(color = FALSE)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/example/03-example_files/figure-html/slopegraph-sa-simple-text-1.png&#34; width=&#34;576&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
-&lt;p&gt;That gets us a &lt;em&gt;little&lt;/em&gt; closer, but the country labels are hard to see, and we could include more information, like the actual values. Remember those &lt;code&gt;label_first&lt;/code&gt; and &lt;code&gt;label_last&lt;/code&gt; columns we made? Let’s use those instead:&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(gdp_south_asia, aes(x = year, y = gdp_per_cap, group = country, color = country)) +
-  geom_line(size = 1.5) +
-  geom_text(aes(label = label_first)) +
-  geom_text(aes(label = label_last)) +
-  guides(color = FALSE)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/example/03-example_files/figure-html/slopegraph-sa-simple-text-fancier-1.png&#34; width=&#34;576&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
-&lt;p&gt;Now we have dollar amounts and country names, but the labels are still overlapping and really hard to read. To fix this, we can make the labels repel away from each other and randomly position in a way that makes them not overlap. The &lt;a href=&#34;https://cran.r-project.org/web/packages/ggrepel/vignettes/ggrepel.html&#34;&gt;&lt;strong&gt;ggrepel&lt;/strong&gt; package&lt;/a&gt; lets us do this with &lt;code&gt;geom_text_repel()&lt;/code&gt;&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(gdp_south_asia, aes(x = year, y = gdp_per_cap, group = country, color = country)) +
-  geom_line(size = 1.5) +
-  geom_text_repel(aes(label = label_first)) +
-  geom_text_repel(aes(label = label_last)) +
-  guides(color = FALSE)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/example/03-example_files/figure-html/slopegraph-sa-getting-warmer-1.png&#34; width=&#34;576&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
-&lt;p&gt;Now none of the labels are on top of each other, but the labels are still on top of the lines. Also, some of the labels moved inward and outward along the x-axis, but they don’t need to do that—they just need to shift up and down. We can force the labels to only move up and down by setting the &lt;code&gt;direction = &#34;y&#34;&lt;/code&gt; argument, and we can move all the labels to the left or right with the &lt;code&gt;nudge_x&lt;/code&gt; argument. The &lt;code&gt;seed&lt;/code&gt; argument makes sure that the random label placement is the same every time we run this. It can be whatever number you want—it just has to be a number.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(gdp_south_asia, aes(x = year, y = gdp_per_cap, group = country, color = country)) +
-  geom_line(size = 1.5) +
-  geom_text_repel(aes(label = label_first), direction = &amp;quot;y&amp;quot;, nudge_x = -1, seed = 1234) +
-  geom_text_repel(aes(label = label_last), direction = &amp;quot;y&amp;quot;, nudge_x = 1, seed = 1234) +
-  guides(color = FALSE)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/example/03-example_files/figure-html/slopegraph-sa-fancier-1.png&#34; width=&#34;576&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
-&lt;p&gt;That’s it! Let’s take the theme off completely, change the colors a little, and it should be perfect.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(gdp_south_asia, aes(x = year, y = gdp_per_cap, group = country, color = country)) +
-  geom_line(size = 1.5) +
-  geom_text_repel(aes(label = label_first), direction = &amp;quot;y&amp;quot;, nudge_x = -1, seed = 1234) +
-  geom_text_repel(aes(label = label_last), direction = &amp;quot;y&amp;quot;, nudge_x = 1, seed = 1234) +
-  guides(color = FALSE) +
-  scale_color_viridis_d(option = &amp;quot;magma&amp;quot;, end = 0.9) +
-  theme_void()&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/example/03-example_files/figure-html/slopegraph-sa-done-1.png&#34; width=&#34;576&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
-&lt;/div&gt;
-&lt;div id=&#34;bump-charts&#34; class=&#34;section level3&#34;&gt;
-&lt;h3&gt;Bump charts&lt;/h3&gt;
-&lt;p&gt;Finally, we can make a bump chart that shows changes in rankings over time. We’ll look at CO&lt;sub&gt;2&lt;/sub&gt; emissions in South Asia. First we need to calculate a new variable that shows the rank of each country within each year. We can do this if we group by year and then use the &lt;code&gt;rank()&lt;/code&gt; function to rank countries by the &lt;code&gt;co2_emissions&lt;/code&gt; column.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;sa_co2 &amp;lt;- wdi_clean %&amp;gt;%
-  filter(region == &amp;quot;South Asia&amp;quot;) %&amp;gt;%
-  filter(year &amp;gt;= 2004, year &amp;lt; 2015) %&amp;gt;%
-  group_by(year) %&amp;gt;%
-  mutate(rank = rank(co2_emissions))&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;We then plot this with points and lines, reversing the y-axis so 1 is at the top:&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(sa_co2, aes(x = year, y = rank, color = country)) +
-  geom_line() +
-  geom_point() +
-  scale_y_reverse(breaks = 1:8)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/example/03-example_files/figure-html/make-bump-plot-1.png&#34; width=&#34;576&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
-&lt;p&gt;Afghanistan and Nepal switched around for the number 1 spot, while India dropped from 4 to 6, switching places with Pakistan.&lt;/p&gt;
-&lt;p&gt;As with the slopegraph, there are 8 different colors in the legend and it’s hard to line them all up with the different lines, so we can plot the text directly instead. We’ll use &lt;code&gt;geom_text()&lt;/code&gt; again. We don’t need to repel anything, since the text should fit in each row just fine. We need to change the &lt;code&gt;data&lt;/code&gt; argument in &lt;code&gt;geom_text()&lt;/code&gt; though and filter the data to only include one year, otherwise we’ll get labels on every point, which is excessive. We can also adjust the theme and colors to make it cleaner.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(sa_co2, aes(x = year, y = rank, color = country)) +
-  geom_line(size = 2) +
-  geom_point(size = 4) +
-  geom_text(data = filter(sa_co2, year == 2004),
-            aes(label = iso2c, x = 2003.25),
-            fontface = &amp;quot;bold&amp;quot;) +
-  geom_text(data = filter(sa_co2, year == 2014),
-            aes(label = iso2c, x = 2014.75),
-            fontface = &amp;quot;bold&amp;quot;) +
-  guides(color = FALSE) +
-  scale_y_reverse(breaks = 1:8) +
-  scale_x_continuous(breaks = 2004:2014) +
-  scale_color_viridis_d(option = &amp;quot;magma&amp;quot;, begin = 0.2, end = 0.9) +
-  labs(x = NULL, y = &amp;quot;Rank&amp;quot;) +
-  theme_minimal() +
-  theme(panel.grid.major.y = element_blank(),
-        panel.grid.minor.y = element_blank(),
-        panel.grid.minor.x = element_blank())&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/example/03-example_files/figure-html/bump-plot-fancier-1.png&#34; width=&#34;672&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
-&lt;p&gt;If you want to be &lt;em&gt;super&lt;/em&gt; fancy, you can use flags instead of country codes, but that’s a little more complicated (you need to install the &lt;a href=&#34;https://github.com/rensa/ggflags&#34;&gt;&lt;strong&gt;ggflags&lt;/strong&gt; package&lt;/a&gt;. &lt;a href=&#34;https://dominikkoch.github.io/Bump-Chart/&#34;&gt;See here for an example&lt;/a&gt;.&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 </description>
@@ -5900,7 +5927,25 @@ mpg %&amp;gt;%
 &lt;li&gt;&lt;a href=&#34;#readings&#34;&gt;Readings&lt;/a&gt;&lt;ul&gt;
 &lt;li&gt;&lt;a href=&#34;#guiding-question&#34;&gt;Guiding Question&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;#slides&#34;&gt;Slides&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#a-brief-introduction-to-ssc442&#34;&gt;A Brief Introduction to SSC442&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#about-me&#34;&gt;About Me&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#about-you&#34;&gt;About You&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#this-course&#34;&gt;This Course&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#more-about-this-course&#34;&gt;More About This Course&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#super-big-important-explanation-of-the-course&#34;&gt;SUPER BIG IMPORTANT EXPLANATION OF THE COURSE&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#and-finally&#34;&gt;And finally…&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#what-is-data-analytics&#34;&gt;What is “Data Analytics”?&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#starting-point-for-this-course&#34;&gt;Starting point for this course&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#outline-of-the-course&#34;&gt;Outline of the Course&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#non-social-science-approaches-to-statistical-learning&#34;&gt;Non-Social Science Approaches to Statistical Learning&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#the-pros-and-cons-of-correlation&#34;&gt;The Pros and Cons of Correlation&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#a-case-study-in-prediction&#34;&gt;A Case Study in Prediction&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#more-recent-examples-of-prediction&#34;&gt;More Recent Examples of Prediction&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#an-aside-nomenclature&#34;&gt;An Aside: Nomenclature&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#learning-from-data&#34;&gt;Learning from Data&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;#r-basics&#34;&gt;&lt;code&gt;R&lt;/code&gt; basics&lt;/a&gt;&lt;ul&gt;
 &lt;li&gt;&lt;a href=&#34;#case-study-us-homicides-by-firearm&#34;&gt;Case study: US homicides by firearm&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;#the-very-basics&#34;&gt;The (very) basics&lt;/a&gt;&lt;ul&gt;
@@ -5971,25 +6016,252 @@ mpg %&amp;gt;%
 &lt;/ul&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;div id=&#34;slides&#34; class=&#34;section level2&#34;&gt;
-&lt;h2&gt;Slides&lt;/h2&gt;
-&lt;p&gt;There are no direct slides for this lesson; the content below is intended to serve as a refresher for those who may have forgotten some of the basics of &lt;code&gt;R&lt;/code&gt;. This content will form the first week of the course and will include the Example 0. The slides below cover introductory material from the first lecture; some kinks to be worked out.&lt;/p&gt;
-&lt;ul class=&#34;nav nav-tabs&#34; id=&#34;slide-tabs&#34; role=&#34;tablist&#34;&gt;
-&lt;li class=&#34;nav-item&#34;&gt;
-&lt;a class=&#34;nav-link active&#34; id=&#34;introduction-tab&#34; data-toggle=&#34;tab&#34; href=&#34;#introduction&#34; role=&#34;tab&#34; aria-controls=&#34;introduction&#34; aria-selected=&#34;true&#34;&gt;Introduction&lt;/a&gt;
-&lt;/li&gt;
+&lt;div id=&#34;a-brief-introduction-to-ssc442&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;A Brief Introduction to SSC442&lt;/h1&gt;
+&lt;blockquote&gt;
+&lt;p&gt;I keep saying that the sexy job in the next 10 years will be statisticians. And I’m not kidding.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;div id=&#34;hal-varian-chief-economist-google&#34; class=&#34;section level4&#34;&gt;
+&lt;h4&gt;Hal Varian, Chief Economist, Google&lt;/h4&gt;
+&lt;/div&gt;
+&lt;div id=&#34;about-me&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;About Me&lt;/h3&gt;
+&lt;p&gt;&lt;strong&gt;Me:&lt;/strong&gt; My primary area of expertise is environmental and energy (applied) economics.&lt;/p&gt;
+&lt;p&gt;This class is totally, unapologetically a work in progress. It was developed mainly by Prof. Bushong with refinements by myself.&lt;/p&gt;
+&lt;p&gt;Material is a mish-mash of stuff from courses offered at Caltech, Stanford, Harvard, and Duke…so, yeah, it will be challenging. Hopefully, you’ll find it fun!&lt;/p&gt;
+&lt;p&gt;My research: occasionally touches the topics in the course, but mostly utilizes things in the course as tools.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;about-you&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;About You&lt;/h3&gt;
+&lt;div class=&#34;fyi&#34;&gt;
+&lt;p&gt;&lt;em&gt;New phone who dis?&lt;/em&gt; Please email me jkirk@msu.edu your&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;name (with pronunciation guide)&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;major&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;desired graduation year and semester&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;interest in this course on a 10-point scale (1: not at all interested; 10: helllllll yeah)&lt;/p&gt;&lt;/li&gt;
 &lt;/ul&gt;
-&lt;div id=&#34;slide-tabs&#34; class=&#34;tab-content&#34;&gt;
-&lt;div id=&#34;introduction&#34; class=&#34;tab-pane fade show active&#34; role=&#34;tabpanel&#34; aria-labelledby=&#34;introduction-tab&#34;&gt;
-&lt;div class=&#34;embed-responsive embed-responsive-16by9&#34;&gt;
-&lt;iframe class=&#34;embed-responsive-item&#34; src=&#34;https://datavizm20.classes.andrewheiss.com/slides/00-slides.html#Introduction&#34;&gt;
-&lt;/iframe&gt;
+&lt;/div&gt;
+&lt;p&gt;You &lt;strong&gt;must&lt;/strong&gt; spend 5 minutes emailing me a little bit about your interests before the next class.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;this-course&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;This Course&lt;/h3&gt;
+&lt;p&gt;The syllabus is posted on the course website. I’ll walk through highlights now, but read it later – it’s long.
+- But eventually, please read it. It is “required.”&lt;/p&gt;
+&lt;p&gt;Syllabus highlights:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Grade is composed of weekly writings, labs, and projects.
+&lt;ul&gt;
+&lt;li&gt;Weekly writings: 22%&lt;/li&gt;
+&lt;li&gt;Participation: 4%&lt;/li&gt;
+&lt;li&gt;Labs: 29%&lt;/li&gt;
+&lt;li&gt;Projects: 45%&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;This structure is designed to give ~55% “for free”. Success on the projects will require real work.&lt;/li&gt;
+&lt;li&gt;Labs consist of a practical implementation of something we’ve covered in the course (e.g., code your own Recommender System).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div id=&#34;grading&#34; class=&#34;section level4&#34;&gt;
+&lt;h4&gt;Grading&lt;/h4&gt;
+&lt;p&gt;Grading: &lt;strong&gt;come to class.&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;If&lt;/strong&gt; you complete all assignments and attend all class dates, I suspect you will do very well. Given the way the syllabus is structured, I conjecture that the following is a loose guide to grades:&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;4.0&lt;/code&gt; Turned in all assignments with good effort, worked hard on the projects and was proud of final product.&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;3.5&lt;/code&gt; Turned in all assignments with good effort, worked a bit on the projects and was indifferent to final product.&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;3.0&lt;/code&gt; Turned in all assignments with some effort, worked a bit on the projects and was shy about final product.&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;&amp;lt; 3.0&lt;/code&gt; Very little effort, or did not turn in all assignments, worked very little on the projects and was embarassed by final product.&lt;/p&gt;
+&lt;p&gt;…of course, failing to turn in assignments can lead to a grade dramatically &lt;strong&gt;lower&lt;/strong&gt; than just a 3.0.&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
+&lt;div id=&#34;more-about-this-course&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;More About This Course&lt;/h3&gt;
+&lt;p&gt;There are sort of three texts for this course and sort of zero.&lt;/p&gt;
+&lt;p&gt;The “main text” is free and available online. The secondary text is substantially more difficult, but also free online. The third text costs about $25. Assigned readings can be found on the course website under “Content”.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Please please please please please:&lt;/strong&gt; Ask questions during class via chat.
+- Most ideas will be new.
+- Sometimes (often?) the material itself will be confusing or interesting—or both!
+- Teaching online is incredibly challenging (no feedback) and chat is vital to success.
+- &lt;strong&gt;Note:&lt;/strong&gt; If I find that attendance is terrible, I may have to start incorporating attendance into participation.&lt;/p&gt;
+&lt;p&gt;Return of the Please: If there is some topic that you really want to learn about, ask. If you are uncomfortable asking in front of the whole group, please see me during office hours.&lt;/p&gt;
+&lt;p&gt;Because this is a new course:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;Some of the lectures will be way too long or too short.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Some (most?) of the lectures won’t make sense.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Some of the time I’ll forget what I intended to say and awkwardly stare at you for a few moments (sorry).&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Comment &lt;strong&gt;throughout&lt;/strong&gt; the course, not just at the end.&lt;/p&gt;
+&lt;p&gt;The material will improve with time and feedback.&lt;/p&gt;
+&lt;p&gt;I encourage measured feedback and thoughtful responses to questions. If I call on you and you don’t know immediately, don’t freak out. If you don’t know, it’s totally okay to say you don’t know.&lt;/p&gt;
 &lt;/div&gt;
+&lt;div id=&#34;super-big-important-explanation-of-the-course&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;SUPER BIG IMPORTANT EXPLANATION OF THE COURSE&lt;/h3&gt;
+&lt;p&gt;I teach using ``math’’.&lt;/p&gt;
+&lt;p&gt;…Don’t be afraid. The math won’t hurt you.&lt;/p&gt;
+&lt;p&gt;I fundamentally believe that true knowledge of how we learn from data depends on a basic understanding of the underlying mathematics.&lt;/p&gt;
+&lt;p&gt;-Good news: no black boxes.
+- You’ll &lt;strong&gt;actually learn&lt;/strong&gt; stuff. (Probably. Hopefully?)
+- Also good news: level of required math is reasonably low. High-school algebra or equivalent should be fine.&lt;/p&gt;
+&lt;p&gt;-Bad news: notation-heavy slides and reading.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;and-finally&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;And finally…&lt;/h3&gt;
+&lt;p&gt;Finally: I cannot address field-specific questions in areas outside economics to any satisfying degree.&lt;/p&gt;
+&lt;p&gt;Good news: I’m good at knowing what I don’t know and have a very small ego, which means that I’m much less likely to blow smoke up your ass than other professors.&lt;/p&gt;
+&lt;p&gt;Bad news: I can’t help with certain types of questions.&lt;/p&gt;
+&lt;p&gt;This course should be applicable broadly, but many of the examples will lean on my personal expertise (sorry).&lt;/p&gt;
+&lt;p&gt;Your assignment: read syllabus the content from Week 0.&lt;/p&gt;
+&lt;p&gt;Things to stress from syllabus:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;E-mail isn’t the ideal solution for technical problems&lt;/li&gt;
+&lt;li&gt;No appointments necessary for regularly scheduled office hours; or by appointment.&lt;/li&gt;
+&lt;li&gt;TA office hours are great as well. Our TA has experience in this course.&lt;/li&gt;
+&lt;li&gt;Can only reschedule exams (with good reason) if you tell me &lt;strong&gt;before&lt;/strong&gt; the exam that you have a conflict.
+&lt;ul&gt;
+&lt;li&gt;Notify me immediately if you need accommodations because of RCPD or religious convictions; If you approach me at the last minute, I may not be able to help.&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Despite my hard-assness in these intro slides: I’m here to help and I am not in the business of giving bad grades for no reason.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;what-is-data-analytics&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;What is “Data Analytics”?&lt;/h1&gt;
+&lt;p&gt;How do &lt;strong&gt;you&lt;/strong&gt; define “data analytics”? (Not a rhetorical question!)&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;This course will avoid this nomenclature. It is confusing and imprecise. But you signed up (suckers) and I owe an explanation of what this course will cover.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Some “data analytics” topics we will cover:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Linear regression: &lt;em&gt;il classico&lt;/em&gt;.&lt;/li&gt;
+&lt;li&gt;Models of classification or discrete choice.&lt;/li&gt;
+&lt;li&gt;Analysis of ``wide’’ data.&lt;/li&gt;
+&lt;li&gt;Decision trees and other non-linear models.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div id=&#34;starting-point-for-this-course&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Starting point for this course&lt;/h2&gt;
+&lt;p&gt;Better utilizing existing data can improve our predictive power whilst providing interpretable outputs for considering new policies.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;WARNING:&lt;/strong&gt; Causation is tough and we will spend the entire course warning you to avoid making causal claims!&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;outline-of-the-course&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Outline of the Course&lt;/h1&gt;
+&lt;div id=&#34;non-social-science-approaches-to-statistical-learning&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Non-Social Science Approaches to Statistical Learning&lt;/h3&gt;
+&lt;p&gt;&lt;strong&gt;A Brief History&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Suppose you are a researcher and you want to teach a computer to recognize images of a tree.&lt;/p&gt;
+&lt;p&gt;Note: this is an ``easy&#34; problem. If you show pictures to a 3-year-old, that child will probably be able to tell you if there is a tree in the picture.&lt;/p&gt;
+&lt;p&gt;Computer scientists spent about 20 years on this problem because they thought about the problem like nerds and tried to write down a series of rules.&lt;/p&gt;
+&lt;p&gt;Rules are difficult to form, and simply writing rules misses the key insight: the data can tell you something.&lt;/p&gt;
+&lt;div id=&#34;social-science-approaches-to-statistical-learning&#34; class=&#34;section level4&#34;&gt;
+&lt;h4&gt;Social Science Approaches to Statistical Learning&lt;/h4&gt;
+&lt;p&gt;&lt;strong&gt;A Brief History&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Suppose you are a researcher and you want to know whether prisons reduce crime.&lt;/p&gt;
+&lt;p&gt;from ``A Call for a Moratorium on Prison Building’’ (1976)&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Between 1955 and 1975, fifteen states increased the collective capacity of their adult prison systems by 56% (from, on average, 63,100 to 98,649).&lt;/li&gt;
+&lt;li&gt;Fifteen other states increased capacity by less than 4% (from 49,575 to 51,440).&lt;/li&gt;
+&lt;li&gt;In “heavy-construction” states the crime rate increased by 167%; in “low-construction” states the crime rate increased by 145%.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr class=&#34;header&#34;&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;th&gt;Prison Capacity&lt;/th&gt;
+&lt;th&gt;Crime Rate&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td&gt;High construction&lt;/td&gt;
+&lt;td&gt;&lt;span class=&#34;math inline&#34;&gt;\(\uparrow\)&lt;/span&gt;~56%&lt;/td&gt;
+&lt;td&gt;&lt;span class=&#34;math inline&#34;&gt;\(\uparrow\)&lt;/span&gt;~167%&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td&gt;Low construction&lt;/td&gt;
+&lt;td&gt;&lt;span class=&#34;math inline&#34;&gt;\(\uparrow\)&lt;/span&gt;~4%&lt;/td&gt;
+&lt;td&gt;&lt;span class=&#34;math inline&#34;&gt;\(\uparrow\)&lt;/span&gt;~145%&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;the-pros-and-cons-of-correlation&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;The Pros and Cons of Correlation&lt;/h3&gt;
+&lt;p&gt;Pros:
+- Nature gives you correlations for free.
+- In principle, everyone can agree on the facts.&lt;/p&gt;
+&lt;p&gt;Cons:
+- Correlations are not very helpful.
+- They show what has happened, but not why.
+- For many things, we care about why.&lt;/p&gt;
+&lt;div id=&#34;why-a-correlation-exists-between-x-and-y&#34; class=&#34;section level4&#34;&gt;
+&lt;h4&gt;Why a Correlation Exists Between X and Y&lt;/h4&gt;
+&lt;ol style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;&lt;p&gt;&lt;span class=&#34;math inline&#34;&gt;\(X \rightarrow Y\)&lt;/span&gt;
+X causes Y (causality)&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;span class=&#34;math inline&#34;&gt;\(X \leftarrow Y\)&lt;/span&gt;
+Y causes X (reverse causality)&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;span class=&#34;math inline&#34;&gt;\(Z \rightarrow X\)&lt;/span&gt;; &lt;span class=&#34;math inline&#34;&gt;\(Z \rightarrow Y\)&lt;/span&gt;
+Z causes X and Y (common cause)&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;span class=&#34;math inline&#34;&gt;\(X \rightarrow Y\)&lt;/span&gt;; &lt;span class=&#34;math inline&#34;&gt;\(Y \rightarrow X\)&lt;/span&gt;
+X causes Y and Y causes X (simultaneous equations)&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;
+&lt;div id=&#34;uniting-social-science-and-computer-science&#34; class=&#34;section level4&#34;&gt;
+&lt;h4&gt;Uniting Social Science and Computer Science&lt;/h4&gt;
+&lt;p&gt;We will start in this course by examining situations where we do &lt;strong&gt;not&lt;/strong&gt; care about why something has happened, but instead we care about our ability to predict its occurrence from existing data.&lt;/p&gt;
+&lt;p&gt;(But of course keep in back of mind that if you are making policy, you must care about why something happened).&lt;/p&gt;
+&lt;p&gt;We will also borrow a few other ideas from CS:
+- Anything is data
++ Satellite data
++ Unstructured text or audio
++ Facial expressions or vocal intonations
+- Subtle improvements on existing techniques
+- An eye towards practical implementability over ``cleanliness&#34;&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;a-case-study-in-prediction&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;A Case Study in Prediction&lt;/h3&gt;
+&lt;p&gt;&lt;strong&gt;Example:&lt;/strong&gt; a firm wishes to predict user behavior based on previous purchases or interactions.&lt;/p&gt;
+&lt;p&gt;Small margins &lt;span class=&#34;math inline&#34;&gt;\(\rightarrow\)&lt;/span&gt; huge payoffs. &lt;span class=&#34;math inline&#34;&gt;\(10\% \rightarrow\)&lt;/span&gt; $1 million.&lt;/p&gt;
+&lt;p&gt;Not obvious why this was true for Netflix; quite obvious why this is true in financial markets.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;more-recent-examples-of-prediction&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;More Recent Examples of Prediction&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;Identify the risk factors for prostate cancer.&lt;/li&gt;
+&lt;li&gt;Classify a tissue sample into one of several cancer classes, based on a gene expression profile.&lt;/li&gt;
+&lt;li&gt;Classify a recorded phoneme based on a log-periodogram.&lt;/li&gt;
+&lt;li&gt;Predict whether someone will have a heart attack on the basis of demographic, diet and clinical measurements.&lt;/li&gt;
+&lt;li&gt;Customize an email spam detection system.&lt;/li&gt;
+&lt;li&gt;Identify a hand-drawn object.&lt;/li&gt;
+&lt;li&gt;Determine which oscillations of stellar luminosity are likely due to exoplanets.&lt;/li&gt;
+&lt;li&gt;Establish the relationship between salary and demographic variables in population survey data.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;div id=&#34;an-aside-nomenclature&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;An Aside: Nomenclature&lt;/h3&gt;
+&lt;p&gt;&lt;strong&gt;Machine learning&lt;/strong&gt; arose as a subfield of Artificial Intelligence.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Statistical learning&lt;/strong&gt; arose as a subfield of Statistics.&lt;/p&gt;
+&lt;p&gt;There is much overlap; however, a few points of distinction:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;Machine learning has a greater emphasis on large scale applications and prediction accuracy.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Statistical learning emphasizes models and their interpretability, and precision and uncertainty.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;But the distinction has become more and more blurred, and there is a great deal of “cross-fertilization”.&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;Obviously true:&lt;/strong&gt; machine learning has the upper hand in marketing.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;learning-from-data&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Learning from Data&lt;/h3&gt;
+&lt;p&gt;The following are the basic requirements for statistical learning:&lt;/p&gt;
+&lt;ol style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;A pattern exists.&lt;/li&gt;
+&lt;li&gt;This pattern is not easily expressed in a closed mathematical form.&lt;/li&gt;
+&lt;li&gt;You have data.&lt;/li&gt;
+&lt;/ol&gt;
 &lt;div class=&#34;fyi&#34;&gt;
 &lt;p&gt;&lt;strong&gt;ALERT&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;The course content below should be considered a prerequisite for success. For those concerned about basics of &lt;code&gt;R&lt;/code&gt;, you absolutely must read this content and attempt the coding exercises. If you struggle to follow the content, please contact the professor or TA.&lt;/p&gt;
+&lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;div id=&#34;r-basics&#34; class=&#34;section level1&#34;&gt;
@@ -6047,8 +6319,7 @@ c &amp;lt;- -1&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;##  [1] &amp;quot;a&amp;quot;                   &amp;quot;b&amp;quot;                   &amp;quot;BASE&amp;quot;               
 ##  [4] &amp;quot;c&amp;quot;                   &amp;quot;candidates.rprofile&amp;quot; &amp;quot;dat&amp;quot;                
 ##  [7] &amp;quot;GIS.files&amp;quot;           &amp;quot;jLoad&amp;quot;               &amp;quot;Mode&amp;quot;               
-## [10] &amp;quot;murders&amp;quot;             &amp;quot;robust.se&amp;quot;           &amp;quot;sections&amp;quot;           
-## [13] &amp;quot;slide_tabs&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+## [10] &amp;quot;murders&amp;quot;             &amp;quot;robust.se&amp;quot;&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;(Note that one of &lt;em&gt;my&lt;/em&gt; variables listed above comes from generating the graphs above). In RStudio, the &lt;em&gt;Environment&lt;/em&gt; tab shows the values:&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/img/rstudio-environment.png&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;We should see &lt;code&gt;a&lt;/code&gt;, &lt;code&gt;b&lt;/code&gt;, and &lt;code&gt;c&lt;/code&gt;. If you try to recover the value of a variable that is not in your workspace, you receive an error. For example, if you type &lt;code&gt;x&lt;/code&gt; you will receive the following message: &lt;code&gt;Error: object &#39;x&#39; not found&lt;/code&gt;.&lt;/p&gt;
@@ -6962,7 +7233,7 @@ data(murders)&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;In order to address these questions, we will cover so-called “standard” techniques such as supervised and unsupervised learning, statistical learning theory and nonparametric and Bayesian approaches. If it were up to me, this course would be titled “Statistical Learning for Social Scientists”—I believe this provides a more appropriate guide to the content of this course. And while this class will cover these novel statistical methodologies in some detail, it is not a substitute for the appropriate class in Computer Science or Statistics. Nor is this a class that teaches specific skills for the job market. Rather, this class will teach you to think about data analytics broadly. We will spend a great deal of time learning how to interpret the output of statistical learning algorithms and approaches, and will also spend a great deal of time on better understanding the basic ideas in statistical learning. This, of course, comes at some cost in terms of time spent on learning computational and/or programming skills.&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;Enrollment for credit in this course is simply not suitable for those unprepared in or uninterested in elementary statistical theory no matter the intensity of interest in machine learning or “Big Data”. Really.&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;You will be required to understand elementary mathematics in this course and should have at least some exposure to statistical theory. The class is front-loaded technically: early lectures are more mathematically oriented, while later lectures are more applied.&lt;/p&gt;
-&lt;p&gt;The topics covered in this course are listed later in this document. I will assign readings sparingly from &lt;a href=&#34;http://faculty.marshall.usc.edu/gareth-james/ISL/ISLR%20Seventh%20Printing.pdf&#34;&gt;Introduction to Statistical Learning&lt;/a&gt;, henceforth referred to as ISL. This text is available for free online and, for those who like physical books, can be purchased for about $25. Importantly, the lectures deviate a fair bit from the reading, and thus you will rely on your course notes much more than you might in other classes.&lt;/p&gt;
+&lt;p&gt;The topics covered in this course are listed later in this document. I will assign readings sparingly from &lt;a href=&#34;https://statlearning.com/ISLR%20Seventh%20Printing.pdf&#34;&gt;Introduction to Statistical Learning&lt;/a&gt;, henceforth referred to as ISL. This text is available for free online and, for those who like physical books, can be purchased for about $25. Importantly, the lectures deviate a fair bit from the reading, and thus you will rely on your course notes much more than you might in other classes.&lt;/p&gt;
 &lt;p&gt;If—after you have read this document and preferably after attending the first lecture—you have any questions about whether this course is appropriate for you, please come talk to me.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;what-this-course-is-not&#34; class=&#34;section level2&#34;&gt;
@@ -6990,7 +7261,7 @@ data(murders)&lt;/code&gt;&lt;/pre&gt;
 &lt;div id=&#34;course-materials&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Course materials&lt;/h2&gt;
 &lt;p&gt;The course website can be found at &lt;a href=&#34;https://ssc442Kirkpatrick.netlify.app&#34;&gt;https://ssc442Kirkpatrick.netlify.app&lt;/a&gt; (but you know that. You’re on it right now.)&lt;/p&gt;
-&lt;p&gt;All of the readings and software in this class are &lt;strong&gt;free&lt;/strong&gt;. There are free online version of all the texts including &lt;a href=&#34;http://faculty.marshall.usc.edu/gareth-james/ISL/ISLR%20Seventh%20Printing.pdf&#34;&gt;Introduction to Statistical Learning&lt;/a&gt; and &lt;code&gt;R&lt;/code&gt; / RStudio are free. (Don’t pay for RStudio.) We will reference outside readings and there exist paper versions of some “books” but you won’t need to buy anything&lt;a href=&#34;#fn2&#34; class=&#34;footnote-ref&#34; id=&#34;fnref2&#34;&gt;&lt;sup&gt;2&lt;/sup&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;All of the readings and software in this class are &lt;strong&gt;free&lt;/strong&gt;. There are free online version of all the texts including &lt;a href=&#34;https://statlearning.com/ISLR%20Seventh%20Printing.pdf&#34;&gt;&lt;strong&gt;Introduction to Statistical Learning&lt;/strong&gt;&lt;/a&gt; and &lt;code&gt;R&lt;/code&gt; / RStudio are free. (Don’t pay for RStudio.) We will reference outside readings and there exist paper versions of some “books” but you won’t need to buy anything&lt;a href=&#34;#fn2&#34; class=&#34;footnote-ref&#34; id=&#34;fnref2&#34;&gt;&lt;sup&gt;2&lt;/sup&gt;&lt;/a&gt;&lt;/p&gt;
 &lt;div id=&#34;r-and-rstudio&#34; class=&#34;section level3&#34;&gt;
 &lt;h3&gt;R and RStudio&lt;/h3&gt;
 &lt;p&gt;You will do all of your analysis with the open source (and free!) programming language &lt;a href=&#34;https://cran.r-project.org/&#34;&gt;&lt;code&gt;R&lt;/code&gt;&lt;/a&gt;. You will use &lt;a href=&#34;https://www.rstudio.com/&#34;&gt;RStudio&lt;/a&gt; as the main program to access R. &lt;strong&gt;Think of &lt;code&gt;R&lt;/code&gt; as an engine and RStudio as a car dashboard&lt;/strong&gt;—&lt;code&gt;R&lt;/code&gt; handles all the calculations produces the actual statistics and graphical output, while RStudio provides a nice interface for running &lt;code&gt;R&lt;/code&gt; code.&lt;/p&gt;
@@ -8965,8 +9236,7 @@ murders %&amp;gt;% mutate(rate = total/population*100000)&lt;/code&gt;&lt;/pre&g
 &lt;h2&gt;Readings&lt;/h2&gt;
 &lt;ul&gt;
 &lt;li&gt;This page.&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;https://forms.gle/SCgNC9N3PLw6rMea9&#34;&gt;Link to survey about teams.&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;Chapter 1 of Introduction to Statistical Learning, available &lt;a href=&#34;http://faculty.marshall.usc.edu/gareth-james/ISL/ISLR%20Seventh%20Printing.pdf&#34;&gt;here.&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Chapter 1 of Introduction to Statistical Learning, available &lt;a href=&#34;https://statlearning.com/ISLR%20Seventh%20Printing.pdf&#34;&gt;here.&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;div id=&#34;guiding-question&#34; class=&#34;section level3&#34;&gt;
 &lt;h3&gt;Guiding Question&lt;/h3&gt;
@@ -8980,6 +9250,23 @@ murders %&amp;gt;% mutate(rate = total/population*100000)&lt;/code&gt;&lt;/pre&g
 &lt;div id=&#34;slides&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Slides&lt;/h2&gt;
 &lt;p&gt;The slides below are a much broader overview about goals for the class and thinking about relationships that we might explore with data. The technical aspects of this lecture will be explored in greater detail in the Thursday practical lecture.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;## 
+## Attaching package: &amp;#39;dplyr&amp;#39;&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## The following objects are masked from &amp;#39;package:stats&amp;#39;:
+## 
+##     filter, lag&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## The following objects are masked from &amp;#39;package:raster&amp;#39;:
+## 
+##     intersect, select, union&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## The following objects are masked from &amp;#39;package:rgeos&amp;#39;:
+## 
+##     intersect, setdiff, union&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## The following objects are masked from &amp;#39;package:data.table&amp;#39;:
+## 
+##     between, first, last&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## The following objects are masked from &amp;#39;package:base&amp;#39;:
+## 
+##     intersect, setdiff, setequal, union&lt;/code&gt;&lt;/pre&gt;
 &lt;ul class=&#34;nav nav-tabs&#34; id=&#34;slide-tabs&#34; role=&#34;tablist&#34;&gt;
 &lt;li class=&#34;nav-item&#34;&gt;
 &lt;a class=&#34;nav-link active&#34; id=&#34;overview-tab&#34; data-toggle=&#34;tab&#34; href=&#34;#overview&#34; role=&#34;tab&#34; aria-controls=&#34;overview&#34; aria-selected=&#34;true&#34;&gt;Overview&lt;/a&gt;

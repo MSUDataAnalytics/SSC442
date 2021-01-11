@@ -1,6 +1,10 @@
 ---
 title: "Visualizations "
 linktitle: "3: Visualization III"
+read_date: "2021-02-11"
+draft: false
+publishDate: "2021-02-04"
+lastmod: "2021-01-11"
 output:
   blogdown::html_page:
     toc: true
@@ -29,6 +33,23 @@ editor_options:
 </div>
 
 <p>Today’s example will continue (and conclude) some of the discussion from Tuesday. The code may be useful for future work.</p>
+<pre><code>## 
+## Attaching package: &#39;dplyr&#39;</code></pre>
+<pre><code>## The following objects are masked from &#39;package:raster&#39;:
+## 
+##     intersect, select, union</code></pre>
+<pre><code>## The following objects are masked from &#39;package:rgeos&#39;:
+## 
+##     intersect, setdiff, union</code></pre>
+<pre><code>## The following objects are masked from &#39;package:stats&#39;:
+## 
+##     filter, lag</code></pre>
+<pre><code>## The following objects are masked from &#39;package:data.table&#39;:
+## 
+##     between, first, last</code></pre>
+<pre><code>## The following objects are masked from &#39;package:base&#39;:
+## 
+##     intersect, setdiff, setequal, union</code></pre>
 <div id="preliminaries" class="section level2">
 <h2>Preliminaries</h2>
 <p>For today’s example, we’re going to use cross-national data. But instead of using the typical <code>gapminder</code> dataset as with the Tuuesday lecture, we’re going to collect data directly from the <a href="https://data.worldbank.org/">World Bank’s Open Data portal</a></p>
@@ -108,7 +129,7 @@ ggplot(data = life_expectancy_small,
   theme_void() +
   theme(strip.text = element_text(face = &quot;bold&quot;))</code></pre>
 <p><img src="/example/03-example_files/figure-html/life-expectancy-small-minimalist-1.png" width="576" style="display: block; margin: auto;" /></p>
-<p>We can do a whole part of a continent (poor Iraq and Syria 😭)</p>
+<p>We can do a whole part of a continent (poor Iraq and Syria 😞)</p>
 <pre class="r"><code>life_expectancy_mena &lt;- wdi_clean %&gt;%
   filter(region == &quot;Middle East &amp; North Africa&quot;)
 ggplot(data = life_expectancy_mena,

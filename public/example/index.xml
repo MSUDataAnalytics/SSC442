@@ -13,20 +13,270 @@
     </image>
     
     <item>
-      <title>Illustrating Classification</title>
-      <link>https://datavizm20.classes.andrewheiss.com/example/10-example/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>https://datavizm20.classes.andrewheiss.com/example/10-example/</guid>
+      <title>Visualizations </title>
+      <link>https://datavizm20.classes.andrewheiss.com/example/03-example/</link>
+      <pubDate>Thu, 04 Feb 2021 00:00:00 +0000</pubDate>
+      <guid>https://datavizm20.classes.andrewheiss.com/example/03-example/</guid>
       <description>
-&lt;script src=&#34;https://datavizm20.classes.andrewheiss.com/rmarkdown-libs/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
 
-
-&lt;div class=&#34;fyi&#34;&gt;
-&lt;p&gt;Today’s example will come from the “Content” tab.&lt;/p&gt;
-&lt;p&gt;We may use last week’s dataset (it is covered in Lab 9). You can find it below.&lt;/p&gt;
+&lt;div id=&#34;TOC&#34;&gt;
 &lt;ul&gt;
-&lt;li&gt;&lt;a href=&#34;https://datavizm20.classes.andrewheiss.com/projects/data/bank.csv&#34;&gt;&lt;i class=&#34;fas fa-file-csv&#34;&gt;&lt;/i&gt; &lt;code&gt;bank.csv&lt;/code&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#preliminaries&#34;&gt;Preliminaries&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#complete-code&#34;&gt;Complete code&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#load-and-clean-data&#34;&gt;Load and clean data&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#small-multiples&#34;&gt;Small multiples&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#sparklines&#34;&gt;Sparklines&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#slopegraphs&#34;&gt;Slopegraphs&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#bump-charts&#34;&gt;Bump charts&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
 &lt;/ul&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Today’s example will continue (and conclude) some of the discussion from Tuesday. The code may be useful for future work.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;## 
+## Attaching package: &amp;#39;dplyr&amp;#39;&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## The following objects are masked from &amp;#39;package:raster&amp;#39;:
+## 
+##     intersect, select, union&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## The following objects are masked from &amp;#39;package:rgeos&amp;#39;:
+## 
+##     intersect, setdiff, union&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## The following objects are masked from &amp;#39;package:stats&amp;#39;:
+## 
+##     filter, lag&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## The following objects are masked from &amp;#39;package:data.table&amp;#39;:
+## 
+##     between, first, last&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## The following objects are masked from &amp;#39;package:base&amp;#39;:
+## 
+##     intersect, setdiff, setequal, union&lt;/code&gt;&lt;/pre&gt;
+&lt;div id=&#34;preliminaries&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Preliminaries&lt;/h2&gt;
+&lt;p&gt;For today’s example, we’re going to use cross-national data. But instead of using the typical &lt;code&gt;gapminder&lt;/code&gt; dataset as with the Tuuesday lecture, we’re going to collect data directly from the &lt;a href=&#34;https://data.worldbank.org/&#34;&gt;World Bank’s Open Data portal&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;If you want to skip the data downloading, you can download the data below (you’ll likely need to right click and choose “Save Link As”). However, it may be instructive for your group projects to explore the collection process. It’s not particularly hard!&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://datavizm20.classes.andrewheiss.com/data/wdi_raw.csv&#34;&gt;&lt;i class=&#34;fas fa-file-csv&#34;&gt;&lt;/i&gt; &lt;code&gt;wdi_raw.csv&lt;/code&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;div id=&#34;complete-code&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Complete code&lt;/h2&gt;
+&lt;div id=&#34;load-and-clean-data&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Load and clean data&lt;/h3&gt;
+&lt;p&gt;First, we load the libraries we’ll be using. Note: there are some new packages below. You will almost surely need to add these. Moreover, these will almost surely throw an error unless you use the &lt;code&gt;dependencies = TRUE&lt;/code&gt; argument when installing.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(tidyverse)  # For ggplot, dplyr, and friends
+library(WDI)        # For getting data from the World Bank
+library(geofacet)   # For map-shaped facets
+library(scales)     # For helpful scale functions like dollar()
+library(ggrepel)    # For non-overlapping labels&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The World Bank has a ton of country-level data at &lt;a href=&#34;https://data.worldbank.org/&#34;&gt;data.worldbank.org&lt;/a&gt;. We can use &lt;a href=&#34;https://cran.r-project.org/package=WDI&#34;&gt;a package named &lt;strong&gt;WDI&lt;/strong&gt;&lt;/a&gt; (&lt;strong&gt;w&lt;/strong&gt;orld &lt;strong&gt;d&lt;/strong&gt;evelopment &lt;strong&gt;i&lt;/strong&gt;ndicators) to access their servers and download the data directly into R.&lt;/p&gt;
+&lt;p&gt;To do this, we need to find the special World Bank codes for specific variables we want to get. These codes come from the URLs of the World Bank’s website. For instance, if you search for “access to electricity” at the World Bank’s website, you’ll find &lt;a href=&#34;https://data.worldbank.org/indicator/EG.ELC.ACCS.ZS&#34;&gt;this page&lt;/a&gt;. If you look at the end of the URL, you’ll see a cryptic code: &lt;code&gt;EG.ELC.ACCS.ZS&lt;/code&gt;. That’s the World Bank’s ID code for the “Access to electricity (% of population)” indicator.&lt;/p&gt;
+&lt;p&gt;We can feed a list of ID codes to the &lt;code&gt;WDI()&lt;/code&gt; function to download data for those specific indicators. We want data from 1995-2015, so we set the start and end years accordingly. The &lt;code&gt;extra=TRUE&lt;/code&gt; argument means that it’ll also include other helpful details like region, aid status, etc. Without it, it would only download the indicators we listed.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;indicators &amp;lt;- c(&amp;quot;SP.DYN.LE00.IN&amp;quot;,  # Life expectancy
+                &amp;quot;EG.ELC.ACCS.ZS&amp;quot;,  # Access to electricity
+                &amp;quot;EN.ATM.CO2E.PC&amp;quot;,  # CO2 emissions
+                &amp;quot;NY.GDP.PCAP.KD&amp;quot;)  # GDP per capita
+wdi_raw &amp;lt;- WDI(country = &amp;quot;all&amp;quot;, indicators, extra = TRUE,
+               start = 1995, end = 2015)
+head(wdi_raw)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Downloading data from the World Bank every time you knit will get tedious and take a long time (plus if their servers are temporarily down, you won’t be able to get the data). It’s good practice to save this raw data as a CSV file and then work with that.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;write_csv(wdi_raw, &amp;quot;data/wdi_raw.csv&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Since we care about reproducibility, we still want to include the code we used to get data from the World Bank, we just don’t want it to actually run. You can include chunks but not run them by setting &lt;code&gt;eval=FALSE&lt;/code&gt; in the chunk options. In this little example, we show the code for downloading the data, but we don’t evaluate the chunk. We then include a chunk that loads the data from a CSV file with &lt;code&gt;read_csv()&lt;/code&gt;, but we don’t include it (&lt;code&gt;include=FALSE&lt;/code&gt;). That way, in the knitted file we see the &lt;code&gt;WDI()&lt;/code&gt; code, but in reality it’s loading the data from CSV. Super tricky.&lt;/p&gt;
+&lt;pre class=&#34;text&#34;&gt;&lt;code&gt;I first download data from the World Bank:
+```{r get-wdi-data, eval=FALSE}
+wdi_raw &amp;lt;- WDI(...)
+write_csv(wdi_raw, &amp;quot;data/wdi_raw.csv&amp;quot;)
+```
+```{r load-wdi-data-real, include=FALSE}
+wdi_raw &amp;lt;- read_csv(&amp;quot;data/wdi_raw.csv&amp;quot;)
+```&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Then we clean up the data a little, filtering out rows that aren’t actually countries and renaming the ugly World Bank code columns to actual words:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;wdi_clean &amp;lt;- wdi_raw %&amp;gt;%
+  filter(region != &amp;quot;Aggregates&amp;quot;) %&amp;gt;%
+  select(iso2c, country, year,
+         life_expectancy = SP.DYN.LE00.IN,
+         access_to_electricity = EG.ELC.ACCS.ZS,
+         co2_emissions = EN.ATM.CO2E.PC,
+         gdp_per_cap = NY.GDP.PCAP.KD,
+         region, income)
+head(wdi_clean)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 6 x 9
+##   iso2c country  year life_expectancy access_to_electricity co2_emissions gdp_per_cap region                income     
+##   &amp;lt;chr&amp;gt; &amp;lt;chr&amp;gt;   &amp;lt;dbl&amp;gt;           &amp;lt;dbl&amp;gt;                 &amp;lt;dbl&amp;gt;         &amp;lt;dbl&amp;gt;       &amp;lt;dbl&amp;gt; &amp;lt;chr&amp;gt;                 &amp;lt;chr&amp;gt;      
+## 1 AD    Andorra  2015              NA                   100         NA         41768. Europe &amp;amp; Central Asia High income
+## 2 AD    Andorra  2004              NA                   100          7.36      47033. Europe &amp;amp; Central Asia High income
+## 3 AD    Andorra  2001              NA                   100          7.79      41421. Europe &amp;amp; Central Asia High income
+## 4 AD    Andorra  2002              NA                   100          7.59      42396. Europe &amp;amp; Central Asia High income
+## 5 AD    Andorra  2014              NA                   100          5.83      40790. Europe &amp;amp; Central Asia High income
+## 6 AD    Andorra  1995              NA                   100          6.66      32918. Europe &amp;amp; Central Asia High income&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;small-multiples&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Small multiples&lt;/h3&gt;
+&lt;p&gt;First we can make some small multiples plots and show life expectancy over time for a handful of countries. We’ll make a list of some countries chosen at random while I scrolled through the data, and then filter our data to include only those rows. We then plot life expectancy, faceting by country.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;life_expectancy_small &amp;lt;- wdi_clean %&amp;gt;%
+  filter(country %in% c(&amp;quot;Argentina&amp;quot;, &amp;quot;Bolivia&amp;quot;, &amp;quot;Brazil&amp;quot;,
+                        &amp;quot;Belize&amp;quot;, &amp;quot;Canada&amp;quot;, &amp;quot;Chile&amp;quot;))
+ggplot(data = life_expectancy_small,
+       mapping = aes(x = year, y = life_expectancy)) +
+  geom_line(size = 1) +
+  facet_wrap(vars(country))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/example/03-example_files/figure-html/life-expectancy-small-1.png&#34; width=&#34;576&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Small multiples! That’s all we need to do.&lt;/p&gt;
+&lt;p&gt;We can do some fancier things, though. We can make this plot hyper minimalist:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(data = life_expectancy_small,
+       mapping = aes(x = year, y = life_expectancy)) +
+  geom_line(size = 1) +
+  facet_wrap(vars(country), scales = &amp;quot;free_y&amp;quot;) +
+  theme_void() +
+  theme(strip.text = element_text(face = &amp;quot;bold&amp;quot;))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/example/03-example_files/figure-html/life-expectancy-small-minimalist-1.png&#34; width=&#34;576&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;We can do a whole part of a continent (poor Iraq and Syria 😞)&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;life_expectancy_mena &amp;lt;- wdi_clean %&amp;gt;%
+  filter(region == &amp;quot;Middle East &amp;amp; North Africa&amp;quot;)
+ggplot(data = life_expectancy_mena,
+       mapping = aes(x = year, y = life_expectancy)) +
+  geom_line(size = 1) +
+  facet_wrap(vars(country), scales = &amp;quot;free_y&amp;quot;, nrow = 3) +
+  theme_void() +
+  theme(strip.text = element_text(face = &amp;quot;bold&amp;quot;))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/example/03-example_files/figure-html/life-expectancy-mena-1.png&#34; width=&#34;960&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;We can use the &lt;a href=&#34;https://hafen.github.io/geofacet/&#34;&gt;&lt;strong&gt;geofacet&lt;/strong&gt; package&lt;/a&gt; to arrange these facets by geography:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;life_expectancy_eu &amp;lt;- wdi_clean %&amp;gt;%
+  filter(region == &amp;quot;Europe &amp;amp; Central Asia&amp;quot;)
+ggplot(life_expectancy_eu, aes(x = year, y = life_expectancy)) +
+  geom_line(size = 1) +
+  facet_geo(vars(country), grid = &amp;quot;eu_grid1&amp;quot;, scales = &amp;quot;free_y&amp;quot;) +
+  labs(x = NULL, y = NULL, title = &amp;quot;Life expectancy from 1995–2015&amp;quot;,
+       caption = &amp;quot;Source: The World Bank (SP.DYN.LE00.IN)&amp;quot;) +
+  theme_minimal() +
+  theme(strip.text = element_text(face = &amp;quot;bold&amp;quot;),
+        plot.title = element_text(face = &amp;quot;bold&amp;quot;),
+        axis.text.x = element_text(angle = 45, hjust = 1))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/example/03-example_files/figure-html/life-expectancy-eu-1.png&#34; width=&#34;960&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Neat!&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;sparklines&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Sparklines&lt;/h3&gt;
+&lt;p&gt;Sparklines are just line charts (or bar charts) that are really really small.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;india_co2 &amp;lt;- wdi_clean %&amp;gt;%
+  filter(country == &amp;quot;India&amp;quot;)
+plot_india &amp;lt;- ggplot(india_co2, aes(x = year, y = co2_emissions)) +
+  geom_line() +
+  theme_void()
+plot_india&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/example/03-example_files/figure-html/india-spark-1.png&#34; width=&#34;96&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggsave(&amp;quot;india_co2.pdf&amp;quot;, plot_india, width = 1, height = 0.15, units = &amp;quot;in&amp;quot;)
+ggsave(&amp;quot;india_co2.png&amp;quot;, plot_india, width = 1, height = 0.15, units = &amp;quot;in&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;china_co2 &amp;lt;- wdi_clean %&amp;gt;%
+  filter(country == &amp;quot;China&amp;quot;)
+plot_china &amp;lt;- ggplot(china_co2, aes(x = year, y = co2_emissions)) +
+  geom_line() +
+  theme_void()
+plot_china&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/example/03-example_files/figure-html/china-spark-1.png&#34; width=&#34;96&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggsave(&amp;quot;china_co2.pdf&amp;quot;, plot_china, width = 1, heighlt = 0.15, units = &amp;quot;in&amp;quot;)
+ggsave(&amp;quot;china_co2.png&amp;quot;, plot_china, width = 1, height = 0.15, units = &amp;quot;in&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;You can then use those saved tiny plots in your text.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Both India &lt;img class=&#34;img-inline&#34; src=&#34;https://datavizm20.classes.andrewheiss.com/example/08-example_files/figure-html/india-spark-1.png&#34; width = &#34;100&#34;/&gt; and China &lt;img class=&#34;img-inline&#34; src=&#34;https://datavizm20.classes.andrewheiss.com/example/08-example_files/figure-html/china-spark-1.png&#34; width = &#34;100&#34;/&gt; have seen increased CO&lt;sub&gt;2&lt;/sub&gt; emissions over the past 20 years.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;/div&gt;
+&lt;div id=&#34;slopegraphs&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Slopegraphs&lt;/h3&gt;
+&lt;p&gt;We can make a slopegraph to show changes in GDP per capita between two time periods. We need to first filter our WDI to include only the start and end years (here 1995 and 2015). Then, to make sure that we’re using complete data, we’ll get rid of any country that has missing data for either 1995 or 2015. The &lt;code&gt;group_by(...) %&amp;gt;% filter(...) %&amp;gt;% ungroup()&lt;/code&gt; pipeline does this, with the &lt;code&gt;!any(is.na(gdp_per_cap))&lt;/code&gt; test keeping any rows where any of the &lt;code&gt;gdp_per_cap&lt;/code&gt; values are not missing for the whole country.&lt;/p&gt;
+&lt;p&gt;We then add a couple special columns for labels. The &lt;code&gt;paste0()&lt;/code&gt; function concatenates strings and variables together, so that &lt;code&gt;paste0(&#34;2 + 2 = &#34;, 2 + 2)&lt;/code&gt; would show “2 + 2 = 4”. Here we make labels that say either “Country name: $GDP” or “$GDP” depending on the year.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;gdp_south_asia &amp;lt;- wdi_clean %&amp;gt;%
+  filter(region == &amp;quot;South Asia&amp;quot;) %&amp;gt;%
+  filter(year %in% c(1995, 2015)) %&amp;gt;%
+  # Look at each country individually
+  group_by(country) %&amp;gt;%
+  # Remove the country if any of its gdp_per_cap values are missing
+  filter(!any(is.na(gdp_per_cap))) %&amp;gt;%
+  ungroup() %&amp;gt;%
+  # Make year a factor
+  mutate(year = factor(year)) %&amp;gt;%
+  # Make some nice label columns
+  # If the year is 1995, format it like &amp;quot;Country name: $GDP&amp;quot;. If the year is
+  # 2015, format it like &amp;quot;$GDP&amp;quot;
+  mutate(label_first = ifelse(year == 1995, paste0(country, &amp;quot;: &amp;quot;, dollar(round(gdp_per_cap))), NA),
+         label_last = ifelse(year == 2015, dollar(round(gdp_per_cap, 0)), NA))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;With the data filtered like this, we can plot it by mapping year to the x-axis, GDP per capita to the y-axis, and coloring by country. To make the lines go across the two categorical labels in the x-axis (since we made year a factor/category), we need to also specify the &lt;code&gt;group&lt;/code&gt; aesthetic.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(gdp_south_asia, aes(x = year, y = gdp_per_cap, group = country, color = country)) +
+  geom_line(size = 1.5)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/example/03-example_files/figure-html/slopegraph-sa-simple-1.png&#34; width=&#34;576&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Cool! We’re getting closer. We can definitely see different slopes, but with 7 different colors, it’s hard to see exactly which country is which. Instead, we can directly label each of these lines with &lt;code&gt;geom_text()&lt;/code&gt;:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(gdp_south_asia, aes(x = year, y = gdp_per_cap, group = country, color = country)) +
+  geom_line(size = 1.5) +
+  geom_text(aes(label = country)) +
+  guides(color = FALSE)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/example/03-example_files/figure-html/slopegraph-sa-simple-text-1.png&#34; width=&#34;576&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;That gets us a &lt;em&gt;little&lt;/em&gt; closer, but the country labels are hard to see, and we could include more information, like the actual values. Remember those &lt;code&gt;label_first&lt;/code&gt; and &lt;code&gt;label_last&lt;/code&gt; columns we made? Let’s use those instead:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(gdp_south_asia, aes(x = year, y = gdp_per_cap, group = country, color = country)) +
+  geom_line(size = 1.5) +
+  geom_text(aes(label = label_first)) +
+  geom_text(aes(label = label_last)) +
+  guides(color = FALSE)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/example/03-example_files/figure-html/slopegraph-sa-simple-text-fancier-1.png&#34; width=&#34;576&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Now we have dollar amounts and country names, but the labels are still overlapping and really hard to read. To fix this, we can make the labels repel away from each other and randomly position in a way that makes them not overlap. The &lt;a href=&#34;https://cran.r-project.org/web/packages/ggrepel/vignettes/ggrepel.html&#34;&gt;&lt;strong&gt;ggrepel&lt;/strong&gt; package&lt;/a&gt; lets us do this with &lt;code&gt;geom_text_repel()&lt;/code&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(gdp_south_asia, aes(x = year, y = gdp_per_cap, group = country, color = country)) +
+  geom_line(size = 1.5) +
+  geom_text_repel(aes(label = label_first)) +
+  geom_text_repel(aes(label = label_last)) +
+  guides(color = FALSE)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/example/03-example_files/figure-html/slopegraph-sa-getting-warmer-1.png&#34; width=&#34;576&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Now none of the labels are on top of each other, but the labels are still on top of the lines. Also, some of the labels moved inward and outward along the x-axis, but they don’t need to do that—they just need to shift up and down. We can force the labels to only move up and down by setting the &lt;code&gt;direction = &#34;y&#34;&lt;/code&gt; argument, and we can move all the labels to the left or right with the &lt;code&gt;nudge_x&lt;/code&gt; argument. The &lt;code&gt;seed&lt;/code&gt; argument makes sure that the random label placement is the same every time we run this. It can be whatever number you want—it just has to be a number.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(gdp_south_asia, aes(x = year, y = gdp_per_cap, group = country, color = country)) +
+  geom_line(size = 1.5) +
+  geom_text_repel(aes(label = label_first), direction = &amp;quot;y&amp;quot;, nudge_x = -1, seed = 1234) +
+  geom_text_repel(aes(label = label_last), direction = &amp;quot;y&amp;quot;, nudge_x = 1, seed = 1234) +
+  guides(color = FALSE)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/example/03-example_files/figure-html/slopegraph-sa-fancier-1.png&#34; width=&#34;576&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;That’s it! Let’s take the theme off completely, change the colors a little, and it should be perfect.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(gdp_south_asia, aes(x = year, y = gdp_per_cap, group = country, color = country)) +
+  geom_line(size = 1.5) +
+  geom_text_repel(aes(label = label_first), direction = &amp;quot;y&amp;quot;, nudge_x = -1, seed = 1234) +
+  geom_text_repel(aes(label = label_last), direction = &amp;quot;y&amp;quot;, nudge_x = 1, seed = 1234) +
+  guides(color = FALSE) +
+  scale_color_viridis_d(option = &amp;quot;magma&amp;quot;, end = 0.9) +
+  theme_void()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/example/03-example_files/figure-html/slopegraph-sa-done-1.png&#34; width=&#34;576&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;bump-charts&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Bump charts&lt;/h3&gt;
+&lt;p&gt;Finally, we can make a bump chart that shows changes in rankings over time. We’ll look at CO&lt;sub&gt;2&lt;/sub&gt; emissions in South Asia. First we need to calculate a new variable that shows the rank of each country within each year. We can do this if we group by year and then use the &lt;code&gt;rank()&lt;/code&gt; function to rank countries by the &lt;code&gt;co2_emissions&lt;/code&gt; column.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;sa_co2 &amp;lt;- wdi_clean %&amp;gt;%
+  filter(region == &amp;quot;South Asia&amp;quot;) %&amp;gt;%
+  filter(year &amp;gt;= 2004, year &amp;lt; 2015) %&amp;gt;%
+  group_by(year) %&amp;gt;%
+  mutate(rank = rank(co2_emissions))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;We then plot this with points and lines, reversing the y-axis so 1 is at the top:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(sa_co2, aes(x = year, y = rank, color = country)) +
+  geom_line() +
+  geom_point() +
+  scale_y_reverse(breaks = 1:8)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/example/03-example_files/figure-html/make-bump-plot-1.png&#34; width=&#34;576&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Afghanistan and Nepal switched around for the number 1 spot, while India dropped from 4 to 6, switching places with Pakistan.&lt;/p&gt;
+&lt;p&gt;As with the slopegraph, there are 8 different colors in the legend and it’s hard to line them all up with the different lines, so we can plot the text directly instead. We’ll use &lt;code&gt;geom_text()&lt;/code&gt; again. We don’t need to repel anything, since the text should fit in each row just fine. We need to change the &lt;code&gt;data&lt;/code&gt; argument in &lt;code&gt;geom_text()&lt;/code&gt; though and filter the data to only include one year, otherwise we’ll get labels on every point, which is excessive. We can also adjust the theme and colors to make it cleaner.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(sa_co2, aes(x = year, y = rank, color = country)) +
+  geom_line(size = 2) +
+  geom_point(size = 4) +
+  geom_text(data = filter(sa_co2, year == 2004),
+            aes(label = iso2c, x = 2003.25),
+            fontface = &amp;quot;bold&amp;quot;) +
+  geom_text(data = filter(sa_co2, year == 2014),
+            aes(label = iso2c, x = 2014.75),
+            fontface = &amp;quot;bold&amp;quot;) +
+  guides(color = FALSE) +
+  scale_y_reverse(breaks = 1:8) +
+  scale_x_continuous(breaks = 2004:2014) +
+  scale_color_viridis_d(option = &amp;quot;magma&amp;quot;, begin = 0.2, end = 0.9) +
+  labs(x = NULL, y = &amp;quot;Rank&amp;quot;) +
+  theme_minimal() +
+  theme(panel.grid.major.y = element_blank(),
+        panel.grid.minor.y = element_blank(),
+        panel.grid.minor.x = element_blank())&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/example/03-example_files/figure-html/bump-plot-fancier-1.png&#34; width=&#34;672&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;If you want to be &lt;em&gt;super&lt;/em&gt; fancy, you can use flags instead of country codes, but that’s a little more complicated (you need to install the &lt;a href=&#34;https://github.com/rensa/ggflags&#34;&gt;&lt;strong&gt;ggflags&lt;/strong&gt; package&lt;/a&gt;. &lt;a href=&#34;https://dominikkoch.github.io/Bump-Chart/&#34;&gt;See here for an example&lt;/a&gt;.&lt;/p&gt;
+&lt;/div&gt;
 &lt;/div&gt;
 </description>
     </item>
@@ -34,7 +284,7 @@
     <item>
       <title>Working with R and RStudio</title>
       <link>https://datavizm20.classes.andrewheiss.com/example/00-example/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <pubDate>Fri, 10 Jan 2020 00:00:00 +0000</pubDate>
       <guid>https://datavizm20.classes.andrewheiss.com/example/00-example/</guid>
       <description>
 
@@ -50,6 +300,7 @@
 &lt;li&gt;&lt;a href=&#34;#running-commands-while-editing-scripts&#34;&gt;Running commands while editing scripts&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;#installing-r-packages&#34;&gt;Installing &lt;code&gt;R&lt;/code&gt; packages&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#rmarkdown&#34;&gt;Rmarkdown&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/div&gt;
@@ -132,6 +383,13 @@ install it first.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;installed.packages()&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;As we move through this course, we will constantly be adding to our toolbox of packages. Accordingly, you will need to keep track to ensure you have the requisite package for any given lecture.&lt;/p&gt;
 &lt;/div&gt;
+&lt;div id=&#34;rmarkdown&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Rmarkdown&lt;/h2&gt;
+&lt;p&gt;Markdown is a general-purpose syntax for laying out documents. Rmarkdown is a combination of R and markdown, as the name implies. When using markdown, one can define headers and tables using specific notation, and depending on the rendering engine, the headers and tables (and a whole lot more) are customized. In fact, this whole website is built in R using Rmarkdown (and a lot of add-ons like Hugo and blogdown). In other contexts, the rendering engine may recognize that your headers are likely to be entries in a table of contents, and does so for you. The table of contents at the top of this document is built from the markdown headers.&lt;/p&gt;
+&lt;p&gt;The power of Rmarkdown is that it lets us mix formatted text with R code. That is, you can have a section of the document that understands R code, and a separate section right after that discusses the results from the R code.&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://raw.githubusercontent.com/ajkirkpatrick/FS20/Spring2021/Rmarkdown_templates/SSC442_Weekly_Writing_Template.Rmd&#34;&gt;Try it out using the Weekly Writing Template&lt;/a&gt;. If it opens in your web browser, just right-click the link and select Save As…. &lt;strong&gt;Make sure you save the file to its own folder on your hard drive&lt;/strong&gt;. In converting your Rmarkdown .Rmd file to a .pdf, your system will make multiple interim files&lt;a href=&#34;#fn9&#34; class=&#34;footnote-ref&#34; id=&#34;fnref9&#34;&gt;&lt;sup&gt;9&lt;/sup&gt;&lt;/a&gt;. It also creates folders to store the output of any plots or graphics you create with your R code.&lt;/p&gt;
+&lt;p&gt;If we have time today, let’s open the template linked above and see what happens when we select “knit to pdf”.&lt;/p&gt;
+&lt;/div&gt;
 &lt;/div&gt;
 &lt;div class=&#34;footnotes&#34;&gt;
 &lt;hr /&gt;
@@ -144,6 +402,7 @@ install it first.&lt;/p&gt;
 &lt;li id=&#34;fn6&#34;&gt;&lt;p&gt;&lt;a href=&#34;https://stackoverflow.com/documentation/r/topics&#34; class=&#34;uri&#34;&gt;https://stackoverflow.com/documentation/r/topics&lt;/a&gt;&lt;a href=&#34;#fnref6&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
 &lt;li id=&#34;fn7&#34;&gt;&lt;p&gt;But probably tip more than 15%. Times are tough, man.&lt;a href=&#34;#fnref7&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
 &lt;li id=&#34;fn8&#34;&gt;&lt;p&gt;&lt;a href=&#34;https://www.rstudio.com/&#34; class=&#34;uri&#34;&gt;https://www.rstudio.com/&lt;/a&gt;&lt;a href=&#34;#fnref8&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li id=&#34;fn9&#34;&gt;&lt;p&gt;Specifically, knitr will create an intermediate .md file which is then processed with Pandoc using Latex to create a pdf. Whew!&lt;a href=&#34;#fnref9&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
 &lt;/ol&gt;
 &lt;/div&gt;
 </description>
@@ -152,7 +411,7 @@ install it first.&lt;/p&gt;
     <item>
       <title>Introduction to Visualization</title>
       <link>https://datavizm20.classes.andrewheiss.com/example/01-example/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <pubDate>Fri, 10 Jan 2020 00:00:00 +0000</pubDate>
       <guid>https://datavizm20.classes.andrewheiss.com/example/01-example/</guid>
       <description>
 
@@ -246,6 +505,7 @@ Turning tables into graphs. The American Statistician 56:121-130.&lt;/li&gt;
 &lt;div id=&#34;video&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Video&lt;/h2&gt;
 &lt;p&gt;Video from today’s class will be available below after the class.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;example-1-extracted-code.R&amp;quot;&lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;div class=&#34;footnotes&#34;&gt;
@@ -258,6 +518,25 @@ Turning tables into graphs. The American Statistician 56:121-130.&lt;/li&gt;
 &lt;li id=&#34;fn5&#34;&gt;&lt;p&gt;&lt;a href=&#34;https://www.ted.com/talks/hans_rosling_reveals_new_insights_on_poverty?language=en&#34; class=&#34;uri&#34;&gt;https://www.ted.com/talks/hans_rosling_reveals_new_insights_on_poverty?language=en&lt;/a&gt;&lt;a href=&#34;#fnref5&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
 &lt;li id=&#34;fn6&#34;&gt;&lt;p&gt;&lt;a href=&#34;https://www.ted.com/talks/hans_rosling_shows_the_best_stats_you_ve_ever_seen&#34; class=&#34;uri&#34;&gt;https://www.ted.com/talks/hans_rosling_shows_the_best_stats_you_ve_ever_seen&lt;/a&gt;&lt;a href=&#34;#fnref6&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
 &lt;/ol&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Illustrating Classification</title>
+      <link>https://datavizm20.classes.andrewheiss.com/example/10-example/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>https://datavizm20.classes.andrewheiss.com/example/10-example/</guid>
+      <description>
+&lt;script src=&#34;https://datavizm20.classes.andrewheiss.com/rmarkdown-libs/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
+
+
+&lt;div class=&#34;fyi&#34;&gt;
+&lt;p&gt;Today’s example will come from the “Content” tab.&lt;/p&gt;
+&lt;p&gt;We may use last week’s dataset (it is covered in Lab 9). You can find it below.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://datavizm20.classes.andrewheiss.com/projects/data/bank.csv&#34;&gt;&lt;i class=&#34;fas fa-file-csv&#34;&gt;&lt;/i&gt; &lt;code&gt;bank.csv&lt;/code&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
 &lt;/div&gt;
 </description>
     </item>
@@ -659,258 +938,6 @@ Print the object &lt;code&gt;p&lt;/code&gt; defined in exercise one and describe
 &lt;li id=&#34;fn3&#34;&gt;&lt;p&gt;&lt;a href=&#34;https://github.com/rstudio/cheatsheets&#34; class=&#34;uri&#34;&gt;https://github.com/rstudio/cheatsheets&lt;/a&gt;&lt;a href=&#34;#fnref3&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
 &lt;li id=&#34;fn4&#34;&gt;&lt;p&gt;&lt;a href=&#34;https://github.com/rstudio/cheatsheets/blob/master/LICENSE&#34; class=&#34;uri&#34;&gt;https://github.com/rstudio/cheatsheets/blob/master/LICENSE&lt;/a&gt;&lt;a href=&#34;#fnref4&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
 &lt;/ol&gt;
-&lt;/div&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>Visualizations </title>
-      <link>https://datavizm20.classes.andrewheiss.com/example/03-example/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>https://datavizm20.classes.andrewheiss.com/example/03-example/</guid>
-      <description>
-
-&lt;div id=&#34;TOC&#34;&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;a href=&#34;#preliminaries&#34;&gt;Preliminaries&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;#complete-code&#34;&gt;Complete code&lt;/a&gt;&lt;ul&gt;
-&lt;li&gt;&lt;a href=&#34;#load-and-clean-data&#34;&gt;Load and clean data&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;#small-multiples&#34;&gt;Small multiples&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;#sparklines&#34;&gt;Sparklines&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;#slopegraphs&#34;&gt;Slopegraphs&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;#bump-charts&#34;&gt;Bump charts&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/div&gt;
-
-&lt;p&gt;Today’s example will continue (and conclude) some of the discussion from Tuesday. The code may be useful for future work.&lt;/p&gt;
-&lt;div id=&#34;preliminaries&#34; class=&#34;section level2&#34;&gt;
-&lt;h2&gt;Preliminaries&lt;/h2&gt;
-&lt;p&gt;For today’s example, we’re going to use cross-national data. But instead of using the typical &lt;code&gt;gapminder&lt;/code&gt; dataset as with the Tuuesday lecture, we’re going to collect data directly from the &lt;a href=&#34;https://data.worldbank.org/&#34;&gt;World Bank’s Open Data portal&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;If you want to skip the data downloading, you can download the data below (you’ll likely need to right click and choose “Save Link As”). However, it may be instructive for your group projects to explore the collection process. It’s not particularly hard!&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;a href=&#34;https://datavizm20.classes.andrewheiss.com/data/wdi_raw.csv&#34;&gt;&lt;i class=&#34;fas fa-file-csv&#34;&gt;&lt;/i&gt; &lt;code&gt;wdi_raw.csv&lt;/code&gt;&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/div&gt;
-&lt;div id=&#34;complete-code&#34; class=&#34;section level2&#34;&gt;
-&lt;h2&gt;Complete code&lt;/h2&gt;
-&lt;div id=&#34;load-and-clean-data&#34; class=&#34;section level3&#34;&gt;
-&lt;h3&gt;Load and clean data&lt;/h3&gt;
-&lt;p&gt;First, we load the libraries we’ll be using. Note: there are some new packages below. You will almost surely need to add these. Moreover, these will almost surely throw an error unless you use the &lt;code&gt;dependencies = TRUE&lt;/code&gt; argument when installing.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(tidyverse)  # For ggplot, dplyr, and friends
-library(WDI)        # For getting data from the World Bank
-library(geofacet)   # For map-shaped facets
-library(scales)     # For helpful scale functions like dollar()
-library(ggrepel)    # For non-overlapping labels&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;The World Bank has a ton of country-level data at &lt;a href=&#34;https://data.worldbank.org/&#34;&gt;data.worldbank.org&lt;/a&gt;. We can use &lt;a href=&#34;https://cran.r-project.org/package=WDI&#34;&gt;a package named &lt;strong&gt;WDI&lt;/strong&gt;&lt;/a&gt; (&lt;strong&gt;w&lt;/strong&gt;orld &lt;strong&gt;d&lt;/strong&gt;evelopment &lt;strong&gt;i&lt;/strong&gt;ndicators) to access their servers and download the data directly into R.&lt;/p&gt;
-&lt;p&gt;To do this, we need to find the special World Bank codes for specific variables we want to get. These codes come from the URLs of the World Bank’s website. For instance, if you search for “access to electricity” at the World Bank’s website, you’ll find &lt;a href=&#34;https://data.worldbank.org/indicator/EG.ELC.ACCS.ZS&#34;&gt;this page&lt;/a&gt;. If you look at the end of the URL, you’ll see a cryptic code: &lt;code&gt;EG.ELC.ACCS.ZS&lt;/code&gt;. That’s the World Bank’s ID code for the “Access to electricity (% of population)” indicator.&lt;/p&gt;
-&lt;p&gt;We can feed a list of ID codes to the &lt;code&gt;WDI()&lt;/code&gt; function to download data for those specific indicators. We want data from 1995-2015, so we set the start and end years accordingly. The &lt;code&gt;extra=TRUE&lt;/code&gt; argument means that it’ll also include other helpful details like region, aid status, etc. Without it, it would only download the indicators we listed.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;indicators &amp;lt;- c(&amp;quot;SP.DYN.LE00.IN&amp;quot;,  # Life expectancy
-                &amp;quot;EG.ELC.ACCS.ZS&amp;quot;,  # Access to electricity
-                &amp;quot;EN.ATM.CO2E.PC&amp;quot;,  # CO2 emissions
-                &amp;quot;NY.GDP.PCAP.KD&amp;quot;)  # GDP per capita
-wdi_raw &amp;lt;- WDI(country = &amp;quot;all&amp;quot;, indicators, extra = TRUE,
-               start = 1995, end = 2015)
-head(wdi_raw)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Downloading data from the World Bank every time you knit will get tedious and take a long time (plus if their servers are temporarily down, you won’t be able to get the data). It’s good practice to save this raw data as a CSV file and then work with that.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;write_csv(wdi_raw, &amp;quot;data/wdi_raw.csv&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Since we care about reproducibility, we still want to include the code we used to get data from the World Bank, we just don’t want it to actually run. You can include chunks but not run them by setting &lt;code&gt;eval=FALSE&lt;/code&gt; in the chunk options. In this little example, we show the code for downloading the data, but we don’t evaluate the chunk. We then include a chunk that loads the data from a CSV file with &lt;code&gt;read_csv()&lt;/code&gt;, but we don’t include it (&lt;code&gt;include=FALSE&lt;/code&gt;). That way, in the knitted file we see the &lt;code&gt;WDI()&lt;/code&gt; code, but in reality it’s loading the data from CSV. Super tricky.&lt;/p&gt;
-&lt;pre class=&#34;text&#34;&gt;&lt;code&gt;I first download data from the World Bank:
-```{r get-wdi-data, eval=FALSE}
-wdi_raw &amp;lt;- WDI(...)
-write_csv(wdi_raw, &amp;quot;data/wdi_raw.csv&amp;quot;)
-```
-```{r load-wdi-data-real, include=FALSE}
-wdi_raw &amp;lt;- read_csv(&amp;quot;data/wdi_raw.csv&amp;quot;)
-```&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Then we clean up the data a little, filtering out rows that aren’t actually countries and renaming the ugly World Bank code columns to actual words:&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;wdi_clean &amp;lt;- wdi_raw %&amp;gt;%
-  filter(region != &amp;quot;Aggregates&amp;quot;) %&amp;gt;%
-  select(iso2c, country, year,
-         life_expectancy = SP.DYN.LE00.IN,
-         access_to_electricity = EG.ELC.ACCS.ZS,
-         co2_emissions = EN.ATM.CO2E.PC,
-         gdp_per_cap = NY.GDP.PCAP.KD,
-         region, income)
-head(wdi_clean)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## # A tibble: 6 x 9
-##   iso2c country  year life_expectancy access_to_electricity co2_emissions gdp_per_cap region                income     
-##   &amp;lt;chr&amp;gt; &amp;lt;chr&amp;gt;   &amp;lt;dbl&amp;gt;           &amp;lt;dbl&amp;gt;                 &amp;lt;dbl&amp;gt;         &amp;lt;dbl&amp;gt;       &amp;lt;dbl&amp;gt; &amp;lt;chr&amp;gt;                 &amp;lt;chr&amp;gt;      
-## 1 AD    Andorra  2015              NA                   100         NA         41768. Europe &amp;amp; Central Asia High income
-## 2 AD    Andorra  2004              NA                   100          7.36      47033. Europe &amp;amp; Central Asia High income
-## 3 AD    Andorra  2001              NA                   100          7.79      41421. Europe &amp;amp; Central Asia High income
-## 4 AD    Andorra  2002              NA                   100          7.59      42396. Europe &amp;amp; Central Asia High income
-## 5 AD    Andorra  2014              NA                   100          5.83      40790. Europe &amp;amp; Central Asia High income
-## 6 AD    Andorra  1995              NA                   100          6.66      32918. Europe &amp;amp; Central Asia High income&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-&lt;div id=&#34;small-multiples&#34; class=&#34;section level3&#34;&gt;
-&lt;h3&gt;Small multiples&lt;/h3&gt;
-&lt;p&gt;First we can make some small multiples plots and show life expectancy over time for a handful of countries. We’ll make a list of some countries chosen at random while I scrolled through the data, and then filter our data to include only those rows. We then plot life expectancy, faceting by country.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;life_expectancy_small &amp;lt;- wdi_clean %&amp;gt;%
-  filter(country %in% c(&amp;quot;Argentina&amp;quot;, &amp;quot;Bolivia&amp;quot;, &amp;quot;Brazil&amp;quot;,
-                        &amp;quot;Belize&amp;quot;, &amp;quot;Canada&amp;quot;, &amp;quot;Chile&amp;quot;))
-ggplot(data = life_expectancy_small,
-       mapping = aes(x = year, y = life_expectancy)) +
-  geom_line(size = 1) +
-  facet_wrap(vars(country))&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/example/03-example_files/figure-html/life-expectancy-small-1.png&#34; width=&#34;576&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
-&lt;p&gt;Small multiples! That’s all we need to do.&lt;/p&gt;
-&lt;p&gt;We can do some fancier things, though. We can make this plot hyper minimalist:&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(data = life_expectancy_small,
-       mapping = aes(x = year, y = life_expectancy)) +
-  geom_line(size = 1) +
-  facet_wrap(vars(country), scales = &amp;quot;free_y&amp;quot;) +
-  theme_void() +
-  theme(strip.text = element_text(face = &amp;quot;bold&amp;quot;))&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/example/03-example_files/figure-html/life-expectancy-small-minimalist-1.png&#34; width=&#34;576&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
-&lt;p&gt;We can do a whole part of a continent (poor Iraq and Syria 😭)&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;life_expectancy_mena &amp;lt;- wdi_clean %&amp;gt;%
-  filter(region == &amp;quot;Middle East &amp;amp; North Africa&amp;quot;)
-ggplot(data = life_expectancy_mena,
-       mapping = aes(x = year, y = life_expectancy)) +
-  geom_line(size = 1) +
-  facet_wrap(vars(country), scales = &amp;quot;free_y&amp;quot;, nrow = 3) +
-  theme_void() +
-  theme(strip.text = element_text(face = &amp;quot;bold&amp;quot;))&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/example/03-example_files/figure-html/life-expectancy-mena-1.png&#34; width=&#34;960&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
-&lt;p&gt;We can use the &lt;a href=&#34;https://hafen.github.io/geofacet/&#34;&gt;&lt;strong&gt;geofacet&lt;/strong&gt; package&lt;/a&gt; to arrange these facets by geography:&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;life_expectancy_eu &amp;lt;- wdi_clean %&amp;gt;%
-  filter(region == &amp;quot;Europe &amp;amp; Central Asia&amp;quot;)
-ggplot(life_expectancy_eu, aes(x = year, y = life_expectancy)) +
-  geom_line(size = 1) +
-  facet_geo(vars(country), grid = &amp;quot;eu_grid1&amp;quot;, scales = &amp;quot;free_y&amp;quot;) +
-  labs(x = NULL, y = NULL, title = &amp;quot;Life expectancy from 1995–2015&amp;quot;,
-       caption = &amp;quot;Source: The World Bank (SP.DYN.LE00.IN)&amp;quot;) +
-  theme_minimal() +
-  theme(strip.text = element_text(face = &amp;quot;bold&amp;quot;),
-        plot.title = element_text(face = &amp;quot;bold&amp;quot;),
-        axis.text.x = element_text(angle = 45, hjust = 1))&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/example/03-example_files/figure-html/life-expectancy-eu-1.png&#34; width=&#34;960&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
-&lt;p&gt;Neat!&lt;/p&gt;
-&lt;/div&gt;
-&lt;div id=&#34;sparklines&#34; class=&#34;section level3&#34;&gt;
-&lt;h3&gt;Sparklines&lt;/h3&gt;
-&lt;p&gt;Sparklines are just line charts (or bar charts) that are really really small.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;india_co2 &amp;lt;- wdi_clean %&amp;gt;%
-  filter(country == &amp;quot;India&amp;quot;)
-plot_india &amp;lt;- ggplot(india_co2, aes(x = year, y = co2_emissions)) +
-  geom_line() +
-  theme_void()
-plot_india&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/example/03-example_files/figure-html/india-spark-1.png&#34; width=&#34;96&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggsave(&amp;quot;india_co2.pdf&amp;quot;, plot_india, width = 1, height = 0.15, units = &amp;quot;in&amp;quot;)
-ggsave(&amp;quot;india_co2.png&amp;quot;, plot_india, width = 1, height = 0.15, units = &amp;quot;in&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;china_co2 &amp;lt;- wdi_clean %&amp;gt;%
-  filter(country == &amp;quot;China&amp;quot;)
-plot_china &amp;lt;- ggplot(china_co2, aes(x = year, y = co2_emissions)) +
-  geom_line() +
-  theme_void()
-plot_china&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/example/03-example_files/figure-html/china-spark-1.png&#34; width=&#34;96&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggsave(&amp;quot;china_co2.pdf&amp;quot;, plot_china, width = 1, heighlt = 0.15, units = &amp;quot;in&amp;quot;)
-ggsave(&amp;quot;china_co2.png&amp;quot;, plot_china, width = 1, height = 0.15, units = &amp;quot;in&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;You can then use those saved tiny plots in your text.&lt;/p&gt;
-&lt;blockquote&gt;
-&lt;p&gt;Both India &lt;img class=&#34;img-inline&#34; src=&#34;https://datavizm20.classes.andrewheiss.com/example/08-example_files/figure-html/india-spark-1.png&#34; width = &#34;100&#34;/&gt; and China &lt;img class=&#34;img-inline&#34; src=&#34;https://datavizm20.classes.andrewheiss.com/example/08-example_files/figure-html/china-spark-1.png&#34; width = &#34;100&#34;/&gt; have seen increased CO&lt;sub&gt;2&lt;/sub&gt; emissions over the past 20 years.&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;/div&gt;
-&lt;div id=&#34;slopegraphs&#34; class=&#34;section level3&#34;&gt;
-&lt;h3&gt;Slopegraphs&lt;/h3&gt;
-&lt;p&gt;We can make a slopegraph to show changes in GDP per capita between two time periods. We need to first filter our WDI to include only the start and end years (here 1995 and 2015). Then, to make sure that we’re using complete data, we’ll get rid of any country that has missing data for either 1995 or 2015. The &lt;code&gt;group_by(...) %&amp;gt;% filter(...) %&amp;gt;% ungroup()&lt;/code&gt; pipeline does this, with the &lt;code&gt;!any(is.na(gdp_per_cap))&lt;/code&gt; test keeping any rows where any of the &lt;code&gt;gdp_per_cap&lt;/code&gt; values are not missing for the whole country.&lt;/p&gt;
-&lt;p&gt;We then add a couple special columns for labels. The &lt;code&gt;paste0()&lt;/code&gt; function concatenates strings and variables together, so that &lt;code&gt;paste0(&#34;2 + 2 = &#34;, 2 + 2)&lt;/code&gt; would show “2 + 2 = 4”. Here we make labels that say either “Country name: $GDP” or “$GDP” depending on the year.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;gdp_south_asia &amp;lt;- wdi_clean %&amp;gt;%
-  filter(region == &amp;quot;South Asia&amp;quot;) %&amp;gt;%
-  filter(year %in% c(1995, 2015)) %&amp;gt;%
-  # Look at each country individually
-  group_by(country) %&amp;gt;%
-  # Remove the country if any of its gdp_per_cap values are missing
-  filter(!any(is.na(gdp_per_cap))) %&amp;gt;%
-  ungroup() %&amp;gt;%
-  # Make year a factor
-  mutate(year = factor(year)) %&amp;gt;%
-  # Make some nice label columns
-  # If the year is 1995, format it like &amp;quot;Country name: $GDP&amp;quot;. If the year is
-  # 2015, format it like &amp;quot;$GDP&amp;quot;
-  mutate(label_first = ifelse(year == 1995, paste0(country, &amp;quot;: &amp;quot;, dollar(round(gdp_per_cap))), NA),
-         label_last = ifelse(year == 2015, dollar(round(gdp_per_cap, 0)), NA))&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;With the data filtered like this, we can plot it by mapping year to the x-axis, GDP per capita to the y-axis, and coloring by country. To make the lines go across the two categorical labels in the x-axis (since we made year a factor/category), we need to also specify the &lt;code&gt;group&lt;/code&gt; aesthetic.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(gdp_south_asia, aes(x = year, y = gdp_per_cap, group = country, color = country)) +
-  geom_line(size = 1.5)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/example/03-example_files/figure-html/slopegraph-sa-simple-1.png&#34; width=&#34;576&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
-&lt;p&gt;Cool! We’re getting closer. We can definitely see different slopes, but with 7 different colors, it’s hard to see exactly which country is which. Instead, we can directly label each of these lines with &lt;code&gt;geom_text()&lt;/code&gt;:&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(gdp_south_asia, aes(x = year, y = gdp_per_cap, group = country, color = country)) +
-  geom_line(size = 1.5) +
-  geom_text(aes(label = country)) +
-  guides(color = FALSE)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/example/03-example_files/figure-html/slopegraph-sa-simple-text-1.png&#34; width=&#34;576&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
-&lt;p&gt;That gets us a &lt;em&gt;little&lt;/em&gt; closer, but the country labels are hard to see, and we could include more information, like the actual values. Remember those &lt;code&gt;label_first&lt;/code&gt; and &lt;code&gt;label_last&lt;/code&gt; columns we made? Let’s use those instead:&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(gdp_south_asia, aes(x = year, y = gdp_per_cap, group = country, color = country)) +
-  geom_line(size = 1.5) +
-  geom_text(aes(label = label_first)) +
-  geom_text(aes(label = label_last)) +
-  guides(color = FALSE)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/example/03-example_files/figure-html/slopegraph-sa-simple-text-fancier-1.png&#34; width=&#34;576&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
-&lt;p&gt;Now we have dollar amounts and country names, but the labels are still overlapping and really hard to read. To fix this, we can make the labels repel away from each other and randomly position in a way that makes them not overlap. The &lt;a href=&#34;https://cran.r-project.org/web/packages/ggrepel/vignettes/ggrepel.html&#34;&gt;&lt;strong&gt;ggrepel&lt;/strong&gt; package&lt;/a&gt; lets us do this with &lt;code&gt;geom_text_repel()&lt;/code&gt;&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(gdp_south_asia, aes(x = year, y = gdp_per_cap, group = country, color = country)) +
-  geom_line(size = 1.5) +
-  geom_text_repel(aes(label = label_first)) +
-  geom_text_repel(aes(label = label_last)) +
-  guides(color = FALSE)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/example/03-example_files/figure-html/slopegraph-sa-getting-warmer-1.png&#34; width=&#34;576&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
-&lt;p&gt;Now none of the labels are on top of each other, but the labels are still on top of the lines. Also, some of the labels moved inward and outward along the x-axis, but they don’t need to do that—they just need to shift up and down. We can force the labels to only move up and down by setting the &lt;code&gt;direction = &#34;y&#34;&lt;/code&gt; argument, and we can move all the labels to the left or right with the &lt;code&gt;nudge_x&lt;/code&gt; argument. The &lt;code&gt;seed&lt;/code&gt; argument makes sure that the random label placement is the same every time we run this. It can be whatever number you want—it just has to be a number.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(gdp_south_asia, aes(x = year, y = gdp_per_cap, group = country, color = country)) +
-  geom_line(size = 1.5) +
-  geom_text_repel(aes(label = label_first), direction = &amp;quot;y&amp;quot;, nudge_x = -1, seed = 1234) +
-  geom_text_repel(aes(label = label_last), direction = &amp;quot;y&amp;quot;, nudge_x = 1, seed = 1234) +
-  guides(color = FALSE)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/example/03-example_files/figure-html/slopegraph-sa-fancier-1.png&#34; width=&#34;576&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
-&lt;p&gt;That’s it! Let’s take the theme off completely, change the colors a little, and it should be perfect.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(gdp_south_asia, aes(x = year, y = gdp_per_cap, group = country, color = country)) +
-  geom_line(size = 1.5) +
-  geom_text_repel(aes(label = label_first), direction = &amp;quot;y&amp;quot;, nudge_x = -1, seed = 1234) +
-  geom_text_repel(aes(label = label_last), direction = &amp;quot;y&amp;quot;, nudge_x = 1, seed = 1234) +
-  guides(color = FALSE) +
-  scale_color_viridis_d(option = &amp;quot;magma&amp;quot;, end = 0.9) +
-  theme_void()&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/example/03-example_files/figure-html/slopegraph-sa-done-1.png&#34; width=&#34;576&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
-&lt;/div&gt;
-&lt;div id=&#34;bump-charts&#34; class=&#34;section level3&#34;&gt;
-&lt;h3&gt;Bump charts&lt;/h3&gt;
-&lt;p&gt;Finally, we can make a bump chart that shows changes in rankings over time. We’ll look at CO&lt;sub&gt;2&lt;/sub&gt; emissions in South Asia. First we need to calculate a new variable that shows the rank of each country within each year. We can do this if we group by year and then use the &lt;code&gt;rank()&lt;/code&gt; function to rank countries by the &lt;code&gt;co2_emissions&lt;/code&gt; column.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;sa_co2 &amp;lt;- wdi_clean %&amp;gt;%
-  filter(region == &amp;quot;South Asia&amp;quot;) %&amp;gt;%
-  filter(year &amp;gt;= 2004, year &amp;lt; 2015) %&amp;gt;%
-  group_by(year) %&amp;gt;%
-  mutate(rank = rank(co2_emissions))&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;We then plot this with points and lines, reversing the y-axis so 1 is at the top:&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(sa_co2, aes(x = year, y = rank, color = country)) +
-  geom_line() +
-  geom_point() +
-  scale_y_reverse(breaks = 1:8)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/example/03-example_files/figure-html/make-bump-plot-1.png&#34; width=&#34;576&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
-&lt;p&gt;Afghanistan and Nepal switched around for the number 1 spot, while India dropped from 4 to 6, switching places with Pakistan.&lt;/p&gt;
-&lt;p&gt;As with the slopegraph, there are 8 different colors in the legend and it’s hard to line them all up with the different lines, so we can plot the text directly instead. We’ll use &lt;code&gt;geom_text()&lt;/code&gt; again. We don’t need to repel anything, since the text should fit in each row just fine. We need to change the &lt;code&gt;data&lt;/code&gt; argument in &lt;code&gt;geom_text()&lt;/code&gt; though and filter the data to only include one year, otherwise we’ll get labels on every point, which is excessive. We can also adjust the theme and colors to make it cleaner.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(sa_co2, aes(x = year, y = rank, color = country)) +
-  geom_line(size = 2) +
-  geom_point(size = 4) +
-  geom_text(data = filter(sa_co2, year == 2004),
-            aes(label = iso2c, x = 2003.25),
-            fontface = &amp;quot;bold&amp;quot;) +
-  geom_text(data = filter(sa_co2, year == 2014),
-            aes(label = iso2c, x = 2014.75),
-            fontface = &amp;quot;bold&amp;quot;) +
-  guides(color = FALSE) +
-  scale_y_reverse(breaks = 1:8) +
-  scale_x_continuous(breaks = 2004:2014) +
-  scale_color_viridis_d(option = &amp;quot;magma&amp;quot;, begin = 0.2, end = 0.9) +
-  labs(x = NULL, y = &amp;quot;Rank&amp;quot;) +
-  theme_minimal() +
-  theme(panel.grid.major.y = element_blank(),
-        panel.grid.minor.y = element_blank(),
-        panel.grid.minor.x = element_blank())&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/example/03-example_files/figure-html/bump-plot-fancier-1.png&#34; width=&#34;672&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
-&lt;p&gt;If you want to be &lt;em&gt;super&lt;/em&gt; fancy, you can use flags instead of country codes, but that’s a little more complicated (you need to install the &lt;a href=&#34;https://github.com/rensa/ggflags&#34;&gt;&lt;strong&gt;ggflags&lt;/strong&gt; package&lt;/a&gt;. &lt;a href=&#34;https://dominikkoch.github.io/Bump-Chart/&#34;&gt;See here for an example&lt;/a&gt;.&lt;/p&gt;
-&lt;/div&gt;
 &lt;/div&gt;
 </description>
     </item>

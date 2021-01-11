@@ -32,5 +32,14 @@ give an error.
 To update, even without a good running hugo server, save the .Rmd, click "knit" to create the .html, then commit both of those. Use git push AJK to push it to Github. Netlify will AUTOMATICALLY re-deploy and update.
 
 +++ Ben's code does not call dplyr::select. Ugh.
+```{r, eval=T, echo=F, purl=F}
 detach("package:dplyr")
 library(dplyr)
+```
+
+
+
+++ only works if you allow duplicate labels using options(knitr.duplicate.label = 'allow')
+```{r, echo=F, purl = F}
+knitr::purl(input = knitr::current_input(), documentation = 0, output = 'example-1-extracted-code.R', quiet = T)
+```

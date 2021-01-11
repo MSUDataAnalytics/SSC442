@@ -1,6 +1,11 @@
 ---
 title: "Introduction to Visualization"
 linktitle: "1: Visualization I"
+date: "2020-01-10"
+read_date: "2021-01-28"
+draft: false
+publishDate: "2021-01-21"
+lastmod: "`r Sys.Date()`"
 output:
   blogdown::html_page:
     toc: true
@@ -17,8 +22,16 @@ editor_options:
 # Introduction to data visualization
 
 Looking at the numbers and character strings that define a dataset is rarely useful. To convince yourself, print and stare at the US murders data table:
+```{r, echo=F, include=F, eval=T, purl = F}
+detach("package:dplyr")
+library(dplyr)
+library(knitr)
+options(knitr.duplicate.label = 'allow')
+
+```
 
 ```{r, message=FALSE, warning=FALSE}
+
 library(dslabs)
 data(murders)
 head(murders)
@@ -189,3 +202,7 @@ Some of the code from today's class will be available below *after* the class.
 ## Video
 
 Video from today's class will be available below after the class.
+
+```{r, echo=F, purl = F}
+knitr::purl(input = knitr::current_input(), documentation = 0, output = 'example-1-extracted-code.R', quiet = T)
+```
