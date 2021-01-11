@@ -14,27 +14,18 @@ $~$
 
 # Introduction: About Me
 
-**Me:** My primary area of expertise is psychology and economics.
+**Me:** My primary area of expertise is environmental and energy (applied) economics.
 
-This class is totally, unapologetically a work in progress.
+This class is totally, unapologetically a work in progress. It was developed mainly by Prof. Bushong with refinements by myself.
 
-Material is a mish-mash of stuff from:
-
-
-- Caltech (undergrad)
-
-- Stanford University (graduate course)
-
-- Harvard (graduate course)
-
-...so, yeah, it will be challenging. Hopefully, you'll find it fun!
+Material is a mish-mash of stuff from courses offered at Caltech, Stanford, Harvard, and Duke...so, yeah, it will be challenging. Hopefully, you'll find it fun!
 
 My research: occasionally touches the topics in the course, but mostly utilizes things in the course as tools.
 
 <!-- slide -->
 # Introduction: About You
 
-*New phone who dis?*  Please email me your
+*New phone who dis?*  Please email me jkirk\@msu.edu your
 - name (with pronunciation guide)
 - major
 - desired graduation year and semester
@@ -44,7 +35,7 @@ You **must** spend 5 minutes emailing me a little bit about your interests befor
 
 <!-- slide -->
 
-### https://ssc442.netlify.app
+### https://ssc442kirkpatrick.netlify.app
 
 <!-- slide -->
 
@@ -56,11 +47,12 @@ The syllabus is posted on the course website. I'll walk through highlights now, 
 	Syllabus highlights:
 
 - Grade is composed of weekly writings, labs, and projects.
-  - Weekly writings: 24\%
-  - Labs: 30\%
-  - Projects: 46\%
+  - Weekly writings: 22\%
+  - Participation: 4\%
+  - Labs: 29\%
+  - Projects: 45\%
 
-- This structure is designed to give ~56\% "for free". Success on the projects will require real work.
+- This structure is designed to give ~55\% "for free". Success on the projects will require real work.
 - Labs consist of a practical implementation of something we've covered in the course (e.g., code your own Recommender System).
 
 <!-- slide -->
@@ -93,7 +85,7 @@ The "main text" is free and available online. The secondary text is substantiall
 - Most ideas will be new.
 - Sometimes (often?) the material itself will be confusing or interesting---or both!
 - Teaching online is incredibly challenging (no feedback) and chat is vital to success.
-- **Note:** If I find that attendance is terrible, I may have to shift to Zoom + Cameras On.
+- **Note:** If I find that attendance is terrible, I may have to start incorporating attendance into participation.
 
 Return of the Please: If there is some topic that you really want to learn about, ask. If you are uncomfortable asking in front of the whole group, please see me during office hours.
 
@@ -158,6 +150,7 @@ Things to stress from syllabus:
 
 - E-mail isn't the ideal solution for technical problems
 - No appointments necessary for regularly scheduled office hours; or by appointment.
+- TA office hours are great as well. Our TA has experience in this course.
 - Can only reschedule exams (with good reason) if you tell me **before** the exam that you have a conflict.
   - Notify me immediately if you need accommodations because of RCPD or religious convictions; If you approach me at the last minute, I may not be able to help.
 
@@ -177,7 +170,6 @@ Some "data analytics" topics we will cover:
 - Models of classification or discrete choice.
 - Analysis of ``wide'' data.
 - Decision trees and other non-linear models.
-- Neural networks and other things that have deceptively cool names (not as fun as they sound).
 
 <!-- slide -->
 ## Starting point for this course
