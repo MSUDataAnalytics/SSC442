@@ -1,9 +1,3 @@
-detach("package:dplyr")
-library(dplyr)
-library(knitr)
-options(knitr.duplicate.label = 'allow')
-
-
 
 library(dslabs)
 data(murders)
@@ -108,5 +102,3 @@ p + theme(strip.background = element_blank(),
     strip.text.x = element_blank(),
    strip.text.y = element_blank(),
    legend.position = "top")
-
-knitr::purl(input = knitr::current_input(), documentation = 0, output = 'example-1-extracted-code.R', quiet = T)
