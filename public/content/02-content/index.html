@@ -30,7 +30,7 @@
   
     
   
-  <meta name="description" content="ReadingsGuiding QuestionsSlidesVisualizing data distributionsVariable typesCase study: describing student heightsDistribution functionCumulative distribution functionsHistogramsSmoothed densityInterpreting the y-axisDensities permit stratificationThe normal distributionStandard unitsQuantile-quantile plotsPercentilesBoxplotsStratificationCase study: describing student heights (continued)ggplot2 geometriesBarplotsHistogramsDensity plotsBoxplotsQQ-plotsData visualization principlesEncoding data using visual cuesKnow when to include 0Do not distort quantitiesOrder categories by a meaningful valueShow the dataEase comparisonsUse common axesAlign plots vertically to see horizontal changes and horizontally to see vertical changesConsider transformationsVisual cues to be compared should be adjacentUse colorThink of the color blindPlots for two variablesSlope chartsBland-Altman plotEncoding a third variableAvoid pseudo-three-dimensional plotsAvoid too many significant digitsKnow your audienceReadingsThis page.">
+  <meta name="description" content="ReadingsGuiding QuestionsVisualizing data distributionsVariable typesCase study: describing student heightsDistribution functionCumulative distribution functionsHistogramsSmoothed densityInterpreting the y-axisDensities permit stratificationThe normal distributionStandard unitsQuantile-quantile plotsPercentilesBoxplotsStratificationCase study: describing student heights (continued)ggplot2 geometriesBarplotsHistogramsDensity plotsBoxplotsQQ-plotsData visualization principlesEncoding data using visual cuesKnow when to include 0Do not distort quantitiesOrder categories by a meaningful valueShow the dataEase comparisonsUse common axesAlign plots vertically to see horizontal changes and horizontally to see vertical changesConsider transformationsVisual cues to be compared should be adjacentUse colorThink of the color blindPlots for two variablesSlope chartsBland-Altman plotEncoding a third variableAvoid pseudo-three-dimensional plotsAvoid too many significant digitsKnow your audienceReadingsThis page.">
 
   
   <link rel="alternate" hreflang="en-us" href="https://datavizm20.classes.andrewheiss.com/content/02-content/">
@@ -238,7 +238,7 @@
   <meta property="og:site_name" content="Data Analytics">
   <meta property="og:url" content="https://datavizm20.classes.andrewheiss.com/content/02-content/">
   <meta property="og:title" content="Effective Visualizations | Data Analytics">
-  <meta property="og:description" content="ReadingsGuiding QuestionsSlidesVisualizing data distributionsVariable typesCase study: describing student heightsDistribution functionCumulative distribution functionsHistogramsSmoothed densityInterpreting the y-axisDensities permit stratificationThe normal distributionStandard unitsQuantile-quantile plotsPercentilesBoxplotsStratificationCase study: describing student heights (continued)ggplot2 geometriesBarplotsHistogramsDensity plotsBoxplotsQQ-plotsData visualization principlesEncoding data using visual cuesKnow when to include 0Do not distort quantitiesOrder categories by a meaningful valueShow the dataEase comparisonsUse common axesAlign plots vertically to see horizontal changes and horizontally to see vertical changesConsider transformationsVisual cues to be compared should be adjacentUse colorThink of the color blindPlots for two variablesSlope chartsBland-Altman plotEncoding a third variableAvoid pseudo-three-dimensional plotsAvoid too many significant digitsKnow your audienceReadingsThis page."><meta property="og:image" content="https://datavizm20.classes.andrewheiss.com/img/social-image.png">
+  <meta property="og:description" content="ReadingsGuiding QuestionsVisualizing data distributionsVariable typesCase study: describing student heightsDistribution functionCumulative distribution functionsHistogramsSmoothed densityInterpreting the y-axisDensities permit stratificationThe normal distributionStandard unitsQuantile-quantile plotsPercentilesBoxplotsStratificationCase study: describing student heights (continued)ggplot2 geometriesBarplotsHistogramsDensity plotsBoxplotsQQ-plotsData visualization principlesEncoding data using visual cuesKnow when to include 0Do not distort quantitiesOrder categories by a meaningful valueShow the dataEase comparisonsUse common axesAlign plots vertically to see horizontal changes and horizontally to see vertical changesConsider transformationsVisual cues to be compared should be adjacentUse colorThink of the color blindPlots for two variablesSlope chartsBland-Altman plotEncoding a third variableAvoid pseudo-three-dimensional plotsAvoid too many significant digitsKnow your audienceReadingsThis page."><meta property="og:image" content="https://datavizm20.classes.andrewheiss.com/img/social-image.png">
   <meta property="twitter:image" content="https://datavizm20.classes.andrewheiss.com/img/social-image.png"><meta property="og:locale" content="en-us">
   
     
@@ -570,7 +570,6 @@
 <ul>
 <li><a href="#readings">Readings</a><ul>
 <li><a href="#guiding-questions">Guiding Questions</a></li>
-<li><a href="#slides">Slides</a></li>
 </ul></li>
 <li><a href="#distributions">Visualizing data distributions</a><ul>
 <li><a href="#variable-types">Variable types</a></li>
@@ -636,18 +635,10 @@
 <li>What makes a visual compelling?</li>
 <li>What are the worst visuals? Which of these are most frequently used? Why?</li>
 </ul>
-</div>
-<div id="slides" class="section level3">
-<h3>Slides</h3>
-<p>As with last week’s content, the technical aspects of this lecture will be explored in greater detail in the Thursday practical lecture. Today, we will focus on some principles. We will also avoid slides entirely.</p>
+<p>As with last week’s content, the technical aspects of this lecture will be explored in greater detail in the Thursday practical lecture. Today, we will focus on some principles.</p>
 <blockquote>
 <p>“The greatest value of a picture is when it forces us to notice what we never expected to see.” – John Tukey</p>
 </blockquote>
-<p>Today’s lecture will ask you to touch real data during the lecture. Please download the following dataset and load it into <code>R</code>.</p>
-<ul>
-<li><a href="/projects/data/ames.csv"><i class="fas fa-file-csv"></i> <code>Ames.csv</code></a></li>
-</ul>
-<p>This dataset is from houses in Ames, Iowa. (Thrilling!) We will use this dataset during the lecture to illustrate some of the points discussed below.</p>
 </div>
 </div>
 <div id="distributions" class="section level1">
@@ -665,10 +656,7 @@
 <h2>Case study: describing student heights</h2>
 <p>Here we consider an artificial problem to help us illustrate the underlying concepts.</p>
 <p>Pretend that we have to describe the heights of our classmates to ET, an extraterrestrial that has never seen humans. As a first step, we need to collect data. To do this, we ask students to report their heights in inches. We ask them to provide sex information because we know there are two different distributions by sex. We collect the data and save it in the <code>heights</code> data frame:</p>
-<pre class="r"><code>detach(&quot;package:dplyr&quot;)
-library(dplyr)
-
-library(tidyverse)
+<pre class="r"><code>library(tidyverse)
 library(dslabs)
 data(heights)</code></pre>
 <p>One way to convey the heights to ET is to simply send him this list of 1050 heights. But there are much more effective ways to convey this information, and understanding the concept of a distribution will help. To simplify the explanation, we first focus on male heights.</p>
