@@ -29,14 +29,14 @@ For future lectures, the guiding questions will be more pointed and at a higher 
 - Why do we want tidy data?
 - What are the challenges associated with shaping things into a tidy format?
 
-
+<!---
 ## Slides
 
 The slides below are a much broader overview about goals for the class and thinking about relationships that we might explore with data. The technical aspects of this lecture will be explored in greater detail in the Thursday practical lecture.
 
-```{r show-slide-tabs, echo=FALSE, results="asis"}
-detach("package:dplyr")
-library(dplyr)
+```{r show-slide-tabs, echo=FALSE, results="asis", warning=F, message = F}
+# detach("package:dplyr")
+# library(dplyr)
 
 
 source(here::here("R", "slide_tabs.R"))
@@ -46,6 +46,177 @@ sections <- tibble::tribble(
 )
 slide_tabs(sections, "/slides/01-slides.html")
 ```
+-->
+
+## Group Projects
+Your final is a group project.
+
+You need to start planning soon.
+
+To aid in your planning, here are the required elements of your project (**note: the assignment that currently exists on this site, if you find it, is old and will change a lot between now and next week**).
+
+1. You must find existing data to analyze. Aggregating and merging data from multiple sources is encouraged.
+
+2. You must visualize 3 intersting features of that data.
+
+3. You must come up with some analysis---using tools from this course---which relates your data to either a prediction or a policy conclusion.
+
+4. You must think critically about your analysis and be able to identify potential issues/
+
+5. You must present your analysis as if presenting to a C-suite executive.
+
+### Teams
+Please form teams of 2-4 and use the survey link I will send out via email to "establish" your teams.
+
+If you opt to not form a team, you will be automatically added to the "willing to be randomly assigned" pool and will be paired with another person.
+
+#### More on your team
+- You should strongly consider coordinating your work via Github
+
+- Your team will earn the same scores on all projects
+
+- Teams will submit only one write-up for the mini-projects and the final
+
+To combat additional freeloading, we will use a reporting system. More details will follow. 
+
+
+
+
+
+## Randomness and Data Analytics
+And the fabulous importance of probabilistic inference...
+
+This lecture is very "high-level," which means it is talking about abstract concepts. It is also quite important.
+
+We want to discuss **why** we eventually will need ot utilize tons of difficult mathematics. Why do we care so much about hypothesis tests and the like?
+
+Moreover, we can highlight why we want our data structured to behave nicely.
+
+### Learning From Data
+The following are the baisc requirements for statistical learning
+
+1. A pattern exists
+
+2. This pattern is not easily expressed in a closed mathematical form
+
+3. You have data
+
+### Formalization
+We think of our outcome-of-interest as a **reponse** or **target** that we wish to predict or wish to learn something about.
+
+We generically refer to the response as $Y$
+
+Other aspects of the data are known as **features, inputs, predictors**, or **regressors**. We call one of these $X_i$.
+
+- The subscript $i$ indicates that we have an $X$ realized for every individual in our data
+
+We can refer to the input vector collectively as:
+
+$$X = \begin{bmatrix} 
+x_{11} & x_{12} \\
+x_{21} & x_{22} \\
+\vdots & \vdots \\
+x_{N1} & x_{N2}
+\end{bmatrix}$$
+
+
+We are seeking some unknown function that maps $X$ to $Y$
+
+Put another way, we are seeking to explain $Y$ as follows:
+
+$$Y = f(X) + e$$
+
+### The Target Function
+We call the function $f: \mathcal{X} \rightarrow \mathcal{Y}$ the **target function**
+
+How do we find the function? We don't! We get as close as we can, though:
+
+- Observe data $(\mathbf{x}_1, y_1), \cdots, (\mathbf{x}_N, y_N)$
+
+- Use some algorithm to approximate $f$
+
+- Produce final hypothesis function $g \approx f$
+
+- Evaluate how well $g$ approximates $f$ and iterate as needed.
+
+### Why Estimate an Unknown Function?
+
+With a good estimate of $f$ we can make predictions of $Y$ at **new** points $X = x$
+
+We can also understand which components of $X = (X_1, X_2, \cdots, X_m)$ are important in explaining $Y$, and which are (potentially) irrelevant
+
+- e.g. `GDP` and `yearsindustrialized` have a big impact on `emissions` but `hydroutilization` typically does not.
+
+Depending on the complexity of $f$, we may be able to meaningfully understand how each component of $X$ affects $Y$.
+
+(But we should be careful about assigning causal interpretations, more on this later)
+
+### The Parable of the Marbles
+.small[Courtesy of Prof. Bushong]
+
+Imagine a bag of marbles with two types of marbles: `r emo::ji('club suit')` and `r emo::ji('diamond suit')`.
+
+We are going to pick a **sample** of $n$ marbles (with replacement). 
+
+We want to learn something about $\mu$, the **objective** probability to pick a `r emo::ji('club suit')`.
+
+In addition to defining the **objective** probability of picking a `r emo::ji('club suit')`, we have an observed fraction $\eta$, which will define as the fraction of `r emo::ji('club suit')` in the *sample*.
+
+**Question**: Can we say anything exact and for-sure about $\mu$ (outside the data) after observing $\eta$ (the data)?
+
+- No. It is possible for the sample to be all `r rep(emo::ji('club suit'), 5)` even when the bag is is 50/50 `r emo::ji('club suit'); emo::ji('diamond suit')`
+
+  - No matter what we draw, we can't (based on that draw alone) eliminate the possibility of drawing a `r emo::ji('diamond suit')`.
+  
+  - And unless we assume that the only two values in the world are `r emo::ji('diamond suit')` and `r emo::ji('club suit')`, we can't rule out `r emo::ji('poop')`^[I discovered the `emo::ji()` function at 8:55am. My wife joked that I would find a way to use the poop emoji by 9:00am. It is now 8:59am. She was right.]
+  
+** Question**: Then why do we do things like polling (e.g. to predict the outcome of a presidential election)?
+
+- The bad case, that we draw something that has is completely misleading, is *possible* but not **probable**.
+
+### Outside the Data
+
+Put another way, since $f$ is unknown, it can take on any value outside the data, no matter how large the data.
+
+- This is called *No Free Lunch*
+
+You cannot know anything for sure about $f$ outside the data without making assumptions.
+
+Is there any hope to know anything about $f$ outside the data set without making assumptions about $f$?
+
+**Yes**, if we are willing to give up the "for sure"
+
+### Hoeffding's Inequality
+
+**Hoeffding's Inequality** states, loosely, that $\eta$ cannot be too far from $\mu$.
+
+$$\mathbb{P}\left[|\eta - \mu| > \epsilon \right] \leq 2e^{-2\epsilon^2n}$$
+$\eta \approx \mu$ is called **probably approximately correct** (PAC) learning.
+
+
+### An example of Hoeffding's Inequality
+
+**Example**: n = 1,000. Draw a sample and observe $\eta$
+
+- 99% of the time, $\mu - .05 \leq \eta \leq \mu+.05$
+
+  - This is implied by setting $\epsilon = 0.05$ and using $n=1,000$
+
+- 99.9999996\% of the time $\mu - .10 \leq \eta \leq \mu + .10\%$
+
+**What does this mean?**
+
+If I repeatedly pick a sample of size 1,000, observe $\eta$ and claim that $\mu \in \left[\eta - .05, \eta + .05\right]$ (or that the error bar is $\pm 0.05$), I will be right 99\% of the time.
+
+On any particular sample you may be wrong, but not often.
+
+
+
+
+
+
+
+
 
 :::fyi
 **NOTE** 
@@ -73,15 +244,14 @@ We say that a data table is in  _tidy_ format if each row represents one observa
 library(dslabs)
 data(murders)
 head(murders)
+
 ```
 
 Each row represent a state with each of the five columns providing a different variable related to these states: name, abbreviation, region, population, and total murders.
 
 To see how the same information can be provided in different formats, consider the following example:
 
-```{r, echo=TRUE}
-detach('package:dplyr', unload=T)
-library(dplyr)
+```{r, echo=TRUE, warning=F, message = F}
 library(dslabs)
 data("gapminder")
 tidy_data <- gapminder %>%
