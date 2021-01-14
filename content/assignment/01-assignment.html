@@ -1,0 +1,210 @@
+---
+title: "Basics of ggplot"
+linktitle: "1: Visualization I"
+publishDate: "2021-01-22"
+output:
+  blogdown::html_page:
+    toc: true
+menu:
+  assignment:
+    parent: Labs
+    weight: 2
+type: docs
+weight: 1
+editor_options:
+  chunk_output_type: console
+---
+
+
+<div id="TOC">
+<ul>
+<li><a href="#using-ggplot2">Using ggplot2</a><ul>
+<li><a href="#how-to-use-ggplot2-the-too-fast-and-wholly-unclear-recipe">How to use <code>ggplot2</code> – the too-fast and wholly unclear recipe</a></li>
+</ul></li>
+<li><a href="#mappings-link-data-to-things-you-see">Mappings Link Data to Things You See</a></li>
+<li><a href="#the-recipe">The Recipe</a><ul>
+<li><a href="#mapping-aesthetics-vs-setting-them">Mapping Aesthetics vs Setting them</a></li>
+</ul></li>
+</ul>
+</div>
+
+<div class="fyi">
+<p><strong>NOTE</strong></p>
+<p>You must turn in a PDF document of your <code>R markdown</code> code. Submit this to D2L by 11:59 PM on Monday Feb 1.</p>
+</div>
+<p>Our primary tool for data visualization in the course will be <code>ggplot</code>. Technically, we’re using <code>ggplot2</code>; the o.g. version lacked some of the modern features of its big brother. <code>ggplot2</code> implements the grammar of graphics, a coherent and relatively straightforward system for describing and building graphs. With <code>ggplot2</code>, you can do more faster by learning one system and applying it in many places. Other languages provide more specific tools, but require you to learn a different tool for each application. In this class, we’ll dig into a single package for our visuals.</p>
+<div id="using-ggplot2" class="section level2">
+<h2>Using ggplot2</h2>
+<p>In order to get our hands dirty, we will first have to load <code>ggplot2</code>. To do this, and to access the datasets, help pages, and functions that we will use in this assignment, we will load the so-called tidyverse by running this code:</p>
+<pre><code>library(tidyverse)</code></pre>
+<p>If you run this code and get an error message “there is no package called ‘tidyverse’”, you’ll need to first install it, then run library() once again. To install packages in <code>R</code>, we utilize the simple function install.packages(). In this case, we would write:</p>
+<pre><code>install.packages(&quot;tidyverse&quot;)
+library(tidyverse)</code></pre>
+<p>Once we’re up and running, we’re ready to dive into some basic exercises. <code>ggplot2</code> works by specifying the connections between the variables in the data and the colors, points, and shapes you see on the screen. These logical connections are called <em>aesthetic mappings</em> or simply <em>aesthetics</em>.</p>
+<div id="how-to-use-ggplot2-the-too-fast-and-wholly-unclear-recipe" class="section level3">
+<h3>How to use <code>ggplot2</code> – the too-fast and wholly unclear recipe</h3>
+<ul>
+<li><p><code>data =</code>: Define what your data is. For instance, below we’ll use the mpg data frame found in ggplot2 (by using <code>ggplot2::mpg</code>). As a reminder, a data frame is a rectangular collection of variables (in the columns) and observations (in the rows). This structure of data is often called a “table” but we’ll try to use terms slightly more precisely. The <code>mpg</code> data frame contains observations collected by the US Environmental Protection Agency on 38 different models of car.</p></li>
+<li><p><code>mapping = aes(...)</code>: How to map the variables in the data to aesthetics</p>
+<ul>
+<li>Axes, size of points, intensities of colors, which colors, shape of points, lines/points</li>
+</ul></li>
+<li><p>Then say what type of plot you want:</p>
+<ul>
+<li>boxplot, scatterplot, histogram, …</li>
+<li>these are called ‘geoms’ in ggplot’s grammar, such as <code>geom_point()</code> giving scatter plots</li>
+</ul></li>
+</ul>
+<pre><code>library(ggplot2)
+... + geom_point() # Produces scatterplots
+... + geom_bar() # Bar plots
+.... + geom_boxplot() # boxplots
+... #</code></pre>
+<p>You link these steps by <em>literally</em> adding them together with <code>+</code> as we’ll see.</p>
+<p><strong>Try it:</strong> What other types of plots are there? Try to find several more <code>geom_</code> functions.</p>
+</div>
+</div>
+<div id="mappings-link-data-to-things-you-see" class="section level2">
+<h2>Mappings Link Data to Things You See</h2>
+<pre class="r"><code>library(gapminder)
+library(ggplot2)
+gapminder</code></pre>
+<pre><code>## # A tibble: 1,704 x 6
+##    country     continent  year lifeExp      pop gdpPercap
+##    &lt;fct&gt;       &lt;fct&gt;     &lt;int&gt;   &lt;dbl&gt;    &lt;int&gt;     &lt;dbl&gt;
+##  1 Afghanistan Asia       1952    28.8  8425333      779.
+##  2 Afghanistan Asia       1957    30.3  9240934      821.
+##  3 Afghanistan Asia       1962    32.0 10267083      853.
+##  4 Afghanistan Asia       1967    34.0 11537966      836.
+##  5 Afghanistan Asia       1972    36.1 13079460      740.
+##  6 Afghanistan Asia       1977    38.4 14880372      786.
+##  7 Afghanistan Asia       1982    39.9 12881816      978.
+##  8 Afghanistan Asia       1987    40.8 13867957      852.
+##  9 Afghanistan Asia       1992    41.7 16317921      649.
+## 10 Afghanistan Asia       1997    41.8 22227415      635.
+## # ... with 1,694 more rows</code></pre>
+<pre class="r"><code>p &lt;- ggplot(data = gapminder,
+            mapping = aes(x = gdpPercap, y = lifeExp))
+p + geom_point()</code></pre>
+<p><img src="/assignment/01-assignment_files/figure-html/unnamed-chunk-1-1.png" width="672" /></p>
+<p>Above we’ve loaded a different dataset and have started to explore a particular relationship. Before putting in this code yourself, try to intuit what <em>might</em> be going on.</p>
+<p>Any ideas?</p>
+<p>Here’s a breakdown of everything that happens after the <code>p&lt;- ggplot()</code> call:</p>
+<ul>
+<li><code>data = gapminder</code> tells ggplot to use gapminder dataset, so if variable names are mentioned, they should be looked up in gapminder</li>
+<li><code>mapping = aes(...)</code> shows that the mapping is a function call. There is a deeper logic to this that I will disucss below, but it’s easiest to simply accept that this is how you write it. Put another way, the <code>mapping = aes(...)</code> argument <em>links variables</em> to <em>things you will see</em> on the plot.</li>
+<li><code>aes(x = gdpPercap, y = lifeExp)</code> maps the GDP data onto <code>x</code>, which is a known aesthetic (the x-coordinate) and life expectancy data onto <code>x</code>
+<ul>
+<li><code>x</code> and <code>y</code> are predefined names that are used by <code>ggplot</code> and friends</li>
+</ul></li>
+</ul>
+<div class="fyi">
+<p><strong>Exercise 1:</strong></p>
+<p>Let’s return to the <code>mpg</code> data. Among the variables in <code>mpg</code> are:</p>
+<ul>
+<li><p><code>displ</code>, a car’s engine size, in litres.</p></li>
+<li><p><code>hwy</code>, a car’s fuel efficiency on the highway, in miles per gallon (mpg). A car with a low fuel efficiency consumes more fuel than a car with a high fuel efficiency when they travel the same distance.</p></li>
+</ul>
+<p>Generate a scatterplot between these two variables. Does it capture the intuitive relationship you expected? What happens if you make a scatterplot of <code>class</code> vs <code>drv</code>? Why is the plot not useful?</p>
+</div>
+<p>It turns out there’s a reason for doing all of this:</p>
+<blockquote>
+<p>“The greatest value of a picture is when it forces us to notice what we never expected to see.”" — John Tukey</p>
+</blockquote>
+<p>In the plot you made above, one group of points seems to fall outside of the linear trend. These cars have a higher mileage than you might expect. How can you explain these cars?</p>
+<p>Let’s hypothesize that the cars are hybrids. One way to test this hypothesis is to look at the class value for each car. The <code>class</code> variable of the <code>mpg</code> dataset classifies cars into groups such as compact, midsize, and SUV. If the outlying points are hybrids, they should be classified as compact cars or, perhaps, subcompact cars (keep in mind that this data was collected before hybrid trucks and SUVs became popular).</p>
+<p>You can add a third variable, like <code>class</code>, to a two dimensional scatterplot by mapping it to an aesthetic. An aesthetic is a visual property of the objects in your plot. Aesthetics include things like the size, the shape, or the color of your points. You can display a point (like the one below) in different ways by changing the values of its aesthetic properties. Since we already use the word “<strong>value</strong>” to describe data, let’s use the word “<strong>level</strong>” to describe aesthetic properties. Thus, we are interested in exploring <code>class</code> as a level.</p>
+<p>You can convey information about your data by mapping the aesthetics in your plot to the variables in your dataset. For example, you can map the colors of your points to the class variable to reveal the class of each car. To map an aesthetic to a variable, associate the name of the aesthetic to the name of the variable inside <code>aes()</code>. <code>ggplot2</code> will automatically assign a unique level of the aesthetic (here a unique color) to each unique value of the variable, a process known as scaling. <code>ggplot2</code> will also add a legend that explains which levels correspond to which values.</p>
+<div class="fyi">
+<p><strong>Exercise 2:</strong></p>
+<p>Using your previous scatterplot of <code>displ</code> and <code>hwy</code>, map the colors of your points to the class variable to reveal the class of each car. What conclusions can we make?</p>
+</div>
+<p>Let’s explore our previously saved <code>p</code> in greater detail. As with Exercise 1, we’ll add a <em>layer</em>. This says how some data gets turned into concrete visual aspects.</p>
+<pre><code>p + geom_point()
+p + geom_smooth()</code></pre>
+<p><strong>Note:</strong> Both of the above geom’s use the same mapping, where the x-axis represents <code>gdpPercap</code> and the y-axis represents <code>lifeExp</code>. You can find this yourself with some ease. But the first one maps the data to individual points, the other one maps it to a smooth line with error ranges.</p>
+<p>We get a message that tells us that <code>geom_smooth()</code> is using the method = ‘gam’, so presumably we can use other methods. Let’s see if we can figure out which other methods there are.</p>
+<pre><code>?geom_smooth
+p + geom_point() + geom_smooth() + geom_smooth(method = ...) + geom_smooth(method = ...)
+p + geom_point() + geom_smooth() + geom_smooth(method = ...) + geom_smooth(method = ..., color = &quot;red&quot;)</code></pre>
+<p>You may start to see why <code>ggplot2</code>’s way of breaking up tasks is quite powerful: the geometric objects can all reuse the <em>same</em> mapping of data to aesthetics, yet the results are quite different. And if we want later geoms to use different mappings, then we can override them – but it isn’t necessary.</p>
+<p>Consider the output we’ve explored thus far. One potential issue lurking in the data is that most of it is bunched to the left. If we instead used a logarithmic scale, we should be able to spread the data out better.</p>
+<pre><code>p + geom_point() + geom_smooth(method = &quot;lm&quot;) + scale_x_log10()</code></pre>
+<p><strong>Try it:</strong> Describe what the <code>scale_x_log10()</code> does. Why is it a more evenly distributed cloud of points now? (2-3 sentences.)</p>
+<p>Nice. We’re starting to get somewhere. But, you might notice that the x-axis now has scientific notation. Let’s change that.</p>
+<pre><code>library(scales)
+p + geom_point() +
+  geom_smooth(method = &quot;lm&quot;) +
+  scale_x_log10(labels = scales::dollar)
+p + geom_point() +
+  geom_smooth(method = &quot;lm&quot;) +
+  scale_x_log10(labels = scales::...)</code></pre>
+<p><strong>Try it:</strong> What does the <code>dollar()</code> call do? How can you find other ways of relabeling the scales when using <code>scale_x_log10()</code>?</p>
+<pre><code>?dollar()</code></pre>
+</div>
+<div id="the-recipe" class="section level2">
+<h2>The Recipe</h2>
+<ol style="list-style-type: decimal">
+<li>Tell the <code>ggplot()</code> function what our data is.</li>
+<li>Tell <code>ggplot()</code> <em>what</em> relationships we want to see. For convenience we will put the results of the first two steps in an object called <code>p</code>.</li>
+<li>Tell <code>ggplot</code> <em>how</em> we want to see the relationships in our data.</li>
+<li>Layer on geoms as needed, by adding them on the <code>p</code> object one at a time.</li>
+<li>Use some additional functions to adjust scales, labels, tickmarks, titles.</li>
+</ol>
+<ul>
+<li>e.g. <code>scale_</code>, <code>labs()</code>, and <code>guides()</code> functions</li>
+</ul>
+<p>As you start to run more <code>R</code> code, you’re likely to run into problems. Don’t worry — it happens to everyone. I have been writing code in numerous languages for years, and every day I still write code that doesn’t work. Sadly, <code>R</code> is particularly persnickity, and its error messages are often opaque.</p>
+<p>Start by carefully comparing the code that you’re running to the code in these notes. <code>R</code> is extremely picky, and a misplaced character can make all the difference. Make sure that every ( is matched with a ) and every " is paired with another ". Sometimes you’ll run the code and nothing happens. Check the left-hand of your console: if it’s a +, it means that R doesn’t think you’ve typed a complete expression and it’s waiting for you to finish it. In this case, it’s usually easy to start from scratch again by pressing ESCAPE to abort processing the current command.</p>
+<p>One common problem when creating ggplot2 graphics is to put the + in the wrong place: it has to come at the end of the line, not the start.</p>
+<div id="mapping-aesthetics-vs-setting-them" class="section level3">
+<h3>Mapping Aesthetics vs Setting them</h3>
+<pre><code>p &lt;- ggplot(data = gapminder,
+            mapping = aes(x = gdpPercap, y = lifeExp, color = &#39;yellow&#39;))
+p + geom_point() + scale_x_log10()</code></pre>
+<p>This is interesting (or annoying): the points are not yellow. How can we tell ggplot to draw yellow points?</p>
+<pre><code>p &lt;- ggplot(data = gapminder,
+            mapping = aes(x = gdpPercap, y = lifeExp, ...))
+p + geom_point(...) + scale_x_log10()</code></pre>
+<p><strong>Try it:</strong> describe in your words what is going on.
+One way to avoid such mistakes is to read arguments inside <code>aes(&lt;property&gt; = &lt;variable&gt;)</code>as <em>the property <property> in the graph is determined by the data in <variable></em>.</p>
+<p><strong>Try it:</strong> Write the above sentence for the original call <code>aes(x = gdpPercap, y = lifeExp, color = 'yellow')</code>.</p>
+<p>Aesthetics convey information about a variable in the dataset, whereas setting the color of all points to yellow conveys no information about the dataset - it changes the appearance of the plot in a way that is independent of the underlying data.</p>
+<p>Remember: <code>color = 'yellow'</code> and <code>aes(color = 'yellow')</code> are very different, and the second makes usually no sense, as <code>'yellow'</code> is treated as <em>data</em>.</p>
+<pre><code>p &lt;- ggplot(data = gapminder,
+            mapping = aes(x = gdpPercap, y = lifeExp))
+p + geom_point() + geom_smooth(color = &quot;orange&quot;, se = FALSE, size = 8, method = &quot;lm&quot;) + scale_x_log10()</code></pre>
+<p><strong>Try it:</strong> Write down what all those arguments in <code>geom_smooth(...)</code> do.</p>
+<pre><code>p + geom_point(alpha = 0.3) +
+  geom_smooth(method = &quot;gam&quot;) +
+  scale_x_log10(labels = scales::dollar) +
+  labs(x = &quot;GDP Per Capita&quot;, y = &quot;Life Expectancy in Years&quot;,
+       title = &quot;Economic Growth and Life Expectancy&quot;,
+       subtitle = &quot;Data Points are country-years&quot;,
+       caption = &quot;Source: Gapminder&quot;)</code></pre>
+<p>Coloring by continent:</p>
+<pre><code>library(scales)
+p &lt;- ggplot(data = gapminder,
+            mapping = aes(x = gdpPercap, y = lifeExp, color = continent, fill = continent))
+p + geom_point()
+p + geom_point() + scale_x_log10(labels = dollar)
+p + geom_point() + scale_x_log10(labels = dollar) + geom_smooth()</code></pre>
+<p><strong>Try it:</strong> What does <code>fill = continent</code> do? What do you think about the match of colors between lines and error bands?</p>
+<pre><code>p &lt;- ggplot(data = gapminder,
+            mapping = aes(x = gdpPercap, y = lifeExp))
+p + geom_point(mapping = aes(color = continent)) + geom_smooth() + scale_x_log10()</code></pre>
+<p><strong>Try it:</strong> Notice how the above code leads to a single smooth line, not one per continent. Why?</p>
+<p><strong>Try it:</strong> What is bad about the following example, assuming the graph is the one we want? Think about why you should set aesthetics at the top level rather than at the individual geometry level if that’s your intent.</p>
+<pre><code>p &lt;- ggplot(data = gapminder,
+            mapping = aes(x = gdpPercap, y = lifeExp))
+p + geom_point(mapping = aes(color = continent)) +
+  geom_smooth(mapping = aes(color = continent, fill = continent)) +
+  scale_x_log10() +
+  geom_smooth(mapping = aes(color = continent), method = &quot;gam&quot;)</code></pre>
+<div class="fyi">
+<p><strong>Exercise 3:</strong></p>
+<p>Generate two new plots with <code>data = gapminder</code> (note: you’ll need to install the package by the same name if you have not already). Label the axes and the header with clear, easy to understand language. In a few sentences, describe what you’ve visualized and why.</p>
+<p>Note that this is your first foray into <code>ggplot2</code>; accordingly, you should ry to make sure that you do not bite off more than you can chew. We will improve and refine our abilities as we progress through the semester.</p>
+</div>
+</div>
+</div>
