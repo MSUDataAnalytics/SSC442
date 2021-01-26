@@ -5,7 +5,7 @@ date: "2020-01-10"
 read_date: "2021-01-26"
 draft: false
 publishDate: "2021-01-09"
-lastmod: "2021-01-12"
+lastmod: "2021-01-26"
 menu:
   content:
     parent: Course content
@@ -65,9 +65,9 @@ output:
 <li><a href="#tidyverse-conditionals">Tidyverse conditionals</a><ul>
 <li><a href="#case_when"><code>case_when</code></a></li>
 <li><a href="#between"><code>between</code></a></li>
+<li><a href="#lecture-video">Lecture Video</a></li>
 </ul></li>
 </ul></li>
-<li><a href="#videos">Videos</a></li>
 </ul>
 </div>
 
@@ -75,7 +75,8 @@ output:
 <h2>Readings</h2>
 <ul>
 <li>This page.</li>
-<li>Chapter 1 of Introduction to Statistical Learning, available <a href="https://statlearning.com/ISLR%20Seventh%20Printing.pdf">here.</a></li>
+<li>Chapter 1 of Introduction to Statistical Learning, available <a href="https://www.statlearning.com/">here.</a></li>
+<li>Optional: The “Tidy Your Data” tutorial on <a href="https://rstudio.cloud/learn/primers">Rstudio Clould Primers</a></li>
 </ul>
 <div id="guiding-question" class="section level3">
 <h3>Guiding Question</h3>
@@ -188,7 +189,7 @@ x_{N1} &amp; x_{N2}
 </div>
 <div id="the-parable-of-the-marbles" class="section level3">
 <h3>The Parable of the Marbles</h3>
-<p>.small[Courtesy of Prof. Bushong]</p>
+<p>(Courtesy of Prof. Bushong)</p>
 <p>Imagine a bag of marbles with two types of marbles: ♣️ and ♦️.</p>
 <p>We are going to pick a <strong>sample</strong> of <span class="math inline">\(n\)</span> marbles (with replacement).</p>
 <p>We want to learn something about <span class="math inline">\(\mu\)</span>, the <strong>objective</strong> probability to pick a ♣️.</p>
@@ -201,14 +202,14 @@ x_{N1} &amp; x_{N2}
 <li><p>And unless we assume that the only two values in the world are ♦️ and ♣️, we can’t rule out 💩<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a></p></li>
 </ul></li>
 </ul>
-<p>** Question**: Then why do we do things like polling (e.g. to predict the outcome of a presidential election)?</p>
+<p><strong>Question</strong>: Then why do we do things like polling (e.g. to predict the outcome of a presidential election)?</p>
 <ul>
 <li>The bad case, that we draw something that has is completely misleading, is <em>possible</em> but not <strong>probable</strong>.</li>
 </ul>
 </div>
 <div id="outside-the-data" class="section level3">
 <h3>Outside the Data</h3>
-<p>Put another way, since <span class="math inline">\(f\)</span> is unknown, it can take on any value outside the data, no matter how large the data.</p>
+<p>Put another way, since <span class="math inline">\(f\)</span> is unknown, it can take on any value outside the data we have, no matter how large the data.</p>
 <ul>
 <li>This is called <em>No Free Lunch</em></li>
 </ul>
@@ -226,7 +227,7 @@ x_{N1} &amp; x_{N2}
 <h3>An example of Hoeffding’s Inequality</h3>
 <p><strong>Example</strong>: n = 1,000. Draw a sample and observe <span class="math inline">\(\eta\)</span></p>
 <ul>
-<li><p>99% of the time, <span class="math inline">\(\mu - .05 \leq \eta \leq \mu+.05\)</span></p>
+<li><p>$$99% of the time, <span class="math inline">\(\mu - .05 \leq \eta \leq \mu+.05\)</span></p>
 <ul>
 <li>This is implied by setting <span class="math inline">\(\epsilon = 0.05\)</span> and using <span class="math inline">\(n=1,000\)</span></li>
 </ul></li>
@@ -826,10 +827,14 @@ heights %&gt;%
   sum(x)
 }
 n &lt;- 1:25
-s_n &lt;- sapply(n, compute_s_n)</code></pre>
+s_n &lt;- sapply(n, compute_s_n)
+s_n</code></pre>
+<pre><code>##  [1]   1   3   6  10  15  21  28  36  45  55  66  78  91 105 120 136 153 171 190
+## [20] 210 231 253 276 300 325</code></pre>
 <p>This type of operation, applying the same function or procedure to elements of an object, is quite common in data analysis. The <strong>purrr</strong> package includes functions similar to <code>sapply</code> but that better interact with other tidyverse functions. The main advantage is that we can better control the output type of functions. In contrast, <code>sapply</code> can return several different object types; for example, we might expect a numeric result from a line of code, but <code>sapply</code> might convert our result to character under some circumstances. <strong>purrr</strong> functions will never do this: they will return objects of a specified type or return an error if this is not possible.</p>
 <p>The first <strong>purrr</strong> function we will learn is <code>map</code>, which works very similar to <code>sapply</code> but always, without exception, returns a list:</p>
-<pre class="r"><code>library(purrr)
+<pre class="r"><code>library(purrr) # or library(tidyverse)
+n &lt;- 1:25
 s_n &lt;- map(n, compute_s_n)
 class(s_n)</code></pre>
 <pre><code>## [1] &quot;list&quot;</code></pre>
@@ -845,7 +850,17 @@ class(s_n)</code></pre>
   x &lt;- 1:n
   tibble(sum = sum(x))
 }
-s_n &lt;- map_df(n, compute_s_n)</code></pre>
+s_n &lt;- map_df(n, compute_s_n)
+head(s_n)</code></pre>
+<pre><code>## # A tibble: 6 x 1
+##     sum
+##   &lt;int&gt;
+## 1     1
+## 2     3
+## 3     6
+## 4    10
+## 5    15
+## 6    21</code></pre>
 <p>The <strong>purrr</strong> package provides much more functionality not covered here. For more details you can consult <a href="https://jennybc.github.io/purrr-tutorial/">this online resource</a>.</p>
 </div>
 <div id="tidyverse-conditionals" class="section level2">
@@ -857,7 +872,7 @@ s_n &lt;- map_df(n, compute_s_n)</code></pre>
 <pre class="r"><code>x &lt;- c(-2, -1, 0, 1, 2)
 case_when(x &lt; 0 ~ &quot;Negative&quot;,
           x &gt; 0 ~ &quot;Positive&quot;,
-          TRUE  ~ &quot;Zero&quot;)</code></pre>
+          x == 0  ~ &quot;Zero&quot;)</code></pre>
 <pre><code>## [1] &quot;Negative&quot; &quot;Negative&quot; &quot;Zero&quot;     &quot;Positive&quot; &quot;Positive&quot;</code></pre>
 <p>A common use for this function is to define categorical variables based on existing variables. For example, suppose we want to compare the murder rates in four groups of states: <em>New England</em>, <em>West Coast</em>, <em>South</em>, and <em>other</em>. For each state, we need to ask if it is in New England, if it is not we ask if it is in the West Coast, if not we ask if it is in the South, and if not we assign <em>other</em>. Here is how we use <code>case_when</code> to do this:</p>
 <pre class="r"><code>murders %&gt;%
@@ -868,7 +883,6 @@ case_when(x &lt; 0 ~ &quot;Negative&quot;,
     TRUE ~ &quot;Other&quot;)) %&gt;%
   group_by(group) %&gt;%
   summarize(rate = sum(total) / sum(population) * 10^5)</code></pre>
-<pre><code>## `summarise()` ungrouping output (override with `.groups` argument)</code></pre>
 <pre><code>## # A tibble: 4 x 2
 ##   group        rate
 ##   &lt;chr&gt;       &lt;dbl&gt;
@@ -906,11 +920,16 @@ case_when(x &lt; 0 ~ &quot;Negative&quot;,
 </ol>
 </div>
 </div>
-</div>
-</div>
-<div id="videos" class="section level1">
-<h1>Videos</h1>
+<div id="lecture-video" class="section level3">
+<h3>Lecture Video</h3>
+<p>A link to the lecture video will be here when it is available</p>
+<!---
+# Videos
+
 {{% youtube "D6WqHA8TDWQ" %}}
+-->
+</div>
+</div>
 </div>
 <div class="footnotes">
 <hr />

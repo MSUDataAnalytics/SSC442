@@ -19,8 +19,8 @@ output:
 ## Readings  
 
 - This page.
-- Chapter 1 of Introduction to Statistical Learning, available [here.](https://statlearning.com/ISLR Seventh Printing.pdf)
-
+- Chapter 1 of Introduction to Statistical Learning, available [here.](https://www.statlearning.com/)
+- Optional: The "Tidy Your Data" tutorial on [Rstudio Clould Primers](https://rstudio.cloud/learn/primers)
 
 ### Guiding Question
 
@@ -152,7 +152,7 @@ Depending on the complexity of $f$, we may be able to meaningfully understand ho
 (But we should be careful about assigning causal interpretations, more on this later)
 
 ### The Parable of the Marbles
-.small[Courtesy of Prof. Bushong]
+(Courtesy of Prof. Bushong)
 
 Imagine a bag of marbles with two types of marbles: `r emo::ji('club suit')` and `r emo::ji('diamond suit')`.
 
@@ -170,13 +170,13 @@ In addition to defining the **objective** probability of picking a `r emo::ji('c
   
   - And unless we assume that the only two values in the world are `r emo::ji('diamond suit')` and `r emo::ji('club suit')`, we can't rule out `r emo::ji('poop')`^[I discovered the `emo::ji()` function at 8:55am. My wife joked that I would find a way to use the poop emoji by 9:00am. It is now 8:59am. She was right.]
   
-** Question**: Then why do we do things like polling (e.g. to predict the outcome of a presidential election)?
+**Question**: Then why do we do things like polling (e.g. to predict the outcome of a presidential election)?
 
 - The bad case, that we draw something that has is completely misleading, is *possible* but not **probable**.
 
 ### Outside the Data
 
-Put another way, since $f$ is unknown, it can take on any value outside the data, no matter how large the data.
+Put another way, since $f$ is unknown, it can take on any value outside the data we have, no matter how large the data.
 
 - This is called *No Free Lunch*
 
@@ -198,7 +198,7 @@ $\eta \approx \mu$ is called **probably approximately correct** (PAC) learning.
 
 **Example**: n = 1,000. Draw a sample and observe $\eta$
 
-- 99% of the time, $\mu - .05 \leq \eta \leq \mu+.05$
+- $\sim$99% of the time, $\mu - .05 \leq \eta \leq \mu+.05$
 
   - This is implied by setting $\epsilon = 0.05$ and using $n=1,000$
 
@@ -960,6 +960,7 @@ compute_s_n <- function(n){
 }
 n <- 1:25
 s_n <- sapply(n, compute_s_n)
+s_n
 ```
 
 This type of operation, applying the same function or procedure to elements of an object, is quite common in data analysis. The __purrr__ package includes functions similar to `sapply` but that better interact with other tidyverse functions. The main advantage is that we can better control the output type of functions. In contrast, `sapply` can return several different object types; for example, we might expect a numeric result from a line of code, but `sapply` might convert our result to character under some circumstances. __purrr__ functions will never do this: they will return objects of a specified type or return an error if this is not possible.
@@ -967,7 +968,8 @@ This type of operation, applying the same function or procedure to elements of a
 The first __purrr__ function we will learn is `map`, which works very similar to `sapply` but always, without exception, returns a list:
 
 ```{r}
-library(purrr)
+library(purrr) # or library(tidyverse)
+n <- 1:25
 s_n <- map(n, compute_s_n)
 class(s_n)
 ```
@@ -995,6 +997,7 @@ compute_s_n <- function(n){
   tibble(sum = sum(x))
 }
 s_n <- map_df(n, compute_s_n)
+head(s_n)
 ```
 
 The __purrr__ package provides much more functionality not covered here. For more details you can consult [this online resource](https://jennybc.github.io/purrr-tutorial/).
@@ -1011,12 +1014,12 @@ The `case_when` function is useful for vectorizing conditional statements. It is
 x <- c(-2, -1, 0, 1, 2)
 case_when(x < 0 ~ "Negative",
           x > 0 ~ "Positive",
-          TRUE  ~ "Zero")
+          x == 0  ~ "Zero")
 ```
 
 A common use for this function is to define categorical variables based on existing variables. For example, suppose we want to compare the murder rates in four groups of states: _New England_, _West Coast_, _South_,  and _other_. For each state, we need to ask if it is in New England, if it is not we ask if it is in the West Coast, if not we ask if it is in the South, and if not we assign _other_. Here is how we use `case_when` to do this:
 
-```{r}
+```{r, warning=F, message = F}
 murders %>%
   mutate(group = case_when(
     abb %in% c("ME", "NH", "VT", "MA", "RI", "CT") ~ "New England",
@@ -1067,6 +1070,8 @@ Write it using the pipe so that each function is called without arguments. Use t
 5. Use the `map_df` to create a data frame with three columns named `n`, `s_n`, and `s_n_2`. The first column should contain the numbers 1 through 100. The second and third columns should each contain the sum of 1 through $n$ with $n$ the row number.
 :::
 
+### Lecture Video
+A link to the lecture video will be here when it is available
 
 <!---
 # Videos
