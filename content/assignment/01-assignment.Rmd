@@ -70,7 +70,7 @@ You link these steps by *literally* adding them together with `+` as we'll see.
 ```{r}
 library(gapminder)
 library(ggplot2)
-gapminder
+gapminder::gapminder
 p <- ggplot(data = gapminder,
             mapping = aes(x = gdpPercap, y = lifeExp))
 p + geom_point()
@@ -84,7 +84,7 @@ Here's a breakdown of everything that happens after the `p<- ggplot()` call:
 
 - `data = gapminder` tells ggplot to use gapminder dataset, so if variable names are mentioned, they should be looked up in gapminder
 - `mapping = aes(...)` shows that the mapping is a function call. There is a deeper logic to this that I will disucss below, but it's easiest to simply accept that this is how you write it. Put another way, the `mapping = aes(...)` argument *links variables* to *things you will see* on the plot.
-- `aes(x = gdpPercap, y = lifeExp)` maps the GDP data onto `x`, which is a known aesthetic (the x-coordinate) and life expectancy data onto `x`
+- `aes(x = gdpPercap, y = lifeExp)` maps the GDP data onto `x`, which is a known aesthetic (the x-coordinate) and life expectancy data onto `y`
   - `x` and `y` are  predefined names that are used by `ggplot` and friends
 
 

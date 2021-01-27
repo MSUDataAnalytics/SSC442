@@ -68,7 +68,7 @@ library(tidyverse)</code></pre>
 <h2>Mappings Link Data to Things You See</h2>
 <pre class="r"><code>library(gapminder)
 library(ggplot2)
-gapminder</code></pre>
+gapminder::gapminder</code></pre>
 <pre><code>## # A tibble: 1,704 x 6
 ##    country     continent  year lifeExp      pop gdpPercap
 ##    &lt;fct&gt;       &lt;fct&gt;     &lt;int&gt;   &lt;dbl&gt;    &lt;int&gt;     &lt;dbl&gt;
@@ -93,7 +93,7 @@ p + geom_point()</code></pre>
 <ul>
 <li><code>data = gapminder</code> tells ggplot to use gapminder dataset, so if variable names are mentioned, they should be looked up in gapminder</li>
 <li><code>mapping = aes(...)</code> shows that the mapping is a function call. There is a deeper logic to this that I will disucss below, but it’s easiest to simply accept that this is how you write it. Put another way, the <code>mapping = aes(...)</code> argument <em>links variables</em> to <em>things you will see</em> on the plot.</li>
-<li><code>aes(x = gdpPercap, y = lifeExp)</code> maps the GDP data onto <code>x</code>, which is a known aesthetic (the x-coordinate) and life expectancy data onto <code>x</code>
+<li><code>aes(x = gdpPercap, y = lifeExp)</code> maps the GDP data onto <code>x</code>, which is a known aesthetic (the x-coordinate) and life expectancy data onto <code>y</code>
 <ul>
 <li><code>x</code> and <code>y</code> are predefined names that are used by <code>ggplot</code> and friends</li>
 </ul></li>
