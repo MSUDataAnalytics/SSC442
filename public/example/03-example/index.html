@@ -31,7 +31,7 @@
     
   
   <meta name="description" content="PreliminariesComplete codeLoad and clean dataSmall multiplesSparklinesSlopegraphsBump chartsToday’s example will continue (and conclude) some of the discussion from Tuesday. The code may be useful for future work.
-## ## Attaching package: &#39;dplyr&#39;## The following objects are masked from &#39;package:raster&#39;:## ## intersect, select, union## The following objects are masked from &#39;package:rgeos&#39;:## ## intersect, setdiff, union## The following objects are masked from &#39;package:stats&#39;:## ## filter, lag## The following objects are masked from &#39;package:data.">
+PreliminariesFor today’s example, we’re going to use cross-national data. But instead of using the typical gapminder dataset as with the Tuesday lecture, we’re going to collect data directly from the World Bank’s Open Data portal">
 
   
   <link rel="alternate" hreflang="en-us" href="https://datavizm20.classes.andrewheiss.com/example/03-example/">
@@ -238,15 +238,15 @@
   
   <meta property="og:site_name" content="Data Analytics">
   <meta property="og:url" content="https://datavizm20.classes.andrewheiss.com/example/03-example/">
-  <meta property="og:title" content="Visualizations  | Data Analytics">
+  <meta property="og:title" content="Visualizations | Data Analytics">
   <meta property="og:description" content="PreliminariesComplete codeLoad and clean dataSmall multiplesSparklinesSlopegraphsBump chartsToday’s example will continue (and conclude) some of the discussion from Tuesday. The code may be useful for future work.
-## ## Attaching package: &#39;dplyr&#39;## The following objects are masked from &#39;package:raster&#39;:## ## intersect, select, union## The following objects are masked from &#39;package:rgeos&#39;:## ## intersect, setdiff, union## The following objects are masked from &#39;package:stats&#39;:## ## filter, lag## The following objects are masked from &#39;package:data."><meta property="og:image" content="https://datavizm20.classes.andrewheiss.com/img/social-image.png">
+PreliminariesFor today’s example, we’re going to use cross-national data. But instead of using the typical gapminder dataset as with the Tuesday lecture, we’re going to collect data directly from the World Bank’s Open Data portal"><meta property="og:image" content="https://datavizm20.classes.andrewheiss.com/img/social-image.png">
   <meta property="twitter:image" content="https://datavizm20.classes.andrewheiss.com/img/social-image.png"><meta property="og:locale" content="en-us">
   
     
-      <meta property="article:published_time" content="2021-02-04T00:00:00&#43;00:00">
+      <meta property="article:published_time" content="2021-01-28T00:00:00&#43;00:00">
     
-    <meta property="article:modified_time" content="2020-09-26T14:12:51-04:00">
+    <meta property="article:modified_time" content="2021-01-11T16:52:29-05:00">
   
 
   
@@ -273,7 +273,7 @@
   <meta name="msapplication-TileImage" content="https://datavizm20.classes.andrewheiss.com/img/mstile-144x144.png" />
 
 
-  <title>Visualizations  | Data Analytics</title>
+  <title>Visualizations | Data Analytics</title>
 
 </head>
 
@@ -461,6 +461,30 @@
         
         
 
+        
+
+        
+        
+        
+          
+            
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="https://join.slack.com/t/ssc442kirkpatrick/shared_invite/zt-kxhgemgn-vaEGD_4KcpDCOEJtXxbxbQ" target="_blank" rel="noopener"><span><i class="fab fa-slack"></i></span></a>
+        </li>
+
+        
+        
+
       
 
         
@@ -514,17 +538,8 @@
   
   
   <div class="docs-toc-item">
-    <a class="docs-toc-link" href="/example/">Practical Content</a>
-
-  </div>
-  
-  <div class="docs-toc-item">
-    <a class="docs-toc-link" href="/example/10-example/">Examples</a>
+    <a class="docs-toc-link" href="/example/">Examples</a>
     <ul class="nav docs-sidenav">
-      
-      <li >
-        <a href="/example/10-example/">*10: Classification</a>
-      </li>
       
       <li >
         <a href="/example/00-example/">0: Introduction to R</a>
@@ -546,26 +561,6 @@
         <a href="/example/04-example/">4: Uncertainty</a>
       </li>
       
-      <li >
-        <a href="/example/05-example/">5: Linear Regression I</a>
-      </li>
-      
-      <li >
-        <a href="/example/06-example/">6: Linear Regression II</a>
-      </li>
-      
-      <li >
-        <a href="/example/07-example/">7: Linear Regression III</a>
-      </li>
-      
-      <li >
-        <a href="/example/08-example/">8: Nonparametric Regression</a>
-      </li>
-      
-      <li >
-        <a href="/example/09-example/">9: Bias vs. Variance</a>
-      </li>
-      
     </ul>
     
 
@@ -583,7 +578,7 @@
             <article class="article">
 
                 <div class="docs-article-container">
-                    <h1>Visualizations </h1>
+                    <h1>Visualizations</h1>
 
                     
 
@@ -612,26 +607,9 @@
 </div>
 
 <p>Today’s example will continue (and conclude) some of the discussion from Tuesday. The code may be useful for future work.</p>
-<pre><code>## 
-## Attaching package: &#39;dplyr&#39;</code></pre>
-<pre><code>## The following objects are masked from &#39;package:raster&#39;:
-## 
-##     intersect, select, union</code></pre>
-<pre><code>## The following objects are masked from &#39;package:rgeos&#39;:
-## 
-##     intersect, setdiff, union</code></pre>
-<pre><code>## The following objects are masked from &#39;package:stats&#39;:
-## 
-##     filter, lag</code></pre>
-<pre><code>## The following objects are masked from &#39;package:data.table&#39;:
-## 
-##     between, first, last</code></pre>
-<pre><code>## The following objects are masked from &#39;package:base&#39;:
-## 
-##     intersect, setdiff, setequal, union</code></pre>
 <div id="preliminaries" class="section level2">
 <h2>Preliminaries</h2>
-<p>For today’s example, we’re going to use cross-national data. But instead of using the typical <code>gapminder</code> dataset as with the Tuuesday lecture, we’re going to collect data directly from the <a href="https://data.worldbank.org/">World Bank’s Open Data portal</a></p>
+<p>For today’s example, we’re going to use cross-national data. But instead of using the typical <code>gapminder</code> dataset as with the Tuesday lecture, we’re going to collect data directly from the <a href="https://data.worldbank.org/">World Bank’s Open Data portal</a></p>
 <p>If you want to skip the data downloading, you can download the data below (you’ll likely need to right click and choose “Save Link As”). However, it may be instructive for your group projects to explore the collection process. It’s not particularly hard!</p>
 <ul>
 <li><a href="/data/wdi_raw.csv"><i class="fas fa-file-csv"></i> <code>wdi_raw.csv</code></a></li>
@@ -786,7 +764,7 @@ ggsave(&quot;china_co2.png&quot;, plot_china, width = 1, height = 0.15, units = 
 <pre class="r"><code>ggplot(gdp_south_asia, aes(x = year, y = gdp_per_cap, group = country, color = country)) +
   geom_line(size = 1.5) +
   geom_text(aes(label = country)) +
-  guides(color = FALSE)</code></pre>
+  guides(color = FALSE)  #&lt;---- this turns off the guide (legend) for the aesthetic &quot;color&quot;</code></pre>
 <p><img src="/example/03-example_files/figure-html/slopegraph-sa-simple-text-1.png" width="576" style="display: block; margin: auto;" /></p>
 <p>That gets us a <em>little</em> closer, but the country labels are hard to see, and we could include more information, like the actual values. Remember those <code>label_first</code> and <code>label_last</code> columns we made? Let’s use those instead:</p>
 <pre class="r"><code>ggplot(gdp_south_asia, aes(x = year, y = gdp_per_cap, group = country, color = country)) +
@@ -868,7 +846,7 @@ ggsave(&quot;china_co2.png&quot;, plot_china, width = 1, height = 0.15, units = 
                 </div>
 
                 <div class="body-footer">
-                    <p>Last updated on September 26, 2020</p>
+                    <p>Last updated on January 11, 2021</p>
 
                     
 

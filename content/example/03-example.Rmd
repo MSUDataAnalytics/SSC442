@@ -3,7 +3,7 @@ title: "Visualizations"
 linktitle: "3: Visualization III"
 read_date: "2021-02-11"
 draft: false
-publishDate: "2021-02-04"
+publishDate: "2021-01-28"
 lastmod: "`r Sys.Date()`"
 output:
   blogdown::html_page:
@@ -21,14 +21,14 @@ editor_options:
 Today's example will continue (and conclude) some of the discussion from Tuesday. The code may be useful for future work.
 
 
-```{r, eval=T, echo=F, purl=F}
+```{r, eval=F, echo=F, purl=F}
 detach("package:dplyr")
 library(dplyr)
 ```
 
 
 ## Preliminaries
-For today's example, we're going to use cross-national data. But instead of using the typical `gapminder` dataset as with the Tuuesday lecture, we're going to collect data directly from the [World Bank's Open Data portal](https://data.worldbank.org/)
+For today's example, we're going to use cross-national data. But instead of using the typical `gapminder` dataset as with the Tuesday lecture, we're going to collect data directly from the [World Bank's Open Data portal](https://data.worldbank.org/)
 
 If you want to skip the data downloading, you can download the data below (you'll likely need to right click and choose "Save Link As"). However, it may be instructive for your group projects to explore the collection process. It's not particularly hard!
 
@@ -243,7 +243,7 @@ Cool! We're getting closer. We can definitely see different slopes, but with 7 d
 ggplot(gdp_south_asia, aes(x = year, y = gdp_per_cap, group = country, color = country)) +
   geom_line(size = 1.5) +
   geom_text(aes(label = country)) +
-  guides(color = FALSE)
+  guides(color = FALSE)  #<---- this turns off the guide (legend) for the aesthetic "color"
 ```
 
 That gets us a *little* closer, but the country labels are hard to see, and we could include more information, like the actual values. Remember those `label_first` and `label_last` columns we made? Let's use those instead:
