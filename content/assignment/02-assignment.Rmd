@@ -58,35 +58,24 @@ knitr::include_graphics("/img/assignments/insert-chunk-button.png", error = FALS
 
 ```{r eval=T, include=F, echo=F}
 library(tidyverse)
-essentialConstruction = read_csv('./data/EssentialConstruction.csv')
+essential = read_csv('./data/EssentialConstruction.csv')
 ```
 
 ### Data Prep
-Once you download the `EssentialConstruction.csv` file and save it in your project folder, you can open it and start cleaning. I'll help with that. 
+Once you download the `EssentialConstruction.csv` file and save it in your project folder, you can open it and start cleaning. I'll help with that. I'll give you a .Rmd that will get you started on the Exercises below. Download this and use it in place of your lab assignment template.
 
-In class, we used base-R's `read.csv`. `tidyverse` has its own `read_csv` function that is a bit more robust. Let's use that. Make a *new* code chunk and use it to import and clean the data:
+- [<i class="fab fa-r-project"></i> `02-lab.Rmd`](/projects/02-lab/02-lab.Rmd)
 
-- Use `essentialConstruction <- read_csv('path/to/the/downloaded/EssentialConstruction.csv')`. This will import your data. You can then look at it to see the variables. Use `str(essentialConstruction)` to see the data types.
-
-- One of the columns has a name that has a space in it. Things get awkward when this happens. Let's `mutate` a new column. When we want to refer to a column name with a space in it, we have to wrap it in the backtick \`.
-
-```{r CleanData-1, eval=T, echo=T}
-essentialConstruction = essentialConstruction %>%
-  mutate(JOBNUMBERS = `JOB NUMBERS`)
-```
-
-
+**NOTE: YOU WILL NEED TO CHANGE THE HEADER TO SAY: output: pdf_document, and change the title to Lab Assignment 02**
 
 :::fyi
 __Exercise 1 of 1: Essential pandemic construction__
 
-A. **Create a variable**: Using `case_when` and `mutate`, create a new variable called `APPROVED` which is equal to `TRUE` when `JOBNUMBERS` is "All jobs for this BIN are approved", and is equal to `FALSE` otherwise. 
+Using the Lab 02 template above, do the following:
 
-**Make the following plots and briefly explain what they show.**
+A. Show the count or proportion of approved projects by borough using a bar chart.
 
-B. Show the count or proportion of approved projects by borough using a bar chart.
-
-C. Show the count or proportion of approved projects by category using a lollipop chart. Not sure of what a lollipop chart is? Google `R ggplot lollipop`. A huge portion of knowing how to code is knowing how to google, find examples, and figure out where to put your variables from your data!
+B. Show the count or proportion of approved projects by category using a lollipop chart. Not sure of what a lollipop chart is? Google `R ggplot lollipop`. A huge portion of knowing how to code is knowing how to google, find examples, and figure out where to put your variables from your data!
 
 D. Show the proportion of approved projects by borough and category *simultaneously* using a heatmap.
 
