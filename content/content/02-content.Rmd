@@ -88,7 +88,7 @@ murders %>% group_by(region) %>%
   xlab("")
 ```
 
-This particular plot simply shows us four numbers, one for each category. We usually use barplots to display a few numbers. Although this particular plot does not provide much more insight than a frequency table itself, it is a first example of how we convert a vector into a plot that succinctly summarizes all the information in the vector. When the data is numerical, the task of displaying distributions is more challenging.
+This particular plot simply shows us four numbers, one for each category. We usually use barplots to display a few numbers. Although this particular plot does not provide much more insight than a frequency table itself, it is a first example of how we convert a vector into a plot that succinctly summarizes all the information in the vector. When the data is numerical, the task of displaying distributions is more challenging. 
 
 ## Cumulative distribution functions {#cdf-intro}
 
@@ -1238,18 +1238,35 @@ p1 <- data.frame(x=1:8, y=rep(1,8), col = as.character(1:8)) %>%
 p1 + scale_color_manual(values=color_blind_friendly_cols)
 ```
 
-There are several resources that can help you select colors, for example this one: [http://bconnelly.net/2013/10/creating-colorblind-friendly-figures/](http://bconnelly.net/2013/10/creating-colorblind-friendly-figures/).
+From [Seafood Prices Reveal Impacts of a Major Ecological Disturbance](http://www.pnas.org/content/pnas/early/2017/01/24/1617948114.full.pdf):
+
+![](/content/02-content_files/Colorblind_example.png) 
+
+
+
+```{r seafood, echo=F, eval = F} 
+knitr::include_graphics('/content/02content-files/Colorblind_example.png')
+
+'Above, I copy the file to the path: static/content/02-content_files/...png
+and then reference it here AS IF THE ROOT WERE STATIC.
+https://bookdown.org/yihui/blogdown/dep-path.html says that any local files should be copied on Knit (or maybe on build_site?) to static, but
+this just does not happen.
+
+![](/content/02-content_files/Colorblind_example.png) 
+```
+
+There are several resources that can help you select colors, for example this one:  [http://bconnelly.net/2013/10/creating-colorblind-friendly-figures/](http://bconnelly.net/2013/10/creating-colorblind-friendly-figures/).
 
 ## Plots for two variables
 
 In general, you should use scatterplots to visualize the relationship between two variables.
 In every single instance in which we have examined the relationship between two variables, including total murders versus population size, life expectancy versus fertility rates, and infant mortality versus income, we have used scatterplots. This is the plot we generally recommend. However, there are some exceptions and we describe two alternative plots here: the _slope chart_ and the _Bland-Altman plot_.
 
-### Slope charts
+### Slope charts 
 
 One exception where another type of plot may be more informative is when you are comparing variables of the same type, but at different time points and for a relatively small number of comparisons. For example, comparing life expectancy between 2010 and 2015. In this case, we might recommend a _slope chart_.
 
-There is no geometry for slope charts in __ggplot2__, but we can construct one using `geom_line`. We need to do some tinkering to add labels. Below is an example comparing 2010 to 2015 for large western countries:
+There is no geometry for slope charts in __ggplot2__, but we can construct one using `geom_line`. We need to do some tinkering to add labels. Below is an example comparing 2010 to 2015 for large western countries: 
 
 ```{r slope-plot}
 west <- c("Western Europe","Northern Europe","Southern Europe",

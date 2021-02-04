@@ -473,6 +473,69 @@ grid.arrange(p1, p2, ncol = 2)
 ```
 
 
+## In-class exercises
+If we have time, let's explore some new geom's.
+
+I'll break you out into Breakout Rooms of 4-5 people each. In your room, I want you to explore one of the following 5 `ggplot` geoms:
+
+For whichever geom your group chooses, use the `dslabs::gapminder` data 
+
+```
+library(dslabs)
+gapminder = dslabs::gapminder
+```
+
+
+
+__geom_density_2d_filled()__
+
+- This is a 2d density plot which shows correlation between two variables. Try `infant_mortality` and GDP per capita
+
+- __Challenge__: Show infant mortality's relationship to gdp per capita in the year 2007
+
+- x = infant_mortality, y = calculate gdp per capita on the fly (in the ggplot call)
+
+__geom_tile()__
+
+- This is a heatmap type plot
+
+- __Challenge__: Show infant_mortality by year for each country in continent=='Americas'
+
+- Hint: x = year, y = country
+
+__geom_smooth()__
+
+- This is plot that shows the mean and variance (standard deviation) over time
+
+- __Challenge__: Show the distribution of infant mortality across the world for 1960 and 2007, with a separate density for each of those two years
+
+- Hint: x = infant_mortality, "+ facet_wrap"
+
+
+__geom_qq()__
+
+- This plot helps us tell if a variable's distribution is close to normal
+
+- __Challenge__: Show a qq plot of fertility in 2007 across the world. Is it normally distributed? 
+
+- Hint: This one takes a new `aes(...)` argument: sample = fertility
+
+- Hint: geom_qq and geom_qq_line do two different things, but can be combined. geom_qq_line is a lot like geom_abline()
+
+
+
+__geom_rug()__
+
+- This plot shows both the point scatter and the density of each variable. `geom_rug` adds density in the margins, use with geom_point
+
+- __Challenge__:Visualize the relationship between gdp per capita and infant mortality that also communicates the density of each variable
+
+- Hint: x = gdp per capita (calculate in ggplot call), y = infant_mortality
+
+- Hint: use alpha = .1 to make rug lines show overlap
+
+
+ 
 :::fyi
 
 __TRY IT__
