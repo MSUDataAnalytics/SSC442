@@ -20,6 +20,15 @@ To commit everything, use terminal:
 Use blogdown::hugo_build() which should update the public folders. Those are what Netlify cares about. Make sure all disappear from Git window if committing with -a
 Once those are committed and pushed to AJK, netlify will automatically build and deploy within minutes.
 
+When updating a .rmd, blogdown does not automatically put the whole thing together - e.g. it does not copy the graphics referred to in the .rmd into
+the appropriate static/ directory (which is where it must be in order to be pulled by the *rendered* site). You can do it manually (e.g. refer to the 
+place in /static where the file should be and copy it there). Or, I think you can have blogdown::build_site(build_rmd = rstudioapi::getSourceEditorContext()$path) 
+build the .html of the page you're working on, and it should move the graphics you refer to in the project (content/example/assignment) .Rmd into
+the right static location, and the reference on the site will be updated to the proper place.
+
+    blogdown::build_site(build_rmd = rstudioapi::getSourceEditorContext()$path) INSTEAD of "knit". Just running build_site() does NOT automatically render the .Rmd!
+
+Add'l note: hmmm, maybe you do have to render by clicking "knit". R-generated plots didn't show up running build_site(build_rm = rstudioapi::...). Hmmm
 +++++++++++++++++++
 
 Remember to NEVER use the PUSH button - that will create and update a fork on Ben's github (ugh).
