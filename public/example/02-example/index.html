@@ -30,7 +30,7 @@
   
     
   
-  <meta name="description" content="ggplot2The components of a graphggplot objectsGeometriesAesthetic mappingsLayersTinkering with argumentsGlobal versus local aesthetic mappingsScalesLabels and titlesCategories as colorsAnnotation, shapes, and adjustmentsAdd-on packagesPutting it all togetherQuick plots with qplotGrids of plotsggplot2Exploratory data visualization is perhaps the greatest strength of R. One can quickly go from idea to data to plot with a unique balance of flexibility and ease.">
+  <meta name="description" content="ggplot2The components of a graphggplot objectsGeometriesAesthetic mappingsLayersTinkering with argumentsGlobal versus local aesthetic mappingsScalesLabels and titlesCategories as colorsAnnotation, shapes, and adjustmentsAdd-on packagesPutting it all togetherQuick plots with qplotGrids of plotsIn-class exercisesggplot2Exploratory data visualization is perhaps the greatest strength of R. One can quickly go from idea to data to plot with a unique balance of flexibility and ease.">
 
   
   <link rel="alternate" hreflang="en-us" href="https://datavizm20.classes.andrewheiss.com/example/02-example/">
@@ -238,13 +238,13 @@
   <meta property="og:site_name" content="Data Analytics">
   <meta property="og:url" content="https://datavizm20.classes.andrewheiss.com/example/02-example/">
   <meta property="og:title" content="ggplot2: Everything you ever wanted to know | Data Analytics">
-  <meta property="og:description" content="ggplot2The components of a graphggplot objectsGeometriesAesthetic mappingsLayersTinkering with argumentsGlobal versus local aesthetic mappingsScalesLabels and titlesCategories as colorsAnnotation, shapes, and adjustmentsAdd-on packagesPutting it all togetherQuick plots with qplotGrids of plotsggplot2Exploratory data visualization is perhaps the greatest strength of R. One can quickly go from idea to data to plot with a unique balance of flexibility and ease."><meta property="og:image" content="https://datavizm20.classes.andrewheiss.com/img/social-image.png">
+  <meta property="og:description" content="ggplot2The components of a graphggplot objectsGeometriesAesthetic mappingsLayersTinkering with argumentsGlobal versus local aesthetic mappingsScalesLabels and titlesCategories as colorsAnnotation, shapes, and adjustmentsAdd-on packagesPutting it all togetherQuick plots with qplotGrids of plotsIn-class exercisesggplot2Exploratory data visualization is perhaps the greatest strength of R. One can quickly go from idea to data to plot with a unique balance of flexibility and ease."><meta property="og:image" content="https://datavizm20.classes.andrewheiss.com/img/social-image.png">
   <meta property="twitter:image" content="https://datavizm20.classes.andrewheiss.com/img/social-image.png"><meta property="og:locale" content="en-us">
   
     
       <meta property="article:published_time" content="2021-01-25T00:00:00&#43;00:00">
     
-    <meta property="article:modified_time" content="2021-01-26T12:05:24-05:00">
+    <meta property="article:modified_time" content="2021-02-04T11:43:20-05:00">
   
 
   
@@ -610,6 +610,7 @@
 <li><a href="#putting-it-all-together">Putting it all together</a></li>
 <li><a href="#qplot">Quick plots with <code>qplot</code></a></li>
 <li><a href="#grids-of-plots">Grids of plots</a></li>
+<li><a href="#in-class-exercises">In-class exercises</a></li>
 </ul></li>
 </ul>
 </div>
@@ -876,6 +877,46 @@ p1 &lt;- qplot(x)
 p2 &lt;- qplot(x,y)
 grid.arrange(p1, p2, ncol = 2)</code></pre>
 <p><img src="/example/02-example_files/figure-html/gridExtra-example-1.png" width="480" /></p>
+</div>
+<div id="in-class-exercises" class="section level2">
+<h2>In-class exercises</h2>
+<p>If we have time, let’s explore some new geom’s.</p>
+<p>I’ll break you out into Breakout Rooms of 4-5 people each. In your room, I want you to explore one of the following 5 <code>ggplot</code> geoms. Use ?geom_name to learn about the <em>aes</em> arguments each takes / requires.</p>
+<p>For whichever geom your group chooses, use the <code>dslabs::gapminder</code> data</p>
+<pre><code>library(dslabs)
+gapminder = dslabs::gapminder</code></pre>
+<p><strong>geom_density_2d_filled()</strong></p>
+<ul>
+<li><p>This is a 2d density plot which shows correlation between two variables. Try <code>infant_mortality</code> and GDP per capita</p></li>
+<li><p><strong>Challenge</strong>: Show infant mortality’s relationship to gdp per capita in the year 2007</p></li>
+<li><p>x = infant_mortality, y = calculate gdp per capita on the fly (in the ggplot call)</p></li>
+</ul>
+<p><strong>geom_tile()</strong></p>
+<ul>
+<li><p>This is a heatmap type plot</p></li>
+<li><p><strong>Challenge</strong>: Show infant_mortality by year for each country in continent==‘Americas’</p></li>
+<li><p>Hint: x = year, y = country</p></li>
+</ul>
+<p><strong>geom_smooth()</strong></p>
+<ul>
+<li><p>This is plot that shows the mean and variance (standard deviation) over time</p></li>
+<li><p><strong>Challenge</strong>: Show the distribution of infant mortality across the world for 1960 and 2007, with a separate density for each of those two years</p></li>
+<li><p>Hint: x = infant_mortality, “+ facet_wrap”</p></li>
+</ul>
+<p><strong>geom_qq()</strong></p>
+<ul>
+<li><p>This plot helps us tell if a variable’s distribution is close to normal</p></li>
+<li><p><strong>Challenge</strong>: Show a qq plot of fertility in 2007 across the world. Is it normally distributed?</p></li>
+<li><p>Hint: This one takes a new <code>aes(...)</code> argument: sample = fertility</p></li>
+<li><p>Hint: geom_qq and geom_qq_line do two different things, but can be combined. geom_qq_line is a lot like geom_abline()</p></li>
+</ul>
+<p><strong>geom_rug()</strong></p>
+<ul>
+<li><p>This plot shows both the point scatter and the density of each variable. <code>geom_rug</code> adds density in the margins, use with geom_point</p></li>
+<li><p><strong>Challenge</strong>:Visualize the relationship between gdp per capita and infant mortality that also communicates the density of each variable</p></li>
+<li><p>Hint: x = gdp per capita (calculate in ggplot call), y = infant_mortality</p></li>
+<li><p>Hint: use alpha = .1 to make rug lines show overlap</p></li>
+</ul>
 <div class="fyi">
 <p><strong>TRY IT</strong></p>
 <p>Start by loading the <strong>dplyr</strong> and <strong>ggplot2</strong> library as well as the <code>murders</code> and <code>heights</code> data.</p>
@@ -993,7 +1034,7 @@ Print the object <code>p</code> defined in exercise one and describe what you se
                 </div>
 
                 <div class="body-footer">
-                    <p>Last updated on January 26, 2021</p>
+                    <p>Last updated on February 4, 2021</p>
 
                     
 

@@ -44,9 +44,9 @@ your-project-name\
 ```
 
 
-[The example for today's session](/example/03-example/) will be ***incredibly*** helpful for this exercise. Reference it.
+[The example for this week](/example/03-example/) will be ***incredibly*** helpful for this exercise. Reference it.
 
-For this week, you need to start making your plots look nice. Label axes. Label the plot. Experiment with themes. Experiment with adding a `labs()` layer or changing colors. Or, if you're super brave, try modifying a theme and its elements.
+For this week, you need to start making your plots look nice. For full credit, you will have to label axes, label the plot, and experiment with themes. Experiment with adding a `labs()` layer or changing colors. Or, if you're super brave, try modifying a theme and its elements. Default plots will not receive full credit.
 
 You'll need to insert your own code chunks where needed. Rather than typing them by hand (that's tedious and you might miscount the number of backticks!), use the "Insert" button at the top of the editing window, or type <kbd>ctrl</kbd> + <kbd>alt</kbd> + <kbd>i</kbd> on Windows, or <kbd>⌘</kbd> + <kbd>⌥</kbd> + <kbd>i</kbd> on macOS.
 
@@ -97,7 +97,7 @@ If you do this, plotting 51 lines is going to be a huge mess. But filtering the 
 
 ## Turning everything in
 
-When you're all done, click on the "Knit" button at the top of the editing window and create a PDF. If you haven't already [install **tinytex**](/resource/install/#install-tinytex)) to ensure that works. Upload the PDF file to D2L.
+When you're all done, click on the "Knit" button at the top of the editing window and create a PDF. Upload the PDF file to D2L.
 
 
 ## Postscript: how we got this unemployment data
@@ -107,9 +107,13 @@ For the curious, [here's the code we used](/projects/get_bls_data.R) to download
 And to pull the curtain back and show how much googling is involved in data visualization (and data analysis and programming in general), here was my process for getting this data:
 
 1. We thought "We want to have students show variation in something domestic over time" and then we googled "us data by state". Nothing really came up (since it was an exceedingly vague search in the first place), but some results mentioned unemployment rates, so we figured that could be cool.
+
 2. We googled "unemployment statistics by state over time" and found that the BLS keeps statistics on this. We clicked on the ["Data Tools" link in their main navigation bar](https://www.bls.gov/data/), clicked on "Unemployment", and then clicked on the "Multi-screen data search" button for the Local Area Unemployment Statistics (LAUS).
+
 3. We walked through the multiple screens and got excited that we'd be able to download all unemployment stats for all states for a ton of years, *but then* the final page had links to 51 individual Excel files, which was dumb.
+
 4. So we went back to Google and searched for "download bls data r" and found a few different packages people have written to do this. The first one we clicked on was [`blscrapeR` at GitHub](https://github.com/keberwein/blscrapeR), and it looked like it had been updated recently, so we went with it.
+
 5. We followed the examples in the `blscrapeR` package and downloaded data for every state.
 
 Another day in the life of doing modern data science. This is an example of something you will be able to do by the end of this class. we had no idea people had written `R` packages to access BLS data, but there are (at least) 3 packages out there. After a few minutes of tinkering, we got it working and it is relatively straightforward.
