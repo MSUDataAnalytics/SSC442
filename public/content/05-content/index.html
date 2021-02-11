@@ -244,7 +244,7 @@
     
       <meta property="article:published_time" content="2021-02-18T00:00:00&#43;00:00">
     
-    <meta property="article:modified_time" content="2021-01-10T09:24:29-05:00">
+    <meta property="article:modified_time" content="2021-02-07T08:28:33-05:00">
   
 
   
@@ -689,7 +689,7 @@ galton_heights &lt;- GaltonFamilies %&gt;%
 <p>However, this summary fails to describe an important characteristic of the data: the trend that the taller the father, the taller the son.</p>
 <pre class="r"><code>galton_heights %&gt;% ggplot(aes(father, son)) +
   geom_point(alpha = 0.5)</code></pre>
-<p><img src="C:/Users/jkirk/OneDrive - Michigan State University/Teaching/SSC442_SS21/content/content/05-content_files/figure-html/scatterplot-1.png" width="40%" /></p>
+<p><img src="/content/05-content_files/figure-html/scatterplot-1.png" width="40%" /></p>
 <p>We will learn that the correlation coefficient is an informative summary of how two variables move together and then see how this can be used to predict one variable using the other.</p>
 </div>
 <div id="corr-coef" class="section level2">
@@ -713,7 +713,7 @@ with <span class="math inline">\(\mu_x, \mu_y\)</span> the averages of <span cla
 <pre class="r"><code>galton_heights %&gt;% summarize(r = cor(father, son)) %&gt;% pull(r)</code></pre>
 <pre><code>## [1] 0.4334102</code></pre>
 <p>To see what data looks like for different values of <span class="math inline">\(\rho\)</span>, here are six examples of pairs with correlations ranging from -0.9 to 0.99:</p>
-<p><img src="C:/Users/jkirk/OneDrive - Michigan State University/Teaching/SSC442_SS21/content/content/05-content_files/figure-html/what-correlation-looks-like-1.png" width="672" /></p>
+<p><img src="/content/05-content_files/figure-html/what-correlation-looks-like-1.png" width="672" /></p>
 <div id="sample-correlation-is-a-random-variable" class="section level3">
 <h3>Sample correlation is a random variable</h3>
 <p>Before we continue connecting correlation to regression, let’s remind ourselves about random variability.</p>
@@ -730,7 +730,7 @@ R &lt;- replicate(B, {
     pull(r)
 })
 qplot(R, geom = &quot;histogram&quot;, binwidth = 0.05, color = I(&quot;black&quot;))</code></pre>
-<p><img src="C:/Users/jkirk/OneDrive - Michigan State University/Teaching/SSC442_SS21/content/content/05-content_files/figure-html/sample-correlation-distribution-1.png" width="672" /></p>
+<p><img src="/content/05-content_files/figure-html/sample-correlation-distribution-1.png" width="672" /></p>
 <p>We see that the expected value of <code>R</code> is the population correlation:</p>
 <pre class="r"><code>mean(R)</code></pre>
 <pre><code>## [1] 0.4307393</code></pre>
@@ -743,14 +743,14 @@ qplot(R, geom = &quot;histogram&quot;, binwidth = 0.05, color = I(&quot;black&qu
 <pre class="r"><code>ggplot(aes(sample=R), data = data.frame(R)) +
   stat_qq() +
   geom_abline(intercept = mean(R), slope = sqrt((1-mean(R)^2)/(N-2)))</code></pre>
-<p><img src="C:/Users/jkirk/OneDrive - Michigan State University/Teaching/SSC442_SS21/content/content/05-content_files/figure-html/small-sample-correlation-not-normal-1.png" width="40%" /></p>
+<p><img src="/content/05-content_files/figure-html/small-sample-correlation-not-normal-1.png" width="40%" /></p>
 <p>If you increase <span class="math inline">\(N\)</span>, you will see the distribution converging to normal.</p>
 </div>
 <div id="correlation-is-not-always-a-useful-summary" class="section level3">
 <h3>Correlation is not always a useful summary</h3>
 <p>Correlation is not always a good summary of the relationship between two variables. The following four artificial datasets, referred to as Anscombe’s quartet, famously illustrate this point. All these pairs have a correlation of 0.82:</p>
 <pre><code>## `geom_smooth()` using formula &#39;y ~ x&#39;</code></pre>
-<p><img src="C:/Users/jkirk/OneDrive - Michigan State University/Teaching/SSC442_SS21/content/content/05-content_files/figure-html/ascombe-quartet-1.png" width="672" /></p>
+<p><img src="/content/05-content_files/figure-html/ascombe-quartet-1.png" width="672" /></p>
 <p>Correlation is only meaningful in a particular context. To help us understand when it is that correlation is meaningful as a summary statistic, we will return to the example of predicting a son’s height using his father’s height. This will help motivate and define linear regression. We start by demonstrating how correlation can be useful for prediction.</p>
 </div>
 </div>
@@ -787,11 +787,11 @@ conditional_avg</code></pre>
   ggplot(aes(father_strata, son)) +
   geom_boxplot() +
   geom_point()</code></pre>
-<p><img src="C:/Users/jkirk/OneDrive - Michigan State University/Teaching/SSC442_SS21/content/content/05-content_files/figure-html/boxplot-1-1.png" width="40%" /></p>
+<p><img src="/content/05-content_files/figure-html/boxplot-1-1.png" width="40%" /></p>
 <p>Not surprisingly, the centers of the groups are increasing with height.
 Furthermore, these centers appear to follow a linear relationship. Below we plot the averages of each group. If we take into account that these averages are random variables with standard errors, the data is consistent with these points following a straight line:</p>
 <pre><code>## `summarise()` ungrouping output (override with `.groups` argument)</code></pre>
-<p><img src="C:/Users/jkirk/OneDrive - Michigan State University/Teaching/SSC442_SS21/content/content/05-content_files/figure-html/conditional-averages-follow-line-1.png" width="40%" /></p>
+<p><img src="/content/05-content_files/figure-html/conditional-averages-follow-line-1.png" width="40%" /></p>
 <p>The fact that these conditional averages follow a line is not a coincidence. In the next section, we explain that the line these averages follow is what we call the <em>regression line</em>, which improves the precision of our estimates. However, it is not always appropriate to estimate conditional expectations with the regression line so we also describe Galton’s theoretical justification for using the regression line.</p>
 </div>
 <div id="the-regression-line" class="section level2">
@@ -820,7 +820,7 @@ galton_heights %&gt;%
   ggplot(aes(father, son)) +
   geom_point(alpha = 0.5) +
   geom_abline(slope = r * s_y/s_x, intercept = mu_y - r * s_y/s_x * mu_x)</code></pre>
-<p><img src="C:/Users/jkirk/OneDrive - Michigan State University/Teaching/SSC442_SS21/content/content/05-content_files/figure-html/regression-line-1.png" width="40%" /></p>
+<p><img src="/content/05-content_files/figure-html/regression-line-1.png" width="40%" /></p>
 <p>The regression formula implies that if we first standardize the variables, that is subtract the average and divide by the standard deviation, then the regression line has intercept 0 and slope equal to the correlation <span class="math inline">\(\rho\)</span>. You can make same plot, but using standard units like this:</p>
 <pre class="r"><code>galton_heights %&gt;%
   ggplot(aes(scale(father), scale(son))) +
@@ -873,7 +873,7 @@ regression_prediction &lt;- replicate(B, {
 <p>The main way we motivate the use of correlation involves what is called the <em>bivariate normal distribution</em>.</p>
 <p>When a pair of random variables is approximated by the bivariate normal distribution, scatterplots look like ovals. These ovals can be thin (high correlation) or circle-shaped (no correlation).</p>
 <!--
-<img src="C:/Users/jkirk/OneDrive - Michigan State University/Teaching/SSC442_SS21/content/content/05-content_files/figure-html/bivariate-ovals-1.png" width="672" />
+<img src="/content/05-content_files/figure-html/bivariate-ovals-1.png" width="672" />
 -->
 <p>A more technical way to define the bivariate normal distribution is the following: if <span class="math inline">\(X\)</span> is a normally distributed random variable, <span class="math inline">\(Y\)</span> is also a normally distributed random variable, and the conditional distribution of <span class="math inline">\(Y\)</span> for any <span class="math inline">\(X=x\)</span> is approximately normal, then the pair is approximately bivariate normal.</p>
 <p>If we think the height data is well approximated by the bivariate normal distribution, then we should see the normal approximation hold for each strata. Here we stratify the son heights by the standardized father heights and see that the assumption appears to hold:</p>
@@ -883,7 +883,7 @@ regression_prediction &lt;- replicate(B, {
   ggplot() +
   stat_qq(aes(sample = son)) +
   facet_wrap( ~ z_father)</code></pre>
-<p><img src="C:/Users/jkirk/OneDrive - Michigan State University/Teaching/SSC442_SS21/content/content/05-content_files/figure-html/qqnorm-of-strata-1.png" width="672" /></p>
+<p><img src="/content/05-content_files/figure-html/qqnorm-of-strata-1.png" width="672" /></p>
 <p>Now we come back to defining correlation. Galton used mathematical statistics to demonstrate that, when two variables follow a bivariate normal distribution, computing the regression line is equivalent to computing conditional expectations. We don’t show the derivation here, but we can show that under this assumption, for any given value of <span class="math inline">\(x\)</span>, the expected value of the <span class="math inline">\(Y\)</span> in pairs for which <span class="math inline">\(X=x\)</span> is:</p>
 <p><span class="math display">\[
 \mbox{E}(Y | X=x) = \mu_Y +  \rho \frac{X-\mu_X}{\sigma_X}\sigma_Y
@@ -929,7 +929,7 @@ b_2 &lt;- mu_x - m_2 * mu_y</code></pre>
   geom_point(alpha = 0.5) +
   geom_abline(intercept = b_1, slope = m_1, col = &quot;blue&quot;) +
   geom_abline(intercept = -b_2/m_2, slope = 1/m_2, col = &quot;red&quot;)</code></pre>
-<p><img src="C:/Users/jkirk/OneDrive - Michigan State University/Teaching/SSC442_SS21/content/content/05-content_files/figure-html/two-regression-lines-1.png" width="40%" /></p>
+<p><img src="/content/05-content_files/figure-html/two-regression-lines-1.png" width="40%" /></p>
 <div class="fyi">
 <p><strong>TRY IT</strong></p>
 <ol style="list-style-type: decimal">
@@ -958,7 +958,7 @@ b_2 &lt;- mu_x - m_2 * mu_y</code></pre>
                 </div>
 
                 <div class="body-footer">
-                    <p>Last updated on January 10, 2021</p>
+                    <p>Last updated on February 7, 2021</p>
 
                     
 

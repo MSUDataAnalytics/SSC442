@@ -3561,7 +3561,7 @@ galton_heights &amp;lt;- GaltonFamilies %&amp;gt;%
 &lt;p&gt;However, this summary fails to describe an important characteristic of the data: the trend that the taller the father, the taller the son.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;galton_heights %&amp;gt;% ggplot(aes(father, son)) +
   geom_point(alpha = 0.5)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;C:/Users/jkirk/OneDrive - Michigan State University/Teaching/SSC442_SS21/content/content/05-content_files/figure-html/scatterplot-1.png&#34; width=&#34;40%&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/content/05-content_files/figure-html/scatterplot-1.png&#34; width=&#34;40%&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;We will learn that the correlation coefficient is an informative summary of how two variables move together and then see how this can be used to predict one variable using the other.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;corr-coef&#34; class=&#34;section level2&#34;&gt;
@@ -3585,7 +3585,7 @@ with &lt;span class=&#34;math inline&#34;&gt;\(\mu_x, \mu_y\)&lt;/span&gt; the a
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;galton_heights %&amp;gt;% summarize(r = cor(father, son)) %&amp;gt;% pull(r)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## [1] 0.4334102&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;To see what data looks like for different values of &lt;span class=&#34;math inline&#34;&gt;\(\rho\)&lt;/span&gt;, here are six examples of pairs with correlations ranging from -0.9 to 0.99:&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;C:/Users/jkirk/OneDrive - Michigan State University/Teaching/SSC442_SS21/content/content/05-content_files/figure-html/what-correlation-looks-like-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/content/05-content_files/figure-html/what-correlation-looks-like-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;div id=&#34;sample-correlation-is-a-random-variable&#34; class=&#34;section level3&#34;&gt;
 &lt;h3&gt;Sample correlation is a random variable&lt;/h3&gt;
 &lt;p&gt;Before we continue connecting correlation to regression, let’s remind ourselves about random variability.&lt;/p&gt;
@@ -3602,7 +3602,7 @@ R &amp;lt;- replicate(B, {
     pull(r)
 })
 qplot(R, geom = &amp;quot;histogram&amp;quot;, binwidth = 0.05, color = I(&amp;quot;black&amp;quot;))&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;C:/Users/jkirk/OneDrive - Michigan State University/Teaching/SSC442_SS21/content/content/05-content_files/figure-html/sample-correlation-distribution-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/content/05-content_files/figure-html/sample-correlation-distribution-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;We see that the expected value of &lt;code&gt;R&lt;/code&gt; is the population correlation:&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;mean(R)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## [1] 0.4307393&lt;/code&gt;&lt;/pre&gt;
@@ -3615,14 +3615,14 @@ qplot(R, geom = &amp;quot;histogram&amp;quot;, binwidth = 0.05, color = I(&amp;q
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(aes(sample=R), data = data.frame(R)) +
   stat_qq() +
   geom_abline(intercept = mean(R), slope = sqrt((1-mean(R)^2)/(N-2)))&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;C:/Users/jkirk/OneDrive - Michigan State University/Teaching/SSC442_SS21/content/content/05-content_files/figure-html/small-sample-correlation-not-normal-1.png&#34; width=&#34;40%&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/content/05-content_files/figure-html/small-sample-correlation-not-normal-1.png&#34; width=&#34;40%&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;If you increase &lt;span class=&#34;math inline&#34;&gt;\(N\)&lt;/span&gt;, you will see the distribution converging to normal.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;correlation-is-not-always-a-useful-summary&#34; class=&#34;section level3&#34;&gt;
 &lt;h3&gt;Correlation is not always a useful summary&lt;/h3&gt;
 &lt;p&gt;Correlation is not always a good summary of the relationship between two variables. The following four artificial datasets, referred to as Anscombe’s quartet, famously illustrate this point. All these pairs have a correlation of 0.82:&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;## `geom_smooth()` using formula &amp;#39;y ~ x&amp;#39;&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;C:/Users/jkirk/OneDrive - Michigan State University/Teaching/SSC442_SS21/content/content/05-content_files/figure-html/ascombe-quartet-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/content/05-content_files/figure-html/ascombe-quartet-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Correlation is only meaningful in a particular context. To help us understand when it is that correlation is meaningful as a summary statistic, we will return to the example of predicting a son’s height using his father’s height. This will help motivate and define linear regression. We start by demonstrating how correlation can be useful for prediction.&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
@@ -3659,11 +3659,11 @@ conditional_avg&lt;/code&gt;&lt;/pre&gt;
   ggplot(aes(father_strata, son)) +
   geom_boxplot() +
   geom_point()&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;C:/Users/jkirk/OneDrive - Michigan State University/Teaching/SSC442_SS21/content/content/05-content_files/figure-html/boxplot-1-1.png&#34; width=&#34;40%&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/content/05-content_files/figure-html/boxplot-1-1.png&#34; width=&#34;40%&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Not surprisingly, the centers of the groups are increasing with height.
 Furthermore, these centers appear to follow a linear relationship. Below we plot the averages of each group. If we take into account that these averages are random variables with standard errors, the data is consistent with these points following a straight line:&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;## `summarise()` ungrouping output (override with `.groups` argument)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;C:/Users/jkirk/OneDrive - Michigan State University/Teaching/SSC442_SS21/content/content/05-content_files/figure-html/conditional-averages-follow-line-1.png&#34; width=&#34;40%&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/content/05-content_files/figure-html/conditional-averages-follow-line-1.png&#34; width=&#34;40%&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;The fact that these conditional averages follow a line is not a coincidence. In the next section, we explain that the line these averages follow is what we call the &lt;em&gt;regression line&lt;/em&gt;, which improves the precision of our estimates. However, it is not always appropriate to estimate conditional expectations with the regression line so we also describe Galton’s theoretical justification for using the regression line.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;the-regression-line&#34; class=&#34;section level2&#34;&gt;
@@ -3692,7 +3692,7 @@ galton_heights %&amp;gt;%
   ggplot(aes(father, son)) +
   geom_point(alpha = 0.5) +
   geom_abline(slope = r * s_y/s_x, intercept = mu_y - r * s_y/s_x * mu_x)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;C:/Users/jkirk/OneDrive - Michigan State University/Teaching/SSC442_SS21/content/content/05-content_files/figure-html/regression-line-1.png&#34; width=&#34;40%&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/content/05-content_files/figure-html/regression-line-1.png&#34; width=&#34;40%&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;The regression formula implies that if we first standardize the variables, that is subtract the average and divide by the standard deviation, then the regression line has intercept 0 and slope equal to the correlation &lt;span class=&#34;math inline&#34;&gt;\(\rho\)&lt;/span&gt;. You can make same plot, but using standard units like this:&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;galton_heights %&amp;gt;%
   ggplot(aes(scale(father), scale(son))) +
@@ -3745,7 +3745,7 @@ regression_prediction &amp;lt;- replicate(B, {
 &lt;p&gt;The main way we motivate the use of correlation involves what is called the &lt;em&gt;bivariate normal distribution&lt;/em&gt;.&lt;/p&gt;
 &lt;p&gt;When a pair of random variables is approximated by the bivariate normal distribution, scatterplots look like ovals. These ovals can be thin (high correlation) or circle-shaped (no correlation).&lt;/p&gt;
 &lt;!--
-&lt;img src=&#34;C:/Users/jkirk/OneDrive - Michigan State University/Teaching/SSC442_SS21/content/content/05-content_files/figure-html/bivariate-ovals-1.png&#34; width=&#34;672&#34; /&gt;
+&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/content/05-content_files/figure-html/bivariate-ovals-1.png&#34; width=&#34;672&#34; /&gt;
 --&gt;
 &lt;p&gt;A more technical way to define the bivariate normal distribution is the following: if &lt;span class=&#34;math inline&#34;&gt;\(X\)&lt;/span&gt; is a normally distributed random variable, &lt;span class=&#34;math inline&#34;&gt;\(Y\)&lt;/span&gt; is also a normally distributed random variable, and the conditional distribution of &lt;span class=&#34;math inline&#34;&gt;\(Y\)&lt;/span&gt; for any &lt;span class=&#34;math inline&#34;&gt;\(X=x\)&lt;/span&gt; is approximately normal, then the pair is approximately bivariate normal.&lt;/p&gt;
 &lt;p&gt;If we think the height data is well approximated by the bivariate normal distribution, then we should see the normal approximation hold for each strata. Here we stratify the son heights by the standardized father heights and see that the assumption appears to hold:&lt;/p&gt;
@@ -3755,7 +3755,7 @@ regression_prediction &amp;lt;- replicate(B, {
   ggplot() +
   stat_qq(aes(sample = son)) +
   facet_wrap( ~ z_father)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;C:/Users/jkirk/OneDrive - Michigan State University/Teaching/SSC442_SS21/content/content/05-content_files/figure-html/qqnorm-of-strata-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/content/05-content_files/figure-html/qqnorm-of-strata-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Now we come back to defining correlation. Galton used mathematical statistics to demonstrate that, when two variables follow a bivariate normal distribution, computing the regression line is equivalent to computing conditional expectations. We don’t show the derivation here, but we can show that under this assumption, for any given value of &lt;span class=&#34;math inline&#34;&gt;\(x\)&lt;/span&gt;, the expected value of the &lt;span class=&#34;math inline&#34;&gt;\(Y\)&lt;/span&gt; in pairs for which &lt;span class=&#34;math inline&#34;&gt;\(X=x\)&lt;/span&gt; is:&lt;/p&gt;
 &lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
 \mbox{E}(Y | X=x) = \mu_Y +  \rho \frac{X-\mu_X}{\sigma_X}\sigma_Y
@@ -3801,7 +3801,7 @@ b_2 &amp;lt;- mu_x - m_2 * mu_y&lt;/code&gt;&lt;/pre&gt;
   geom_point(alpha = 0.5) +
   geom_abline(intercept = b_1, slope = m_1, col = &amp;quot;blue&amp;quot;) +
   geom_abline(intercept = -b_2/m_2, slope = 1/m_2, col = &amp;quot;red&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;C:/Users/jkirk/OneDrive - Michigan State University/Teaching/SSC442_SS21/content/content/05-content_files/figure-html/two-regression-lines-1.png&#34; width=&#34;40%&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/content/05-content_files/figure-html/two-regression-lines-1.png&#34; width=&#34;40%&#34; /&gt;&lt;/p&gt;
 &lt;div class=&#34;fyi&#34;&gt;
 &lt;p&gt;&lt;strong&gt;TRY IT&lt;/strong&gt;&lt;/p&gt;
 &lt;ol style=&#34;list-style-type: decimal&#34;&gt;
@@ -4195,8 +4195,8 @@ gapminder %&amp;gt;%
 &lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/content/03-content_files/figure-html/dollars-per-day-distribution-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;We use the &lt;code&gt;color = &#34;black&#34;&lt;/code&gt; argument to draw a boundary and clearly distinguish the bins.&lt;/p&gt;
 &lt;p&gt;In this plot, we see that for the majority of countries, averages are below $10 a day.&lt;/p&gt;
-&lt;p&gt;However, the majority of the x-axis is dedicated to the &lt;code&gt;35&lt;/code&gt; countries with averages above $10. So the plot is not very informative about countries with values below $10 a day.&lt;/p&gt;
-&lt;p&gt;It might be more informative to quickly be able to see how many countries have average daily incomes of about $1 (extremely poor), $2 (very poor), $4 (poor), $8 (middle), $16 (well off), $32 (rich), $64 (very rich) per day. These changes are multiplicative and log transformations convert multiplicative changes into additive ones: when using base 2, a doubling of a value turns into an increase by 1.&lt;/p&gt;
+&lt;p&gt;However, the majority of the x-axis is dedicated to the &lt;code&gt;35&lt;/code&gt; countries with averages above $ 10. So the plot is not very informative about countries with values below $ 10 a day.&lt;/p&gt;
+&lt;p&gt;It might be more informative to quickly be able to see how many countries have average daily incomes of about $ 1 (extremely poor), $ 2 (very poor), $ 4 (poor), $ 8 (middle), $ 16 (well off), $ 32 (rich), $ 64 (very rich) per day. These changes are multiplicative and log transformations convert multiplicative changes into additive ones: when using base 2, a doubling of a value turns into an increase by 1.&lt;/p&gt;
 &lt;p&gt;Here is the distribution if we apply a log base 2 transform:&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;gapminder %&amp;gt;%
   filter(year == past_year &amp;amp; !is.na(gdp)) %&amp;gt;%
@@ -9494,10 +9494,9 @@ case_when(x &amp;lt; 0 ~ &amp;quot;Negative&amp;quot;,
         &lt;tr&gt;
             &lt;td align=&#34;right&#34; style=&#34;width:18%;text-align:right&#34;&gt;Week 5 (Feb 23/25)&lt;/td&gt;
             &lt;td style=&#34;width:50%;text-align:left&#34;&gt;Linear Regression I&lt;/td&gt;
-            &lt;td align=&#34;center&#34; style=&#34;width:10%;text-align:center&#34;&gt;
-                &lt;font color=&#34;f1f1f1&#34;&gt;
-                    &lt;i class=&#34;fas fa-book-reader fa-lg&#34;&gt;&lt;/i&gt;&lt;/font&gt;
-            &lt;/td&gt;
+            &lt;td align=&#34;center&#34; style=&#34;width:10%;text-align:center&#34;&gt;&lt;a
+                    href=&#34;https://datavizm20.classes.andrewheiss.com/content/05-content/&#34;&gt;
+                    &lt;i class=&#34;fas fa-book-reader fa-lg&#34;&gt;&lt;/i&gt;&lt;/a&gt;&lt;/td&gt;
             &lt;td align=&#34;center&#34; style=&#34;width:10%;text-align:center&#34;&gt;
                 &lt;font color=&#34;f1f1f1&#34;&gt;
                     &lt;i class=&#34;fas fa-laptop-code fa-lg&#34;&gt;&lt;/i&gt;&lt;/font&gt;
