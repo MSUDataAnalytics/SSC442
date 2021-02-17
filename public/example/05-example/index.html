@@ -246,7 +246,7 @@ We will also use the Ames data again (in addition to the Atlanta weather data). 
   <meta property="twitter:image" content="https://datavizm20.classes.andrewheiss.com/img/social-image.png"><meta property="og:locale" content="en-us">
   
     
-    <meta property="article:modified_time" content="2021-01-11T16:52:29-05:00">
+    <meta property="article:modified_time" content="2021-02-16T18:40:07-05:00">
   
 
   
@@ -565,6 +565,14 @@ We will also use the Ames data again (in addition to the Atlanta weather data). 
         <a href="/example/05-example/">5: Linear Regression I</a>
       </li>
       
+      <li >
+        <a href="/example/06-example/">6: Linear Regression II</a>
+      </li>
+      
+      <li >
+        <a href="/example/07-example/">7: Linear Regression III</a>
+      </li>
+      
     </ul>
     
 
@@ -653,7 +661,7 @@ library(broom)      # For converting model objects to data frames</code></pre>
                                          name = &quot;Celsius&quot;)) +
   labs(x = NULL, y = &quot;Fahrenheit&quot;) +
   theme_minimal()</code></pre>
-<p><img src="C:/Users/jkirk/OneDrive - Michigan State University/Teaching/SSC442_SS21/content/example/05-example_files/figure-html/atl-weather-dual-axes-1.png" width="576" style="display: block; margin: auto;" /></p>
+<p><img src="/example/05-example_files/figure-html/atl-weather-dual-axes-1.png" width="576" style="display: block; margin: auto;" /></p>
 <p>For fun, we could also convert it to Kelvin, which uses this formula:</p>
 <p><span class="math display">\[
 \text{K} = (\text{F} - 32) \times \frac{5}{9} + 273.15
@@ -664,7 +672,7 @@ library(broom)      # For converting model objects to data frames</code></pre>
                                          name = &quot;Kelvin&quot;)) +
   labs(x = NULL, y = &quot;Fahrenheit&quot;) +
   theme_minimal()</code></pre>
-<p><img src="C:/Users/jkirk/OneDrive - Michigan State University/Teaching/SSC442_SS21/content/example/05-example_files/figure-html/atl-weather-dual-axes-kelvin-1.png" width="576" style="display: block; margin: auto;" /></p>
+<p><img src="/example/05-example_files/figure-html/atl-weather-dual-axes-kelvin-1.png" width="576" style="display: block; margin: auto;" /></p>
 </div>
 <div id="combining-plots" class="section level3">
 <h3>Combining plots</h3>
@@ -680,7 +688,7 @@ temp_plot &lt;- ggplot(weather_atl, aes(x = time, y = temperatureHigh)) +
   labs(x = NULL, y = &quot;Fahrenheit&quot;) +
   theme_minimal()
 temp_plot</code></pre>
-<p><img src="C:/Users/jkirk/OneDrive - Michigan State University/Teaching/SSC442_SS21/content/example/05-example_files/figure-html/create-temp-humid-plots-1.png" width="576" style="display: block; margin: auto;" /></p>
+<p><img src="/example/05-example_files/figure-html/create-temp-humid-plots-1.png" width="576" style="display: block; margin: auto;" /></p>
 <pre class="r"><code># Humidity in Atlanta
 humidity_plot &lt;- ggplot(weather_atl, aes(x = time, y = humidity)) +
   geom_line() +
@@ -688,20 +696,20 @@ humidity_plot &lt;- ggplot(weather_atl, aes(x = time, y = humidity)) +
   labs(x = NULL, y = &quot;Humidity&quot;) +
   theme_minimal()
 humidity_plot</code></pre>
-<p><img src="C:/Users/jkirk/OneDrive - Michigan State University/Teaching/SSC442_SS21/content/example/05-example_files/figure-html/create-temp-humid-plots-2.png" width="576" style="display: block; margin: auto;" /></p>
+<p><img src="/example/05-example_files/figure-html/create-temp-humid-plots-2.png" width="576" style="display: block; margin: auto;" /></p>
 <p>Right now, these are two separate plots, but we can combine them with <code>+</code> if we load <strong>patchwork</strong>:</p>
 <pre class="r"><code>library(patchwork)
 
 temp_plot + humidity_plot</code></pre>
-<p><img src="C:/Users/jkirk/OneDrive - Michigan State University/Teaching/SSC442_SS21/content/example/05-example_files/figure-html/patchwork-first-1.png" width="576" style="display: block; margin: auto;" /></p>
+<p><img src="/example/05-example_files/figure-html/patchwork-first-1.png" width="576" style="display: block; margin: auto;" /></p>
 <p>By default, <strong>patchwork</strong> will put these side-by-side, but we can change that with the <code>plot_layout()</code> function:</p>
 <pre class="r"><code>temp_plot + humidity_plot +
   plot_layout(ncol = 1)</code></pre>
-<p><img src="C:/Users/jkirk/OneDrive - Michigan State University/Teaching/SSC442_SS21/content/example/05-example_files/figure-html/patchwork-vertical-1.png" width="576" style="display: block; margin: auto;" /></p>
+<p><img src="/example/05-example_files/figure-html/patchwork-vertical-1.png" width="576" style="display: block; margin: auto;" /></p>
 <p>We can also play with other arguments in <code>plot_layout()</code>. If we want to make the temperature plot taller and shrink the humidity section, we can specify the proportions for the plot heights. Here, the temperature plot is 70% of the height and the humidity plot is 30%:</p>
 <pre class="r"><code>temp_plot + humidity_plot +
   plot_layout(ncol = 1, heights = c(0.7, 0.3))</code></pre>
-<p><img src="C:/Users/jkirk/OneDrive - Michigan State University/Teaching/SSC442_SS21/content/example/05-example_files/figure-html/patchwork-vertical-resized-1.png" width="576" style="display: block; margin: auto;" /></p>
+<p><img src="/example/05-example_files/figure-html/patchwork-vertical-resized-1.png" width="576" style="display: block; margin: auto;" /></p>
 </div>
 <div id="scatterplot-matrices" class="section level3">
 <h3>Scatterplot matrices</h3>
@@ -712,7 +720,7 @@ weather_correlations &lt;- weather_atl %&gt;%
   select(temperatureHigh, temperatureLow, humidity, windSpeed, precipProbability)
 
 ggpairs(weather_correlations)</code></pre>
-<p><img src="C:/Users/jkirk/OneDrive - Michigan State University/Teaching/SSC442_SS21/content/example/05-example_files/figure-html/ggpairs-1.png" width="864" style="display: block; margin: auto;" /></p>
+<p><img src="/example/05-example_files/figure-html/ggpairs-1.png" width="864" style="display: block; margin: auto;" /></p>
 <p>It looks like high and low temperatures are extremely highly positively correlated (r = 0.92). Wind spped and temperature are moderately negatively correlated, with low temperatures having a stronger negative correlation (r = -0.45). There’s no correlation whatsoever between low temperatures and the precipitation probability (r = -0.03) or humidity and high temperatures (r = -0.03).</p>
 <p>Even though <code>ggpairs()</code> doesn’t use the standard <code>ggplot(...) + geom_whatever()</code> syntax we’re familiar with, it does behind the scenes, so you can add regular ggplot layers to it:</p>
 <pre class="r"><code>ggpairs(weather_correlations) +
@@ -798,7 +806,7 @@ things_to_correlate_long</code></pre>
   coord_equal() +
   theme_minimal() +
   theme(panel.grid = element_blank())</code></pre>
-<p><img src="C:/Users/jkirk/OneDrive - Michigan State University/Teaching/SSC442_SS21/content/example/05-example_files/figure-html/cor-heatmap-1.png" width="480" style="display: block; margin: auto;" /></p>
+<p><img src="/example/05-example_files/figure-html/cor-heatmap-1.png" width="480" style="display: block; margin: auto;" /></p>
 <p>Instead of using a heatmap, we can also use points, which encode the correlation information both as color <em>and</em> as size. To do that, we just need to switch <code>geom_tile()</code> to <code>geom_point()</code> and set the <code>size = cor</code> mapping:</p>
 <pre class="r"><code>ggplot(things_to_correlate_long,
        aes(x = measure2, y = measure1, color = cor)) +
@@ -811,7 +819,7 @@ things_to_correlate_long</code></pre>
   coord_equal() +
   theme_minimal() +
   theme(panel.grid = element_blank())</code></pre>
-<p><img src="C:/Users/jkirk/OneDrive - Michigan State University/Teaching/SSC442_SS21/content/example/05-example_files/figure-html/cor-points-1.png" width="480" style="display: block; margin: auto;" /></p>
+<p><img src="/example/05-example_files/figure-html/cor-points-1.png" width="480" style="display: block; margin: auto;" /></p>
 </div>
 <div id="simple-regression" class="section level3">
 <h3>Simple regression</h3>
@@ -844,7 +852,7 @@ tidy(model_simple, conf.int = TRUE)</code></pre>
   geom_point() +
   geom_smooth(method = &quot;lm&quot;)</code></pre>
 <pre><code>## `geom_smooth()` using formula &#39;y ~ x&#39;</code></pre>
-<p><img src="C:/Users/jkirk/OneDrive - Michigan State University/Teaching/SSC442_SS21/content/example/05-example_files/figure-html/plot-simple-model-1.png" width="576" style="display: block; margin: auto;" /></p>
+<p><img src="/example/05-example_files/figure-html/plot-simple-model-1.png" width="576" style="display: block; margin: auto;" /></p>
 <p>And indeed, as humidity increases, temperatures decrease.</p>
 </div>
 <div id="coefficient-plots" class="section level3">
@@ -885,7 +893,7 @@ ggplot(model_tidied,
   geom_pointrange(aes(xmin = conf.low, xmax = conf.high)) +
   labs(x = &quot;Coefficient estimate&quot;, y = NULL) +
   theme_minimal()</code></pre>
-<p><img src="C:/Users/jkirk/OneDrive - Michigan State University/Teaching/SSC442_SS21/content/example/05-example_files/figure-html/coef-plot-1.png" width="576" style="display: block; margin: auto;" /></p>
+<p><img src="/example/05-example_files/figure-html/coef-plot-1.png" width="576" style="display: block; margin: auto;" /></p>
 <p>Neat! Now we can see how big these different coefficients are and how close they are to zero. Wind speed has a big significant effect on temperature. The others are all very close to zero.</p>
 </div>
 <div id="marginal-effects-plots" class="section level3">
@@ -967,7 +975,7 @@ predicted_values %&gt;%
   geom_line(size = 1, color = &quot;#BF3984&quot;) +
   labs(x = &quot;Wind speed (MPH)&quot;, y = &quot;Predicted high temperature (F)&quot;) +
   theme_minimal()</code></pre>
-<p><img src="C:/Users/jkirk/OneDrive - Michigan State University/Teaching/SSC442_SS21/content/example/05-example_files/figure-html/mfx-plot-simple-1.png" width="576" style="display: block; margin: auto;" /></p>
+<p><img src="/example/05-example_files/figure-html/mfx-plot-simple-1.png" width="576" style="display: block; margin: auto;" /></p>
 <p>We just manipulated one of the model coefficients and held everything else at its mean. We can manipulate multiple variables too and encode them all on the graph. For instance, what is the effect of windspeed <em>and</em> cloud cover on the temperature?</p>
 <p>We’ll follow the same process, but vary both <code>windSpeed</code> and <code>cloudCover_scaled</code>. Instead of using <code>tibble()</code>, we use <code>exapnd_grid()</code>, which creates every combination of the variables we specify. Instead of varying cloud cover by every possible value (like from 0 to 100), we’ll choose four possible cloud cover types: 0%, 33%, 66%, and 100%. Everything else will be at its mean.</p>
 <pre class="r"><code>newdata_fancy &lt;- expand_grid(windSpeed = seq(0, 8, 0.5),
@@ -1007,7 +1015,7 @@ ggplot(predicted_values_fancy, aes(x = windSpeed, y = .fitted)) +
   theme_minimal() +
   guides(fill = FALSE, color = FALSE) +
   facet_wrap(vars(cloudCover_scaled), nrow = 1)</code></pre>
-<p><img src="C:/Users/jkirk/OneDrive - Michigan State University/Teaching/SSC442_SS21/content/example/05-example_files/figure-html/mfx-complex-1.png" width="864" style="display: block; margin: auto;" /></p>
+<p><img src="/example/05-example_files/figure-html/mfx-complex-1.png" width="864" style="display: block; margin: auto;" /></p>
 <p>Nice. Temperatures go down slightly as cloud cover increases. If we wanted to improve the model, we’d add an interaction term between cloud cover and windspeed so that each line would have a different slope in addition to a different intercept, but that’s beyond the scope of this class.</p>
 </div>
 </div>
@@ -1022,7 +1030,7 @@ ggplot(predicted_values_fancy, aes(x = windSpeed, y = .fitted)) +
                 </div>
 
                 <div class="body-footer">
-                    <p>Last updated on January 11, 2021</p>
+                    <p>Last updated on February 16, 2021</p>
 
                     
 
