@@ -30,7 +30,7 @@
   
     
   
-  <meta name="description" content="Backstory and Set UpLinear ModelsAssesing Model AccuracyModel ComplexityTest-Train SplitAdding Flexibility to Linear ModelsREAD THIS CAREFULLY
+  <meta name="description" content="Backstory and Set UpData CleaningLinear ModelsAssesing Model AccuracyModel ComplexityTest-Train SplitAdding Flexibility to Linear ModelsREAD THIS CAREFULLY
 The content below describes both Lab 7 and Lab 8. Lab 7 is Exercise 1; Lab 8 is Exercise 2. Also, you may find some other tasks in the text…
 You must turn in a PDF document of your R Markdown code. Submit this to D2L by 11:59 PM Eastern Time on Monday, March 15th for Lab 7; turn in Lab 8 by 11:59 PM Eastern Time on Monday, March 22nd.">
 
@@ -240,7 +240,7 @@ You must turn in a PDF document of your R Markdown code. Submit this to D2L by 1
   <meta property="og:site_name" content="Data Analytics">
   <meta property="og:url" content="https://datavizm20.classes.andrewheiss.com/assignment/07-assignment/">
   <meta property="og:title" content="Advanced Model Building | Data Analytics">
-  <meta property="og:description" content="Backstory and Set UpLinear ModelsAssesing Model AccuracyModel ComplexityTest-Train SplitAdding Flexibility to Linear ModelsREAD THIS CAREFULLY
+  <meta property="og:description" content="Backstory and Set UpData CleaningLinear ModelsAssesing Model AccuracyModel ComplexityTest-Train SplitAdding Flexibility to Linear ModelsREAD THIS CAREFULLY
 The content below describes both Lab 7 and Lab 8. Lab 7 is Exercise 1; Lab 8 is Exercise 2. Also, you may find some other tasks in the text…
 You must turn in a PDF document of your R Markdown code. Submit this to D2L by 11:59 PM Eastern Time on Monday, March 15th for Lab 7; turn in Lab 8 by 11:59 PM Eastern Time on Monday, March 22nd."><meta property="og:image" content="https://datavizm20.classes.andrewheiss.com/img/social-image.png">
   <meta property="twitter:image" content="https://datavizm20.classes.andrewheiss.com/img/social-image.png"><meta property="og:locale" content="en-us">
@@ -248,7 +248,7 @@ You must turn in a PDF document of your R Markdown code. Submit this to D2L by 1
     
       <meta property="article:published_time" content="2021-02-26T00:00:00&#43;00:00">
     
-    <meta property="article:modified_time" content="2021-02-16T17:56:07-05:00">
+    <meta property="article:modified_time" content="2021-03-09T05:48:36-05:00">
   
 
   
@@ -624,6 +624,7 @@ You must turn in a PDF document of your R Markdown code. Submit this to D2L by 1
 <div id="TOC">
 <ul>
 <li><a href="#backstory-and-set-up">Backstory and Set Up</a></li>
+<li><a href="#data-cleaning">Data Cleaning</a></li>
 <li><a href="#linear-models">Linear Models</a><ul>
 <li><a href="#assesing-model-accuracy">Assesing Model Accuracy</a></li>
 <li><a href="#model-complexity">Model Complexity</a></li>
@@ -645,6 +646,12 @@ You must turn in a PDF document of your R Markdown code. Submit this to D2L by 1
 <pre class="r"><code>Ames &lt;- read.table(&quot;https://msudataanalytics.github.io/SSC442/Labs/data/ames.csv&quot;,
                  header = TRUE,
                  sep = &quot;,&quot;)</code></pre>
+</div>
+<div id="data-cleaning" class="section level2">
+<h2>Data Cleaning</h2>
+<p>Oh, the Ames data yet again. It’s given us lots of trouble. Many of you have found a few variables (columns) that should be avoided. The main problem is that some columns have only one value in them, or they have only <code>NA</code> and one value, so once <code>lm(...)</code> drops the <code>NA</code> rows, they are left with only one value. Linear regression by OLS does not like variables that don’t vary! So, let’s be systematic about figuring out which columns in our data are to be avoided.</p>
+<p>The <code>skimr</code> package is very helpful for seeing what our data contains. Install it, and then use <code>skim(Ames)</code> directly in the console (we’re just looking at data at the moment). Take a look at the “complete rate” column - this tells us the fraction of observations in that column that are <code>NA</code>. If it’s very small (see <code>Alley</code>), then that variable will be problematic. The “n_unique” column tells us if there are few or many different values - a “1” in “n_unique” is definitely going to be a problem!</p>
+<p>You can make a note of those columns that have extremely low “complete rates” and drop them to start off. There are about 5-6 of them that will cause an error if we include them in a regression.</p>
 </div>
 <div id="linear-models" class="section level2">
 <h2>Linear Models</h2>
@@ -678,13 +685,12 @@ You must turn in a PDF document of your R Markdown code. Submit this to D2L by 1
 <div class="fyi">
 <p><strong>EXERCISE 1</strong></p>
 <ol style="list-style-type: decimal">
-<li><p>Load the <code>Ames</code> data. Drop the variables <code>OverallCond</code> and <code>OverallQual</code>.</p></li>
+<li><p>Load the <code>Ames</code> data. Using <code>skimr::skim</code>, find the variables that have a complete rate of below 60% and drop them. 60% isn’t a magic number by any means, the “right” number is entirely dependent on your data. It is always standard practice to document the fields you have dropped from the data, so make sure you state which variables have been dropped.</p></li>
+<li><p>Take a look at <code>Utilities</code>. Use the <code>table</code> function to see a tabulation of the values of <code>Utilities</code>. Do you see why this field is not likely to be useful to us, or even problematic?</p></li>
 <li><p>Using <strong>forward selection</strong> (that is, select one variable, then select another) create a series of models up to complexity length 15. You may use any variable within the dataset, including categorical variables.</p></li>
 <li><p>Create a chart plotting the model complexity as the <span class="math inline">\(x\)</span>-axis variable and RMSE as the <span class="math inline">\(y\)</span>-axis variable. Describe any patterns you see. Do you think you should use the full-size model? Why or why not? What criterion are you using to make this statement?</p></li>
 </ol>
 </div>
-<hr />
-<p>Weekly writing: After completing the exercise above, reflect on the process. Was this efficient? Was it enjoyable? Do you think you created an highly predictive model? Write a short paragraph. As always, submit this separately into the “weekly writing” assigment on D2L.</p>
 <hr />
 </div>
 <div id="test-train-split" class="section level3">
@@ -838,7 +844,7 @@ lines(model_complexity, test_rmse, type = &quot;b&quot;, col = &quot;darkorange&
                 </div>
 
                 <div class="body-footer">
-                    <p>Last updated on February 16, 2021</p>
+                    <p>Last updated on March 9, 2021</p>
 
                     
 

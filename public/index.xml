@@ -22,6 +22,7 @@
 &lt;div id=&#34;TOC&#34;&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;a href=&#34;#backstory-and-set-up&#34;&gt;Backstory and Set Up&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#data-cleaning&#34;&gt;Data Cleaning&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;#linear-models&#34;&gt;Linear Models&lt;/a&gt;&lt;ul&gt;
 &lt;li&gt;&lt;a href=&#34;#assesing-model-accuracy&#34;&gt;Assesing Model Accuracy&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;#model-complexity&#34;&gt;Model Complexity&lt;/a&gt;&lt;/li&gt;
@@ -43,6 +44,12 @@
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;Ames &amp;lt;- read.table(&amp;quot;https://msudataanalytics.github.io/SSC442/Labs/data/ames.csv&amp;quot;,
                  header = TRUE,
                  sep = &amp;quot;,&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;data-cleaning&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Data Cleaning&lt;/h2&gt;
+&lt;p&gt;Oh, the Ames data yet again. It’s given us lots of trouble. Many of you have found a few variables (columns) that should be avoided. The main problem is that some columns have only one value in them, or they have only &lt;code&gt;NA&lt;/code&gt; and one value, so once &lt;code&gt;lm(...)&lt;/code&gt; drops the &lt;code&gt;NA&lt;/code&gt; rows, they are left with only one value. Linear regression by OLS does not like variables that don’t vary! So, let’s be systematic about figuring out which columns in our data are to be avoided.&lt;/p&gt;
+&lt;p&gt;The &lt;code&gt;skimr&lt;/code&gt; package is very helpful for seeing what our data contains. Install it, and then use &lt;code&gt;skim(Ames)&lt;/code&gt; directly in the console (we’re just looking at data at the moment). Take a look at the “complete rate” column - this tells us the fraction of observations in that column that are &lt;code&gt;NA&lt;/code&gt;. If it’s very small (see &lt;code&gt;Alley&lt;/code&gt;), then that variable will be problematic. The “n_unique” column tells us if there are few or many different values - a “1” in “n_unique” is definitely going to be a problem!&lt;/p&gt;
+&lt;p&gt;You can make a note of those columns that have extremely low “complete rates” and drop them to start off. There are about 5-6 of them that will cause an error if we include them in a regression.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;linear-models&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Linear Models&lt;/h2&gt;
@@ -76,13 +83,12 @@
 &lt;div class=&#34;fyi&#34;&gt;
 &lt;p&gt;&lt;strong&gt;EXERCISE 1&lt;/strong&gt;&lt;/p&gt;
 &lt;ol style=&#34;list-style-type: decimal&#34;&gt;
-&lt;li&gt;&lt;p&gt;Load the &lt;code&gt;Ames&lt;/code&gt; data. Drop the variables &lt;code&gt;OverallCond&lt;/code&gt; and &lt;code&gt;OverallQual&lt;/code&gt;.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Load the &lt;code&gt;Ames&lt;/code&gt; data. Using &lt;code&gt;skimr::skim&lt;/code&gt;, find the variables that have a complete rate of below 60% and drop them. 60% isn’t a magic number by any means, the “right” number is entirely dependent on your data. It is always standard practice to document the fields you have dropped from the data, so make sure you state which variables have been dropped.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Take a look at &lt;code&gt;Utilities&lt;/code&gt;. Use the &lt;code&gt;table&lt;/code&gt; function to see a tabulation of the values of &lt;code&gt;Utilities&lt;/code&gt;. Do you see why this field is not likely to be useful to us, or even problematic?&lt;/p&gt;&lt;/li&gt;
 &lt;li&gt;&lt;p&gt;Using &lt;strong&gt;forward selection&lt;/strong&gt; (that is, select one variable, then select another) create a series of models up to complexity length 15. You may use any variable within the dataset, including categorical variables.&lt;/p&gt;&lt;/li&gt;
 &lt;li&gt;&lt;p&gt;Create a chart plotting the model complexity as the &lt;span class=&#34;math inline&#34;&gt;\(x\)&lt;/span&gt;-axis variable and RMSE as the &lt;span class=&#34;math inline&#34;&gt;\(y\)&lt;/span&gt;-axis variable. Describe any patterns you see. Do you think you should use the full-size model? Why or why not? What criterion are you using to make this statement?&lt;/p&gt;&lt;/li&gt;
 &lt;/ol&gt;
 &lt;/div&gt;
-&lt;hr /&gt;
-&lt;p&gt;Weekly writing: After completing the exercise above, reflect on the process. Was this efficient? Was it enjoyable? Do you think you created an highly predictive model? Write a short paragraph. As always, submit this separately into the “weekly writing” assigment on D2L.&lt;/p&gt;
 &lt;hr /&gt;
 &lt;/div&gt;
 &lt;div id=&#34;test-train-split&#34; class=&#34;section level3&#34;&gt;
@@ -5864,6 +5870,7 @@ mpg %&amp;gt;%
 &lt;/ul&gt;
 &lt;/div&gt;
 
+&lt;pre&gt;&lt;code&gt;## Loading required package: knitr&lt;/code&gt;&lt;/pre&gt;
 &lt;div id=&#34;required-reading&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Required Reading&lt;/h2&gt;
 &lt;ul&gt;
@@ -5919,34 +5926,32 @@ sim_data &amp;lt;- tibble(group = rep(1:g, each=N),
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;res &amp;lt;- sim_data %&amp;gt;%
   group_by(group) %&amp;gt;%
   summarize(r = cor(x, y)) %&amp;gt;%
-  arrange(desc(r))&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## `summarise()` ungrouping output (override with `.groups` argument)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;res&lt;/code&gt;&lt;/pre&gt;
+  arrange(desc(r))
+res&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## # A tibble: 1,000,000 x 2
 ##     group     r
 ##     &amp;lt;int&amp;gt; &amp;lt;dbl&amp;gt;
-##  1 429746 0.834
-##  2 869522 0.812
-##  3 682857 0.788
-##  4 412703 0.783
-##  5 582608 0.767
-##  6 903529 0.767
-##  7 887648 0.766
-##  8 518655 0.763
-##  9 190125 0.752
-## 10  32213 0.752
+##  1 677492 0.798
+##  2 410425 0.795
+##  3 688540 0.772
+##  4  38208 0.766
+##  5 956220 0.757
+##  6 432519 0.756
+##  7 449430 0.755
+##  8 288426 0.750
+##  9 958989 0.747
+## 10 123174 0.746
 ## # ... with 999,990 more rows&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;We see a maximum correlation of 0.8337689 and if you just plot the data from the group achieving this correlation, it shows a convincing plot that &lt;span class=&#34;math inline&#34;&gt;\(X\)&lt;/span&gt; and &lt;span class=&#34;math inline&#34;&gt;\(Y\)&lt;/span&gt; are in fact correlated:&lt;/p&gt;
+&lt;p&gt;We see a maximum correlation of 0.798 and if you just plot the data from the group achieving this correlation, it shows a convincing plot that &lt;span class=&#34;math inline&#34;&gt;\(X\)&lt;/span&gt; and &lt;span class=&#34;math inline&#34;&gt;\(Y\)&lt;/span&gt; are in fact correlated:&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;sim_data %&amp;gt;% filter(group == res$group[which.max(res$r)]) %&amp;gt;%
   ggplot(aes(x, y)) +
   geom_point() +
   geom_smooth(method = &amp;quot;lm&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## `geom_smooth()` using formula &amp;#39;y ~ x&amp;#39;&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/content/07-content_files/figure-html/dredging-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Remember that the correlation summary is a random variable. Here is the distribution generated by the Monte Carlo simulation:&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;res %&amp;gt;% ggplot(aes(x=r)) + geom_histogram(binwidth = 0.1, color = &amp;quot;black&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/content/07-content_files/figure-html/null-corr-hist-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
-&lt;p&gt;It’s just a mathematical fact that if we observe random correlations that are expected to be 0, but have a standard error of 0.2042214, the largest one will be close to 1.&lt;/p&gt;
+&lt;p&gt;It’s just a mathematical fact that if we observe random correlations that are expected to be 0, but have a standard error of 0.2040139, the largest one will be close to 1.&lt;/p&gt;
 &lt;p&gt;If we performed regression on this group and interpreted the p-value, we would incorrectly claim this was a statistically significant relation:&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(broom)
 sim_data %&amp;gt;%
@@ -5954,10 +5959,10 @@ sim_data %&amp;gt;%
   do(tidy(lm(y ~ x, data = .))) %&amp;gt;%
   filter(term == &amp;quot;x&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## # A tibble: 1 x 5
-##   term  estimate std.error statistic     p.value
-##   &amp;lt;chr&amp;gt;    &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt;       &amp;lt;dbl&amp;gt;
-## 1 x        0.770     0.106      7.24 0.000000226&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;This particular form of data dredging is referred to as &lt;em&gt;p-hacking&lt;/em&gt;. P-hacking is a topic of much discussion because it is a problem in scientific publications. Because publishers tend to reward statistically significant results over negative results, there is an incentive to report significant results. In epidemiology and the social sciences, for example, researchers may look for associations between an adverse outcome and several exposures and report only the one exposure that resulted in a small p-value. Furthermore, they might try fitting several different models to account for confounding and pick the one that yields the smallest p-value. In experimental disciplines, an experiment might be repeated more than once, yet only the results of the one experiment with a small p-value reported. This does not necessarily happen due to unethical behavior, but rather as a result of statistical ignorance or wishful thinking. In advanced statistics courses, you can learn methods to adjust for these multiple comparisons.&lt;/p&gt;
+##   term  estimate std.error statistic    p.value
+##   &amp;lt;chr&amp;gt;    &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt;      &amp;lt;dbl&amp;gt;
+## 1 x        0.759     0.119      6.36 0.00000174&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Now, imagine that instead of a whole lot of simulated data, you had a whole lot of actual data and waded through enough of it to find two unrelated variables that happened to show up as correlated (like divorce rates and pounds of margarine consumed). This particular form of data dredging is referred to as &lt;em&gt;p-hacking&lt;/em&gt;. P-hacking is a topic of much discussion because it is a problem in scientific publications. Because publishers tend to reward statistically significant results over negative results, there is an incentive to report significant results. In epidemiology and the social sciences, for example, researchers may look for associations between an adverse outcome and a lot of different variables that represent exposures and report only the one exposure that resulted in a small p-value. Furthermore, they might try fitting several different models to account for confounding and pick the one that yields the smallest p-value. In experimental disciplines, an experiment might be repeated more than once, yet only the results of the one experiment with a small p-value reported. This does not necessarily happen due to unethical behavior, but rather as a result of statistical ignorance or wishful thinking. In advanced statistics courses, you can learn methods to adjust for these multiple comparisons.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;outliers&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Outliers&lt;/h2&gt;
@@ -6019,37 +6024,22 @@ GaltonFamilies %&amp;gt;%
 &lt;p&gt;Incorrect interpretation due to confounders is ubiquitous in the lay press and they are often hard to detect. Here, we present a widely used example related to college admissions.&lt;/p&gt;
 &lt;div id=&#34;example-uc-berkeley-admissions&#34; class=&#34;section level3&#34;&gt;
 &lt;h3&gt;Example: UC Berkeley admissions&lt;/h3&gt;
-&lt;p&gt;Admission data from six U.C. Berkeley majors, from 1973, showed that more men were being admitted than women: 44% men were admitted compared to 30% women. PJ Bickel, EA Hammel, and JW O’Connell. Science (1975). We can load the data and
-&lt;!--compute the percent of men and women that were accepted like this:
-
-
-```r
-data(admissions)
-admissions %&gt;% group_by(gender) %&gt;%
-  summarize(percentage =
-              round(sum(admitted*applicants)/sum(applicants),1))
-```
-
-```
-## `summarise()` ungrouping output (override with `.groups` argument)
-```
-
-```
-## # A tibble: 2 x 2
-##   gender percentage
-##   &lt;chr&gt;       &lt;dbl&gt;
-## 1 men          44.5
-## 2 women        30.3
-```
---&gt;
-a statistical test, which clearly rejects the hypothesis that gender and admission are independent:&lt;/p&gt;
+&lt;p&gt;Admission data from six U.C. Berkeley majors, from 1973, showed that more men were being admitted than women: 44% men were admitted compared to 30% women. PJ Bickel, EA Hammel, and JW O’Connell. Science (1975). We can load the data and calculate the “headline” number:&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data(admissions)
 admissions %&amp;gt;% group_by(gender) %&amp;gt;%
+  summarize(percentage =
+              round(sum(admitted*applicants)/sum(applicants),1))&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 2 x 2
+##   gender percentage
+##   &amp;lt;chr&amp;gt;       &amp;lt;dbl&amp;gt;
+## 1 men          44.5
+## 2 women        30.3&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The chi-squared test compares two groups with binary outcomes (like “admit” and “nonadmit”). The null hypothesis is that the groups are not differently distributed between the outcomes. A low p-value rejects this hypothesis. Here, the test clearly rejects the hypothesis that gender and admission are independent:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;admissions %&amp;gt;% group_by(gender) %&amp;gt;%
   summarize(total_admitted = round(sum(admitted / 100 * applicants)),
             not_admitted = sum(applicants) - sum(total_admitted)) %&amp;gt;%
   select(-gender) %&amp;gt;%
   do(tidy(chisq.test(.))) %&amp;gt;% .$p.value&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## `summarise()` ungrouping output (override with `.groups` argument)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## [1] 1.055797e-21&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;But closer inspection shows a paradoxical result. Here are the percent admissions by major:&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;admissions %&amp;gt;% select(major, gender, admitted) %&amp;gt;%
@@ -6073,7 +6063,6 @@ admissions %&amp;gt;% group_by(gender) %&amp;gt;%
                                              sum(applicants) * 100) %&amp;gt;%
   ggplot(aes(major_selectivity, percent_women_applicants, label = major)) +
   geom_text()&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## `summarise()` ungrouping output (override with `.groups` argument)&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/content/07-content_files/figure-html/uc-berkeley-majors-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;There seems to be association. The plot suggests that women were much more likely to apply to the two “hard” majors: gender and major’s selectivity are confounded. Compare, for example, major B and major E. Major E is much harder to enter than major B and over 60% of applicants to major E were women, while less than 30% of the applicants of major B were women.&lt;/p&gt;
 &lt;/div&gt;
@@ -6104,7 +6093,6 @@ admissions %&gt;%
 &lt;p&gt;Now we see that major by major, there is not much difference. The size of the dot represents the number of applicants, and explains the paradox: we see large red dots and small blue dots for the easiest majors, A and B.&lt;/p&gt;
 &lt;p&gt;If we average the difference by major, we find that the percent is actually 3.5% higher for women.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;admissions %&amp;gt;%  group_by(gender) %&amp;gt;% summarize(average = mean(admitted))&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## `summarise()` ungrouping output (override with `.groups` argument)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## # A tibble: 2 x 2
 ##   gender average
 ##   &amp;lt;chr&amp;gt;    &amp;lt;dbl&amp;gt;
@@ -6117,7 +6105,6 @@ admissions %&gt;%
 &lt;p&gt;The case we have just covered is an example of Simpson’s paradox. It is called a paradox because we see the sign of the correlation flip when comparing the entire publication and specific strata. As an illustrative example, suppose you have three random variables &lt;span class=&#34;math inline&#34;&gt;\(X\)&lt;/span&gt;, &lt;span class=&#34;math inline&#34;&gt;\(Y\)&lt;/span&gt;, and &lt;span class=&#34;math inline&#34;&gt;\(Z\)&lt;/span&gt; and that we observe realizations of these. Here is a plot of simulated observations for &lt;span class=&#34;math inline&#34;&gt;\(X\)&lt;/span&gt; and &lt;span class=&#34;math inline&#34;&gt;\(Y\)&lt;/span&gt; along with the sample correlation:&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/content/07-content_files/figure-html/simpsons-paradox-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;You can see that &lt;span class=&#34;math inline&#34;&gt;\(X\)&lt;/span&gt; and &lt;span class=&#34;math inline&#34;&gt;\(Y\)&lt;/span&gt; are negatively correlated. However, once we stratify by &lt;span class=&#34;math inline&#34;&gt;\(Z\)&lt;/span&gt; (shown in different colors below) another pattern emerges:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;## `summarise()` ungrouping output (override with `.groups` argument)&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/content/07-content_files/figure-html/simpsons-paradox-explained-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;It is really &lt;span class=&#34;math inline&#34;&gt;\(Z\)&lt;/span&gt; that is negatively correlated with &lt;span class=&#34;math inline&#34;&gt;\(X\)&lt;/span&gt;. If we stratify by &lt;span class=&#34;math inline&#34;&gt;\(Z\)&lt;/span&gt;, the &lt;span class=&#34;math inline&#34;&gt;\(X\)&lt;/span&gt; and &lt;span class=&#34;math inline&#34;&gt;\(Y\)&lt;/span&gt; are actually positively correlated as seen in the plot above.&lt;/p&gt;
 &lt;/div&gt;

@@ -13,6 +13,11 @@ output:
     toc: true
 ---
 
+```{r opts, echo = FALSE}
+require(knitr)
+knitr::opts_chunk$set(warning = FALSE, error = FALSE, message = FALSE)
+
+```
 ## Required Reading
 
 - This page. 
@@ -92,7 +97,7 @@ res <- sim_data %>%
 res
 ```
 
-We see a maximum correlation of `r max(res$r)` and if you just plot the data from the group achieving this correlation, it shows a convincing plot that $X$ and $Y$ are in fact correlated:
+We see a maximum correlation of `r round(max(res$r), 3)` and if you just plot the data from the group achieving this correlation, it shows a convincing plot that $X$ and $Y$ are in fact correlated:
 
 ```{r dredging}
 sim_data %>% filter(group == res$group[which.max(res$r)]) %>%
@@ -119,7 +124,7 @@ sim_data %>%
   filter(term == "x")
 ```
 
-This particular form of data dredging is referred to as _p-hacking_. P-hacking is a topic of much discussion because it is a problem in scientific publications. Because publishers tend to reward statistically significant results over negative results, there is an incentive to report significant results. In epidemiology and the social sciences, for example, researchers may look for associations between an adverse outcome and several exposures and report only the one exposure that resulted in a small p-value. Furthermore, they might try fitting several different models to account for confounding and pick the one that yields the smallest p-value. In experimental disciplines, an experiment might be repeated more than once, yet only the results of the one experiment with a small p-value reported. This does not necessarily happen due to unethical behavior, but rather as a result of statistical ignorance or wishful thinking. In advanced statistics courses, you can learn methods to adjust for these multiple comparisons.
+Now, imagine that instead of a whole lot of simulated data, you had a whole lot of actual data and waded through enough of it to find two unrelated variables that happened to show up as correlated (like divorce rates and pounds of margarine consumed). This particular form of data dredging is referred to as _p-hacking_. P-hacking is a topic of much discussion because it is a problem in scientific publications. Because publishers tend to reward statistically significant results over negative results, there is an incentive to report significant results. In epidemiology and the social sciences, for example, researchers may look for associations between an adverse outcome and a lot of different variables that represent exposures and report only the one exposure that resulted in a small p-value. Furthermore, they might try fitting several different models to account for confounding and pick the one that yields the smallest p-value. In experimental disciplines, an experiment might be repeated more than once, yet only the results of the one experiment with a small p-value reported. This does not necessarily happen due to unethical behavior, but rather as a result of statistical ignorance or wishful thinking. In advanced statistics courses, you can learn methods to adjust for these multiple comparisons.
 
 
 ## Outliers
@@ -213,8 +218,7 @@ Incorrect interpretation due to confounders is ubiquitous in the lay press and t
 
 ### Example: UC Berkeley admissions
 
-Admission data from six U.C. Berkeley majors, from 1973, showed that more men were being admitted than women: 44% men were admitted compared to 30% women. PJ Bickel, EA Hammel, and JW O'Connell. Science (1975). We can load the data and
-<!--compute the percent of men and women that were accepted like this:
+Admission data from six U.C. Berkeley majors, from 1973, showed that more men were being admitted than women: 44% men were admitted compared to 30% women. PJ Bickel, EA Hammel, and JW O'Connell. Science (1975). We can load the data and calculate the "headline" number:
 
 ```{r}
 data(admissions)
@@ -222,11 +226,11 @@ admissions %>% group_by(gender) %>%
   summarize(percentage =
               round(sum(admitted*applicants)/sum(applicants),1))
 ```
--->
-a statistical test, which clearly rejects the hypothesis that gender and admission are independent:
+
+The chi-squared test compares two groups with binary outcomes (like "admit" and "nonadmit"). The null hypothesis is that the groups are not differently distributed between the outcomes. A low p-value rejects this hypothesis. Here, the test clearly rejects the hypothesis that gender and admission are independent:
 
 ```{r}
-data(admissions)
+
 admissions %>% group_by(gender) %>%
   summarize(total_admitted = round(sum(admitted / 100 * applicants)),
             not_admitted = sum(applicants) - sum(total_admitted)) %>%

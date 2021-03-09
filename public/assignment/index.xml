@@ -22,6 +22,7 @@
 &lt;div id=&#34;TOC&#34;&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;a href=&#34;#backstory-and-set-up&#34;&gt;Backstory and Set Up&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#data-cleaning&#34;&gt;Data Cleaning&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;#linear-models&#34;&gt;Linear Models&lt;/a&gt;&lt;ul&gt;
 &lt;li&gt;&lt;a href=&#34;#assesing-model-accuracy&#34;&gt;Assesing Model Accuracy&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;#model-complexity&#34;&gt;Model Complexity&lt;/a&gt;&lt;/li&gt;
@@ -43,6 +44,12 @@
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;Ames &amp;lt;- read.table(&amp;quot;https://msudataanalytics.github.io/SSC442/Labs/data/ames.csv&amp;quot;,
                  header = TRUE,
                  sep = &amp;quot;,&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;data-cleaning&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Data Cleaning&lt;/h2&gt;
+&lt;p&gt;Oh, the Ames data yet again. It’s given us lots of trouble. Many of you have found a few variables (columns) that should be avoided. The main problem is that some columns have only one value in them, or they have only &lt;code&gt;NA&lt;/code&gt; and one value, so once &lt;code&gt;lm(...)&lt;/code&gt; drops the &lt;code&gt;NA&lt;/code&gt; rows, they are left with only one value. Linear regression by OLS does not like variables that don’t vary! So, let’s be systematic about figuring out which columns in our data are to be avoided.&lt;/p&gt;
+&lt;p&gt;The &lt;code&gt;skimr&lt;/code&gt; package is very helpful for seeing what our data contains. Install it, and then use &lt;code&gt;skim(Ames)&lt;/code&gt; directly in the console (we’re just looking at data at the moment). Take a look at the “complete rate” column - this tells us the fraction of observations in that column that are &lt;code&gt;NA&lt;/code&gt;. If it’s very small (see &lt;code&gt;Alley&lt;/code&gt;), then that variable will be problematic. The “n_unique” column tells us if there are few or many different values - a “1” in “n_unique” is definitely going to be a problem!&lt;/p&gt;
+&lt;p&gt;You can make a note of those columns that have extremely low “complete rates” and drop them to start off. There are about 5-6 of them that will cause an error if we include them in a regression.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;linear-models&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Linear Models&lt;/h2&gt;
@@ -76,13 +83,12 @@
 &lt;div class=&#34;fyi&#34;&gt;
 &lt;p&gt;&lt;strong&gt;EXERCISE 1&lt;/strong&gt;&lt;/p&gt;
 &lt;ol style=&#34;list-style-type: decimal&#34;&gt;
-&lt;li&gt;&lt;p&gt;Load the &lt;code&gt;Ames&lt;/code&gt; data. Drop the variables &lt;code&gt;OverallCond&lt;/code&gt; and &lt;code&gt;OverallQual&lt;/code&gt;.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Load the &lt;code&gt;Ames&lt;/code&gt; data. Using &lt;code&gt;skimr::skim&lt;/code&gt;, find the variables that have a complete rate of below 60% and drop them. 60% isn’t a magic number by any means, the “right” number is entirely dependent on your data. It is always standard practice to document the fields you have dropped from the data, so make sure you state which variables have been dropped.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Take a look at &lt;code&gt;Utilities&lt;/code&gt;. Use the &lt;code&gt;table&lt;/code&gt; function to see a tabulation of the values of &lt;code&gt;Utilities&lt;/code&gt;. Do you see why this field is not likely to be useful to us, or even problematic?&lt;/p&gt;&lt;/li&gt;
 &lt;li&gt;&lt;p&gt;Using &lt;strong&gt;forward selection&lt;/strong&gt; (that is, select one variable, then select another) create a series of models up to complexity length 15. You may use any variable within the dataset, including categorical variables.&lt;/p&gt;&lt;/li&gt;
 &lt;li&gt;&lt;p&gt;Create a chart plotting the model complexity as the &lt;span class=&#34;math inline&#34;&gt;\(x\)&lt;/span&gt;-axis variable and RMSE as the &lt;span class=&#34;math inline&#34;&gt;\(y\)&lt;/span&gt;-axis variable. Describe any patterns you see. Do you think you should use the full-size model? Why or why not? What criterion are you using to make this statement?&lt;/p&gt;&lt;/li&gt;
 &lt;/ol&gt;
 &lt;/div&gt;
-&lt;hr /&gt;
-&lt;p&gt;Weekly writing: After completing the exercise above, reflect on the process. Was this efficient? Was it enjoyable? Do you think you created an highly predictive model? Write a short paragraph. As always, submit this separately into the “weekly writing” assigment on D2L.&lt;/p&gt;
 &lt;hr /&gt;
 &lt;/div&gt;
 &lt;div id=&#34;test-train-split&#34; class=&#34;section level3&#34;&gt;
