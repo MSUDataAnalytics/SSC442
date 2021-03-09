@@ -37,8 +37,14 @@ Ames <- read.table("https://msudataanalytics.github.io/SSC442/Labs/data/ames.csv
                  sep = ",")
 ```
 
-## Linear Models
+## Data Cleaning
+Oh, the Ames data yet again. It's given us lots of trouble. Many of you have found a few variables (columns) that should be avoided. The main problem is that some columns have only one value in them, or they have only `NA` and one value, so once `lm(...)` drops the `NA` rows, they are left with only one value. Linear regression by OLS does not like variables that don't vary! So, let's be systematic about figuring out which columns in our data are to be avoided.
 
+The `skimr` package is very helpful for seeing what our data contains. Install it, and then use `skim(Ames)` directly in the console (we're just looking at data at the moment). Take a look at the "complete rate" column - this tells us the fraction of observations in that column that are `NA`. If it's very small (see `Alley`), then that variable will be problematic. The "n_unique" column tells us if there are few or many different values - a "1" in "n_unique" is definitely going to be a problem!
+
+You can make a note of those columns that have extremely low "complete rates" and drop them to start off. There are about 5-6 of them that will cause an error if we include them in a regression.
+
+## Linear Models
 When exploring linear models in other classes, we often emphasize asymptotic results under distributional assumptions. That is, we make assumptions about the model in order to derive properties of large samples. This general approach is useful for creating and performing hypothesis tests. Frequently, when developing a linear regression model, part of the goal is to **explain** a relationship. However, this isn't always the case. And it's often not a valid approach, as we discussed in this week's content.
 
 So, we will ignore much of what we have learned in other classes (sorry, EC420) and instead simply use regression as a tool to **predict**. Instead of a model which supposedly explains relationships, we seek a model which minimizes **errors**.
@@ -89,18 +95,16 @@ When deciding how complex of a model to use, we can utilize two techniques: *for
 
 __EXERCISE 1__
 
-1. Load the `Ames` data. Drop the variables `OverallCond` and `OverallQual`.
+1. Load the `Ames` data. Using `skimr::skim`, find the variables that have a complete rate of below 60\% and drop them. 60\% isn't a magic number by any means, the "right" number is entirely dependent on your data. It is always standard practice to document the fields you have dropped from the data, so make sure you state which variables have been dropped. 
 
-2. Using **forward selection** (that is, select one variable, then select another) create a series of models up to complexity length 15. You may use any variable within the dataset, including categorical variables.
+2. Take a look at `Utilities`. Use the `table` function to see a tabulation of the values of `Utilities`. Do you see why this field is not likely to be useful to us, or even problematic?
 
-3. Create a chart plotting the model complexity as the $x$-axis variable and RMSE as the $y$-axis variable. Describe any patterns you see. Do you think you should use the full-size model? Why or why not? What criterion are you using to make this statement?
+3. Using **forward selection** (that is, select one variable, then select another) create a series of models up to complexity length 15. You may use any variable within the dataset, including categorical variables.
+
+4. Create a chart plotting the model complexity as the $x$-axis variable and RMSE as the $y$-axis variable. Describe any patterns you see. Do you think you should use the full-size model? Why or why not? What criterion are you using to make this statement?
 
 :::
 
-
----
-
-Weekly writing: After completing the exercise above, reflect on the process. Was this efficient? Was it enjoyable? Do you think you created an highly predictive model? Write a short paragraph. As always, submit this separately into the "weekly writing" assigment on D2L.
 
 ---
 
