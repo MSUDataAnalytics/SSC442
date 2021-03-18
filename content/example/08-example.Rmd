@@ -28,7 +28,7 @@ library(rpart.plot)
 library(skimr)
 
 wage2 = wooldridge::wage2
-skim(wage2)
+
 ```
 
 We've learned that our RMSE calculations have a hard time with `NA`s in the data. So let's use the `skim` output to drop variables with `NA` (see `n_missing`). Of course, there are other things we can do (impute the `NA`s, or make dummies for them), but for now, it's easiest to drop.
@@ -40,7 +40,7 @@ wage_clean = wage2 %>%
 
 Once cleaned, we should be able to use `rpart(wage ~ ., data = wage_clean)` and not have any `NA`s in our prediction.
 
-## Some functions
+### Some functions
 These functions are taken from our previous Content and Examples:
 
 ```{r}
@@ -59,7 +59,7 @@ get_rmse = function(model, data, response) {
 
 
 ## Breakout #1
-I'm going to assign you to breakout rooms to work in groups of 3-4 on live-coding. One person in the group will need to have Rstudio up, be able to share screen, and have the correct packages loaded (`caret`, `rpart`, and `rpart.plot`, plus `skimr`).
+I'm going to assign you to breakout rooms to work in groups of 3-4 on live-coding. One person in the group will need to have Rstudio up, be able to share screen, and have the correct packages loaded (`caret`, `rpart`, and `rpart.plot`, plus `skimr`). Copy the `rmse` and `get_rmse` code into a blank R script (you don't have to use RMarkdown, just use a blank R script and run from there).
 
 For the first breakout, all I want you to do is the following:
 
@@ -146,6 +146,7 @@ Let's send you back to your breakout rooms. Using the loop method, generate 5 re
 
 **10 minutes**
 
+### Breakout #2 discussion
 
 ## Getting RMSE from the list
 Finally, we want to move towards getting the RMSE for each of these trees. We've done this before using `lapply`. Let's introduce a neat coding shortcut, the `anonymous function`:

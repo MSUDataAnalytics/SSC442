@@ -39,15 +39,18 @@
 
 &lt;div id=&#34;TOC&#34;&gt;
 &lt;ul&gt;
-&lt;li&gt;&lt;a href=&#34;#our-data-and-goal&#34;&gt;Our data and goal&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#our-data-and-goal&#34;&gt;Our data and goal&lt;/a&gt;&lt;ul&gt;
 &lt;li&gt;&lt;a href=&#34;#some-functions&#34;&gt;Some functions&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;#breakout-1&#34;&gt;Breakout #1&lt;/a&gt;&lt;ul&gt;
 &lt;li&gt;&lt;a href=&#34;#breakout-1-discussion&#34;&gt;Breakout #1 discussion&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;#automating-models&#34;&gt;Automating models&lt;/a&gt;&lt;ul&gt;
 &lt;li&gt;&lt;a href=&#34;#loops&#34;&gt;Loops&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;#breakout-2&#34;&gt;Breakout #2&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#breakout-2&#34;&gt;Breakout #2&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#breakout-2-discussion&#34;&gt;Breakout #2 discussion&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;#getting-rmse-from-the-list&#34;&gt;Getting RMSE from the list&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;#breakout-3-if-time&#34;&gt;Breakout #3 (if time)&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
@@ -59,10 +62,9 @@
 &lt;p&gt;We’ve learned that our RMSE calculations have a hard time with &lt;code&gt;NA&lt;/code&gt;s in the data. So let’s use the &lt;code&gt;skim&lt;/code&gt; output to drop variables with &lt;code&gt;NA&lt;/code&gt; (see &lt;code&gt;n_missing&lt;/code&gt;). Of course, there are other things we can do (impute the &lt;code&gt;NA&lt;/code&gt;s, or make dummies for them), but for now, it’s easiest to drop.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;wage_clean = wage2 %&amp;gt;%
   dplyr::select(-brthord, -meduc, -feduc)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Once cleaned, we should be able to use &lt;code&gt;rpart(wage ~ ., data = wage_clean)&lt;/code&gt;.&lt;/p&gt;
-&lt;/div&gt;
-&lt;div id=&#34;some-functions&#34; class=&#34;section level2&#34;&gt;
-&lt;h2&gt;Some functions&lt;/h2&gt;
+&lt;p&gt;Once cleaned, we should be able to use &lt;code&gt;rpart(wage ~ ., data = wage_clean)&lt;/code&gt; and not have any &lt;code&gt;NA&lt;/code&gt;s in our prediction.&lt;/p&gt;
+&lt;div id=&#34;some-functions&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Some functions&lt;/h3&gt;
 &lt;p&gt;These functions are taken from our previous Content and Examples:&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;rmse = function(actual, predicted) {
   sqrt(mean((actual - predicted) ^ 2))
@@ -72,9 +74,10 @@
        predicted = predict(model, data))
 }&lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
+&lt;/div&gt;
 &lt;div id=&#34;breakout-1&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Breakout #1&lt;/h2&gt;
-&lt;p&gt;I’m going to assign you to breakout rooms to work in groups of 3-4 on live-coding. One person in the group will need to have Rstudio up, be able to share screen, and have the correct packages loaded (&lt;code&gt;caret&lt;/code&gt;, &lt;code&gt;rpart&lt;/code&gt;, and &lt;code&gt;rpart.plot&lt;/code&gt;, plus &lt;code&gt;skimr&lt;/code&gt;).&lt;/p&gt;
+&lt;p&gt;I’m going to assign you to breakout rooms to work in groups of 3-4 on live-coding. One person in the group will need to have Rstudio up, be able to share screen, and have the correct packages loaded (&lt;code&gt;caret&lt;/code&gt;, &lt;code&gt;rpart&lt;/code&gt;, and &lt;code&gt;rpart.plot&lt;/code&gt;, plus &lt;code&gt;skimr&lt;/code&gt;). Copy the &lt;code&gt;rmse&lt;/code&gt; and &lt;code&gt;get_rmse&lt;/code&gt; code into a blank R script (you don’t have to use RMarkdown, just use a blank R script and run from there).&lt;/p&gt;
 &lt;p&gt;For the first breakout, all I want you to do is the following:&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;Estimate a default regression tree on &lt;code&gt;wage_clean&lt;/code&gt; using the default parameters.&lt;/li&gt;
@@ -91,8 +94,8 @@
 &lt;div id=&#34;automating-models&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Automating models&lt;/h2&gt;
 &lt;p&gt;Let’s talk about a little code shortcut that helps iterate through your model selection.&lt;/p&gt;
-&lt;p&gt;First, before, we use &lt;code&gt;list()&lt;/code&gt; to store all of our models. This is because &lt;code&gt;list()&lt;/code&gt; can “hold” anything at all, unlike a &lt;code&gt;matrix&lt;/code&gt;, which is only numeric, or a &lt;code&gt;data.frame&lt;/code&gt; which needs all rows in a column to be the same data type. &lt;code&gt;list()&lt;/code&gt; is also recursive, so each element in a list can be a list. Of lists. Of lists!&lt;/p&gt;
-&lt;p&gt;Lists are also really easy to add to iteratively. We can initiate a list using &lt;code&gt;myList &amp;lt;- list()&lt;/code&gt;, then we can add things to it. Note that we use the double &lt;code&gt;[&lt;/code&gt; to index:&lt;/p&gt;
+&lt;p&gt;First, before, we used &lt;code&gt;list()&lt;/code&gt; to store all of our models. This is because &lt;code&gt;list()&lt;/code&gt; can “hold” anything at all, unlike a &lt;code&gt;matrix&lt;/code&gt;, which is only numeric, or a &lt;code&gt;data.frame&lt;/code&gt; which needs all rows in a column to be the same data type. &lt;code&gt;list()&lt;/code&gt; is also recursive, so each element in a list can be a list. Of lists. Of lists!&lt;/p&gt;
+&lt;p&gt;Lists are also really easy to add to iteratively. We can initiate an empty list using &lt;code&gt;myList &amp;lt;- list()&lt;/code&gt;, then we can add things to it. Note that we use the double &lt;code&gt;[&lt;/code&gt; to index:&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;myList &amp;lt;- list()
 myList[[&amp;#39;first&amp;#39;]] = &amp;#39;This is the first thing on my list&amp;#39;
 print(myList)&lt;/code&gt;&lt;/pre&gt;
@@ -141,7 +144,7 @@ print(i)
 ## [1] &amp;quot;second&amp;quot;
 ## [1] &amp;quot;third&amp;quot;&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Here, R is repeating the thing in the loop (&lt;code&gt;print(i)&lt;/code&gt;) with a different value for &lt;code&gt;i&lt;/code&gt; each time. R repeats only what is &lt;em&gt;inside the curly-brackets&lt;/em&gt;, then when it reaches the close-curly-bracket, it goes back to the top, changes &lt;code&gt;i&lt;/code&gt; to the next element, and repeats.&lt;/p&gt;
-&lt;p&gt;We can use this to train our models. First, we clear our list object &lt;code&gt;myList&lt;/code&gt; by setting it equal to an empty list. Then, we loop over some regression tree tuning parameters. First, we have to figure out how to use the loop to set a &lt;em&gt;unique&lt;/em&gt; name for each list container. To do this, we’ll use &lt;code&gt;paste0(&#39;Tuning&#39;,i)&lt;/code&gt; which will result in a character string of &lt;code&gt;Tuning0&lt;/code&gt; when &lt;code&gt;i=0&lt;/code&gt;, &lt;code&gt;Tuning.1&lt;/code&gt; when &lt;code&gt;i=.1&lt;/code&gt;, etc.&lt;/p&gt;
+&lt;p&gt;We can use this to train our models. First, we clear our list object &lt;code&gt;myList&lt;/code&gt; by setting it equal to an empty list. Then, we loop over some regression tree tuning parameters. First, we have to figure out how to use the loop to set a &lt;em&gt;unique&lt;/em&gt; name for each list container. To do this, we’ll use &lt;code&gt;paste0(&#39;Tuning&#39;,i)&lt;/code&gt; which will result in a character string of &lt;code&gt;Tuning0&lt;/code&gt; when &lt;code&gt;i=0&lt;/code&gt;, &lt;code&gt;Tuning00.1&lt;/code&gt; when &lt;code&gt;i=0.01&lt;/code&gt;, etc.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;myList &amp;lt;- list()   # resets the list. Otherwise, you&amp;#39;ll just be adding to your old list!
 
 for(i in c(0, 0.01, 0.02)){
@@ -156,6 +159,9 @@ for(i in c(0, 0.01, 0.02)){
 &lt;h2&gt;Breakout #2&lt;/h2&gt;
 &lt;p&gt;Let’s send you back to your breakout rooms. Using the loop method, generate 5 regression trees to explain &lt;code&gt;wage&lt;/code&gt; in &lt;code&gt;wage_clean&lt;/code&gt;. You can iterate through values of &lt;code&gt;cp&lt;/code&gt;, the complexity parameter, or &lt;code&gt;minsplit&lt;/code&gt;, the minimum # of points that have to be in each split.&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;10 minutes&lt;/strong&gt;&lt;/p&gt;
+&lt;div id=&#34;breakout-2-discussion&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Breakout #2 discussion&lt;/h3&gt;
+&lt;/div&gt;
 &lt;/div&gt;
 &lt;div id=&#34;getting-rmse-from-the-list&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Getting RMSE from the list&lt;/h2&gt;
@@ -179,10 +185,11 @@ print(myRMSE)&lt;/code&gt;&lt;/pre&gt;
 &lt;li&gt;The first argument is the list you want to do something to&lt;/li&gt;
 &lt;li&gt;The second argument would usually be the function you want to apply, like &lt;code&gt;get_rmse&lt;/code&gt;&lt;/li&gt;
 &lt;li&gt;Here, we’re going to ask R to &lt;em&gt;temporarily&lt;/em&gt; create a function that takes one argument, &lt;code&gt;x&lt;/code&gt;.&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;x&lt;/code&gt; is going to be each list element in &lt;code&gt;myList&lt;/code&gt;.
+&lt;li&gt;&lt;code&gt;x&lt;/code&gt; is going to be each list element in &lt;code&gt;myList&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;Think of it as a loop:
 &lt;ul&gt;
-&lt;li&gt;Think of it as a loop: it’ll take the first element of &lt;code&gt;myList&lt;/code&gt; and refer to it as &lt;code&gt;x&lt;/code&gt;.&lt;/li&gt;
-&lt;li&gt;Then it’ll take the second element of &lt;code&gt;myList&lt;/code&gt; and refer to it as &lt;code&gt;x&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;Take the first element of &lt;code&gt;myList&lt;/code&gt; and refer to it as &lt;code&gt;x&lt;/code&gt;. Run the function.&lt;/li&gt;
+&lt;li&gt;Then it’ll take the second element of &lt;code&gt;myList&lt;/code&gt; and refer to it as &lt;code&gt;x&lt;/code&gt; and run the function.&lt;/li&gt;
 &lt;li&gt;Repeat until all elements of &lt;code&gt;x&lt;/code&gt; have been used.&lt;/li&gt;
 &lt;/ul&gt;&lt;/li&gt;
 &lt;li&gt;Once the anonymous function has been applied to &lt;code&gt;x&lt;/code&gt;, the result is passed back and saved as the new element of the list output, always in the same position from where the &lt;code&gt;x&lt;/code&gt; was taken.&lt;/li&gt;
@@ -205,7 +212,7 @@ myList[[3]] = get_rmse(x, wage_clean, &amp;#39;wage&amp;#39;)&lt;/code&gt;&lt;/p
 &lt;div id=&#34;breakout-3-if-time&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Breakout #3 (if time)&lt;/h2&gt;
 &lt;p&gt;Let’s send you to the breakout rooms one more time, and use &lt;code&gt;lapply&lt;/code&gt; to get a list of your RMSE’s (one for each of your models). Note that we are not yet splitting into &lt;code&gt;test&lt;/code&gt; and &lt;code&gt;train&lt;/code&gt; (which you &lt;strong&gt;will&lt;/strong&gt; need to do on your lab assignment).&lt;/p&gt;
-&lt;p&gt;Once you have your list, create the plot of RMSE similar to the one we looked at in Content this week. Note: you can use &lt;code&gt;unlist(myRMSE)&lt;/code&gt; to get a numeric vector of the RMSE’s (as long as all of the elements in &lt;code&gt;myRMSE&lt;/code&gt; are numeric). Then, it’s a matter of plotting either with base &lt;code&gt;plot&lt;/code&gt; or with &lt;code&gt;ggplot&lt;/code&gt; (if you use &lt;code&gt;ggplot&lt;/code&gt; you’ll have to &lt;code&gt;tidy&lt;/code&gt; the RMSE by adding the index column or naming the x-axis).&lt;/p&gt;
+&lt;p&gt;Once you have your list, &lt;strong&gt;create the plot of RMSEs&lt;/strong&gt; similar to the one we looked at in Content this week. Note: you can use &lt;code&gt;unlist(myRMSE)&lt;/code&gt; to get a numeric vector of the RMSE’s (as long as all of the elements in &lt;code&gt;myRMSE&lt;/code&gt; are numeric). Then, it’s a matter of plotting either with base &lt;code&gt;plot&lt;/code&gt; or with &lt;code&gt;ggplot&lt;/code&gt; (if you use &lt;code&gt;ggplot&lt;/code&gt; you’ll have to &lt;code&gt;tidy&lt;/code&gt; the RMSE by adding the index column or naming the x-axis).&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;Remaining time&lt;/strong&gt;&lt;/p&gt;
 &lt;/div&gt;
 </description>
