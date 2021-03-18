@@ -13,6 +13,241 @@
     </image>
     
     <item>
+      <title>Illustrating Bias vs. Variance</title>
+      <link>https://datavizm20.classes.andrewheiss.com/example/09-example/</link>
+      <pubDate>Thu, 25 Mar 2021 00:00:00 +0000</pubDate>
+      <guid>https://datavizm20.classes.andrewheiss.com/example/09-example/</guid>
+      <description>
+
+
+&lt;div class=&#34;fyi&#34;&gt;
+&lt;p&gt;Today’s example is incorporated into the Content tab.&lt;/p&gt;
+&lt;p&gt;We may use a new dataset (it is covered in the Lab). You can find it below.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://datavizm20.classes.andrewheiss.com/projects/data/bank.csv&#34;&gt;&lt;i class=&#34;fas fa-file-csv&#34;&gt;&lt;/i&gt; &lt;code&gt;bank.csv&lt;/code&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Nonparametric Regression</title>
+      <link>https://datavizm20.classes.andrewheiss.com/example/08-example/</link>
+      <pubDate>Thu, 18 Mar 2021 00:00:00 +0000</pubDate>
+      <guid>https://datavizm20.classes.andrewheiss.com/example/08-example/</guid>
+      <description>
+
+&lt;div id=&#34;TOC&#34;&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#our-data-and-goal&#34;&gt;Our data and goal&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#some-functions&#34;&gt;Some functions&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#breakout-1&#34;&gt;Breakout #1&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#breakout-1-discussion&#34;&gt;Breakout #1 discussion&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#automating-models&#34;&gt;Automating models&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#loops&#34;&gt;Loops&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#breakout-2&#34;&gt;Breakout #2&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#getting-rmse-from-the-list&#34;&gt;Getting RMSE from the list&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#breakout-3-if-time&#34;&gt;Breakout #3 (if time)&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+
+&lt;div id=&#34;our-data-and-goal&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Our data and goal&lt;/h2&gt;
+&lt;p&gt;We want to use the &lt;code&gt;wooldridge::wage2&lt;/code&gt; data on wages to generate and tune a non-parametric model of wages using a regression tree.&lt;/p&gt;
+&lt;p&gt;We’ve learned that our RMSE calculations have a hard time with &lt;code&gt;NA&lt;/code&gt;s in the data. So let’s use the &lt;code&gt;skim&lt;/code&gt; output to drop variables with &lt;code&gt;NA&lt;/code&gt; (see &lt;code&gt;n_missing&lt;/code&gt;). Of course, there are other things we can do (impute the &lt;code&gt;NA&lt;/code&gt;s, or make dummies for them), but for now, it’s easiest to drop.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;wage_clean = wage2 %&amp;gt;%
+  dplyr::select(-brthord, -meduc, -feduc)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Once cleaned, we should be able to use &lt;code&gt;rpart(wage ~ ., data = wage_clean)&lt;/code&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;some-functions&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Some functions&lt;/h2&gt;
+&lt;p&gt;These functions are taken from our previous Content and Examples:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;rmse = function(actual, predicted) {
+  sqrt(mean((actual - predicted) ^ 2))
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;get_rmse = function(model, data, response) {
+  rmse(actual = subset(data, select = response, drop = TRUE),
+       predicted = predict(model, data))
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;breakout-1&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Breakout #1&lt;/h2&gt;
+&lt;p&gt;I’m going to assign you to breakout rooms to work in groups of 3-4 on live-coding. One person in the group will need to have Rstudio up, be able to share screen, and have the correct packages loaded (&lt;code&gt;caret&lt;/code&gt;, &lt;code&gt;rpart&lt;/code&gt;, and &lt;code&gt;rpart.plot&lt;/code&gt;, plus &lt;code&gt;skimr&lt;/code&gt;).&lt;/p&gt;
+&lt;p&gt;For the first breakout, all I want you to do is the following:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Estimate a default regression tree on &lt;code&gt;wage_clean&lt;/code&gt; using the default parameters.&lt;/li&gt;
+&lt;li&gt;Use &lt;code&gt;rpart.plot&lt;/code&gt; to vizualize your regression tree, and &lt;em&gt;talk through the interpretation&lt;/em&gt; with each other.&lt;/li&gt;
+&lt;li&gt;Calculate the RMSE for your regression tree.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;I’ll bring you back in about 5 minutes. Remember, you can use &lt;code&gt;?wage2&lt;/code&gt; to see the variable names. Make sure you know what variables are showing up in the plot and explaining &lt;code&gt;wage&lt;/code&gt; in your model. You may find something odd at first and may need to drop more variables…&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;5 minutes&lt;/strong&gt;&lt;/p&gt;
+&lt;div id=&#34;breakout-1-discussion&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Breakout #1 discussion&lt;/h3&gt;
+&lt;p&gt;Let’s choose a group to share their plot and discuss the results.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;automating-models&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Automating models&lt;/h2&gt;
+&lt;p&gt;Let’s talk about a little code shortcut that helps iterate through your model selection.&lt;/p&gt;
+&lt;p&gt;First, before, we use &lt;code&gt;list()&lt;/code&gt; to store all of our models. This is because &lt;code&gt;list()&lt;/code&gt; can “hold” anything at all, unlike a &lt;code&gt;matrix&lt;/code&gt;, which is only numeric, or a &lt;code&gt;data.frame&lt;/code&gt; which needs all rows in a column to be the same data type. &lt;code&gt;list()&lt;/code&gt; is also recursive, so each element in a list can be a list. Of lists. Of lists!&lt;/p&gt;
+&lt;p&gt;Lists are also really easy to add to iteratively. We can initiate a list using &lt;code&gt;myList &amp;lt;- list()&lt;/code&gt;, then we can add things to it. Note that we use the double &lt;code&gt;[&lt;/code&gt; to index:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;myList &amp;lt;- list()
+myList[[&amp;#39;first&amp;#39;]] = &amp;#39;This is the first thing on my list&amp;#39;
+print(myList)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## $first
+## [1] &amp;quot;This is the first thing on my list&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Lists let you name the “containers” (much like you can name colums in a &lt;code&gt;data.frame&lt;/code&gt;). Our first one is called “first”. We can add more later:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;myList[[&amp;#39;second&amp;#39;]] = c(1,2,3)
+print(myList)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## $first
+## [1] &amp;quot;This is the first thing on my list&amp;quot;
+## 
+## $second
+## [1] 1 2 3&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;And still more:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;myList[[&amp;#39;third&amp;#39;]] = data.frame(a = c(1,2,3), b = c(&amp;#39;Albert&amp;#39;,&amp;#39;Alex&amp;#39;,&amp;#39;Alice&amp;#39;))
+print(myList)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## $first
+## [1] &amp;quot;This is the first thing on my list&amp;quot;
+## 
+## $second
+## [1] 1 2 3
+## 
+## $third
+##   a      b
+## 1 1 Albert
+## 2 2   Alex
+## 3 3  Alice&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Now we have a &lt;code&gt;data.frame&lt;/code&gt; in there! We can use &lt;code&gt;lapply&lt;/code&gt; to do something to every element in the list:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;lapply(myList, length) # the length() function with the first entry being the list element&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## $first
+## [1] 1
+## 
+## $second
+## [1] 3
+## 
+## $third
+## [1] 2&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;We get back a list of equal length but each (still-named) container is now the length of the original list’s contents.&lt;/p&gt;
+&lt;div id=&#34;loops&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Loops&lt;/h3&gt;
+&lt;p&gt;R has a very useful looping function that takes the form:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;for(i in c(&amp;#39;first&amp;#39;,&amp;#39;second&amp;#39;,&amp;#39;third&amp;#39;)){
+print(i)
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;first&amp;quot;
+## [1] &amp;quot;second&amp;quot;
+## [1] &amp;quot;third&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Here, R is repeating the thing in the loop (&lt;code&gt;print(i)&lt;/code&gt;) with a different value for &lt;code&gt;i&lt;/code&gt; each time. R repeats only what is &lt;em&gt;inside the curly-brackets&lt;/em&gt;, then when it reaches the close-curly-bracket, it goes back to the top, changes &lt;code&gt;i&lt;/code&gt; to the next element, and repeats.&lt;/p&gt;
+&lt;p&gt;We can use this to train our models. First, we clear our list object &lt;code&gt;myList&lt;/code&gt; by setting it equal to an empty list. Then, we loop over some regression tree tuning parameters. First, we have to figure out how to use the loop to set a &lt;em&gt;unique&lt;/em&gt; name for each list container. To do this, we’ll use &lt;code&gt;paste0(&#39;Tuning&#39;,i)&lt;/code&gt; which will result in a character string of &lt;code&gt;Tuning0&lt;/code&gt; when &lt;code&gt;i=0&lt;/code&gt;, &lt;code&gt;Tuning.1&lt;/code&gt; when &lt;code&gt;i=.1&lt;/code&gt;, etc.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;myList &amp;lt;- list()   # resets the list. Otherwise, you&amp;#39;ll just be adding to your old list!
+
+for(i in c(0, 0.01, 0.02)){
+  myList[[paste0(&amp;#39;Tuning&amp;#39;,i)]] = rpart(wage ~ ., data = wage_clean, cp = i)
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;If you use &lt;code&gt;names(myList)&lt;/code&gt; you’ll see the result of our &lt;code&gt;paste0&lt;/code&gt; naming. If you want to see the plotted results, you can use:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;rpart.plot(myList[[&amp;#39;Tuning0.01&amp;#39;]])&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/example/08-example_files/figure-html/unnamed-chunk-12-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;breakout-2&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Breakout #2&lt;/h2&gt;
+&lt;p&gt;Let’s send you back to your breakout rooms. Using the loop method, generate 5 regression trees to explain &lt;code&gt;wage&lt;/code&gt; in &lt;code&gt;wage_clean&lt;/code&gt;. You can iterate through values of &lt;code&gt;cp&lt;/code&gt;, the complexity parameter, or &lt;code&gt;minsplit&lt;/code&gt;, the minimum # of points that have to be in each split.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;10 minutes&lt;/strong&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;getting-rmse-from-the-list&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Getting RMSE from the list&lt;/h2&gt;
+&lt;p&gt;Finally, we want to move towards getting the RMSE for each of these trees. We’ve done this before using &lt;code&gt;lapply&lt;/code&gt;. Let’s introduce a neat coding shortcut, the &lt;code&gt;anonymous function&lt;/code&gt;:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;myRMSE &amp;lt;- lapply(myList, function(x){
+                  get_rmse(x, wage_clean, &amp;#39;wage&amp;#39;)
+                  } )
+
+print(myRMSE)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## $Tuning0
+## [1] 292.5856
+## 
+## $Tuning0.01
+## [1] 359.4592
+## 
+## $Tuning0.02
+## [1] 367.2748&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Well, it gets us the right answer, but whaaaaaat is going on? Curly brackets? &lt;code&gt;x&lt;/code&gt;?&lt;/p&gt;
+&lt;p&gt;This is an “anonymous function”, or a function created on the fly. Here’s how it works in &lt;code&gt;lapply&lt;/code&gt;:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;The first argument is the list you want to do something to&lt;/li&gt;
+&lt;li&gt;The second argument would usually be the function you want to apply, like &lt;code&gt;get_rmse&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;Here, we’re going to ask R to &lt;em&gt;temporarily&lt;/em&gt; create a function that takes one argument, &lt;code&gt;x&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;x&lt;/code&gt; is going to be each list element in &lt;code&gt;myList&lt;/code&gt;.
+&lt;ul&gt;
+&lt;li&gt;Think of it as a loop: it’ll take the first element of &lt;code&gt;myList&lt;/code&gt; and refer to it as &lt;code&gt;x&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;Then it’ll take the second element of &lt;code&gt;myList&lt;/code&gt; and refer to it as &lt;code&gt;x&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;Repeat until all elements of &lt;code&gt;x&lt;/code&gt; have been used.&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;Once the anonymous function has been applied to &lt;code&gt;x&lt;/code&gt;, the result is passed back and saved as the new element of the list output, always in the same position from where the &lt;code&gt;x&lt;/code&gt; was taken.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;So you can think of it like this:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;x = myList[[1]]
+myList[[1]] = get_rmse(x, wage_clean, &amp;#39;wage&amp;#39;)
+
+x = myList[[2]]
+myList[[2]] = get_rmse(x, wage_clean, &amp;#39;wage&amp;#39;)
+
+x = myList[[3]]
+myList[[3]] = get_rmse(x, wage_clean, &amp;#39;wage&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;You can refer to &lt;code&gt;myList&lt;/code&gt; by name:
+- &lt;code&gt;myList[[&#39;Tuning0.01&#39;]]&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;Or you can refer to &lt;code&gt;myList&lt;/code&gt; by the index:
+- &lt;code&gt;myList[[2]]&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;Just like you can refer to &lt;code&gt;data.frame&lt;/code&gt; columns by name or by index.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;breakout-3-if-time&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Breakout #3 (if time)&lt;/h2&gt;
+&lt;p&gt;Let’s send you to the breakout rooms one more time, and use &lt;code&gt;lapply&lt;/code&gt; to get a list of your RMSE’s (one for each of your models). Note that we are not yet splitting into &lt;code&gt;test&lt;/code&gt; and &lt;code&gt;train&lt;/code&gt; (which you &lt;strong&gt;will&lt;/strong&gt; need to do on your lab assignment).&lt;/p&gt;
+&lt;p&gt;Once you have your list, create the plot of RMSE similar to the one we looked at in Content this week. Note: you can use &lt;code&gt;unlist(myRMSE)&lt;/code&gt; to get a numeric vector of the RMSE’s (as long as all of the elements in &lt;code&gt;myRMSE&lt;/code&gt; are numeric). Then, it’s a matter of plotting either with base &lt;code&gt;plot&lt;/code&gt; or with &lt;code&gt;ggplot&lt;/code&gt; (if you use &lt;code&gt;ggplot&lt;/code&gt; you’ll have to &lt;code&gt;tidy&lt;/code&gt; the RMSE by adding the index column or naming the x-axis).&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Remaining time&lt;/strong&gt;&lt;/p&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Model Evaluation</title>
+      <link>https://datavizm20.classes.andrewheiss.com/assignment/09-assignment/</link>
+      <pubDate>Tue, 09 Mar 2021 00:00:00 +0000</pubDate>
+      <guid>https://datavizm20.classes.andrewheiss.com/assignment/09-assignment/</guid>
+      <description>
+
+&lt;div id=&#34;TOC&#34;&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#backstory-and-set-up&#34;&gt;Backstory and Set Up&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+
+&lt;div class=&#34;fyi&#34;&gt;
+&lt;p&gt;You must turn in a PDF document of your &lt;code&gt;R Markdown&lt;/code&gt; knitted document. Submit this to D2L by 11:59 PM Eastern Time on Monday, March 29th.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;backstory-and-set-up&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Backstory and Set Up&lt;/h2&gt;
+&lt;p&gt;You work for a bank. This bank is trying to predict defaults on loans (a relatively uncommon occurence, but one that costs the bank a great deal of money when it does happen.) They’ve given you a dataset on defaults (encoded as the variable &lt;code&gt;y&lt;/code&gt;). You’re going to try to predict this.&lt;/p&gt;
+&lt;p&gt;This is some new data. The snippet below loads it.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;bank &amp;lt;- read.table(&amp;quot;https://raw.githubusercontent.com/ajkirkpatrick/FS20/Spring2021/classdata/bank.csv&amp;quot;,
+                 header = TRUE,
+                 sep = &amp;quot;,&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;There’s not going to be a whole lot of wind-up here. You should be well-versed in doing these sorts of things by now (if not, look back at the previous lab for sample code).&lt;/p&gt;
+&lt;div class=&#34;fyi&#34;&gt;
+&lt;p&gt;&lt;strong&gt;EXERCISE 1&lt;/strong&gt;&lt;/p&gt;
+&lt;ol style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;&lt;p&gt;Split the data into an 80/20 train vs. test split. Make sure you explicitly set the seed for replicability, but do not share your seed with others in the class. (We may compare some results across people.)&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Run a series of KNN models with &lt;span class=&#34;math inline&#34;&gt;\(k\)&lt;/span&gt; ranging from 2 to 100. (You need not do every &lt;span class=&#34;math inline&#34;&gt;\(k\)&lt;/span&gt; between 2 and 100, but you can easily write a short function to do this; see the Content tab).&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Create a chart plotting the model complexity as the &lt;span class=&#34;math inline&#34;&gt;\(x\)&lt;/span&gt;-axis variable and RMSE as the &lt;span class=&#34;math inline&#34;&gt;\(y\)&lt;/span&gt;-axis variable for &lt;strong&gt;both&lt;/strong&gt; the training and test data. What do you think is the optimal &lt;span class=&#34;math inline&#34;&gt;\(k\)&lt;/span&gt;?&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    
+    <item>
       <title>Advanced Model Building</title>
       <link>https://datavizm20.classes.andrewheiss.com/assignment/07-assignment/</link>
       <pubDate>Fri, 26 Feb 2021 00:00:00 +0000</pubDate>
@@ -5844,6 +6079,1038 @@ mpg %&amp;gt;%
     </item>
     
     <item>
+      <title>The Bias-Variance Tradeoff</title>
+      <link>https://datavizm20.classes.andrewheiss.com/content/09-content/</link>
+      <pubDate>Tue, 23 Mar 2021 00:00:00 +0000</pubDate>
+      <guid>https://datavizm20.classes.andrewheiss.com/content/09-content/</guid>
+      <description>
+
+&lt;div id=&#34;TOC&#34;&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#required-reading&#34;&gt;Required Reading&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#guiding-questions&#34;&gt;Guiding Questions&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#the-biasvariance-tradeoff&#34;&gt;The Bias–Variance Tradeoff&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#r-setup-and-source&#34;&gt;R Setup and Source&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#the-regression-setup&#34;&gt;The Regression Setup&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#reducible-and-irreducible-error&#34;&gt;Reducible and Irreducible Error&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#bias-variance-decomposition&#34;&gt;Bias-Variance Decomposition&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#using-simulation-to-estimate-bias-and-variance&#34;&gt;Using Simulation to Estimate Bias and Variance&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#estimating-expected-prediction-error&#34;&gt;Estimating Expected Prediction Error&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#model-flexibility&#34;&gt;Model Flexibility&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#linear-models&#34;&gt;Linear Models&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#k-nearest-neighbors&#34;&gt;k-Nearest Neighbors&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#decision-trees&#34;&gt;Decision Trees&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+
+&lt;div id=&#34;required-reading&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Required Reading&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;This page.&lt;/li&gt;
+&lt;li&gt;&lt;i class=&#34;fas fa-book&#34;&gt;&lt;/i&gt; &lt;a href=&#34;https://trevorhastie.github.io/ISLR/ISLR%20Seventh%20Printing.pdf&#34;&gt;Chapter 2&lt;/a&gt; in &lt;em&gt;Introduction to Statistical Learning with Applications in R&lt;/em&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div id=&#34;guiding-questions&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Guiding Questions&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;What is the relationship between &lt;strong&gt;bias&lt;/strong&gt;, &lt;strong&gt;variance&lt;/strong&gt;, and &lt;strong&gt;mean squared error?&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;What is the relationship between &lt;strong&gt;model flexibility&lt;/strong&gt; and training error?&lt;/li&gt;
+&lt;li&gt;What is the relationship between &lt;strong&gt;model flexibility&lt;/strong&gt; and validation (or test) error?&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;the-biasvariance-tradeoff&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;The Bias–Variance Tradeoff&lt;/h1&gt;
+&lt;p&gt;This lecture will begin to dig into some theoretical details of estimating regression functions, in particular how the &lt;strong&gt;bias-variance tradeoff&lt;/strong&gt; helps explain the relationship between &lt;strong&gt;model flexibility&lt;/strong&gt; and the errors a model makes.&lt;/p&gt;
+&lt;p&gt;This content is currently &lt;strong&gt;under construction&lt;/strong&gt;. You can expect it to be a lot less polished than other sections.&lt;/p&gt;
+&lt;p&gt;Don’t freak out if this seems mathematically overwhelming. We’ll walk through relatively slowly. It’s not super important to follow the nitty-gritty details; but the broad takeaways are quite important.&lt;/p&gt;
+&lt;div id=&#34;r-setup-and-source&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;R Setup and Source&lt;/h2&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(tibble)     # data frame printing
+library(dplyr)      # data manipulation
+
+library(caret)      # fitting knn
+library(rpart)      # fitting trees
+library(rpart.plot) # plotting trees&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;the-regression-setup&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;The Regression Setup&lt;/h2&gt;
+&lt;p&gt;Consider the general regression setup where we are given a random pair &lt;span class=&#34;math inline&#34;&gt;\((X, Y) \in \mathbb{R}^p \times \mathbb{R}\)&lt;/span&gt;. We would like to “predict” &lt;span class=&#34;math inline&#34;&gt;\(Y\)&lt;/span&gt; with some function of &lt;span class=&#34;math inline&#34;&gt;\(X\)&lt;/span&gt;, say, &lt;span class=&#34;math inline&#34;&gt;\(f(X)\)&lt;/span&gt;.&lt;/p&gt;
+&lt;p&gt;To clarify what we mean by “predict,” we specify that we would like &lt;span class=&#34;math inline&#34;&gt;\(f(X)\)&lt;/span&gt; to be “close” to &lt;span class=&#34;math inline&#34;&gt;\(Y\)&lt;/span&gt;. To further clarify what we mean by “close,” we define the &lt;strong&gt;squared error loss&lt;/strong&gt; of estimating &lt;span class=&#34;math inline&#34;&gt;\(Y\)&lt;/span&gt; using &lt;span class=&#34;math inline&#34;&gt;\(f(X)\)&lt;/span&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
+L(Y, f(X)) \triangleq (Y - f(X)) ^ 2
+\]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;Now we can clarify the goal of regression, which is to minimize the above loss, on average. We call this the &lt;strong&gt;risk&lt;/strong&gt; of estimating &lt;span class=&#34;math inline&#34;&gt;\(Y\)&lt;/span&gt; using &lt;span class=&#34;math inline&#34;&gt;\(f(X)\)&lt;/span&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
+R(Y, f(X)) \triangleq \mathbb{E}[L(Y, f(X))] = \mathbb{E}_{X, Y}[(Y - f(X)) ^ 2]
+\]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;Before attempting to minimize the risk, we first re-write the risk after conditioning on &lt;span class=&#34;math inline&#34;&gt;\(X\)&lt;/span&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
+\mathbb{E}_{X, Y} \left[ (Y - f(X)) ^ 2 \right] = \mathbb{E}_{X} \mathbb{E}_{Y \mid X} \left[ ( Y - f(X) ) ^ 2 \mid X = x \right]
+\]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;Minimizing the right-hand side is much easier, as it simply amounts to minimizing the inner expectation with respect to &lt;span class=&#34;math inline&#34;&gt;\(Y \mid X\)&lt;/span&gt;, essentially minimizing the risk pointwise, for each &lt;span class=&#34;math inline&#34;&gt;\(x\)&lt;/span&gt;.&lt;/p&gt;
+&lt;p&gt;It turns out, that the risk is minimized by setting &lt;span class=&#34;math inline&#34;&gt;\(f(x)\)&lt;/span&gt; to be equal the conditional mean of &lt;span class=&#34;math inline&#34;&gt;\(Y\)&lt;/span&gt; given &lt;span class=&#34;math inline&#34;&gt;\(X\)&lt;/span&gt;,&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
+f(x) = \mathbb{E}(Y \mid X = x)
+\]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;which we call the &lt;strong&gt;regression function&lt;/strong&gt;.&lt;a href=&#34;#fn1&#34; class=&#34;footnote-ref&#34; id=&#34;fnref1&#34;&gt;&lt;sup&gt;1&lt;/sup&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Note that the choice of squared error loss is somewhat arbitrary. Suppose instead we chose absolute error loss.&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
+L(Y, f(X)) \triangleq | Y - f(X) |
+\]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;The risk would then be minimized setting &lt;span class=&#34;math inline&#34;&gt;\(f(x)\)&lt;/span&gt; equal to the conditional median.&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
+f(x) = \text{median}(Y \mid X = x)
+\]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;Despite this possibility, our preference will still be for squared error loss. The reasons for this are numerous, including: historical, ease of optimization, and protecting against large deviations.&lt;/p&gt;
+&lt;p&gt;Now, given data &lt;span class=&#34;math inline&#34;&gt;\(\mathcal{D} = (x_i, y_i) \in \mathbb{R}^p \times \mathbb{R}\)&lt;/span&gt;, our goal becomes finding some &lt;span class=&#34;math inline&#34;&gt;\(\hat{f}\)&lt;/span&gt; that is a good estimate of the regression function &lt;span class=&#34;math inline&#34;&gt;\(f\)&lt;/span&gt;. We’ll see that this amounts to minimizing what we call the reducible error.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;reducible-and-irreducible-error&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Reducible and Irreducible Error&lt;/h2&gt;
+&lt;p&gt;Suppose that we obtain some &lt;span class=&#34;math inline&#34;&gt;\(\hat{f}\)&lt;/span&gt;, how well does it estimate &lt;span class=&#34;math inline&#34;&gt;\(f\)&lt;/span&gt;? We define the &lt;strong&gt;expected prediction error&lt;/strong&gt; of predicting &lt;span class=&#34;math inline&#34;&gt;\(Y\)&lt;/span&gt; using &lt;span class=&#34;math inline&#34;&gt;\(\hat{f}(X)\)&lt;/span&gt;. A good &lt;span class=&#34;math inline&#34;&gt;\(\hat{f}\)&lt;/span&gt; will have a low expected prediction error.&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
+\text{EPE}\left(Y, \hat{f}(X)\right) \triangleq \mathbb{E}_{X, Y, \mathcal{D}} \left[  \left( Y - \hat{f}(X) \right)^2 \right]
+\]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;This expectation is over &lt;span class=&#34;math inline&#34;&gt;\(X\)&lt;/span&gt;, &lt;span class=&#34;math inline&#34;&gt;\(Y\)&lt;/span&gt;, and also &lt;span class=&#34;math inline&#34;&gt;\(\mathcal{D}\)&lt;/span&gt;. The estimate &lt;span class=&#34;math inline&#34;&gt;\(\hat{f}\)&lt;/span&gt; is actually random depending on the data, &lt;span class=&#34;math inline&#34;&gt;\(\mathcal{D}\)&lt;/span&gt;, used to estimate &lt;span class=&#34;math inline&#34;&gt;\(\hat{f}\)&lt;/span&gt;. We could actually write &lt;span class=&#34;math inline&#34;&gt;\(\hat{f}(X, \mathcal{D})\)&lt;/span&gt; to make this dependence explicit, but our notation will become cumbersome enough as it is.&lt;/p&gt;
+&lt;p&gt;Like before, we’ll condition on &lt;span class=&#34;math inline&#34;&gt;\(X\)&lt;/span&gt;. This results in the expected prediction error of predicting &lt;span class=&#34;math inline&#34;&gt;\(Y\)&lt;/span&gt; using &lt;span class=&#34;math inline&#34;&gt;\(\hat{f}(X)\)&lt;/span&gt; when &lt;span class=&#34;math inline&#34;&gt;\(X = x\)&lt;/span&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
+\text{EPE}\left(Y, \hat{f}(x)\right) =
+\mathbb{E}_{Y \mid X, \mathcal{D}} \left[  \left(Y - \hat{f}(X) \right)^2 \mid X = x \right] =
+\underbrace{\mathbb{E}_{\mathcal{D}} \left[  \left(f(x) - \hat{f}(x) \right)^2 \right]}_\textrm{reducible error} +
+\underbrace{\mathbb{V}_{Y \mid X} \left[ Y \mid X = x \right]}_\textrm{irreducible error}
+\]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;A number of things to note here:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;The expected prediction error is for a random &lt;span class=&#34;math inline&#34;&gt;\(Y\)&lt;/span&gt; given a fixed &lt;span class=&#34;math inline&#34;&gt;\(x\)&lt;/span&gt; and a random &lt;span class=&#34;math inline&#34;&gt;\(\hat{f}\)&lt;/span&gt;. As such, the expectation is over &lt;span class=&#34;math inline&#34;&gt;\(Y \mid X\)&lt;/span&gt; and &lt;span class=&#34;math inline&#34;&gt;\(\mathcal{D}\)&lt;/span&gt;. Our estimated function &lt;span class=&#34;math inline&#34;&gt;\(\hat{f}\)&lt;/span&gt; is random depending on the data, &lt;span class=&#34;math inline&#34;&gt;\(\mathcal{D}\)&lt;/span&gt;, which is used to perform the estimation.&lt;/li&gt;
+&lt;li&gt;The expected prediction error of predicting &lt;span class=&#34;math inline&#34;&gt;\(Y\)&lt;/span&gt; using &lt;span class=&#34;math inline&#34;&gt;\(\hat{f}(X)\)&lt;/span&gt; when &lt;span class=&#34;math inline&#34;&gt;\(X = x\)&lt;/span&gt; has been decomposed into two errors:
+&lt;ul&gt;
+&lt;li&gt;The &lt;strong&gt;reducible error&lt;/strong&gt;, which is the expected squared error loss of estimation &lt;span class=&#34;math inline&#34;&gt;\(f(x)\)&lt;/span&gt; using &lt;span class=&#34;math inline&#34;&gt;\(\hat{f}(x)\)&lt;/span&gt; at a fixed point &lt;span class=&#34;math inline&#34;&gt;\(x\)&lt;/span&gt;. The only thing that is random here is &lt;span class=&#34;math inline&#34;&gt;\(\mathcal{D}\)&lt;/span&gt;, the data used to obtain &lt;span class=&#34;math inline&#34;&gt;\(\hat{f}\)&lt;/span&gt;. (Both &lt;span class=&#34;math inline&#34;&gt;\(f\)&lt;/span&gt; and &lt;span class=&#34;math inline&#34;&gt;\(x\)&lt;/span&gt; are fixed.) We’ll often call this reducible error the &lt;strong&gt;mean squared error&lt;/strong&gt; of estimating &lt;span class=&#34;math inline&#34;&gt;\(f(x)\)&lt;/span&gt; using &lt;span class=&#34;math inline&#34;&gt;\(\hat{f}\)&lt;/span&gt; at a fixed point &lt;span class=&#34;math inline&#34;&gt;\(x\)&lt;/span&gt;.
+&lt;span class=&#34;math display&#34;&gt;\[ \text{MSE}\left(f(x), \hat{f}(x)\right) \triangleq \mathbb{E}_{\mathcal{D}} \left[  \left(f(x) - \hat{f}(x) \right)^2 \right]\]&lt;/span&gt;&lt;/li&gt;
+&lt;li&gt;The &lt;strong&gt;irreducible error&lt;/strong&gt;. This is simply the variance of &lt;span class=&#34;math inline&#34;&gt;\(Y\)&lt;/span&gt; given that &lt;span class=&#34;math inline&#34;&gt;\(X = x\)&lt;/span&gt;, essentially noise that we do not want to learn. This is also called the &lt;strong&gt;Bayes error&lt;/strong&gt;.&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;As the name suggests, the reducible error is the error that we have some control over. But how do we control this error?&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;bias-variance-decomposition&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Bias-Variance Decomposition&lt;/h2&gt;
+&lt;p&gt;After decomposing the expected prediction error into reducible and irreducible error, we can further decompose the reducible error.&lt;/p&gt;
+&lt;p&gt;Recall the definition of the &lt;strong&gt;bias&lt;/strong&gt; of an estimator.&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
+\text{bias}(\hat{\theta}) \triangleq \mathbb{E}\left[\hat{\theta}\right] - \theta
+\]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;Also recall the definition of the &lt;strong&gt;variance&lt;/strong&gt; of an estimator.&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
+\mathbb{V}(\hat{\theta}) = \text{var}(\hat{\theta}) \triangleq \mathbb{E}\left [ ( \hat{\theta} -\mathbb{E}\left[\hat{\theta}\right] )^2 \right]
+\]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;Using this, we further decompose the reducible error (mean squared error) into bias squared and variance.&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
+\text{MSE}\left(f(x), \hat{f}(x)\right) =
+\mathbb{E}_{\mathcal{D}} \left[  \left(f(x) - \hat{f}(x) \right)^2 \right] =
+\underbrace{\left(f(x) - \mathbb{E} \left[ \hat{f}(x) \right]  \right)^2}_{\text{bias}^2 \left(\hat{f}(x) \right)} +
+\underbrace{\mathbb{E} \left[ \left( \hat{f}(x) - \mathbb{E} \left[ \hat{f}(x) \right] \right)^2 \right]}_{\text{var} \left(\hat{f}(x) \right)}
+\]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;This is actually a common fact in estimation theory, but we have stated it here specifically for estimation of some regression function &lt;span class=&#34;math inline&#34;&gt;\(f\)&lt;/span&gt; using &lt;span class=&#34;math inline&#34;&gt;\(\hat{f}\)&lt;/span&gt; at some point &lt;span class=&#34;math inline&#34;&gt;\(x\)&lt;/span&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
+\text{MSE}\left(f(x), \hat{f}(x)\right) = \text{bias}^2 \left(\hat{f}(x) \right) + \text{var} \left(\hat{f}(x) \right)
+\]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;In a perfect world, we would be able to find some &lt;span class=&#34;math inline&#34;&gt;\(\hat{f}\)&lt;/span&gt; which is &lt;strong&gt;unbiased&lt;/strong&gt;, that is &lt;span class=&#34;math inline&#34;&gt;\(\text{bias}\left(\hat{f}(x) \right) = 0\)&lt;/span&gt;, which also has low variance. In practice, this isn’t always possible.&lt;/p&gt;
+&lt;p&gt;It turns out, there is a &lt;strong&gt;bias-variance tradeoff&lt;/strong&gt;. That is, often, the more bias in our estimation, the lesser the variance. Similarly, less variance is often accompanied by more bias. Flexible models tend to be unbiased, but highly variable. Simple models are often extremely biased, but have low variance.&lt;/p&gt;
+&lt;p&gt;In the context of regression, models are biased when:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Parametric: The form of the model &lt;a href=&#34;https://en.wikipedia.org/wiki/Omitted-variable_bias&#34;&gt;does not incorporate all the necessary variables&lt;/a&gt;, or the form of the relationship is too simple. For example, a parametric model assumes a linear relationship, but the true relationship is quadratic.&lt;/li&gt;
+&lt;li&gt;Non-parametric: The model provides too much smoothing.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;In the context of regression, models are variable when:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Parametric: The form of the model incorporates too many variables, or the form of the relationship is too flexible. For example, a parametric model assumes a cubic relationship, but the true relationship is linear.&lt;/li&gt;
+&lt;li&gt;Non-parametric: The model does not provide enough smoothing. It is very, “wiggly.”&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;So for us, to select a model that appropriately balances the tradeoff between bias and variance, and thus minimizes the reducible error, we need to select a model of the appropriate flexibility for the data.&lt;/p&gt;
+&lt;p&gt;Recall that when fitting models, we’ve seen that train RMSE decreases as model flexibility is increasing. (Technically it is non-increasing.) For validation RMSE, we expect to see a U-shaped curve. Importantly, validation RMSE decreases, until a certain flexibility, then begins to increase.&lt;/p&gt;
+&lt;p&gt;Now we can understand why this is happening. The expected test RMSE is essentially the expected prediction error, which we now known decomposes into (squared) bias, variance, and the irreducible Bayes error. The following plots show three examples of this.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/content/09-content_files/figure-html/unnamed-chunk-3-1.png&#34; width=&#34;1152&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;The three plots show three examples of the bias-variance tradeoff. In the left panel, the variance influences the expected prediction error more than the bias. In the right panel, the opposite is true. The middle panel is somewhat neutral. In all cases, the difference between the Bayes error (the horizontal dashed grey line) and the expected prediction error (the solid black curve) is exactly the mean squared error, which is the sum of the squared bias (blue curve) and variance (orange curve). The vertical line indicates the flexibility that minimizes the prediction error.&lt;/p&gt;
+&lt;p&gt;To summarize, if we assume that irreducible error can be written as&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
+\mathbb{V}[Y \mid X = x] = \sigma ^ 2
+\]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;then we can write the full decomposition of the expected prediction error of predicting &lt;span class=&#34;math inline&#34;&gt;\(Y\)&lt;/span&gt; using &lt;span class=&#34;math inline&#34;&gt;\(\hat{f}\)&lt;/span&gt; when &lt;span class=&#34;math inline&#34;&gt;\(X = x\)&lt;/span&gt; as&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
+\text{EPE}\left(Y, \hat{f}(x)\right) =
+\underbrace{\text{bias}^2\left(\hat{f}(x)\right) + \text{var}\left(\hat{f}(x)\right)}_\textrm{reducible error} + \sigma^2.
+\]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;As model flexibility increases, bias decreases, while variance increases. By understanding the tradeoff between bias and variance, we can manipulate model flexibility to find a model that will predict well on unseen observations.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/content/09-content_files/figure-html/error-vs-flex-1.png&#34; width=&#34;960&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Tying this all together, the above image shows how we “expect” training and validation error to behavior in relation to model flexibility.&lt;a href=&#34;#fn2&#34; class=&#34;footnote-ref&#34; id=&#34;fnref2&#34;&gt;&lt;sup&gt;2&lt;/sup&gt;&lt;/a&gt; In practice, we won’t always see such a nice “curve” in the validation error, but we expect to see the general trends.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;using-simulation-to-estimate-bias-and-variance&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Using Simulation to Estimate Bias and Variance&lt;/h2&gt;
+&lt;p&gt;We will illustrate these decompositions, most importantly the bias-variance tradeoff, through simulation. Suppose we would like to train a model to learn the true regression function function &lt;span class=&#34;math inline&#34;&gt;\(f(x) = x^2\)&lt;/span&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;f = function(x) {
+  x ^ 2
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;More specifically, we’d like to predict an observation, &lt;span class=&#34;math inline&#34;&gt;\(Y\)&lt;/span&gt;, given that &lt;span class=&#34;math inline&#34;&gt;\(X = x\)&lt;/span&gt; by using &lt;span class=&#34;math inline&#34;&gt;\(\hat{f}(x)\)&lt;/span&gt; where&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
+\mathbb{E}[Y \mid X = x] = f(x) = x^2
+\]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;and&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
+\mathbb{V}[Y \mid X = x] = \sigma ^ 2.
+\]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;Alternatively, we could write this as&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
+Y = f(X) + \epsilon
+\]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;where &lt;span class=&#34;math inline&#34;&gt;\(\mathbb{E}[\epsilon] = 0\)&lt;/span&gt; and &lt;span class=&#34;math inline&#34;&gt;\(\mathbb{V}[\epsilon] = \sigma ^ 2\)&lt;/span&gt;. In this formulation, we call &lt;span class=&#34;math inline&#34;&gt;\(f(X)\)&lt;/span&gt; the &lt;strong&gt;signal&lt;/strong&gt; and &lt;span class=&#34;math inline&#34;&gt;\(\epsilon\)&lt;/span&gt; the &lt;strong&gt;noise&lt;/strong&gt;.&lt;/p&gt;
+&lt;p&gt;To carry out a concrete simulation example, we need to fully specify the data generating process. We do so with the following &lt;code&gt;R&lt;/code&gt; code.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;gen_sim_data = function(f, sample_size = 100) {
+  x = runif(n = sample_size, min = 0, max = 1)
+  y = rnorm(n = sample_size, mean = f(x), sd = 0.3)
+  tibble(x, y)
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Also note that if you prefer to think of this situation using the &lt;span class=&#34;math inline&#34;&gt;\(Y = f(X) + \epsilon\)&lt;/span&gt; formulation, the following code represents the same data generating process.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;gen_sim_data = function(f, sample_size = 100) {
+  x = runif(n = sample_size, min = 0, max = 1)
+  eps = rnorm(n = sample_size, mean = 0, sd = 0.75)
+  y = f(x) + eps
+  tibble(x, y)
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;To completely specify the data generating process, we have made more model assumptions than simply &lt;span class=&#34;math inline&#34;&gt;\(\mathbb{E}[Y \mid X = x] = x^2\)&lt;/span&gt; and &lt;span class=&#34;math inline&#34;&gt;\(\mathbb{V}[Y \mid X = x] = \sigma ^ 2\)&lt;/span&gt;. In particular,&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;The &lt;span class=&#34;math inline&#34;&gt;\(x_i\)&lt;/span&gt; in &lt;span class=&#34;math inline&#34;&gt;\(\mathcal{D}\)&lt;/span&gt; are sampled from a uniform distribution over &lt;span class=&#34;math inline&#34;&gt;\([0, 1]\)&lt;/span&gt;.&lt;/li&gt;
+&lt;li&gt;The &lt;span class=&#34;math inline&#34;&gt;\(x_i\)&lt;/span&gt; and &lt;span class=&#34;math inline&#34;&gt;\(\epsilon\)&lt;/span&gt; are independent.&lt;/li&gt;
+&lt;li&gt;The &lt;span class=&#34;math inline&#34;&gt;\(y_i\)&lt;/span&gt; in &lt;span class=&#34;math inline&#34;&gt;\(\mathcal{D}\)&lt;/span&gt; are sampled from the conditional normal distribution.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
+Y \mid X \sim N(f(x), \sigma^2)
+\]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;Using this setup, we will generate datasets, &lt;span class=&#34;math inline&#34;&gt;\(\mathcal{D}\)&lt;/span&gt;, with a sample size &lt;span class=&#34;math inline&#34;&gt;\(n = 100\)&lt;/span&gt; and fit four models.&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
+\begin{aligned}
+\texttt{predict(fit0, x)} &amp;amp;= \hat{f}_0(x) = \hat{\beta}_0\\
+\texttt{predict(fit1, x)} &amp;amp;= \hat{f}_1(x) = \hat{\beta}_0 + \hat{\beta}_1 x \\
+\texttt{predict(fit2, x)} &amp;amp;= \hat{f}_2(x) = \hat{\beta}_0 + \hat{\beta}_1 x + \hat{\beta}_2 x^2 \\
+\texttt{predict(fit9, x)} &amp;amp;= \hat{f}_9(x) = \hat{\beta}_0 + \hat{\beta}_1 x + \hat{\beta}_2 x^2 + \ldots + \hat{\beta}_9 x^9
+\end{aligned}
+\]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;To get a sense of the data and these four models, we generate one simulated dataset, and fit the four models.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;set.seed(1)
+sim_data = gen_sim_data(f)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;fit_0 = lm(y ~ 1,                   data = sim_data)
+fit_1 = lm(y ~ poly(x, degree = 1), data = sim_data)
+fit_2 = lm(y ~ poly(x, degree = 2), data = sim_data)
+fit_9 = lm(y ~ poly(x, degree = 9), data = sim_data)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Note that technically we’re being lazy and using orthogonal polynomials, but the fitted values are the same, so this makes no difference for our purposes.&lt;/p&gt;
+&lt;p&gt;Plotting these four trained models, we see that the zero predictor model does very poorly. The first degree model is reasonable, but we can see that the second degree model fits much better. The ninth degree model seem rather wild.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/content/09-content_files/figure-html/unnamed-chunk-9-1.png&#34; width=&#34;864&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;The following three plots were created using three additional simulated datasets. The zero predictor and ninth degree polynomial were fit to each.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/content/09-content_files/figure-html/unnamed-chunk-10-1.png&#34; width=&#34;1152&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;This plot should make clear the difference between the bias and variance of these two models. The zero predictor model is clearly wrong, that is, biased, but nearly the same for each of the datasets, since it has very low variance.&lt;/p&gt;
+&lt;p&gt;While the ninth degree model doesn’t appear to be correct for any of these three simulations, we’ll see that on average it is, and thus is performing unbiased estimation. These plots do however clearly illustrate that the ninth degree polynomial is extremely variable. Each dataset results in a very different fitted model. Correct on average isn’t the only goal we’re after, since in practice, we’ll only have a single dataset. This is why we’d also like our models to exhibit low variance.&lt;/p&gt;
+&lt;p&gt;We could have also fit &lt;span class=&#34;math inline&#34;&gt;\(k\)&lt;/span&gt;-nearest neighbors models to these three datasets.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/content/09-content_files/figure-html/unnamed-chunk-11-1.png&#34; width=&#34;1152&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Here we see that when &lt;span class=&#34;math inline&#34;&gt;\(k = 100\)&lt;/span&gt; we have a biased model with very low variance.&lt;a href=&#34;#fn3&#34; class=&#34;footnote-ref&#34; id=&#34;fnref3&#34;&gt;&lt;sup&gt;3&lt;/sup&gt;&lt;/a&gt; When &lt;span class=&#34;math inline&#34;&gt;\(k = 5\)&lt;/span&gt;, we again have a highly variable model.&lt;/p&gt;
+&lt;p&gt;These two sets of plots reinforce our intuition about the bias-variance tradeoff. Flexible models (ninth degree polynomial and &lt;span class=&#34;math inline&#34;&gt;\(k\)&lt;/span&gt; = 5) are highly variable, and often unbiased. Simple models (zero predictor linear model and &lt;span class=&#34;math inline&#34;&gt;\(k = 100\)&lt;/span&gt;) are very biased, but have extremely low variance.&lt;/p&gt;
+&lt;p&gt;We will now complete a simulation study to understand the relationship between the bias, variance, and mean squared error for the estimates of &lt;span class=&#34;math inline&#34;&gt;\(f(x)\)&lt;/span&gt; given by these four models at the point &lt;span class=&#34;math inline&#34;&gt;\(x = 0.90\)&lt;/span&gt;. We use simulation to complete this task, as performing the analytical calculations would prove to be rather tedious and difficult.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;set.seed(1)
+n_sims = 250
+n_models = 4
+x = data.frame(x = 0.90) # fixed point at which we make predictions
+predictions = matrix(0, nrow = n_sims, ncol = n_models)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;for (sim in 1:n_sims) {
+
+  # simulate new, random, training data
+  # this is the only random portion of the bias, var, and mse calculations
+  # this allows us to calculate the expectation over D
+  sim_data = gen_sim_data(f)
+
+  # fit models
+  fit_0 = lm(y ~ 1,                   data = sim_data)
+  fit_1 = lm(y ~ poly(x, degree = 1), data = sim_data)
+  fit_2 = lm(y ~ poly(x, degree = 2), data = sim_data)
+  fit_9 = lm(y ~ poly(x, degree = 9), data = sim_data)
+
+  # get predictions
+  predictions[sim, 1] = predict(fit_0, x)
+  predictions[sim, 2] = predict(fit_1, x)
+  predictions[sim, 3] = predict(fit_2, x)
+  predictions[sim, 4] = predict(fit_9, x)
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Note that this is one of many ways we could have accomplished this task using &lt;code&gt;R&lt;/code&gt;. For example we could have used a combination of &lt;code&gt;replicate()&lt;/code&gt; and &lt;code&gt;*apply()&lt;/code&gt; functions. Alternatively, we could have used a &lt;a href=&#34;https://www.tidyverse.org/&#34;&gt;&lt;code&gt;tidyverse&lt;/code&gt;&lt;/a&gt; approach, which likely would have used some combination of &lt;a href=&#34;http://dplyr.tidyverse.org/&#34;&gt;&lt;code&gt;dplyr&lt;/code&gt;&lt;/a&gt;, &lt;a href=&#34;http://tidyr.tidyverse.org/&#34;&gt;&lt;code&gt;tidyr&lt;/code&gt;&lt;/a&gt;, and &lt;a href=&#34;http://purrr.tidyverse.org/&#34;&gt;&lt;code&gt;purrr&lt;/code&gt;&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Our approach, which would be considered a &lt;code&gt;base&lt;/code&gt; &lt;code&gt;R&lt;/code&gt; approach, was chosen to make it as clear as possible what is being done. The &lt;code&gt;tidyverse&lt;/code&gt; approach is rapidly gaining popularity in the &lt;code&gt;R&lt;/code&gt; community, but might make it more difficult to see what is happening here, unless you are already familiar with that approach.&lt;/p&gt;
+&lt;p&gt;Also of note, while it may seem like the output stored in &lt;code&gt;predictions&lt;/code&gt; would meet the definition of &lt;a href=&#34;http://vita.had.co.nz/papers/tidy-data.html&#34;&gt;tidy data&lt;/a&gt; given by &lt;a href=&#34;http://hadley.nz/&#34;&gt;Hadley Wickham&lt;/a&gt; since each row represents a simulation, it actually falls slightly short. For our data to be tidy, a row should store the simulation number, the model, and the resulting prediction. We’ve actually already aggregated one level above this. Our observational unit is a simulation (with four predictions), but for tidy data, it should be a single prediction.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/content/09-content_files/figure-html/unnamed-chunk-15-1.png&#34; width=&#34;864&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;The above plot shows the predictions for each of the 250 simulations of each of the four models of different polynomial degrees. The truth, &lt;span class=&#34;math inline&#34;&gt;\(f(x = 0.90) = (0.9)^2 = 0.81\)&lt;/span&gt;, is given by the solid black horizontal line.&lt;/p&gt;
+&lt;p&gt;Two things are immediately clear:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;As flexibility &lt;em&gt;increases&lt;/em&gt;, &lt;strong&gt;bias decreases&lt;/strong&gt;. The mean of a model’s predictions is closer to the truth.&lt;/li&gt;
+&lt;li&gt;As flexibility &lt;em&gt;increases&lt;/em&gt;, &lt;strong&gt;variance increases&lt;/strong&gt;. The variance about the mean of a model’s predictions increases.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;The goal of this simulation study is to show that the following holds true for each of the four models.&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
+\text{MSE}\left(f(0.90), \hat{f}_k(0.90)\right) =
+\underbrace{\left(\mathbb{E} \left[ \hat{f}_k(0.90) \right] - f(0.90) \right)^2}_{\text{bias}^2 \left(\hat{f}_k(0.90) \right)} +
+\underbrace{\mathbb{E} \left[ \left( \hat{f}_k(0.90) - \mathbb{E} \left[ \hat{f}_k(0.90) \right] \right)^2 \right]}_{\text{var} \left(\hat{f}_k(0.90) \right)}
+\]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;We’ll use the empirical results of our simulations to estimate these quantities. (Yes, we’re using estimation to justify facts about estimation.) Note that we’ve actually used a rather small number of simulations. In practice we should use more, but for the sake of computation time, we’ve performed just enough simulations to obtain the desired results. (Since we’re estimating estimation, the bigger the sample size, the better.)&lt;/p&gt;
+&lt;p&gt;To estimate the mean squared error of our predictions, we’ll use&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
+\widehat{\text{MSE}}\left(f(0.90), \hat{f}_k(0.90)\right) = \frac{1}{n_{\texttt{sims}}}\sum_{i = 1}^{n_{\texttt{sims}}} \left(f(0.90) - \hat{f}_k^{[i]}(0.90) \right)^2
+\]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;where &lt;span class=&#34;math inline&#34;&gt;\(\hat{f}_k^{[i]}(0.90)\)&lt;/span&gt; is the estimate of &lt;span class=&#34;math inline&#34;&gt;\(f(0.90)\)&lt;/span&gt; using the &lt;span class=&#34;math inline&#34;&gt;\(i\)&lt;/span&gt;-th from the polynomial degree &lt;span class=&#34;math inline&#34;&gt;\(k\)&lt;/span&gt; model.&lt;/p&gt;
+&lt;p&gt;We also write an accompanying &lt;code&gt;R&lt;/code&gt; function.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;get_mse = function(truth, estimate) {
+  mean((estimate - truth) ^ 2)
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Similarly, for the bias of our predictions we use,&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
+\widehat{\text{bias}} \left(\hat{f}(0.90) \right)  = \frac{1}{n_{\texttt{sims}}}\sum_{i = 1}^{n_{\texttt{sims}}} \left(\hat{f}_k^{[i]}(0.90) \right) - f(0.90)
+\]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;And again, we write an accompanying &lt;code&gt;R&lt;/code&gt; function.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;get_bias = function(estimate, truth) {
+  mean(estimate) - truth
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Lastly, for the variance of our predictions we have&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
+\widehat{\text{var}} \left(\hat{f}(0.90) \right) = \frac{1}{n_{\texttt{sims}}}\sum_{i = 1}^{n_{\texttt{sims}}} \left(\hat{f}_k^{[i]}(0.90) - \frac{1}{n_{\texttt{sims}}}\sum_{i = 1}^{n_{\texttt{sims}}}\hat{f}_k^{[i]}(0.90) \right)^2
+\]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;While there is already &lt;code&gt;R&lt;/code&gt; function for variance, the following is more appropriate in this situation.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;get_var = function(estimate) {
+  mean((estimate - mean(estimate)) ^ 2)
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;To quickly obtain these results for each of the four models, we utilize the &lt;code&gt;apply()&lt;/code&gt; function.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;bias = apply(predictions, 2, get_bias, truth = f(x = 0.90))
+variance = apply(predictions, 2, get_var)
+mse = apply(predictions, 2, get_mse, truth = f(x = 0.90))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;We summarize these results in the following table.&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr class=&#34;header&#34;&gt;
+&lt;th align=&#34;center&#34;&gt;Degree&lt;/th&gt;
+&lt;th align=&#34;center&#34;&gt;Mean Squared Error&lt;/th&gt;
+&lt;th align=&#34;center&#34;&gt;Bias Squared&lt;/th&gt;
+&lt;th align=&#34;center&#34;&gt;Variance&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;center&#34;&gt;0&lt;/td&gt;
+&lt;td align=&#34;center&#34;&gt;0.22643&lt;/td&gt;
+&lt;td align=&#34;center&#34;&gt;0.22476&lt;/td&gt;
+&lt;td align=&#34;center&#34;&gt;0.00167&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;center&#34;&gt;1&lt;/td&gt;
+&lt;td align=&#34;center&#34;&gt;0.00829&lt;/td&gt;
+&lt;td align=&#34;center&#34;&gt;0.00508&lt;/td&gt;
+&lt;td align=&#34;center&#34;&gt;0.00322&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;center&#34;&gt;2&lt;/td&gt;
+&lt;td align=&#34;center&#34;&gt;0.00387&lt;/td&gt;
+&lt;td align=&#34;center&#34;&gt;0.00005&lt;/td&gt;
+&lt;td align=&#34;center&#34;&gt;0.00381&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;center&#34;&gt;9&lt;/td&gt;
+&lt;td align=&#34;center&#34;&gt;0.01019&lt;/td&gt;
+&lt;td align=&#34;center&#34;&gt;0.00002&lt;/td&gt;
+&lt;td align=&#34;center&#34;&gt;0.01017&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;A number of things to notice here:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;We use squared bias in this table. Since bias can be positive or negative, squared bias is more useful for observing the trend as flexibility increases.&lt;/li&gt;
+&lt;li&gt;The squared bias trend which we see here is &lt;strong&gt;decreasing&lt;/strong&gt; as flexibility increases, which we expect to see in general.&lt;/li&gt;
+&lt;li&gt;The exact opposite is true of variance. As model flexibility increases, variance &lt;strong&gt;increases&lt;/strong&gt;.&lt;/li&gt;
+&lt;li&gt;The mean squared error, which is a function of the bias and variance, decreases, then increases. This is a result of the bias-variance tradeoff. We can decrease bias, by increasing variance. Or, we can decrease variance by increasing bias. By striking the correct balance, we can find a good mean squared error!&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;We can check for these trends with the &lt;code&gt;diff()&lt;/code&gt; function in &lt;code&gt;R&lt;/code&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;all(diff(bias ^ 2) &amp;lt; 0)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] TRUE&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;all(diff(variance) &amp;gt; 0)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] TRUE&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;diff(mse) &amp;lt; 0&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;##     1     2     9 
+##  TRUE  TRUE FALSE&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The models with polynomial degrees 2 and 9 are both essentially unbiased. We see some bias here as a result of using simulation. If we increased the number of simulations, we would see both biases go down. Since they are both unbiased, the model with degree 2 outperforms the model with degree 9 due to its smaller variance.&lt;/p&gt;
+&lt;p&gt;Models with degree 0 and 1 are biased because they assume the wrong form of the regression function. While the degree 9 model does this as well, it does include all the necessary polynomial degrees.&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
+\hat{f}_9(x) = \hat{\beta}_0 + \hat{\beta}_1 x + \hat{\beta}_2 x^2 + \ldots + \hat{\beta}_9 x^9
+\]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;Then, since least squares estimation is unbiased, importantly,&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
+\mathbb{E}\left[\hat{\beta}_d\right] = \beta_d = 0
+\]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;for &lt;span class=&#34;math inline&#34;&gt;\(d = 3, 4, \ldots 9\)&lt;/span&gt;, we have&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
+\mathbb{E}\left[\hat{f}_9(x)\right] = \beta_0 + \beta_1 x + \beta_2 x^2
+\]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;Now we can finally verify the bias-variance decomposition.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;bias ^ 2 + variance == mse&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;##     0     1     2     9 
+## FALSE FALSE FALSE  TRUE&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;But wait, this says it isn’t true, except for the degree 9 model? It turns out, this is simply a computational issue. If we allow for some very small error tolerance, we see that the bias-variance decomposition is indeed true for predictions from these for models.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;all.equal(bias ^ 2 + variance, mse)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] TRUE&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;See &lt;code&gt;?all.equal()&lt;/code&gt; for details.&lt;/p&gt;
+&lt;p&gt;So far, we’ve focused our efforts on looking at the mean squared error of estimating &lt;span class=&#34;math inline&#34;&gt;\(f(0.90)\)&lt;/span&gt; using &lt;span class=&#34;math inline&#34;&gt;\(\hat{f}(0.90)\)&lt;/span&gt;. We could also look at the expected prediction error of using &lt;span class=&#34;math inline&#34;&gt;\(\hat{f}(X)\)&lt;/span&gt; when &lt;span class=&#34;math inline&#34;&gt;\(X = 0.90\)&lt;/span&gt; to estimate &lt;span class=&#34;math inline&#34;&gt;\(Y\)&lt;/span&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
+\text{EPE}\left(Y, \hat{f}_k(0.90)\right) =
+\mathbb{E}_{Y \mid X, \mathcal{D}} \left[  \left(Y - \hat{f}_k(X) \right)^2 \mid X = 0.90 \right]
+\]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;We can estimate this quantity for each of the four models using the simulation study we already performed.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;get_epe = function(realized, estimate) {
+  mean((realized - estimate) ^ 2)
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;y = rnorm(n = nrow(predictions), mean = f(x = 0.9), sd = 0.3)
+epe = apply(predictions, 2, get_epe, realized = y)
+epe&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;##         0         1         2         9 
+## 0.3180470 0.1104055 0.1095955 0.1205570&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;What about the unconditional expected prediction error. That is, for any &lt;span class=&#34;math inline&#34;&gt;\(X\)&lt;/span&gt;, not just &lt;span class=&#34;math inline&#34;&gt;\(0.90\)&lt;/span&gt;. Specifically, the expected prediction error of estimating &lt;span class=&#34;math inline&#34;&gt;\(Y\)&lt;/span&gt; using &lt;span class=&#34;math inline&#34;&gt;\(\hat{f}(X)\)&lt;/span&gt;. The following (new) simulation study provides an estimate of&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
+\text{EPE}\left(Y, \hat{f}_k(X)\right) = \mathbb{E}_{X, Y, \mathcal{D}} \left[  \left( Y - \hat{f}_k(X) \right)^2 \right]
+\]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;for the quadratic model, that is &lt;span class=&#34;math inline&#34;&gt;\(k = 2\)&lt;/span&gt; as we have defined &lt;span class=&#34;math inline&#34;&gt;\(k\)&lt;/span&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;set.seed(42)
+n_sims = 2500
+X = runif(n = n_sims, min = 0, max = 1)
+Y = rnorm(n = n_sims, mean = f(X), sd = 0.3)
+
+f_hat_X = rep(0, length(X))
+
+for (i in seq_along(X)) {
+  sim_data = gen_sim_data(f)
+  fit_2 = lm(y ~ poly(x, degree = 2), data = sim_data)
+  f_hat_X[i] = predict(fit_2, newdata = data.frame(x = X[i]))
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# truth
+0.3 ^ 2&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 0.09&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# via simulation
+mean((Y - f_hat_X) ^ 2)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 0.09566445&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Note that in practice, we should use many more simulations in this study.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;estimating-expected-prediction-error&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Estimating Expected Prediction Error&lt;/h2&gt;
+&lt;p&gt;While previously, we only decomposed the expected prediction error conditionally, a similar argument holds unconditionally.&lt;/p&gt;
+&lt;p&gt;Assuming&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
+\mathbb{V}[Y \mid X = x] = \sigma ^ 2.
+\]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;we have&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
+\text{EPE}\left(Y, \hat{f}(X)\right) =
+\mathbb{E}_{X, Y, \mathcal{D}} \left[  (Y - \hat{f}(X))^2 \right] =
+\underbrace{\mathbb{E}_{X} \left[\text{bias}^2\left(\hat{f}(X)\right)\right] + \mathbb{E}_{X} \left[\text{var}\left(\hat{f}(X)\right)\right]}_\textrm{reducible error} + \sigma^2
+\]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;Lastly, we note that if&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
+\mathcal{D} = \mathcal{D}_{\texttt{trn}} \cup \mathcal{D}_{\texttt{tst}} = (x_i, y_i) \in \mathbb{R}^p \times \mathbb{R}, \ i = 1, 2, \ldots n
+\]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;where&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
+\mathcal{D}_{\texttt{trn}} = (x_i, y_i) \in \mathbb{R}^p \times \mathbb{R}, \ i \in \texttt{trn}
+\]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;and&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
+\mathcal{D}_{\texttt{tst}} = (x_i, y_i) \in \mathbb{R}^p \times \mathbb{R}, \ i \in \texttt{tst}
+\]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;Then, if we have a model fit to the training data &lt;span class=&#34;math inline&#34;&gt;\(\mathcal{D}_{\texttt{trn}}\)&lt;/span&gt;, we can use the test mean squared error&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
+\sum_{i \in \texttt{tst}}\left(y_i - \hat{f}(x_i)\right) ^ 2
+\]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;as an estimate of&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
+\mathbb{E}_{X, Y, \mathcal{D}} \left[  (Y - \hat{f}(X))^2 \right]
+\]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;the expected prediction error.&lt;a href=&#34;#fn4&#34; class=&#34;footnote-ref&#34; id=&#34;fnref4&#34;&gt;&lt;sup&gt;4&lt;/sup&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;How good is this estimate? Well, if &lt;span class=&#34;math inline&#34;&gt;\(\mathcal{D}\)&lt;/span&gt; is a random sample from &lt;span class=&#34;math inline&#34;&gt;\((X, Y)\)&lt;/span&gt;, and the &lt;span class=&#34;math inline&#34;&gt;\(\texttt{tst}\)&lt;/span&gt; data are randomly sampled observations randomly sampled from &lt;span class=&#34;math inline&#34;&gt;\(i = 1, 2, \ldots, n\)&lt;/span&gt;, then it is a reasonable estimate. However, it is rather variable due to the randomness of selecting the observations for the test set, if the test set is small.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;model-flexibility&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Model Flexibility&lt;/h2&gt;
+&lt;p&gt;Let’s return to the simiulated dataset we used occaisionally in the linear regression content. Recall there was a single feature &lt;span class=&#34;math inline&#34;&gt;\(x\)&lt;/span&gt; with the following properties:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# define regression function
+cubic_mean = function(x) {
+  1 - 2 * x - 3 * x ^ 2 + 5 * x ^ 3
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;We then generated some data around this function with some added noise:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# define full data generating process
+gen_slr_data = function(sample_size = 100, mu) {
+  x = runif(n = sample_size, min = -1, max = 1)
+  y = mu(x) + rnorm(n = sample_size)
+  tibble(x, y)
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;After defining the data generating process, we generate and split the data.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# simulate entire dataset
+set.seed(3)
+sim_slr_data = gen_slr_data(sample_size = 100, mu = cubic_mean)
+
+# test-train split
+slr_trn_idx = sample(nrow(sim_slr_data), size = 0.8 * nrow(sim_slr_data))
+slr_trn = sim_slr_data[slr_trn_idx, ]
+slr_tst = sim_slr_data[-slr_trn_idx, ]
+
+# estimation-validation split
+slr_est_idx = sample(nrow(slr_trn), size = 0.8 * nrow(slr_trn))
+slr_est = slr_trn[slr_est_idx, ]
+slr_val = slr_trn[-slr_est_idx, ]
+
+# check data
+head(slr_trn, n = 10)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 10 x 2
+##         x      y
+##     &amp;lt;dbl&amp;gt;  &amp;lt;dbl&amp;gt;
+##  1  0.573 -1.18 
+##  2  0.807  0.576
+##  3  0.272 -0.973
+##  4 -0.813 -1.78 
+##  5 -0.161  0.833
+##  6  0.736  1.07 
+##  7 -0.242  2.97 
+##  8  0.520 -1.64 
+##  9 -0.664  0.269
+## 10 -0.777 -2.02&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;For validating models, we will use RMSE.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# helper function for calculating RMSE
+calc_rmse = function(actual, predicted) {
+  sqrt(mean((actual - predicted) ^ 2))
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Let’s check how linear, k-nearest neighbors, and decision tree models fit to this data make errors, while paying attention to their flexibility.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/content/09-content_files/figure-html/error-vs-flex-1.png&#34; width=&#34;960&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;This picture is an idealized version of what we expect to see, but we’ll illustrate the sorts of validate “curves” that we might see in practice.&lt;/p&gt;
+&lt;p&gt;Note that in the following three sub-sections, a significant portion of the code is suppressed for visual clarity. See the source document for full details.&lt;/p&gt;
+&lt;div id=&#34;linear-models&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Linear Models&lt;/h3&gt;
+&lt;p&gt;First up, linear models. We will fit polynomial models with degree from one to nine, and then validate.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# fit polynomial models
+poly_mod_est_list = list(
+  poly_mod_1_est = lm(y ~ poly(x, degree = 1), data = slr_est),
+  poly_mod_2_est = lm(y ~ poly(x, degree = 2), data = slr_est),
+  poly_mod_3_est = lm(y ~ poly(x, degree = 3), data = slr_est),
+  poly_mod_4_est = lm(y ~ poly(x, degree = 4), data = slr_est),
+  poly_mod_5_est = lm(y ~ poly(x, degree = 5), data = slr_est),
+  poly_mod_6_est = lm(y ~ poly(x, degree = 6), data = slr_est),
+  poly_mod_7_est = lm(y ~ poly(x, degree = 7), data = slr_est),
+  poly_mod_8_est = lm(y ~ poly(x, degree = 8), data = slr_est),
+  poly_mod_9_est = lm(y ~ poly(x, degree = 9), data = slr_est)
+)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The plot below visualizes the results.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/content/09-content_files/figure-html/unnamed-chunk-35-1.png&#34; width=&#34;672&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;What do we see here? As the polynomial degree &lt;em&gt;increases&lt;/em&gt;:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;The training error &lt;em&gt;decreases&lt;/em&gt;.&lt;/li&gt;
+&lt;li&gt;The validation error &lt;em&gt;decreases&lt;/em&gt;, then &lt;em&gt;increases&lt;/em&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;This more of less matches the idealized version above, but the validation “curve” is much more jagged. This is something that we can expect in practice.&lt;/p&gt;
+&lt;p&gt;We have previously noted that training error isn’t particularly useful for validating models. That is still true. However, it can be useful for checking that everything is working as planned. In this case, since we known that training error decreases as model flexibility increases, we can verify our intuition that a higher degree polynomial is indeed more flexible.&lt;a href=&#34;#fn5&#34; class=&#34;footnote-ref&#34; id=&#34;fnref5&#34;&gt;&lt;sup&gt;5&lt;/sup&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;k-nearest-neighbors&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;k-Nearest Neighbors&lt;/h3&gt;
+&lt;p&gt;Next up, k-nearest neighbors. We will consider values for &lt;span class=&#34;math inline&#34;&gt;\(k\)&lt;/span&gt; that are odd and between &lt;span class=&#34;math inline&#34;&gt;\(1\)&lt;/span&gt; and &lt;span class=&#34;math inline&#34;&gt;\(45\)&lt;/span&gt; inclusive.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# helper function for fitting knn models
+fit_knn_mod = function(neighbors) {
+  knnreg(y ~ x, data = slr_est, k = neighbors)
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# define values of tuning parameter k to evaluate
+k_to_try = seq(from = 1, to = 45, by = 2)
+
+# fit knn models
+knn_mod_est_list = lapply(k_to_try, fit_knn_mod)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The plot below visualizes the results.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/content/09-content_files/figure-html/unnamed-chunk-39-1.png&#34; width=&#34;672&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Here we see the “opposite” of the usual plot. Why? Because with k-nearest neighbors, a small value of &lt;span class=&#34;math inline&#34;&gt;\(k\)&lt;/span&gt; generates a flexible model compared to larger values of &lt;span class=&#34;math inline&#34;&gt;\(k\)&lt;/span&gt;. So visually, this plot is flipped. That is we see that as &lt;span class=&#34;math inline&#34;&gt;\(k\)&lt;/span&gt; &lt;em&gt;increases&lt;/em&gt;:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;The training error &lt;em&gt;increases&lt;/em&gt;.&lt;/li&gt;
+&lt;li&gt;The validation error &lt;em&gt;decreases&lt;/em&gt;, then &lt;em&gt;increases&lt;/em&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Important to note here: the pattern above only holds “in general,” that is, there can be minor deviations in the validation pattern along the way. This is due to the random nature of selection the data for the validate set.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;decision-trees&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Decision Trees&lt;/h3&gt;
+&lt;p&gt;Lastly, we evaluate some decision tree models. We choose some arbitrary values of &lt;code&gt;cp&lt;/code&gt; to evaluate, while holding &lt;code&gt;minsplit&lt;/code&gt; constant at &lt;code&gt;5&lt;/code&gt;. There are arbitrary choices that produce a plot that is useful for discussion.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# helper function for fitting decision tree models
+tree_knn_mod = function(flex) {
+  rpart(y ~ x, data = slr_est, cp = flex, minsplit = 5)
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# define values of tuning parameter cp to evaluate
+cp_to_try = c(0.5, 0.3, 0.1, 0.05, 0.01, 0.001, 0.0001)
+
+# fit decision tree models
+tree_mod_est_list = lapply(cp_to_try, tree_knn_mod)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The plot below visualizes the results.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/content/09-content_files/figure-html/unnamed-chunk-43-1.png&#34; width=&#34;672&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Based on this plot, how is &lt;code&gt;cp&lt;/code&gt; related to model flexibility?&lt;a href=&#34;#fn6&#34; class=&#34;footnote-ref&#34; id=&#34;fnref6&#34;&gt;&lt;sup&gt;6&lt;/sup&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&#34;footnotes&#34;&gt;
+&lt;hr /&gt;
+&lt;ol&gt;
+&lt;li id=&#34;fn1&#34;&gt;&lt;p&gt;Note that in this section, we will refer to &lt;span class=&#34;math inline&#34;&gt;\(f(x)\)&lt;/span&gt; as the regression function instead of &lt;span class=&#34;math inline&#34;&gt;\(\mu(x)\)&lt;/span&gt; for unimportant and arbitrary reasons.&lt;a href=&#34;#fnref1&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li id=&#34;fn2&#34;&gt;&lt;p&gt;Someday, someone will tell you this is a lie. They aren’t wrong. In modern deep learning, there is a concept called &lt;a href=&#34;https://openai.com/blog/deep-double-descent/&#34;&gt;Deep Double Descent&lt;/a&gt;. See also &lt;span class=&#34;citation&#34;&gt;@belkin2018reconciling&lt;/span&gt;.&lt;a href=&#34;#fnref2&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li id=&#34;fn3&#34;&gt;&lt;p&gt;It’s actually the same as the 0 predictor linear model. Can you see why?&lt;a href=&#34;#fnref3&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li id=&#34;fn4&#34;&gt;&lt;p&gt;In practice we prefer RMSE to MSE for comparing models and reporting because of the units.&lt;a href=&#34;#fnref4&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li id=&#34;fn5&#34;&gt;&lt;p&gt;In practice, if you already know how your model’s flexibility works, by checking that the training error goes down as you increase flexibility, you can check that you have done your coding and model training correctly.&lt;a href=&#34;#fnref5&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li id=&#34;fn6&#34;&gt;&lt;p&gt;As &lt;code&gt;cp&lt;/code&gt; increases, model flexibility decreases.&lt;a href=&#34;#fnref6&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Nonparametric Regression</title>
+      <link>https://datavizm20.classes.andrewheiss.com/content/08-content/</link>
+      <pubDate>Tue, 16 Mar 2021 00:00:00 +0000</pubDate>
+      <guid>https://datavizm20.classes.andrewheiss.com/content/08-content/</guid>
+      <description>
+&lt;script src=&#34;https://datavizm20.classes.andrewheiss.com/rmarkdown-libs/kePrint/kePrint.js&#34;&gt;&lt;/script&gt;
+&lt;link href=&#34;https://datavizm20.classes.andrewheiss.com/rmarkdown-libs/lightable/lightable.css&#34; rel=&#34;stylesheet&#34; /&gt;
+
+&lt;div id=&#34;TOC&#34;&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#required-reading&#34;&gt;Required Reading&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#guiding-ideas&#34;&gt;Guiding Ideas&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#nonparametric-regression&#34;&gt;Nonparametric Regression&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#r-setup&#34;&gt;R Setup&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#mathematical-setup&#34;&gt;Mathematical Setup&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#k-nearest-neighbors&#34;&gt;k-Nearest Neighbors&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#decision-trees&#34;&gt;Decision Trees&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#example-credit-card-data&#34;&gt;Example: Credit Card Data&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+
+&lt;div id=&#34;required-reading&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Required Reading&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;This page.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div id=&#34;guiding-ideas&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Guiding Ideas&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;How to use &lt;strong&gt;k-nearest neighbors&lt;/strong&gt; for regression through the use of the &lt;code&gt;knnreg()&lt;/code&gt; function from the &lt;code&gt;caret&lt;/code&gt; package&lt;/li&gt;
+&lt;li&gt;How to use &lt;strong&gt;decision trees&lt;/strong&gt; for regression through the use of the &lt;code&gt;rpart()&lt;/code&gt; function from the &lt;code&gt;rpart&lt;/code&gt; package.&lt;/li&gt;
+&lt;li&gt;How “making predictions” can be thought of as &lt;strong&gt;estimating the regression function&lt;/strong&gt;, that is, the conditional mean of the response given values of the features.&lt;/li&gt;
+&lt;li&gt;The difference between &lt;strong&gt;parametric&lt;/strong&gt; and &lt;strong&gt;nonparametric&lt;/strong&gt; methods.&lt;/li&gt;
+&lt;li&gt;The difference between &lt;strong&gt;model parameters&lt;/strong&gt; and &lt;strong&gt;tuning parameters&lt;/strong&gt; methods.&lt;/li&gt;
+&lt;li&gt;How these nonparametric methods deal with &lt;strong&gt;categorical variables&lt;/strong&gt; and &lt;strong&gt;interactions&lt;/strong&gt;.&lt;/li&gt;
+&lt;li&gt;What is &lt;strong&gt;model flexibility&lt;/strong&gt;?&lt;/li&gt;
+&lt;li&gt;What is &lt;strong&gt;overfitting&lt;/strong&gt; and how do we avoid it?&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;nonparametric-regression&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Nonparametric Regression&lt;/h1&gt;
+&lt;p&gt;In the next weeks, we will continue to explore models for making &lt;strong&gt;predictions&lt;/strong&gt;, but now we will introduce &lt;strong&gt;nonparametric models&lt;/strong&gt; that will contrast the &lt;strong&gt;parametric models&lt;/strong&gt; that we have used previously.&lt;/p&gt;
+&lt;p&gt;This content is currently &lt;strong&gt;under construction&lt;/strong&gt;. You can expect it to be a lot less polished than other sections.&lt;/p&gt;
+&lt;div id=&#34;r-setup&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;R Setup&lt;/h2&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(tibble)     # data frame printing
+library(dplyr)      # data manipulation
+
+library(caret)      # fitting knn
+library(rpart)      # fitting trees
+library(rpart.plot) # plotting trees
+
+library(knitr)      # creating tables
+library(kableExtra) # styling tables&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;mathematical-setup&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Mathematical Setup&lt;/h2&gt;
+&lt;p&gt;Let’s return to the setup we defined in the previous lectures. Consider a random variable &lt;span class=&#34;math inline&#34;&gt;\(Y\)&lt;/span&gt; which represents a &lt;strong&gt;response&lt;/strong&gt; variable, and &lt;span class=&#34;math inline&#34;&gt;\(p\)&lt;/span&gt; &lt;strong&gt;feature&lt;/strong&gt; variables &lt;span class=&#34;math inline&#34;&gt;\(\boldsymbol{X} = (X_1, X_2, \ldots, X_p)\)&lt;/span&gt;. We assume that the response variable &lt;span class=&#34;math inline&#34;&gt;\(Y\)&lt;/span&gt; is some function of the features, plus some random noise.&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
+Y = f(\boldsymbol{X}) + \epsilon
+\]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;Our goal is to find some &lt;span class=&#34;math inline&#34;&gt;\(f\)&lt;/span&gt; such that &lt;span class=&#34;math inline&#34;&gt;\(f(\boldsymbol{X})\)&lt;/span&gt; is close to &lt;span class=&#34;math inline&#34;&gt;\(Y\)&lt;/span&gt;. More specifically we want to minimize the risk under squared error loss.&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
+\mathbb{E}_{\boldsymbol{X}, Y} \left[ (Y - f(\boldsymbol{X})) ^ 2 \right] = \mathbb{E}_{\boldsymbol{X}} \mathbb{E}_{Y \mid \boldsymbol{X}} \left[ ( Y - f(\boldsymbol{X}) ) ^ 2 \mid \boldsymbol{X} = \boldsymbol{x} \right]
+\]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;We saw previously (see the slides from last two content days) that this risk is minimized by the &lt;strong&gt;conditional mean&lt;/strong&gt; of &lt;span class=&#34;math inline&#34;&gt;\(Y\)&lt;/span&gt; given &lt;span class=&#34;math inline&#34;&gt;\(\boldsymbol{X}\)&lt;/span&gt;,&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
+\mu(\boldsymbol{x}) \triangleq \mathbb{E}[Y \mid \boldsymbol{X} = \boldsymbol{x}]
+\]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;which we call the &lt;strong&gt;regression function&lt;/strong&gt;.&lt;/p&gt;
+&lt;p&gt;Our goal then is to &lt;strong&gt;estimate&lt;/strong&gt; this &lt;strong&gt;regression function&lt;/strong&gt;. Let’s use an example where we know the true probability model:&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
+Y = 1 - 2x - 3x ^ 2 + 5x ^ 3 + \epsilon
+\]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;where &lt;span class=&#34;math inline&#34;&gt;\(\epsilon \sim \text{N}(0, \sigma^2)\)&lt;/span&gt;.&lt;/p&gt;
+&lt;p&gt;Recall that this implies that the regression function is&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
+\mu(x) = \mathbb{E}[Y \mid \boldsymbol{X} = \boldsymbol{x}] = 1 - 2x - 3x ^ 2 + 5x ^ 3
+\]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;Let’s also pretend that we do not actually know this information, but instead have some data, &lt;span class=&#34;math inline&#34;&gt;\((x_i, y_i)\)&lt;/span&gt; for &lt;span class=&#34;math inline&#34;&gt;\(i = 1, 2, \ldots, n\)&lt;/span&gt;.&lt;/p&gt;
+&lt;p&gt;We simulate enough data to make the “pattern” clear-ish to recognize.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/content/08-content_files/figure-html/unnamed-chunk-4-1.png&#34; width=&#34;576&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;When we use a linear model, we first need to make an &lt;strong&gt;assumption&lt;/strong&gt; about the form of the regression function.&lt;/p&gt;
+&lt;p&gt;For example, we could assume that&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
+\mu(x) = \mathbb{E}[Y \mid \boldsymbol{X} = \boldsymbol{x}] = \beta_0 + \beta_1 x + \beta_2 x^2 + \beta_3 x^3
+\]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;which is fit in R using the &lt;code&gt;lm()&lt;/code&gt; function&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;lm(y ~ x + I(x ^ 2) + I(x ^ 3), data = sim_slr_data)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## 
+## Call:
+## lm(formula = y ~ x + I(x^2) + I(x^3), data = sim_slr_data)
+## 
+## Coefficients:
+## (Intercept)            x       I(x^2)       I(x^3)  
+##      0.8397      -2.7257      -2.3752       6.0906&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Notice that what is returned are (maximum likelihood or least squares) estimates of the unknown &lt;span class=&#34;math inline&#34;&gt;\(\beta\)&lt;/span&gt; coefficients. That is, the “learning” that takes place with a linear models is “learning” the values of the coefficients.&lt;/p&gt;
+&lt;p&gt;For this reason, we call linear regression models &lt;strong&gt;parametric&lt;/strong&gt; models. They have unknown &lt;strong&gt;model parameters&lt;/strong&gt;, in this case the &lt;span class=&#34;math inline&#34;&gt;\(\beta\)&lt;/span&gt; coefficients that must be learned from the data. The form of the regression function is assumed.&lt;/p&gt;
+&lt;p&gt;What if we don’t want to make an assumption about the form of the regression function? While in this case, you might look at the plot and arrive at a reasonable guess of assuming a third order polynomial, what if it isn’t so clear? What if you have 100 features? Making strong assumptions might not work well.&lt;/p&gt;
+&lt;p&gt;Enter &lt;strong&gt;nonparametric&lt;/strong&gt; models. We will consider two examples: &lt;strong&gt;k-nearest neighbors&lt;/strong&gt; and &lt;strong&gt;decision trees&lt;/strong&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;k-nearest-neighbors&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;k-Nearest Neighbors&lt;/h2&gt;
+&lt;p&gt;We’ll start with &lt;strong&gt;k-nearest neighbors&lt;/strong&gt; which is possibly a more intuitive procedure than linear models.&lt;a href=&#34;#fn1&#34; class=&#34;footnote-ref&#34; id=&#34;fnref1&#34;&gt;&lt;sup&gt;1&lt;/sup&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;If our goal is to estimate the mean function,&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
+\mu(x) = \mathbb{E}[Y \mid \boldsymbol{X} = \boldsymbol{x}]
+\]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;the most natural approach would be to use&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
+\text{average}(\{ y_i : x_i = x \}).
+\]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;That is, to estimate the conditional mean at &lt;span class=&#34;math inline&#34;&gt;\(x\)&lt;/span&gt;, average the &lt;span class=&#34;math inline&#34;&gt;\(y_i\)&lt;/span&gt; values for each data point where &lt;span class=&#34;math inline&#34;&gt;\(x_i = x\)&lt;/span&gt;.&lt;/p&gt;
+&lt;p&gt;While this sounds nice, it has an obvious flaw. For most values of &lt;span class=&#34;math inline&#34;&gt;\(x\)&lt;/span&gt; there will not be any &lt;span class=&#34;math inline&#34;&gt;\(x_i\)&lt;/span&gt; in the data where &lt;span class=&#34;math inline&#34;&gt;\(x_i = x\)&lt;/span&gt;!&lt;/p&gt;
+&lt;p&gt;So what’s the next best thing? Pick values of &lt;span class=&#34;math inline&#34;&gt;\(x_i\)&lt;/span&gt; that are “close” to &lt;span class=&#34;math inline&#34;&gt;\(x\)&lt;/span&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
+\text{average}( \{ y_i : x_i \text{ equal to (or very close to) x} \} ).
+\]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;This is the main idea behind many nonparametric approaches. The details often just amount to very specifically defining what “close” means.&lt;/p&gt;
+&lt;p&gt;In the case of k-nearest neighbors we use&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
+\hat{\mu}_k(x) = \frac{1}{k} \sum_{ \{i \ : \ x_i \in \mathcal{N}_k(x, \mathcal{D}) \} } y_i
+\]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;as our estimate of the regression function at &lt;span class=&#34;math inline&#34;&gt;\(x\)&lt;/span&gt;. While this looks complicated, it is actually very simple. Here, we are using an average of the &lt;span class=&#34;math inline&#34;&gt;\(y_i\)&lt;/span&gt; values of for the &lt;span class=&#34;math inline&#34;&gt;\(k\)&lt;/span&gt; nearest neighbors to &lt;span class=&#34;math inline&#34;&gt;\(x\)&lt;/span&gt;.&lt;/p&gt;
+&lt;p&gt;The &lt;span class=&#34;math inline&#34;&gt;\(k\)&lt;/span&gt; “nearest” neighbors are the &lt;span class=&#34;math inline&#34;&gt;\(k\)&lt;/span&gt; data points &lt;span class=&#34;math inline&#34;&gt;\((x_i, y_i)\)&lt;/span&gt; that have &lt;span class=&#34;math inline&#34;&gt;\(x_i\)&lt;/span&gt; values that are nearest to &lt;span class=&#34;math inline&#34;&gt;\(x\)&lt;/span&gt;. We can define “nearest” using any distance we like, but unless otherwise noted, we are referring to euclidean distance.&lt;a href=&#34;#fn2&#34; class=&#34;footnote-ref&#34; id=&#34;fnref2&#34;&gt;&lt;sup&gt;2&lt;/sup&gt;&lt;/a&gt; We are using the notation &lt;span class=&#34;math inline&#34;&gt;\(\{i \ : \ x_i \in \mathcal{N}_k(x, \mathcal{D}) \}\)&lt;/span&gt; to define the &lt;span class=&#34;math inline&#34;&gt;\(k\)&lt;/span&gt; observations that have &lt;span class=&#34;math inline&#34;&gt;\(x_i\)&lt;/span&gt; values that are nearest to the value &lt;span class=&#34;math inline&#34;&gt;\(x\)&lt;/span&gt; in a dataset &lt;span class=&#34;math inline&#34;&gt;\(\mathcal{D}\)&lt;/span&gt;, in other words, the &lt;span class=&#34;math inline&#34;&gt;\(k\)&lt;/span&gt; nearest neighbors.&lt;/p&gt;
+&lt;p&gt;The plots below begin to illustrate this idea.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/content/08-content_files/figure-html/unnamed-chunk-7-1.png&#34; width=&#34;864&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;In the left plot, to estimate the mean of &lt;span class=&#34;math inline&#34;&gt;\(Y\)&lt;/span&gt; at &lt;span class=&#34;math inline&#34;&gt;\(x = -0.5\)&lt;/span&gt; we use the three nearest neighbors, which are highlighted with green. Our estimate is the average of the &lt;span class=&#34;math inline&#34;&gt;\(y_i\)&lt;/span&gt; values of these three points indicated by the black x.&lt;/li&gt;
+&lt;li&gt;In the middle plot, to estimate the mean of &lt;span class=&#34;math inline&#34;&gt;\(Y\)&lt;/span&gt; at &lt;span class=&#34;math inline&#34;&gt;\(x = 0\)&lt;/span&gt; we use the five nearest neighbors, which are highlighted with green. Our estimate is the average of the &lt;span class=&#34;math inline&#34;&gt;\(y_i\)&lt;/span&gt; values of these five points indicated by the black x.&lt;/li&gt;
+&lt;li&gt;In the right plot, to estimate the mean of &lt;span class=&#34;math inline&#34;&gt;\(Y\)&lt;/span&gt; at &lt;span class=&#34;math inline&#34;&gt;\(x = 0.75\)&lt;/span&gt; we use the nine nearest neighbors, which are highlighted with green. Our estimate is the average of the &lt;span class=&#34;math inline&#34;&gt;\(y_i\)&lt;/span&gt; values of these nine points indicated by the black x.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;You might begin to notice a bit of an issue here. We have to do a new calculation each time we want to estimate the regression function at a different value of &lt;span class=&#34;math inline&#34;&gt;\(x\)&lt;/span&gt;! For this reason, k-nearest neighbors is often said to be “fast to train” and “slow to predict.” Training, is instant. You just memorize the data! Prediction involves finding the distance between the &lt;span class=&#34;math inline&#34;&gt;\(x\)&lt;/span&gt; considered and all &lt;span class=&#34;math inline&#34;&gt;\(x_i\)&lt;/span&gt; in the data!&lt;a href=&#34;#fn3&#34; class=&#34;footnote-ref&#34; id=&#34;fnref3&#34;&gt;&lt;sup&gt;3&lt;/sup&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;So, how then, do we choose the value of the &lt;strong&gt;tuning&lt;/strong&gt; parameter &lt;span class=&#34;math inline&#34;&gt;\(k\)&lt;/span&gt;? We &lt;em&gt;&lt;strong&gt;validate&lt;/strong&gt;&lt;/em&gt;!&lt;/p&gt;
+&lt;p&gt;First, let’s take a look at what happens with this data if we consider three different values of &lt;span class=&#34;math inline&#34;&gt;\(k\)&lt;/span&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/content/08-content_files/figure-html/unnamed-chunk-9-1.png&#34; width=&#34;1152&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;For each plot, the black dashed curve is the true mean function.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;In the left plot we use &lt;span class=&#34;math inline&#34;&gt;\(k = 25\)&lt;/span&gt;. The red “curve” is the estimate of the mean function for each &lt;span class=&#34;math inline&#34;&gt;\(x\)&lt;/span&gt; shown in the plot.&lt;/li&gt;
+&lt;li&gt;In the left plot we use &lt;span class=&#34;math inline&#34;&gt;\(k = 5\)&lt;/span&gt;. The blue “curve” is the estimate of the mean function for each &lt;span class=&#34;math inline&#34;&gt;\(x\)&lt;/span&gt; shown in the plot.&lt;/li&gt;
+&lt;li&gt;In the left plot we use &lt;span class=&#34;math inline&#34;&gt;\(k = 1\)&lt;/span&gt;. The green “curve” is the estimate of the mean function for each &lt;span class=&#34;math inline&#34;&gt;\(x\)&lt;/span&gt; shown in the plot.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Some things to notice here:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;The left plot with &lt;span class=&#34;math inline&#34;&gt;\(k = 25\)&lt;/span&gt; is performing poorly. The estimated “curve” does not “move” enough. This is an example of an &lt;strong&gt;inflexible&lt;/strong&gt; model.&lt;/li&gt;
+&lt;li&gt;The right plot with &lt;span class=&#34;math inline&#34;&gt;\(k = 1\)&lt;/span&gt; might not perform too well. The estimated “curve” seems to “move” too much. (Notice, that it goes through each point. We’ve fit to the noise.) This is an example of a &lt;strong&gt;flexible&lt;/strong&gt; model.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;While the middle plot with &lt;span class=&#34;math inline&#34;&gt;\(k = 5\)&lt;/span&gt; is not “perfect” it seems to roughly capture the “motion” of the true regression function. We can begin to see that if we generated new data, this estimated regression function would perform better than the other two.&lt;/p&gt;
+&lt;p&gt;But remember, in practice, we won’t know the true regression function, so we will need to determine how our model performs using only the available data!&lt;/p&gt;
+&lt;p&gt;This &lt;span class=&#34;math inline&#34;&gt;\(k\)&lt;/span&gt;, the number of neighbors, is an example of a &lt;strong&gt;tuning parameter&lt;/strong&gt;. Instead of being learned from the data, like model parameters such as the &lt;span class=&#34;math inline&#34;&gt;\(\beta\)&lt;/span&gt; coefficients in linear regression, a tuning parameter tells us &lt;em&gt;how&lt;/em&gt; to learn from data. It is user-specified. To determine the value of &lt;span class=&#34;math inline&#34;&gt;\(k\)&lt;/span&gt; that should be used, many models are fit to the estimation data, then evaluated on the validation. Using the information from the validation data, a value of &lt;span class=&#34;math inline&#34;&gt;\(k\)&lt;/span&gt; is chosen. (More on this in a bit.)&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Model parameters&lt;/strong&gt; are “learned” using the same data that was used to fit the model.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Tuning parameters&lt;/strong&gt; are “chosen” using data not used to fit the model.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;This tuning parameter &lt;span class=&#34;math inline&#34;&gt;\(k\)&lt;/span&gt; also defines the &lt;strong&gt;flexibility&lt;/strong&gt; of the model. In KNN, a small value of &lt;span class=&#34;math inline&#34;&gt;\(k\)&lt;/span&gt; is a flexible model, while a large value of &lt;span class=&#34;math inline&#34;&gt;\(k\)&lt;/span&gt; is inflexible.&lt;a href=&#34;#fn4&#34; class=&#34;footnote-ref&#34; id=&#34;fnref4&#34;&gt;&lt;sup&gt;4&lt;/sup&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Before moving to an example of tuning a KNN model, we will first introduce decision trees.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;decision-trees&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Decision Trees&lt;/h2&gt;
+&lt;p&gt;&lt;strong&gt;Decision trees&lt;/strong&gt; are similar to k-nearest neighbors but instead of looking for neighbors, decision trees create neighborhoods. We won’t explore the full details of trees, but just start to understand the basic concepts, as well as learn to fit them in R.&lt;/p&gt;
+&lt;p&gt;Neighborhoods are created via recursive binary partitions. In simpler terms, pick a feature and a possible cutoff value. Data that have a value less than the cutoff for the selected feature are in one neighborhood (the left) and data that have a value greater than the cutoff are in another (the right). Within these two neighborhoods, repeat this procedure until a stopping rule is satisfied. To make a prediction, check which neighborhood a new piece of data would belong to and predict the average of the &lt;span class=&#34;math inline&#34;&gt;\(y_i\)&lt;/span&gt; values of data in that neighborhood.&lt;/p&gt;
+&lt;p&gt;With the data above, which has a single feature &lt;span class=&#34;math inline&#34;&gt;\(x\)&lt;/span&gt;, consider three possible cutoffs: -0.5, 0.0, and 0.75.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/content/08-content_files/figure-html/unnamed-chunk-11-1.png&#34; width=&#34;864&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;For each plot, the black vertical line defines the neighborhoods. The green horizontal lines are the average of the &lt;span class=&#34;math inline&#34;&gt;\(y_i\)&lt;/span&gt; values for the points in the left neighborhood. The red horizontal lines are the average of the &lt;span class=&#34;math inline&#34;&gt;\(y_i\)&lt;/span&gt; values for the points in the right neighborhood.&lt;/p&gt;
+&lt;p&gt;What makes a cutoff good? Large differences in the average &lt;span class=&#34;math inline&#34;&gt;\(y_i\)&lt;/span&gt; between the two neighborhoods. More formally we want to find a cutoff value that minimizes&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
+\sum_{i \in N_L} \left( y_i - \hat{\mu}_{N_L} \right) ^ 2 + \sum_{i \in N_R} \left(y_i - \hat{\mu}_{N_R} \right) ^ 2
+\]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;where&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;span class=&#34;math inline&#34;&gt;\(N_L\)&lt;/span&gt; are the data in the left neighborhood, that is &lt;span class=&#34;math inline&#34;&gt;\(x &amp;lt; c\)&lt;/span&gt;&lt;/li&gt;
+&lt;li&gt;&lt;span class=&#34;math inline&#34;&gt;\(N_R\)&lt;/span&gt; are the data in the right neighborhood, that is &lt;span class=&#34;math inline&#34;&gt;\(x &amp;gt; c\)&lt;/span&gt;&lt;/li&gt;
+&lt;li&gt;&lt;span class=&#34;math inline&#34;&gt;\(\hat{\mu}_{N_L}\)&lt;/span&gt; is the mean of the &lt;span class=&#34;math inline&#34;&gt;\(y_i\)&lt;/span&gt; for data in the left neighborhood&lt;/li&gt;
+&lt;li&gt;&lt;span class=&#34;math inline&#34;&gt;\(\hat{\mu}_{N_R}\)&lt;/span&gt; is the mean of the &lt;span class=&#34;math inline&#34;&gt;\(y_i\)&lt;/span&gt; for data in the right neighborhood&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;This quantity is the sum of two sum of squared errors, one for the left neighborhood, and one for the right neighborhood.&lt;/p&gt;
+&lt;table class=&#34;table&#34; style=&#34;width: auto !important; margin-left: auto; margin-right: auto;&#34;&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th style=&#34;text-align:right;&#34;&gt;
+Cutoff
+&lt;/th&gt;
+&lt;th style=&#34;text-align:right;&#34;&gt;
+Total SSE
+&lt;/th&gt;
+&lt;th style=&#34;text-align:right;&#34;&gt;
+Left SSE
+&lt;/th&gt;
+&lt;th style=&#34;text-align:right;&#34;&gt;
+Right SSE
+&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.50
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+45.02
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+21.28
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+23.74
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0.00
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+58.94
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+44.68
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+14.26
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0.75
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+56.71
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+55.46
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+1.25
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;The table above summarizes the results of the three potential splits. We see that (of the splits considered, which are not exhaustive&lt;a href=&#34;#fn5&#34; class=&#34;footnote-ref&#34; id=&#34;fnref5&#34;&gt;&lt;sup&gt;5&lt;/sup&gt;&lt;/a&gt;) the split based on a cutoff of &lt;span class=&#34;math inline&#34;&gt;\(x = -0.50\)&lt;/span&gt; creates the best partitioning of the space.&lt;/p&gt;
+&lt;p&gt;Now let’s consider building a full tree.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/content/08-content_files/figure-html/unnamed-chunk-15-1.png&#34; width=&#34;672&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;In the plot above, the true regression function is the dashed black curve, and the solid orange curve is the estimated regression function using a decision tree. We see that there are two splits, which we can visualize as a tree.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/content/08-content_files/figure-html/unnamed-chunk-16-1.png&#34; width=&#34;672&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;The above “tree”&lt;a href=&#34;#fn6&#34; class=&#34;footnote-ref&#34; id=&#34;fnref6&#34;&gt;&lt;sup&gt;6&lt;/sup&gt;&lt;/a&gt; shows the splits that were made. It informs us of the variable used, the cutoff value, and some summary of the resulting neighborhood. In “tree” terminology the resulting neighborhoods are “terminal nodes” of the tree. In contrast, “internal nodes” are neighborhoods that are created, but then further split.&lt;/p&gt;
+&lt;p&gt;The “root node” is the neighborhood contains all observations, before any splitting, and can be seen at the top of the image above. We see that this node represents 100% of the data. The other number, 0.21, is the mean of the response variable, in this case, &lt;span class=&#34;math inline&#34;&gt;\(y_i\)&lt;/span&gt;.&lt;/p&gt;
+&lt;p&gt;Looking at a terminal node, for example the bottom left node, we see that 23% of the data is in this node. The average value of the &lt;span class=&#34;math inline&#34;&gt;\(y_i\)&lt;/span&gt; in this node is -1, which can be seen in the plot above.&lt;/p&gt;
+&lt;p&gt;We also see that the first split is based on the &lt;span class=&#34;math inline&#34;&gt;\(x\)&lt;/span&gt; variable, and a cutoff of &lt;span class=&#34;math inline&#34;&gt;\(x = -0.52\)&lt;/span&gt;. Note that because there is only one variable here, all splits are based on &lt;span class=&#34;math inline&#34;&gt;\(x\)&lt;/span&gt;, but in the future, we will have multiple features that can be split and neighborhoods will no longer be one-dimensional. However, this is hard to plot.&lt;/p&gt;
+&lt;p&gt;Let’s build a bigger, more flexible tree.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/content/08-content_files/figure-html/unnamed-chunk-18-1.png&#34; width=&#34;672&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/content/08-content_files/figure-html/unnamed-chunk-19-1.png&#34; width=&#34;672&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;There are two tuning parameters at play here which we will call by their names in R which we will see soon:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;cp&lt;/code&gt; or the “complexity parameter” as it is called.&lt;a href=&#34;#fn7&#34; class=&#34;footnote-ref&#34; id=&#34;fnref7&#34;&gt;&lt;sup&gt;7&lt;/sup&gt;&lt;/a&gt; This parameter determines which splits are accepted. A split must improve the performance of the tree by more than &lt;code&gt;cp&lt;/code&gt; in order to be used. When we get to R, we will see that the default value is 0.1.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;minsplit&lt;/code&gt;, the minimum number of observations in a node (neighborhood) in order to consider splitting within a neighborhood.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;There are actually many more possible tuning parameters for trees, possibly differing depending on who wrote the code you’re using. We will limit discussion to these two.&lt;a href=&#34;#fn8&#34; class=&#34;footnote-ref&#34; id=&#34;fnref8&#34;&gt;&lt;sup&gt;8&lt;/sup&gt;&lt;/a&gt; Note that they effect each other, and they effect other parameters which we are not discussing. The main takeaway should be how they effect model flexibility.&lt;/p&gt;
+&lt;p&gt;First let’s look at what happens for a fixed &lt;code&gt;minsplit&lt;/code&gt; by variable &lt;code&gt;cp&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/content/08-content_files/figure-html/unnamed-chunk-21-1.png&#34; width=&#34;1152&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;We see that as &lt;code&gt;cp&lt;/code&gt; &lt;em&gt;decreases&lt;/em&gt;, model flexibility &lt;strong&gt;increases&lt;/strong&gt;. We see more splits, because the increase in performance needed to accept a split is smaller as &lt;code&gt;cp&lt;/code&gt; is reduced.&lt;/p&gt;
+&lt;p&gt;Now the reverse, fix &lt;code&gt;cp&lt;/code&gt; and vary &lt;code&gt;minsplit&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/content/08-content_files/figure-html/unnamed-chunk-23-1.png&#34; width=&#34;1152&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;We see that as &lt;code&gt;minsplit&lt;/code&gt; &lt;em&gt;decreases&lt;/em&gt;, model flexibility &lt;strong&gt;increases&lt;/strong&gt;. By allowing splits of neighborhoods with fewer observations, we obtain more splits, which results in a more flexible model.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;example-credit-card-data&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Example: Credit Card Data&lt;/h2&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# load data, coerce to tibble
+crdt = as_tibble(ISLR::Credit)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Again, we are using the &lt;code&gt;Credit&lt;/code&gt; data form the &lt;code&gt;ISLR&lt;/code&gt; package. Note: &lt;strong&gt;this is not real data.&lt;/strong&gt; It has been simulated.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# data prep
+crdt = crdt %&amp;gt;%
+  select(-ID) %&amp;gt;%
+  select(-Rating, everything())&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;We remove the &lt;code&gt;ID&lt;/code&gt; variable as it should have no predictive power. We also move the &lt;code&gt;Rating&lt;/code&gt; variable to the last column with a clever &lt;code&gt;dplyr&lt;/code&gt; trick. This is in no way necessary, but is useful in creating some plots.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# test-train split
+set.seed(1)
+crdt_trn_idx = sample(nrow(crdt), size = 0.8 * nrow(crdt))
+crdt_trn = crdt[crdt_trn_idx, ]
+crdt_tst = crdt[-crdt_trn_idx, ]&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# estimation-validation split
+crdt_est_idx = sample(nrow(crdt_trn), size = 0.8 * nrow(crdt_trn))
+crdt_est = crdt_trn[crdt_est_idx, ]
+crdt_val = crdt_trn[-crdt_est_idx, ]&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;After train-test (with 80% of the data) and estimation-validation splitting the data, we look at the train data.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# check data
+head(crdt_trn, n = 10)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 10 x 11
+##    Income Limit Cards   Age Education Gender Student Married Ethnicity Balance
+##     &amp;lt;dbl&amp;gt; &amp;lt;int&amp;gt; &amp;lt;int&amp;gt; &amp;lt;int&amp;gt;     &amp;lt;int&amp;gt; &amp;lt;fct&amp;gt;  &amp;lt;fct&amp;gt;   &amp;lt;fct&amp;gt;   &amp;lt;fct&amp;gt;       &amp;lt;int&amp;gt;
+##  1  183.  13913     4    98        17 &amp;quot; Mal~ No      Yes     Caucasian    1999
+##  2   35.7  2880     2    35        15 &amp;quot; Mal~ No      No      African ~       0
+##  3  123.   8376     2    89        17 &amp;quot; Mal~ Yes     No      African ~    1259
+##  4   20.8  2672     1    70        18 &amp;quot;Fema~ No      No      African ~       0
+##  5   39.1  5565     4    48        18 &amp;quot;Fema~ No      Yes     Caucasian     772
+##  6   36.5  3806     2    52        13 &amp;quot; Mal~ No      No      African ~     188
+##  7   45.1  3762     3    80         8 &amp;quot; Mal~ No      Yes     Caucasian      70
+##  8   43.5  2906     4    69        11 &amp;quot; Mal~ No      No      Caucasian       0
+##  9   23.1  3476     2    50        15 &amp;quot;Fema~ No      No      Caucasian     209
+## 10   53.2  4943     2    46        16 &amp;quot;Fema~ No      Yes     Asian         382
+## # ... with 1 more variable: Rating &amp;lt;int&amp;gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;In this simulated data, we would like to predict the &lt;code&gt;Rating&lt;/code&gt; variable. For now, let’s try to use only demographic information as predictors.&lt;a href=&#34;#fn9&#34; class=&#34;footnote-ref&#34; id=&#34;fnref9&#34;&gt;&lt;sup&gt;9&lt;/sup&gt;&lt;/a&gt; In particular, let’s focus on &lt;code&gt;Age&lt;/code&gt; (numeric), &lt;code&gt;Gender&lt;/code&gt; (categorical), and &lt;code&gt;Student&lt;/code&gt; (categorical).&lt;/p&gt;
+&lt;p&gt;Let’s fit KNN models with these features, and various values of &lt;span class=&#34;math inline&#34;&gt;\(k\)&lt;/span&gt;. To do so, we use the &lt;code&gt;knnreg()&lt;/code&gt; function from the &lt;code&gt;caret&lt;/code&gt; package.&lt;a href=&#34;#fn10&#34; class=&#34;footnote-ref&#34; id=&#34;fnref10&#34;&gt;&lt;sup&gt;10&lt;/sup&gt;&lt;/a&gt; Use &lt;code&gt;?knnreg&lt;/code&gt; for documentation and details.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;crdt_knn_01 = knnreg(Rating ~ Age + Gender + Student, data = crdt_est, k = 1)
+crdt_knn_10 = knnreg(Rating ~ Age + Gender + Student, data = crdt_est, k = 10)
+crdt_knn_25 = knnreg(Rating ~ Age + Gender + Student, data = crdt_est, k = 25)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Here, we fit three models to the estimation data. We supply the variables that will be used as features as we would with &lt;code&gt;lm()&lt;/code&gt;. We also specify how many neighbors to consider via the &lt;code&gt;k&lt;/code&gt; argument.&lt;/p&gt;
+&lt;p&gt;But wait a second, what is the distance from non-student to student? From male to female? In other words, how does KNN handle categorical variables? It doesn’t! Like &lt;code&gt;lm()&lt;/code&gt; it creates dummy variables under the hood.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Note:&lt;/strong&gt; To this point, and until we specify otherwise, we will always coerce categorical variables to be factor variables in R. We will then let modeling functions such as &lt;code&gt;lm()&lt;/code&gt; or &lt;code&gt;knnreg()&lt;/code&gt; deal with the creation of dummy variables internally.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;head(crdt_knn_10$learn$X)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;##   Age GenderFemale StudentYes
+## 1  30            0          0
+## 2  25            0          0
+## 3  44            0          0
+## 4  73            1          0
+## 5  44            0          1
+## 6  71            0          0&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Once these dummy variables have been created, we have a numeric &lt;span class=&#34;math inline&#34;&gt;\(X\)&lt;/span&gt; matrix, which makes distance calculations easy.&lt;a href=&#34;#fn11&#34; class=&#34;footnote-ref&#34; id=&#34;fnref11&#34;&gt;&lt;sup&gt;11&lt;/sup&gt;&lt;/a&gt; For example, the distance between the 3rd and 4th observation here is 29.017.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;dist(head(crdt_knn_10$learn$X))&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;##           1         2         3         4         5
+## 2  5.000000                                        
+## 3 14.000000 19.000000                              
+## 4 43.011626 48.010416 29.017236                    
+## 5 14.035669 19.026298  1.000000 29.034462          
+## 6 41.000000 46.000000 27.000000  2.236068 27.018512&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;sqrt(sum((crdt_knn_10$learn$X[3, ] - crdt_knn_10$learn$X[4, ]) ^ 2))&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 29.01724&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;What about interactions? Basically, you’d have to create them the same way as you do for linear models. We only mention this to contrast with trees in a bit.&lt;/p&gt;
+&lt;p&gt;OK, so of these three models, which one performs best? (Where for now, “best” is obtaining the lowest validation RMSE.)&lt;/p&gt;
+&lt;p&gt;First, note that we return to the &lt;code&gt;predict()&lt;/code&gt; function as we did with &lt;code&gt;lm()&lt;/code&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;predict(crdt_knn_10, crdt_val[1:5, ])&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 337.7857 356.0000 295.7692 360.8182 306.8000&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;This uses the 10-NN (10 nearest neighbors) model to make predictions (estimate the regression function) given the first five observations of the validation data. &lt;strong&gt;Note:&lt;/strong&gt; We did not name the second argument to &lt;code&gt;predict()&lt;/code&gt;. Again, you’ve been warned.&lt;/p&gt;
+&lt;p&gt;Now that we know how to use the &lt;code&gt;predict()&lt;/code&gt; function, let’s calculate the validation RMSE for each of these models.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;knn_mod_list = list(
+  crdt_knn_01 = knnreg(Rating ~ Age + Gender + Student, data = crdt_est, k = 1),
+  crdt_knn_10 = knnreg(Rating ~ Age + Gender + Student, data = crdt_est, k = 10),
+  crdt_knn_25 = knnreg(Rating ~ Age + Gender + Student, data = crdt_est, k = 25)
+)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;knn_val_pred = lapply(knn_mod_list, predict, crdt_val)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;calc_rmse = function(actual, predicted) {
+  sqrt(mean((actual - predicted) ^ 2))
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;sapply(knn_val_pred, calc_rmse, crdt_val$Rating)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## crdt_knn_01 crdt_knn_10 crdt_knn_25 
+##    182.3469    149.2172    138.6527&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;So, of these three values of &lt;span class=&#34;math inline&#34;&gt;\(k\)&lt;/span&gt;, the model with &lt;span class=&#34;math inline&#34;&gt;\(k = 25\)&lt;/span&gt; achieves the lowest validation RMSE.&lt;/p&gt;
+&lt;p&gt;This process, fitting a number of models with different values of the &lt;em&gt;tuning parameter&lt;/em&gt;, in this case &lt;span class=&#34;math inline&#34;&gt;\(k\)&lt;/span&gt;, and then finding the “best” tuning parameter value based on performance on the validation data is called &lt;strong&gt;tuning&lt;/strong&gt;. In practice, we would likely consider more values of &lt;span class=&#34;math inline&#34;&gt;\(k\)&lt;/span&gt;, but this should illustrate the point.&lt;/p&gt;
+&lt;p&gt;In the next lectures, we will discuss the details of model flexibility and model tuning, and how these concepts are tied together. However, even though we will present some theory behind this relationship, in practice, &lt;strong&gt;you must tune and validate your models&lt;/strong&gt;. There is no theory that will inform you ahead of tuning and validation which model will be the best. By teaching you &lt;em&gt;how&lt;/em&gt; to fit KNN models in R and how to calculate validation RMSE, you already have all a set of tools you can use to find a good model.&lt;/p&gt;
+&lt;p&gt;Let’s turn to decision trees which we will fit with the &lt;code&gt;rpart()&lt;/code&gt; function from the &lt;code&gt;rpart&lt;/code&gt; package. Use &lt;code&gt;?rpart&lt;/code&gt; and &lt;code&gt;?rpart.control&lt;/code&gt; for documentation and details. In particular, &lt;code&gt;?rpart.control&lt;/code&gt; will detail the many tuning parameters of this implementation of decision tree models in R.&lt;/p&gt;
+&lt;p&gt;We’ll start by using default tuning parameters.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;crdt_tree = rpart(Rating ~ Age + Gender + Student, data = crdt_est)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;crdt_tree&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## n= 256 
+## 
+## node), split, n, deviance, yval
+##       * denotes terminal node
+## 
+##  1) root 256 6667400.0 357.0781  
+##    2) Age&amp;lt; 82.5 242 5865419.0 349.3719  
+##      4) Age&amp;gt;=69.5 52 1040678.0 313.0385 *
+##      5) Age&amp;lt; 69.5 190 4737307.0 359.3158  
+##       10) Age&amp;lt; 38.5 55  700013.2 326.6000 *
+##       11) Age&amp;gt;=38.5 135 3954443.0 372.6444  
+##         22) Student=Yes 14  180764.4 297.7857 *
+##         23) Student=No 121 3686148.0 381.3058  
+##           46) Age&amp;gt;=50.5 64 1881299.0 359.2344  
+##             92) Age&amp;lt; 53.5 9   48528.0 278.3333 *
+##             93) Age&amp;gt;=53.5 55 1764228.0 372.4727 *
+##           47) Age&amp;lt; 50.5 57 1738665.0 406.0877 *
+##    3) Age&amp;gt;=82.5 14  539190.9 490.2857 *&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Above we see the resulting tree printed, however, this is difficult to read. Instead, we use the &lt;code&gt;rpart.plot()&lt;/code&gt; function from the &lt;code&gt;rpart.plot&lt;/code&gt; package to better visualize the tree.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;rpart.plot(crdt_tree)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/content/08-content_files/figure-html/unnamed-chunk-40-1.png&#34; width=&#34;672&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;At each split, the variable used to split is listed together with a condition. If the condition is true for a data point, send it to the left neighborhood. Although the &lt;code&gt;Gender&lt;/code&gt; available for creating splits, we only see splits based on &lt;code&gt;Age&lt;/code&gt; and &lt;code&gt;Student&lt;/code&gt;. This hints at the relative importance of these variables for prediction. More on this much later.&lt;/p&gt;
+&lt;p&gt;Categorical variables are split based on potential categories! This is &lt;em&gt;excellent&lt;/em&gt;. This means that trees naturally handle categorical features without needing to convert to numeric under the hood. We see a split that puts students into one neighborhood, and non-students into another.&lt;/p&gt;
+&lt;p&gt;Notice that the splits happen in order. So for example, the third terminal node (with an average rating of 298) is based on splits of:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;Age &amp;lt; 83&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Age &amp;lt; 70&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Age &amp;gt; 39&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Student = Yes&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;In other words, individuals in this terminal node are students who are between the ages of 39 and 70. (Only 5% of the data is represented here.) This is basically an interaction between &lt;code&gt;Age&lt;/code&gt; and &lt;code&gt;Student&lt;/code&gt; without any need to directly specify it! What a great feature of trees.&lt;/p&gt;
+&lt;p&gt;To recap:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Trees do not make assumptions about the form of the regression function.&lt;/li&gt;
+&lt;li&gt;Trees automatically handle categorical features.&lt;/li&gt;
+&lt;li&gt;Trees naturally incorporate interaction.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Now let’s fit another tree that is more flexible by relaxing some tuning parameters. Recall that by default, &lt;code&gt;cp = 0.1&lt;/code&gt; and &lt;code&gt;minsplit = 20&lt;/code&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;crdt_tree_big = rpart(Rating ~ Age + Gender + Student, data = crdt_est,
+                      cp = 0.0, minsplit = 20)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;rpart.plot(crdt_tree_big)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/content/08-content_files/figure-html/unnamed-chunk-42-1.png&#34; width=&#34;672&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;To make the tree even bigger, we could reduce &lt;code&gt;minsplit&lt;/code&gt;, but in practice we mostly consider the &lt;code&gt;cp&lt;/code&gt; parameter. Since &lt;code&gt;minsplit&lt;/code&gt; has been kept the same, but &lt;code&gt;cp&lt;/code&gt; was reduced, we see the same splits as the smaller tree, but many additional splits.&lt;/p&gt;
+&lt;p&gt;Now let’s fit a bunch of trees, with different values of &lt;code&gt;cp&lt;/code&gt;, for tuning.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;tree_mod_list = list(
+  crdt_tree_0000 = rpart(Rating ~ Age + Gender + Student, data = crdt_est, cp = 0.000),
+  crdt_tree_0001 = rpart(Rating ~ Age + Gender + Student, data = crdt_est, cp = 0.001),
+  crdt_tree_0010 = rpart(Rating ~ Age + Gender + Student, data = crdt_est, cp = 0.010),
+  crdt_tree_0100 = rpart(Rating ~ Age + Gender + Student, data = crdt_est, cp = 0.100)
+)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;tree_val_pred = lapply(tree_mod_list, predict, crdt_val)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;sapply(tree_val_pred, calc_rmse, crdt_val$Rating)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## crdt_tree_0000 crdt_tree_0001 crdt_tree_0010 crdt_tree_0100 
+##       156.3527       155.4262       151.9081       140.0806&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Here we see the least flexible model, with &lt;code&gt;cp = 0.100&lt;/code&gt;, performs best.&lt;/p&gt;
+&lt;p&gt;Note that by only using these three features, we are severely limiting our models performance. Let’s quickly assess using all available predictors.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;crdt_tree_all = rpart(Rating ~ ., data = crdt_est)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;rpart.plot(crdt_tree_all)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/content/08-content_files/figure-html/unnamed-chunk-47-1.png&#34; width=&#34;672&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Notice that this model &lt;strong&gt;only&lt;/strong&gt; splits based on &lt;code&gt;Limit&lt;/code&gt; despite using all features. This should be a big hint about which variables are useful for prediction.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;calc_rmse(
+  actual = crdt_val$Rating,
+  predicted = predict(crdt_tree_all, crdt_val)
+)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 28.8498&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;This model performs much better. You should try something similar with the KNN models above. Also, consider comparing this result to results from last lectures using linear models.&lt;/p&gt;
+&lt;p&gt;Notice that we’ve been using that trusty &lt;code&gt;predict()&lt;/code&gt; function here again.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;predict(crdt_tree_all, crdt_val[1:5, ])&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;##        1        2        3        4        5 
+## 292.8182 467.5152 467.5152 467.5152 772.4000&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;What does this code do? It estimates the mean &lt;code&gt;Rating&lt;/code&gt; given the feature information (the “x” values) from the first five observations from the validation data using a decision tree model with default tuning parameters. Hopefully a theme is emerging.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&#34;footnotes&#34;&gt;
+&lt;hr /&gt;
+&lt;ol&gt;
+&lt;li id=&#34;fn1&#34;&gt;&lt;p&gt;We chose to start with linear regression because most students the social sciences should already be familiar with the basic notion.&lt;a href=&#34;#fnref1&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li id=&#34;fn2&#34;&gt;&lt;p&gt;The usual distance when you hear distance. That is, unless you drive a &lt;a href=&#34;https://en.wikipedia.org/wiki/Taxicab_geometry&#34;&gt;taxicab&lt;/a&gt;.&lt;a href=&#34;#fnref2&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li id=&#34;fn3&#34;&gt;&lt;p&gt;For this reason, KNN is often not used in practice, but it is very useful learning tool.&lt;a href=&#34;#fnref3&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li id=&#34;fn4&#34;&gt;&lt;p&gt;Many texts use the term complex instead of flexible. We feel this is confusing as complex is often associated with difficult. KNN with &lt;span class=&#34;math inline&#34;&gt;\(k = 1\)&lt;/span&gt; is actually a very simple model to understand, but it is very flexible as defined here.&lt;a href=&#34;#fnref4&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li id=&#34;fn5&#34;&gt;&lt;p&gt;To exhaust all possible splits of a variable, we would need to consider the midpoint between each of the order statistics of the variable. To exhaust all possible splits, we would need to do this for each of the feature variables.&lt;a href=&#34;#fnref5&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li id=&#34;fn6&#34;&gt;&lt;p&gt;It’s really an upside tree isn’t it?&lt;a href=&#34;#fnref6&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li id=&#34;fn7&#34;&gt;&lt;p&gt;Flexibility parameter would be a better name.&lt;a href=&#34;#fnref7&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li id=&#34;fn8&#34;&gt;&lt;p&gt;The &lt;code&gt;rpart&lt;/code&gt; function in R would allow us to use others, but we will always just leave their values as the default values.&lt;a href=&#34;#fnref8&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li id=&#34;fn9&#34;&gt;&lt;p&gt;There is a question of whether or not we &lt;em&gt;should&lt;/em&gt; use these variables. For example, should men and women be given different ratings when all other variables are the same? Using the &lt;code&gt;Gender&lt;/code&gt; variable allows for this to happen. Also, you might think, just don’t use the &lt;code&gt;Gender&lt;/code&gt; variable. Unfortunately, it’s not that easy. There is an increasingly popular field of study centered around these ideas called &lt;a href=&#34;https://en.wikipedia.org/wiki/Fairness_(machine_learning)&#34;&gt;machine learning &lt;strong&gt;fairness&lt;/strong&gt;&lt;/a&gt;.&lt;a href=&#34;#fnref9&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li id=&#34;fn10&#34;&gt;&lt;p&gt;There are many other KNN functions in &lt;code&gt;R&lt;/code&gt;. However, the operation and syntax of &lt;code&gt;knnreg()&lt;/code&gt; better matches other functions we use in this course.&lt;a href=&#34;#fnref10&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li id=&#34;fn11&#34;&gt;&lt;p&gt;Wait. Doesn’t this sort of create an arbitrary distance between the categories? Why &lt;span class=&#34;math inline&#34;&gt;\(0\)&lt;/span&gt; and &lt;span class=&#34;math inline&#34;&gt;\(1\)&lt;/span&gt; and not &lt;span class=&#34;math inline&#34;&gt;\(-42\)&lt;/span&gt; and &lt;span class=&#34;math inline&#34;&gt;\(51\)&lt;/span&gt;? Good question. This hints at the notion of pre-processing. We’re going to hold off on this for now, but, often when performing k-nearest neighbors, you should try scaling all of the features to have mean &lt;span class=&#34;math inline&#34;&gt;\(0\)&lt;/span&gt; and variance &lt;span class=&#34;math inline&#34;&gt;\(1\)&lt;/span&gt;.&lt;a href=&#34;#fnref11&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    
+    <item>
       <title>Linear Regression III</title>
       <link>https://datavizm20.classes.andrewheiss.com/content/07-content/</link>
       <pubDate>Tue, 09 Mar 2021 00:00:00 +0000</pubDate>
@@ -6114,6 +7381,196 @@ admissions %&gt;%
 &lt;ol&gt;
 &lt;li id=&#34;fn1&#34;&gt;&lt;p&gt;&lt;a href=&#34;http://tylervigen.com/spurious-correlations&#34; class=&#34;uri&#34;&gt;http://tylervigen.com/spurious-correlations&lt;/a&gt;&lt;a href=&#34;#fnref1&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
 &lt;li id=&#34;fn2&#34;&gt;&lt;p&gt;&lt;a href=&#34;https://opinionator.blogs.nytimes.com/2014/04/12/parental-involvement-is-overrated&#34; class=&#34;uri&#34;&gt;https://opinionator.blogs.nytimes.com/2014/04/12/parental-involvement-is-overrated&lt;/a&gt;&lt;a href=&#34;#fnref2&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Project 2</title>
+      <link>https://datavizm20.classes.andrewheiss.com/assignment/project2/</link>
+      <pubDate>Tue, 09 Mar 2021 00:00:00 +0000</pubDate>
+      <guid>https://datavizm20.classes.andrewheiss.com/assignment/project2/</guid>
+      <description>
+
+&lt;div id=&#34;TOC&#34;&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#part-1-instructions&#34;&gt;Part 1: Instructions&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#part-2-hypotheses&#34;&gt;Part 2: Hypotheses&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#evaluation&#34;&gt;Evaluation&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#data-cleaning-code&#34;&gt;Data cleaning code&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#data-to-possibly-use-in-your-plot&#34;&gt;Data to possibly use in your plot&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#country-totals-over-time&#34;&gt;Country totals over time&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#cumulative-country-totals-over-time&#34;&gt;Cumulative country totals over time&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#continent-totals-over-time&#34;&gt;Continent totals over time&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#cumulative-continent-totals-over-time&#34;&gt;Cumulative continent totals over time&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+
+&lt;div class=&#34;fyi&#34;&gt;
+&lt;p&gt;As with Project 1, each member of the group should submit an identical copy of the project to D2L (for ease of evaluation and to ensure communication across the group). Please write your group number and the group members’ names across the top. Upload the components (see below) to the Project 2 assignment on D2L by 11:59pm on April 2, 2021.&lt;/p&gt;
+&lt;/div&gt;
+&lt;p&gt;The United States has resettled more than 600,000 refugees from 60 different countries since 2006.&lt;a href=&#34;#fn1&#34; class=&#34;footnote-ref&#34; id=&#34;fnref1&#34;&gt;&lt;sup&gt;1&lt;/sup&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/img/assignments/refugees_welcome.jpg&#34; width=&#34;70%&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;In this project, you will use &lt;strong&gt;R, ggplot&lt;/strong&gt; and some form of graphics editor to explore where these refugees have come from.&lt;/p&gt;
+&lt;div id=&#34;part-1-instructions&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Part 1: Instructions&lt;/h2&gt;
+&lt;p&gt;Here’s what you need to do:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;Download&lt;/strong&gt; the Department of Homeland Security’s annual count of people granted refugee status between 2006-2015:&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://datavizm20.classes.andrewheiss.com/data/refugee_status.csv&#34;&gt;&lt;i class=&#34;fas fa-file-csv&#34;&gt;&lt;/i&gt; DHS refugees, 2006-2015&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Save this somewhere on your computer (you might need to right click on this link and choose “Save link as…”, since your browser may try to display it as text). This data was originally &lt;a href=&#34;https://www.kaggle.com/dhs/refugee-report&#34;&gt;uploaded by the Department of Homeland Security to Kaggle&lt;/a&gt;, and is provided with a public domain license.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;Clean&lt;/strong&gt; the data using the code we’ve given you below. As always, this code is presented without guarantee. You may need to deal with a few issues, depending on your computer’s setup.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;Summarize&lt;/strong&gt; the data somehow. There is data for 60 countries over 10 years, so you’ll probably need to aggregate or reshape the data somehow (unless you do a 60-country sparkline). I’ve included some examples down below.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;Create&lt;/strong&gt; an appropriate time-based visualization based on the data. I’ve shown a few different ways to summarize the data so that it’s plottable down below. Don’t just calculate overall averages or totals per country—the visualization needs to deal with change over time, and it needs to illustrate something non-obvious and insightful in the data. &lt;em&gt;Do as much polishing and refining in R&lt;/em&gt;—make adjustments to the colors, scales, labels, grid lines, and even fonts, etc. You may have more than one visualization, but only one is required. If you have more than one, they must be visually consistent (same appearance, coordinated colors, etc.)&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;Refine and polish&lt;/strong&gt; the saved image, adding annotations, changing colors, and otherwise enhancing it.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;Design and create&lt;/strong&gt; an infographic “poster”. Your poster should look like a polished image that you might see on a newspaper website like &lt;a href=&#34;https://www.nytimes.com/interactive/2020/04/11/business/economy/coronavirus-us-economy-spending.html&#34;&gt;the NYT&lt;/a&gt;. Your infographic “poster” should include an eye-catching title, your plot, the caption describing the plot, and 2-4 short paragraphs succinctly describing the insights you are sharing about the data. You can (and should consider) integrating other images like national flags or arrows to convey some semantic meaning. *You may do the layout of the infographic “poster” in any software you choose - Publisher (do people still use that?), Adobe Illustrator, etc. Again, the idea is to have a polished plot with an interesting insight from the data, a polished layout to make it attractive, and a polished 2-4 paragraphs that sets up the plot and elaborates on your insight.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;Upload&lt;/strong&gt; the following outputs to D2L:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Your code (.Rmd) that generates the graphic.&lt;/li&gt;
+&lt;li&gt;Your final poster, saved as a PDF.&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;For this assignment, we are less concerned with the code (that’s why we gave most of it to you), and more concerned with the &lt;em&gt;design&lt;/em&gt;. Choose good colors based on palettes. Choose good, clean fonts. Use the heck out of &lt;code&gt;theme()&lt;/code&gt;. Add informative design elements. Make it look beautiful. Refer to &lt;a href=&#34;https://datavizm20.classes.andrewheiss.com/resource/design/&#34;&gt;the design resources here&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Please seek out help when you need it!&lt;/strong&gt; You know enough R (and have enough examples of code from class and your readings) to be able to do this. &lt;em&gt;You can do this,&lt;/em&gt; and you’ll feel like a budding dataviz witch/wizard when you’re done.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;part-2-hypotheses&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Part 2: Hypotheses&lt;/h2&gt;
+&lt;p&gt;For this part of the assignment, you need to provide five hypotheses about the relationship between variables in a dataset. You can (and should) consider making hypotheses about the dataset that you plan to use for your final project. However, this is not a requirement. All that is required is that you provide five hypotheses about some data. Your write-up should have an enumerated list of questions (e.g., “1. Are there more murders in states that have high unemployment.”). You will receive 2 points for each hypothesis.&lt;/p&gt;
+&lt;div id=&#34;evaluation&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Evaluation&lt;/h3&gt;
+&lt;p&gt;I will evaluate these projects (not the TA). I will only give top marks to those groups showing initiative and cleverness. I will use the following weights for final scores:&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Part 1&lt;/strong&gt;&lt;/p&gt;
+&lt;ol style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;&lt;p&gt;Technical difficulty: Does the final project show mastery of the skills we’ve discussed thus far? (15 points)&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Professionalism of visuals: Does the visualizations look like something you might see on TV or in the newspaper? (15 points)&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Poster clarity: Does your poster clearly convey some point? (10 points)&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;&lt;strong&gt;Part 2&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Each hypothesis is worth 2 points. (This is intended to be some free points for all; 10 points)&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;data-cleaning-code&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Data cleaning code&lt;/h2&gt;
+&lt;p&gt;The data isn’t perfectly clean and tidy, but it’s real world data, so this is normal. Because the emphasis for this assignment is on design, not code, we’ve provided code to help you clean up the data.&lt;/p&gt;
+&lt;p&gt;These are the main issues with the data:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;There are non-numeric values in the data, like &lt;code&gt;-&lt;/code&gt;, &lt;code&gt;X&lt;/code&gt;, and &lt;code&gt;D&lt;/code&gt;. The data isn’t very well documented; we’re assuming &lt;code&gt;-&lt;/code&gt; indicates a missing value, but we’re not sure what &lt;code&gt;X&lt;/code&gt; and &lt;code&gt;D&lt;/code&gt; mean, so for this assignment, we’ll just assume they’re also missing.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;The data generally includes rows for dozens of countries, but there are also rows for some continents, “unknown,” “other,” and a total row. Because &lt;a href=&#34;https://twitter.com/africasacountry&#34;&gt;Africa is not a country&lt;/a&gt;, and neither are the other continents, we want to exclude all non-countries.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Maintaining consistent country names across different datasets is &lt;em&gt;literally&lt;/em&gt; the woooooooorst. Countries have different formal official names and datasets are never consistent in how they use those names.&lt;a href=&#34;#fn2&#34; class=&#34;footnote-ref&#34; id=&#34;fnref2&#34;&gt;&lt;sup&gt;2&lt;/sup&gt;&lt;/a&gt; It’s such a tricky problem that social scientists have spent their careers just figuring out how to properly name and code countries. Really.&lt;a href=&#34;#fn3&#34; class=&#34;footnote-ref&#34; id=&#34;fnref3&#34;&gt;&lt;sup&gt;3&lt;/sup&gt;&lt;/a&gt; There are international standards for country codes, though, like &lt;a href=&#34;https://en.wikipedia.org/wiki/ISO_3166-1_alpha-3&#34;&gt;ISO 3166-1 alpha 3&lt;/a&gt; (my favorite), also known as ISO3. It’s not perfect—it omits microstates (some Polynesian countries) and gray area states (Palestine, Kosovo)—but it’s an international standard, so it has that going for it.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;To ensure that country names are consistent in this data, we use the &lt;strong&gt;countrycode&lt;/strong&gt; package (install it if you don’t have it), which is amazing. The &lt;code&gt;countrycode()&lt;/code&gt; function will take a country name in a given coding scheme and convert it to a different coding scheme using this syntax:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;  countrycode(variable, &amp;quot;current-coding-scheme&amp;quot;, &amp;quot;new-coding-scheme&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;It also does a farily good job at guessing and parsing inconsistent country names (e.g. it will recognize “Congo, Democratic Republic”, even though it should technically be “Democratic Republic of the Congo”). Here, we use &lt;code&gt;countrycode()&lt;/code&gt; to convert the inconsistent country names into ISO3 codes. We then create a cleaner version of the &lt;code&gt;origin_country&lt;/code&gt; column by converting the ISO3 codes back into country names. Note that the function chokes on North Korea initially, since it’s included as “Korea, North”—we use the &lt;code&gt;custom_match&lt;/code&gt; argument to help the function out.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;The data isn’t tidy—there are individual columns for each year. &lt;code&gt;gather()&lt;/code&gt; takes every column and changes it to a row. We exclude the country, region, continent, and ISO3 code from the change-into-rows transformation with &lt;code&gt;-origin_country, -iso3, -origin_region, -origin_continent&lt;/code&gt;.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Currently, the year is being treated as a number, but it’s helpful to also treat it as an actual date. We create a new variable named &lt;code&gt;year_date&lt;/code&gt; that converts the raw number (e.g. 2009) into a date. The date needs to have at least a month, day, and year, so we actually convert it to January 1, 2009 with &lt;code&gt;ymd(paste0(year, &#34;-01-01&#34;))&lt;/code&gt;.&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(tidyverse)    # For ggplot, dplyr, and friends
+library(countrycode)  # For dealing with country names, abbreviations, and codes
+library(lubridate)    # For dealing with dates&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;refugees_raw &amp;lt;- read_csv(&amp;quot;data/refugee_status.csv&amp;quot;, na = c(&amp;quot;-&amp;quot;, &amp;quot;X&amp;quot;, &amp;quot;D&amp;quot;))&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;non_countries &amp;lt;- c(&amp;quot;Africa&amp;quot;, &amp;quot;Asia&amp;quot;, &amp;quot;Europe&amp;quot;, &amp;quot;North America&amp;quot;, &amp;quot;Oceania&amp;quot;,
+                   &amp;quot;South America&amp;quot;, &amp;quot;Unknown&amp;quot;, &amp;quot;Other&amp;quot;, &amp;quot;Total&amp;quot;)
+
+refugees_clean &amp;lt;- refugees_raw %&amp;gt;%
+  # Make this column name easier to work with
+  rename(origin_country = `Continent/Country of Nationality`) %&amp;gt;%
+  # Get rid of non-countries
+  filter(!(origin_country %in% non_countries)) %&amp;gt;%
+  # Convert country names to ISO3 codes
+  mutate(iso3 = countrycode(origin_country, &amp;quot;country.name&amp;quot;, &amp;quot;iso3c&amp;quot;,
+                            custom_match = c(&amp;quot;Korea, North&amp;quot; = &amp;quot;PRK&amp;quot;))) %&amp;gt;%
+  # Convert ISO3 codes to country names, regions, and continents
+  mutate(origin_country = countrycode(iso3, &amp;quot;iso3c&amp;quot;, &amp;quot;country.name&amp;quot;),
+         origin_region = countrycode(iso3, &amp;quot;iso3c&amp;quot;, &amp;quot;region&amp;quot;),
+         origin_continent = countrycode(iso3, &amp;quot;iso3c&amp;quot;, &amp;quot;continent&amp;quot;)) %&amp;gt;%
+  # Make this data tidy
+  gather(year, number, -origin_country, -iso3, -origin_region, -origin_continent) %&amp;gt;%
+  # Make sure the year column is numeric + make an actual date column for years
+  mutate(year = as.numeric(year),
+         year_date = ymd(paste0(year, &amp;quot;-01-01&amp;quot;)))&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;data-to-possibly-use-in-your-plot&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Data to possibly use in your plot&lt;/h2&gt;
+&lt;p&gt;Here are some possible summaries of the data you might use…&lt;/p&gt;
+&lt;div id=&#34;country-totals-over-time&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Country totals over time&lt;/h3&gt;
+&lt;p&gt;This is just the &lt;code&gt;refugees_clean&lt;/code&gt; data frame I gave you. You’ll want to filter it and select specific countries, though—you won’t really be able to plot 60 countries all at once unless you use sparklines.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 6 x 7
+##   origin_country iso3  origin_region    origin_continent  year number year_date 
+##   &amp;lt;chr&amp;gt;          &amp;lt;chr&amp;gt; &amp;lt;chr&amp;gt;            &amp;lt;chr&amp;gt;            &amp;lt;dbl&amp;gt;  &amp;lt;dbl&amp;gt; &amp;lt;date&amp;gt;    
+## 1 Afghanistan    AFG   South Asia       Asia              2006    651 2006-01-01
+## 2 Angola         AGO   Sub-Saharan Afr~ Africa            2006     13 2006-01-01
+## 3 Armenia        ARM   Europe &amp;amp; Centra~ Asia              2006     87 2006-01-01
+## 4 Azerbaijan     AZE   Europe &amp;amp; Centra~ Asia              2006     77 2006-01-01
+## 5 Belarus        BLR   Europe &amp;amp; Centra~ Europe            2006    350 2006-01-01
+## 6 Bhutan         BTN   South Asia       Asia              2006      3 2006-01-01&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;cumulative-country-totals-over-time&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Cumulative country totals over time&lt;/h3&gt;
+&lt;p&gt;Note the &lt;code&gt;cumsum()&lt;/code&gt; function—it calculates the cumulative sum of a column.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;refugees_countries_cumulative &amp;lt;- refugees_clean %&amp;gt;%
+  arrange(year_date) %&amp;gt;%
+  group_by(origin_country) %&amp;gt;%
+  mutate(cumulative_total = cumsum(number))&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 6 x 7
+## # Groups:   origin_country [1]
+##   origin_country iso3  origin_continent  year number year_date  cumulative_total
+##   &amp;lt;chr&amp;gt;          &amp;lt;chr&amp;gt; &amp;lt;chr&amp;gt;            &amp;lt;dbl&amp;gt;  &amp;lt;dbl&amp;gt; &amp;lt;date&amp;gt;                &amp;lt;dbl&amp;gt;
+## 1 Afghanistan    AFG   Asia              2006    651 2006-01-01              651
+## 2 Afghanistan    AFG   Asia              2007    441 2007-01-01             1092
+## 3 Afghanistan    AFG   Asia              2008    576 2008-01-01             1668
+## 4 Afghanistan    AFG   Asia              2009    349 2009-01-01             2017
+## 5 Afghanistan    AFG   Asia              2010    515 2010-01-01             2532
+## 6 Afghanistan    AFG   Asia              2011    428 2011-01-01             2960&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;continent-totals-over-time&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Continent totals over time&lt;/h3&gt;
+&lt;p&gt;Note the &lt;code&gt;na.rm = TRUE&lt;/code&gt; argument in &lt;code&gt;sum()&lt;/code&gt;. This makes R ignore any missing data when calculating the total. Without it, if R finds a missing value in the column, it will mark the final sum as &lt;code&gt;NA&lt;/code&gt; too, which we don’t want.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;refugees_continents &amp;lt;- refugees_clean %&amp;gt;%
+  group_by(origin_continent, year_date) %&amp;gt;%
+  summarize(total = sum(number, na.rm = TRUE))&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## `summarise()` regrouping output by &amp;#39;origin_continent&amp;#39; (override with `.groups` argument)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 6 x 3
+## # Groups:   origin_continent [1]
+##   origin_continent year_date  total
+##   &amp;lt;chr&amp;gt;            &amp;lt;date&amp;gt;     &amp;lt;dbl&amp;gt;
+## 1 Africa           2006-01-01 18116
+## 2 Africa           2007-01-01 17473
+## 3 Africa           2008-01-01  8931
+## 4 Africa           2009-01-01  9664
+## 5 Africa           2010-01-01 13303
+## 6 Africa           2011-01-01  7677&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;cumulative-continent-totals-over-time&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Cumulative continent totals over time&lt;/h3&gt;
+&lt;p&gt;Note that there are two &lt;code&gt;group_by()&lt;/code&gt; functions here. First we get the total number of refugees per continent per year, then we group by continent only to get the cumulative sum of refugees across continents.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;refugees_continents_cumulative &amp;lt;- refugees_clean %&amp;gt;%
+  group_by(origin_continent, year_date) %&amp;gt;%
+  summarize(total = sum(number, na.rm = TRUE)) %&amp;gt;%
+  arrange(year_date) %&amp;gt;%
+  group_by(origin_continent) %&amp;gt;%
+  mutate(cumulative_total = cumsum(total))&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## `summarise()` regrouping output by &amp;#39;origin_continent&amp;#39; (override with `.groups` argument)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 6 x 4
+## # Groups:   origin_continent [1]
+##   origin_continent year_date  total cumulative_total
+##   &amp;lt;chr&amp;gt;            &amp;lt;date&amp;gt;     &amp;lt;dbl&amp;gt;            &amp;lt;dbl&amp;gt;
+## 1 Africa           2006-01-01 18116            18116
+## 2 Africa           2007-01-01 17473            35589
+## 3 Africa           2008-01-01  8931            44520
+## 4 Africa           2009-01-01  9664            54184
+## 5 Africa           2010-01-01 13303            67487
+## 6 Africa           2011-01-01  7677            75164&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&#34;footnotes&#34;&gt;
+&lt;hr /&gt;
+&lt;ol&gt;
+&lt;li id=&#34;fn1&#34;&gt;&lt;p&gt;You found the footnote! Week 8’s writing assignment has three parts. First, write down your guess (a probability; stated as a percentage) for the odds that Joe Biden is elected President of the United States. Second, write a short paragraph about why you made that guess. Are you integrating data into your guess? If so, what data? Do you believe that personal experience is useful for making such predictions, or that personal experience can be misleading. As always, the total writing should be a couple hundred words.&lt;a href=&#34;#fnref1&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li id=&#34;fn2&#34;&gt;&lt;p&gt;For instance, “North Korea”, “Korea, North”, “DPRK”, “Korea, Democratic People’s Republic of”, and “Democratic People’s Republic of Korea”, and “Korea (DPRK)” are all perfectly normal versions of the country’s name and you’ll find them all in the wild.&lt;a href=&#34;#fnref2&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li id=&#34;fn3&#34;&gt;&lt;p&gt;See Gleditsch, Kristian S. &amp;amp; Michael D. Ward. 1999. &lt;a href=&#34;https://www.tandfonline.com/doi/abs/10.1080/03050629908434958&#34;&gt;“Interstate System Membership: A Revised List of the Independent States since 1816.”&lt;/a&gt; &lt;em&gt;International Interactions&lt;/em&gt; 25: 393-413; or the &lt;a href=&#34;http://www.paulhensel.org/icownames.html&#34;&gt;“ICOW Historical State Names Data Set”&lt;/a&gt;.&lt;a href=&#34;#fnref3&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
 &lt;/ol&gt;
 &lt;/div&gt;
 </description>
@@ -13859,18 +15316,13 @@ case_when(x &amp;lt; 0 ~ &amp;quot;Negative&amp;quot;,
         &lt;tr&gt;
             &lt;td align=&#34;right&#34; style=&#34;width:18%;text-align:right&#34;&gt;Week 7 (March 9/11)&lt;/td&gt;
             &lt;td style=&#34;width:50%;text-align:left&#34;&gt;Linear Regression III&lt;/td&gt;
-            &lt;td align=&#34;center&#34; style=&#34;width:10%;text-align:center&#34;&gt;
-                &lt;font color=&#34;f1f1f1&#34;&gt;
-                    &lt;i class=&#34;fas fa-book-reader fa-lg&#34;&gt;&lt;/i&gt;&lt;/font&gt;
-            &lt;/td&gt;
-            &lt;td align=&#34;center&#34; style=&#34;width:10%;text-align:center&#34;&gt;
-                &lt;font color=&#34;f1f1f1&#34;&gt;
-                    &lt;i class=&#34;fas fa-laptop-code fa-lg&#34;&gt;&lt;/i&gt;&lt;/font&gt;
-            &lt;/td&gt;
-            &lt;td align=&#34;center&#34; style=&#34;width:10%;text-align:center&#34;&gt;
-                &lt;font color=&#34;f1f1f1&#34;&gt;
-                    &lt;i class=&#34;fas fa-pencil-ruler fa-lg&#34;&gt;&lt;/i&gt;&lt;/font&gt;
-            &lt;/td&gt;
+            &lt;td align=&#34;center&#34; style=&#34;width:10%;text-align:center&#34;&gt;&lt;a
+                    href=&#34;https://datavizm20.classes.andrewheiss.com/content/07-content/&#34;&gt;
+                    &lt;i class=&#34;fas fa-book-reader fa-lg&#34;&gt;&lt;/i&gt;&lt;/a&gt;&lt;/td&gt;
+            &lt;td align=&#34;center&#34; style=&#34;width:10%;text-align:center&#34;&gt;&lt;a href=&#34;https://datavizm20.classes.andrewheiss.com/example/07-example/&#34;&gt;
+                    &lt;i class=&#34;fas fa-laptop-code fa-lg&#34;&gt;&lt;/i&gt;&lt;/a&gt;&lt;/td&gt;
+            &lt;td align=&#34;center&#34; style=&#34;width:10%;text-align:center&#34;&gt;&lt;a href=&#34;https://datavizm20.classes.andrewheiss.com/assignment/07-assignment/&#34;&gt;
+                    &lt;i class=&#34;fas fa-pencil-ruler fa-lg&#34;&gt;&lt;/i&gt;&lt;/a&gt;&lt;/td&gt;
         &lt;/tr&gt;
         &lt;tr&gt;
             &lt;td align=&#34;right&#34; style=&#34;width:18%;text-align:right&#34;&gt;&lt;/td&gt;
@@ -13883,34 +15335,24 @@ case_when(x &amp;lt; 0 ~ &amp;quot;Negative&amp;quot;,
         &lt;tr&gt;
             &lt;td align=&#34;right&#34; style=&#34;width:18%;text-align:right&#34;&gt;Week 8 (March 16/18)&lt;/td&gt;
             &lt;td style=&#34;width:50%;text-align:left&#34;&gt;Nonlinear Regression&lt;/td&gt;
-            &lt;td align=&#34;center&#34; style=&#34;width:10%;text-align:center&#34;&gt;
-                &lt;font color=&#34;f1f1f1&#34;&gt;
-                    &lt;i class=&#34;fas fa-book-reader fa-lg&#34;&gt;&lt;/i&gt;&lt;/font&gt;
-            &lt;/td&gt;
-            &lt;td align=&#34;center&#34; style=&#34;width:10%;text-align:center&#34;&gt;
-                &lt;font color=&#34;f1f1f1&#34;&gt;
-                    &lt;i class=&#34;fas fa-laptop-code fa-lg&#34;&gt;&lt;/i&gt;&lt;/font&gt;
-            &lt;/td&gt;
-            &lt;td align=&#34;center&#34; style=&#34;width:10%;text-align:center&#34;&gt;
-                &lt;font color=&#34;f1f1f1&#34;&gt;
-                    &lt;i class=&#34;fas fa-pencil-ruler fa-lg&#34;&gt;&lt;/i&gt;&lt;/font&gt;
-            &lt;/td&gt;
+            &lt;td align=&#34;center&#34; style=&#34;width:10%;text-align:center&#34;&gt;&lt;a
+                    href=&#34;https://datavizm20.classes.andrewheiss.com/content/08-content/&#34;&gt;
+                    &lt;i class=&#34;fas fa-book-reader fa-lg&#34;&gt;&lt;/i&gt;&lt;/a&gt;&lt;/td&gt;
+            &lt;td align=&#34;center&#34; style=&#34;width:10%;text-align:center&#34;&gt;&lt;a href=&#34;https://datavizm20.classes.andrewheiss.com/example/08-example/&#34;&gt;
+                    &lt;i class=&#34;fas fa-laptop-code fa-lg&#34;&gt;&lt;/i&gt;&lt;/a&gt;&lt;/td&gt;
+            &lt;td align=&#34;center&#34; style=&#34;width:10%;text-align:center&#34;&gt;&lt;a href=&#34;https://datavizm20.classes.andrewheiss.com/assignment/07-assignment/&#34;&gt;
+                    &lt;i class=&#34;fas fa-pencil-ruler fa-lg&#34;&gt;&lt;/i&gt;&lt;/a&gt;&lt;/td&gt;
         &lt;/tr&gt;
         &lt;tr&gt;
             &lt;td align=&#34;right&#34; style=&#34;width:18%;text-align:right&#34;&gt;Week 9 (March 23/25)&lt;/td&gt;
             &lt;td style=&#34;width:50%;text-align:left&#34;&gt;Bias vs Variance&lt;/td&gt;
-            &lt;td align=&#34;center&#34; style=&#34;width:10%;text-align:center&#34;&gt;
-                &lt;font color=&#34;f1f1f1&#34;&gt;
-                    &lt;i class=&#34;fas fa-book-reader fa-lg&#34;&gt;&lt;/i&gt;&lt;/font&gt;
-            &lt;/td&gt;
-            &lt;td align=&#34;center&#34; style=&#34;width:10%;text-align:center&#34;&gt;
-                &lt;font color=&#34;f1f1f1&#34;&gt;
-                    &lt;i class=&#34;fas fa-laptop-code fa-lg&#34;&gt;&lt;/i&gt;&lt;/font&gt;
-            &lt;/td&gt;
-            &lt;td align=&#34;center&#34; style=&#34;width:10%;text-align:center&#34;&gt;
-                &lt;font color=&#34;f1f1f1&#34;&gt;
-                    &lt;i class=&#34;fas fa-pencil-ruler fa-lg&#34;&gt;&lt;/i&gt;&lt;/font&gt;
-            &lt;/td&gt;
+            &lt;td align=&#34;center&#34; style=&#34;width:10%;text-align:center&#34;&gt;&lt;a
+                    href=&#34;https://datavizm20.classes.andrewheiss.com/content/09-content/&#34;&gt;
+                    &lt;i class=&#34;fas fa-book-reader fa-lg&#34;&gt;&lt;/i&gt;&lt;/a&gt;&lt;/td&gt;
+            &lt;td align=&#34;center&#34; style=&#34;width:10%;text-align:center&#34;&gt;&lt;a href=&#34;https://datavizm20.classes.andrewheiss.com/example/09-example/&#34;&gt;
+                    &lt;i class=&#34;fas fa-laptop-code fa-lg&#34;&gt;&lt;/i&gt;&lt;/a&gt;&lt;/td&gt;
+            &lt;td align=&#34;center&#34; style=&#34;width:10%;text-align:center&#34;&gt;&lt;a href=&#34;https://datavizm20.classes.andrewheiss.com/assignment/09-assignment/&#34;&gt;
+                    &lt;i class=&#34;fas fa-pencil-ruler fa-lg&#34;&gt;&lt;/i&gt;&lt;/a&gt;&lt;/td&gt;
         &lt;/tr&gt;
         &lt;tr&gt;
             &lt;td align=&#34;right&#34; style=&#34;width:18%;text-align:right&#34;&gt;Week 10 (March 30/Apr 1)&lt;/td&gt;
@@ -13929,7 +15371,7 @@ case_when(x &amp;lt; 0 ~ &amp;quot;Negative&amp;quot;,
             &lt;/td&gt;
         &lt;/tr&gt;
         &lt;tr&gt;
-            &lt;td align=&#34;right&#34; style=&#34;width:18%;text-align:right&#34;&gt;End of Week 10&lt;/td&gt;
+            &lt;td align=&#34;right&#34; style=&#34;width:18%;text-align:right&#34;&gt;April 2nd&lt;/td&gt;
             &lt;td style=&#34;width:50%;text-align:left&#34;&gt;&lt;i class=&#34;fas fa-star&#34;&gt;&lt;/i&gt; &lt;strong&gt;Project 2 Due&lt;/strong&gt;&lt;/td&gt;
             &lt;td align=&#34;center&#34; style=&#34;width:10%;text-align:center&#34;&gt;
                 &lt;font color=&#34;f1f1f1&#34;&gt;
@@ -13939,10 +15381,8 @@ case_when(x &amp;lt; 0 ~ &amp;quot;Negative&amp;quot;,
                 &lt;font color=&#34;f1f1f1&#34;&gt;
                     &lt;i class=&#34;fas fa-laptop-code fa-lg&#34;&gt;&lt;/i&gt;&lt;/font&gt;
             &lt;/td&gt;
-            &lt;td align=&#34;center&#34; style=&#34;width:10%;text-align:center&#34;&gt;
-                &lt;font color=&#34;f1f1f1&#34;&gt;
-                    &lt;i class=&#34;fas fa-pencil-ruler fa-lg&#34;&gt;&lt;/i&gt;&lt;/font&gt;
-            &lt;/td&gt;
+            &lt;td align=&#34;center&#34; style=&#34;width:10%;text-align:center&#34;&gt;&lt;a href=&#34;https://datavizm20.classes.andrewheiss.com/assignment/02-mini-project/&#34;&gt;
+                    &lt;i class=&#34;fas fa-pencil-ruler fa-lg&#34;&gt;&lt;/i&gt;&lt;/a&gt;&lt;/td&gt;
         &lt;/tr&gt;
         &lt;tr&gt;
             &lt;td align=&#34;right&#34; style=&#34;width:18%;text-align:right&#34;&gt;Week 11 (Apr 6/8)&lt;/td&gt;
