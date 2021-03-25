@@ -19,13 +19,370 @@
       <guid>https://datavizm20.classes.andrewheiss.com/example/09-example/</guid>
       <description>
 
-
-&lt;div class=&#34;fyi&#34;&gt;
-&lt;p&gt;Today’s example is incorporated into the Content tab.&lt;/p&gt;
-&lt;p&gt;We may use a new dataset (it is covered in the Lab). You can find it below.&lt;/p&gt;
+&lt;div id=&#34;TOC&#34;&gt;
 &lt;ul&gt;
-&lt;li&gt;&lt;a href=&#34;https://datavizm20.classes.andrewheiss.com/projects/data/bank.csv&#34;&gt;&lt;i class=&#34;fas fa-file-csv&#34;&gt;&lt;/i&gt; &lt;code&gt;bank.csv&lt;/code&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#review-and-clarify&#34;&gt;Review and Clarify&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#illustration-of-bias-vs.-variance&#34;&gt;Illustration of Bias vs. Variance&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#a-quick-bit-of-r-code-to-help-with-todays-example&#34;&gt;A quick bit of R code to help with todays example&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#todays-example&#34;&gt;Today’s Example&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#simulation&#34;&gt;Simulation&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#heres-the-code&#34;&gt;Here’s the code&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
 &lt;/ul&gt;
+&lt;/div&gt;
+
+&lt;div id=&#34;review-and-clarify&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Review and Clarify&lt;/h2&gt;
+&lt;p&gt;Bias and Variance are tricky subjects. Hopefully the illustrations from yesterday are helpful. Let’s talk through a few things based on questions some of you have asked since Content 9.&lt;/p&gt;
+&lt;div id=&#34;illustration-of-bias-vs.-variance&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Illustration of Bias vs. Variance&lt;/h3&gt;
+&lt;p&gt;Bias is about how close you are on average to the correct answer. Variance is about how scattered your estimates would be if you repeated your experiment with new data.&lt;/p&gt;
+&lt;div class=&#34;figure&#34;&gt;&lt;span id=&#34;fig:unnamed-chunk-1&#34;&gt;&lt;/span&gt;
+&lt;img src=&#34;https://www.machinelearningplus.com/wp-content/uploads/2020/10/output_31_0.png&#34; alt=&#34;Image from MachineLearningPlus.com&#34;  /&gt;
+&lt;p class=&#34;caption&#34;&gt;
+Figure 1: Image from MachineLearningPlus.com
+&lt;/p&gt;
+&lt;/div&gt;
+&lt;p&gt;We care about these things because we usually only have our one dataset (when we’re not creating simulated data, that is), but need to know something about how bias and variance tend to look when we change our model complexity.&lt;/p&gt;
+&lt;div id=&#34;deriving-bias-and-variance&#34; class=&#34;section level4&#34;&gt;
+&lt;h4&gt;Deriving Bias and Variance&lt;/h4&gt;
+&lt;p&gt;For this section, recall our model:&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
+y = f(x) + \epsilon
+\]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;This tells us that some of &lt;span class=&#34;math inline&#34;&gt;\(y\)&lt;/span&gt; can be predicted by the &lt;strong&gt;true&lt;/strong&gt; &lt;span class=&#34;math inline&#34;&gt;\(f(x)\)&lt;/span&gt;, and some is just noise &lt;span class=&#34;math inline&#34;&gt;\(\epsilon\)&lt;/span&gt;. In our simulation from last week, &lt;span class=&#34;math inline&#34;&gt;\(f(x) = x^2\)&lt;/span&gt;, so &lt;span class=&#34;math inline&#34;&gt;\(y = x^2 + \epsilon\)&lt;/span&gt;.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;We want to predict &lt;span class=&#34;math inline&#34;&gt;\(y\)&lt;/span&gt;. We call our prediction &lt;span class=&#34;math inline&#34;&gt;\(\hat{y}\)&lt;/span&gt;.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Our best guess for &lt;span class=&#34;math inline&#34;&gt;\(f(x)\)&lt;/span&gt; is &lt;span class=&#34;math inline&#34;&gt;\(\hat{f}(x)\)&lt;/span&gt;, where &lt;span class=&#34;math inline&#34;&gt;\(\hat{f}(x)\)&lt;/span&gt; is our model. It might be from a linear regression with 1, 2, 9, 15, etc. predictors or interactions of predictors. It might be from a k-nearest-neighbors estimation with &lt;code&gt;k = 4&lt;/code&gt;. It might be from a regression tree with &lt;code&gt;cp = .1&lt;/code&gt; and &lt;code&gt;minsplit=2&lt;/code&gt;.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Even when we really nail &lt;span class=&#34;math inline&#34;&gt;\(\hat{f}(x)\)&lt;/span&gt; (which means &lt;span class=&#34;math inline&#34;&gt;\(\hat{f}(x) = f(x)\)&lt;/span&gt;), there is &lt;em&gt;still&lt;/em&gt; error in our prediction because of &lt;span class=&#34;math inline&#34;&gt;\(\epsilon\)&lt;/span&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;span class=&#34;math inline&#34;&gt;\(y \neq \hat{y}\)&lt;/span&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;So we think of two different measures of error:&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
+EPE = E[(y - \hat{y})^2] = 
+\underbrace{\mathbb{E}_{\mathcal{D}} \left[  \left(f(x) - \hat{f}(x) \right)^2 \right]}_\textrm{reducible error - MSE from imperfect model} +
+\underbrace{\mathbb{V}_{Y \mid X} \left[ Y \mid X = x \right]}_{\textrm{irreducible error from }\epsilon}
+\]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;And:&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
+MSE(f(x), \hat{f}(x)) = E_{\mathcal{D}}\left[\left(f(x) - \hat{f}(x)\right)^2\right]
+\]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;Some of you asked about this equation from last time that decomposed our MSE:&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
+\text{MSE}\left(f(x), \hat{f}(x)\right) =
+\mathbb{E}_{\mathcal{D}} \left[  \left(f(x) - \hat{f}(x) \right)^2 \right] =
+\underbrace{\left(f(x) - \mathbb{E} \left[ \hat{f}(x) \right]  \right)^2}_{\text{bias}^2 \left(\hat{f}(x) \right)} +
+\underbrace{\mathbb{E} \left[ \left( \hat{f}(x) - \mathbb{E} \left[ \hat{f}(x) \right] \right)^2 \right]}_{\text{var} \left(\hat{f}(x) \right)}
+\]&lt;/span&gt;
+This can be derived by:&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
+\begin{eqnarray*}
+\mathbb{E}_{\mathcal{D}} \left[  \left(f(x) - \hat{f}(x) \right)^2 \right] &amp;amp;=&amp;amp; \mathbb{E}_{\mathcal{D}} \left[\left(f(x) - E[\hat{f}(x)] + E[\hat{f}(x)] - \hat{f}(x)\right)^2 \right] \\
+&amp;amp;=&amp;amp; \mathbb{E}_{\mathcal{D}} \left[\left(f(x) - E[\hat{f}(x)]\right)^2 + \left(E[\hat{f}(x)] - \hat{f}(x)\right)^2 + 2\left(f(x) - E[\hat{f}(x)]\right) \left(E[\hat{f}(x)] - \hat{f}(x)\right) \right] \\
+&amp;amp;=&amp;amp; \mathbb{E}_{\mathcal{D}} \left[\left(f(x) - E[\hat{f}(x)]\right)^2\right] + \mathbb{E}_{\mathcal{D}} \left[\left(E[\hat{f}(x)] - \hat{f}(x)\right)^2\right] +  \mathbb{E}_{\mathcal{D}} \left[2\left(f(x) - E[\hat{f}(x)]\right) \left(E[\hat{f}(x)] - \hat{f}(x)\right) \right] \\
+&amp;amp;=&amp;amp; \left(f(x) - E[\hat{f}(x)]\right)^2 + Var\left(\hat{f}(x)\right) + 0
+\end{eqnarray*}
+\]&lt;/span&gt;
+Let’s talk about what’s in this equation:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;MSE is the Mean Squared Error between &lt;span class=&#34;math inline&#34;&gt;\(f(x)\)&lt;/span&gt; and &lt;span class=&#34;math inline&#34;&gt;\(\hat{f}(x)\)&lt;/span&gt;
+&lt;ul&gt;
+&lt;li&gt;It does not have the &lt;span class=&#34;math inline&#34;&gt;\(\epsilon\)&lt;/span&gt; in it&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;It is an expectation over all the possible &lt;span class=&#34;math inline&#34;&gt;\(\mathcal{D}\)&lt;/span&gt; draws of the data we could have
+&lt;ul&gt;
+&lt;li&gt;Because of this &lt;span class=&#34;math inline&#34;&gt;\(f(x)\)&lt;/span&gt; and &lt;span class=&#34;math inline&#34;&gt;\(\mathbb{E}\left[\hat{f}(x)\right]\)&lt;/span&gt; can move out of the expectation. This lets us cancel that last term with the “2” in it.&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;The main takeaway is that, even given the error, &lt;span class=&#34;math inline&#34;&gt;\(\epsilon\)&lt;/span&gt;, we &lt;em&gt;still&lt;/em&gt; have additional error coming from our inability to perfectly get &lt;span class=&#34;math inline&#34;&gt;\(\hat{f}(x) = f(x)\)&lt;/span&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;a-quick-bit-of-r-code-to-help-with-todays-example&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;A quick bit of R code to help with todays example&lt;/h2&gt;
+&lt;p&gt;We saw before the usefulness of having a list&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;myList = list()
+myList[[&amp;#39;thisThing&amp;#39;]] = c(1,2,3)
+myList[[&amp;#39;thisOtherThing&amp;#39;]] = c(&amp;#39;A&amp;#39;,&amp;#39;B&amp;#39;,&amp;#39;C&amp;#39;,&amp;#39;D&amp;#39;)
+myList&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## $thisThing
+## [1] 1 2 3
+## 
+## $thisOtherThing
+## [1] &amp;quot;A&amp;quot; &amp;quot;B&amp;quot; &amp;quot;C&amp;quot; &amp;quot;D&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;It worked really well for holding results from models since we could name the things in the list. But if we put it into a loop:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;for(i in c(&amp;#39;G&amp;#39;,&amp;#39;H&amp;#39;,&amp;#39;I&amp;#39;)){
+  myList = list()
+  myList[[i]] = paste0(&amp;#39;This loop is on &amp;#39;,i)
+}
+
+print(myList)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## $I
+## [1] &amp;quot;This loop is on I&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;What happened? Every time we used the loop, it re-initiated the list, so we only get the last result!&lt;/p&gt;
+&lt;p&gt;So what we want is to create the list &lt;strong&gt;if&lt;/strong&gt; it doesn’t exist, and add to it afterwards. We can do that with &lt;code&gt;exists(&#39;myList&#39;)&lt;/code&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;for(i in c(&amp;#39;G&amp;#39;,&amp;#39;H&amp;#39;,&amp;#39;I&amp;#39;)){
+  if(!exists(&amp;#39;myList&amp;#39;)) myList = list()
+  myList[[i]] = paste0(&amp;#39;This loop is on &amp;#39;,i)
+}
+print(myList)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## $I
+## [1] &amp;quot;This loop is on I&amp;quot;
+## 
+## $G
+## [1] &amp;quot;This loop is on G&amp;quot;
+## 
+## $H
+## [1] &amp;quot;This loop is on H&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;We’re almost there. It turns out, we have our original &lt;span class=&#34;math inline&#34;&gt;\(I\)&lt;/span&gt; in there left over from the previous creation of the list. That’s why its out of order. What we want to do is start with a fresh, clean list. If we run &lt;code&gt;rm(myList)&lt;/code&gt;, the old list will no longer exist, and *our code will create a fresh one when we run it again!&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;rm(myList)
+for(i in c(&amp;#39;G&amp;#39;,&amp;#39;H&amp;#39;,&amp;#39;I&amp;#39;)){
+  if(!exists(&amp;#39;myList&amp;#39;)) myList = list()
+  myList[[i]] = paste0(&amp;#39;This loop is on &amp;#39;,i)
+}
+print(myList)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## $G
+## [1] &amp;quot;This loop is on G&amp;quot;
+## 
+## $H
+## [1] &amp;quot;This loop is on H&amp;quot;
+## 
+## $I
+## [1] &amp;quot;This loop is on I&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;You’re going to use this in your breakout rooms today. You’re going to be asked to run some code that stores a plot in a list. To reset the list that stores things, just use &lt;code&gt;rm(listName)&lt;/code&gt; (where &lt;code&gt;listName&lt;/code&gt; is the name of the list).&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;todays-example&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Today’s Example&lt;/h2&gt;
+&lt;p&gt;Our goal today is to&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;See the code that produced this week’s Content&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Why? Because it helps to illustrate the &lt;em&gt;true&lt;/em&gt; sources of noise in the data&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;See what larger sample sizes and higher/lower irreducible error does to our Bias vs. Variance tradeoff.&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div id=&#34;simulation&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Simulation&lt;/h3&gt;
+&lt;p&gt;We will use the exact code from Content 9, which I have reproduced here. I have removed the in-between parts with notation so we can focus on the example. I have &lt;strong&gt;copied all of the relevant code into one chunk down at the bottom as well&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;We’ll need the following libraries:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(ggplot2)
+library(patchwork)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;And here, I’ve made a little change to Content 9’s code so we can play with sample size &lt;code&gt;NN&lt;/code&gt; and the SD of the irreducible Bayes error.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;NN = 100   #----&amp;gt; In class, we will change this to 
+#                 see how our results change in response
+SD.of.Bayes.Error = .75   #-----&amp;gt; This, too, will change. 
+
+# Note that both of these are used in the next chunk(s) to generate data.&lt;/code&gt;&lt;/pre&gt;
+&lt;div id=&#34;begin-content-9-code-here&#34; class=&#34;section level4&#34;&gt;
+&lt;h4&gt;Begin Content 9 code here:&lt;/h4&gt;
+&lt;p&gt;We will illustrate these decompositions, most importantly the bias-variance tradeoff, through simulation. Suppose we would like to train a model to learn the true regression function function &lt;span class=&#34;math inline&#34;&gt;\(f(x) = x^2\)&lt;/span&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;f = function(x) {
+  x ^ 2
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;To carry out a concrete simulation example, we need to fully specify the data generating process. We do so with the following &lt;code&gt;R&lt;/code&gt; code.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;get_sim_data = function(f, sample_size = NN) {
+  x = runif(n = sample_size, min = 0, max = 1)
+  eps = rnorm(n = sample_size, mean = 0, sd = SD.of.Bayes.Error)
+  y = f(x) + eps
+  data.frame(x, y)
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;To completely specify the data generating process, we have made more model assumptions than simply &lt;span class=&#34;math inline&#34;&gt;\(\mathbb{E}[Y \mid X = x] = x^2\)&lt;/span&gt; and &lt;span class=&#34;math inline&#34;&gt;\(\mathbb{V}[Y \mid X = x] = \sigma ^ 2\)&lt;/span&gt;. In particular,&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;The &lt;span class=&#34;math inline&#34;&gt;\(x_i\)&lt;/span&gt; in &lt;span class=&#34;math inline&#34;&gt;\(\mathcal{D}\)&lt;/span&gt; are sampled from a uniform distribution over &lt;span class=&#34;math inline&#34;&gt;\([0, 1]\)&lt;/span&gt;.&lt;/li&gt;
+&lt;li&gt;The &lt;span class=&#34;math inline&#34;&gt;\(x_i\)&lt;/span&gt; and &lt;span class=&#34;math inline&#34;&gt;\(\epsilon\)&lt;/span&gt; are independent.&lt;/li&gt;
+&lt;li&gt;The &lt;span class=&#34;math inline&#34;&gt;\(y_i\)&lt;/span&gt; in &lt;span class=&#34;math inline&#34;&gt;\(\mathcal{D}\)&lt;/span&gt; are sampled from the conditional normal distribution.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Using this setup, we will generate datasets, &lt;span class=&#34;math inline&#34;&gt;\(\mathcal{D}\)&lt;/span&gt;, with a sample size &lt;span class=&#34;math inline&#34;&gt;\(NN\)&lt;/span&gt; and fit four models.&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
+\begin{aligned}
+\texttt{predict(fit0, x)} &amp;amp;= \hat{f}_0(x) = \hat{\beta}_0\\
+\texttt{predict(fit1, x)} &amp;amp;= \hat{f}_1(x) = \hat{\beta}_0 + \hat{\beta}_1 x \\
+\texttt{predict(fit2, x)} &amp;amp;= \hat{f}_2(x) = \hat{\beta}_0 + \hat{\beta}_1 x + \hat{\beta}_2 x^2 \\
+\texttt{predict(fit9, x)} &amp;amp;= \hat{f}_9(x) = \hat{\beta}_0 + \hat{\beta}_1 x + \hat{\beta}_2 x^2 + \ldots + \hat{\beta}_9 x^9
+\end{aligned}
+\]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;To get a sense of the data and these four models, we generate one simulated dataset, and fit the four models.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;set.seed(1)
+sim_data = get_sim_data(f)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;fit_0 = lm(y ~ 1,                   data = sim_data)
+fit_1 = lm(y ~ poly(x, degree = 1), data = sim_data)
+fit_2 = lm(y ~ poly(x, degree = 2), data = sim_data)
+fit_9 = lm(y ~ poly(x, degree = 9), data = sim_data)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Plotting these four trained models, we see that the zero predictor model does very poorly. The first degree model is reasonable, but we can see that the second degree model fits much better. The ninth degree model seem rather wild.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/example/09-example_files/figure-html/unnamed-chunk-12-1.png&#34; width=&#34;864&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;…&lt;/p&gt;
+&lt;p&gt;We will now complete a simulation study to understand the relationship between the bias, variance, and mean squared error for the estimates for &lt;span class=&#34;math inline&#34;&gt;\(f(x)\)&lt;/span&gt; given by these four models at the point &lt;span class=&#34;math inline&#34;&gt;\(x = 0.90\)&lt;/span&gt;. We use simulation to complete this task, as performing the analytical calculations would prove to be rather tedious and difficult.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;set.seed(1)
+n_sims = 250
+n_models = 4
+x = data.frame(x = 0.90) # fixed point at which we make predictions
+predictions = matrix(0, nrow = n_sims, ncol = n_models)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;for (sim in 1:n_sims) {
+
+  # simulate new, random, training data
+  # this is the only random portion of the bias, var, and mse calculations
+  # this allows us to calculate the expectation over D
+  sim_data = get_sim_data(f, sample_size = NN)
+
+  # fit models
+  fit_0 = lm(y ~ 1,                   data = sim_data)
+  fit_1 = lm(y ~ poly(x, degree = 1), data = sim_data)
+  fit_2 = lm(y ~ poly(x, degree = 2), data = sim_data)
+  fit_9 = lm(y ~ poly(x, degree = 9), data = sim_data)
+
+  # get predictions
+  predictions[sim, 1] = predict(fit_0, x)
+  predictions[sim, 2] = predict(fit_1, x)
+  predictions[sim, 3] = predict(fit_2, x)
+  predictions[sim, 4] = predict(fit_9, x)
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Compile all of the results:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/example/09-example_files/figure-html/unnamed-chunk-15-1.png&#34; width=&#34;864&#34; /&gt;&lt;/p&gt;
+&lt;div class=&#34;fyi&#34;&gt;
+&lt;p&gt;In your breakout room and using the code below:&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;First Breakout&lt;/strong&gt;: set &lt;code&gt;NN&lt;/code&gt; = 100, the value we used in our Content 9 lecture. The value is set in one of the first code chunks. Step through the code to get your finalPlot and make sure it looks like the plot in Content 9. I changed the code to use ggplot (easier to save output), so the formatting and colors will be different - that’s OK, we want to get the same results, not copy the layout of the plot. Note that at the end of the code, a list is created that will hold all of your results. In case you need to clear this list, &lt;code&gt;rm(FinalResults)&lt;/code&gt; will do so and the code will initate a new blank list to hold subsequent results.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Second Breakout&lt;/strong&gt;: set NN to a larger number. Usually, more data means more precise predictions. Run your code again stepping through it, until you get to this plot. Note that at the end of the code provided, there is a list that aggregates your results. &lt;strong&gt;Repeat this&lt;/strong&gt; with a 3rd, even larger value for NN. Don’t go much beyond 50,000 or it’ll take too long. Your &lt;code&gt;FinalResults&lt;/code&gt; list should have 3 elements in it. Use &lt;code&gt;wrap_plots(FinalResults, nrow = 1)&lt;/code&gt; to see all 3 side-by-side.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Third Breakout&lt;/strong&gt;: Finally, change the &lt;code&gt;SD.of.Bayes.Error&lt;/code&gt; value to make it higher or lower. Remember, this is the &lt;em&gt;irreducible&lt;/em&gt; error. Run your code again with your first, second, and third different value for sample size &lt;code&gt;NN&lt;/code&gt;. You should have 6 plots in your &lt;code&gt;FinalResults&lt;/code&gt; list - 3 from before, and 3 more with the new SD of Bayes Error. Use &lt;code&gt;wrap_plots&lt;/code&gt; with the right number of rows to see a 2x3 grid of the results.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Usually we think larger sample sizes and lower error lead to better overall prediction. Do we see any change in the bias vs. tradeoff relationship with lower/higher sample size &lt;code&gt;NN&lt;/code&gt; and lower/higher SD of Bayes Error?&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;heres-the-code&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Here’s the code&lt;/h3&gt;
+&lt;p&gt;I’ve merged all of the code together for you here. Copy this into a new .R script - you don’t need to use a full Markdown.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(ggplot2)
+library(patchwork)
+
+
+
+NN = 100   #----&amp;gt; In class, we will change this to 
+#                 see how our results change in response
+SD.of.Bayes.Error = 0.75   #-----&amp;gt; This, too, will change. 
+
+# Note that both of these are used in the next chunk(s) to generate data.
+
+
+
+
+
+
+
+f = function(x) {
+  x ^ 2
+}
+
+
+
+get_sim_data = function(f, sample_size = NN) {
+  x = runif(n = sample_size, min = 0, max = 1)
+  eps = rnorm(n = sample_size, mean = 0, sd = SD.of.Bayes.Error)
+  y = f(x) + eps
+  data.frame(x, y)
+}
+
+
+
+set.seed(1)
+sim_data = get_sim_data(f)
+
+
+
+fit_0 = lm(y ~ 1,                   data = sim_data)
+fit_1 = lm(y ~ poly(x, degree = 1), data = sim_data)
+fit_2 = lm(y ~ poly(x, degree = 2), data = sim_data)
+fit_9 = lm(y ~ poly(x, degree = 9), data = sim_data)
+
+
+
+
+
+set.seed(42)
+plot(y ~ x, data = sim_data, col = &amp;quot;grey&amp;quot;, pch = 20,
+     main = &amp;quot;Four Polynomial Models fit to a Simulated Dataset&amp;quot;)
+
+grid = seq(from = 0, to = 2, by = 0.01)
+lines(grid, f(grid), col = &amp;quot;black&amp;quot;, lwd = 3)
+lines(grid, predict(fit_0, newdata = data.frame(x = grid)), col = &amp;quot;dodgerblue&amp;quot;,  lwd = 2, lty = 2)
+lines(grid, predict(fit_1, newdata = data.frame(x = grid)), col = &amp;quot;firebrick&amp;quot;,   lwd = 2, lty = 3)
+lines(grid, predict(fit_2, newdata = data.frame(x = grid)), col = &amp;quot;springgreen&amp;quot;, lwd = 2, lty = 4)
+lines(grid, predict(fit_9, newdata = data.frame(x = grid)), col = &amp;quot;darkorange&amp;quot;,  lwd = 2, lty = 5)
+
+legend(&amp;quot;topleft&amp;quot;, 
+       c(&amp;quot;y ~ 1&amp;quot;, &amp;quot;y ~ poly(x, 1)&amp;quot;, &amp;quot;y ~ poly(x, 2)&amp;quot;,  &amp;quot;y ~ poly(x, 9)&amp;quot;, &amp;quot;truth&amp;quot;), 
+       col = c(&amp;quot;dodgerblue&amp;quot;, &amp;quot;firebrick&amp;quot;, &amp;quot;springgreen&amp;quot;, &amp;quot;darkorange&amp;quot;, &amp;quot;black&amp;quot;), lty = c(2, 3, 4, 5, 1), lwd = 2)
+
+
+
+set.seed(1)
+n_sims = 250
+n_models = 4
+x = data.frame(x = 0.90) # fixed point at which we make predictions
+predictions = matrix(0, nrow = n_sims, ncol = n_models)
+
+
+
+for (sim in 1:n_sims) {
+
+  # simulate new, random, training data
+  # this is the only random portion of the bias, var, and mse calculations
+  # this allows us to calculate the expectation over D
+  sim_data = get_sim_data(f, sample_size = NN)
+
+  # fit models
+  fit_0 = lm(y ~ 1,                   data = sim_data)
+  fit_1 = lm(y ~ poly(x, degree = 1), data = sim_data)
+  fit_2 = lm(y ~ poly(x, degree = 2), data = sim_data)
+  fit_9 = lm(y ~ poly(x, degree = 9), data = sim_data)
+
+  # get predictions
+  predictions[sim, 1] = predict(fit_0, x)
+  predictions[sim, 2] = predict(fit_1, x)
+  predictions[sim, 3] = predict(fit_2, x)
+  predictions[sim, 4] = predict(fit_9, x)
+}
+
+
+
+predictions.proc = (predictions)
+colnames(predictions.proc) = c(&amp;quot;0&amp;quot;, &amp;quot;1&amp;quot;, &amp;quot;2&amp;quot;, &amp;quot;9&amp;quot;)
+predictions.proc = as.data.frame(predictions.proc)
+
+tall_predictions = tidyr::gather(predictions.proc, factor_key = TRUE)
+
+## Here, you can save your ggplot output 
+FinalPlot &amp;lt;- ggplot(tall_predictions, aes(x = key, y = value, col = as.factor(key))) + 
+                      geom_boxplot() +
+                      geom_jitter(alpha = .5) +
+                      geom_hline(yintercept = f(x = .90)) +
+                      labs(col = &amp;#39;Model&amp;#39;, x = &amp;#39;Model&amp;#39;, y = &amp;#39;Prediction&amp;#39;, title = paste0(&amp;#39;Bias v Var - Sample Size: &amp;#39;,NN), subtitle = paste0(&amp;#39;SD of Bayes Err: &amp;#39;,SD.of.Bayes.Error)) +
+                      theme_bw()
+
+
+
+FinalPlot
+
+
+## This is going to aggregate your results for you:
+if(!exists(&amp;#39;FinalResults&amp;#39;)) FinalResults = list()
+
+FinalResults[[paste0(&amp;#39;finalPlot.NN.&amp;#39;,NN,&amp;#39;.SDBayes.&amp;#39;,SD.of.Bayes.Error)]] = FinalPlot
+
+# 
+# boxplot(value ~ key, data = tall_predictions, border = &amp;quot;darkgrey&amp;quot;, xlab = &amp;quot;Polynomial Degree&amp;quot;, ylab = &amp;quot;Predictions&amp;quot;,
+#         main = &amp;quot;Simulated Predictions for Polynomial Models&amp;quot;)
+# grid()
+# stripchart(value ~ key, data = tall_predictions, add = TRUE, vertical = TRUE, method = &amp;quot;jitter&amp;quot;, jitter = 0.15, pch = 1, col = c(&amp;quot;dodgerblue&amp;quot;, &amp;quot;firebrick&amp;quot;, &amp;quot;springgreen&amp;quot;, &amp;quot;darkorange&amp;quot;))
+# abline(h = f(x = 0.90), lwd = 2)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;And to output &lt;em&gt;whatever is in your list&lt;/em&gt;:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;## This not run automatically.
+## To plot the whole list of ggplot objects in FinalResults:
+wrap_plots(FinalResults, nrow = 2, guides = &amp;#39;collect&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
 &lt;/div&gt;
 </description>
     </item>
