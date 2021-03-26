@@ -115,6 +115,7 @@ These are the main issues with the data:
 library(tidyverse)    # For ggplot, dplyr, and friends
 library(countrycode)  # For dealing with country names, abbreviations, and codes
 library(lubridate)    # For dealing with dates
+library(WDI)
 ```
 
 ```{r load-data-real, include=FALSE}
@@ -213,3 +214,53 @@ refugees_continents_cumulative %>%
   arrange(origin_continent) %>%
   head()
 ```
+
+
+### What about other data?
+In your prerequisite course, you learned how to use the `merge` function (and possibly its Tidyverse cousin, `left_join`). Since our refugee data has a standardized country code, we can find other datasets that might have useful information. 
+
+The `WDI` package acts as an interface to the World Bank Development Inidcators dataset, which has a *lot* of information on the countries in our data. To merge WDI data to our refugee data, we'll need to make a little change to our cleaning code - `WDI` needs the iso2 country code, which is a unique 2-letter code instead of the iso3 3-letter code we have. Here's the cleaning data:
+
+```{r}
+refugees_clean <- refugees_raw %>%
+  rename(origin_country = `Continent/Country of Nationality`) %>%
+  dplyr::filter(!(origin_country %in% non_countries)) %>%
+  mutate(iso2 = countrycode(origin_country, "country.name", "iso2c",
+                            custom_match = c("Korea, North" = "KP"))) %>%
+  mutate(origin_country = countrycode(iso2, "iso2c", "country.name"),
+         origin_region = countrycode(iso2, "iso2c", "region"),
+         origin_continent = countrycode(iso2, "iso2c", "continent")) %>%
+  gather(year, number, -origin_country, -iso2, -origin_region, -origin_continent) %>%
+  mutate(year = as.numeric(year),
+         year_date = ymd(paste0(year, "-01-01")),
+         iso2c = iso2)
+```
+
+The only difference here is that we now have iso2 instead of iso3. If you use your iso3 field in your code, you'll have to create both.
+
+Now, the `WDI` function:
+
+```{r}
+library(WDI)
+myData = WDI(country = refugees_clean$iso2, indicator = 'SP.POP.TOTL', start = 2006, end = 2015)  %>%
+      dplyr::select(-country)
+```
+The function needs four arguments (see `?WDI` after installing the `WDI` package for more). The first has to be list of iso2 codes, which we have...in the form of the `iso2` column. So we pass that column as the first argument, and `WDI` will give us data for every country in that column.
+
+The second argument, `indicator`, tells `WDI` what data you want. The [WDI data dictionary is here](https://databank.worldbank.org/metadataglossary/World-Development-Indicators/series). Use the drop-down under "Select Database" and choose just the World Development Indicators option to simplify. Then, use the search box to search for intersting indicators. The website shows the "code" of each of the indicators. That's the code you use. For instance, `SP.POP.TOTL` is the total population by country, so you can generate per-capita measures of refugees if you want. Finally, `WDI` needs the start and end years. Our data is 2006 to 2015, so that makes the most sense.
+
+Now, once you have `myData` retrieved from `WDI`, take a look at it. We need to see which columns to merge on - that is, which columns should R match to put the data together? We want to merge on `'iso2c'` and on `'year'` because `WDI` gives us a tidy data frame by country-year.
+
+```{r}
+refugees_clean_merged = left_join(refugees_clean, myData, by = c('iso2c','year')) 
+```
+
+We didn't have an `iso2c` column before, just an `iso2` column, so you might notice that the new cleaning code I gave you added `iso2c = iso2` at the end using `mutate`. That way, the column names that we're using to merge will match.
+
+You can search the WDI data dictionary and find the "Code" for the indicator you'd like to use, then just merge it into your data. Look at your data closely before you merge, and make sure you know what you're merging in. Use the slack if you get stuck. Happy data hunting!
+
+
+```{r}
+head(refugees_clean_merged %>% dplyr::select(origin_country, number, iso2, year, SP.POP.TOTL))
+```
+

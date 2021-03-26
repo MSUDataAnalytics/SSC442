@@ -30,7 +30,7 @@
   
     
   
-  <meta name="description" content="Part 1: InstructionsPart 2: HypothesesEvaluationData cleaning codeData to possibly use in your plotCountry totals over timeCumulative country totals over timeContinent totals over timeCumulative continent totals over timeAs with Project 1, each member of the group should submit an identical copy of the project to D2L (for ease of evaluation and to ensure communication across the group).">
+  <meta name="description" content="Part 1: InstructionsPart 2: HypothesesEvaluationData cleaning codeData to possibly use in your plotCountry totals over timeCumulative country totals over timeContinent totals over timeCumulative continent totals over timeWhat about other data?As with Project 1, each member of the group should submit an identical copy of the project to D2L (for ease of evaluation and to ensure communication across the group).">
 
   
   <link rel="alternate" hreflang="en-us" href="https://datavizm20.classes.andrewheiss.com/assignment/project2/">
@@ -238,7 +238,7 @@
   <meta property="og:site_name" content="Data Analytics">
   <meta property="og:url" content="https://datavizm20.classes.andrewheiss.com/assignment/project2/">
   <meta property="og:title" content="Project 2 | Data Analytics">
-  <meta property="og:description" content="Part 1: InstructionsPart 2: HypothesesEvaluationData cleaning codeData to possibly use in your plotCountry totals over timeCumulative country totals over timeContinent totals over timeCumulative continent totals over timeAs with Project 1, each member of the group should submit an identical copy of the project to D2L (for ease of evaluation and to ensure communication across the group)."><meta property="og:image" content="https://datavizm20.classes.andrewheiss.com/img/social-image.png">
+  <meta property="og:description" content="Part 1: InstructionsPart 2: HypothesesEvaluationData cleaning codeData to possibly use in your plotCountry totals over timeCumulative country totals over timeContinent totals over timeCumulative continent totals over timeWhat about other data?As with Project 1, each member of the group should submit an identical copy of the project to D2L (for ease of evaluation and to ensure communication across the group)."><meta property="og:image" content="https://datavizm20.classes.andrewheiss.com/img/social-image.png">
   <meta property="twitter:image" content="https://datavizm20.classes.andrewheiss.com/img/social-image.png"><meta property="og:locale" content="en-us">
   
     
@@ -641,6 +641,7 @@
 <li><a href="#cumulative-country-totals-over-time">Cumulative country totals over time</a></li>
 <li><a href="#continent-totals-over-time">Continent totals over time</a></li>
 <li><a href="#cumulative-continent-totals-over-time">Cumulative continent totals over time</a></li>
+<li><a href="#what-about-other-data">What about other data?</a></li>
 </ul></li>
 </ul>
 </div>
@@ -648,7 +649,7 @@
 <div class="fyi">
 <p>As with Project 1, each member of the group should submit an identical copy of the project to D2L (for ease of evaluation and to ensure communication across the group). Please write your group number and the group members’ names across the top. Upload the components (see below) to the Project 2 assignment on D2L by 11:59pm on April 2, 2021.</p>
 </div>
-<p>The United States has resettled more than 600,000 refugees from 60 different countries since 2006.<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a></p>
+<p>The United States has resettled more than 600,000 refugees from 60 different countries since 2006.</p>
 <p><img src="/img/assignments/refugees_welcome.jpg" width="70%" style="display: block; margin: auto;" /></p>
 <p>In this project, you will use <strong>R, ggplot</strong> and some form of graphics editor to explore where these refugees have come from.</p>
 <div id="part-1-instructions" class="section level2">
@@ -695,7 +696,7 @@
 <ul>
 <li><p>There are non-numeric values in the data, like <code>-</code>, <code>X</code>, and <code>D</code>. The data isn’t very well documented; we’re assuming <code>-</code> indicates a missing value, but we’re not sure what <code>X</code> and <code>D</code> mean, so for this assignment, we’ll just assume they’re also missing.</p></li>
 <li><p>The data generally includes rows for dozens of countries, but there are also rows for some continents, “unknown,” “other,” and a total row. Because <a href="https://twitter.com/africasacountry">Africa is not a country</a>, and neither are the other continents, we want to exclude all non-countries.</p></li>
-<li><p>Maintaining consistent country names across different datasets is <em>literally</em> the woooooooorst. Countries have different formal official names and datasets are never consistent in how they use those names.<a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a> It’s such a tricky problem that social scientists have spent their careers just figuring out how to properly name and code countries. Really.<a href="#fn3" class="footnote-ref" id="fnref3"><sup>3</sup></a> There are international standards for country codes, though, like <a href="https://en.wikipedia.org/wiki/ISO_3166-1_alpha-3">ISO 3166-1 alpha 3</a> (my favorite), also known as ISO3. It’s not perfect—it omits microstates (some Polynesian countries) and gray area states (Palestine, Kosovo)—but it’s an international standard, so it has that going for it.</p></li>
+<li><p>Maintaining consistent country names across different datasets is <em>literally</em> the woooooooorst. Countries have different formal official names and datasets are never consistent in how they use those names.<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a> It’s such a tricky problem that social scientists have spent their careers just figuring out how to properly name and code countries. Really.<a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a> There are international standards for country codes, though, like <a href="https://en.wikipedia.org/wiki/ISO_3166-1_alpha-3">ISO 3166-1 alpha 3</a> (my favorite), also known as ISO3. It’s not perfect—it omits microstates (some Polynesian countries) and gray area states (Palestine, Kosovo)—but it’s an international standard, so it has that going for it.</p></li>
 <li><p>To ensure that country names are consistent in this data, we use the <strong>countrycode</strong> package (install it if you don’t have it), which is amazing. The <code>countrycode()</code> function will take a country name in a given coding scheme and convert it to a different coding scheme using this syntax:</p>
 <pre><code>  countrycode(variable, &quot;current-coding-scheme&quot;, &quot;new-coding-scheme&quot;)</code></pre>
 <p>It also does a farily good job at guessing and parsing inconsistent country names (e.g. it will recognize “Congo, Democratic Republic”, even though it should technically be “Democratic Republic of the Congo”). Here, we use <code>countrycode()</code> to convert the inconsistent country names into ISO3 codes. We then create a cleaner version of the <code>origin_country</code> column by converting the ISO3 codes back into country names. Note that the function chokes on North Korea initially, since it’s included as “Korea, North”—we use the <code>custom_match</code> argument to help the function out.</p></li>
@@ -704,7 +705,8 @@
 </ul>
 <pre class="r"><code>library(tidyverse)    # For ggplot, dplyr, and friends
 library(countrycode)  # For dealing with country names, abbreviations, and codes
-library(lubridate)    # For dealing with dates</code></pre>
+library(lubridate)    # For dealing with dates
+library(WDI)</code></pre>
 <pre class="r"><code>refugees_raw &lt;- read_csv(&quot;data/refugee_status.csv&quot;, na = c(&quot;-&quot;, &quot;X&quot;, &quot;D&quot;))</code></pre>
 <pre class="r"><code>non_countries &lt;- c(&quot;Africa&quot;, &quot;Asia&quot;, &quot;Europe&quot;, &quot;North America&quot;, &quot;Oceania&quot;,
                    &quot;South America&quot;, &quot;Unknown&quot;, &quot;Other&quot;, &quot;Total&quot;)
@@ -767,7 +769,7 @@ refugees_clean &lt;- refugees_raw %&gt;%
 <pre class="r"><code>refugees_continents &lt;- refugees_clean %&gt;%
   group_by(origin_continent, year_date) %&gt;%
   summarize(total = sum(number, na.rm = TRUE))</code></pre>
-<pre><code>## `summarise()` regrouping output by &#39;origin_continent&#39; (override with `.groups` argument)</code></pre>
+<pre><code>## `summarise()` has grouped output by &#39;origin_continent&#39;. You can override using the `.groups` argument.</code></pre>
 <pre><code>## # A tibble: 6 x 3
 ## # Groups:   origin_continent [1]
 ##   origin_continent year_date  total
@@ -788,7 +790,7 @@ refugees_clean &lt;- refugees_raw %&gt;%
   arrange(year_date) %&gt;%
   group_by(origin_continent) %&gt;%
   mutate(cumulative_total = cumsum(total))</code></pre>
-<pre><code>## `summarise()` regrouping output by &#39;origin_continent&#39; (override with `.groups` argument)</code></pre>
+<pre><code>## `summarise()` has grouped output by &#39;origin_continent&#39;. You can override using the `.groups` argument.</code></pre>
 <pre><code>## # A tibble: 6 x 4
 ## # Groups:   origin_continent [1]
 ##   origin_continent year_date  total cumulative_total
@@ -800,13 +802,50 @@ refugees_clean &lt;- refugees_raw %&gt;%
 ## 5 Africa           2010-01-01 13303            67487
 ## 6 Africa           2011-01-01  7677            75164</code></pre>
 </div>
+<div id="what-about-other-data" class="section level3">
+<h3>What about other data?</h3>
+<p>In your prerequisite course, you learned how to use the <code>merge</code> function (and possibly its Tidyverse cousin, <code>left_join</code>). Since our refugee data has a standardized country code, we can find other datasets that might have useful information.</p>
+<p>The <code>WDI</code> package acts as an interface to the World Bank Development Inidcators dataset, which has a <em>lot</em> of information on the countries in our data. To merge WDI data to our refugee data, we’ll need to make a little change to our cleaning code - <code>WDI</code> needs the iso2 country code, which is a unique 2-letter code instead of the iso3 3-letter code we have. Here’s the cleaning data:</p>
+<pre class="r"><code>refugees_clean &lt;- refugees_raw %&gt;%
+  rename(origin_country = `Continent/Country of Nationality`) %&gt;%
+  dplyr::filter(!(origin_country %in% non_countries)) %&gt;%
+  mutate(iso2 = countrycode(origin_country, &quot;country.name&quot;, &quot;iso2c&quot;,
+                            custom_match = c(&quot;Korea, North&quot; = &quot;KP&quot;))) %&gt;%
+  mutate(origin_country = countrycode(iso2, &quot;iso2c&quot;, &quot;country.name&quot;),
+         origin_region = countrycode(iso2, &quot;iso2c&quot;, &quot;region&quot;),
+         origin_continent = countrycode(iso2, &quot;iso2c&quot;, &quot;continent&quot;)) %&gt;%
+  gather(year, number, -origin_country, -iso2, -origin_region, -origin_continent) %&gt;%
+  mutate(year = as.numeric(year),
+         year_date = ymd(paste0(year, &quot;-01-01&quot;)),
+         iso2c = iso2)</code></pre>
+<p>The only difference here is that we now have iso2 instead of iso3. If you use your iso3 field in your code, you’ll have to create both.</p>
+<p>Now, the <code>WDI</code> function:</p>
+<pre class="r"><code>library(WDI)
+myData = WDI(country = refugees_clean$iso2, indicator = &#39;SP.POP.TOTL&#39;, start = 2006, end = 2015)  %&gt;%
+      dplyr::select(-country)</code></pre>
+<p>The function needs four arguments (see <code>?WDI</code> after installing the <code>WDI</code> package for more). The first has to be list of iso2 codes, which we have…in the form of the <code>iso2</code> column. So we pass that column as the first argument, and <code>WDI</code> will give us data for every country in that column.</p>
+<p>The second argument, <code>indicator</code>, tells <code>WDI</code> what data you want. The <a href="https://databank.worldbank.org/metadataglossary/World-Development-Indicators/series">WDI data dictionary is here</a>. Use the drop-down under “Select Database” and choose just the World Development Indicators option to simplify. Then, use the search box to search for intersting indicators. The website shows the “code” of each of the indicators. That’s the code you use. For instance, <code>SP.POP.TOTL</code> is the total population by country, so you can generate per-capita measures of refugees if you want. Finally, <code>WDI</code> needs the start and end years. Our data is 2006 to 2015, so that makes the most sense.</p>
+<p>Now, once you have <code>myData</code> retrieved from <code>WDI</code>, take a look at it. We need to see which columns to merge on - that is, which columns should R match to put the data together? We want to merge on <code>'iso2c'</code> and on <code>'year'</code> because <code>WDI</code> gives us a tidy data frame by country-year.</p>
+<pre class="r"><code>refugees_clean_merged = left_join(refugees_clean, myData, by = c(&#39;iso2c&#39;,&#39;year&#39;)) </code></pre>
+<p>We didn’t have an <code>iso2c</code> column before, just an <code>iso2</code> column, so you might notice that the new cleaning code I gave you added <code>iso2c = iso2</code> at the end using <code>mutate</code>. That way, the column names that we’re using to merge will match.</p>
+<p>You can search the WDI data dictionary and find the “Code” for the indicator you’d like to use, then just merge it into your data. Look at your data closely before you merge, and make sure you know what you’re merging in. Use the slack if you get stuck. Happy data hunting!</p>
+<pre class="r"><code>head(refugees_clean_merged %&gt;% dplyr::select(origin_country, number, iso2, year, SP.POP.TOTL))</code></pre>
+<pre><code>## # A tibble: 6 x 5
+##   origin_country number iso2   year SP.POP.TOTL
+##   &lt;chr&gt;           &lt;dbl&gt; &lt;chr&gt; &lt;dbl&gt;       &lt;dbl&gt;
+## 1 Afghanistan       651 AF     2006    26433049
+## 2 Angola             13 AO     2006    20149901
+## 3 Armenia            87 AM     2006     2958307
+## 4 Azerbaijan         77 AZ     2006     8484550
+## 5 Belarus           350 BY     2006     9604924
+## 6 Bhutan              3 BT     2006      657410</code></pre>
+</div>
 </div>
 <div class="footnotes">
 <hr />
 <ol>
-<li id="fn1"><p>You found the footnote! Week 8’s writing assignment has three parts. First, write down your guess (a probability; stated as a percentage) for the odds that Joe Biden is elected President of the United States. Second, write a short paragraph about why you made that guess. Are you integrating data into your guess? If so, what data? Do you believe that personal experience is useful for making such predictions, or that personal experience can be misleading. As always, the total writing should be a couple hundred words.<a href="#fnref1" class="footnote-back">↩︎</a></p></li>
-<li id="fn2"><p>For instance, “North Korea”, “Korea, North”, “DPRK”, “Korea, Democratic People’s Republic of”, and “Democratic People’s Republic of Korea”, and “Korea (DPRK)” are all perfectly normal versions of the country’s name and you’ll find them all in the wild.<a href="#fnref2" class="footnote-back">↩︎</a></p></li>
-<li id="fn3"><p>See Gleditsch, Kristian S. &amp; Michael D. Ward. 1999. <a href="https://www.tandfonline.com/doi/abs/10.1080/03050629908434958">“Interstate System Membership: A Revised List of the Independent States since 1816.”</a> <em>International Interactions</em> 25: 393-413; or the <a href="http://www.paulhensel.org/icownames.html">“ICOW Historical State Names Data Set”</a>.<a href="#fnref3" class="footnote-back">↩︎</a></p></li>
+<li id="fn1"><p>For instance, “North Korea”, “Korea, North”, “DPRK”, “Korea, Democratic People’s Republic of”, and “Democratic People’s Republic of Korea”, and “Korea (DPRK)” are all perfectly normal versions of the country’s name and you’ll find them all in the wild.<a href="#fnref1" class="footnote-back">↩︎</a></p></li>
+<li id="fn2"><p>See Gleditsch, Kristian S. &amp; Michael D. Ward. 1999. <a href="https://www.tandfonline.com/doi/abs/10.1080/03050629908434958">“Interstate System Membership: A Revised List of the Independent States since 1816.”</a> <em>International Interactions</em> 25: 393-413; or the <a href="http://www.paulhensel.org/icownames.html">“ICOW Historical State Names Data Set”</a>.<a href="#fnref2" class="footnote-back">↩︎</a></p></li>
 </ol>
 </div>
 

@@ -1594,6 +1594,7 @@ my_func &amp;lt;- function(y){
 &lt;li&gt;&lt;a href=&#34;#cumulative-country-totals-over-time&#34;&gt;Cumulative country totals over time&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;#continent-totals-over-time&#34;&gt;Continent totals over time&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;#cumulative-continent-totals-over-time&#34;&gt;Cumulative continent totals over time&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#what-about-other-data&#34;&gt;What about other data?&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/div&gt;
@@ -1601,7 +1602,7 @@ my_func &amp;lt;- function(y){
 &lt;div class=&#34;fyi&#34;&gt;
 &lt;p&gt;As with Project 1, each member of the group should submit an identical copy of the project to D2L (for ease of evaluation and to ensure communication across the group). Please write your group number and the group members’ names across the top. Upload the components (see below) to the Project 2 assignment on D2L by 11:59pm on April 2, 2021.&lt;/p&gt;
 &lt;/div&gt;
-&lt;p&gt;The United States has resettled more than 600,000 refugees from 60 different countries since 2006.&lt;a href=&#34;#fn1&#34; class=&#34;footnote-ref&#34; id=&#34;fnref1&#34;&gt;&lt;sup&gt;1&lt;/sup&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;The United States has resettled more than 600,000 refugees from 60 different countries since 2006.&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/img/assignments/refugees_welcome.jpg&#34; width=&#34;70%&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;In this project, you will use &lt;strong&gt;R, ggplot&lt;/strong&gt; and some form of graphics editor to explore where these refugees have come from.&lt;/p&gt;
 &lt;div id=&#34;part-1-instructions&#34; class=&#34;section level2&#34;&gt;
@@ -1648,7 +1649,7 @@ my_func &amp;lt;- function(y){
 &lt;ul&gt;
 &lt;li&gt;&lt;p&gt;There are non-numeric values in the data, like &lt;code&gt;-&lt;/code&gt;, &lt;code&gt;X&lt;/code&gt;, and &lt;code&gt;D&lt;/code&gt;. The data isn’t very well documented; we’re assuming &lt;code&gt;-&lt;/code&gt; indicates a missing value, but we’re not sure what &lt;code&gt;X&lt;/code&gt; and &lt;code&gt;D&lt;/code&gt; mean, so for this assignment, we’ll just assume they’re also missing.&lt;/p&gt;&lt;/li&gt;
 &lt;li&gt;&lt;p&gt;The data generally includes rows for dozens of countries, but there are also rows for some continents, “unknown,” “other,” and a total row. Because &lt;a href=&#34;https://twitter.com/africasacountry&#34;&gt;Africa is not a country&lt;/a&gt;, and neither are the other continents, we want to exclude all non-countries.&lt;/p&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;Maintaining consistent country names across different datasets is &lt;em&gt;literally&lt;/em&gt; the woooooooorst. Countries have different formal official names and datasets are never consistent in how they use those names.&lt;a href=&#34;#fn2&#34; class=&#34;footnote-ref&#34; id=&#34;fnref2&#34;&gt;&lt;sup&gt;2&lt;/sup&gt;&lt;/a&gt; It’s such a tricky problem that social scientists have spent their careers just figuring out how to properly name and code countries. Really.&lt;a href=&#34;#fn3&#34; class=&#34;footnote-ref&#34; id=&#34;fnref3&#34;&gt;&lt;sup&gt;3&lt;/sup&gt;&lt;/a&gt; There are international standards for country codes, though, like &lt;a href=&#34;https://en.wikipedia.org/wiki/ISO_3166-1_alpha-3&#34;&gt;ISO 3166-1 alpha 3&lt;/a&gt; (my favorite), also known as ISO3. It’s not perfect—it omits microstates (some Polynesian countries) and gray area states (Palestine, Kosovo)—but it’s an international standard, so it has that going for it.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Maintaining consistent country names across different datasets is &lt;em&gt;literally&lt;/em&gt; the woooooooorst. Countries have different formal official names and datasets are never consistent in how they use those names.&lt;a href=&#34;#fn1&#34; class=&#34;footnote-ref&#34; id=&#34;fnref1&#34;&gt;&lt;sup&gt;1&lt;/sup&gt;&lt;/a&gt; It’s such a tricky problem that social scientists have spent their careers just figuring out how to properly name and code countries. Really.&lt;a href=&#34;#fn2&#34; class=&#34;footnote-ref&#34; id=&#34;fnref2&#34;&gt;&lt;sup&gt;2&lt;/sup&gt;&lt;/a&gt; There are international standards for country codes, though, like &lt;a href=&#34;https://en.wikipedia.org/wiki/ISO_3166-1_alpha-3&#34;&gt;ISO 3166-1 alpha 3&lt;/a&gt; (my favorite), also known as ISO3. It’s not perfect—it omits microstates (some Polynesian countries) and gray area states (Palestine, Kosovo)—but it’s an international standard, so it has that going for it.&lt;/p&gt;&lt;/li&gt;
 &lt;li&gt;&lt;p&gt;To ensure that country names are consistent in this data, we use the &lt;strong&gt;countrycode&lt;/strong&gt; package (install it if you don’t have it), which is amazing. The &lt;code&gt;countrycode()&lt;/code&gt; function will take a country name in a given coding scheme and convert it to a different coding scheme using this syntax:&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;  countrycode(variable, &amp;quot;current-coding-scheme&amp;quot;, &amp;quot;new-coding-scheme&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;It also does a farily good job at guessing and parsing inconsistent country names (e.g. it will recognize “Congo, Democratic Republic”, even though it should technically be “Democratic Republic of the Congo”). Here, we use &lt;code&gt;countrycode()&lt;/code&gt; to convert the inconsistent country names into ISO3 codes. We then create a cleaner version of the &lt;code&gt;origin_country&lt;/code&gt; column by converting the ISO3 codes back into country names. Note that the function chokes on North Korea initially, since it’s included as “Korea, North”—we use the &lt;code&gt;custom_match&lt;/code&gt; argument to help the function out.&lt;/p&gt;&lt;/li&gt;
@@ -1657,7 +1658,8 @@ my_func &amp;lt;- function(y){
 &lt;/ul&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(tidyverse)    # For ggplot, dplyr, and friends
 library(countrycode)  # For dealing with country names, abbreviations, and codes
-library(lubridate)    # For dealing with dates&lt;/code&gt;&lt;/pre&gt;
+library(lubridate)    # For dealing with dates
+library(WDI)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;refugees_raw &amp;lt;- read_csv(&amp;quot;data/refugee_status.csv&amp;quot;, na = c(&amp;quot;-&amp;quot;, &amp;quot;X&amp;quot;, &amp;quot;D&amp;quot;))&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;non_countries &amp;lt;- c(&amp;quot;Africa&amp;quot;, &amp;quot;Asia&amp;quot;, &amp;quot;Europe&amp;quot;, &amp;quot;North America&amp;quot;, &amp;quot;Oceania&amp;quot;,
                    &amp;quot;South America&amp;quot;, &amp;quot;Unknown&amp;quot;, &amp;quot;Other&amp;quot;, &amp;quot;Total&amp;quot;)
@@ -1720,7 +1722,7 @@ refugees_clean &amp;lt;- refugees_raw %&amp;gt;%
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;refugees_continents &amp;lt;- refugees_clean %&amp;gt;%
   group_by(origin_continent, year_date) %&amp;gt;%
   summarize(total = sum(number, na.rm = TRUE))&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## `summarise()` regrouping output by &amp;#39;origin_continent&amp;#39; (override with `.groups` argument)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## `summarise()` has grouped output by &amp;#39;origin_continent&amp;#39;. You can override using the `.groups` argument.&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## # A tibble: 6 x 3
 ## # Groups:   origin_continent [1]
 ##   origin_continent year_date  total
@@ -1741,7 +1743,7 @@ refugees_clean &amp;lt;- refugees_raw %&amp;gt;%
   arrange(year_date) %&amp;gt;%
   group_by(origin_continent) %&amp;gt;%
   mutate(cumulative_total = cumsum(total))&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## `summarise()` regrouping output by &amp;#39;origin_continent&amp;#39; (override with `.groups` argument)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## `summarise()` has grouped output by &amp;#39;origin_continent&amp;#39;. You can override using the `.groups` argument.&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## # A tibble: 6 x 4
 ## # Groups:   origin_continent [1]
 ##   origin_continent year_date  total cumulative_total
@@ -1753,13 +1755,50 @@ refugees_clean &amp;lt;- refugees_raw %&amp;gt;%
 ## 5 Africa           2010-01-01 13303            67487
 ## 6 Africa           2011-01-01  7677            75164&lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
+&lt;div id=&#34;what-about-other-data&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;What about other data?&lt;/h3&gt;
+&lt;p&gt;In your prerequisite course, you learned how to use the &lt;code&gt;merge&lt;/code&gt; function (and possibly its Tidyverse cousin, &lt;code&gt;left_join&lt;/code&gt;). Since our refugee data has a standardized country code, we can find other datasets that might have useful information.&lt;/p&gt;
+&lt;p&gt;The &lt;code&gt;WDI&lt;/code&gt; package acts as an interface to the World Bank Development Inidcators dataset, which has a &lt;em&gt;lot&lt;/em&gt; of information on the countries in our data. To merge WDI data to our refugee data, we’ll need to make a little change to our cleaning code - &lt;code&gt;WDI&lt;/code&gt; needs the iso2 country code, which is a unique 2-letter code instead of the iso3 3-letter code we have. Here’s the cleaning data:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;refugees_clean &amp;lt;- refugees_raw %&amp;gt;%
+  rename(origin_country = `Continent/Country of Nationality`) %&amp;gt;%
+  dplyr::filter(!(origin_country %in% non_countries)) %&amp;gt;%
+  mutate(iso2 = countrycode(origin_country, &amp;quot;country.name&amp;quot;, &amp;quot;iso2c&amp;quot;,
+                            custom_match = c(&amp;quot;Korea, North&amp;quot; = &amp;quot;KP&amp;quot;))) %&amp;gt;%
+  mutate(origin_country = countrycode(iso2, &amp;quot;iso2c&amp;quot;, &amp;quot;country.name&amp;quot;),
+         origin_region = countrycode(iso2, &amp;quot;iso2c&amp;quot;, &amp;quot;region&amp;quot;),
+         origin_continent = countrycode(iso2, &amp;quot;iso2c&amp;quot;, &amp;quot;continent&amp;quot;)) %&amp;gt;%
+  gather(year, number, -origin_country, -iso2, -origin_region, -origin_continent) %&amp;gt;%
+  mutate(year = as.numeric(year),
+         year_date = ymd(paste0(year, &amp;quot;-01-01&amp;quot;)),
+         iso2c = iso2)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The only difference here is that we now have iso2 instead of iso3. If you use your iso3 field in your code, you’ll have to create both.&lt;/p&gt;
+&lt;p&gt;Now, the &lt;code&gt;WDI&lt;/code&gt; function:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(WDI)
+myData = WDI(country = refugees_clean$iso2, indicator = &amp;#39;SP.POP.TOTL&amp;#39;, start = 2006, end = 2015)  %&amp;gt;%
+      dplyr::select(-country)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The function needs four arguments (see &lt;code&gt;?WDI&lt;/code&gt; after installing the &lt;code&gt;WDI&lt;/code&gt; package for more). The first has to be list of iso2 codes, which we have…in the form of the &lt;code&gt;iso2&lt;/code&gt; column. So we pass that column as the first argument, and &lt;code&gt;WDI&lt;/code&gt; will give us data for every country in that column.&lt;/p&gt;
+&lt;p&gt;The second argument, &lt;code&gt;indicator&lt;/code&gt;, tells &lt;code&gt;WDI&lt;/code&gt; what data you want. The &lt;a href=&#34;https://databank.worldbank.org/metadataglossary/World-Development-Indicators/series&#34;&gt;WDI data dictionary is here&lt;/a&gt;. Use the drop-down under “Select Database” and choose just the World Development Indicators option to simplify. Then, use the search box to search for intersting indicators. The website shows the “code” of each of the indicators. That’s the code you use. For instance, &lt;code&gt;SP.POP.TOTL&lt;/code&gt; is the total population by country, so you can generate per-capita measures of refugees if you want. Finally, &lt;code&gt;WDI&lt;/code&gt; needs the start and end years. Our data is 2006 to 2015, so that makes the most sense.&lt;/p&gt;
+&lt;p&gt;Now, once you have &lt;code&gt;myData&lt;/code&gt; retrieved from &lt;code&gt;WDI&lt;/code&gt;, take a look at it. We need to see which columns to merge on - that is, which columns should R match to put the data together? We want to merge on &lt;code&gt;&#39;iso2c&#39;&lt;/code&gt; and on &lt;code&gt;&#39;year&#39;&lt;/code&gt; because &lt;code&gt;WDI&lt;/code&gt; gives us a tidy data frame by country-year.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;refugees_clean_merged = left_join(refugees_clean, myData, by = c(&amp;#39;iso2c&amp;#39;,&amp;#39;year&amp;#39;)) &lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;We didn’t have an &lt;code&gt;iso2c&lt;/code&gt; column before, just an &lt;code&gt;iso2&lt;/code&gt; column, so you might notice that the new cleaning code I gave you added &lt;code&gt;iso2c = iso2&lt;/code&gt; at the end using &lt;code&gt;mutate&lt;/code&gt;. That way, the column names that we’re using to merge will match.&lt;/p&gt;
+&lt;p&gt;You can search the WDI data dictionary and find the “Code” for the indicator you’d like to use, then just merge it into your data. Look at your data closely before you merge, and make sure you know what you’re merging in. Use the slack if you get stuck. Happy data hunting!&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;head(refugees_clean_merged %&amp;gt;% dplyr::select(origin_country, number, iso2, year, SP.POP.TOTL))&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 6 x 5
+##   origin_country number iso2   year SP.POP.TOTL
+##   &amp;lt;chr&amp;gt;           &amp;lt;dbl&amp;gt; &amp;lt;chr&amp;gt; &amp;lt;dbl&amp;gt;       &amp;lt;dbl&amp;gt;
+## 1 Afghanistan       651 AF     2006    26433049
+## 2 Angola             13 AO     2006    20149901
+## 3 Armenia            87 AM     2006     2958307
+## 4 Azerbaijan         77 AZ     2006     8484550
+## 5 Belarus           350 BY     2006     9604924
+## 6 Bhutan              3 BT     2006      657410&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
 &lt;/div&gt;
 &lt;div class=&#34;footnotes&#34;&gt;
 &lt;hr /&gt;
 &lt;ol&gt;
-&lt;li id=&#34;fn1&#34;&gt;&lt;p&gt;You found the footnote! Week 8’s writing assignment has three parts. First, write down your guess (a probability; stated as a percentage) for the odds that Joe Biden is elected President of the United States. Second, write a short paragraph about why you made that guess. Are you integrating data into your guess? If so, what data? Do you believe that personal experience is useful for making such predictions, or that personal experience can be misleading. As always, the total writing should be a couple hundred words.&lt;a href=&#34;#fnref1&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
-&lt;li id=&#34;fn2&#34;&gt;&lt;p&gt;For instance, “North Korea”, “Korea, North”, “DPRK”, “Korea, Democratic People’s Republic of”, and “Democratic People’s Republic of Korea”, and “Korea (DPRK)” are all perfectly normal versions of the country’s name and you’ll find them all in the wild.&lt;a href=&#34;#fnref2&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
-&lt;li id=&#34;fn3&#34;&gt;&lt;p&gt;See Gleditsch, Kristian S. &amp;amp; Michael D. Ward. 1999. &lt;a href=&#34;https://www.tandfonline.com/doi/abs/10.1080/03050629908434958&#34;&gt;“Interstate System Membership: A Revised List of the Independent States since 1816.”&lt;/a&gt; &lt;em&gt;International Interactions&lt;/em&gt; 25: 393-413; or the &lt;a href=&#34;http://www.paulhensel.org/icownames.html&#34;&gt;“ICOW Historical State Names Data Set”&lt;/a&gt;.&lt;a href=&#34;#fnref3&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li id=&#34;fn1&#34;&gt;&lt;p&gt;For instance, “North Korea”, “Korea, North”, “DPRK”, “Korea, Democratic People’s Republic of”, and “Democratic People’s Republic of Korea”, and “Korea (DPRK)” are all perfectly normal versions of the country’s name and you’ll find them all in the wild.&lt;a href=&#34;#fnref1&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li id=&#34;fn2&#34;&gt;&lt;p&gt;See Gleditsch, Kristian S. &amp;amp; Michael D. Ward. 1999. &lt;a href=&#34;https://www.tandfonline.com/doi/abs/10.1080/03050629908434958&#34;&gt;“Interstate System Membership: A Revised List of the Independent States since 1816.”&lt;/a&gt; &lt;em&gt;International Interactions&lt;/em&gt; 25: 393-413; or the &lt;a href=&#34;http://www.paulhensel.org/icownames.html&#34;&gt;“ICOW Historical State Names Data Set”&lt;/a&gt;.&lt;a href=&#34;#fnref2&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
 &lt;/ol&gt;
 &lt;/div&gt;
 </description>
