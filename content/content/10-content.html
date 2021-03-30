@@ -3,7 +3,7 @@ title: "Classification"
 linktitle: "10: Classification"
 date: "2021-03-30"
 read_date: "2021-03-30"
-lastmod: "2021-03-25"
+lastmod: "2021-03-30"
 draft: false
 publishdate: "2021-01-15"
 menu:
@@ -191,10 +191,11 @@ head(default_tst_pred, n = 10)</code></pre>
 ##       Yes  523  130</code></pre>
 <p>Often we give specific names to individual cells of these tables, and in the predictive setting, we would call this table a <a href="https://en.wikipedia.org/wiki/Confusion_matrix"><strong>confusion matrix</strong></a>. Be aware, that the placement of Actual and Predicted values affects the names of the cells, and often the matrix may be presented transposed.</p>
 <p>In statistics, we label the errors Type I and Type II, but these are hard to remember. False Positive and False Negative are more descriptive, so we choose to use these.</p>
-<p><img src="images/confusion.png" /></p>
+<!-- ![](images/confusion.png) -->
 <p>The <code>confusionMatrix()</code> function from the <code>caret</code> package can be used to obtain a wealth of additional information, which we see output below for the test data. Note that we specify which category is considered “positive.”</p>
 <pre class="r"><code>trn_con_mat  = confusionMatrix(trn_tab, positive = &quot;Yes&quot;)
-(tst_con_mat = confusionMatrix(tst_tab, positive = &quot;Yes&quot;))</code></pre>
+tst_con_mat = confusionMatrix(tst_tab, positive = &quot;Yes&quot;)
+tst_con_mat</code></pre>
 <pre><code>## Confusion Matrix and Statistics
 ## 
 ##          actual
@@ -242,28 +243,50 @@ I(y_i \neq \hat{C}(x)) =
 <p><span class="math display">\[
 \text{err}_{\texttt{tst}}(\hat{C}, \text{Test Data}) = \frac{1}{n_{\texttt{tst}}}\sum_{i \in \texttt{tst}}^{}I(y_i \neq \hat{C}(x_i))
 \]</span></p>
-<p>Accuracy values can be found by calling <code>confusionMatrix()</code>, or, if stored, can be accessed directly. Here, we use them to obtain error rates.</p>
-<pre class="r"><code>1 - trn_con_mat$overall[&quot;Accuracy&quot;]</code></pre>
+<p>Accuracy values can be found by calling <code>confusionMatrix()</code>, or, if stored, can be accessed directly. Here, we use them to obtain <strong>error rates</strong> (1-Accuracy).</p>
+<pre class="r"><code> 1 - trn_con_mat$overall[&quot;Accuracy&quot;]</code></pre>
 <pre><code>## Accuracy 
 ##   0.0976</code></pre>
+<pre class="r"><code># Note, R doesn&#39;t know to rename the result &quot;err&quot;, so it keeps the name &quot;Accuracy&quot;</code></pre>
 <pre class="r"><code>1 - tst_con_mat$overall[&quot;Accuracy&quot;]</code></pre>
 <pre><code>## Accuracy 
 ##   0.1102</code></pre>
+<pre class="r"><code># Note, R doesn&#39;t know to rename the result &quot;err&quot;, so it keeps the name &quot;Accuracy&quot;</code></pre>
+<p>We can go back to the <code>tst_con_mat</code> table before and hand-calculate accuracy</p>
+<pre class="r"><code>1 - ((4319 + 130) / 5000)</code></pre>
+<pre><code>## [1] 0.1102</code></pre>
+<p>First some notation:</p>
+<ul>
+<li><span class="math inline">\(P\)</span> is the total number of actual positives</li>
+<li><span class="math inline">\(TP\)</span> is the total number of actual positives predicted to be positive</li>
+<li><span class="math inline">\(N\)</span> is the total number of actual negatives</li>
+<li><span class="math inline">\(TN\)</span> is the total number of actual negatives predicted to be negative</li>
+<li><span class="math inline">\(FP\)</span> and <span class="math inline">\(FN\)</span> are the total number of false positives and false negatives</li>
+</ul>
+<p>Which means…</p>
+<ul>
+<li><span class="math inline">\(P = TP + FN\)</span></li>
+<li><span class="math inline">\(N = TN + FP\)</span></li>
+</ul>
 <p>Sometimes guarding against making certain errors, FP or FN, are more important than simply finding the best accuracy. Thus, sometimes we will consider <strong>sensitivity</strong> and <strong>specificity</strong>.</p>
 <p><span class="math display">\[
-\text{Sens} = \text{True Positive Rate} = \frac{\text{TP}}{\text{P}} = \frac{\text{TP}}{\text{TP + FN}}
+\text{Sensitivity} = \text{True Positive Rate} = \frac{\text{TP}}{\text{P}} = \frac{\text{TP}}{\text{TP + FN}}
 \]</span></p>
 <pre class="r"><code>tst_con_mat$byClass[&quot;Sensitivity&quot;]</code></pre>
 <pre><code>## Sensitivity 
 ##   0.8227848</code></pre>
+<pre class="r"><code># 130/(130+28)</code></pre>
+<p>This is the <em>share of actually-“yes” observations that were predicted by the model to be “yes”</em></p>
 <p><span class="math display">\[
-\text{Spec} = \text{True Negative Rate} = \frac{\text{TN}}{\text{N}} = \frac{\text{TN}}{\text{TN + FP}}
+\text{Specificity} = \text{True Negative Rate} = \frac{\text{TN}}{\text{N}} = \frac{\text{TN}}{\text{TN + FP}}
 \]</span></p>
 <pre class="r"><code>tst_con_mat$byClass[&quot;Specificity&quot;]</code></pre>
 <pre><code>## Specificity 
 ##   0.8919868</code></pre>
+<pre class="r"><code># 4319/(4319/523)</code></pre>
+<p>Specificity is the <em>share of actually-“no” observations that were predicted by the model to be “no”</em></p>
 <p>Like accuracy, these can easily be found using <code>confusionMatrix()</code>.</p>
-<p>When considering how well a classifier is performing, often, it is understandable to assume that any accuracy in a binary classification problem above 0.50, is a reasonable classifier. This however is not the case. We need to consider the <strong>balance</strong> of the classes. To do so, we look at the <strong>prevalence</strong> of positive cases.</p>
+<p>When considering how well a classifier is performing, often, it is understandable to assume that any accuracy in a binary classification problem above 0.50 is a reasonable classifier. This however is not the case. We need to consider the <strong>balance</strong> of the classes. To do so, we look at the <strong>prevalence</strong> of positive cases.</p>
 <p><span class="math display">\[
 \text{Prev} = \frac{\text{P}}{\text{Total Obs}}= \frac{\text{TP + FN}}{\text{Total Obs}}
 \]</span></p>
@@ -273,6 +296,7 @@ I(y_i \neq \hat{C}(x)) =
 <pre class="r"><code>tst_con_mat$byClass[&quot;Prevalence&quot;]</code></pre>
 <pre><code>## Prevalence 
 ##     0.0316</code></pre>
+<pre class="r"><code># (28+130)/5000</code></pre>
 <p>Here, we see an extremely low prevalence, which suggests an even simpler classifier than our current based on <code>balance</code>.</p>
 <p><span class="math display">\[
 \hat{C}(\texttt{balance}) =
@@ -300,7 +324,7 @@ table(predicted = pred_all_no, actual = default_tst$default)</code></pre>
 <pre><code>## 
 ##     No    Yes 
 ## 0.9684 0.0316</code></pre>
-<p>This classifier does better than the previous. But the point is, in reality, to create a good classifier, we should obtain a test error better than 0.033, which is obtained by simply manipulating the prevalences. Next section, we’ll introduce much better classifiers which should have no problem accomplishing this task.</p>
+<p>This classifier does better than the previous. But the point is, in reality, to create a good classifier, we should obtain a test error better than 0.033, which is obtained by simply manipulating the prevalences. Next section, we’ll introduce much better classifiers which should have no problem accomplishing this task. Point is, think carefully about what you’re putting your classifier up against. Last March when we were very worried about COVID test accuracy, and when <em>prevalance</em> was, say, 1%, it was pointed out that we could make a 99% accurate COVID test by simply returning “No COVID” for every test! We’d be the new Theranos!</p>
 </div>
 </div>
 <div id="logistic-regression" class="section level1">
@@ -354,7 +378,7 @@ abline(h = 0, lty = 3)
 abline(h = 1, lty = 3)
 abline(h = 0.5, lty = 2)
 abline(model_lm, lwd = 3, col = &quot;dodgerblue&quot;)</code></pre>
-<p><img src="/content/10-content_files/figure-html/unnamed-chunk-28-1.png" width="672" /></p>
+<p><img src="/content/10-content_files/figure-html/unnamed-chunk-29-1.png" width="672" /></p>
 <p>Two issues arise. First, all of the predicted probabilities are below 0.5. That means, we would classify every observation as a <code>"No"</code>. This is certainly possible, but not what we would expect.</p>
 <pre class="r"><code>all(predict(model_lm) &lt; 0.5)</code></pre>
 <pre><code>## [1] TRUE</code></pre>
@@ -384,7 +408,7 @@ C^B(x) = \underset{g}{\mathrm{argmax}} \ P(Y = g \mid  X = x)
       0 &amp; \hat{p}(x) \leq 0.5
 \end{cases}
 \]</span></p>
-<p>This classifier is essentially estimating the Bayes Classifier, thus, is seeking to minimize classification errors.</p>
+<p>This classifier is essentially estimating the Bayes Classifier - it takes the value of <span class="math inline">\(x\)</span>, figures out which is larger, the <span class="math inline">\(\hat{P}(Y=1|X=x)\)</span> or <span class="math inline">\(\hat{P}(Y=0 | X=x)\)</span>, and returns the classification <span class="math inline">\(\hat{C}(x)\)</span> as whichever probability is larger. Since there are only two values for <span class="math inline">\(Y\in\{0,1\}\)</span>, the larger is always the one greater than <span class="math inline">\(.50\)</span>. Thus, since this is a Bayes Classificer, it minimizes classification errors.</p>
 </div>
 <div id="logistic-regression-with-glm" class="section level2">
 <h2>Logistic Regression with <code>glm()</code></h2>
@@ -404,8 +428,8 @@ p(x) = \frac{1}{1 + e^{-(\beta_0 + \beta_1 x_1 + \beta_2 x_2 + \cdots  + \beta_p
 <p><span class="math display">\[
 \sigma(x) = \frac{e^x}{1 + e^x} = \frac{1}{1 + e^{-x}}
 \]</span></p>
-<p>The model is fit by numerically maximizing the likelihood, which we will let <code>R</code> take care of.</p>
-<p>We start with a single predictor example, again using <code>balance</code> as our single predictor.</p>
+<p>The model is fit by numerically maximizing the likelihood, which we will let <code>R</code> take care of. Essentially, <code>R</code> is going to try a whole bunch of guesses for <span class="math inline">\(\mathbf{\beta}\)</span> and choose the one that best explains the data we have.</p>
+<p>We start with a single predictor example, again using <code>balance</code> as our single predictor. Note that <code>default_trn</code> has a factor variable for <code>default</code> (No/Yes). Since <code>R</code> represents factor variables as numbers (here, 1 and 2), <code>glm</code> figures out that you mean <code>No</code> and <code>Yes</code> for <code>0</code> and <code>1</code>.</p>
 <pre class="r"><code>model_glm = glm(default ~ balance, data = default_trn, family = &quot;binomial&quot;)</code></pre>
 <p>Fitting this model looks very similar to fitting a simple linear regression. Instead of <code>lm()</code> we use <code>glm()</code>. The only other difference is the use of <code>family = "binomial"</code> which indicates that we have a two-class categorical response. Using <code>glm()</code> with <code>family = "gaussian"</code> would perform the usual linear regression.</p>
 <p>First, we can obtain the fitted coefficients the same way we did with linear regression.</p>
@@ -460,7 +484,7 @@ for each observation.</p>
 <p><span class="math display">\[
 \hat{p}(x) = \hat{P}(Y = 1 \mid X = x).
 \]</span></p>
-<p>Once we have classifications, we can calculate metrics such as the trainging classification error rate.</p>
+<p>Once we have classifications, we can calculate metrics such as the training classification error rate.</p>
 <pre class="r"><code>calc_class_err = function(actual, predicted) {
   mean(actual != predicted)
 }</code></pre>
@@ -475,7 +499,7 @@ c(train_con_mat$overall[&quot;Accuracy&quot;],
   train_con_mat$byClass[&quot;Specificity&quot;])</code></pre>
 <pre><code>##    Accuracy Sensitivity Specificity 
 ##   0.9716000   0.2941176   0.9954451</code></pre>
-<p>We could also write a custom function for the error for use with trained logist regression models.</p>
+<p>We could also write a custom function for the error for use with trained logistic regression models.</p>
 <pre class="r"><code>get_logistic_error = function(mod, data, res = &quot;y&quot;, pos = 1, neg = 0, cut = 0.5) {
   probs = predict(mod, newdata = data, type = &quot;response&quot;)
   preds = ifelse(probs &gt; cut, pos, neg)
@@ -495,7 +519,7 @@ abline(h = 0.5, lty = 2)
 curve(predict(model_glm, data.frame(balance = x), type = &quot;response&quot;),
       add = TRUE, lwd = 3, col = &quot;dodgerblue&quot;)
 abline(v = -coef(model_glm)[1] / coef(model_glm)[2], lwd = 2)</code></pre>
-<p><img src="/content/10-content_files/figure-html/unnamed-chunk-42-1.png" width="672" /></p>
+<p><img src="/content/10-content_files/figure-html/unnamed-chunk-43-1.png" width="672" /></p>
 <p>This plot contains a wealth of information.</p>
 <ul>
 <li>The orange <code>|</code> characters are the data, <span class="math inline">\((x_i, y_i)\)</span>.</li>
@@ -535,8 +559,32 @@ model_3 = glm(default ~ . ^ 2 + I(balance ^ 2),
 train_errors = sapply(model_list, get_logistic_error, data = default_trn,
                       res = &quot;default&quot;, pos = &quot;Yes&quot;, neg = &quot;No&quot;, cut = 0.5)
 test_errors  = sapply(model_list, get_logistic_error, data = default_tst,
-                      res = &quot;default&quot;, pos = &quot;Yes&quot;, neg = &quot;No&quot;, cut = 0.5)</code></pre>
-<p>Here we see the misclassification error rates for each model. The train decreases, and the test decreases, until it starts to increases. Everything we learned about the bias-variance tradeoff for regression also applies here.</p>
+                      res = &quot;default&quot;, pos = &quot;Yes&quot;, neg = &quot;No&quot;, cut = 0.5)
+
+knitr::kable(cbind(train_errors, test_errors))</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="right">train_errors</th>
+<th align="right">test_errors</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="right">0.0340</td>
+<td align="right">0.0326</td>
+</tr>
+<tr class="even">
+<td align="right">0.0274</td>
+<td align="right">0.0258</td>
+</tr>
+<tr class="odd">
+<td align="right">0.0274</td>
+<td align="right">0.0264</td>
+</tr>
+</tbody>
+</table>
+<p>Here we see the misclassification error rates for each model. The train (weakly) decreases, and the test decreases, until it starts to increases. Everything we learned about the bias-variance tradeoff for regression also applies here.</p>
 <pre class="r"><code>diff(train_errors)</code></pre>
 <pre><code>## [1] -0.0066  0.0000</code></pre>
 <pre class="r"><code>diff(test_errors)</code></pre>
@@ -599,13 +647,17 @@ metrics</code></pre>
 <p>We see then sensitivity decreases as the cutoff is increased. Conversely, specificity increases as the cutoff increases. This is useful if we are more interested in a particular error, instead of giving them equal weight.</p>
 <p>Note that usually the best accuracy will be seen near <span class="math inline">\(c = 0.50\)</span>.</p>
 <p>Instead of manually checking cutoffs, we can create an ROC curve (receiver operating characteristic curve) which will sweep through all possible cutoffs, and plot the sensitivity and specificity.</p>
+<ul>
+<li><p><strong>Where on this curve would you think is the “best” place to be? Why?</strong></p></li>
+<li><p><strong>Where on this curve would you think is the “worst” place to be? Why?</strong></p></li>
+</ul>
 <pre class="r"><code>library(pROC)
 test_prob = predict(model_glm, newdata = default_tst, type = &quot;response&quot;)
 test_roc = roc(default_tst$default ~ test_prob, plot = TRUE, print.auc = TRUE)</code></pre>
-<p><img src="/content/10-content_files/figure-html/unnamed-chunk-52-1.png" width="672" /></p>
+<p><img src="/content/10-content_files/figure-html/unnamed-chunk-53-1.png" width="672" /></p>
 <pre class="r"><code>as.numeric(test_roc$auc)</code></pre>
 <pre><code>## [1] 0.9492866</code></pre>
-<p>A good model will have a high AUC, that is as often as possible a high sensitivity and specificity.</p>
+<p>The AUC is the “area under the curve”. One interpretation of the AUC is that it is “the probability that the model ranks a randomly selected positive more highly than a randomly selected negative.” A good model will have a high AUC. A high AUC has a high sensitivity and a high specificity over all of the cutoff values.</p>
 </div>
 <div id="multinomial-logistic-regression" class="section level2">
 <h2>Multinomial Logistic Regression</h2>
@@ -622,9 +674,8 @@ iris_idx = sample(iris_obs, size = trunc(0.50 * iris_obs))
 iris_trn = iris[iris_idx, ]
 iris_test = iris[-iris_idx, ]</code></pre>
 <p>To perform multinomial logistic regression, we use the <code>multinom</code> function from the <code>nnet</code> package. Training using <code>multinom()</code> is done using similar syntax to <code>lm()</code> and <code>glm()</code>. We add the <code>trace = FALSE</code> argument to suppress information about updates to the optimization routine as the model is trained.</p>
-<pre class="r"><code>library(nnet)</code></pre>
-<pre><code>## Warning: package &#39;nnet&#39; was built under R version 4.0.4</code></pre>
-<pre class="r"><code>model_multi = multinom(Species ~ ., data = iris_trn, trace = FALSE)
+<pre class="r"><code>library(nnet)
+model_multi = multinom(Species ~ ., data = iris_trn, trace = FALSE)
 summary(model_multi)$coefficients</code></pre>
 <pre><code>##            (Intercept) Sepal.Length Sepal.Width Petal.Length Petal.Width
 ## versicolor    16.77474    -7.855576   -13.98668     25.13860    4.270375
