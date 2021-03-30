@@ -198,13 +198,14 @@ Often we give specific names to individual cells of these tables, and in the pre
 
 In statistics, we label the errors Type I and Type II, but these are hard to remember. False Positive and False Negative are more descriptive, so we choose to use these.
 
-![](images/confusion.png)
+<!-- ![](images/confusion.png) -->
 
 The `confusionMatrix()` function from the `caret` package can be used to obtain a wealth of additional information, which we see output below for the test data. Note that we specify which category is considered "positive."
 
 ```{r}
 trn_con_mat  = confusionMatrix(trn_tab, positive = "Yes")
-(tst_con_mat = confusionMatrix(tst_tab, positive = "Yes"))
+tst_con_mat = confusionMatrix(tst_tab, positive = "Yes")
+tst_con_mat
 ```
 
 The most common, and most important metric is the **classification error rate**.
@@ -235,37 +236,64 @@ $$
 \text{err}_{\texttt{tst}}(\hat{C}, \text{Test Data}) = \frac{1}{n_{\texttt{tst}}}\sum_{i \in \texttt{tst}}^{}I(y_i \neq \hat{C}(x_i))
 $$
 
-Accuracy values can be found by calling `confusionMatrix()`, or, if stored, can be accessed directly. Here, we use them to obtain error rates.
+Accuracy values can be found by calling `confusionMatrix()`, or, if stored, can be accessed directly. Here, we use them to obtain **error rates** (1-Accuracy).
 
 ```{r}
-1 - trn_con_mat$overall["Accuracy"]
+ 1 - trn_con_mat$overall["Accuracy"]
+# Note, R doesn't know to rename the result "err", so it keeps the name "Accuracy"
 ```
 
 ```{r}
 1 - tst_con_mat$overall["Accuracy"]
+# Note, R doesn't know to rename the result "err", so it keeps the name "Accuracy"
 ```
+
+We can go back to the `tst_con_mat` table before and hand-calculate accuracy
+```{r}
+1 - ((4319 + 130) / 5000)
+```
+
+
+First some notation:
+
+- $P$ is the total number of actual positives
+- $TP$ is the total number of actual positives predicted to be positive
+- $N$ is the total number of actual negatives
+- $TN$ is the total number of actual negatives predicted to be negative
+- $FP$ and $FN$ are the total number of false positives and false negatives
+
+Which means...
+
+- $P = TP + FN$ 
+- $N = TN + FP$
 
 Sometimes guarding against making certain errors, FP or FN, are more important than simply finding the best accuracy. Thus, sometimes we will consider **sensitivity** and **specificity**.
 
 $$
-\text{Sens} = \text{True Positive Rate} = \frac{\text{TP}}{\text{P}} = \frac{\text{TP}}{\text{TP + FN}}
+\text{Sensitivity} = \text{True Positive Rate} = \frac{\text{TP}}{\text{P}} = \frac{\text{TP}}{\text{TP + FN}}
 $$
 
 ```{r}
 tst_con_mat$byClass["Sensitivity"]
+# 130/(130+28)
 ```
 
+This is the *share of actually-"yes" observations that were predicted by the model to be "yes"*
+
 $$
-\text{Spec} = \text{True Negative Rate} = \frac{\text{TN}}{\text{N}} = \frac{\text{TN}}{\text{TN + FP}}
+\text{Specificity} = \text{True Negative Rate} = \frac{\text{TN}}{\text{N}} = \frac{\text{TN}}{\text{TN + FP}}
 $$
 
 ```{r}
 tst_con_mat$byClass["Specificity"]
+# 4319/(4319/523)
 ```
+
+Specificity is the *share of actually-"no" observations that were predicted by the model to be "no"*
 
 Like accuracy, these can easily be found using `confusionMatrix()`.
 
-When considering how well a classifier is performing, often, it is understandable to assume that any accuracy in a binary classification problem above 0.50, is a reasonable classifier. This however is not the case. We need to consider the **balance** of the classes. To do so, we look at the **prevalence** of positive cases.
+When considering how well a classifier is performing, often, it is understandable to assume that any accuracy in a binary classification problem above 0.50 is a reasonable classifier. This however is not the case. We need to consider the **balance** of the classes. To do so, we look at the **prevalence** of positive cases.
 
 $$
 \text{Prev} = \frac{\text{P}}{\text{Total Obs}}= \frac{\text{TP + FN}}{\text{Total Obs}}
@@ -274,6 +302,7 @@ $$
 ```{r}
 trn_con_mat$byClass["Prevalence"]
 tst_con_mat$byClass["Prevalence"]
+# (28+130)/5000
 ```
 
 Here, we see an extremely low prevalence, which suggests an even simpler classifier than our current based on `balance`.
@@ -313,7 +342,7 @@ Here we see that the error rate is exactly the prevelance of the minority class.
 table(default_tst$default) / length(default_tst$default)
 ```
 
-This classifier does better than the previous. But the point is, in reality, to create a good classifier, we should obtain a test error better than 0.033, which is obtained by simply manipulating the prevalences. Next section, we'll introduce much better classifiers which should have no problem accomplishing this task.
+This classifier does better than the previous. But the point is, in reality, to create a good classifier, we should obtain a test error better than 0.033, which is obtained by simply manipulating the prevalences. Next section, we'll introduce much better classifiers which should have no problem accomplishing this task. Point is, think carefully about what you're putting your classifier up against. Last March when we were very worried about COVID test accuracy, and when *prevalance* was, say, 1%, it was pointed out that we could make a 99% accurate COVID test by simply returning "No COVID" for every test! We'd be the new Theranos!
 
 # Logistic Regression
 
@@ -424,7 +453,7 @@ $$
 \end{cases}
 $$
 
-This classifier is essentially estimating the Bayes Classifier, thus, is seeking to minimize classification errors.
+This classifier is essentially estimating the Bayes Classifier - it takes the value of $x$, figures out which is larger, the $\hat{P}(Y=1|X=x)$ or $\hat{P}(Y=0 | X=x)$, and returns the classification $\hat{C}(x)$ as whichever probability is larger. Since there are only two values for $Y\in\{0,1\}$, the larger is always the one greater than $.50$. Thus, since this is a Bayes Classificer, it minimizes classification errors.
 
 
 ## Logistic Regression with `glm()`
@@ -452,9 +481,9 @@ $$
 \sigma(x) = \frac{e^x}{1 + e^x} = \frac{1}{1 + e^{-x}}
 $$
 
-The model is fit by numerically maximizing the likelihood, which we will let `R` take care of.
+The model is fit by numerically maximizing the likelihood, which we will let `R` take care of. Essentially, `R` is going to try a whole bunch of guesses for $\mathbf{\beta}$ and choose the one that best explains the data we have.
 
-We start with a single predictor example, again using `balance` as our single predictor.
+We start with a single predictor example, again using `balance` as our single predictor. Note that `default_trn` has a factor variable for `default` (No/Yes). Since `R` represents factor variables as numbers (here, 1 and 2), `glm` figures out that you mean `No` and `Yes` for `0` and `1`.
 
 ```{r}
 model_glm = glm(default ~ balance, data = default_trn, family = "binomial")
@@ -538,7 +567,7 @@ $$
 \hat{p}(x) = \hat{P}(Y = 1 \mid X = x).
 $$
 
-Once we have classifications, we can calculate metrics such as the trainging classification error rate.
+Once we have classifications, we can calculate metrics such as the training classification error rate.
 
 ```{r}
 calc_class_err = function(actual, predicted) {
@@ -561,7 +590,7 @@ c(train_con_mat$overall["Accuracy"],
   train_con_mat$byClass["Specificity"])
 ```
 
-We could also write a custom function for the error for use with trained logist regression models.
+We could also write a custom function for the error for use with trained logistic regression models.
 
 ```{r}
 get_logistic_error = function(mod, data, res = "y", pos = 1, neg = 0, cut = 0.5) {
@@ -648,9 +677,11 @@ train_errors = sapply(model_list, get_logistic_error, data = default_trn,
                       res = "default", pos = "Yes", neg = "No", cut = 0.5)
 test_errors  = sapply(model_list, get_logistic_error, data = default_tst,
                       res = "default", pos = "Yes", neg = "No", cut = 0.5)
+
+knitr::kable(cbind(train_errors, test_errors))
 ```
 
-Here we see the misclassification error rates for each model. The train decreases, and the test decreases, until it starts to increases. Everything we learned about the bias-variance tradeoff for regression also applies here.
+Here we see the misclassification error rates for each model. The train (weakly) decreases, and the test decreases, until it starts to increases. Everything we learned about the bias-variance tradeoff for regression also applies here.
 
 ```{r}
 diff(train_errors)
@@ -733,7 +764,11 @@ We see then sensitivity decreases as the cutoff is increased. Conversely, specif
 
 Note that usually the best accuracy will be seen near $c = 0.50$.
 
-Instead of manually checking cutoffs, we can create an ROC curve (receiver operating characteristic curve) which will sweep through all possible cutoffs, and plot the sensitivity and specificity.
+Instead of manually checking cutoffs, we can create an ROC curve (receiver operating characteristic curve) which will sweep through all possible cutoffs, and plot the sensitivity and specificity. 
+
+- **Where on this curve would you think is the "best" place to be? Why?**
+
+- **Where on this curve would you think is the "worst" place to be? Why?**
 
 ```{r, message = FALSE, warning = FALSE}
 library(pROC)
@@ -742,7 +777,7 @@ test_roc = roc(default_tst$default ~ test_prob, plot = TRUE, print.auc = TRUE)
 as.numeric(test_roc$auc)
 ```
 
-A good model will have a high AUC, that is as often as possible a high sensitivity and specificity.
+The AUC is the "area under the curve". One interpretation of the AUC is that it is "the probability that the model ranks a randomly selected positive more highly than a randomly selected negative." A good model will have a high AUC. A high AUC has a high sensitivity and a high specificity over all of the cutoff values..
 
 
 ## Multinomial Logistic Regression
@@ -769,7 +804,7 @@ iris_test = iris[-iris_idx, ]
 
 To perform multinomial logistic regression, we use the `multinom` function from the `nnet` package. Training using `multinom()` is done using similar syntax to `lm()` and `glm()`. We add the `trace = FALSE` argument to suppress information about updates to the optimization routine as the model is trained.
 
-```{r}
+```{r, warning=FALSE, message = FALSE}
 library(nnet)
 model_multi = multinom(Species ~ ., data = iris_trn, trace = FALSE)
 summary(model_multi)$coefficients
