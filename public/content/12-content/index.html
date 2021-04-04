@@ -242,9 +242,9 @@
   <meta property="twitter:image" content="https://datavizm20.classes.andrewheiss.com/img/social-image.png"><meta property="og:locale" content="en-us">
   
     
-      <meta property="article:published_time" content="2021-01-10T00:00:00&#43;00:00">
+      <meta property="article:published_time" content="2021-04-01T00:00:00&#43;00:00">
     
-    <meta property="article:modified_time" content="2021-01-10T08:50:16-05:00">
+    <meta property="article:modified_time" content="2021-01-10T09:24:29-05:00">
   
 
   
@@ -459,6 +459,30 @@
         
         
 
+        
+
+        
+        
+        
+          
+            
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="https://join.slack.com/t/ssc442kirkpatrick/shared_invite/zt-kxhgemgn-vaEGD_4KcpDCOEJtXxbxbQ" target="_blank" rel="noopener"><span><i class="fab fa-slack"></i></span></a>
+        </li>
+
+        
+        
+
       
 
         
@@ -517,8 +541,52 @@
   </div>
   
   <div class="docs-toc-item">
-    <a class="docs-toc-link" href="/content/11-content/">Course content</a>
+    <a class="docs-toc-link" href="/content/00-content/">Course content</a>
     <ul class="nav docs-sidenav">
+      
+      <li >
+        <a href="/content/00-content/">0: Introduction to R</a>
+      </li>
+      
+      <li >
+        <a href="/content/01-content/">1: The Tidyverse</a>
+      </li>
+      
+      <li >
+        <a href="/content/02-content/">2: Visualization</a>
+      </li>
+      
+      <li >
+        <a href="/content/03-content/">3: Visualization II</a>
+      </li>
+      
+      <li >
+        <a href="/content/04-content/">4: Uncertainty</a>
+      </li>
+      
+      <li >
+        <a href="/content/05-content/">5: Linear Regression I</a>
+      </li>
+      
+      <li >
+        <a href="/content/06-content/">6: Linear Regression II</a>
+      </li>
+      
+      <li >
+        <a href="/content/07-content/">7: Linear Regression III</a>
+      </li>
+      
+      <li >
+        <a href="/content/08-content/">8: Nonparametric Regression</a>
+      </li>
+      
+      <li >
+        <a href="/content/09-content/">9: Bias vs. Variance</a>
+      </li>
+      
+      <li >
+        <a href="/content/10-content/">10: Classification</a>
+      </li>
       
       <li >
         <a href="/content/11-content/">11: Data Wrangling</a>
@@ -551,7 +619,7 @@
 
                     
                     <div class="due-date p-2 mb-3 bg-content text-white">
-                        Content for Tuesday, December 1, 2020
+                        Content for Sunday, April 11, 2021
                     </div>
                     
 
@@ -874,8 +942,10 @@ data(murders)</code></pre>
 We can use the <code>str_detect</code> function to see that two of the three columns have commas in the entries:</p>
 <pre class="r"><code>commas &lt;- function(x) any(str_detect(x, &quot;,&quot;))
 murders_raw %&gt;% summarize_all(commas)</code></pre>
-<pre><code>##   state population total murder_rate
-## 1 FALSE       TRUE  TRUE       FALSE</code></pre>
+<pre><code>## # A tibble: 1 x 4
+##   state population total murder_rate
+##   &lt;lgl&gt; &lt;lgl&gt;      &lt;lgl&gt; &lt;lgl&gt;      
+## 1 FALSE TRUE       TRUE  FALSE</code></pre>
 <p>We can then use the <code>str_replace_all</code> function to remove them:</p>
 <pre class="r"><code>test_1 &lt;- str_replace_all(murders_raw$population, &quot;,&quot;, &quot;&quot;)
 test_1 &lt;- as.numeric(test_1)</code></pre>
@@ -887,13 +957,15 @@ identical(test_1, test_2)</code></pre>
 <p>So we can obtain our desired table using:</p>
 <pre class="r"><code>murders_new &lt;- murders_raw %&gt;% mutate_at(2:3, parse_number)
 head(murders_new)</code></pre>
-<pre><code>##        state population total murder_rate
-## 1    Alabama    4853875   348         7.2
-## 2     Alaska     737709    59         8.0
-## 3    Arizona    6817565   309         4.5
-## 4   Arkansas    2977853   181         6.1
+<pre><code>## # A tibble: 6 x 4
+##   state      population total murder_rate
+##   &lt;chr&gt;           &lt;dbl&gt; &lt;dbl&gt;       &lt;dbl&gt;
+## 1 Alabama       4853875   348         7.2
+## 2 Alaska         737709    59         8  
+## 3 Arizona       6817565   309         4.5
+## 4 Arkansas      2977853   181         6.1
 ## 5 California   38993940  1861         4.8
-## 6   Colorado    5448819   176         3.2</code></pre>
+## 6 Colorado      5448819   176         3.2</code></pre>
 <p>This case is relatively simple compared to the string processing challenges that we typically face in data science. The next example is a rather complex one and it provides several challenges that will permit us to learn many string processing techniques.</p>
 </div>
 <div id="case-study-2-self-reported-heights" class="section level2">
@@ -1618,17 +1690,17 @@ the_names</code></pre>
   mutate_at(-1, parse_number)
 new_research_funding_rates %&gt;% as_tibble()</code></pre>
 <pre><code>## # A tibble: 9 x 10
-##   discipline applications_to~ applications_men applications_wo~ awards_total
-##   &lt;chr&gt;                 &lt;dbl&gt;            &lt;dbl&gt;            &lt;dbl&gt;        &lt;dbl&gt;
-## 1 Chemical ~              122               83               39           32
-## 2 Physical ~              174              135               39           35
-## 3 Physics                  76               67                9           20
-## 4 Humanities              396              230              166           65
-## 5 Technical~              251              189               62           43
-## 6 Interdisc~              183              105               78           29
-## 7 Earth/lif~              282              156              126           56
-## 8 Social sc~              834              425              409          112
-## 9 Medical s~              505              245              260           75
+##   discipline    applications_tot~ applications_men applications_wo~ awards_total
+##   &lt;chr&gt;                     &lt;dbl&gt;            &lt;dbl&gt;            &lt;dbl&gt;        &lt;dbl&gt;
+## 1 Chemical sci~               122               83               39           32
+## 2 Physical sci~               174              135               39           35
+## 3 Physics                      76               67                9           20
+## 4 Humanities                  396              230              166           65
+## 5 Technical sc~               251              189               62           43
+## 6 Interdiscipl~               183              105               78           29
+## 7 Earth/life s~               282              156              126           56
+## 8 Social scien~               834              425              409          112
+## 9 Medical scie~               505              245              260           75
 ## # ... with 5 more variables: awards_men &lt;dbl&gt;, awards_women &lt;dbl&gt;,
 ## #   success_rates_total &lt;dbl&gt;, success_rates_men &lt;dbl&gt;,
 ## #   success_rates_women &lt;dbl&gt;</code></pre>
@@ -1823,17 +1895,19 @@ h &lt;- read_html(url)</code></pre>
 <p>This is clearly not a tidy dataset, not even a data frame. In the code above, you can definitely see a pattern and writing code to extract just the data is very doable. In fact, <strong>rvest</strong> includes a function just for converting HTML tables into data frames:</p>
 <pre class="r"><code>tab &lt;- tab[[1]] %&gt;% html_table
 class(tab)</code></pre>
-<pre><code>## [1] &quot;data.frame&quot;</code></pre>
+<pre><code>## [1] &quot;tbl_df&quot;     &quot;tbl&quot;        &quot;data.frame&quot;</code></pre>
 <p>We are now much closer to having a usable data table:</p>
 <pre class="r"><code>tab &lt;- tab %&gt;% setNames(c(&quot;state&quot;, &quot;population&quot;, &quot;total&quot;, &quot;murder_rate&quot;))
 head(tab)</code></pre>
-<pre><code>##        state population total murder_rate
-## 1    Alabama  4,853,875   348         7.2
-## 2     Alaska    737,709    59         8.0
-## 3    Arizona  6,817,565   309         4.5
-## 4   Arkansas  2,977,853   181         6.1
+<pre><code>## # A tibble: 6 x 4
+##   state      population total murder_rate
+##   &lt;chr&gt;      &lt;chr&gt;      &lt;chr&gt;       &lt;dbl&gt;
+## 1 Alabama    4,853,875  348           7.2
+## 2 Alaska     737,709    59            8  
+## 3 Arizona    6,817,565  309           4.5
+## 4 Arkansas   2,977,853  181           6.1
 ## 5 California 38,993,940 1,861         4.8
-## 6   Colorado  5,448,819   176         3.2</code></pre>
+## 6 Colorado   5,448,819  176           3.2</code></pre>
 <p>We still have some wrangling to do. For example, we need to remove the commas and turn characters into numbers. Before continuing with this, we will learn a more general approach to extracting information from web sites.</p>
 </div>
 <div id="css-selectors" class="section level2">
