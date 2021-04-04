@@ -30,7 +30,7 @@
   
     
   
-  <meta name="description" content="Required ReadingGuiding QuestionsIntroduction to data wranglingReshaping datagatherspreadseparateuniteJoining tablesJoinsLeft joinRight joinInner joinFull joinSemi joinAnti joinBindingBinding columnsBinding by rowsSet operatorsIntersectUnionsetdiffsetequalParsing dates and timesThe date data typeThe lubridate packageRequired ReadingThis page.Guiding QuestionsHow can we reshape data into a useable tidy form?">
+  <meta name="description" content="Required ReadingGuiding QuestionsIntroduction to data wranglingReshaping datagatherspreadseparateuniteJoining tablesJoinsLeft joinRight joinInner joinFull joinSemi joinAnti joinBindingBinding columnsBinding by rowsSet operatorsIntersectUnionsetdiffsetequalA note about merging and dupliacted rowsParsing dates and timesThe date data typeThe lubridate packageRequired ReadingThis page.">
 
   
   <link rel="alternate" hreflang="en-us" href="https://datavizm20.classes.andrewheiss.com/content/11-content/">
@@ -238,13 +238,13 @@
   <meta property="og:site_name" content="Data Analytics">
   <meta property="og:url" content="https://datavizm20.classes.andrewheiss.com/content/11-content/">
   <meta property="og:title" content="Data Wrangling | Data Analytics">
-  <meta property="og:description" content="Required ReadingGuiding QuestionsIntroduction to data wranglingReshaping datagatherspreadseparateuniteJoining tablesJoinsLeft joinRight joinInner joinFull joinSemi joinAnti joinBindingBinding columnsBinding by rowsSet operatorsIntersectUnionsetdiffsetequalParsing dates and timesThe date data typeThe lubridate packageRequired ReadingThis page.Guiding QuestionsHow can we reshape data into a useable tidy form?"><meta property="og:image" content="https://datavizm20.classes.andrewheiss.com/img/social-image.png">
+  <meta property="og:description" content="Required ReadingGuiding QuestionsIntroduction to data wranglingReshaping datagatherspreadseparateuniteJoining tablesJoinsLeft joinRight joinInner joinFull joinSemi joinAnti joinBindingBinding columnsBinding by rowsSet operatorsIntersectUnionsetdiffsetequalA note about merging and dupliacted rowsParsing dates and timesThe date data typeThe lubridate packageRequired ReadingThis page."><meta property="og:image" content="https://datavizm20.classes.andrewheiss.com/img/social-image.png">
   <meta property="twitter:image" content="https://datavizm20.classes.andrewheiss.com/img/social-image.png"><meta property="og:locale" content="en-us">
   
     
       <meta property="article:published_time" content="2021-01-15T00:00:00&#43;00:00">
     
-    <meta property="article:modified_time" content="2021-01-10T08:50:16-05:00">
+    <meta property="article:modified_time" content="2021-01-10T09:24:29-05:00">
   
 
   
@@ -459,6 +459,30 @@
         
         
 
+        
+
+        
+        
+        
+          
+            
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="https://join.slack.com/t/ssc442kirkpatrick/shared_invite/zt-kxhgemgn-vaEGD_4KcpDCOEJtXxbxbQ" target="_blank" rel="noopener"><span><i class="fab fa-slack"></i></span></a>
+        </li>
+
+        
+        
+
       
 
         
@@ -517,15 +541,55 @@
   </div>
   
   <div class="docs-toc-item">
-    <a class="docs-toc-link" href="/content/11-content/">Course content</a>
+    <a class="docs-toc-link" href="/content/00-content/">Course content</a>
     <ul class="nav docs-sidenav">
       
-      <li class="active">
-        <a href="/content/11-content/">11: Data Wrangling</a>
+      <li >
+        <a href="/content/00-content/">0: Introduction to R</a>
       </li>
       
       <li >
-        <a href="/content/12-content/">12: Text as Data</a>
+        <a href="/content/01-content/">1: The Tidyverse</a>
+      </li>
+      
+      <li >
+        <a href="/content/02-content/">2: Visualization</a>
+      </li>
+      
+      <li >
+        <a href="/content/03-content/">3: Visualization II</a>
+      </li>
+      
+      <li >
+        <a href="/content/04-content/">4: Uncertainty</a>
+      </li>
+      
+      <li >
+        <a href="/content/05-content/">5: Linear Regression I</a>
+      </li>
+      
+      <li >
+        <a href="/content/06-content/">6: Linear Regression II</a>
+      </li>
+      
+      <li >
+        <a href="/content/07-content/">7: Linear Regression III</a>
+      </li>
+      
+      <li >
+        <a href="/content/08-content/">8: Nonparametric Regression</a>
+      </li>
+      
+      <li >
+        <a href="/content/09-content/">9: Bias vs. Variance</a>
+      </li>
+      
+      <li >
+        <a href="/content/10-content/">10: Classification</a>
+      </li>
+      
+      <li class="active">
+        <a href="/content/11-content/">11: Data Wrangling</a>
       </li>
       
     </ul>
@@ -551,7 +615,7 @@
 
                     
                     <div class="due-date p-2 mb-3 bg-content text-white">
-                        Content for Thursday, November 19, 2020
+                        Content for Tuesday, April 6, 2021
                     </div>
                     
 
@@ -591,6 +655,7 @@
 <li><a href="#setdiff"><code>setdiff</code></a></li>
 <li><a href="#setequal"><code>setequal</code></a></li>
 </ul></li>
+<li><a href="#a-note-about-merging-and-dupliacted-rows">A note about merging and dupliacted rows</a></li>
 </ul></li>
 <li><a href="#parsing-dates-and-times">Parsing dates and times</a><ul>
 <li><a href="#the-date-data-type">The date data type</a></li>
@@ -683,6 +748,7 @@ dplyr::select(new_wide_data, country, `1960`:`1967`)</code></pre>
 ## 2 South Korea   6.16   5.99   5.79   5.57   5.36   5.16   4.99   4.85</code></pre>
 <p>The following diagram can help remind you how these two functions work:</p>
 <p><img src="/./11-content_files/gather-spread.png" /></p>
+<p><img src="img/gather-spread.png" /></p>
 <p>(Image courtesy of RStudio<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a>. CC-BY-4.0 license<a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a>. Cropped from original.)
 <!-- (Source: RStudio. The image is a section of this [cheat sheet](https://github.com/rstudio/cheatsheets/raw/master/data-transformation.pdf).)--></p>
 </div>
@@ -714,33 +780,14 @@ head(dat)</code></pre>
 ## 4 South Korea 1960_life_expectancy 53.0 
 ## 5 Germany     1961_fertility        2.44
 ## 6 South Korea 1961_fertility        5.99</code></pre>
-<p>The result is not exactly what we refer to as tidy since each observation is associated with two, not one, rows. We want to have the values from the two variables, fertility and life expectancy, in two separate columns. The first challenge to achieve this is to separate the <code>key</code> column into the year and the variable type. Notice that the entries in this column separate the year from the variable name with an underscore:</p>
+<p>The result is not exactly what we refer to as tidy since each observation (year-country combination) is associated with two, not one, rows. We want to have the values from the two variables, fertility and life expectancy, in two separate columns. The first challenge to achieve this is to separate the <code>key</code> column into the year and the variable type. Notice that the entries in this column separate the year from the variable name with an underscore:</p>
 <pre class="r"><code>dat$key[1:5]</code></pre>
 <pre><code>## [1] &quot;1960_fertility&quot;       &quot;1960_fertility&quot;       &quot;1960_life_expectancy&quot;
 ## [4] &quot;1960_life_expectancy&quot; &quot;1961_fertility&quot;</code></pre>
-<p>Encoding multiple variables in a column name is such a common problem that the <strong>readr</strong> package includes a function to separate these columns into two or more. Apart from the data, the <code>separate</code> function takes three arguments: the name of the column to be separated, the names to be used for the new columns, and the character that separates the variables. So, a first attempt at this is:</p>
-<pre class="r"><code>dat %&gt;% separate(key, c(&quot;year&quot;, &quot;variable_name&quot;), &quot;_&quot;)</code></pre>
-<p>Because <code>_</code> is the default separator assumed by <code>separate</code>, we do not have to include it in the code:</p>
-<pre class="r"><code>dat %&gt;% separate(key, c(&quot;year&quot;, &quot;variable_name&quot;))</code></pre>
-<pre><code>## Warning: Expected 2 pieces. Additional pieces discarded in 112 rows [3, 4, 7, 8,
-## 11, 12, 15, 16, 19, 20, 23, 24, 27, 28, 31, 32, 35, 36, 39, 40, ...].</code></pre>
-<pre><code>## # A tibble: 224 x 4
-##    country     year  variable_name value
-##    &lt;chr&gt;       &lt;chr&gt; &lt;chr&gt;         &lt;dbl&gt;
-##  1 Germany     1960  fertility      2.41
-##  2 South Korea 1960  fertility      6.16
-##  3 Germany     1960  life          69.3 
-##  4 South Korea 1960  life          53.0 
-##  5 Germany     1961  fertility      2.44
-##  6 South Korea 1961  fertility      5.99
-##  7 Germany     1961  life          69.8 
-##  8 South Korea 1961  life          53.8 
-##  9 Germany     1962  fertility      2.47
-## 10 South Korea 1962  fertility      5.79
-## # ... with 214 more rows</code></pre>
-<p>The function does separate the values, but we run into a new problem. We receive the warning <code>Too many values at 112 locations:</code> and that the <code>life_expectancy</code> variable is truncated to <code>life</code>. This is because the <code>_</code> is used to separate <code>life</code> and <code>expectancy</code>, not just year and variable name! We could add a third column to catch this and let the <code>separate</code> function know which column to <em>fill in</em> with missing values, <code>NA</code>, when there is no third value. Here we tell it to fill the column on the right:</p>
-<pre class="r"><code>var_names &lt;- c(&quot;year&quot;, &quot;first_variable_name&quot;, &quot;second_variable_name&quot;)
-dat %&gt;% separate(key, var_names, fill = &quot;right&quot;)</code></pre>
+<p>Encoding multiple variables in a column name is such a common problem that the <strong>tidyverse</strong> package includes a function to separate these columns into two or more. Apart from the data, the <code>separate</code> function takes three arguments: the name of the column to be separated, the names to be used for the new columns, and the character that separates the variables. So, a first attempt at this is:</p>
+<pre class="r"><code>dat %&gt;% separate(col = key, into = c(&quot;year&quot;, &quot;variable_name&quot;), sep = &quot;_&quot;)</code></pre>
+<p>The function does separate the values, but we run into a new problem. We receive the warning <code>Additional pieces discarded in 112 rows [3, 4, 7,...]</code>. (Earlier versions may give the error <code>Too many values at 112 locations:</code>) and that the <code>life_expectancy</code> variable is truncated to <code>life</code>. This is because the <code>_</code> is used to separate <code>life</code> and <code>expectancy</code>, not just year and variable name! We could add a third column to catch this and let the <code>separate</code> function know which column to <em>fill in</em> with missing values, <code>NA</code>, when there is no third value. Here we tell it to fill the column on the right:</p>
+<pre class="r"><code>dat %&gt;% separate(key, into = c(&quot;year&quot;, &quot;first_variable_name&quot;, &quot;second_variable_name&quot;), fill = &quot;right&quot;)</code></pre>
 <pre><code>## # A tibble: 224 x 5
 ##    country     year  first_variable_name second_variable_name value
 ##    &lt;chr&gt;       &lt;chr&gt; &lt;chr&gt;               &lt;chr&gt;                &lt;dbl&gt;
@@ -756,7 +803,7 @@ dat %&gt;% separate(key, var_names, fill = &quot;right&quot;)</code></pre>
 ## 10 South Korea 1962  fertility           &lt;NA&gt;                  5.79
 ## # ... with 214 more rows</code></pre>
 <p>However, if we read the <code>separate</code> help file, we find that a better approach is to merge the last two variables when there is an extra separation:</p>
-<pre class="r"><code>dat %&gt;% separate(key, c(&quot;year&quot;, &quot;variable_name&quot;), extra = &quot;merge&quot;)</code></pre>
+<pre class="r"><code>dat %&gt;% separate(key, into = c(&quot;year&quot;, &quot;variable_name&quot;), extra = &quot;merge&quot;)</code></pre>
 <pre><code>## # A tibble: 224 x 4
 ##    country     year  variable_name   value
 ##    &lt;chr&gt;       &lt;chr&gt; &lt;chr&gt;           &lt;dbl&gt;
@@ -795,7 +842,7 @@ dat %&gt;% separate(key, var_names, fill = &quot;right&quot;)</code></pre>
 <h2><code>unite</code></h2>
 <p>It is sometimes useful to do the inverse of <code>separate</code>, unite two columns into one. To demonstrate how to use <code>unite</code>, we show code that, although <em>not</em> the optimal approach, serves as an illustration. Suppose that we did not know about <code>extra</code> and used this command to separate:</p>
 <pre class="r"><code>dat %&gt;%
-  separate(key, var_names, fill = &quot;right&quot;)</code></pre>
+  separate(key, c(&quot;year&quot;, &quot;first_variable_name&quot;, &quot;second_variable_name&quot;), fill = &quot;right&quot;)</code></pre>
 <pre><code>## # A tibble: 224 x 5
 ##    country     year  first_variable_name second_variable_name value
 ##    &lt;chr&gt;       &lt;chr&gt; &lt;chr&gt;               &lt;chr&gt;                &lt;dbl&gt;
@@ -812,7 +859,7 @@ dat %&gt;% separate(key, var_names, fill = &quot;right&quot;)</code></pre>
 ## # ... with 214 more rows</code></pre>
 <p>We can achieve the same final result by uniting the second and third columns, then spreading the columns and renaming <code>fertility_NA</code> to <code>fertility</code>:</p>
 <pre class="r"><code>dat %&gt;%
-  separate(key, var_names, fill = &quot;right&quot;) %&gt;%
+  separate(key, c(&quot;year&quot;, &quot;first_variable_name&quot;, &quot;second_variable_name&quot;), fill = &quot;right&quot;) %&gt;%
   unite(variable_name, first_variable_name, second_variable_name) %&gt;%
   spread(variable_name, value) %&gt;%
   rename(fertility = fertility_NA)</code></pre>
@@ -833,7 +880,7 @@ dat %&gt;% separate(key, var_names, fill = &quot;right&quot;)</code></pre>
 <div class="fyi">
 <p><strong>TRY IT</strong></p>
 <ol style="list-style-type: decimal">
-<li>Run the following command to define the <code>co2_wide</code> object:</li>
+<li>Run the following command to define the <code>co2_wide</code> object using the <code>co2</code> data built in to R (see <code>?co2</code>):</li>
 </ol>
 <pre class="r"><code>co2_wide &lt;- data.frame(matrix(co2, ncol = 12, byrow = TRUE)) %&gt;%
   setNames(1:12) %&gt;%
@@ -875,7 +922,7 @@ dat &lt;- admissions %&gt;% dplyr::select(-applicants)</code></pre>
 </div>
 <div id="joining-tables" class="section level1">
 <h1>Joining tables</h1>
-<p>The information we need for a given analysis may not be just in one table. For example, when forecasting elections we used the function <code>left_join</code> to combine the information from two tables. Here we use a simpler example to illustrate the general challenge of combining tables.</p>
+<p>The information we need for a given analysis may not be just in one table. For example, when forecasting elections we used the function <code>left_join</code> to combine the information from two tables. We also saw this in action using the <code>WDI</code> function (technically, the <code>WDI</code> API) in Project 2. Here we use a simpler example to illustrate the general challenge of combining tables.</p>
 <p>Suppose we want to explore the relationship between population size for US states and electoral votes. We have the population size in this table:</p>
 <pre class="r"><code>library(tidyverse)
 library(dslabs)
@@ -904,9 +951,10 @@ head(results_us_election_2016)</code></pre>
 <p>The <em>join</em> functions, described below, are designed to handle this challenge.</p>
 <div id="joins" class="section level2">
 <h2>Joins</h2>
-<p>The <em>join</em> functions in the <strong>dplyr</strong> package make sure that the tables are combined so that matching rows are together. If you know SQL, you will see that the approach and syntax is very similar. The general idea is that one needs to identify one or more columns that will serve to match the two tables. Then a new table with the combined information is returned. Notice what happens if we join the two tables above by state using <code>left_join</code> (we will remove the <code>others</code> column and rename <code>electoral_votes</code> so that the tables fit on the page):</p>
+<p>The <em>join</em> functions in the <strong>dplyr</strong> package (part of the tidyverse) make sure that the tables are combined so that matching rows are together. If you know SQL, you will see that the approach and syntax is very similar. The general idea is that one needs to identify one or more columns that will serve to match the two tables. Then a new table with the combined information is returned. Notice what happens if we join the two tables above by state using <code>left_join</code> (we will remove the <code>others</code> column and rename <code>electoral_votes</code> so that the tables fit on the page):</p>
 <pre class="r"><code>tab &lt;- left_join(murders, results_us_election_2016, by = &quot;state&quot;) %&gt;%
-  dplyr::select(-others) %&gt;% rename(ev = electoral_votes)
+  dplyr::select(-others) %&gt;% 
+  rename(ev = electoral_votes)
 head(tab)</code></pre>
 <pre><code>##        state abb region population total ev clinton trump
 ## 1    Alabama  AL  South    4779736   135  9    34.4  62.1
@@ -1001,8 +1049,16 @@ tab_2</code></pre>
 </div>
 <div id="semi-join" class="section level3">
 <h3>Semi join</h3>
-<p>The <code>semi_join</code> function lets us keep the part of first table for which we have information in the second. It does not add the columns of the second:</p>
+<p>The <code>semi_join</code> function lets us keep the part of first table for which we have information in the second. It does not add the columns of the second. It isn’t often used:</p>
 <pre class="r"><code>semi_join(tab_1, tab_2, by = &quot;state&quot;)</code></pre>
+<pre><code>##        state population
+## 1    Alabama    4779736
+## 2     Alaska     710231
+## 3    Arizona    6392017
+## 4 California   37253956</code></pre>
+<p>This gives the same result as:</p>
+<pre class="r"><code>tab_1 %&gt;% 
+  filter(state %in% tab_2$state) </code></pre>
 <pre><code>##        state population
 ## 1    Alabama    4779736
 ## 2     Alaska     710231
@@ -1017,8 +1073,9 @@ tab_2</code></pre>
 ## 1 Arkansas    2915918
 ## 2 Colorado    5029196</code></pre>
 <p>The following diagram summarizes the above joins:</p>
-<p><img src="/./11-content_files/joins.png" />
-(Image courtesy of RStudio<a href="#fn3" class="footnote-ref" id="fnref3"><sup>3</sup></a>. CC-BY-4.0 license<a href="#fn4" class="footnote-ref" id="fnref4"><sup>4</sup></a>. Cropped from original.)</p>
+<p><img src="/./11-content_files/joins.png" /></p>
+<p><img src="img/joins.png" /></p>
+<p>(Image courtesy of RStudio<a href="#fn3" class="footnote-ref" id="fnref3"><sup>3</sup></a>. CC-BY-4.0 license<a href="#fn4" class="footnote-ref" id="fnref4"><sup>4</sup></a>. Cropped from original.)</p>
 </div>
 </div>
 <div id="binding" class="section level2">
@@ -1103,6 +1160,7 @@ dplyr::union(tab_1, tab_2)</code></pre>
 ## 5  California  CA      West   37253956  1257 55    61.7  31.6
 ## 6    Colorado  CO      West    5029196    65  9    48.2  43.3
 ## 7 Connecticut  CT Northeast    3574097    97  7    54.6  40.9</code></pre>
+<p>Note that we get 7 unique rows from this. We do not get duplicated rows from the overlap in <code>1:5</code> and <code>3:7</code>. If we were to <code>bind_rows</code> on the two subsets, we would get duplicates.</p>
 </div>
 <div id="setdiff" class="section level3">
 <h3><code>setdiff</code></h3>
@@ -1162,6 +1220,69 @@ top %&gt;% as_tibble()</code></pre>
 </ol>
 </div>
 </div>
+</div>
+<div id="a-note-about-merging-and-dupliacted-rows" class="section level2">
+<h2>A note about merging and dupliacted rows</h2>
+<p>When we merge data, we have to be very careful about duplicated rows. Specifically, we have to be certain that the fields we use to join on are unique <strong>or</strong> that we know they aren’t unique and intend to duplicate rows.</p>
+<p>When we have tidy data, we have one row per observation. When we join data that has more than one row per observation, the new dataset will no longer be tidy. For instance:</p>
+<pre class="r"><code>tidyData &lt;- bind_cols( state = c(&#39;MI&#39;,&#39;CA&#39;,&#39;MI&#39;,&#39;CA&#39;), 
+                       year = c(2001, 2002, 2001, 2002),  
+                       Arrests = c(10, 21, 30, 12))
+
+notTidyData &lt;- bind_cols(state = c(&#39;MI&#39;,&#39;MI&#39;,&#39;MI&#39;,&#39;CA&#39;,&#39;CA&#39;,&#39;CA&#39;), 
+                         County = c(&#39;Ingham&#39;,&#39;Clinton&#39;,&#39;Wayne&#39;,&#39;Orange&#39;,&#39;Los Angeles&#39;,&#39;Kern&#39;),
+                         InNOut_locations = c(0,0,0,20, 31, 8))
+
+head(tidyData)</code></pre>
+<pre><code>## # A tibble: 4 x 3
+##   state  year Arrests
+##   &lt;chr&gt; &lt;dbl&gt;   &lt;dbl&gt;
+## 1 MI     2001      10
+## 2 CA     2002      21
+## 3 MI     2001      30
+## 4 CA     2002      12</code></pre>
+<pre class="r"><code>head(notTidyData)</code></pre>
+<pre><code>## # A tibble: 6 x 3
+##   state County      InNOut_locations
+##   &lt;chr&gt; &lt;chr&gt;                  &lt;dbl&gt;
+## 1 MI    Ingham                     0
+## 2 MI    Clinton                    0
+## 3 MI    Wayne                      0
+## 4 CA    Orange                    20
+## 5 CA    Los Angeles               31
+## 6 CA    Kern                       8</code></pre>
+<p>If we use the only common field, <code>state</code> to merge <code>tidyData</code>, which is unique on <code>state</code> and <code>year</code>, to <code>notTidyData</code>, which is unique on <code>county</code>, then every time we see <code>state</code> in our “left” data, we will get <strong>all three counties in that state and for that year</strong>. Even worse, we will get the <code>InNOut_locations</code> tally repeated for every matching <code>state</code>!</p>
+<pre class="r"><code>joinedData &lt;- left_join(tidyData, notTidyData, by = c(&#39;state&#39;))
+joinedData</code></pre>
+<pre><code>## # A tibble: 12 x 5
+##    state  year Arrests County      InNOut_locations
+##    &lt;chr&gt; &lt;dbl&gt;   &lt;dbl&gt; &lt;chr&gt;                  &lt;dbl&gt;
+##  1 MI     2001      10 Ingham                     0
+##  2 MI     2001      10 Clinton                    0
+##  3 MI     2001      10 Wayne                      0
+##  4 CA     2002      21 Orange                    20
+##  5 CA     2002      21 Los Angeles               31
+##  6 CA     2002      21 Kern                       8
+##  7 MI     2001      30 Ingham                     0
+##  8 MI     2001      30 Clinton                    0
+##  9 MI     2001      30 Wayne                      0
+## 10 CA     2002      12 Orange                    20
+## 11 CA     2002      12 Los Angeles               31
+## 12 CA     2002      12 Kern                       8</code></pre>
+<p>Because we asked for all columns of <code>tidyData</code> that matched (on <code>state</code>) in <code>notTidyData</code>, we get replicated <code>Arrests</code> - look at MI in 2001 in the first three rows. The original data had 10 Arrests in Michigan in 2001. Now, <em>for every MI County in <code>notTidyData</code>, we have replicated the statewide arrests!</em></p>
+<pre class="r"><code>sum(joinedData$Arrests)</code></pre>
+<pre><code>## [1] 219</code></pre>
+<pre class="r"><code>sum(tidyData$Arrests)</code></pre>
+<pre><code>## [1] 73</code></pre>
+<p>Yikes! We now have 3x the number of arrests in our data.</p>
+<pre class="r"><code>sum(joinedData$InNOut_locations)</code></pre>
+<pre><code>## [1] 118</code></pre>
+<pre class="r"><code>sum(notTidyData$InNOut_locations)</code></pre>
+<pre><code>## [1] 59</code></pre>
+<p>And while we might like that we have 3x the In-N-Out locations, we definitely think our data shouldn’t suddenly have more.</p>
+<p>The reason this happens is that we do not have a unique <em>key</em> variable. In the <code>WDI</code> tip in Project 2, we didn’t have a single unique key variable - there were multiple values of <code>iso2</code> country code in the data because we had multiple years for each <code>iso2</code>. Thus, when we merged, use used <code>by = c('iso2','year')</code> because <strong>the <code>iso2</code> x <code>year</code> combination was the unique key</strong>.</p>
+<p>The lesson is this: always know what your join is doing. Know your unique keys. Use <code>sum(duplicated(tidyData$key))</code> to see if all values are unique, or <code>NROW(unique(tidyData %&gt;% dplyr::select(key1, key2)))</code> to see if all rows are unique over the 2 keys (replacing “key1” and “key2” with your key fields).</p>
+<p>If it shouldn’t add rows, then make sure the new data has the same number of rows as the old one, or use <code>setequal</code> to check.</p>
 </div>
 </div>
 <div id="parsing-dates-and-times" class="section level1">
@@ -1253,17 +1374,17 @@ In these cases, examining the entire vector of dates will help you determine wha
 <pre><code>## [1] &quot;2001-02-09&quot;</code></pre>
 <p>The <strong>lubridate</strong> package is also useful for dealing with times. In R base, you can get the current time typing <code>Sys.time()</code>. The <strong>lubridate</strong> package provides a slightly more advanced function, <code>now</code>, that permits you to define the time zone:</p>
 <pre class="r"><code>now()</code></pre>
-<pre><code>## [1] &quot;2020-12-30 14:04:05 EST&quot;</code></pre>
+<pre><code>## [1] &quot;2021-04-04 07:51:12 EDT&quot;</code></pre>
 <pre class="r"><code>now(&quot;GMT&quot;)</code></pre>
-<pre><code>## [1] &quot;2020-12-30 19:04:05 GMT&quot;</code></pre>
+<pre><code>## [1] &quot;2021-04-04 11:51:12 GMT&quot;</code></pre>
 <p>You can see all the available time zones with <code>OlsonNames()</code> function.</p>
 <p>We can also extract hours, minutes, and seconds:</p>
 <pre class="r"><code>now() %&gt;% hour()</code></pre>
-<pre><code>## [1] 14</code></pre>
+<pre><code>## [1] 7</code></pre>
 <pre class="r"><code>now() %&gt;% minute()</code></pre>
-<pre><code>## [1] 4</code></pre>
+<pre><code>## [1] 51</code></pre>
 <pre class="r"><code>now() %&gt;% second()</code></pre>
-<pre><code>## [1] 5.452146</code></pre>
+<pre><code>## [1] 12.7151</code></pre>
 <p>The package also includes a function to parse strings into times as well as parsers for time objects that include dates:</p>
 <pre class="r"><code>x &lt;- c(&quot;12:34:56&quot;)
 hms(x)</code></pre>
@@ -1285,8 +1406,31 @@ mdy_hms(x)</code></pre>
   group_by(week) %&gt;%
   summarize(margin = mean(rawpoll_clinton - rawpoll_trump)) %&gt;%
   qplot(week, margin, data = .)</code></pre>
-<pre><code>## `summarise()` ungrouping output (override with `.groups` argument)</code></pre>
 <p><img src="/content/11-content_files/figure-html/poll-margin-versus-week-1.png" width="672" /></p>
+<p>Date objects can be added to and subtracted from with <code>hours</code>, <code>minutes</code>, etc.</p>
+<pre class="r"><code>startDate &lt;- ymd_hms(&#39;2021-06-14 12:20:57&#39;)
+
+startDate + seconds(4)</code></pre>
+<pre><code>## [1] &quot;2021-06-14 12:21:01 UTC&quot;</code></pre>
+<pre class="r"><code>startDate + hours(1) + days(2) - seconds(10)</code></pre>
+<pre><code>## [1] &quot;2021-06-16 13:20:47 UTC&quot;</code></pre>
+<p>You can even calculate time differences in specific units:</p>
+<pre class="r"><code>endDate = ymd_hms(&#39;2021-06-15 01:00:00&#39;)
+
+endDate - startDate</code></pre>
+<pre><code>## Time difference of 12.65083 hours</code></pre>
+<pre class="r"><code>difftime(endDate, startDate, units = &#39;days&#39;)</code></pre>
+<pre><code>## Time difference of 0.5271181 days</code></pre>
+<p>Note that both of these result in a <code>difftime</code> object. You can use <code>as.numeric(difftime(endDate, startDate))</code> to get the numeric difference in times.</p>
+<p>Sequences can be created as well:</p>
+<pre class="r"><code>seq(from = startDate, to = endDate, by = &#39;hour&#39;)</code></pre>
+<pre><code>##  [1] &quot;2021-06-14 12:20:57 UTC&quot; &quot;2021-06-14 13:20:57 UTC&quot;
+##  [3] &quot;2021-06-14 14:20:57 UTC&quot; &quot;2021-06-14 15:20:57 UTC&quot;
+##  [5] &quot;2021-06-14 16:20:57 UTC&quot; &quot;2021-06-14 17:20:57 UTC&quot;
+##  [7] &quot;2021-06-14 18:20:57 UTC&quot; &quot;2021-06-14 19:20:57 UTC&quot;
+##  [9] &quot;2021-06-14 20:20:57 UTC&quot; &quot;2021-06-14 21:20:57 UTC&quot;
+## [11] &quot;2021-06-14 22:20:57 UTC&quot; &quot;2021-06-14 23:20:57 UTC&quot;
+## [13] &quot;2021-06-15 00:20:57 UTC&quot;</code></pre>
 </div>
 </div>
 <div class="footnotes">

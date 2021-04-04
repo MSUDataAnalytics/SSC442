@@ -1,8 +1,8 @@
 ---
 title: "Data Wrangling"
 linktitle: "11: Data Wrangling"
-date: "2020-11-19"
-read_date: "2020-11-19"
+date: "2021-04-06"
+read_date: "2021-04-06"
 draft: false
 publishDate: "2021-01-15"
 menu:
@@ -44,9 +44,6 @@ img_path <- "wrangling/img/"
 As we have seen through the class, having data in _tidy_ format is what makes the tidyverse flow. After the first step in the data analysis process, importing data, a common next step is to reshape the data into a form that facilitates the rest of the analysis. The __tidyr__ package includes several functions that are useful for tidying data.
 
 ```{r, message=FALSE, warning=FALSE}
-detach("package:dplyr")
-library(dplyr)
-
 library(tidyverse)
 library(dslabs)
 path <- system.file("extdata", package="dslabs")
@@ -133,6 +130,8 @@ The following diagram can help remind you how these two functions work:
 
 ![](/./11-content_files/gather-spread.png)
 
+![](./img/gather-spread.png)
+
 (Image courtesy of RStudio^[https://github.com/rstudio/cheatsheets]. CC-BY-4.0 license^[https://github.com/rstudio/cheatsheets/blob/master/LICENSE]. Cropped from original.)
 <!-- (Source: RStudio. The image is a section of this [cheat sheet](https://github.com/rstudio/cheatsheets/raw/master/data-transformation.pdf).)-->
 
@@ -159,35 +158,30 @@ dat <- raw_dat %>% gather(key, value, -country)
 head(dat)
 ```
 
-The result is not exactly what we refer to as tidy since each observation is associated with two, not one, rows. We want to have the values from the two variables, fertility and life expectancy, in two separate columns. The first challenge to achieve this is to separate the `key` column into the year and the variable type. Notice that the entries in this column separate the year from the variable name with an underscore:
+The result is not exactly what we refer to as tidy since each observation (year-country combination) is associated with two, not one, rows. We want to have the values from the two variables, fertility and life expectancy, in two separate columns. The first challenge to achieve this is to separate the `key` column into the year and the variable type. Notice that the entries in this column separate the year from the variable name with an underscore:
 
 ```{r}
 dat$key[1:5]
 ```
 
-Encoding multiple variables in a column name is such a common problem that the __readr__ package includes a function to separate these columns into two or more. Apart from the data, the `separate` function takes three arguments: the name of the column to be separated, the names to be used for the new columns, and the character that separates the variables. So, a first attempt at this is:
+Encoding multiple variables in a column name is such a common problem that the __tidyverse__ package includes a function to separate these columns into two or more. Apart from the data, the `separate` function takes three arguments: the name of the column to be separated, the names to be used for the new columns, and the character that separates the variables. So, a first attempt at this is:
 
 ```{r, eval=FALSE}
-dat %>% separate(key, c("year", "variable_name"), "_")
+dat %>% separate(col = key, into = c("year", "variable_name"), sep = "_")
 ```
 
-Because `_` is the default separator assumed by `separate`, we do not have to include it in the code:
+
+
+The function does separate the values, but we run into a new problem. We receive the warning `Additional pieces discarded in 112 rows [3, 4, 7,...]`. (Earlier versions may give the error `Too many values at 112 locations:`) and that the `life_expectancy` variable is truncated to `life`. This is because the `_` is used to separate `life` and `expectancy`, not just year and variable name! We could add a third column to catch this and let the `separate` function know which column to _fill in_ with missing values, `NA`, when there is no third value. Here we tell it to fill the column on the right:
 
 ```{r}
-dat %>% separate(key, c("year", "variable_name"))
-```
-
-The function does separate the values, but we run into a new problem. We receive the warning `Too many values at 112 locations:` and that the `life_expectancy` variable is truncated to `life`. This is because the `_` is used to separate `life` and `expectancy`, not just year and variable name! We could add a third column to catch this and let the `separate` function know which column to _fill in_ with missing values, `NA`, when there is no third value. Here we tell it to fill the column on the right:
-
-```{r}
-var_names <- c("year", "first_variable_name", "second_variable_name")
-dat %>% separate(key, var_names, fill = "right")
+dat %>% separate(key, into = c("year", "first_variable_name", "second_variable_name"), fill = "right")
 ```
 
 However, if we read the `separate` help file, we find that a better approach is to merge the last two variables when there is an extra separation:
 
 ```{r}
-dat %>% separate(key, c("year", "variable_name"), extra = "merge")
+dat %>% separate(key, into = c("year", "variable_name"), extra = "merge")
 ```
 
 This achieves the separation we wanted. However, we are not done yet. We need to create a column for each variable. As we learned, the `spread` function can do this:
@@ -206,14 +200,14 @@ It is sometimes useful to do the inverse of `separate`, unite two columns into o
 
 ```{r}
 dat %>%
-  separate(key, var_names, fill = "right")
+  separate(key, c("year", "first_variable_name", "second_variable_name"), fill = "right")
 ```
 
 We can achieve the same final result by uniting the second and third columns, then spreading the columns and renaming `fertility_NA` to `fertility`:
 
 ```{r}
 dat %>%
-  separate(key, var_names, fill = "right") %>%
+  separate(key, c("year", "first_variable_name", "second_variable_name"), fill = "right") %>%
   unite(variable_name, first_variable_name, second_variable_name) %>%
   spread(variable_name, value) %>%
   rename(fertility = fertility_NA)
@@ -223,7 +217,7 @@ dat %>%
 
 __TRY IT__
 
-1. Run the following command to define the `co2_wide` object:
+1. Run the following command to define the `co2_wide` object using the `co2` data built in to R (see `?co2`):
 
 ```{r, eval=FALSE}
 co2_wide <- data.frame(matrix(co2, ncol = 12, byrow = TRUE)) %>%
@@ -283,7 +277,7 @@ Use the gather function to create a `tmp` data.frame with a column containing th
 
 # Joining tables
 
-The information we need for a given analysis may not be just in one table. For example, when forecasting elections we used the function `left_join` to combine the information from two tables. Here we use a simpler example to illustrate the general challenge of combining tables.
+The information we need for a given analysis may not be just in one table. For example, when forecasting elections we used the function `left_join` to combine the information from two tables. We also saw this in action using the `WDI` function (technically, the `WDI` API) in Project 2. Here we use a simpler example to illustrate the general challenge of combining tables.
 
 Suppose we want to explore the relationship between population size for US states and electoral votes. We have the population size in this table:
 
@@ -311,11 +305,12 @@ The _join_ functions, described below, are designed to handle this challenge.
 
 ## Joins {#joins}
 
-The _join_ functions in the __dplyr__ package make sure that the tables are combined so that matching rows are together. If you know SQL, you will see that the approach and syntax is very similar. The general idea is that one needs to identify one or more columns that will serve to match the two tables. Then a new table with the combined information is returned. Notice what happens if we join the two tables above by state using `left_join` (we will remove the `others` column and rename `electoral_votes` so that the tables fit on the page):
+The _join_ functions in the __dplyr__ package (part of the tidyverse) make sure that the tables are combined so that matching rows are together. If you know SQL, you will see that the approach and syntax is very similar. The general idea is that one needs to identify one or more columns that will serve to match the two tables. Then a new table with the combined information is returned. Notice what happens if we join the two tables above by state using `left_join` (we will remove the `others` column and rename `electoral_votes` so that the tables fit on the page):
 
 ```{r}
 tab <- left_join(murders, results_us_election_2016, by = "state") %>%
-  dplyr::select(-others) %>% rename(ev = electoral_votes)
+  dplyr::select(-others) %>% 
+  rename(ev = electoral_votes)
 head(tab)
 ```
 
@@ -392,12 +387,16 @@ full_join(tab_1, tab_2, by = "state")
 
 ### Semi join
 
-The `semi_join` function lets us keep the part of first table for which we have information in the second. It does not add the columns of the second:
+The `semi_join` function lets us keep the part of first table for which we have information in the second. It does not add the columns of the second. It isn't often used:
 
 ```{r}
 semi_join(tab_1, tab_2, by = "state")
 ```
-
+This gives the same result as:
+```{r}
+tab_1 %>% 
+  filter(state %in% tab_2$state) 
+```
 
 ### Anti join
 
@@ -411,6 +410,10 @@ The following diagram summarizes the above joins:
 
 
 ![](/./11-content_files/joins.png)
+
+![](./img/joins.png)
+
+
 (Image courtesy of RStudio^[https://github.com/rstudio/cheatsheets]. CC-BY-4.0 license^[https://github.com/rstudio/cheatsheets/blob/master/LICENSE]. Cropped from original.)
 
 ## Binding
@@ -495,7 +498,7 @@ tab_1 <- tab[1:5,]
 tab_2 <- tab[3:7,]
 dplyr::union(tab_1, tab_2)
 ```
-
+Note that we get 7 unique rows from this. We do not get duplicated rows from the overlap in `1:5` and `3:7`. If we were to `bind_rows` on the two subsets, we would get duplicates.
 
 ### `setdiff`
 
@@ -588,6 +591,56 @@ We want to see if the monthly trend is changing so we are going to remove the ye
 5. Make a plot of the seasonal trends by year but only after removing the year effect.
 
 :::
+
+
+## A note about merging and dupliacted rows
+
+When we merge data, we have to be very careful about duplicated rows. Specifically, we have to be certain that the fields we use to join on are unique **or** that we know they aren't unique and intend to duplicate rows.
+
+When we have tidy data, we have one row per observation. When we join data that has more than one row per observation, the new dataset will no longer be tidy. For instance:
+
+```{r}
+tidyData <- bind_cols( state = c('MI','CA','MI','CA'), 
+                       year = c(2001, 2002, 2001, 2002),  
+                       Arrests = c(10, 21, 30, 12))
+
+notTidyData <- bind_cols(state = c('MI','MI','MI','CA','CA','CA'), 
+                         County = c('Ingham','Clinton','Wayne','Orange','Los Angeles','Kern'),
+                         InNOut_locations = c(0,0,0,20, 31, 8))
+
+head(tidyData)
+head(notTidyData)
+```
+
+If we use the only common field, `state` to merge `tidyData`, which is unique on `state` and `year`, to `notTidyData`, which is unique on `county`, then every time we see `state` in our "left" data, we will get **all three counties in that state and for that year**. Even worse, we will get the `InNOut_locations` tally repeated for every matching `state`!
+
+```{r}
+joinedData <- left_join(tidyData, notTidyData, by = c('state'))
+joinedData
+```
+
+Because we asked for all columns of `tidyData` that matched (on `state`) in `notTidyData`, we get replicated `Arrests` - look at MI in 2001 in the first three rows. The original data had 10 Arrests in Michigan in 2001. Now, *for every MI County in `notTidyData`, we have replicated the statewide arrests!*
+
+```{r}
+sum(joinedData$Arrests)
+sum(tidyData$Arrests)
+```
+
+Yikes! We now have 3x the number of arrests in our data. 
+
+```{r}
+sum(joinedData$InNOut_locations)
+sum(notTidyData$InNOut_locations)
+```
+
+And while we might like that we have 3x the In-N-Out locations, we definitely think our data shouldn't suddenly have more.
+
+The reason this happens is that we do not have a unique *key* variable. In the `WDI` tip in Project 2, we didn't have a single unique key variable - there were multiple values of `iso2` country code in the data because we had multiple years for each `iso2`. Thus, when we merged, use used `by = c('iso2','year')` because **the `iso2` x `year` combination was the unique key**.
+
+The lesson is this: always know what your join is doing. Know your unique keys. Use `sum(duplicated(tidyData$key))` to see if all values are unique, or `NROW(unique(tidyData %>% dplyr::select(key1, key2)))` to see if all rows are unique over the 2 keys (replacing "key1" and "key2" with your key fields).
+
+If it shouldn't add rows, then make sure the new data has the same number of rows as the old one, or use `setequal` to check. 
+
 
 # Parsing dates and times
 
@@ -754,4 +807,35 @@ polls_us_election_2016 %>%
   group_by(week) %>%
   summarize(margin = mean(rawpoll_clinton - rawpoll_trump)) %>%
   qplot(week, margin, data = .)
+```
+
+Date objects can be added to and subtracted from with `hours`, `minutes`, etc.
+
+```{r}
+startDate <- ymd_hms('2021-06-14 12:20:57')
+
+startDate + seconds(4)
+
+startDate + hours(1) + days(2) - seconds(10)
+
+```
+
+You can even calculate time differences in specific units:
+
+```{r}
+endDate = ymd_hms('2021-06-15 01:00:00')
+
+endDate - startDate
+
+difftime(endDate, startDate, units = 'days')
+
+```
+
+Note that both of these result in a `difftime` object. You can use `as.numeric(difftime(endDate, startDate))` to get the numeric difference in times.
+
+Sequences can be created as well:
+
+```{r}
+seq(from = startDate, to = endDate, by = 'hour')
+
 ```
