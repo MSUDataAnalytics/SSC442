@@ -17,7 +17,8 @@
 #### 
 require(lubridate)
 require(zoo)
-require(timeDate)
+# require(timeDate)
+require(tidyverse)
 set.seed(2021)
 
 NC = 5
@@ -85,5 +86,13 @@ roomrates_use = roomrates_dates %>%
   pivot_wider(id_cols = id, names_from = date_occupied, values_from =  price_single:price_economy) %>%
   dplyr::select(-1)
 
+write.csv(books_use, file.path('C:/Users/jkirk/OneDrive - Michigan State University','Teaching','SSC442_SS21','static','data','Example11_booking.csv'), row.names = F)
+write.csv(parking_use, file.path('C:/Users/jkirk/OneDrive - Michigan State University','Teaching','SSC442_SS21','static','data','Example11_parking.csv'), row.names = F)
+write.csv(roomrates_use, file.path('C:/Users/jkirk/OneDrive - Michigan State University','Teaching','SSC442_SS21','static','data','Example11_roomrates.csv'), row.names = F)
 
-
+# students are to use the three datasets to answer the question: which corporation spends the most with the hotel?
+# 
+# books_use has the data on bookings but has no prices
+# roomrates_use has the data on room prices, but in wide format (and with tricky column names)
+# parking_use has the data on which ones have free parking (but missing any who don't so NA's in merge)
+# 
