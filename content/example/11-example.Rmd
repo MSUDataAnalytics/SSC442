@@ -1,5 +1,5 @@
 ---
-title: "Illustrating Classification"
+title: "Data Wrangling"
 linktitle: "11: Data Wrangling"
 output:
   blogdown::html_page:
@@ -42,10 +42,16 @@ Some tips:
 :::
 
 
-```{r eval = T, include=F}
+```{r eval = F, include=F}
+### NOTE to BEN: script creating this data is in Example_11_practice.R in the "working" directory (since I wasn't sure where to put scripts that generate data; don't need the kids finding them)
+
 booking_raw = read_csv('http://localhost:4321/data/Example11_booking.csv')
 roomrates_raw = read_csv('http://localhost:4321/data/Example11_roomrates.csv')
 parking_raw = read_csv('http://localhost:4321/data/Example11_parking.csv')
+
+# booking_raw = read_csv('https://ssc442kirkpatrick.netlify.app/data/Example11_booking.csv')
+# roomrates_raw = read_csv('https://ssc442kirkpatrick.netlify.app/data/Example11_roomrates.csv')
+# parking_raw = read_csv('https://ssc442kirkpatrick.netlify.app/data/Example11_parking.csv')
 
 
 ## gather roomrates to merge to booking ##
@@ -74,5 +80,6 @@ booking.summary = booking.m %>%
   group_by(corp) %>%
   dplyr::summarize(sumSpent = sum(rate))
 
-
+booking.summary
+# B with 98,318
 ```
