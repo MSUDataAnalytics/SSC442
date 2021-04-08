@@ -96,3 +96,32 @@ write.csv(roomrates_use, file.path('C:/Users/jkirk/OneDrive - Michigan State Uni
 # roomrates_use has the data on room prices, but in wide format (and with tricky column names)
 # parking_use has the data on which ones have free parking (but missing any who don't so NA's in merge)
 # 
+# 
+# 
+# 
+## Lab #11 Version
+#     I also make a version for lab work building on the class exercises:
+roomrates_hw = roomrates_dates %>%
+  dplyr::mutate(year = year(date_occupied),
+                month = month(date_occupied),
+                day = day(date_occupied)) %>%
+  dplyr::mutate(year = gsub('^20', '', as.character(year))) %>%
+  dplyr::mutate(date_occupied_new = paste0(day, '/',month,'/',year)) %>%
+  dplyr::select(date_occupied_new, contains('price')) %>%
+  pivot_longer(-c(date_occupied_new) ) %>%
+  pivot_wider(names_from = date_occupied_new, id_cols = name, values_from = value) %>%
+  dplyr::mutate(name = gsub('royalsuite','royal_suite', .$name))
+  
+books_hw = books_use %>%
+  dplyr::mutate(date_occupied = paste0(as.character(date_occupied), ' 01:00:00'))
+
+parking_hw = parking_use %>%
+  bind_rows(tibble(corp = 'C', FreeParking = as.logical(FALSE))) %>%
+  dplyr::arrange(corp)
+parking_hw[4,'corp'] = 'E'
+
+
+write.csv(books_hw, file.path('C:/Users/jkirk/OneDrive - Michigan State University','Teaching','SSC442_SS21','static','data','Lab11_booking.csv'), row.names = F)
+write.csv(parking_hw, file.path('C:/Users/jkirk/OneDrive - Michigan State University','Teaching','SSC442_SS21','static','data','Lab11_parking.csv'), row.names = F)
+write.csv(roomrates_hw, file.path('C:/Users/jkirk/OneDrive - Michigan State University','Teaching','SSC442_SS21','static','data','Lab11_roomrates.csv'), row.names = F)
+
