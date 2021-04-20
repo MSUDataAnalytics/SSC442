@@ -1,0 +1,735 @@
+---
+title: "Geospatial with R"
+linktitle: "13: Geospatial with R"
+date: "2021-04-20"
+read_date: "2021-04-20"
+draft: false
+publishdate: "2021-04-01"
+menu:
+  content:
+    parent: Course content
+    weight: 2
+type: docs
+output:
+  blogdown::html_page:
+    toc: true
+---
+
+
+<div id="TOC">
+<ul>
+<li><a href="#required-reading">Required Reading</a><ul>
+<li><a href="#guiding-questions">Guiding Questions</a></li>
+</ul></li>
+<li><a href="#geospatial-in-r">Geospatial in R</a><ul>
+<li><a href="#vector-vs.-raster">Vector vs. Raster</a><ul>
+<li><a href="#vectors-are-scalable.-rasters-are-not">Vectors are scalable. Rasters are not</a></li>
+</ul></li>
+</ul></li>
+<li><a href="#vectors-points-lines-and-polygons">Vectors: points, lines, and polygons</a><ul>
+<li><a href="#making-polygons">Making polygons</a></li>
+<li><a href="#getting-points-on-a-plot">Getting points on a plot</a></li>
+<li><a href="#making-lines">Making lines</a></li>
+</ul></li>
+<li><a href="#reading-spatial-data">Reading spatial data</a><ul>
+<li><a href="#where-to-find-spatial-data">Where to find spatial data</a></li>
+<li><a href="#loading-the-data">Loading the data</a></li>
+<li><a href="#projections-briefly">Projections, briefly</a></li>
+<li><a href="#spatial-merges">Spatial merges</a><ul>
+<li><a href="#point-to-polygon-merges">Point-to-polygon merges</a></li>
+<li><a href="#mapview">Mapview</a></li>
+<li><a href="#polygon-to-polygon-merges">Polygon-to-polygon merges</a></li>
+<li><a href="#summarizing">Summarizing</a></li>
+</ul></li>
+<li><a href="#cropping-vs.-merging">Cropping vs. merging</a><ul>
+<li><a href="#bounding-boxes">Bounding boxes</a></li>
+</ul></li>
+<li><a href="#distance-matrices">Distance matrices</a><ul>
+<li><a href="#st_nearest_feature">st_nearest_feature</a></li>
+</ul></li>
+<li><a href="#other-resources">Other resources</a></li>
+</ul></li>
+</ul>
+</div>
+
+<div id="required-reading" class="section level2">
+<h2>Required Reading</h2>
+<ul>
+<li>This page.</li>
+</ul>
+<div id="guiding-questions" class="section level3">
+<h3>Guiding Questions</h3>
+<ul>
+<li>What are the building blocks of geospatial data?</li>
+<li>How do we handle uniquely geospatial properties like distance or spatial correlation?</li>
+</ul>
+</div>
+</div>
+<div id="geospatial-in-r" class="section level1">
+<h1>Geospatial in R</h1>
+<p>We will need a handful of new packages for our introduction to geospatial analysis in R. The primary package we will interact with is the <code>sf</code> package. <code>sf</code> stands for “simple features.” It has become the standard for geospatial work in R, and relies on the <code>rgeos</code> and <code>rgdal</code> libraries (which are themselves <code>R</code> compilations of the <code>geos</code> and <code>gdal</code> libraries). Documentation of sf <a href="https://r-spatial.github.io/sf/">can be found here</a>.</p>
+<p>We will also use the <code>mapview</code> package, as well as the <code>tmaptools</code> package. Plus, we’ll use <code>tigris</code> to get state boundaries and <code>tidycensus</code> to pull down census maps. Install those, and any of the many dependencies that they also install.</p>
+<pre class="r"><code>library(sf)
+library(mapview)
+library(tigris)
+library(tidycensus)
+library(tidyverse)
+library(tmaptools)</code></pre>
+<div id="vector-vs.-raster" class="section level2">
+<h2>Vector vs. Raster</h2>
+<p>There are two ways of storing 2-D mapped spatial data, <em>raster</em> and <em>vector</em>. A <em>vector</em> representation of a 2-D shape is best described as an irregular polygon with points defining vertices. A square plotted in cartesian coordinates is a vector representation. Conversely, a <em>raster</em> image is a grid of cells where each cell is defined as “in” or “out” of the square. Most computer graphics like JPEG and TIFF are raster graphics and each pixel has an assigned color. To make a raster image of a blue square, we’d make a big grid of pixels, and then color some blue based on their location. To make a blue square in vector form, we’d record <em>just the location of the corners</em> and add instructions to color inside the polygon formed by those corners blue.</p>
+<p><img src="https://vector-conversions.com/images/vector_vs_raster.jpg" width="50%" /></p>
+<div id="vectors-are-scalable.-rasters-are-not" class="section level3">
+<h3>Vectors are scalable. Rasters are not</h3>
+<p>Rasters are great for detail, like pixels in a picture, but they do not scale up very well. Vectors are great for things that do need to scale up. They are also smaller and easier to work with when they aren’t trying to replicate photo-realistic images. Vectors can handle curves by recording the properties of the curve (e.g. bezier curves), while rasters have to approximate curves along the grid of cells, so if you want a smooth curve, you need lots of cells.</p>
+<p>Geospatial work is almost always done in vectors because (1) it is easier to store data as vectors, and (2) it is easier to manipulate, project, intersect, or connect vector points, lines, and polygons.</p>
+<p>We are going to work entirely with vectors today.</p>
+</div>
+</div>
+</div>
+<div id="vectors-points-lines-and-polygons" class="section level1">
+<h1>Vectors: points, lines, and polygons</h1>
+<p>Most everything we would want to map can be represented as a point, a line, or a polygon. Points could be the location of power plants in the US, or the location of COVID cases, or the location of major intersections. Lines could be the location of train tracks, the shortest distance between someone’s house and the nearest restaurants, or a major road. Polygons could be county boundaries, landowner’s lot lines, or bodies of water.</p>
+<p>We can start by making some points, then turning them into a polygon. We’ll just use arbitrary coordinates for now, but will move into GPS latitude-longitude coordinates shortly. We’ll use <code>st_multipoint</code> to create our points object. It takes a numeric matrix only.</p>
+<pre class="r"><code>myPoints = tribble(~X, ~Y,
+                   0, 0,
+                   0, 4,
+                   1, 4,
+                   1, 1,
+                   .5, 0,
+                   0, 0)
+
+myPoints = st_multipoint(as.matrix(myPoints))
+plot(myPoints)</code></pre>
+<p><img src="/content/13-content_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+<div id="making-polygons" class="section level3">
+<h3>Making polygons</h3>
+<p>We’ve begun making our first spatial object! Now, we can turn it into a polygon under one condition: the polygon has to “close” in order for R to know which side is the inside. In <code>myPoints</code>, the <em>last</em> point is identical to the <em>first</em> point, so R will “close” it:</p>
+<pre class="r"><code>plot(st_polygon(list(myPoints)), col = &#39;darkgreen&#39;)</code></pre>
+<p><img src="/content/13-content_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+<p>That’s just one polylgon. Let’s add another one. When we created the polygon, we put the points object, <code>myPoints</code>, into a list. If we have a list of, say, two points objects, then we’ll get two polygons:</p>
+<pre class="r"><code>myPoints2 = tribble(~X, ~Y,
+                    1,1,
+                    2,1,
+                    2,2,
+                    1,2,
+                    1,1)
+                    
+myPoints2 = st_multipoint(as.matrix(myPoints2))
+
+myPolygons = st_polygon(list(myPoints, myPoints2))
+plot(myPolygons, col = &#39;lightblue&#39;)</code></pre>
+<p><img src="/content/13-content_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+<p>Now we can see two polygons. Looking at the <code>str</code>ucture of the polygons:</p>
+<pre class="r"><code>str(myPolygons)</code></pre>
+<pre><code>## List of 2
+##  $ : &#39;XY&#39; num [1:6, 1:2] 0 0 1 1 0.5 0 0 4 4 1 ...
+##   ..- attr(*, &quot;dimnames&quot;)=List of 2
+##   .. ..$ : NULL
+##   .. ..$ : chr [1:2] &quot;X&quot; &quot;Y&quot;
+##  $ : &#39;XY&#39; num [1:5, 1:2] 1 2 2 1 1 1 1 2 2 1
+##   ..- attr(*, &quot;dimnames&quot;)=List of 2
+##   .. ..$ : NULL
+##   .. ..$ : chr [1:2] &quot;X&quot; &quot;Y&quot;
+##  - attr(*, &quot;class&quot;)= chr [1:3] &quot;XY&quot; &quot;POLYGON&quot; &quot;sfg&quot;</code></pre>
+<p>Notice that one of the classes is <code>sfg</code>. This is a <code>sf</code> package-defined spatial object.</p>
+</div>
+<div id="getting-points-on-a-plot" class="section level3">
+<h3>Getting points on a plot</h3>
+<p>One little-known trick in R is super helpful in spatial work. If you <code>plot(myPolygons)</code> in your own R-studio console (so it appears in your “Plots” pane, not knit into your document), you can use <code>click(n)</code> to interactively get <span class="math inline">\(n\)</span> spatial points in the coordinate system of your plot.</p>
+<pre class="r"><code>myClicks = click(n = 3)
+myClicks = rbind(myClicks, myClicks[1,])  # copy the first point to the last point to &quot;close&quot;
+myNewPolygon = st_polygon(list(st_multipoint(myClicks)))
+plot(myPolygons, col = &#39;lightblue&#39;)
+plot(myNewPolygon, col = &#39;green&#39;, add=T)</code></pre>
+<p><img src="/content/13-content_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+</div>
+<div id="making-lines" class="section level3">
+<h3>Making lines</h3>
+<p>We could also create a line with our points. I’ll leave off the one point we added to “close” the polygon. Note that the line is colored blue, not the (uncompleted) polygon.</p>
+<pre class="r"><code>myLine = st_linestring(myPoints[1:4,])
+plot(myLine, col = &#39;blue&#39;)</code></pre>
+<p><img src="/content/13-content_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
+</div>
+</div>
+<div id="reading-spatial-data" class="section level1">
+<h1>Reading spatial data</h1>
+<p>While it’s fun to draw our own shapes (caution: my definition of fun <span class="math inline">\(\neq\)</span> your definition of fun), we’re probably most interested in finding and using existing spatial data. Let’s talk briefly about the types of spatial data out there:</p>
+<ul>
+<li>Shapefiles
+<ul>
+<li>Shapefiles are not actually single files - they’re usually 4-6 files with similar names and different suffixes like .dbf, .shx, etc. This is because the shapefile format kind of pre-dates our current way of thinking of file storage. The most common program for reading or making shapefiles is ESRI’s ArcGIS. It is expensive, cumbersome, and some may say bloated. Our goal in this section is to be able to rescue shapefiles from the clutches of ArcGIS and open them in R</li>
+</ul></li>
+<li>GEOJSON
+<ul>
+<li>JSON is a way of structuring text data (like a .csv) but with the potential for nests in the data (like our <code>list</code> object) where each nest has a different data structure. GEOJSON pairs this with <strong>WKT</strong> or Well-Known Text representations of coordinates and takes care of making sure that each observation in the JSON data has a corresponding polygon in WKT coordinates.</li>
+</ul></li>
+<li>KML
+<ul>
+<li>Bare-bones storage of coordinates and basic data</li>
+</ul></li>
+<li>.RDS
+<ul>
+<li>Okay, this is just R’s native data type for storage, but it’s really helpful for storing <code>sf</code> objects</li>
+</ul></li>
+<li>Comma separated values (.csv)
+<ul>
+<li>Just like the CSV’s we’ve been using, but with Latitude and Longitude columns. Only works for points (one point per .csv line), but is very commonly found. We can use <code>st_as_sf</code> to tell R which columns are the latitude and longitude.</li>
+</ul></li>
+</ul>
+<p>We can open and use any one of these filetypes. I will cover Shapefiles and GEOJSON as the latter has become a very popular way of sharing spatial datasets.</p>
+<div id="where-to-find-spatial-data" class="section level3">
+<h3>Where to find spatial data</h3>
+<p>Spatial data is all around us! Try searching google for a topic + “spatial shapefile”. One of my favorite sources for spatial data is the DHS <a href="https://hifld-geoplatform.opendata.arcgis.com/">HIFLD Open database</a>, which has lots of government datasets that are well-organized by category. Click through, and when you find something you like, click the “Download” button. If there is a GEOJSON or KML file available, <strong>right-click</strong> and copy the link address. Then, use that with <code>st_read()</code>. On many maps (including this one), the GeoJSON link is shown under the API drop-down. Use GeoJSON over KML as some systems have issues importing the data fields in KML.</p>
+</div>
+<div id="loading-the-data" class="section level3">
+<h3>Loading the data</h3>
+<p>We’ll use the <code>sf</code> package’s <code>st_read</code> to open spatial data. Here, I’m loading the Natural Gas Processing Plants data from the Energy section of HIFLD. I’m using the <strong>GeoJSON</strong> option, which <code>st_read()</code> knows how to handle:</p>
+<pre class="r"><code>gasplants = st_read(&#39;https://opendata.arcgis.com/datasets/ca984888f8154c63bf3a023f0a1f9ac2_0.geojson&#39;) %&gt;%
+  dplyr::select(name = NAME)</code></pre>
+<pre><code>## Reading layer `Natural_Gas_Processing_Plants&#39; from data source `https://opendata.arcgis.com/datasets/ca984888f8154c63bf3a023f0a1f9ac2_0.geojson&#39; using driver `GeoJSON&#39;
+## Simple feature collection with 840 features and 44 fields
+## geometry type:  POINT
+## dimension:      XY
+## bbox:           xmin: -158.0906 ymin: 21.30889 xmax: -78.6591 ymax: 65.2873
+## geographic CRS: WGS 84</code></pre>
+<pre class="r"><code>head(gasplants)</code></pre>
+<pre><code>## Simple feature collection with 6 features and 1 field
+## geometry type:  POINT
+## dimension:      XY
+## bbox:           xmin: -88.1682 ymin: 30.94855 xmax: -86.88647 ymax: 31.29632
+## geographic CRS: WGS 84
+##                               name                   geometry
+## 1              CHUNCHULA GAS PLANT  POINT (-88.1682 30.94855)
+## 2         ATMORE TREATING FACILITY POINT (-87.43715 31.17234)
+## 3    FLARE-BUTLER STREET GAS PLANT POINT (-87.42975 31.24128)
+## 4     BIG ESCAMBIA CREEK GAS PLANT POINT (-87.36302 31.07158)
+## 5               DOGWOOD OAKS PLANT POINT (-87.18784 31.24347)
+## 6 CASTLEBERRY GAS PROCESSING PLANT POINT (-86.88647 31.29632)</code></pre>
+<p>The <code>sf</code> data type holds both the data (which here is just the name of the plant) <em>and</em> the “geometry”, which are the points. It’s tidy data - one row is one observation of one plant, and each row has a set of coordinates telling us where to find the plant.</p>
+<p>We can use ggplot with <code>geom_sf()</code> to plot these points. They’re just scattered across the country and we don’t automatically get a background map, but here are the points</p>
+<pre class="r"><code>ggplot(gasplants) + geom_sf() + theme_minimal()</code></pre>
+<p><img src="/content/13-content_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
+<p>Well, we’re missing some context here – we can kind of make out the point of Texas down there, but it’s hard to tell anything about where these plants are located. Let’s use <code>tidycensus</code> to get a map of the US, then plot it plus the points. Note we use different <code>data =</code> in each of the <code>geom_sf()</code> calls:</p>
+<pre class="r"><code>US &lt;- states(cb = TRUE, progress_bar = FALSE)  # tidycensus maps
+
+ggplot() + geom_sf(data = US, col = &#39;gray50&#39;) +
+  geom_sf(data = gasplants) + theme_minimal()</code></pre>
+<p><img src="/content/13-content_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
+<p>Getting there. The problem now is that the <code>tigris</code> data covers all US territories, which are really spread out! Let’s drop down to just Michigan. We can use good old <code>filter</code> just like with regular data:</p>
+<pre class="r"><code>MI = states(cb = TRUE) %&gt;% dplyr::filter(STUSPS==&#39;MI&#39;)
+
+ggplot() + geom_sf(data = MI, col = &#39;gray50&#39;) +
+  geom_sf(data = gasplants) + theme_minimal()</code></pre>
+<p><img src="/content/13-content_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
+<p>Well, now we have a different problem. We want to have only the <code>gasplants</code> that are <code>over</code> the state of Michigan. That requires a <strong>spatial join</strong>. Luckily, our <code>tidyverse</code> syntax <strong>works pretty seamlessly on <code>sf</code> objects</strong>. First, we have to take care of a little issue with spatial data. The <strong>projection</strong></p>
+</div>
+<div id="projections-briefly" class="section level3">
+<h3>Projections, briefly</h3>
+<p>The <em>projection</em> for spatial data is the translation from a 3-D object (e.g. the globe) to a 2-D space (a map, or the cartesian x-y coordinates of our screen). This is no simple matter! There are entire PhD programs dedicated to forming and processing projections and datum (which refer to the shape of the globe, which is not actually round). It can all be a nightmare. Worst of all, projections determine the definition of your coordinates, so you may be at -81 latitude, +30 longitude, but in another projection, you might be 1245349m above some reference point, and -2452849m to the left of that point. Projections define the distance along the X and Y axis, the scale of the coordinates, and a lot of other stuff about your 2-D polygons.</p>
+<p>Luckily, over the last few years, very smart people have been working on regularizing “projections”. Now, we really need to know three things:</p>
+<ol style="list-style-type: decimal">
+<li>The <em>projection</em> of your data’s coordinates when you read it in</li>
+<li>The <em>projection</em> you want your data to be in when you map it</li>
+<li>The <em>projection</em> of other spatial data you may want to combine.</li>
+</ol>
+<div id="importing-projected-data" class="section level4">
+<h4>Importing projected data</h4>
+<p>GEOJSON, shapefiles, and KML files usually come with embedded projections stored as <strong>EPSG</strong> numbers like ‘4326’ (incidentally, ‘4326’ is the usual projection for GPS coordinates). Thus, the first one is usually already taken care of. If your data doesnt have a PROJ4 or EPSG number but the coordinates are all between -180 and +180, it’s likely in EPSG=4326. If none of those, then the data creator should have <em>metadata</em> stating the proejction. It might take some googling and some trial and error.</p>
+<p>For mapping, you might need to <em>transform</em> your data between projections (or “reproject” it, same thing). We use <code>st_transform</code> for this. We only need to give <code>R</code> the EPSG (Geodetic Parameter Dataset) of the projection you want to end up in. As long as it’s already in a known projection, <code>R</code> can re-project it. The projection is refered to by the Coordinate Reference System (CRS). <code>st_crs</code> will tell us the projection (EPSG number and a lot more) of any spatial object. If they do not match, then <code>R</code> will give an error or, worse, plot them on totally different scales - sometimes you end up with points from the US landing in the middle of the Indian Ocean! In fact, look back at our map of gas plants and the US.</p>
+<div class="Notice">
+<p>Did you notice that a lot of the US gas plants mapped to…Canada? Those might be Alaskan plants, but the <em>projections</em> were not identical, so the definition of coordinates were different between our US map and our gas plants maps. Neither is “right” or “wrong” - they just have to be the same. Differences in projections tend to be worse at the extreme latitudes.</p>
+</div>
+<pre class="r"><code>st_crs(gasplants)</code></pre>
+<pre><code>## Coordinate Reference System:
+##   User input: WGS 84 
+##   wkt:
+## GEOGCRS[&quot;WGS 84&quot;,
+##     DATUM[&quot;World Geodetic System 1984&quot;,
+##         ELLIPSOID[&quot;WGS 84&quot;,6378137,298.257223563,
+##             LENGTHUNIT[&quot;metre&quot;,1]]],
+##     PRIMEM[&quot;Greenwich&quot;,0,
+##         ANGLEUNIT[&quot;degree&quot;,0.0174532925199433]],
+##     CS[ellipsoidal,2],
+##         AXIS[&quot;geodetic latitude (Lat)&quot;,north,
+##             ORDER[1],
+##             ANGLEUNIT[&quot;degree&quot;,0.0174532925199433]],
+##         AXIS[&quot;geodetic longitude (Lon)&quot;,east,
+##             ORDER[2],
+##             ANGLEUNIT[&quot;degree&quot;,0.0174532925199433]],
+##     ID[&quot;EPSG&quot;,4326]]</code></pre>
+<pre class="r"><code>st_crs(MI)</code></pre>
+<pre><code>## Coordinate Reference System:
+##   User input: NAD83 
+##   wkt:
+## GEOGCRS[&quot;NAD83&quot;,
+##     DATUM[&quot;North American Datum 1983&quot;,
+##         ELLIPSOID[&quot;GRS 1980&quot;,6378137,298.257222101,
+##             LENGTHUNIT[&quot;metre&quot;,1]]],
+##     PRIMEM[&quot;Greenwich&quot;,0,
+##         ANGLEUNIT[&quot;degree&quot;,0.0174532925199433]],
+##     CS[ellipsoidal,2],
+##         AXIS[&quot;latitude&quot;,north,
+##             ORDER[1],
+##             ANGLEUNIT[&quot;degree&quot;,0.0174532925199433]],
+##         AXIS[&quot;longitude&quot;,east,
+##             ORDER[2],
+##             ANGLEUNIT[&quot;degree&quot;,0.0174532925199433]],
+##     ID[&quot;EPSG&quot;,4269]]</code></pre>
+<p>One is in 4326, the other in 4269. We can use <code>st_transform</code> on the <code>gasplants</code> data, which will reproject the points (and won’t change the data at all). The data won’t be any different, and the points won’t look too much different</p>
+<pre class="r"><code>gasplants = gasplants %&gt;%
+  st_transform(st_crs(MI))
+
+ggplot(gasplants) + geom_sf() + theme_minimal()</code></pre>
+<p><img src="/content/13-content_files/figure-html/unnamed-chunk-15-1.png" width="672" /></p>
+</div>
+<div id="importing-unprojected-data" class="section level4">
+<h4>Importing unprojected data</h4>
+<p>Sometimes, we have data only in .csv format, but with X and Y coordinates (e.g. Longitude and Latitude). To import this data, we do the following:</p>
+<ul>
+<li>Read in from .csv, .xls, etc.</li>
+<li>Determine the CRS of the data (usually 4326 for gps coordinates)</li>
+<li>Set the spatial coordinates and CRS</li>
+</ul>
+<p>We know how to do the first, and the 2nd and 3rd are done in one step. We’ll make a data.frame of city names and use the <code>tmaptools</code> package’s <code>geocode_OSM</code> to get the latitudes and longitudes of the city centers. This function uses open-source Open Street Maps instead of the google API (which is used by <code>ggmap</code>). This way, we don’t need an API key.</p>
+<pre class="r"><code>ourCities = geocode_OSM(c(&#39;Detroit&#39;,&#39;Lansing&#39;,&#39;Grand Rapids&#39;,&#39;Kalamazoo&#39;,&#39;Traverse City&#39;,&#39;Marquette&#39;)) %&gt;%
+  select(City = query, lat = lat, lon = lon)
+
+head(ourCities)</code></pre>
+<pre><code>##            City      lat       lon
+## 1       Detroit 42.33155 -83.04664
+## 2       Lansing 42.73377 -84.55538
+## 3  Grand Rapids 42.96324 -85.66786
+## 4     Kalamazoo 42.29171 -85.58723
+## 5 Traverse City 44.76064 -85.61653
+## 6     Marquette 46.44815 -87.63059</code></pre>
+<p>Since these are GPS-type coordinates, we are going to assume the CRS is EPSG=4326. Longitude is the “x” axis, and latitude is the “y” axis.</p>
+<pre class="r"><code>ourCities.spatial = st_as_sf(ourCities, coords = c(&#39;lon&#39;,&#39;lat&#39;), crs = 4326)
+head(ourCities.spatial)</code></pre>
+<pre><code>## Simple feature collection with 6 features and 1 field
+## geometry type:  POINT
+## dimension:      XY
+## bbox:           xmin: -87.63059 ymin: 42.29171 xmax: -83.04664 ymax: 46.44815
+## geographic CRS: WGS 84
+##            City                   geometry
+## 1       Detroit POINT (-83.04664 42.33155)
+## 2       Lansing POINT (-84.55538 42.73377)
+## 3  Grand Rapids POINT (-85.66786 42.96324)
+## 4     Kalamazoo POINT (-85.58723 42.29171)
+## 5 Traverse City POINT (-85.61653 44.76064)
+## 6     Marquette POINT (-87.63059 46.44815)</code></pre>
+<p>Now we have the point geometries! We can map this:</p>
+<pre class="r"><code>ggplot() +
+  geom_sf(data = MI, fill = &#39;gray90&#39;) +
+  geom_sf(data = ourCities.spatial, col = &#39;blue&#39;) +
+  theme_minimal()</code></pre>
+<p><img src="/content/13-content_files/figure-html/unnamed-chunk-18-1.png" width="672" /></p>
+</div>
+</div>
+<div id="spatial-merges" class="section level2">
+<h2>Spatial merges</h2>
+<p>Combining spatial data is the strength of geospatial analysis. We have our map of MI, and we have out points. Let’s “merge” the points to the map, meaning let’s connect the elements in our map (the state of MI) to the elements in our points (gas plants). This is a point-to-polygon merge.</p>
+<div id="point-to-polygon-merges" class="section level3">
+<h3>Point-to-polygon merges</h3>
+<p>We’ll use <code>st_join</code> to produce an inner join, so we keep only those points that are “in” (spatially) the state of Michigan. I’m specifying <code>join = st_intersects</code> though this is the default. Note that all the points that remain in the merged <code>MI.gasplants</code> are in Michigan, and note that all the data columns from <code>MI</code> are now in <code>gasplants</code>. We’ll use a county map of MI here so we will have the <em>county</em> data for each county containing a gas plant.</p>
+<pre class="r"><code>MI.counties = counties(state = &#39;MI&#39;, cb = TRUE, progress_bar = FALSE)
+
+MI.gasplants = gasplants %&gt;%
+  st_transform(st_crs(MI.counties)) %&gt;%
+  st_join(MI.counties, left = FALSE,
+          join = st_intersects)
+
+head(MI.gasplants)</code></pre>
+<pre><code>## Simple feature collection with 6 features and 10 fields
+## geometry type:  POINT
+## dimension:      XY
+## bbox:           xmin: -85.36458 ymin: 42.61859 xmax: -82.73532 ymax: 44.69001
+## geographic CRS: NAD83
+##                                     name STATEFP COUNTYFP COUNTYNS
+## 166                           MONITOR 11      26      017 01622951
+## 167                   DRZ (BEAVER CREEK)      26      039 01622962
+## 168 HIGHLAND CENTRAL PROCESSING FACILITY      26      125 01623005
+## 169                   KALKASKA GAS PLANT      26      079 01622982
+## 170          LENOX 36 CENTRAL PRODUCTION      26      099 01622992
+## 171                           SHERMAN 35      26      133 01623009
+##           AFFGEOID GEOID     NAME LSAD      ALAND    AWATER
+## 166 0500000US26017 26017      Bay   06 1145399057 488149217
+## 167 0500000US26039 26039 Crawford   06 1441077804  17917861
+## 168 0500000US26125 26125  Oakland   06 2245928625 103804387
+## 169 0500000US26079 26079 Kalkaska   06 1449729125  28020185
+## 170 0500000US26099 26099   Macomb   06 1241050552 237627819
+## 171 0500000US26133 26133  Osceola   06 1466674350  17425112
+##                       geometry
+## 166 POINT (-83.95389 43.62672)
+## 167 POINT (-84.81844 44.55881)
+## 168 POINT (-83.57433 42.61859)
+## 169 POINT (-85.19667 44.69001)
+## 170 POINT (-82.73532 42.73481)
+## 171 POINT (-85.36458 44.07761)</code></pre>
+<p>Now, we can plot the counties map with the gasplants over it. We can even use <code>aes(...)</code> to <code>fill</code> the counties:</p>
+<pre class="r"><code>ggplot() + 
+  geom_sf(data = MI.counties, aes(fill = NAME), show.legend = F) +  
+  geom_sf(data = MI.gasplants) + 
+  theme_minimal()  </code></pre>
+<p><img src="/content/13-content_files/figure-html/unnamed-chunk-20-1.png" width="672" /></p>
+<p>Huh. Most gas plants in Michigan are to the north of here. Interesting.</p>
+</div>
+<div id="mapview" class="section level3">
+<h3>Mapview</h3>
+<p>Sometimes, we want to be able to zoom in and out. <code>ggplot</code> is static, so that won’t work too well. Thanks to the <code>leaflet</code> engine, the <code>mapview</code> packages is stellar for exploration of spatial data. You can specify <code>zcol = Name</code> if you want to color by the <code>Name</code> field. I can’t embed this in the website, but you can run this at home. It will appear in the “Viewer” pane, not in the “Plots” pane. Unlike the static image here, you will be able to zoom and pan.</p>
+<pre><code>mapview(MI.gasplants)</code></pre>
+<p><img src="img/MIgas.png" width="259" /></p>
+<p>In an actual mapview window (not this static image here), clicking on the points or polygons will bring up a pop-up of the data for that row. Mapview is very useful for exploring your spatial data.</p>
+</div>
+<div id="polygon-to-polygon-merges" class="section level3">
+<h3>Polygon-to-polygon merges</h3>
+<p>The gas plants and state merge, above, was very simple because points are always either within or not within a polygon. Worst that can happen is some of your points are not over any polygon at all (resulting in <code>NA</code> values). But what if you’re merging polygons to polygons?</p>
+<p>First, let’s load some (overlapping) polygons. We can load up all of our states again (dropping the territories). We’ll also use a map of watersheds (which cross state boundaries). This is the HUC-4 map of the Rockies from the <a href="https://hub.arcgis.com/datasets/7f8632f3e3114623b4f5c8f97d935dca_1?geometry=-157.095%2C32.305%2C-73.379%2C44.324">US Geological Survey</a>. The HUC-4 is a definition of a watershed where the area of the HUC-4 is the area drained by a major tributary:</p>
+<pre class="r"><code>US = states(cb=TRUE) %&gt;%
+  dplyr::filter(!STUSPS %in% c(&#39;PR&#39;,&#39;GU&#39;,&#39;VI&#39;,&#39;MP&#39;,&#39;AS&#39;,&#39;AK&#39;,&#39;HI&#39;))
+
+HUC4 = st_read(&#39;https://opendata.arcgis.com/datasets/7f8632f3e3114623b4f5c8f97d935dca_1.kml&#39;) %&gt;%
+  st_transform(st_crs(US)) %&gt;%
+  dplyr::mutate(randomData = rpois(n(), 20))</code></pre>
+<pre><code>## Reading layer `NHD_Hydrologic_Units__HUCs_&#39; from data source `https://opendata.arcgis.com/datasets/7f8632f3e3114623b4f5c8f97d935dca_1.kml&#39; using driver `KML&#39;
+## Simple feature collection with 12 features and 2 fields
+## geometry type:  POLYGON
+## dimension:      XY
+## bbox:           xmin: -121.5779 ymin: 31.5082 xmax: -109.7625 ymax: 45.25827
+## geographic CRS: WGS 84</code></pre>
+<pre class="r"><code>ggplot() + 
+  geom_sf(data = US, col = &#39;gray50&#39;) +
+  geom_sf(data = HUC4, aes(fill = Name), show.legend = FALSE) + 
+  theme_minimal()</code></pre>
+<p><img src="/content/13-content_files/figure-html/unnamed-chunk-22-1.png" width="672" /></p>
+<p>These watersheds clearly overlap state boundaries. So what happens if we merge them? <code>sf</code> will create a new obsveration (row) for every HUC-4 / State combination</p>
+<pre class="r"><code>poly.merge = HUC4 %&gt;%
+  st_join(US, left = TRUE)
+
+head(poly.merge)</code></pre>
+<pre><code>## Simple feature collection with 6 features and 12 fields
+## geometry type:  POLYGON
+## dimension:      XY
+## bbox:           xmin: -115.7061 ymin: 31.5082 xmax: -111.5061 ymax: 39.30285
+## geographic CRS: NAD83
+##                         Name Description randomData STATEFP  STATENS
+## 1             Lower Colorado                     19      06 01779778
+## 1.1           Lower Colorado                     19      32 01779793
+## 1.2           Lower Colorado                     19      04 01779777
+## 2   Lower Colorado-Lake Mead                     21      49 01455989
+## 2.1 Lower Colorado-Lake Mead                     21      32 01779793
+## 2.2 Lower Colorado-Lake Mead                     21      04 01779777
+##        AFFGEOID GEOID STUSPS       NAME LSAD        ALAND      AWATER
+## 1   0400000US06    06     CA California   00 403660088482 20305454540
+## 1.1 0400000US32    32     NV     Nevada   00 284537049864  1839662829
+## 1.2 0400000US04    04     AZ    Arizona   00 294360282618   859561204
+## 2   0400000US49    49     UT       Utah   00 213355135666  6529910339
+## 2.1 0400000US32    32     NV     Nevada   00 284537049864  1839662829
+## 2.2 0400000US04    04     AZ    Arizona   00 294360282618   859561204
+##                           geometry
+## 1   POLYGON ((-114.6233 36.0304...
+## 1.1 POLYGON ((-114.6233 36.0304...
+## 1.2 POLYGON ((-114.6233 36.0304...
+## 2   POLYGON ((-115.0786 39.3005...
+## 2.1 POLYGON ((-115.0786 39.3005...
+## 2.2 POLYGON ((-115.0786 39.3005...</code></pre>
+<p>Now, every HUC-4 like “Lower Colorado” has multiple observations, one for each STUSPS that it touches. When we plot it, though, each of those observations are still attached to the same HUC-4 polygon.</p>
+<pre class="r"><code>ggplot(poly.merge) + geom_sf() + 
+  theme_minimal()</code></pre>
+<p><img src="/content/13-content_files/figure-html/unnamed-chunk-24-1.png" width="672" /></p>
+<p>We have another option in our join - we can ask <code>st_join</code> to keep just the <code>largest</code>:</p>
+<pre class="r"><code>poly.merge.largest = HUC4 %&gt;%
+  st_join(US, left = TRUE, largest = TRUE)
+
+head(poly.merge.largest)</code></pre>
+<pre><code>## Simple feature collection with 6 features and 12 fields
+## geometry type:  POLYGON
+## dimension:      XY
+## bbox:           xmin: -121.255 ymin: 31.5082 xmax: -111.5061 ymax: 42.3448
+## geographic CRS: NAD83
+##                           Name Description randomData STATEFP  STATENS
+## 1               Lower Colorado                     19      04 01779777
+## 2     Lower Colorado-Lake Mead                     21      04 01779777
+## 3    Northern Mojave-Mono Lake                     17      06 01779778
+## 4 Central Nevada Desert Basins                     17      32 01779793
+## 5               North Lahontan                     23      06 01779778
+## 6   Black Rock Desert-Humboldt                     17      32 01779793
+##      AFFGEOID GEOID STUSPS       NAME LSAD        ALAND      AWATER
+## 1 0400000US04    04     AZ    Arizona   00 294360282618   859561204
+## 2 0400000US04    04     AZ    Arizona   00 294360282618   859561204
+## 3 0400000US06    06     CA California   00 403660088482 20305454540
+## 4 0400000US32    32     NV     Nevada   00 284537049864  1839662829
+## 5 0400000US06    06     CA California   00 403660088482 20305454540
+## 6 0400000US32    32     NV     Nevada   00 284537049864  1839662829
+##                         geometry
+## 1 POLYGON ((-114.6233 36.0304...
+## 2 POLYGON ((-115.0786 39.3005...
+## 3 POLYGON ((-118.7594 38.3208...
+## 4 POLYGON ((-114.7211 41.2410...
+## 5 POLYGON ((-120.1835 41.9743...
+## 6 POLYGON ((-117.9693 42.3430...</code></pre>
+<p>Now, there is only <em>one</em> observation per HUC-4, and it corresponds to the state that has the most overlap area-wise. For Lower Colorado, Arizona has the most overlap. There are lots of things besides <code>st_intersect</code> we can use to call two things “joined”. <code>?st_join</code> tells you about them. For instance, we can use <code>join = st_covers</code> and we will only get a merge when HUC-4 completely covers the state.</p>
+<pre class="r"><code>HUC4 %&gt;%
+  st_join(US, left = TRUE, join = st_covers) %&gt;%
+  head()</code></pre>
+<pre><code>## Simple feature collection with 6 features and 12 fields
+## geometry type:  POLYGON
+## dimension:      XY
+## bbox:           xmin: -121.255 ymin: 31.5082 xmax: -111.5061 ymax: 42.3448
+## geographic CRS: NAD83
+##                           Name Description randomData STATEFP STATENS AFFGEOID
+## 1               Lower Colorado                     19    &lt;NA&gt;    &lt;NA&gt;     &lt;NA&gt;
+## 2     Lower Colorado-Lake Mead                     21    &lt;NA&gt;    &lt;NA&gt;     &lt;NA&gt;
+## 3    Northern Mojave-Mono Lake                     17    &lt;NA&gt;    &lt;NA&gt;     &lt;NA&gt;
+## 4 Central Nevada Desert Basins                     17    &lt;NA&gt;    &lt;NA&gt;     &lt;NA&gt;
+## 5               North Lahontan                     23    &lt;NA&gt;    &lt;NA&gt;     &lt;NA&gt;
+## 6   Black Rock Desert-Humboldt                     17    &lt;NA&gt;    &lt;NA&gt;     &lt;NA&gt;
+##   GEOID STUSPS NAME LSAD ALAND AWATER                       geometry
+## 1  &lt;NA&gt;   &lt;NA&gt; &lt;NA&gt; &lt;NA&gt;    NA     NA POLYGON ((-114.6233 36.0304...
+## 2  &lt;NA&gt;   &lt;NA&gt; &lt;NA&gt; &lt;NA&gt;    NA     NA POLYGON ((-115.0786 39.3005...
+## 3  &lt;NA&gt;   &lt;NA&gt; &lt;NA&gt; &lt;NA&gt;    NA     NA POLYGON ((-118.7594 38.3208...
+## 4  &lt;NA&gt;   &lt;NA&gt; &lt;NA&gt; &lt;NA&gt;    NA     NA POLYGON ((-114.7211 41.2410...
+## 5  &lt;NA&gt;   &lt;NA&gt; &lt;NA&gt; &lt;NA&gt;    NA     NA POLYGON ((-120.1835 41.9743...
+## 6  &lt;NA&gt;   &lt;NA&gt; &lt;NA&gt; &lt;NA&gt;    NA     NA POLYGON ((-117.9693 42.3430...</code></pre>
+<p>None of the HUC-4’s completely cover a state, so we get <code>NA</code> for all the state data.</p>
+<p>The other thing we can do is ask <code>R</code> to create separate polygons - one for every HUC-4 / state combination. That isn’t a merge, but it plays a similar role. Note this uses <code>st_intersection</code>:</p>
+<pre class="r"><code>poly.int = HUC4 %&gt;%
+  st_intersection(US) %&gt;%
+  arrange(Name)
+
+head(poly.int)</code></pre>
+<pre><code>## Simple feature collection with 6 features and 12 fields
+## geometry type:  GEOMETRY
+## dimension:      XY
+## bbox:           xmin: -120.4649 ymin: 35.20662 xmax: -114.7152 ymax: 42.3448
+## geographic CRS: NAD83
+##                             Name Description randomData STATEFP  STATENS
+## 6     Black Rock Desert-Humboldt                     17      06 01779778
+## 6.1   Black Rock Desert-Humboldt                     17      32 01779793
+## 6.2   Black Rock Desert-Humboldt                     17      41 01155107
+## 7               Central Lahontan                     18      06 01779778
+## 7.1             Central Lahontan                     18      32 01779793
+## 4   Central Nevada Desert Basins                     17      06 01779778
+##        AFFGEOID GEOID STUSPS       NAME LSAD        ALAND      AWATER
+## 6   0400000US06    06     CA California   00 403660088482 20305454540
+## 6.1 0400000US32    32     NV     Nevada   00 284537049864  1839662829
+## 6.2 0400000US41    41     OR     Oregon   00 248607777514  6191602576
+## 7   0400000US06    06     CA California   00 403660088482 20305454540
+## 7.1 0400000US32    32     NV     Nevada   00 284537049864  1839662829
+## 4   0400000US06    06     CA California   00 403660088482 20305454540
+##                           geometry
+## 6   MULTIPOLYGON (((-119.9997 4...
+## 6.1 MULTIPOLYGON (((-118.7203 4...
+## 6.2 MULTIPOLYGON (((-118.2951 4...
+## 7   POLYGON ((-118.9235 38.2506...
+## 7.1 POLYGON ((-120.0016 39.5794...
+## 4   MULTIPOLYGON (((-118.5931 3...</code></pre>
+<p>Now, we have a unique polygon for every combination of HUC-4 and State:</p>
+<pre class="r"><code>ggplot() + 
+  geom_sf(data = US, fill = &#39;gray50&#39;) +
+  geom_sf(data = poly.int, aes(fill = STUSPS), show.legend = FALSE) +
+  theme_minimal()</code></pre>
+<p><img src="/content/13-content_files/figure-html/unnamed-chunk-28-1.png" width="672" /></p>
+<p>Here, I’ve set the fill to the state, but you can see that the HUC-4’s have boundaries at the state line.</p>
+</div>
+<div id="summarizing" class="section level3">
+<h3>Summarizing</h3>
+<p>Our <code>summarize</code> function let us collapse by groups and calculate interseting things like average (over a group or region). The neat part is that <em>it works on spatial data as well</em>. Let’s look at the data again:</p>
+<pre class="r"><code>head(poly.int %&gt;% 
+       dplyr::select(Name, randomData, STUSPS) %&gt;%
+       arrange(STUSPS))</code></pre>
+<pre><code>## Simple feature collection with 6 features and 3 fields
+## geometry type:  GEOMETRY
+## dimension:      XY
+## bbox:           xmin: -120.4649 ymin: 32.2602 xmax: -111.5061 ymax: 41.10578
+## geographic CRS: NAD83
+##                             Name randomData STUSPS
+## 1.2               Lower Colorado         19     AZ
+## 2.2     Lower Colorado-Lake Mead         21     AZ
+## 6     Black Rock Desert-Humboldt         17     CA
+## 7               Central Lahontan         18     CA
+## 4   Central Nevada Desert Basins         17     CA
+## 1                 Lower Colorado         19     CA
+##                           geometry
+## 1.2 POLYGON ((-114.7368 36.0159...
+## 2.2 POLYGON ((-112.1184 37.0011...
+## 6   MULTIPOLYGON (((-119.9997 4...
+## 7   POLYGON ((-118.9235 38.2506...
+## 4   MULTIPOLYGON (((-118.5931 3...
+## 1   POLYGON ((-114.741 32.71731...</code></pre>
+<p>So AZ has two HUC-4’s in it - Lower Colorado and Lower Coloardo - Lake Mead (you can see them above). Summarize on geospatial data works just like regular data - we can <code>group_by(STUSPS)</code>, and we can <code>summarize()</code> any of the data. I threw some random data into <code>HUC-4</code> so we can summarize that.</p>
+<p>But how do we combine data specific to each HUC-4 in AZ? We could:</p>
+<ul>
+<li><p>Just take the average of all of the <code>randomData</code> values within the state.</p></li>
+<li><p>Take a weighted average of <code>randomData</code> where the <em>area</em> is the weight</p></li>
+<li><p>Take some other function (min, max, etc.) of <code>randomData</code>.</p></li>
+</ul>
+<p>We can implement any of these using <code>sf</code>. Let’s do the second since it nests the first. First, we’ll add the area of the State x HUC-4 using <code>st_area</code>, which gives a <code>units</code> object. We can turn that into a numeric:</p>
+<pre class="r"><code>poly.int.summary = poly.int %&gt;%
+  dplyr::mutate(State.HUC.area = as.numeric(st_area(.))) %&gt;%
+  group_by(STUSPS) %&gt;%
+  dplyr::summarize(mean.randomData = weighted.mean(randomData, w = State.HUC.area))
+
+head(poly.int.summary)</code></pre>
+<pre><code>## Simple feature collection with 6 features and 2 fields
+## geometry type:  GEOMETRY
+## dimension:      XY
+## bbox:           xmin: -121.5779 ymin: 32.2602 xmax: -111.0436 ymax: 45.25827
+## geographic CRS: NAD83
+## # A tibble: 6 x 3
+##   STUSPS mean.randomData                                                geometry
+##   &lt;chr&gt;            &lt;dbl&gt;                                          &lt;GEOMETRY [°]&gt;
+## 1 AZ                20.1 POLYGON ((-113.1825 35.44695, -113.1825 35.44693, -113~
+## 2 CA                17.9 POLYGON ((-114.741 32.71731, -114.741 32.71731, -114.7~
+## 3 ID                19.6 POLYGON ((-112.53 42.36301, -112.5301 42.36246, -112.5~
+## 4 MT                16   MULTIPOLYGON (((-111.3861 44.75427, -111.3856 44.75464~
+## 5 NV                17.8 POLYGON ((-116.2451 36.2725, -116.2509 36.27698, -116.~
+## 6 OR                25.3 POLYGON ((-117.4415 41.99964, -117.4431 41.99966, -117~</code></pre>
+<p><code>sf</code> with the <code>tidyverse</code> makes it really easy to apply spatial versions of <code>summarize</code> and <code>mutate</code>. Very useful.</p>
+<p>If we had wanted to just take the average (ignoring area), we’d just leave out the <code>w = State.HUC.area</code> or just used <code>mean</code>. If we had wanted to take, say, the minimum, we would use <code>min(randomData)</code> instead of <code>weighted.mean</code>. We can use whatever function we want in <code>summarize</code>, just as we did with non-spatial data.</p>
+</div>
+</div>
+<div id="cropping-vs.-merging" class="section level2">
+<h2>Cropping vs. merging</h2>
+<p>Sometimes, we wish to only crop to a region rather than merging. <code>sf</code> has the <code>st_crop</code> function to do this. Let’s crop our <code>HUC-4</code> data to just the <strong>bounding box</strong> of the state of Nevada</p>
+<pre class="r"><code>HUC4.nv = HUC4 %&gt;%
+  st_crop(US %&gt;% dplyr::filter(STUSPS==&#39;NV&#39;))
+
+ggplot(HUC4.nv) + geom_sf(aes(fill = Name), show.legend = F) +
+  geom_sf(data = US %&gt;% dplyr::filter(STUSPS==&#39;NV&#39;),  fill = NA, col = &#39;gray20&#39;, lwd = 3 ) +
+  theme_minimal()</code></pre>
+<p><img src="/content/13-content_files/figure-html/unnamed-chunk-31-1.png" width="672" /></p>
+<div id="bounding-boxes" class="section level3">
+<h3>Bounding boxes</h3>
+<p>Notice that this forms a box around Nevada and uses that to crop. To get the shape of Nevada, we would have to use <code>st_intersection</code>.</p>
+<p>But this introduces a useful concept: the <em>bounding box</em>. The bounding box is defined by the closest 4 points that form a box that perfectly encloses the object (even when the object is not a rectangle). The extent of the above plot is the bounding box for Nevada.</p>
+<pre class="r"><code>Nevada.bbox = st_bbox(US %&gt;% dplyr::filter(STUSPS==&#39;NV&#39;))
+Nevada.bbox</code></pre>
+<pre><code>##       xmin       ymin       xmax       ymax 
+## -120.00575   35.00186 -114.03965   42.00221</code></pre>
+<p>The bounding box can be used to frame a “window” in a <code>ggplot</code> using <code>geom_sf()</code>. That is, sometimes, we want to <em>plot</em> just a subsection of a map, but we still want the data to be the whole map. Here’s an example using the HOLC Redlining Maps, which were created in the 1930’s and were used to segregate US housing up until the 1970’s. They are available at the <a href="https://dsl.richmond.edu/panorama/redlining">University of Richmond’s <em>Mapping Inequality</em> site</a>. We can load Lansing and Detroit using the code below:</p>
+<pre class="r"><code>lansing = st_read(&#39;https://dsl.richmond.edu/panorama/redlining/static/downloads/geojson/MILansing19XX.geojson&#39;)</code></pre>
+<pre><code>## Reading layer `MILansing19XX&#39; from data source `https://dsl.richmond.edu/panorama/redlining/static/downloads/geojson/MILansing19XX.geojson&#39; using driver `GeoJSON&#39;
+## Simple feature collection with 4 features and 4 fields
+## geometry type:  MULTIPOLYGON
+## dimension:      XY
+## bbox:           xmin: -84.60737 ymin: 42.67877 xmax: -84.45292 ymax: 42.77022
+## geographic CRS: WGS 84</code></pre>
+<pre class="r"><code>detroit = st_read(&#39;https://dsl.richmond.edu/panorama/redlining/static/downloads/geojson/MIDetroit1939.geojson&#39;)</code></pre>
+<pre><code>## Reading layer `MIDetroit1939&#39; from data source `https://dsl.richmond.edu/panorama/redlining/static/downloads/geojson/MIDetroit1939.geojson&#39; using driver `GeoJSON&#39;
+## Simple feature collection with 238 features and 4 fields
+## geometry type:  MULTIPOLYGON
+## dimension:      XY
+## bbox:           xmin: -83.40036 ymin: 42.13495 xmax: -82.87286 ymax: 42.56012
+## geographic CRS: WGS 84</code></pre>
+<pre class="r"><code>mi.redlining = bind_rows(lansing, detroit) %&gt;%
+  st_transform(st_crs(MI))
+
+ggplot(mi.redlining) +
+  geom_sf(aes(fill = holc_grade, col = holc_grade)) + 
+  geom_sf(data = MI, fill = NA, col = &#39;gray50&#39;) +
+  scale_fill_manual(values = c(&#39;A&#39; = &#39;green&#39;, &#39;B&#39; = &#39;blue&#39;, &#39;C&#39; = &#39;yellow&#39;, &#39;D&#39; = &#39;red&#39;),
+                    aesthetics = c(&#39;color&#39;,&#39;fill&#39;)) +
+  theme_minimal()</code></pre>
+<p><img src="/content/13-content_files/figure-html/unnamed-chunk-33-1.png" width="672" /></p>
+<p>We can tell that our polygons have plotted, but since we have the whole state of Michigan, they’re almost unreadable. We need to set our window over the lower part of the lower peninsula. We’ll use <code>coord_sf</code> to do this, but first we need to define a window. Since windows are almost always rectangular, we can use the <code>st_bbox(mi.redlining)</code>, but we have to pull out the xlim (xmin, xmax) and ylim (ymin, ymax):</p>
+<pre class="r"><code>ggplot(mi.redlining) +
+  geom_sf(aes(fill = holc_grade, col = holc_grade)) + 
+  geom_sf(data = MI, fill = NA, col = &#39;gray50&#39;) +
+  scale_fill_manual(values = c(&#39;A&#39; = &#39;green&#39;, &#39;B&#39; = &#39;blue&#39;, &#39;C&#39; = &#39;yellow&#39;, &#39;D&#39; = &#39;red&#39;),
+                    aesthetics = c(&#39;color&#39;,&#39;fill&#39;)) +
+  theme_minimal() +
+  coord_sf(xlim = st_bbox(mi.redlining)[c(1, 3)],
+           ylim = st_bbox(mi.redlining)[c(2, 4)])</code></pre>
+<p><img src="/content/13-content_files/figure-html/unnamed-chunk-34-1.png" width="672" /></p>
+</div>
+</div>
+<div id="distance-matrices" class="section level2">
+<h2>Distance matrices</h2>
+<p>One of the most common spatial statistics we’d use in data analytics is the <em>distance</em> matrix. If we have a set of points and we think that we can explain some data about those points (unemployment, ag production, murders per capita) based on the distance to some explanatory source (gas plants, superfund site, etc.), then we might want to include <em>distance to gas plants</em> in our model as a predictor. Frequently, we’ll use inverse distance, <span class="math inline">\(\frac{1}{d}\)</span>, so that closer things can have more of an impact. To do this, we need a distance matrix.</p>
+<p>Let’s combine our <code>gasplants</code> and our <code>ourCities</code> to get the distance from each of our cities to the nearest gas plant. Maybe we have city-level data on student achievements and we want to see if gas plants lower student achievement. While we would need a lot more information to make this model, we can look at what we have for now.</p>
+<p>We will use <code>st_distance</code>, which will generate a special type of object that contains the distance information. <code>MI.gasplants</code> has 15 observations, and ourCities has 6, so for each row in <code>ourCities</code> we will get 15 distances, one to each gasplant. This forms a <em>distance matrix</em> where each row is an object in <code>ourCities</code> and each column is an object in <code>MI.gasplants</code>. We are going to take only a few <code>MI.gasplants</code> so we can easily view the results:</p>
+<pre class="r"><code>ourCities.spatial = ourCities.spatial %&gt;% 
+  st_transform(st_crs(MI.gasplants))
+
+MI.gasplants.small = MI.gasplants[1:4,]
+
+ourDistance = st_distance(x = ourCities.spatial, y = MI.gasplants.small)
+ourDistance</code></pre>
+<pre><code>## Units: [m]
+##          [,1]      [,2]      [,3]      [,4]
+## [1,] 161796.3 285994.94  53847.26 314434.03
+## [2,] 110601.1 203878.53  81425.92 223409.23
+## [3,] 157409.1 190014.72 175508.40 195566.44
+## [4,] 199383.3 259452.57 169506.71 268322.31
+## [5,] 183139.3  67153.92 289375.31  34176.21
+## [6,] 426805.7 303929.71 533731.03 272521.32</code></pre>
+<p>We get a <code>units</code> matrix, which has extra properties that allow us to convert the units. The units will be in whatever the CRS of the objects is in - <code>st_crs(ourCities.spatial)</code> tells us the units are meters.</p>
+<p>What if we wanted to find the closest gas plant to each city? That is akin to looking at each row, and finding the column that is the smallest, right? We will use <code>apply</code>, and we will note that the order of the columns is the same as the order in <code>MI.gasplants.small</code>, so we can use <code>MI.gasplants.small$name</code> to tell us the name of the closest gas plant. We will <code>apply</code> over each row (<code>MAR=1</code>) and use the <code>which.min</code> function, which returns the <em>index</em> number of the maximum column.</p>
+<pre class="r"><code>max.index = apply(ourDistance, MAR = 1, which.min)</code></pre>
+<p>We can combine this index with the <code>MI.gasplants.small</code> object to get the names of the closest gas plant for each of the cities. We’ll make a nice, neat tibble with the city name (in the order from ourCities.spatial), the closest gas plant name, and the distance to that plant:</p>
+<pre class="r"><code>tibble(City = ourCities.spatial$City,
+       Closest.gasplant = MI.gasplants.small$name[max.index],
+       Distance.to.closest = ourDistance[cbind(1:length(max.index), max.index)])</code></pre>
+<pre><code>## # A tibble: 6 x 3
+##   City          Closest.gasplant                     Distance.to.closest
+##   &lt;chr&gt;         &lt;chr&gt;                                                [m]
+## 1 Detroit       HIGHLAND CENTRAL PROCESSING FACILITY            53847.26
+## 2 Lansing       HIGHLAND CENTRAL PROCESSING FACILITY            81425.92
+## 3 Grand Rapids  MONITOR 11                                     157409.13
+## 4 Kalamazoo     HIGHLAND CENTRAL PROCESSING FACILITY           169506.71
+## 5 Traverse City KALKASKA GAS PLANT                              34176.21
+## 6 Marquette     KALKASKA GAS PLANT                             272521.32</code></pre>
+<p>But wait, what is going on in the last line there? Well, recall our distance matrix and <code>max.index</code>:</p>
+<pre class="r"><code>ourDistance</code></pre>
+<pre><code>## Units: [m]
+##          [,1]      [,2]      [,3]      [,4]
+## [1,] 161796.3 285994.94  53847.26 314434.03
+## [2,] 110601.1 203878.53  81425.92 223409.23
+## [3,] 157409.1 190014.72 175508.40 195566.44
+## [4,] 199383.3 259452.57 169506.71 268322.31
+## [5,] 183139.3  67153.92 289375.31  34176.21
+## [6,] 426805.7 303929.71 533731.03 272521.32</code></pre>
+<pre class="r"><code>#
+max.index</code></pre>
+<pre><code>## [1] 3 3 1 3 4 4</code></pre>
+<p>we want to select from our distance matrix the 1st row, 3rd column; the 2nd row, 3rd column; 3rd row, 1st column; 4th row, 3rd column; 5th row, 4th column; and 6th row, 4th column. This means the row index and column index are not ranges, but are paired. Using <code>cbind(1:6, max.index)</code> makes them paired entries, and we can select specific row x column combinations that way.</p>
+<div id="st_nearest_feature" class="section level3">
+<h3>st_nearest_feature</h3>
+<p>As is common in R, there is a function that will get the closest points between to spatial objects. <code>st_nearest_points</code> takes two geometries, and returns the neaarest point in <code>y</code> for every point in <code>x</code>, which is what we did with the MI gas plants.</p>
+<pre class="r"><code>st_nearest_feature(x = ourCities.spatial, y = MI.gasplants.small)</code></pre>
+<pre><code>## although coordinates are longitude/latitude, st_nearest_points assumes that they are planar</code></pre>
+<pre><code>## [1] 3 3 4 3 4 4</code></pre>
+<p>This is exactly our <code>max.index</code> and can be used *on the <code>y</code> object, <code>MI.gasplants.small</code>, to pull the names, subset, get distances etc.</p>
+<p><code>st_nearest_feature</code> also works for points and polygons, or polygons and polygons, where it returns the index of the polygon that contains the nearest point to the features in <code>x</code>. Let’s find the nearest Great Lake for each of our cities using a <a href="https://hub.arcgis.com/datasets/wi-dnr::great-lakes?geometry=-127.301%2C37.038%2C-43.585%2C48.298">KML shapefile of the Great Lakes from WI DNR</a>. Note that the GeoJSON link is under “API” here:</p>
+<pre class="r"><code>GL = st_read(&#39;https://opendata.arcgis.com/datasets/a8bb79fc10e64eee8c3a9db97cc5dc80_4.geojson&#39;) %&gt;%
+  st_transform(st_crs(ourCities.spatial))</code></pre>
+<pre><code>## Reading layer `Great_Lakes&#39; from data source `https://opendata.arcgis.com/datasets/a8bb79fc10e64eee8c3a9db97cc5dc80_4.geojson&#39; using driver `GeoJSON&#39;
+## Simple feature collection with 15 features and 3 fields
+## geometry type:  MULTIPOLYGON
+## dimension:      XY
+## bbox:           xmin: -92.10222 ymin: 41.38576 xmax: -75.95819 ymax: 49.00535
+## geographic CRS: WGS 84</code></pre>
+<pre class="r"><code>closest.GL.index = st_nearest_feature(x = ourCities.spatial, y = GL)</code></pre>
+<pre><code>## although coordinates are longitude/latitude, st_nearest_points assumes that they are planar</code></pre>
+<pre class="r"><code>ourCities %&gt;% dplyr::mutate(Closest.GreatLake = GL$FEAT_NAME[closest.GL.index])</code></pre>
+<pre><code>##            City      lat       lon Closest.GreatLake
+## 1       Detroit 42.33155 -83.04664         Lake Erie
+## 2       Lansing 42.73377 -84.55538        Lake Huron
+## 3  Grand Rapids 42.96324 -85.66786     Lake Michigan
+## 4     Kalamazoo 42.29171 -85.58723     Lake Michigan
+## 5 Traverse City 44.76064 -85.61653     Lake Michigan
+## 6     Marquette 46.44815 -87.63059     Lake Superior</code></pre>
+</div>
+</div>
+<div id="other-resources" class="section level2">
+<h2>Other resources</h2>
+<ul>
+<li><p>Claudia Engel’s “<a href="https://cengel.github.io/R-spatial/">Using Spatial Data with R</a>” is a very useful resource. It covers <code>sf</code> and an older geospatial library called <code>sp</code> that has similar functionality but was not tidyverse-friendly.</p></li>
+<li><p>The <a href="https://github.com/rstudio/cheatsheets/raw/master/sf.pdf">Rstudio Spatial Cheat Sheet</a>.</p>
+<ul>
+<li>There are <a href="https://www.rstudio.com/resources/cheatsheets/">lots of useful RStudio cheat sheets, actually.</a></li>
+</ul></li>
+</ul>
+</div>
+</div>
