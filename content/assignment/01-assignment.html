@@ -15,14 +15,17 @@ editor_options:
   chunk_output_type: console
 ---
 
+<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
 
 <div id="TOC">
 <ul>
-<li><a href="#using-ggplot2">Using ggplot2</a><ul>
+<li><a href="#using-ggplot2">Using ggplot2</a>
+<ul>
 <li><a href="#how-to-use-ggplot2-the-too-fast-and-wholly-unclear-recipe">How to use <code>ggplot2</code> – the too-fast and wholly unclear recipe</a></li>
 </ul></li>
 <li><a href="#mappings-link-data-to-things-you-see">Mappings Link Data to Things You See</a></li>
-<li><a href="#the-recipe">The Recipe</a><ul>
+<li><a href="#the-recipe">The Recipe</a>
+<ul>
 <li><a href="#mapping-aesthetics-vs-setting-them">Mapping Aesthetics vs Setting them</a></li>
 </ul></li>
 </ul>
@@ -69,7 +72,7 @@ library(tidyverse)</code></pre>
 <pre class="r"><code>library(gapminder)
 library(ggplot2)
 gapminder::gapminder</code></pre>
-<pre><code>## # A tibble: 1,704 x 6
+<pre><code>## # A tibble: 1,704 × 6
 ##    country     continent  year lifeExp      pop gdpPercap
 ##    &lt;fct&gt;       &lt;fct&gt;     &lt;int&gt;   &lt;dbl&gt;    &lt;int&gt;     &lt;dbl&gt;
 ##  1 Afghanistan Asia       1952    28.8  8425333      779.
@@ -82,7 +85,7 @@ gapminder::gapminder</code></pre>
 ##  8 Afghanistan Asia       1987    40.8 13867957      852.
 ##  9 Afghanistan Asia       1992    41.7 16317921      649.
 ## 10 Afghanistan Asia       1997    41.8 22227415      635.
-## # ... with 1,694 more rows</code></pre>
+## # … with 1,694 more rows</code></pre>
 <pre class="r"><code>p &lt;- ggplot(data = gapminder,
             mapping = aes(x = gdpPercap, y = lifeExp))
 p + geom_point()</code></pre>
@@ -109,7 +112,7 @@ p + geom_point()</code></pre>
 </div>
 <p>It turns out there’s a reason for doing all of this:</p>
 <blockquote>
-<p>“The greatest value of a picture is when it forces us to notice what we never expected to see.”" — John Tukey</p>
+<p>“The greatest value of a picture is when it forces us to notice what we never expected to see.”” — John Tukey</p>
 </blockquote>
 <p>In the plot you made above, one group of points seems to fall outside of the linear trend. These cars have a higher mileage than you might expect. How can you explain these cars?</p>
 <p>Let’s hypothesize that the cars are hybrids. One way to test this hypothesis is to look at the class value for each car. The <code>class</code> variable of the <code>mpg</code> dataset classifies cars into groups such as compact, midsize, and SUV. If the outlying points are hybrids, they should be classified as compact cars or, perhaps, subcompact cars (keep in mind that this data was collected before hybrid trucks and SUVs became popular).</p>
@@ -155,7 +158,7 @@ p + geom_point() +
 <li>e.g. <code>scale_</code>, <code>labs()</code>, and <code>guides()</code> functions</li>
 </ul>
 <p>As you start to run more <code>R</code> code, you’re likely to run into problems. Don’t worry — it happens to everyone. I have been writing code in numerous languages for years, and every day I still write code that doesn’t work. Sadly, <code>R</code> is particularly persnickity, and its error messages are often opaque.</p>
-<p>Start by carefully comparing the code that you’re running to the code in these notes. <code>R</code> is extremely picky, and a misplaced character can make all the difference. Make sure that every ( is matched with a ) and every " is paired with another ". Sometimes you’ll run the code and nothing happens. Check the left-hand of your console: if it’s a +, it means that R doesn’t think you’ve typed a complete expression and it’s waiting for you to finish it. In this case, it’s usually easy to start from scratch again by pressing ESCAPE to abort processing the current command.</p>
+<p>Start by carefully comparing the code that you’re running to the code in these notes. <code>R</code> is extremely picky, and a misplaced character can make all the difference. Make sure that every ( is matched with a ) and every ” is paired with another “. Sometimes you’ll run the code and nothing happens. Check the left-hand of your console: if it’s a +, it means that R doesn’t think you’ve typed a complete expression and it’s waiting for you to finish it. In this case, it’s usually easy to start from scratch again by pressing ESCAPE to abort processing the current command.</p>
 <p>One common problem when creating ggplot2 graphics is to put the + in the wrong place: it has to come at the end of the line, not the start.</p>
 <div id="mapping-aesthetics-vs-setting-them" class="section level3">
 <h3>Mapping Aesthetics vs Setting them</h3>

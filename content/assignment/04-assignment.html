@@ -15,13 +15,16 @@ editor_options:
   chunk_output_type: console
 ---
 
+<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
 <script src="/rmarkdown-libs/kePrint/kePrint.js"></script>
 <link href="/rmarkdown-libs/lightable/lightable.css" rel="stylesheet" />
 
 <div id="TOC">
 <ul>
-<li><a href="#models">Statistical models</a><ul>
-<li><a href="#poll-aggregators">Poll aggregators</a><ul>
+<li><a href="#models">Statistical models</a>
+<ul>
+<li><a href="#poll-aggregators">Poll aggregators</a>
+<ul>
 <li><a href="#poll-data">Poll data</a></li>
 <li><a href="#pollster-bias">Pollster bias</a></li>
 </ul></li>
@@ -188,8 +191,7 @@ moe</code></pre>
 <h3>Pollster bias</h3>
 <p>Notice that various pollsters are involved and some are taking several polls a week:</p>
 <pre class="r"><code>polls %&gt;% group_by(pollster) %&gt;% summarize(n())</code></pre>
-<pre><code>## `summarise()` ungrouping output (override with `.groups` argument)</code></pre>
-<pre><code>## # A tibble: 15 x 2
+<pre><code>## # A tibble: 15 × 2
 ##    pollster                                                   `n()`
 ##    &lt;fct&gt;                                                      &lt;int&gt;
 ##  1 ABC News/Washington Post                                       7
@@ -213,8 +215,7 @@ moe</code></pre>
 <pre class="r"><code>polls %&gt;% group_by(pollster) %&gt;%
   filter(n() &gt;= 6) %&gt;%
   summarize(se = 2 * sqrt(p_hat * (1-p_hat) / median(samplesize)))</code></pre>
-<pre><code>## `summarise()` ungrouping output (override with `.groups` argument)</code></pre>
-<pre><code>## # A tibble: 5 x 2
+<pre><code>## # A tibble: 5 × 2
 ##   pollster                     se
 ##   &lt;fct&gt;                     &lt;dbl&gt;
 ## 1 ABC News/Washington Post 0.0265

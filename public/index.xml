@@ -393,6 +393,7 @@ wrap_plots(FinalResults, nrow = 2, guides = &amp;#39;collect&amp;#39;)&lt;/code&
       <pubDate>Fri, 19 Mar 2021 00:00:00 +0000</pubDate>
       <guid>https://datavizm20.classes.andrewheiss.com/assignment/10-assignment/</guid>
       <description>
+&lt;script src=&#34;https://datavizm20.classes.andrewheiss.com/rmarkdown-libs/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
 
 &lt;div id=&#34;TOC&#34;&gt;
 &lt;ul&gt;
@@ -429,10 +430,12 @@ wrap_plots(FinalResults, nrow = 2, guides = &amp;#39;collect&amp;#39;)&lt;/code&
       <pubDate>Fri, 19 Mar 2021 00:00:00 +0000</pubDate>
       <guid>https://datavizm20.classes.andrewheiss.com/assignment/11-assignment/</guid>
       <description>
+&lt;script src=&#34;https://datavizm20.classes.andrewheiss.com/rmarkdown-libs/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
 
 &lt;div id=&#34;TOC&#34;&gt;
 &lt;ul&gt;
-&lt;li&gt;&lt;a href=&#34;#this-is-a-bonus-lab&#34;&gt;This is a bonus lab&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#this-is-a-bonus-lab&#34;&gt;This is a bonus lab&lt;/a&gt;
+&lt;ul&gt;
 &lt;li&gt;&lt;a href=&#34;#data-wrangling-continued&#34;&gt;Data Wrangling Continued…&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;&lt;/li&gt;
 &lt;/ul&gt;
@@ -659,6 +662,7 @@ myList[[3]] = get_rmse(x, wage_clean, &amp;#39;wage&amp;#39;)&lt;/code&gt;&lt;/p
       <pubDate>Tue, 09 Mar 2021 00:00:00 +0000</pubDate>
       <guid>https://datavizm20.classes.andrewheiss.com/assignment/09-assignment/</guid>
       <description>
+&lt;script src=&#34;https://datavizm20.classes.andrewheiss.com/rmarkdown-libs/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
 
 &lt;div id=&#34;TOC&#34;&gt;
 &lt;ul&gt;
@@ -695,12 +699,14 @@ myList[[3]] = get_rmse(x, wage_clean, &amp;#39;wage&amp;#39;)&lt;/code&gt;&lt;/p
       <pubDate>Fri, 26 Feb 2021 00:00:00 +0000</pubDate>
       <guid>https://datavizm20.classes.andrewheiss.com/assignment/07-assignment/</guid>
       <description>
+&lt;script src=&#34;https://datavizm20.classes.andrewheiss.com/rmarkdown-libs/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
 
 &lt;div id=&#34;TOC&#34;&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;a href=&#34;#backstory-and-set-up&#34;&gt;Backstory and Set Up&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;#data-cleaning&#34;&gt;Data Cleaning&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;#linear-models&#34;&gt;Linear Models&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#linear-models&#34;&gt;Linear Models&lt;/a&gt;
+&lt;ul&gt;
 &lt;li&gt;&lt;a href=&#34;#assesing-model-accuracy&#34;&gt;Assesing Model Accuracy&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;#model-complexity&#34;&gt;Model Complexity&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;#test-train-split&#34;&gt;Test-Train Split&lt;/a&gt;&lt;/li&gt;
@@ -912,15 +918,93 @@ lines(model_complexity, test_rmse, type = &amp;quot;b&amp;quot;, col = &amp;quot
     </item>
     
     <item>
+      <title>Model Building</title>
+      <link>https://datavizm20.classes.andrewheiss.com/assignment/06-assignment/</link>
+      <pubDate>Thu, 25 Feb 2021 00:00:00 +0000</pubDate>
+      <guid>https://datavizm20.classes.andrewheiss.com/assignment/06-assignment/</guid>
+      <description>
+&lt;script src=&#34;https://datavizm20.classes.andrewheiss.com/rmarkdown-libs/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
+
+&lt;div id=&#34;TOC&#34;&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#backstory-and-set-up&#34;&gt;Backstory and Set Up&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#building-a-model&#34;&gt;Building a Model&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+
+&lt;div class=&#34;fyi&#34;&gt;
+&lt;p&gt;&lt;strong&gt;NOTE&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;You must turn in a PDF document of your &lt;code&gt;R Markdown&lt;/code&gt; code. Submit this to D2L by 11:59 PM Eastern Time on Monday, March 8th&lt;/p&gt;
+&lt;/div&gt;
+&lt;p&gt;This week’s lab will extend last week’s lab. The introduction is a direct repeat.&lt;/p&gt;
+&lt;div id=&#34;backstory-and-set-up&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Backstory and Set Up&lt;/h2&gt;
+&lt;p&gt;You have been recently hired to Zillow’s Zestimate product team as a junior analyst. As a part of their regular hazing, they have given you access to a small subset of their historic sales data. Your job is to present some basic predictions for housing values in a small geographic area (Ames, IA) using this historical pricing.&lt;/p&gt;
+&lt;p&gt;First, let’s load the data.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ameslist &amp;lt;- read.table(&amp;quot;https://msudataanalytics.github.io/SSC442/Labs/data/ames.csv&amp;quot;,
+                 header = TRUE,
+                 sep = &amp;quot;,&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;building-a-model&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Building a Model&lt;/h2&gt;
+&lt;p&gt;We’re now ready to start playing with a model. We will start by using the &lt;code&gt;lm()&lt;/code&gt; function to fit a simple linear regression
+model, with &lt;code&gt;SalePrice&lt;/code&gt; as the response and lstat as the predictor.&lt;/p&gt;
+&lt;p&gt;Recall that the basic &lt;code&gt;lm()&lt;/code&gt; syntax is &lt;code&gt;lm(y∼x,data)&lt;/code&gt;, where &lt;code&gt;y&lt;/code&gt; is the &lt;strong&gt;response&lt;/strong&gt;, &lt;code&gt;x&lt;/code&gt; is the &lt;strong&gt;predictor&lt;/strong&gt;, and &lt;code&gt;data&lt;/code&gt; is the data set in which these two variables are kept. Let’s quickly run this with two variables:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;lm.fit = lm(SalePrice ~ GrLivArea)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;This yields:
+&lt;code&gt;Error in eval(expr, envir, enclos) : Object &#34;SalePrice&#34; not found&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;This command causes an error because &lt;code&gt;R&lt;/code&gt; does not know where to find the variables. We can fix this by attaching the data:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;attach(Ames)
+lm.fit = lm(SalePrice ~ GrLivArea)
+# Alternatively...
+lm.fit = lm(SalePrice ~ GrLivArea, data=Ames)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The next line tells &lt;code&gt;R&lt;/code&gt; that the variables are in the object known as &lt;code&gt;Ames&lt;/code&gt;. If you haven’t created this object yet (as in the previous lab) you’ll get an error at this stage. But once we attach &lt;code&gt;Ames&lt;/code&gt;, the first line works fine because &lt;code&gt;R&lt;/code&gt; now recognizes the variables. Alternatively, we could specify this within the &lt;code&gt;lm()&lt;/code&gt; call using &lt;code&gt;data = Ames&lt;/code&gt;. We’ve presented this way because it may be new to you; choose whichever you find most reasonable.&lt;/p&gt;
+&lt;p&gt;If we type &lt;code&gt;lm.fit&lt;/code&gt;, some basic information about the model is output. For more detailed information, we use &lt;code&gt;summary(lm.fit)&lt;/code&gt;. This gives us p-values and standard errors for the coefficients, as well as the &lt;span class=&#34;math inline&#34;&gt;\(R^2\)&lt;/span&gt; statistic and &lt;span class=&#34;math inline&#34;&gt;\(F\)&lt;/span&gt;-statistic for the entire model.&lt;a href=&#34;#fn1&#34; class=&#34;footnote-ref&#34; id=&#34;fnref1&#34;&gt;&lt;sup&gt;1&lt;/sup&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Utilizing these functions hels us see some interesting results. Note that we built (nearly) the simplest possible model:&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[\text{SalePrice} = \beta_0 + \beta_1*(\text{GrLivArea}) + \epsilon.\]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;But even on its own, this model is instructive. It suggest that an increase in overall living area of 1 ft &lt;span class=&#34;math inline&#34;&gt;\(^2\)&lt;/span&gt; is correlated with an expected increase in sales price of $107. (Note that we &lt;strong&gt;cannot&lt;/strong&gt; make causal claims!)&lt;/p&gt;
+&lt;p&gt;Saving the model as we did above is useful because we can explore other pieces of information it stores. Specifically, we can use the &lt;code&gt;names()&lt;/code&gt; function in order to find out what else is stored in &lt;code&gt;lm.fit&lt;/code&gt;. Although we can extract these quan- tities by name—e.g. &lt;code&gt;lm.fit$coefficients&lt;/code&gt;—it is safer to use the extractor functions like &lt;code&gt;coef()&lt;/code&gt; to access them. We can also use a handy tool like &lt;code&gt;plot()&lt;/code&gt; applied directly to &lt;code&gt;lm.fit&lt;/code&gt; to see some interesting data that is automatically stored by the model.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Try it:&lt;/strong&gt; Use &lt;code&gt;plot()&lt;/code&gt; to explore the model above. Do you suspect that some outliers have a large influence on the data? We will explore this point specifically in the future.&lt;/p&gt;
+&lt;p&gt;We can now go crazy adding variables to our model. It’s as simple as appending them to the previous code—though you should be careful executing this, as it will overwrite your previous output:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;lm.fit = lm(SalePrice ~ GrLivArea + LotArea)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;Try it:&lt;/strong&gt; Does controlling for &lt;code&gt;LotArea&lt;/code&gt; change the &lt;em&gt;qualitative&lt;/em&gt; conclusions from the previous regression? What about the &lt;em&gt;quantitative&lt;/em&gt; results? Does the direction of the change in the quantitative results make sense to you?&lt;/p&gt;
+&lt;div class=&#34;fyi&#34;&gt;
+&lt;p&gt;&lt;strong&gt;EXERCISES&lt;/strong&gt;&lt;/p&gt;
+&lt;ol style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;&lt;p&gt;Use the &lt;code&gt;lm()&lt;/code&gt; function in a &lt;strong&gt;simple&lt;/strong&gt; linear regression (e.g., with only one predictor) with &lt;code&gt;SalePrice&lt;/code&gt; as the response to determine the value of a garage.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Use the &lt;code&gt;lm()&lt;/code&gt; function to perform a multiple linear regression with &lt;code&gt;SalePrice&lt;/code&gt; as the response and all other variables from your &lt;code&gt;Ames&lt;/code&gt; data as the predictors. Use the &lt;code&gt;summary()&lt;/code&gt; function to print the results. Comment on the output. For instance:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Is there a relationship between the predictors and the response?&lt;/li&gt;
+&lt;li&gt;Which predictors appear to have a statistically significant relationship to the response? (Hint: look for stars)&lt;/li&gt;
+&lt;li&gt;What does the coefficient for the year variable suggest?&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Use the &lt;code&gt;:&lt;/code&gt; symbols to fit a linear regression model with &lt;em&gt;one&lt;/em&gt; well-chosen interaction effects. Why did you do this?&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Try a few (e.g., two) different transformations of the variables, such as &lt;span class=&#34;math inline&#34;&gt;\(ln(x)\)&lt;/span&gt;, &lt;span class=&#34;math inline&#34;&gt;\(x^2\)&lt;/span&gt;, &lt;span class=&#34;math inline&#34;&gt;\(\sqrt x\)&lt;/span&gt;. Do any of these make sense to include in a model of &lt;code&gt;SalePrice&lt;/code&gt;? Comment on your findings.&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;&lt;strong&gt;(Bonus; very very challenging)&lt;/strong&gt; How might we build a model to estimate the elasticity of demand from this dataset?&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&#34;footnotes&#34;&gt;
+&lt;hr /&gt;
+&lt;ol&gt;
+&lt;li id=&#34;fn1&#34;&gt;&lt;p&gt;When we use the simple regression model with a single input, the &lt;span class=&#34;math inline&#34;&gt;\(F\)&lt;/span&gt;-stat includes the intercept term. Otherwise, it does not. See Lecture 5 for more detail.&lt;a href=&#34;#fnref1&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    
+    <item>
       <title>Correlations and Simple Models</title>
       <link>https://datavizm20.classes.andrewheiss.com/assignment/05-assignment/</link>
       <pubDate>Fri, 19 Feb 2021 00:00:00 +0000</pubDate>
       <guid>https://datavizm20.classes.andrewheiss.com/assignment/05-assignment/</guid>
       <description>
+&lt;script src=&#34;https://datavizm20.classes.andrewheiss.com/rmarkdown-libs/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
 
 &lt;div id=&#34;TOC&#34;&gt;
 &lt;ul&gt;
-&lt;li&gt;&lt;a href=&#34;#backstory-and-set-up&#34;&gt;Backstory and Set Up&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#backstory-and-set-up&#34;&gt;Backstory and Set Up&lt;/a&gt;
+&lt;ul&gt;
 &lt;li&gt;&lt;a href=&#34;#data-exploration-and-processing&#34;&gt;Data Exploration and Processing&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;&lt;/li&gt;
 &lt;/ul&gt;
@@ -1050,93 +1134,21 @@ unique(ameslist$GarageOutside)
     </item>
     
     <item>
-      <title>Model Building</title>
-      <link>https://datavizm20.classes.andrewheiss.com/assignment/06-assignment/</link>
-      <pubDate>Fri, 19 Feb 2021 00:00:00 +0000</pubDate>
-      <guid>https://datavizm20.classes.andrewheiss.com/assignment/06-assignment/</guid>
-      <description>
-
-&lt;div id=&#34;TOC&#34;&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;a href=&#34;#backstory-and-set-up&#34;&gt;Backstory and Set Up&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;#building-a-model&#34;&gt;Building a Model&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/div&gt;
-
-&lt;div class=&#34;fyi&#34;&gt;
-&lt;p&gt;&lt;strong&gt;NOTE&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;You must turn in a PDF document of your &lt;code&gt;R Markdown&lt;/code&gt; code. Submit this to D2L by 11:59 PM Eastern Time on Monday, March 1st.&lt;/p&gt;
-&lt;/div&gt;
-&lt;p&gt;This week’s lab will extend last week’s lab. The introduction is a direct repeat.&lt;/p&gt;
-&lt;div id=&#34;backstory-and-set-up&#34; class=&#34;section level2&#34;&gt;
-&lt;h2&gt;Backstory and Set Up&lt;/h2&gt;
-&lt;p&gt;You have been recently hired to Zillow’s Zestimate product team as a junior analyst. As a part of their regular hazing, they have given you access to a small subset of their historic sales data. Your job is to present some basic predictions for housing values in a small geographic area (Ames, IA) using this historical pricing.&lt;/p&gt;
-&lt;p&gt;First, let’s load the data.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ameslist &amp;lt;- read.table(&amp;quot;https://msudataanalytics.github.io/SSC442/Labs/data/ames.csv&amp;quot;,
-                 header = TRUE,
-                 sep = &amp;quot;,&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-&lt;div id=&#34;building-a-model&#34; class=&#34;section level2&#34;&gt;
-&lt;h2&gt;Building a Model&lt;/h2&gt;
-&lt;p&gt;We’re now ready to start playing with a model. We will start by using the &lt;code&gt;lm()&lt;/code&gt; function to fit a simple linear regression
-model, with &lt;code&gt;SalePrice&lt;/code&gt; as the response and lstat as the predictor.&lt;/p&gt;
-&lt;p&gt;Recall that the basic &lt;code&gt;lm()&lt;/code&gt; syntax is &lt;code&gt;lm(y∼x,data)&lt;/code&gt;, where &lt;code&gt;y&lt;/code&gt; is the &lt;strong&gt;response&lt;/strong&gt;, &lt;code&gt;x&lt;/code&gt; is the &lt;strong&gt;predictor&lt;/strong&gt;, and &lt;code&gt;data&lt;/code&gt; is the data set in which these two variables are kept. Let’s quickly run this with two variables:&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;lm.fit = lm(SalePrice ~ GrLivArea)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;This yields:
-&lt;code&gt;Error in eval(expr, envir, enclos) : Object &#34;SalePrice&#34; not found&lt;/code&gt;&lt;/p&gt;
-&lt;p&gt;This command causes an error because &lt;code&gt;R&lt;/code&gt; does not know where to find the variables. We can fix this by attaching the data:&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;attach(Ames)
-lm.fit = lm(SalePrice ~ GrLivArea)
-# Alternatively...
-lm.fit = lm(SalePrice ~ GrLivArea, data=Ames)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;The next line tells &lt;code&gt;R&lt;/code&gt; that the variables are in the object known as &lt;code&gt;Ames&lt;/code&gt;. If you haven’t created this object yet (as in the previous lab) you’ll get an error at this stage. But once we attach &lt;code&gt;Ames&lt;/code&gt;, the first line works fine because &lt;code&gt;R&lt;/code&gt; now recognizes the variables. Alternatively, we could specify this within the &lt;code&gt;lm()&lt;/code&gt; call using &lt;code&gt;data = Ames&lt;/code&gt;. We’ve presented this way because it may be new to you; choose whichever you find most reasonable.&lt;/p&gt;
-&lt;p&gt;If we type &lt;code&gt;lm.fit&lt;/code&gt;, some basic information about the model is output. For more detailed information, we use &lt;code&gt;summary(lm.fit)&lt;/code&gt;. This gives us p-values and standard errors for the coefficients, as well as the &lt;span class=&#34;math inline&#34;&gt;\(R^2\)&lt;/span&gt; statistic and &lt;span class=&#34;math inline&#34;&gt;\(F\)&lt;/span&gt;-statistic for the entire model.&lt;a href=&#34;#fn1&#34; class=&#34;footnote-ref&#34; id=&#34;fnref1&#34;&gt;&lt;sup&gt;1&lt;/sup&gt;&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;Utilizing these functions hels us see some interesting results. Note that we built (nearly) the simplest possible model:&lt;/p&gt;
-&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[\text{SalePrice} = \beta_0 + \beta_1*(\text{GrLivArea}) + \epsilon.\]&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;But even on its own, this model is instructive. It suggest that an increase in overall living area of 1 ft &lt;span class=&#34;math inline&#34;&gt;\(^2\)&lt;/span&gt; is correlated with an expected increase in sales price of $107. (Note that we &lt;strong&gt;cannot&lt;/strong&gt; make causal claims!)&lt;/p&gt;
-&lt;p&gt;Saving the model as we did above is useful because we can explore other pieces of information it stores. Specifically, we can use the &lt;code&gt;names()&lt;/code&gt; function in order to find out what else is stored in &lt;code&gt;lm.fit&lt;/code&gt;. Although we can extract these quan- tities by name—e.g. &lt;code&gt;lm.fit$coefficients&lt;/code&gt;—it is safer to use the extractor functions like &lt;code&gt;coef()&lt;/code&gt; to access them. We can also use a handy tool like &lt;code&gt;plot()&lt;/code&gt; applied directly to &lt;code&gt;lm.fit&lt;/code&gt; to see some interesting data that is automatically stored by the model.&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;Try it:&lt;/strong&gt; Use &lt;code&gt;plot()&lt;/code&gt; to explore the model above. Do you suspect that some outliers have a large influence on the data? We will explore this point specifically in the future.&lt;/p&gt;
-&lt;p&gt;We can now go crazy adding variables to our model. It’s as simple as appending them to the previous code—though you should be careful executing this, as it will overwrite your previous output:&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;lm.fit = lm(SalePrice ~ GrLivArea + LotArea)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;strong&gt;Try it:&lt;/strong&gt; Does controlling for &lt;code&gt;LotArea&lt;/code&gt; change the &lt;em&gt;qualitative&lt;/em&gt; conclusions from the previous regression? What about the &lt;em&gt;quantitative&lt;/em&gt; results? Does the direction of the change in the quantitative results make sense to you?&lt;/p&gt;
-&lt;div class=&#34;fyi&#34;&gt;
-&lt;p&gt;&lt;strong&gt;EXERCISES&lt;/strong&gt;&lt;/p&gt;
-&lt;ol style=&#34;list-style-type: decimal&#34;&gt;
-&lt;li&gt;&lt;p&gt;Use the &lt;code&gt;lm()&lt;/code&gt; function in a &lt;strong&gt;simple&lt;/strong&gt; linear regression (e.g., with only one predictor) with &lt;code&gt;SalePrice&lt;/code&gt; as the response to determine the value of a garage.&lt;/p&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;Use the &lt;code&gt;lm()&lt;/code&gt; function to perform a multiple linear regression with &lt;code&gt;SalePrice&lt;/code&gt; as the response and all other variables from your &lt;code&gt;Ames&lt;/code&gt; data as the predictors. Use the &lt;code&gt;summary()&lt;/code&gt; function to print the results. Comment on the output. For instance:&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;Is there a relationship between the predictors and the response?&lt;/li&gt;
-&lt;li&gt;Which predictors appear to have a statistically significant relationship to the response? (Hint: look for stars)&lt;/li&gt;
-&lt;li&gt;What does the coefficient for the year variable suggest?&lt;/li&gt;
-&lt;/ul&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;Use the &lt;code&gt;:&lt;/code&gt; symbols to fit a linear regression model with &lt;em&gt;one&lt;/em&gt; well-chosen interaction effects. Why did you do this?&lt;/p&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;Try a few (e.g., two) different transformations of the variables, such as &lt;span class=&#34;math inline&#34;&gt;\(ln(x)\)&lt;/span&gt;, &lt;span class=&#34;math inline&#34;&gt;\(x^2\)&lt;/span&gt;, &lt;span class=&#34;math inline&#34;&gt;\(\sqrt x\)&lt;/span&gt;. Do any of these make sense to include in a model of &lt;code&gt;SalePrice&lt;/code&gt;? Comment on your findings.&lt;/p&gt;&lt;/li&gt;
-&lt;/ol&gt;
-&lt;p&gt;&lt;strong&gt;(Bonus; very very challenging)&lt;/strong&gt; How might we build a model to estimate the elasticity of demand from this dataset?&lt;/p&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class=&#34;footnotes&#34;&gt;
-&lt;hr /&gt;
-&lt;ol&gt;
-&lt;li id=&#34;fn1&#34;&gt;&lt;p&gt;When we use the simple regression model with a single input, the &lt;span class=&#34;math inline&#34;&gt;\(F\)&lt;/span&gt;-stat includes the intercept term. Otherwise, it does not. See Lecture 5 for more detail.&lt;a href=&#34;#fnref1&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
-&lt;/ol&gt;
-&lt;/div&gt;
-</description>
-    </item>
-    
-    <item>
       <title>Statistical Models</title>
       <link>https://datavizm20.classes.andrewheiss.com/assignment/04-assignment/</link>
       <pubDate>Fri, 12 Feb 2021 00:00:00 +0000</pubDate>
       <guid>https://datavizm20.classes.andrewheiss.com/assignment/04-assignment/</guid>
       <description>
+&lt;script src=&#34;https://datavizm20.classes.andrewheiss.com/rmarkdown-libs/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
 &lt;script src=&#34;https://datavizm20.classes.andrewheiss.com/rmarkdown-libs/kePrint/kePrint.js&#34;&gt;&lt;/script&gt;
 &lt;link href=&#34;https://datavizm20.classes.andrewheiss.com/rmarkdown-libs/lightable/lightable.css&#34; rel=&#34;stylesheet&#34; /&gt;
 
 &lt;div id=&#34;TOC&#34;&gt;
 &lt;ul&gt;
-&lt;li&gt;&lt;a href=&#34;#models&#34;&gt;Statistical models&lt;/a&gt;&lt;ul&gt;
-&lt;li&gt;&lt;a href=&#34;#poll-aggregators&#34;&gt;Poll aggregators&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#models&#34;&gt;Statistical models&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#poll-aggregators&#34;&gt;Poll aggregators&lt;/a&gt;
+&lt;ul&gt;
 &lt;li&gt;&lt;a href=&#34;#poll-data&#34;&gt;Poll data&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;#pollster-bias&#34;&gt;Pollster bias&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;&lt;/li&gt;
@@ -1303,8 +1315,7 @@ moe&lt;/code&gt;&lt;/pre&gt;
 &lt;h3&gt;Pollster bias&lt;/h3&gt;
 &lt;p&gt;Notice that various pollsters are involved and some are taking several polls a week:&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;polls %&amp;gt;% group_by(pollster) %&amp;gt;% summarize(n())&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## `summarise()` ungrouping output (override with `.groups` argument)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## # A tibble: 15 x 2
+&lt;pre&gt;&lt;code&gt;## # A tibble: 15 × 2
 ##    pollster                                                   `n()`
 ##    &amp;lt;fct&amp;gt;                                                      &amp;lt;int&amp;gt;
 ##  1 ABC News/Washington Post                                       7
@@ -1328,8 +1339,7 @@ moe&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;polls %&amp;gt;% group_by(pollster) %&amp;gt;%
   filter(n() &amp;gt;= 6) %&amp;gt;%
   summarize(se = 2 * sqrt(p_hat * (1-p_hat) / median(samplesize)))&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## `summarise()` ungrouping output (override with `.groups` argument)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## # A tibble: 5 x 2
+&lt;pre&gt;&lt;code&gt;## # A tibble: 5 × 2
 ##   pollster                     se
 ##   &amp;lt;fct&amp;gt;                     &amp;lt;dbl&amp;gt;
 ## 1 ABC News/Washington Post 0.0265
@@ -2176,10 +2186,12 @@ head(weather_atl_long)&lt;/code&gt;&lt;/pre&gt;
       <pubDate>Fri, 05 Feb 2021 00:00:00 +0000</pubDate>
       <guid>https://datavizm20.classes.andrewheiss.com/assignment/03-assignment/</guid>
       <description>
+&lt;script src=&#34;https://datavizm20.classes.andrewheiss.com/rmarkdown-libs/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
 
 &lt;div id=&#34;TOC&#34;&gt;
 &lt;ul&gt;
-&lt;li&gt;&lt;a href=&#34;#getting-started&#34;&gt;Getting started&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#getting-started&#34;&gt;Getting started&lt;/a&gt;
+&lt;ul&gt;
 &lt;li&gt;&lt;a href=&#34;#bonus-exercise&#34;&gt;Bonus Exercise&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;#turning-everything-in&#34;&gt;Turning everything in&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;#postscript-how-we-got-this-unemployment-data&#34;&gt;Postscript: how we got this unemployment data&lt;/a&gt;&lt;/li&gt;
@@ -2264,11 +2276,13 @@ head(weather_atl_long)&lt;/code&gt;&lt;/pre&gt;
       <pubDate>Fri, 29 Jan 2021 00:00:00 +0000</pubDate>
       <guid>https://datavizm20.classes.andrewheiss.com/assignment/02-assignment/</guid>
       <description>
+&lt;script src=&#34;https://datavizm20.classes.andrewheiss.com/rmarkdown-libs/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
 
 &lt;div id=&#34;TOC&#34;&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;a href=&#34;#preliminaries&#34;&gt;Preliminaries&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;#background&#34;&gt;Background&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#background&#34;&gt;Background&lt;/a&gt;
+&lt;ul&gt;
 &lt;li&gt;&lt;a href=&#34;#r-markdown&#34;&gt;R Markdown&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;#data-prep&#34;&gt;Data Prep&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;&lt;/li&gt;
@@ -3035,14 +3049,17 @@ Print the object &lt;code&gt;p&lt;/code&gt; defined in exercise one and describe
       <pubDate>Fri, 22 Jan 2021 00:00:00 +0000</pubDate>
       <guid>https://datavizm20.classes.andrewheiss.com/assignment/01-assignment/</guid>
       <description>
+&lt;script src=&#34;https://datavizm20.classes.andrewheiss.com/rmarkdown-libs/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
 
 &lt;div id=&#34;TOC&#34;&gt;
 &lt;ul&gt;
-&lt;li&gt;&lt;a href=&#34;#using-ggplot2&#34;&gt;Using ggplot2&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#using-ggplot2&#34;&gt;Using ggplot2&lt;/a&gt;
+&lt;ul&gt;
 &lt;li&gt;&lt;a href=&#34;#how-to-use-ggplot2-the-too-fast-and-wholly-unclear-recipe&#34;&gt;How to use &lt;code&gt;ggplot2&lt;/code&gt; – the too-fast and wholly unclear recipe&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;#mappings-link-data-to-things-you-see&#34;&gt;Mappings Link Data to Things You See&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;#the-recipe&#34;&gt;The Recipe&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#the-recipe&#34;&gt;The Recipe&lt;/a&gt;
+&lt;ul&gt;
 &lt;li&gt;&lt;a href=&#34;#mapping-aesthetics-vs-setting-them&#34;&gt;Mapping Aesthetics vs Setting them&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;&lt;/li&gt;
 &lt;/ul&gt;
@@ -3089,7 +3106,7 @@ library(tidyverse)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(gapminder)
 library(ggplot2)
 gapminder::gapminder&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## # A tibble: 1,704 x 6
+&lt;pre&gt;&lt;code&gt;## # A tibble: 1,704 × 6
 ##    country     continent  year lifeExp      pop gdpPercap
 ##    &amp;lt;fct&amp;gt;       &amp;lt;fct&amp;gt;     &amp;lt;int&amp;gt;   &amp;lt;dbl&amp;gt;    &amp;lt;int&amp;gt;     &amp;lt;dbl&amp;gt;
 ##  1 Afghanistan Asia       1952    28.8  8425333      779.
@@ -3102,7 +3119,7 @@ gapminder::gapminder&lt;/code&gt;&lt;/pre&gt;
 ##  8 Afghanistan Asia       1987    40.8 13867957      852.
 ##  9 Afghanistan Asia       1992    41.7 16317921      649.
 ## 10 Afghanistan Asia       1997    41.8 22227415      635.
-## # ... with 1,694 more rows&lt;/code&gt;&lt;/pre&gt;
+## # … with 1,694 more rows&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p &amp;lt;- ggplot(data = gapminder,
             mapping = aes(x = gdpPercap, y = lifeExp))
 p + geom_point()&lt;/code&gt;&lt;/pre&gt;
@@ -3129,7 +3146,7 @@ p + geom_point()&lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 &lt;p&gt;It turns out there’s a reason for doing all of this:&lt;/p&gt;
 &lt;blockquote&gt;
-&lt;p&gt;“The greatest value of a picture is when it forces us to notice what we never expected to see.”&#34; — John Tukey&lt;/p&gt;
+&lt;p&gt;“The greatest value of a picture is when it forces us to notice what we never expected to see.”” — John Tukey&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;p&gt;In the plot you made above, one group of points seems to fall outside of the linear trend. These cars have a higher mileage than you might expect. How can you explain these cars?&lt;/p&gt;
 &lt;p&gt;Let’s hypothesize that the cars are hybrids. One way to test this hypothesis is to look at the class value for each car. The &lt;code&gt;class&lt;/code&gt; variable of the &lt;code&gt;mpg&lt;/code&gt; dataset classifies cars into groups such as compact, midsize, and SUV. If the outlying points are hybrids, they should be classified as compact cars or, perhaps, subcompact cars (keep in mind that this data was collected before hybrid trucks and SUVs became popular).&lt;/p&gt;
@@ -3175,7 +3192,7 @@ p + geom_point() +
 &lt;li&gt;e.g. &lt;code&gt;scale_&lt;/code&gt;, &lt;code&gt;labs()&lt;/code&gt;, and &lt;code&gt;guides()&lt;/code&gt; functions&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;As you start to run more &lt;code&gt;R&lt;/code&gt; code, you’re likely to run into problems. Don’t worry — it happens to everyone. I have been writing code in numerous languages for years, and every day I still write code that doesn’t work. Sadly, &lt;code&gt;R&lt;/code&gt; is particularly persnickity, and its error messages are often opaque.&lt;/p&gt;
-&lt;p&gt;Start by carefully comparing the code that you’re running to the code in these notes. &lt;code&gt;R&lt;/code&gt; is extremely picky, and a misplaced character can make all the difference. Make sure that every ( is matched with a ) and every &#34; is paired with another &#34;. Sometimes you’ll run the code and nothing happens. Check the left-hand of your console: if it’s a +, it means that R doesn’t think you’ve typed a complete expression and it’s waiting for you to finish it. In this case, it’s usually easy to start from scratch again by pressing ESCAPE to abort processing the current command.&lt;/p&gt;
+&lt;p&gt;Start by carefully comparing the code that you’re running to the code in these notes. &lt;code&gt;R&lt;/code&gt; is extremely picky, and a misplaced character can make all the difference. Make sure that every ( is matched with a ) and every ” is paired with another “. Sometimes you’ll run the code and nothing happens. Check the left-hand of your console: if it’s a +, it means that R doesn’t think you’ve typed a complete expression and it’s waiting for you to finish it. In this case, it’s usually easy to start from scratch again by pressing ESCAPE to abort processing the current command.&lt;/p&gt;
 &lt;p&gt;One common problem when creating ggplot2 graphics is to put the + in the wrong place: it has to come at the end of the line, not the start.&lt;/p&gt;
 &lt;div id=&#34;mapping-aesthetics-vs-setting-them&#34; class=&#34;section level3&#34;&gt;
 &lt;h3&gt;Mapping Aesthetics vs Setting them&lt;/h3&gt;
@@ -3237,10 +3254,12 @@ p + geom_point(mapping = aes(color = continent)) +
       <pubDate>Fri, 15 Jan 2021 00:00:00 +0000</pubDate>
       <guid>https://datavizm20.classes.andrewheiss.com/assignment/00-assignment/</guid>
       <description>
+&lt;script src=&#34;https://datavizm20.classes.andrewheiss.com/rmarkdown-libs/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
 
 &lt;div id=&#34;TOC&#34;&gt;
 &lt;ul&gt;
-&lt;li&gt;&lt;a href=&#34;#programming-basics&#34;&gt;Programming basics&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#programming-basics&#34;&gt;Programming basics&lt;/a&gt;
+&lt;ul&gt;
 &lt;li&gt;&lt;a href=&#34;#conditionals&#34;&gt;Conditional expressions&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;#defining-functions&#34;&gt;Defining functions&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;#namespaces&#34;&gt;Namespaces&lt;/a&gt;&lt;/li&gt;
@@ -9512,12 +9531,14 @@ endDate - startDate&lt;/code&gt;&lt;/pre&gt;
       <pubDate>Sun, 04 Apr 2021 00:00:00 +0000</pubDate>
       <guid>https://datavizm20.classes.andrewheiss.com/assignment/final-project/</guid>
       <description>
+&lt;script src=&#34;https://datavizm20.classes.andrewheiss.com/rmarkdown-libs/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
 
 &lt;div id=&#34;TOC&#34;&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;a href=&#34;#requirements&#34;&gt;Requirements&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;#teams&#34;&gt;Teams&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;#suggested-outline&#34;&gt;Suggested outline&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#suggested-outline&#34;&gt;Suggested outline&lt;/a&gt;
+&lt;ul&gt;
 &lt;li&gt;&lt;a href=&#34;#introduction&#34;&gt;Introduction&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;#theory-and-background&#34;&gt;Theory and Background&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;#data-and-analyses&#34;&gt;Data and Analyses&lt;/a&gt;&lt;/li&gt;
@@ -11632,15 +11653,18 @@ admissions %&gt;%
       <pubDate>Tue, 09 Mar 2021 00:00:00 +0000</pubDate>
       <guid>https://datavizm20.classes.andrewheiss.com/assignment/project2/</guid>
       <description>
+&lt;script src=&#34;https://datavizm20.classes.andrewheiss.com/rmarkdown-libs/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
 
 &lt;div id=&#34;TOC&#34;&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;a href=&#34;#part-1-instructions&#34;&gt;Part 1: Instructions&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;#part-2-hypotheses&#34;&gt;Part 2: Hypotheses&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#part-2-hypotheses&#34;&gt;Part 2: Hypotheses&lt;/a&gt;
+&lt;ul&gt;
 &lt;li&gt;&lt;a href=&#34;#evaluation&#34;&gt;Evaluation&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;#data-cleaning-code&#34;&gt;Data cleaning code&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;#data-to-possibly-use-in-your-plot&#34;&gt;Data to possibly use in your plot&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#data-to-possibly-use-in-your-plot&#34;&gt;Data to possibly use in your plot&lt;/a&gt;
+&lt;ul&gt;
 &lt;li&gt;&lt;a href=&#34;#country-totals-over-time&#34;&gt;Country totals over time&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;#cumulative-country-totals-over-time&#34;&gt;Cumulative country totals over time&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;#continent-totals-over-time&#34;&gt;Continent totals over time&lt;/a&gt;&lt;/li&gt;
@@ -11739,15 +11763,15 @@ refugees_clean &amp;lt;- refugees_raw %&amp;gt;%
 &lt;div id=&#34;country-totals-over-time&#34; class=&#34;section level3&#34;&gt;
 &lt;h3&gt;Country totals over time&lt;/h3&gt;
 &lt;p&gt;This is just the &lt;code&gt;refugees_clean&lt;/code&gt; data frame I gave you. You’ll want to filter it and select specific countries, though—you won’t really be able to plot 60 countries all at once unless you use sparklines.&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;## # A tibble: 6 x 7
-##   origin_country iso3  origin_region    origin_continent  year number year_date 
-##   &amp;lt;chr&amp;gt;          &amp;lt;chr&amp;gt; &amp;lt;chr&amp;gt;            &amp;lt;chr&amp;gt;            &amp;lt;dbl&amp;gt;  &amp;lt;dbl&amp;gt; &amp;lt;date&amp;gt;    
-## 1 Afghanistan    AFG   South Asia       Asia              2006    651 2006-01-01
-## 2 Angola         AGO   Sub-Saharan Afr~ Africa            2006     13 2006-01-01
-## 3 Armenia        ARM   Europe &amp;amp; Centra~ Asia              2006     87 2006-01-01
-## 4 Azerbaijan     AZE   Europe &amp;amp; Centra~ Asia              2006     77 2006-01-01
-## 5 Belarus        BLR   Europe &amp;amp; Centra~ Europe            2006    350 2006-01-01
-## 6 Bhutan         BTN   South Asia       Asia              2006      3 2006-01-01&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 6 × 7
+##   origin_country iso3  origin_region         origin_continent  year number year_date 
+##   &amp;lt;chr&amp;gt;          &amp;lt;chr&amp;gt; &amp;lt;chr&amp;gt;                 &amp;lt;chr&amp;gt;            &amp;lt;dbl&amp;gt;  &amp;lt;dbl&amp;gt; &amp;lt;date&amp;gt;    
+## 1 Afghanistan    AFG   South Asia            Asia              2006    651 2006-01-01
+## 2 Angola         AGO   Sub-Saharan Africa    Africa            2006     13 2006-01-01
+## 3 Armenia        ARM   Europe &amp;amp; Central Asia Asia              2006     87 2006-01-01
+## 4 Azerbaijan     AZE   Europe &amp;amp; Central Asia Asia              2006     77 2006-01-01
+## 5 Belarus        BLR   Europe &amp;amp; Central Asia Europe            2006    350 2006-01-01
+## 6 Bhutan         BTN   South Asia            Asia              2006      3 2006-01-01&lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 &lt;div id=&#34;cumulative-country-totals-over-time&#34; class=&#34;section level3&#34;&gt;
 &lt;h3&gt;Cumulative country totals over time&lt;/h3&gt;
@@ -11756,7 +11780,7 @@ refugees_clean &amp;lt;- refugees_raw %&amp;gt;%
   arrange(year_date) %&amp;gt;%
   group_by(origin_country) %&amp;gt;%
   mutate(cumulative_total = cumsum(number))&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## # A tibble: 6 x 7
+&lt;pre&gt;&lt;code&gt;## # A tibble: 6 × 7
 ## # Groups:   origin_country [1]
 ##   origin_country iso3  origin_continent  year number year_date  cumulative_total
 ##   &amp;lt;chr&amp;gt;          &amp;lt;chr&amp;gt; &amp;lt;chr&amp;gt;            &amp;lt;dbl&amp;gt;  &amp;lt;dbl&amp;gt; &amp;lt;date&amp;gt;                &amp;lt;dbl&amp;gt;
@@ -11774,7 +11798,7 @@ refugees_clean &amp;lt;- refugees_raw %&amp;gt;%
   group_by(origin_continent, year_date) %&amp;gt;%
   summarize(total = sum(number, na.rm = TRUE))&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## `summarise()` has grouped output by &amp;#39;origin_continent&amp;#39;. You can override using the `.groups` argument.&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## # A tibble: 6 x 3
+&lt;pre&gt;&lt;code&gt;## # A tibble: 6 × 3
 ## # Groups:   origin_continent [1]
 ##   origin_continent year_date  total
 ##   &amp;lt;chr&amp;gt;            &amp;lt;date&amp;gt;     &amp;lt;dbl&amp;gt;
@@ -11795,7 +11819,7 @@ refugees_clean &amp;lt;- refugees_raw %&amp;gt;%
   group_by(origin_continent) %&amp;gt;%
   mutate(cumulative_total = cumsum(total))&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## `summarise()` has grouped output by &amp;#39;origin_continent&amp;#39;. You can override using the `.groups` argument.&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## # A tibble: 6 x 4
+&lt;pre&gt;&lt;code&gt;## # A tibble: 6 × 4
 ## # Groups:   origin_continent [1]
 ##   origin_continent year_date  total cumulative_total
 ##   &amp;lt;chr&amp;gt;            &amp;lt;date&amp;gt;     &amp;lt;dbl&amp;gt;            &amp;lt;dbl&amp;gt;
@@ -11834,15 +11858,15 @@ myData = WDI(country = refugees_clean$iso2, indicator = &amp;#39;SP.POP.TOTL&amp
 &lt;p&gt;We didn’t have an &lt;code&gt;iso2c&lt;/code&gt; column before, just an &lt;code&gt;iso2&lt;/code&gt; column, so you might notice that the new cleaning code I gave you added &lt;code&gt;iso2c = iso2&lt;/code&gt; at the end using &lt;code&gt;mutate&lt;/code&gt;. That way, the column names that we’re using to merge will match.&lt;/p&gt;
 &lt;p&gt;You can search the WDI data dictionary and find the “Code” for the indicator you’d like to use, then just merge it into your data. Look at your data closely before you merge, and make sure you know what you’re merging in. Use the slack if you get stuck. Happy data hunting!&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;head(refugees_clean_merged %&amp;gt;% dplyr::select(origin_country, number, iso2, year, SP.POP.TOTL))&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## # A tibble: 6 x 5
+&lt;pre&gt;&lt;code&gt;## # A tibble: 6 × 5
 ##   origin_country number iso2   year SP.POP.TOTL
 ##   &amp;lt;chr&amp;gt;           &amp;lt;dbl&amp;gt; &amp;lt;chr&amp;gt; &amp;lt;dbl&amp;gt;       &amp;lt;dbl&amp;gt;
-## 1 Afghanistan       651 AF     2006    26433049
-## 2 Angola             13 AO     2006    20149901
-## 3 Armenia            87 AM     2006     2958307
+## 1 Afghanistan       651 AF     2006    26433058
+## 2 Angola             13 AO     2006    20149905
+## 3 Armenia            87 AM     2006     2958301
 ## 4 Azerbaijan         77 AZ     2006     8484550
 ## 5 Belarus           350 BY     2006     9604924
-## 6 Bhutan              3 BT     2006      657410&lt;/code&gt;&lt;/pre&gt;
+## 6 Bhutan              3 BT     2006      657404&lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;div class=&#34;footnotes&#34;&gt;
@@ -16834,10 +16858,12 @@ murders %&amp;gt;% mutate(rate = total/population*100000)&lt;/code&gt;&lt;/pre&g
       <pubDate>Thu, 21 Jan 2021 00:00:00 +0000</pubDate>
       <guid>https://datavizm20.classes.andrewheiss.com/assignment/project1/</guid>
       <description>
+&lt;script src=&#34;https://datavizm20.classes.andrewheiss.com/rmarkdown-libs/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
 
 &lt;div id=&#34;TOC&#34;&gt;
 &lt;ul&gt;
-&lt;li&gt;&lt;a href=&#34;#part-1-rats-rats-rats.&#34;&gt;Part 1: Rats, rats, rats.&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#part-1-rats-rats-rats.&#34;&gt;Part 1: Rats, rats, rats.&lt;/a&gt;
+&lt;ul&gt;
 &lt;li&gt;&lt;a href=&#34;#instructions&#34;&gt;Instructions&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;#starter-code&#34;&gt;Starter code&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;&lt;/li&gt;
@@ -16853,11 +16879,11 @@ murders %&amp;gt;% mutate(rate = total/population*100000)&lt;/code&gt;&lt;/pre&g
 &lt;div id=&#34;part-1-rats-rats-rats.&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Part 1: Rats, rats, rats.&lt;/h2&gt;
 &lt;p&gt;New York City is full of urban wildlife, and rats are one of the city’s most infamous animal mascots. Rats in NYC are plentiful, but they also deliver food, so they’re useful too.&lt;/p&gt;
-
+&lt;p&gt;
 &lt;div style=&#34;position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;&#34;&gt;
   &lt;iframe src=&#34;https://www.youtube.com/embed/PeJUqcbool4&#34; style=&#34;position: absolute; top: 0; left: 0; width: 100%; height: 100%; border:0;&#34; allowfullscreen title=&#34;YouTube Video&#34;&gt;&lt;/iframe&gt;
 &lt;/div&gt;
-
+&lt;/p&gt;
 &lt;p&gt;NYC keeps incredibly detailed data regarding animal sightings, including rats, and &lt;a href=&#34;https://www.kaggle.com/new-york-city/nyc-rat-sightings/data&#34;&gt;it makes this data publicly available&lt;/a&gt;.&lt;/p&gt;
 &lt;p&gt;For this first project, you will use &lt;strong&gt;R and ggplot2&lt;/strong&gt; to tell an interesting story hidden in the data. You must create a story by looking carefully at the data.&lt;/p&gt;
 &lt;div id=&#34;instructions&#34; class=&#34;section level3&#34;&gt;

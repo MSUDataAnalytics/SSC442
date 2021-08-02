@@ -16,15 +16,18 @@ editor_options:
   chunk_output_type: console
 ---
 
+<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
 
 <div id="TOC">
 <ul>
 <li><a href="#part-1-instructions">Part 1: Instructions</a></li>
-<li><a href="#part-2-hypotheses">Part 2: Hypotheses</a><ul>
+<li><a href="#part-2-hypotheses">Part 2: Hypotheses</a>
+<ul>
 <li><a href="#evaluation">Evaluation</a></li>
 </ul></li>
 <li><a href="#data-cleaning-code">Data cleaning code</a></li>
-<li><a href="#data-to-possibly-use-in-your-plot">Data to possibly use in your plot</a><ul>
+<li><a href="#data-to-possibly-use-in-your-plot">Data to possibly use in your plot</a>
+<ul>
 <li><a href="#country-totals-over-time">Country totals over time</a></li>
 <li><a href="#cumulative-country-totals-over-time">Cumulative country totals over time</a></li>
 <li><a href="#continent-totals-over-time">Continent totals over time</a></li>
@@ -123,15 +126,15 @@ refugees_clean &lt;- refugees_raw %&gt;%
 <div id="country-totals-over-time" class="section level3">
 <h3>Country totals over time</h3>
 <p>This is just the <code>refugees_clean</code> data frame I gave you. You’ll want to filter it and select specific countries, though—you won’t really be able to plot 60 countries all at once unless you use sparklines.</p>
-<pre><code>## # A tibble: 6 x 7
-##   origin_country iso3  origin_region    origin_continent  year number year_date 
-##   &lt;chr&gt;          &lt;chr&gt; &lt;chr&gt;            &lt;chr&gt;            &lt;dbl&gt;  &lt;dbl&gt; &lt;date&gt;    
-## 1 Afghanistan    AFG   South Asia       Asia              2006    651 2006-01-01
-## 2 Angola         AGO   Sub-Saharan Afr~ Africa            2006     13 2006-01-01
-## 3 Armenia        ARM   Europe &amp; Centra~ Asia              2006     87 2006-01-01
-## 4 Azerbaijan     AZE   Europe &amp; Centra~ Asia              2006     77 2006-01-01
-## 5 Belarus        BLR   Europe &amp; Centra~ Europe            2006    350 2006-01-01
-## 6 Bhutan         BTN   South Asia       Asia              2006      3 2006-01-01</code></pre>
+<pre><code>## # A tibble: 6 × 7
+##   origin_country iso3  origin_region         origin_continent  year number year_date 
+##   &lt;chr&gt;          &lt;chr&gt; &lt;chr&gt;                 &lt;chr&gt;            &lt;dbl&gt;  &lt;dbl&gt; &lt;date&gt;    
+## 1 Afghanistan    AFG   South Asia            Asia              2006    651 2006-01-01
+## 2 Angola         AGO   Sub-Saharan Africa    Africa            2006     13 2006-01-01
+## 3 Armenia        ARM   Europe &amp; Central Asia Asia              2006     87 2006-01-01
+## 4 Azerbaijan     AZE   Europe &amp; Central Asia Asia              2006     77 2006-01-01
+## 5 Belarus        BLR   Europe &amp; Central Asia Europe            2006    350 2006-01-01
+## 6 Bhutan         BTN   South Asia            Asia              2006      3 2006-01-01</code></pre>
 </div>
 <div id="cumulative-country-totals-over-time" class="section level3">
 <h3>Cumulative country totals over time</h3>
@@ -140,7 +143,7 @@ refugees_clean &lt;- refugees_raw %&gt;%
   arrange(year_date) %&gt;%
   group_by(origin_country) %&gt;%
   mutate(cumulative_total = cumsum(number))</code></pre>
-<pre><code>## # A tibble: 6 x 7
+<pre><code>## # A tibble: 6 × 7
 ## # Groups:   origin_country [1]
 ##   origin_country iso3  origin_continent  year number year_date  cumulative_total
 ##   &lt;chr&gt;          &lt;chr&gt; &lt;chr&gt;            &lt;dbl&gt;  &lt;dbl&gt; &lt;date&gt;                &lt;dbl&gt;
@@ -158,7 +161,7 @@ refugees_clean &lt;- refugees_raw %&gt;%
   group_by(origin_continent, year_date) %&gt;%
   summarize(total = sum(number, na.rm = TRUE))</code></pre>
 <pre><code>## `summarise()` has grouped output by &#39;origin_continent&#39;. You can override using the `.groups` argument.</code></pre>
-<pre><code>## # A tibble: 6 x 3
+<pre><code>## # A tibble: 6 × 3
 ## # Groups:   origin_continent [1]
 ##   origin_continent year_date  total
 ##   &lt;chr&gt;            &lt;date&gt;     &lt;dbl&gt;
@@ -179,7 +182,7 @@ refugees_clean &lt;- refugees_raw %&gt;%
   group_by(origin_continent) %&gt;%
   mutate(cumulative_total = cumsum(total))</code></pre>
 <pre><code>## `summarise()` has grouped output by &#39;origin_continent&#39;. You can override using the `.groups` argument.</code></pre>
-<pre><code>## # A tibble: 6 x 4
+<pre><code>## # A tibble: 6 × 4
 ## # Groups:   origin_continent [1]
 ##   origin_continent year_date  total cumulative_total
 ##   &lt;chr&gt;            &lt;date&gt;     &lt;dbl&gt;            &lt;dbl&gt;
@@ -218,15 +221,15 @@ myData = WDI(country = refugees_clean$iso2, indicator = &#39;SP.POP.TOTL&#39;, s
 <p>We didn’t have an <code>iso2c</code> column before, just an <code>iso2</code> column, so you might notice that the new cleaning code I gave you added <code>iso2c = iso2</code> at the end using <code>mutate</code>. That way, the column names that we’re using to merge will match.</p>
 <p>You can search the WDI data dictionary and find the “Code” for the indicator you’d like to use, then just merge it into your data. Look at your data closely before you merge, and make sure you know what you’re merging in. Use the slack if you get stuck. Happy data hunting!</p>
 <pre class="r"><code>head(refugees_clean_merged %&gt;% dplyr::select(origin_country, number, iso2, year, SP.POP.TOTL))</code></pre>
-<pre><code>## # A tibble: 6 x 5
+<pre><code>## # A tibble: 6 × 5
 ##   origin_country number iso2   year SP.POP.TOTL
 ##   &lt;chr&gt;           &lt;dbl&gt; &lt;chr&gt; &lt;dbl&gt;       &lt;dbl&gt;
-## 1 Afghanistan       651 AF     2006    26433049
-## 2 Angola             13 AO     2006    20149901
-## 3 Armenia            87 AM     2006     2958307
+## 1 Afghanistan       651 AF     2006    26433058
+## 2 Angola             13 AO     2006    20149905
+## 3 Armenia            87 AM     2006     2958301
 ## 4 Azerbaijan         77 AZ     2006     8484550
 ## 5 Belarus           350 BY     2006     9604924
-## 6 Bhutan              3 BT     2006      657410</code></pre>
+## 6 Bhutan              3 BT     2006      657404</code></pre>
 </div>
 </div>
 <div class="footnotes">
