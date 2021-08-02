@@ -1,0 +1,534 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Labs and Evaluations | Data Analytics</title>
+    <link>/lab/</link>
+      <atom:link href="/lab/index.xml" rel="self" type="application/rss+xml" />
+    <description>Labs and Evaluations</description>
+    <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator>
+    <image>
+      <url>/img/social-image.png</url>
+      <title>Labs and Evaluations</title>
+      <link>/lab/</link>
+    </image>
+    
+    <item>
+      <title>Programming Basics in R</title>
+      <link>/lab/00_lab/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>/lab/00_lab/</guid>
+      <description>
+
+&lt;div id=&#34;TOC&#34;&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#programming-basics&#34;&gt;Programming basics&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#conditionals&#34;&gt;Conditional expressions&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#defining-functions&#34;&gt;Defining functions&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#namespaces&#34;&gt;Namespaces&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#for-loops&#34;&gt;For-loops&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#vectorization&#34;&gt;Vectorization and functionals&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+
+&lt;div class=&#34;fyi&#34;&gt;
+&lt;p&gt;&lt;strong&gt;NOTE:&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;This lab is not due for credit. Nevertheless, if you do not have a &lt;em&gt;firm&lt;/em&gt; grasp of &lt;code&gt;R&lt;/code&gt;, you should work through both the entirety of this section and the exercises at the end. There are a number of tricks that will come up over and over.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;programming-basics&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Programming basics&lt;/h1&gt;
+&lt;p&gt;We teach &lt;code&gt;R&lt;/code&gt; because it greatly facilitates data analysis, the main topic of this book. By coding in R, we can efficiently perform exploratory data analysis, build data analysis pipelines, and prepare data visualization to communicate results. However, &lt;code&gt;R&lt;/code&gt; is not just a data analysis environment but a programming language. Advanced &lt;code&gt;R&lt;/code&gt; programmers can develop complex packages and even improve &lt;code&gt;R&lt;/code&gt; itself, but we do not cover advanced programming in this book. Nonetheless, in this section, we introduce three key programming concepts: conditional expressions, for-loops, and functions. These are not just key building blocks for advanced programming, but are sometimes useful during data analysis. We also note that there are several functions that are widely used to program in &lt;code&gt;R&lt;/code&gt; but that we will not cover in this book. These include &lt;code&gt;split&lt;/code&gt;, &lt;code&gt;cut&lt;/code&gt;, &lt;code&gt;do.call&lt;/code&gt;, and &lt;code&gt;Reduce&lt;/code&gt;, as well as the &lt;strong&gt;data.table&lt;/strong&gt; package. These are worth learning if you plan to become an expert &lt;code&gt;R&lt;/code&gt; programmer.&lt;/p&gt;
+&lt;div id=&#34;conditionals&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Conditional expressions&lt;/h2&gt;
+&lt;p&gt;Conditional expressions are one of the basic features of programming. They are used for what is called &lt;em&gt;flow control&lt;/em&gt;. The most common conditional expression is the if-else statement. In R, we can actually perform quite a bit of data analysis without conditionals. However, they do come up occasionally, and you will need them once you start writing your own functions and packages.&lt;/p&gt;
+&lt;p&gt;Here is a very simple example showing the general structure of an if-else statement. The basic idea is to print the reciprocal of &lt;code&gt;a&lt;/code&gt; unless &lt;code&gt;a&lt;/code&gt; is 0:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;a &amp;lt;- 0
+
+if(a!=0){
+  print(1/a)
+} else{
+  print(&amp;quot;No reciprocal for 0.&amp;quot;)
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;No reciprocal for 0.&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Let’s look at one more example using the US murders data frame:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(dslabs)
+data(murders)
+murder_rate &amp;lt;- murders$total / murders$population*100000&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Here is a very simple example that tells us which states, if any, have a murder rate lower than 0.5 per 100,000. The &lt;code&gt;if&lt;/code&gt; statement protects us from the case in which no state satisfies the condition.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ind &amp;lt;- which.min(murder_rate)
+
+if(murder_rate[ind] &amp;lt; 0.5){
+  print(murders$state[ind])
+} else{
+  print(&amp;quot;No state has murder rate that low&amp;quot;)
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;Vermont&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;If we try it again with a rate of 0.25, we get a different answer:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;if(murder_rate[ind] &amp;lt; 0.25){
+  print(murders$state[ind])
+} else{
+  print(&amp;quot;No state has a murder rate that low.&amp;quot;)
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;No state has a murder rate that low.&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;A related function that is very useful is &lt;code&gt;ifelse&lt;/code&gt;. This function takes three arguments: a logical and two possible answers. If the logical is &lt;code&gt;TRUE&lt;/code&gt;, the value in the second argument is returned and if &lt;code&gt;FALSE&lt;/code&gt;, the value in the third argument is returned. Here is an example:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;a &amp;lt;- 0
+ifelse(a &amp;gt; 0, 1/a, NA)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] NA&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The function is particularly useful because it works on vectors. It examines each entry of the logical vector and returns elements from the vector provided in the second argument, if the entry is &lt;code&gt;TRUE&lt;/code&gt;, or elements from the vector provided in the third argument, if the entry is &lt;code&gt;FALSE&lt;/code&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;a &amp;lt;- c(0, 1, 2, -4, 5)
+result &amp;lt;- ifelse(a &amp;gt; 0, 1/a, NA)&lt;/code&gt;&lt;/pre&gt;
+This table helps us see what happened:
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th style=&#34;text-align:right;&#34;&gt;
+a
+&lt;/th&gt;
+&lt;th style=&#34;text-align:left;&#34;&gt;
+is_a_positive
+&lt;/th&gt;
+&lt;th style=&#34;text-align:right;&#34;&gt;
+answer1
+&lt;/th&gt;
+&lt;th style=&#34;text-align:left;&#34;&gt;
+answer2
+&lt;/th&gt;
+&lt;th style=&#34;text-align:right;&#34;&gt;
+result
+&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0
+&lt;/td&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+FALSE
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+Inf
+&lt;/td&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+NA
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+NA
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+1
+&lt;/td&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+TRUE
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+1.00
+&lt;/td&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+NA
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+1.0
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+2
+&lt;/td&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+TRUE
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0.50
+&lt;/td&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+NA
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0.5
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-4
+&lt;/td&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+FALSE
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.25
+&lt;/td&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+NA
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+NA
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+5
+&lt;/td&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+TRUE
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0.20
+&lt;/td&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+NA
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0.2
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;Here is an example of how this function can be readily used to replace all the missing values in a vector with zeros:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data(na_example)
+no_nas &amp;lt;- ifelse(is.na(na_example), 0, na_example)
+sum(is.na(no_nas))&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 0&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Two other useful functions are &lt;code&gt;any&lt;/code&gt; and &lt;code&gt;all&lt;/code&gt;. The &lt;code&gt;any&lt;/code&gt; function takes a vector of logicals and returns &lt;code&gt;TRUE&lt;/code&gt; if any of the entries is &lt;code&gt;TRUE&lt;/code&gt;. The &lt;code&gt;all&lt;/code&gt; function takes a vector of logicals and returns &lt;code&gt;TRUE&lt;/code&gt; if all of the entries are &lt;code&gt;TRUE&lt;/code&gt;. Here is an example:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;z &amp;lt;- c(TRUE, TRUE, FALSE)
+any(z)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] TRUE&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;all(z)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] FALSE&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;defining-functions&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Defining functions&lt;/h2&gt;
+&lt;p&gt;As you become more experienced, you will find yourself needing to perform the same operations over and over. A simple example is computing averages. We can compute the average of a vector &lt;code&gt;x&lt;/code&gt; using the &lt;code&gt;sum&lt;/code&gt; and &lt;code&gt;length&lt;/code&gt; functions: &lt;code&gt;sum(x)/length(x)&lt;/code&gt;. Because we do this repeatedly, it is much more efficient to write a function that performs this operation. This particular operation is so common that someone already wrote the &lt;code&gt;mean&lt;/code&gt; function and it is included in base R. However, you will encounter situations in which the function does not already exist, so &lt;code&gt;R&lt;/code&gt; permits you to write your own. A simple version of a function that computes the average can be defined like this:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;avg &amp;lt;- function(x){
+  s &amp;lt;- sum(x)
+  n &amp;lt;- length(x)
+  s/n
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Now &lt;code&gt;avg&lt;/code&gt; is a function that computes the mean:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;x &amp;lt;- 1:100
+identical(mean(x), avg(x))&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] TRUE&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Notice that variables defined inside a function are not saved in the workspace. So while we use &lt;code&gt;s&lt;/code&gt; and &lt;code&gt;n&lt;/code&gt; when we call &lt;code&gt;avg&lt;/code&gt;, the values are created and changed only during the call. Here is an illustrative example:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;s &amp;lt;- 3
+avg(1:10)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 5.5&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;s&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 3&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Note how &lt;code&gt;s&lt;/code&gt; is still 3 after we call &lt;code&gt;avg&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;In general, functions are objects, so we assign them to variable names with &lt;code&gt;&amp;lt;-&lt;/code&gt;. The function &lt;code&gt;function&lt;/code&gt; tells &lt;code&gt;R&lt;/code&gt; you are about to define a function. The general form of a function definition looks like this:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;my_function &amp;lt;- function(VARIABLE_NAME){
+  perform operations on VARIABLE_NAME and calculate VALUE
+  VALUE
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The functions you define can have multiple arguments as well as default values. For example, we can define a function that computes either the arithmetic or geometric average depending on a user defined variable like this:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;avg &amp;lt;- function(x, arithmetic = TRUE){
+  n &amp;lt;- length(x)
+  ifelse(arithmetic, sum(x)/n, prod(x)^(1/n))
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;We will learn more about how to create functions through experience as we face more complex tasks.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;namespaces&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Namespaces&lt;/h2&gt;
+&lt;p&gt;Once you start becoming more of an &lt;code&gt;R&lt;/code&gt; expert user, you will likely need to load several add-on packages for some of your analysis. Once you start doing this, it is likely that two packages use the same name for two different functions. And often these functions do completely different things. In fact, you have already encountered this because both &lt;strong&gt;dplyr&lt;/strong&gt; and the R-base &lt;strong&gt;stats&lt;/strong&gt; package define a &lt;code&gt;filter&lt;/code&gt; function. There are five other examples in &lt;strong&gt;dplyr&lt;/strong&gt;. We know this because when we first load &lt;strong&gt;dplyr&lt;/strong&gt; we see the following message:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;The following objects are masked from ‘package:stats’:
+
+    filter, lag
+
+The following objects are masked from ‘package:base’:
+
+    intersect, setdiff, setequal, union&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;So what does &lt;code&gt;R&lt;/code&gt; do when we type &lt;code&gt;filter&lt;/code&gt;? Does it use the &lt;strong&gt;dplyr&lt;/strong&gt; function or the &lt;strong&gt;stats&lt;/strong&gt; function? From our previous work we know it uses the &lt;strong&gt;dplyr&lt;/strong&gt; one. But what if we want to use the &lt;strong&gt;stats&lt;/strong&gt; version?&lt;/p&gt;
+&lt;p&gt;These functions live in different &lt;em&gt;namespaces&lt;/em&gt;. &lt;code&gt;R&lt;/code&gt; will follow a certain order when searching for a function in these &lt;em&gt;namespaces&lt;/em&gt;. You can see the order by typing:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;search()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The first entry in this list is the global environment which includes all the objects you define.&lt;/p&gt;
+&lt;p&gt;So what if we want to use the &lt;strong&gt;stats&lt;/strong&gt; &lt;code&gt;filter&lt;/code&gt; instead of the &lt;strong&gt;dplyr&lt;/strong&gt; filter but &lt;strong&gt;dplyr&lt;/strong&gt; appears first in the search list? You can force the use of a specific namespace by using double colons (&lt;code&gt;::&lt;/code&gt;) like this:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;stats::filter&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;If we want to be absolutely sure that we use the &lt;strong&gt;dplyr&lt;/strong&gt; &lt;code&gt;filter&lt;/code&gt;, we can use&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;dplyr::filter&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Also note that if we want to use a function in a package without loading the entire package, we can use the double colon as well.&lt;/p&gt;
+&lt;p&gt;For more on this more advanced topic we recommend the &lt;code&gt;R&lt;/code&gt; packages book&lt;a href=&#34;#fn1&#34; class=&#34;footnote-ref&#34; id=&#34;fnref1&#34;&gt;&lt;sup&gt;1&lt;/sup&gt;&lt;/a&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;for-loops&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;For-loops&lt;/h2&gt;
+&lt;p&gt;If we had to write this section in a single sentence, it would be: Don’t use for-loops. Looping is intuitive, but &lt;code&gt;R&lt;/code&gt; is designed to provide more computationally efficient solutions. For-loops should be considered a quick-and-dirty way to get an answer. But, hey, you live your own life. Below we provide a brief overview to for-looping.&lt;/p&gt;
+&lt;p&gt;The formula for the sum of the series &lt;span class=&#34;math inline&#34;&gt;\(1+2+\dots+n\)&lt;/span&gt; is &lt;span class=&#34;math inline&#34;&gt;\(n(n+1)/2\)&lt;/span&gt;. What if we weren’t sure that was the right function? How could we check? Using what we learned about functions we can create one that computes the &lt;span class=&#34;math inline&#34;&gt;\(S_n\)&lt;/span&gt;:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;compute_s_n &amp;lt;- function(n){
+  x &amp;lt;- 1:n
+  sum(x)
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;How can we compute &lt;span class=&#34;math inline&#34;&gt;\(S_n\)&lt;/span&gt; for various values of &lt;span class=&#34;math inline&#34;&gt;\(n\)&lt;/span&gt;, say &lt;span class=&#34;math inline&#34;&gt;\(n=1,\dots,25\)&lt;/span&gt;? Do we write 25 lines of code calling &lt;code&gt;compute_s_n&lt;/code&gt;? No, that is what for-loops are for in programming. In this case, we are performing exactly the same task over and over, and the only thing that is changing is the value of &lt;span class=&#34;math inline&#34;&gt;\(n\)&lt;/span&gt;. For-loops let us define the range that our variable takes (in our example &lt;span class=&#34;math inline&#34;&gt;\(n=1,\dots,10\)&lt;/span&gt;), then change the value and evaluate expression as you &lt;em&gt;loop&lt;/em&gt;.&lt;/p&gt;
+&lt;p&gt;Perhaps the simplest example of a for-loop is this useless piece of code:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;for(i in 1:5){
+  print(i)
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 1
+## [1] 2
+## [1] 3
+## [1] 4
+## [1] 5&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Here is the for-loop we would write for our &lt;span class=&#34;math inline&#34;&gt;\(S_n\)&lt;/span&gt; example:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;m &amp;lt;- 25
+s_n &amp;lt;- vector(length = m) # create an empty vector
+for(n in 1:m){
+  s_n[n] &amp;lt;- compute_s_n(n)
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;In each iteration &lt;span class=&#34;math inline&#34;&gt;\(n=1\)&lt;/span&gt;, &lt;span class=&#34;math inline&#34;&gt;\(n=2\)&lt;/span&gt;, etc…, we compute &lt;span class=&#34;math inline&#34;&gt;\(S_n\)&lt;/span&gt; and store it in the &lt;span class=&#34;math inline&#34;&gt;\(n\)&lt;/span&gt;th entry of &lt;code&gt;s_n&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;Now we can create a plot to search for a pattern:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;n &amp;lt;- 1:m
+plot(n, s_n)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/lab/00_lab_files/figure-html/sum-of-consecutive-squares-1.png&#34; width=&#34;50%&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;If you noticed that it appears to be a quadratic, you are on the right track because the formula is &lt;span class=&#34;math inline&#34;&gt;\(n(n+1)/2\)&lt;/span&gt;.
+&lt;!--
+which we can confirm with a table:
+
+
+```r
+head(data.frame(s_n = s_n, formula = n*(n+1)/2))
+```
+
+```
+##   s_n formula
+## 1   1       1
+## 2   3       3
+## 3   6       6
+## 4  10      10
+## 5  15      15
+## 6  21      21
+```
+
+We can also overlay the two results by using the function `lines` to draw a line over the previously plotted points:
+
+
+```r
+plot(n, s_n)
+lines(n, n*(n+1)/2)
+```
+
+&lt;img src=&#34;/lab/00_lab_files/figure-html/s_n-v-n-1.png&#34; width=&#34;672&#34; /&gt;
+
+--&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;vectorization&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Vectorization and functionals&lt;/h2&gt;
+&lt;p&gt;Although for-loops are an important concept to understand, in &lt;code&gt;R&lt;/code&gt; we rarely use them. As you learn more &lt;code&gt;R&lt;/code&gt;, you will realize that &lt;em&gt;vectorization&lt;/em&gt; is preferred over for-loops since it results in shorter and clearer code. (It’s also vastly more efficient computationally, which can matter as your data grows.) A &lt;em&gt;vectorized&lt;/em&gt; function is a function that will apply the same operation on each of the vectors.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;x &amp;lt;- 1:10
+sqrt(x)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;##  [1] 1.000000 1.414214 1.732051 2.000000 2.236068 2.449490 2.645751 2.828427
+##  [9] 3.000000 3.162278&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;y &amp;lt;- 1:10
+x*y&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;##  [1]   1   4   9  16  25  36  49  64  81 100&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;To make this calculation, there is no need for for-loops. However, not all functions work this way. For instance, the function we just wrote, &lt;code&gt;compute_s_n&lt;/code&gt;, does not work element-wise since it is expecting a scalar. This piece of code does not run the function on each entry of &lt;code&gt;n&lt;/code&gt;:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;n &amp;lt;- 1:25
+compute_s_n(n)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;Functionals&lt;/em&gt; are functions that help us apply the same function to each entry in a vector, matrix, data frame, or list. Here we cover the functional that operates on numeric, logical, and character vectors: &lt;code&gt;sapply&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;The function &lt;code&gt;sapply&lt;/code&gt; permits us to perform element-wise operations on any function. Here is how it works:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;x &amp;lt;- 1:10
+sapply(x, sqrt)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;##  [1] 1.000000 1.414214 1.732051 2.000000 2.236068 2.449490 2.645751 2.828427
+##  [9] 3.000000 3.162278&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Each element of &lt;code&gt;x&lt;/code&gt; is passed on to the function &lt;code&gt;sqrt&lt;/code&gt; and the result is returned. These results are concatenated. In this case, the result is a vector of the same length as the original &lt;code&gt;x&lt;/code&gt;. This implies that the for-loop above can be written as follows:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;n &amp;lt;- 1:25
+s_n &amp;lt;- sapply(n, compute_s_n)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Other functionals are &lt;code&gt;apply&lt;/code&gt;, &lt;code&gt;lapply&lt;/code&gt;, &lt;code&gt;tapply&lt;/code&gt;, &lt;code&gt;mapply&lt;/code&gt;, &lt;code&gt;vapply&lt;/code&gt;, and &lt;code&gt;replicate&lt;/code&gt;. We mostly use &lt;code&gt;sapply&lt;/code&gt;, &lt;code&gt;apply&lt;/code&gt;, and &lt;code&gt;replicate&lt;/code&gt; in this book, but we recommend familiarizing yourselves with the others as they can be very useful.&lt;/p&gt;
+&lt;div class=&#34;fyi&#34;&gt;
+&lt;p&gt;&lt;strong&gt;EXERCISES&lt;/strong&gt;&lt;/p&gt;
+&lt;ol style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;What will this conditional expression return?&lt;/li&gt;
+&lt;/ol&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;x &amp;lt;- c(1,2,-3,4)
+
+if(all(x&amp;gt;0)){
+  print(&amp;quot;All Postives&amp;quot;)
+} else{
+  print(&amp;quot;Not all positives&amp;quot;)
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;ol start=&#34;2&#34; style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;Which of the following expressions is always &lt;code&gt;FALSE&lt;/code&gt; when at least one entry of a logical vector &lt;code&gt;x&lt;/code&gt; is TRUE?&lt;/li&gt;
+&lt;/ol&gt;
+&lt;ol style=&#34;list-style-type: lower-alpha&#34;&gt;
+&lt;li&gt;&lt;code&gt;all(x)&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;any(x)&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;any(!x)&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;all(!x)&lt;/code&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;ol start=&#34;3&#34; style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;&lt;p&gt;The function &lt;code&gt;nchar&lt;/code&gt; tells you how many characters long a character vector is. Write a line of code that assigns to the object &lt;code&gt;new_names&lt;/code&gt; the state abbreviation when the state name is longer than 8 characters.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Create a function &lt;code&gt;sum_n&lt;/code&gt; that for any given value, say &lt;span class=&#34;math inline&#34;&gt;\(n\)&lt;/span&gt;, computes the sum of the integers from 1 to n (inclusive). Use the function to determine the sum of integers from 1 to 5,000.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Create a function &lt;code&gt;altman_plot&lt;/code&gt; that takes two arguments, &lt;code&gt;x&lt;/code&gt; and &lt;code&gt;y&lt;/code&gt;, and plots the difference against the sum.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;After running the code below, what is the value of &lt;code&gt;x&lt;/code&gt;?&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;x &amp;lt;- 3
+my_func &amp;lt;- function(y){
+  x &amp;lt;- 5
+  y+5
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;ol start=&#34;7&#34; style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;&lt;p&gt;Write a function &lt;code&gt;compute_s_n&lt;/code&gt; that for any given &lt;span class=&#34;math inline&#34;&gt;\(n\)&lt;/span&gt; computes the sum &lt;span class=&#34;math inline&#34;&gt;\(S_n = 1^2 + 2^2 + 3^2 + \dots n^2\)&lt;/span&gt;. Report the value of the sum when &lt;span class=&#34;math inline&#34;&gt;\(n=10\)&lt;/span&gt;.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Define an empty numerical vector &lt;code&gt;s_n&lt;/code&gt; of size 25 using &lt;code&gt;s_n &amp;lt;- vector(&#34;numeric&#34;, 25)&lt;/code&gt; and store in the results of &lt;span class=&#34;math inline&#34;&gt;\(S_1, S_2, \dots S_{25}\)&lt;/span&gt; using a for-loop.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Repeat exercise 8, but this time use &lt;code&gt;sapply&lt;/code&gt;.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Repeat exercise 8, but this time use &lt;code&gt;map_dbl&lt;/code&gt;.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Plot &lt;span class=&#34;math inline&#34;&gt;\(S_n\)&lt;/span&gt; versus &lt;span class=&#34;math inline&#34;&gt;\(n\)&lt;/span&gt;. Use points defined by &lt;span class=&#34;math inline&#34;&gt;\(n=1,\dots,25\)&lt;/span&gt;.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Confirm that the formula for this sum is &lt;span class=&#34;math inline&#34;&gt;\(S_n= n(n+1)(2n+1)/6\)&lt;/span&gt;.&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&#34;footnotes&#34;&gt;
+&lt;hr /&gt;
+&lt;ol&gt;
+&lt;li id=&#34;fn1&#34;&gt;&lt;p&gt;&lt;a href=&#34;http://r-pkgs.had.co.nz/namespace.html&#34; class=&#34;uri&#34;&gt;http://r-pkgs.had.co.nz/namespace.html&lt;/a&gt;&lt;a href=&#34;#fnref1&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Final project</title>
+      <link>/lab/final-project/</link>
+      <pubDate>Mon, 14 Dec 2020 00:00:00 +0000</pubDate>
+      <guid>/lab/final-project/</guid>
+      <description>
+
+&lt;div id=&#34;TOC&#34;&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#resources&#34;&gt;Resources&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#suggested-outline&#34;&gt;Suggested outline&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#introduction&#34;&gt;Introduction&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#program-overview&#34;&gt;Program overview&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#program-theory-and-implementation&#34;&gt;Program theory and implementation&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#outcome-and-causation&#34;&gt;Outcome and causation&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#data-and-methods&#34;&gt;Data and methods&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#synthetic-analysis&#34;&gt;Synthetic analysis&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#conclusion&#34;&gt;Conclusion&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Evaluation research is tricky and costly. If you begin an intervention or launch a study prematurely, you can waste time and money—and potentially lives.&lt;/p&gt;
+&lt;p&gt;Even if you have a well designed program with an impeccable logic model and a perfect DAG, you might discover (too late!) that you forgot to collect some critical variables or realize that your identification strategy will not work.&lt;/p&gt;
+&lt;p&gt;From a more cynical perspective, you might (unethically) engage in the practice of &lt;a href=&#34;https://theconversation.com/one-reason-so-many-scientific-studies-may-be-wrong-66384&#34;&gt;p-hacking&lt;/a&gt;—running all sorts of different model specifications until you find the results you want, and then claim in your report that you had intended to run that model all along.&lt;/p&gt;
+&lt;p&gt;One increasingly popular method for (1) ensuring that your data and methods work before launching a study or intervention, and (2) declaring and committing to your hypotheses and methods and models before analyzing your data is to &lt;a href=&#34;https://blogs.plos.org/plos/2019/11/preregistration-can-bring-science-back-to-its-roots/&#34;&gt;&lt;em&gt;pre-register&lt;/em&gt; your research or evaluation&lt;/a&gt;. A &lt;a href=&#34;https://www.sciencemag.org/news/2018/09/more-and-more-scientists-are-preregistering-their-studies-should-you&#34;&gt;pre-registered study&lt;/a&gt; contains all the background work—an introduction, literature review, theory, hypotheses, and proposed analysis—but without the actual data. Authors post their expectations and hypotheses publicly so they can be held publicly accountable for any deviations from their proposed design.&lt;a href=&#34;#fn1&#34; class=&#34;footnote-ref&#34; id=&#34;fnref1&#34;&gt;&lt;sup&gt;1&lt;/sup&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;The best preregistered studies use simulated data that has the same structure as the data that will be collected (i.e. same columns, sometimes the same correlations and relationships researchers expect to see in the collected data, etc.). Because there’s no data yet (or just fake data), you have more freedom when developing a preregistered study. You can experiment with different models, play with different approaches, manipulate data in different ways, and so on. If you realize that you need a new variable, or that you need to rearrange questions on a survey, or make any other kinds of changes, you can—you haven’t collected the data yet!&lt;/p&gt;
+&lt;p&gt;Once you finalize your plan and know all the data you need to collect, and once you’ve written out the different models you’ll run, all you have to do is collect the real data, plop it into your script (replacing the fake data you’d been using), and run the analysis script again to generate the actual, real results. In the results section, you get to either say “As predicted, we found…”, or “Contrary to expectations, we found that…”.&lt;/p&gt;
+&lt;p&gt;For your final project in this class, you will write a pre-registered analysis of a public or nonprofit social program that you’re interested in. You don’t need to worry about collecting data—you’ll create a synthetic dataset for your pre-analysis.&lt;/p&gt;
+&lt;p&gt;You will submit &lt;strong&gt;three things&lt;/strong&gt; via D2L:&lt;/p&gt;
+&lt;ol style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;A PDF of your preregistered report (see the outline below for details of what this needs to contain). You should compile this with R Markdown. You might want to write the prose-heavy sections in a word processor like Word or Google Docs and copy/paste the text into your R Markdown document, since RStudio doesn’t have a nice spell checker or grammar checker. This should have &lt;em&gt;no visible R code, warnings, or messages in it&lt;/em&gt; (set &lt;code&gt;echo = FALSE&lt;/code&gt; at the beginning of your document before you knit).&lt;/li&gt;
+&lt;li&gt;The same PDF as above, but with all the R code in it (set &lt;code&gt;echo = TRUE&lt;/code&gt; at the beginning of your document and reknit the file).&lt;/li&gt;
+&lt;li&gt;A CSV file of your fake data.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;This project is due by &lt;strong&gt;7:00 PM on Monday, December 14, 2020.&lt;/strong&gt; &lt;span style=&#34;color: #81056F; font-weight: bold&#34;&gt; No late work will be accepted.&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;You can either run the analysis in RStudio locally on your computer (highly recommended(!!), since you won’t have to worry about keeping all your work on RStudio’s servers), or use an RStudio.cloud project. You can make a copy of this RStudio.cloud project—it doesn’t have anything in it, but I have preinstalled all the packages we’ve used over the course of the semester, so you don’t have to.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;del&gt;&lt;a href=&#34;#&#34;&gt;&lt;i class=&#34;fas fa-external-link-square-alt&#34;&gt;&lt;/i&gt; Empty RStudio.cloud project&lt;/a&gt;&lt;/del&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;/files/final-project.zip&#34;&gt;&lt;i class=&#34;fas fa-file-archive&#34;&gt;&lt;/i&gt; Empty RStudio project you can download and unzip on your computer&lt;/a&gt; (doesn’t include any packages, since you’re responsible for installing those)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div id=&#34;resources&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Resources&lt;/h2&gt;
+&lt;p&gt;Most importantly, &lt;strong&gt;do not hesitate&lt;/strong&gt; to work with classmates. You all must choose different programs, but you can work in groups of up to 4 people on your own projects. Also, &lt;strong&gt;absolutely do not hesitate&lt;/strong&gt; to ask me questions! I’m here to help!&lt;/p&gt;
+&lt;p&gt;You might find this evaluation (and its proposal) of a truancy program in the Provo School District in Utah helpful as an example for the first half of this assignment (program overview, theory, implementation, threats to validity, and outcomes). The PSD evaluation doesn’t have DAGs or fancy econometrics models like RCTs, diff-in-diff, RDD, IVs, or anything like that, so you can’t use it as an example of that part, but these should provide a good template for the program-specific sections. &lt;em&gt;This is longer than expected for this class&lt;/em&gt;. I provide suggested word counts in the outline below.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;/files/psd-proposal-2011.pdf&#34;&gt;&lt;i class=&#34;fas fa-file-pdf&#34;&gt;&lt;/i&gt; &lt;code&gt;psd-proposal-2011&lt;/code&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;/files/psd-final-report-2012.pdf&#34;&gt;&lt;i class=&#34;fas fa-file-pdf&#34;&gt;&lt;/i&gt; &lt;code&gt;psd-final-report-2012&lt;/code&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;div id=&#34;suggested-outline&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Suggested outline&lt;/h2&gt;
+&lt;p&gt;Here’s an outline of what you’ll need to do. You did lots of this work in your evaluation assignments. Please don’t just copy/paste those assignments as is into this final project—you’ll want to polish it up for this final report. You can download this as an RMarkdown file and change the text if you want. I’ve also included this as an RMarkdown file in the empty RStudio.cloud project.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;/projects/final-project/final-project-template.Rmd&#34;&gt;&lt;i class=&#34;fab fa-r-project&#34;&gt;&lt;/i&gt; &lt;code&gt;final-project-template.Rmd&lt;/code&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr /&gt;
+&lt;div id=&#34;introduction&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Introduction&lt;/h3&gt;
+&lt;p&gt;Describe the motivation for this evaluation, briefly describe the program to be evaluated, and explain why it matters for society. (&lt;strong&gt;≈150 words&lt;/strong&gt;)&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;program-overview&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Program overview&lt;/h3&gt;
+&lt;p&gt;Provide in-depth background about the program. Include details about (1) when it was started, (2) why it was started, (3) what it was designed to address in society. If the program hasn’t started yet, explain why it’s under consideration. (&lt;strong&gt;≈300 words&lt;/strong&gt;)&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;program-theory-and-implementation&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Program theory and implementation&lt;/h3&gt;
+&lt;div id=&#34;program-theory-and-impact-theory-graph&#34; class=&#34;section level4&#34;&gt;
+&lt;h4&gt;Program theory and impact theory graph&lt;/h4&gt;
+&lt;p&gt;Explain and explore the program’s underlying theory. Sometimes programs will explain why they exist in a mission statement, but often they don’t and you have to infer the theory from what the program looks like when implemented. What did the program designers plan on occurring? Was this theory based on existing research? If so, cite it. (&lt;strong&gt;≈300 words&lt;/strong&gt;)&lt;/p&gt;
+&lt;p&gt;Include a simple impact theory graph showing the program’s basic activities and outcomes. Recall from class and your reading that this is focused primarily on the theory and mechanisms, not on the implementation of the program.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;logic-model&#34; class=&#34;section level4&#34;&gt;
+&lt;h4&gt;Logic model&lt;/h4&gt;
+&lt;p&gt;Describe the program’s inputs, activities, outputs, and outcomes. Pay careful attention to how they are linked—remember that every input needs to flow into an activity and every output must flow out of an activity. (&lt;strong&gt;≈150 words&lt;/strong&gt;)&lt;/p&gt;
+&lt;p&gt;Use flowchart software to connect the inputs, activities, outputs, and outcomes and create a complete logic model. Include this as a figure.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;outcome-and-causation&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Outcome and causation&lt;/h3&gt;
+&lt;div id=&#34;main-outcome&#34; class=&#34;section level4&#34;&gt;
+&lt;h4&gt;Main outcome&lt;/h4&gt;
+&lt;p&gt;Select one of the program’s outcomes to evaluate. Explain why you’ve chosen this (is it the most important? easiest to measure? has the greatest impact on society?) (&lt;strong&gt;≈50 words&lt;/strong&gt;)&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;measurement&#34; class=&#34;section level4&#34;&gt;
+&lt;h4&gt;Measurement&lt;/h4&gt;
+&lt;p&gt;Using the concept of the “ladder of abstraction” that we discussed in class (e.g. identifying a witch, measuring poverty, etc.), make a list of all the possible attributes of the outcome. Narrow this list down to 3-4 key attributes. Discuss how you decided to narrow the concepts and justify why you think these attributes capture the outcome. Then, for each of these attributes, answer these questions:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;em&gt;Measurable definition&lt;/em&gt;: How would you specifically define this attribute? (i.e. if the attribute is “reduced crime”, define it as “The percent change in crime in a specific neighborhood during a certain time frame” or something similar)&lt;/li&gt;
+&lt;li&gt;&lt;em&gt;Ideal measurement&lt;/em&gt;: How would you measure this attribute in an ideal world?&lt;/li&gt;
+&lt;li&gt;&lt;em&gt;Feasible measurement&lt;/em&gt;: How would you measure this given reality and given limitations in budget, time, etc.?&lt;/li&gt;
+&lt;li&gt;&lt;em&gt;Measurement of program effect&lt;/em&gt;: How would to connect this measure to people in the program? How would you check to see if the program itself had an effect?&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;(&lt;strong&gt;≈150 words&lt;/strong&gt; in this section)&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;causal-theory&#34; class=&#34;section level4&#34;&gt;
+&lt;h4&gt;Causal theory&lt;/h4&gt;
+&lt;p&gt;Given your measurement approach, describe and draw a causal diagram (DAG) that shows how your program causes the outcome. Note that this is not the same thing as the logic model—you’ll likely have nodes in the DAG that aren’t related to the program at all (like socioeconomic status, gender, experience, or other factors). The logic model provides the framework for the actual implementation of your program and connects all the moving parts to the outcomes. The DAG is how you can prove causation with statistical approaches. (&lt;strong&gt;≈150 words&lt;/strong&gt;)&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;hypotheses&#34; class=&#34;section level4&#34;&gt;
+&lt;h4&gt;Hypotheses&lt;/h4&gt;
+&lt;p&gt;Make predictions of your program’s effect. Declare what you think will happen. (&lt;strong&gt;≈50 words&lt;/strong&gt;)&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;data-and-methods&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Data and methods&lt;/h3&gt;
+&lt;div id=&#34;identification-strategy&#34; class=&#34;section level4&#34;&gt;
+&lt;h4&gt;Identification strategy&lt;/h4&gt;
+&lt;p&gt;How will you measure the actual program effect? Will you rely on an RCT? Differences-in-differences? Regression discontinuity? Instrumental variables? How does your approach account for selection bias and endogeneity? How does your approach isolate the causal effect of the program on the outcome?&lt;/p&gt;
+&lt;p&gt;Also briefly describe what kinds of threats to internal and external validity you face in your study.&lt;/p&gt;
+&lt;p&gt;(&lt;strong&gt;≈300 words&lt;/strong&gt;)&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;data&#34; class=&#34;section level4&#34;&gt;
+&lt;h4&gt;Data&lt;/h4&gt;
+&lt;p&gt;Given your measurement approach, limits on feasibility, and identification strategy, describe the data you will use. Will you rely on administrative data collected by a government agency or nonprofit? Will you collect your own data? If so, what variables will you measure, and how? Will you conduct a survey or rely on outside observers or do something else? What does this data look like? What variables does it (or should it) include?&lt;/p&gt;
+&lt;p&gt;(&lt;strong&gt;≈100 words&lt;/strong&gt;)&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;synthetic-analysis&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Synthetic analysis&lt;/h3&gt;
+&lt;p&gt;Generate a synthetic (fake) dataset in R with all the variables you’ll need for the real life analysis. Analyze the data using your identification strategy. For instance:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;If you’re relying on observational data, close all the backdoors with matching or inverse probability weighting, don’t adjust for colliders, and make a strong argument for isolation of the causal effect in the absence of treatment/control groups&lt;/li&gt;
+&lt;li&gt;If you’re doing an RCT, test the differences in means in the treatment and control groups (and follow all other best practices listed in the World Bank book, checking for balance across groups, etc.)&lt;/li&gt;
+&lt;li&gt;If you’re doing diff-in-diff, run a regression model with an interaction term to show the diff-in-diff&lt;/li&gt;
+&lt;li&gt;If you’re doing regression discontinuity, check for a jump in the outcome variable at the cutoff in the running variable&lt;/li&gt;
+&lt;li&gt;If you’re using instrumental variables, check the validity of your instrument and run a 2SLS model&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Include robustness checks to ensure the validity of your effect (i.e. if you’re doing regression discontinuity, test different bandwidths and kernel types; etc.)&lt;/p&gt;
+&lt;p&gt;(&lt;strong&gt;As many words as you need to fully describe your analysis and results&lt;/strong&gt;)&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;conclusion&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Conclusion&lt;/h3&gt;
+&lt;p&gt;What would the findings from this analysis mean for your selected program? What would it mean if you found an effect? What would it mean if you didn’t find an effect? Why does any of this matter? (&lt;strong&gt;≈75 words&lt;/strong&gt;)&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&#34;footnotes&#34;&gt;
+&lt;hr /&gt;
+&lt;ol&gt;
+&lt;li id=&#34;fn1&#34;&gt;&lt;p&gt;See the &lt;a href=&#34;https://cos.io/prereg/&#34;&gt;Center for Open Science’s directory of preregistrations&lt;/a&gt;, or &lt;a href=&#34;https://aspredicted.org/&#34;&gt;AsPredicted list&lt;/a&gt; for examples of this in real life. &lt;a href=&#34;https://osf.io/hsbyd&#34;&gt;Here’s one by me!&lt;/a&gt;&lt;a href=&#34;#fnref1&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

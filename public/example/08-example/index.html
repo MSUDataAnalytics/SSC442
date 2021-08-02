@@ -1,0 +1,979 @@
+<!DOCTYPE html>
+<html lang="en-us" 
+      xmlns:og="http://ogp.me/ns#" 
+      xmlns:fb="https://www.facebook.com/2008/fbml">
+
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="generator" content="Source Themes Academic 4.8.0">
+
+  
+
+  
+  
+  
+  
+  
+    
+    
+    
+  
+  
+
+  <meta name="author" content="Ben Bushong">
+
+  
+  
+  
+    
+  
+  <meta name="description" content="Our data and goalSome functionsBreakout #1Breakout #1 discussionAutomating modelsLoopsBreakout #2Breakout #2 discussionGetting RMSE from the listBreakout #3 (if time)Our data and goalWe want to use the wooldridge::wage2 data on wages to generate and tune a non-parametric model of wages using a regression tree.
+We’ve learned that our RMSE calculations have a hard time with NAs in the data.">
+
+  
+  <link rel="alternate" hreflang="en-us" href="https://datavizm20.classes.andrewheiss.com/example/08-example/">
+
+  
+
+
+  
+  
+  
+  <meta name="theme-color" content="#18453B">
+  
+
+  
+  
+  
+  <script src="/js/mathjax-config.js"></script>
+  
+
+  
+  
+  
+  
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/academicons/1.8.6/css/academicons.min.css" integrity="sha256-uFVgMKfistnJAfoCUQigIl+JfUaP47GrRKjf6CTPVmw=" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.0-1/css/all.min.css" integrity="sha256-4w9DunooKSr3MFXHXWyFER38WmPdm361bQS/2KUWZbU=" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+
+    
+    
+    
+      
+    
+    
+      
+      
+        
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/styles/github.min.css" crossorigin="anonymous" title="hl-light">
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/styles/dracula.min.css" crossorigin="anonymous" title="hl-dark" disabled>
+        
+      
+    
+
+    
+
+    
+
+    
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/lazysizes/5.1.2/lazysizes.min.js" integrity="sha256-Md1qLToewPeKjfAHU1zyPwOutccPAm5tahnaw7Osw0A=" crossorigin="anonymous" async></script>
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" integrity="" crossorigin="anonymous" async></script>
+      
+    
+      
+
+      
+      
+
+      
+    
+
+  
+
+  
+  
+  
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Fira+Sans+Condensed:400,400i,700,700i%7COverpass:400,400i,700,700i&display=swap">
+  
+
+  
+  
+  
+  
+  <link rel="stylesheet" href="/css/academic.css">
+
+  
+
+
+
+
+  
+
+
+  
+  
+
+  
+
+  <link rel="manifest" href="/index.webmanifest">
+  <link rel="icon" type="image/png" href="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_32x32_fill_lanczos_center_2.png">
+  <link rel="apple-touch-icon" type="image/png" href="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_192x192_fill_lanczos_center_2.png">
+
+  <link rel="canonical" href="https://datavizm20.classes.andrewheiss.com/example/08-example/">
+
+  
+  
+  
+  
+  
+  
+  
+    
+  
+  
+  <meta property="twitter:card" content="summary_large_image">
+  
+  <meta property="og:site_name" content="Data Analytics">
+  <meta property="og:url" content="https://datavizm20.classes.andrewheiss.com/example/08-example/">
+  <meta property="og:title" content="Nonparametric Regression | Data Analytics">
+  <meta property="og:description" content="Our data and goalSome functionsBreakout #1Breakout #1 discussionAutomating modelsLoopsBreakout #2Breakout #2 discussionGetting RMSE from the listBreakout #3 (if time)Our data and goalWe want to use the wooldridge::wage2 data on wages to generate and tune a non-parametric model of wages using a regression tree.
+We’ve learned that our RMSE calculations have a hard time with NAs in the data."><meta property="og:image" content="https://datavizm20.classes.andrewheiss.com/img/social-image.png">
+  <meta property="twitter:image" content="https://datavizm20.classes.andrewheiss.com/img/social-image.png"><meta property="og:locale" content="en-us">
+  
+    
+      <meta property="article:published_time" content="2021-03-18T00:00:00&#43;00:00">
+    
+    <meta property="article:modified_time" content="2021-03-18T08:05:58-04:00">
+  
+
+  
+
+
+
+  
+
+
+  
+
+
+  <link rel="shortcut icon" href="https://datavizm20.classes.andrewheiss.com/favicon.ico" />
+  <link rel="apple-touch-icon-precomposed" sizes="57x57" href="https://datavizm20.classes.andrewheiss.com/img/apple-touch-icon-57x57.png" />
+  <link rel="apple-touch-icon-precomposed" sizes="114x114" href="https://datavizm20.classes.andrewheiss.com/img/apple-touch-icon-114x114.png" />
+  <link rel="apple-touch-icon-precomposed" sizes="72x72" href="https://datavizm20.classes.andrewheiss.com/img/apple-touch-icon-72x72.png" />
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://datavizm20.classes.andrewheiss.com/img/apple-touch-icon-144x144.png" />
+  <link rel="apple-touch-icon-precomposed" sizes="120x120" href="https://datavizm20.classes.andrewheiss.com/img/apple-touch-icon-120x120.png" />
+  <link rel="apple-touch-icon-precomposed" sizes="152x152" href="https://datavizm20.classes.andrewheiss.com/img/apple-touch-icon-152x152.png" />
+  <link rel="icon" type="image/png" href="https://datavizm20.classes.andrewheiss.com/img/favicon-32x32.png" sizes="32x32" />
+  <link rel="icon" type="image/png" href="https://datavizm20.classes.andrewheiss.com/img/favicon-16x16.png" sizes="16x16" />
+  <meta name="application-name" content="SSC 442: Data Analytics" />
+  <meta name="msapplication-TileColor" content="#FFFFFF" />
+  <meta name="msapplication-TileImage" content="https://datavizm20.classes.andrewheiss.com/img/mstile-144x144.png" />
+
+
+  <title>Nonparametric Regression | Data Analytics</title>
+
+</head>
+
+
+<body id="top" data-spy="scroll" data-offset="70"
+    data-target="#TableOfContents"
+    >
+
+    <aside class="search-results" id="search">
+  <div class="container">
+    <section class="search-header">
+
+      <div class="row no-gutters justify-content-between mb-3">
+        <div class="col-6">
+          <h1>Search</h1>
+        </div>
+        <div class="col-6 col-search-close">
+          <a class="js-search" href="#"><i class="fas fa-times-circle text-muted" aria-hidden="true"></i></a>
+        </div>
+      </div>
+
+      <div id="search-box">
+        
+        
+        
+      </div>
+
+    </section>
+    <section class="section-search-results">
+
+      <div id="search-hits">
+        
+      </div>
+
+    </section>
+  </div>
+</aside>
+
+
+    
+
+
+
+
+
+
+
+<nav class="navbar navbar-expand-lg navbar-light compensate-for-scrollbar" id="navbar-main">
+  <div class="container">
+
+    
+    <div class="d-none d-lg-inline-flex">
+      <a class="navbar-brand" href="/">Data Analytics</a>
+    </div>
+    
+
+    
+    <button type="button" class="navbar-toggler" data-toggle="collapse"
+            data-target="#navbar-content" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
+    <span><i class="fas fa-bars"></i></span>
+    </button>
+    
+
+    
+    <div class="navbar-brand-mobile-wrapper d-inline-flex d-lg-none">
+      <a class="navbar-brand" href="/">Data Analytics</a>
+    </div>
+    
+
+    
+    
+    <div class="navbar-collapse main-menu-item collapse justify-content-end" id="navbar-content">
+
+      
+      <ul class="navbar-nav d-md-inline-flex">
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/syllabus/"><span>Syllabus</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/schedule/"><span>Schedule</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/content/"><span>Content</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link  active" href="/example/"><span>Examples</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/assignment/"><span>Assignments</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+            
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="https://join.slack.com/t/ssc442kirkpatrick/shared_invite/zt-kxhgemgn-vaEGD_4KcpDCOEJtXxbxbQ" target="_blank" rel="noopener"><span><i class="fab fa-slack"></i></span></a>
+        </li>
+
+        
+        
+
+      
+
+        
+      </ul>
+    </div>
+
+    <ul class="nav-icons navbar-nav flex-row ml-auto d-flex pl-md-2">
+      
+
+      
+
+      
+
+    </ul>
+
+  </div>
+</nav>
+
+
+    
+
+<div class="container-fluid docs">
+    <div class="row flex-xl-nowrap">
+        <div class="col-12 col-md-3 col-xl-2 docs-sidebar">
+            
+
+
+
+
+
+  
+    
+  
+
+
+
+
+<form class="docs-search d-flex align-items-center">
+  <button class="btn docs-toggle d-md-none p-0 mr-3" type="button" data-toggle="collapse" data-target="#docs-nav" aria-controls="docs-nav" aria-expanded="false" aria-label="Toggle section navigation">
+    <span><i class="fas fa-bars"></i></span>
+  </button>
+
+  
+</form>
+
+<nav class="collapse docs-links" id="docs-nav">
+  
+
+  
+  
+  
+  
+  <div class="docs-toc-item">
+    <a class="docs-toc-link" href="/example/">Examples</a>
+    <ul class="nav docs-sidenav">
+      
+      <li >
+        <a href="/example/00-example/">0: Introduction to R</a>
+      </li>
+      
+      <li >
+        <a href="/example/01-example/">1: Visualization I</a>
+      </li>
+      
+      <li >
+        <a href="/example/02-example/">2: Visualization II</a>
+      </li>
+      
+      <li >
+        <a href="/example/03-example/">3: Visualization III</a>
+      </li>
+      
+      <li >
+        <a href="/example/04-example/">4: Uncertainty</a>
+      </li>
+      
+      <li >
+        <a href="/example/05-example/">5: Linear Regression I</a>
+      </li>
+      
+      <li >
+        <a href="/example/06-example/">6: Linear Regression II</a>
+      </li>
+      
+      <li >
+        <a href="/example/07-example/">7: Linear Regression III</a>
+      </li>
+      
+      <li class="active">
+        <a href="/example/08-example/">8: Nonparametric Regression</a>
+      </li>
+      
+      <li >
+        <a href="/example/09-example/">9: Bias vs. Variance</a>
+      </li>
+      
+      <li >
+        <a href="/example/10-example/">10: Classification</a>
+      </li>
+      
+      <li >
+        <a href="/example/11-example/">11: Data Wrangling</a>
+      </li>
+      
+      <li >
+        <a href="/example/12-example/">12: Text as Data</a>
+      </li>
+      
+    </ul>
+    
+
+  </div>
+  
+  
+</nav>
+
+        </div>
+
+        
+
+        <main class="col-12 col-md-9 col-xl-8 py-md-3 pl-md-5 docs-content" role="main">
+
+            <article class="article">
+
+                <div class="docs-article-container">
+                    <h1>Nonparametric Regression</h1>
+
+                    
+
+                    
+                    <div class="due-date p-2 mb-3 bg-content text-white">
+                        Content for Thursday, March 18, 2021
+                    </div>
+                    
+
+                    
+
+                    <div class="article-style">
+                        
+
+<div id="TOC">
+<ul>
+<li><a href="#our-data-and-goal">Our data and goal</a><ul>
+<li><a href="#some-functions">Some functions</a></li>
+</ul></li>
+<li><a href="#breakout-1">Breakout #1</a><ul>
+<li><a href="#breakout-1-discussion">Breakout #1 discussion</a></li>
+</ul></li>
+<li><a href="#automating-models">Automating models</a><ul>
+<li><a href="#loops">Loops</a></li>
+</ul></li>
+<li><a href="#breakout-2">Breakout #2</a><ul>
+<li><a href="#breakout-2-discussion">Breakout #2 discussion</a></li>
+</ul></li>
+<li><a href="#getting-rmse-from-the-list">Getting RMSE from the list</a></li>
+<li><a href="#breakout-3-if-time">Breakout #3 (if time)</a></li>
+</ul>
+</div>
+
+<div id="our-data-and-goal" class="section level2">
+<h2>Our data and goal</h2>
+<p>We want to use the <code>wooldridge::wage2</code> data on wages to generate and tune a non-parametric model of wages using a regression tree.</p>
+<p>We’ve learned that our RMSE calculations have a hard time with <code>NA</code>s in the data. So let’s use the <code>skim</code> output to drop variables with <code>NA</code> (see <code>n_missing</code>). Of course, there are other things we can do (impute the <code>NA</code>s, or make dummies for them), but for now, it’s easiest to drop.</p>
+<pre class="r"><code>wage_clean = wage2 %&gt;%
+  dplyr::select(-brthord, -meduc, -feduc)</code></pre>
+<p>Once cleaned, we should be able to use <code>rpart(wage ~ ., data = wage_clean)</code> and not have any <code>NA</code>s in our prediction.</p>
+<div id="some-functions" class="section level3">
+<h3>Some functions</h3>
+<p>These functions are taken from our previous Content and Examples:</p>
+<pre class="r"><code>rmse = function(actual, predicted) {
+  sqrt(mean((actual - predicted) ^ 2))
+}</code></pre>
+<pre class="r"><code>get_rmse = function(model, data, response) {
+  rmse(actual = subset(data, select = response, drop = TRUE),
+       predicted = predict(model, data))
+}</code></pre>
+</div>
+</div>
+<div id="breakout-1" class="section level2">
+<h2>Breakout #1</h2>
+<p>I’m going to assign you to breakout rooms to work in groups of 3-4 on live-coding. One person in the group will need to have Rstudio up, be able to share screen, and have the correct packages loaded (<code>caret</code>, <code>rpart</code>, and <code>rpart.plot</code>, plus <code>skimr</code>). Copy the <code>rmse</code> and <code>get_rmse</code> code into a blank R script (you don’t have to use RMarkdown, just use a blank R script and run from there).</p>
+<p>For the first breakout, all I want you to do is the following:</p>
+<ul>
+<li>Estimate a default regression tree on <code>wage_clean</code> using the default parameters.</li>
+<li>Use <code>rpart.plot</code> to vizualize your regression tree, and <em>talk through the interpretation</em> with each other.</li>
+<li>Calculate the RMSE for your regression tree.</li>
+</ul>
+<p>I’ll bring you back in about 5 minutes. Remember, you can use <code>?wage2</code> to see the variable names. Make sure you know what variables are showing up in the plot and explaining <code>wage</code> in your model. You may find something odd at first and may need to drop more variables…</p>
+<p><strong>5 minutes</strong></p>
+<div id="breakout-1-discussion" class="section level3">
+<h3>Breakout #1 discussion</h3>
+<p>Let’s choose a group to share their plot and discuss the results.</p>
+</div>
+</div>
+<div id="automating-models" class="section level2">
+<h2>Automating models</h2>
+<p>Let’s talk about a little code shortcut that helps iterate through your model selection.</p>
+<p>First, before, we used <code>list()</code> to store all of our models. This is because <code>list()</code> can “hold” anything at all, unlike a <code>matrix</code>, which is only numeric, or a <code>data.frame</code> which needs all rows in a column to be the same data type. <code>list()</code> is also recursive, so each element in a list can be a list. Of lists. Of lists!</p>
+<p>Lists are also really easy to add to iteratively. We can initiate an empty list using <code>myList &lt;- list()</code>, then we can add things to it. Note that we use the double <code>[</code> to index:</p>
+<pre class="r"><code>myList &lt;- list()
+myList[[&#39;first&#39;]] = &#39;This is the first thing on my list&#39;
+print(myList)</code></pre>
+<pre><code>## $first
+## [1] &quot;This is the first thing on my list&quot;</code></pre>
+<p>Lists let you name the “containers” (much like you can name colums in a <code>data.frame</code>). Our first one is called “first”. We can add more later:</p>
+<pre class="r"><code>myList[[&#39;second&#39;]] = c(1,2,3)
+print(myList)</code></pre>
+<pre><code>## $first
+## [1] &quot;This is the first thing on my list&quot;
+## 
+## $second
+## [1] 1 2 3</code></pre>
+<p>And still more:</p>
+<pre class="r"><code>myList[[&#39;third&#39;]] = data.frame(a = c(1,2,3), b = c(&#39;Albert&#39;,&#39;Alex&#39;,&#39;Alice&#39;))
+print(myList)</code></pre>
+<pre><code>## $first
+## [1] &quot;This is the first thing on my list&quot;
+## 
+## $second
+## [1] 1 2 3
+## 
+## $third
+##   a      b
+## 1 1 Albert
+## 2 2   Alex
+## 3 3  Alice</code></pre>
+<p>Now we have a <code>data.frame</code> in there! We can use <code>lapply</code> to do something to every element in the list:</p>
+<pre class="r"><code>lapply(myList, length) # the length() function with the first entry being the list element</code></pre>
+<pre><code>## $first
+## [1] 1
+## 
+## $second
+## [1] 3
+## 
+## $third
+## [1] 2</code></pre>
+<p>We get back a list of equal length but each (still-named) container is now the length of the original list’s contents.</p>
+<div id="loops" class="section level3">
+<h3>Loops</h3>
+<p>R has a very useful looping function that takes the form:</p>
+<pre class="r"><code>for(i in c(&#39;first&#39;,&#39;second&#39;,&#39;third&#39;)){
+print(i)
+}</code></pre>
+<pre><code>## [1] &quot;first&quot;
+## [1] &quot;second&quot;
+## [1] &quot;third&quot;</code></pre>
+<p>Here, R is repeating the thing in the loop (<code>print(i)</code>) with a different value for <code>i</code> each time. R repeats only what is <em>inside the curly-brackets</em>, then when it reaches the close-curly-bracket, it goes back to the top, changes <code>i</code> to the next element, and repeats.</p>
+<p>We can use this to train our models. First, we clear our list object <code>myList</code> by setting it equal to an empty list. Then, we loop over some regression tree tuning parameters. First, we have to figure out how to use the loop to set a <em>unique</em> name for each list container. To do this, we’ll use <code>paste0('Tuning',i)</code> which will result in a character string of <code>Tuning0</code> when <code>i=0</code>, <code>Tuning00.1</code> when <code>i=0.01</code>, etc.</p>
+<pre class="r"><code>myList &lt;- list()   # resets the list. Otherwise, you&#39;ll just be adding to your old list!
+
+for(i in c(0, 0.01, 0.02)){
+  myList[[paste0(&#39;Tuning&#39;,i)]] = rpart(wage ~ ., data = wage_clean, cp = i)
+}</code></pre>
+<p>If you use <code>names(myList)</code> you’ll see the result of our <code>paste0</code> naming. If you want to see the plotted results, you can use:</p>
+<pre class="r"><code>rpart.plot(myList[[&#39;Tuning0.01&#39;]])</code></pre>
+<p><img src="/example/08-example_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
+</div>
+</div>
+<div id="breakout-2" class="section level2">
+<h2>Breakout #2</h2>
+<p>Let’s send you back to your breakout rooms. Using the loop method, generate 5 regression trees to explain <code>wage</code> in <code>wage_clean</code>. You can iterate through values of <code>cp</code>, the complexity parameter, or <code>minsplit</code>, the minimum # of points that have to be in each split.</p>
+<p><strong>10 minutes</strong></p>
+<div id="breakout-2-discussion" class="section level3">
+<h3>Breakout #2 discussion</h3>
+</div>
+</div>
+<div id="getting-rmse-from-the-list" class="section level2">
+<h2>Getting RMSE from the list</h2>
+<p>Finally, we want to move towards getting the RMSE for each of these trees. We’ve done this before using <code>lapply</code>. Let’s introduce a neat coding shortcut, the <code>anonymous function</code>:</p>
+<pre class="r"><code>myRMSE &lt;- lapply(myList, function(x){
+                  get_rmse(x, wage_clean, &#39;wage&#39;)
+                  } )
+
+print(myRMSE)</code></pre>
+<pre><code>## $Tuning0
+## [1] 292.5856
+## 
+## $Tuning0.01
+## [1] 359.4592
+## 
+## $Tuning0.02
+## [1] 367.2748</code></pre>
+<p>Well, it gets us the right answer, but whaaaaaat is going on? Curly brackets? <code>x</code>?</p>
+<p>This is an “anonymous function”, or a function created on the fly. Here’s how it works in <code>lapply</code>:</p>
+<ul>
+<li>The first argument is the list you want to do something to</li>
+<li>The second argument would usually be the function you want to apply, like <code>get_rmse</code></li>
+<li>Here, we’re going to ask R to <em>temporarily</em> create a function that takes one argument, <code>x</code>.</li>
+<li><code>x</code> is going to be each list element in <code>myList</code>.</li>
+<li>Think of it as a loop:
+<ul>
+<li>Take the first element of <code>myList</code> and refer to it as <code>x</code>. Run the function.</li>
+<li>Then it’ll take the second element of <code>myList</code> and refer to it as <code>x</code> and run the function.</li>
+<li>Repeat until all elements of <code>x</code> have been used.</li>
+</ul></li>
+<li>Once the anonymous function has been applied to <code>x</code>, the result is passed back and saved as the new element of the list output, always in the same position from where the <code>x</code> was taken.</li>
+</ul>
+<p>So you can think of it like this:</p>
+<pre><code>x = myList[[1]]
+myList[[1]] = get_rmse(x, wage_clean, &#39;wage&#39;)
+
+x = myList[[2]]
+myList[[2]] = get_rmse(x, wage_clean, &#39;wage&#39;)
+
+x = myList[[3]]
+myList[[3]] = get_rmse(x, wage_clean, &#39;wage&#39;)</code></pre>
+<p>You can refer to <code>myList</code> by name:
+- <code>myList[['Tuning0.01']]</code></p>
+<p>Or you can refer to <code>myList</code> by the index:
+- <code>myList[[2]]</code></p>
+<p>Just like you can refer to <code>data.frame</code> columns by name or by index.</p>
+</div>
+<div id="breakout-3-if-time" class="section level2">
+<h2>Breakout #3 (if time)</h2>
+<p>Let’s send you to the breakout rooms one more time, and use <code>lapply</code> to get a list of your RMSE’s (one for each of your models). Note that we are not yet splitting into <code>test</code> and <code>train</code> (which you <strong>will</strong> need to do on your lab assignment).</p>
+<p>Once you have your list, <strong>create the plot of RMSEs</strong> similar to the one we looked at in Content this week. Note: you can use <code>unlist(myRMSE)</code> to get a numeric vector of the RMSE’s (as long as all of the elements in <code>myRMSE</code> are numeric). Then, it’s a matter of plotting either with base <code>plot</code> or with <code>ggplot</code> (if you use <code>ggplot</code> you’ll have to <code>tidy</code> the RMSE by adding the index column or naming the x-axis).</p>
+<p><strong>Remaining time</strong></p>
+</div>
+
+                    </div>
+
+                    
+
+
+
+                    
+                </div>
+
+                <div class="body-footer">
+                    <p>Last updated on March 18, 2021</p>
+
+                    
+
+
+                    
+
+                </div>
+
+            </article>
+
+            <footer>
+    <hr>
+
+    <div class="row course-info">
+        <div class="col-md-7">
+            <p>
+                <strong>SSC 442: Data Analytics (Spring Semester 2021)</strong><br>
+
+                <a href="https://www.msu.edu" target="_blank" rel="noopener">Michigan State University</a> &emsp;&emsp;
+                <a href="https://socialscience.msu.edu/" target="_blank" rel="noopener">College of Social Science</a>
+            </p>
+
+            <p>
+                <a href="https://www.justinkirkpatrick.com" target="_blank" rel="noopener"><i class="fas fa-user"></i>
+                    Prof. Justin Kirkpatrick</a> &emsp;&emsp;
+                <a href="mailto:jkirk@msu.edu"><i class="fas fa-envelope"></i>
+                    jkirk@msu.edu</a>
+            </p>
+
+            <p>
+                <i class="far fa-calendar-alt"></i> Tuesday and Thursday &emsp;&emsp;
+                <i class="far fa-clock"></i> 1:00pm - 2:20pm 
+                
+            </p>
+        </div>
+
+        <div class="col-md-5 credits">
+            <p>All content licensed under a <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" rel="noopener">Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International License</a>.</p>
+            
+            <p>Content <i class="fab fa-creative-commons"></i> 2020-21 <a href="https://www.justinkirkpatrick.com" target="_blank" rel="noopener">Ben Bushong; Justin Kirkpatrick</a></p>
+        
+            <p>This site created with the <a href="https://sourcethemes.com/academic/" target="_blank" rel="noopener">Academic theme</a> in <a href="https://bookdown.org/yihui/blogdown/" target="_blank" rel="noopener">blogdown</a> and <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a>. </p>
+            
+            <p><a href="https://github.com/" target="_blank" rel="noopener"><i class="fab fa-github"></i> View the source at GitHub.</a></p>
+        </div>
+    </div>
+</footer>
+
+
+        </main>
+    </div>
+</div>
+
+        
+
+    
+    
+    
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/4.1.4/imagesloaded.pkgd.min.js" integrity="sha256-lqvxZrPLtfffUl2G/e7szqSvPBILGbwmsGE1MKlOi0Q=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.6/isotope.pkgd.min.js" integrity="sha256-CBrpuqrMhXwcLLUd5tvQ4euBHCdh7wGlDfNz8vbu/iI=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+
+      
+
+      
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/highlight.min.js" integrity="sha256-eOgo0OtLL4cdq7RdwRUiGKLX9XsIJ7nGhWEKbohmVAQ=" crossorigin="anonymous"></script>
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/languages/r.min.js"></script>
+        
+      
+
+    
+
+    
+    
+
+    
+    
+    <script>const code_highlighting = true;</script>
+    
+
+    
+    
+    <script>const isSiteThemeDark = false;</script>
+    
+
+    
+
+    
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/anchor-js/4.1.1/anchor.min.js" integrity="sha256-pB/deHc9CGfFpJRjC43imB29Rse8tak+5eXqntO94ck=" crossorigin="anonymous"></script>
+    <script>
+      anchors.add();
+    </script>
+    
+
+    
+
+    
+    
+
+    
+    
+
+    
+    
+
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <script src="/js/academic.min.6f7ce8be710290b8c431bbc97f405d15.js"></script>
+
+    
+
+
+
+    
+    
+
+    
+<div id="modal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Cite</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <pre><code class="tex hljs"></code></pre>
+      </div>
+      <div class="modal-footer">
+        <a class="btn btn-outline-primary my-1 js-copy-cite" href="#" target="_blank">
+          <i class="fas fa-copy"></i> Copy
+        </a>
+        <a class="btn btn-outline-primary my-1 js-download-cite" href="#" target="_blank">
+          <i class="fas fa-download"></i> Download
+        </a>
+        <div id="modal-error"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+
+</html>
