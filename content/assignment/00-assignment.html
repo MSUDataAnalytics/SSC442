@@ -31,18 +31,18 @@ editor_options:
 </ul>
 </div>
 
-<p>You must turn in a PDF document of your <code>R markdown</code> code. Submit this to D2L by 11:59 PM on Monday January 25th.</p>
+<p>You must turn in a PDF document of your <code>R markdown</code> code. Submit this to D2L by 11:59 PM on Sunday, September 5th.</p>
 <div class="fyi">
 <p><strong>NOTE:</strong></p>
-<p>As you read through this assignment, practice with each of the examples (copy-paste them into an empty R script and run them). At the bottom of this page you will find the questions that comprise the assignment. These questions apply and expand on the topics and R functions in the assignment.</p>
-<p><a href="https://raw.githubusercontent.com/ajkirkpatrick/FS20/Spring2021/Rmarkdown_templates/SSC442_Lab_Assignment_Template.Rmd">Right-click to download the homework .Rmd template <i class="fas fa-file-download"></i></a>. Please save the template into the labs folder in the SSC442 folder on your local hard drive. If you don’t have a nice file structure setup for the course, please do so now. <em>It will save you headaches in the future</em>.</p>
+<p>As you read through this assignment, practice with each of the examples (copy-paste them into an empty <code>R</code> script and run them). At the bottom of this page you will find the questions that comprise the assignment. These questions apply and expand on the topics and <code>R</code> functions in the assignment. Many assignments will have this same structure: some instruction preceeding specific exercises.</p>
+<p><a href="https://raw.githubusercontent.com/ajkirkpatrick/FS20/Spring2021/Rmarkdown_templates/SSC442_Lab_Assignment_Template.Rmd">Right-click to download the .Rmd template for labs <i class="fas fa-file-download"></i></a>. Please save the template into the labs folder in the SSC442 folder on your local hard drive. If you don’t have a nice file structure setup for the course, please make one now. <em>It will save you from headaches in the future</em>.</p>
 </div>
 <div id="programming-basics" class="section level1">
 <h1>Programming basics</h1>
-<p>We teach <code>R</code> because it greatly facilitates data analysis, the main topic of this book. By coding in R, we can efficiently perform exploratory data analysis, build data analysis pipelines, and prepare data visualization to communicate results. However, <code>R</code> is not just a data analysis environment but a programming language. Advanced <code>R</code> programmers can develop complex packages and even improve <code>R</code> itself, but we do not cover advanced programming in this book. Nonetheless, in this section, we introduce three key programming concepts: conditional expressions, for-loops, and functions. These are not just key building blocks for advanced programming, but are sometimes useful during data analysis. We also note that there are several functions that are widely used to program in <code>R</code> but that we will not cover in this book. These include <code>split</code>, <code>cut</code>, <code>do.call</code>, and <code>Reduce</code>, as well as the <strong>data.table</strong> package. These are worth learning if you plan to become an expert <code>R</code> programmer.</p>
+<p>We teach <code>R</code> because it greatly facilitates data analysis. By coding in <code>R</code>, we can efficiently perform exploratory data analysis, build data analysis pipelines, and prepare data visualization to communicate results. However, <code>R</code> is not just a data analysis environment but a programming language. Advanced <code>R</code> programmers can develop complex packages and even improve <code>R</code> itself. But we do not cover advanced programming in this course. Nonetheless, in this section, we introduce three key programming concepts: conditional expressions, for-loops, and functions. These are not just key building blocks for advanced programming, but are sometimes useful during data analysis. We also note that there are several functions that are widely used to program in <code>R</code> but that we will not cover directly in this course. These include <code>split</code>, <code>cut</code>, <code>do.call</code>, and <code>Reduce</code>, as well as the <strong>data.table</strong> package. These are worth learning if you plan to become an expert <code>R</code> programmer.</p>
 <div id="conditionals" class="section level2">
 <h2>Conditional expressions</h2>
-<p>Conditional expressions are one of the basic features of programming. They are used for what is called <em>flow control</em>. The most common conditional expression is the if-else statement. In R, we can actually perform quite a bit of data analysis without conditionals. However, they do come up occasionally, and you will need them once you start writing your own functions and packages.</p>
+<p>Conditional expressions are one of the basic features of programming. They are used for what is called <em>flow control</em>. The most common conditional expression is the if-else statement. In <code>R</code>, we can actually perform quite a bit of data analysis without conditionals. However, they do come up occasionally, and you will need them once you start writing your own functions and packages.</p>
 <p>Here is a very simple example showing the general structure of an if-else statement. The basic idea is to print the reciprocal of <code>a</code> unless <code>a</code> is 0:</p>
 <pre class="r"><code>a &lt;- 0
 
@@ -202,7 +202,7 @@ any(z)</code></pre>
 </div>
 <div id="defining-functions" class="section level2">
 <h2>Defining functions</h2>
-<p>As you become more experienced, you will find yourself needing to perform the same operations over and over. A simple example is computing averages. We can compute the average of a vector <code>x</code> using the <code>sum</code> and <code>length</code> functions: <code>sum(x)/length(x)</code>. Because we do this repeatedly, it is much more efficient to write a function that performs this operation. This particular operation is so common that someone already wrote the <code>mean</code> function and it is included in base R. However, you will encounter situations in which the function does not already exist, so <code>R</code> permits you to write your own. A simple version of a function that computes the average can be defined like this:</p>
+<p>As you become more experienced, you will find yourself needing to perform the same operations over and over. A simple example is computing averages. We can compute the average of a vector <code>x</code> using the <code>sum</code> and <code>length</code> functions: <code>sum(x)/length(x)</code>. Because we do this repeatedly, it is much more efficient to write a function that performs this operation. This particular operation is so common that someone already wrote the <code>mean</code> function and it is included in base <code>R</code>. However, you will encounter situations in which the function does not already exist, so <code>R</code> permits you to write your own. A simple version of a function that computes the average can be defined like this:</p>
 <pre class="r"><code>avg &lt;- function(x){
   s &lt;- sum(x)
   n &lt;- length(x)
@@ -360,7 +360,6 @@ s_n &lt;- sapply(n, compute_s_n)</code></pre>
 </ul>
 <div class="fyi">
 <p><strong>EXERCISES</strong></p>
-<p><strong>Note: these are updated for F2021 so may be different for S2021</strong></p>
 <ol start="0" style="list-style-type: decimal">
 <li><p>In your first code chunk, load the package library <code>tidyverse</code>, which you will need for Question 8. Always load all your package libraries at the top, in the first code chunk!</p></li>
 <li><p>What will this conditional expression return and why?</p></li>
