@@ -14,6 +14,137 @@
     
     <item>
       <title>Illustrating Bias vs. Variance</title>
+      <link>https://datavizm20.classes.andrewheiss.com/example/code_aggregated/</link>
+      <pubDate>Thu, 25 Mar 2021 00:00:00 +0000</pubDate>
+      <guid>https://datavizm20.classes.andrewheiss.com/example/code_aggregated/</guid>
+      <description>
+
+
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;NN = 100   #----&amp;gt; In class, we will change this to 
+#                 see how our results change in response
+SD.of.Bayes.Error = 0.75   #-----&amp;gt; This, too, will change. 
+
+# Note that both of these are used in the next chunk(s) to generate data.
+
+
+
+library(ggplot2)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Warning: package &amp;#39;ggplot2&amp;#39; was built under R version 4.0.4&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(patchwork)
+
+
+
+f = function(x) {
+  x ^ 2
+}
+
+
+
+get_sim_data = function(f, sample_size = NN) {
+  x = runif(n = sample_size, min = 0, max = 1)
+  eps = rnorm(n = sample_size, mean = 0, sd = SD.of.Bayes.Error)
+  y = f(x) + eps
+  data.frame(x, y)
+}
+
+
+
+set.seed(1)
+sim_data = get_sim_data(f)
+
+
+
+fit_0 = lm(y ~ 1,                   data = sim_data)
+fit_1 = lm(y ~ poly(x, degree = 1), data = sim_data)
+fit_2 = lm(y ~ poly(x, degree = 2), data = sim_data)
+fit_9 = lm(y ~ poly(x, degree = 9), data = sim_data)
+
+
+
+
+
+set.seed(42)
+plot(y ~ x, data = sim_data, col = &amp;quot;grey&amp;quot;, pch = 20,
+     main = &amp;quot;Four Polynomial Models fit to a Simulated Dataset&amp;quot;)
+
+grid = seq(from = 0, to = 2, by = 0.01)
+lines(grid, f(grid), col = &amp;quot;black&amp;quot;, lwd = 3)
+lines(grid, predict(fit_0, newdata = data.frame(x = grid)), col = &amp;quot;dodgerblue&amp;quot;,  lwd = 2, lty = 2)
+lines(grid, predict(fit_1, newdata = data.frame(x = grid)), col = &amp;quot;firebrick&amp;quot;,   lwd = 2, lty = 3)
+lines(grid, predict(fit_2, newdata = data.frame(x = grid)), col = &amp;quot;springgreen&amp;quot;, lwd = 2, lty = 4)
+lines(grid, predict(fit_9, newdata = data.frame(x = grid)), col = &amp;quot;darkorange&amp;quot;,  lwd = 2, lty = 5)
+
+legend(&amp;quot;topleft&amp;quot;, 
+       c(&amp;quot;y ~ 1&amp;quot;, &amp;quot;y ~ poly(x, 1)&amp;quot;, &amp;quot;y ~ poly(x, 2)&amp;quot;,  &amp;quot;y ~ poly(x, 9)&amp;quot;, &amp;quot;truth&amp;quot;), 
+       col = c(&amp;quot;dodgerblue&amp;quot;, &amp;quot;firebrick&amp;quot;, &amp;quot;springgreen&amp;quot;, &amp;quot;darkorange&amp;quot;, &amp;quot;black&amp;quot;), lty = c(2, 3, 4, 5, 1), lwd = 2)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/example/Code_Aggregated_files/figure-html/unnamed-chunk-1-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;set.seed(1)
+n_sims = 250
+n_models = 4
+x = data.frame(x = 0.90) # fixed point at which we make predictions
+predictions = matrix(0, nrow = n_sims, ncol = n_models)
+
+
+
+for (sim in 1:n_sims) {
+
+  # simulate new, random, training data
+  # this is the only random portion of the bias, var, and mse calculations
+  # this allows us to calculate the expectation over D
+  sim_data = get_sim_data(f, sample_size = NN)
+
+  # fit models
+  fit_0 = lm(y ~ 1,                   data = sim_data)
+  fit_1 = lm(y ~ poly(x, degree = 1), data = sim_data)
+  fit_2 = lm(y ~ poly(x, degree = 2), data = sim_data)
+  fit_9 = lm(y ~ poly(x, degree = 9), data = sim_data)
+
+  # get predictions
+  predictions[sim, 1] = predict(fit_0, x)
+  predictions[sim, 2] = predict(fit_1, x)
+  predictions[sim, 3] = predict(fit_2, x)
+  predictions[sim, 4] = predict(fit_9, x)
+}
+
+
+
+predictions.proc = (predictions)
+colnames(predictions.proc) = c(&amp;quot;0&amp;quot;, &amp;quot;1&amp;quot;, &amp;quot;2&amp;quot;, &amp;quot;9&amp;quot;)
+predictions.proc = as.data.frame(predictions.proc)
+
+tall_predictions = tidyr::gather(predictions.proc, factor_key = TRUE)
+
+## Here, you can save your ggplot output 
+FinalPlot &amp;lt;- ggplot(tall_predictions, aes(x = key, y = value, col = as.factor(key))) + 
+                      geom_boxplot() +
+                      geom_jitter(alpha = .5) +
+                      geom_hline(yintercept = f(x = .90)) +
+                      labs(col = &amp;#39;Model&amp;#39;, x = &amp;#39;Model&amp;#39;, y = &amp;#39;Prediction&amp;#39;, title = paste0(&amp;#39;Bias v Var - Sample Size: &amp;#39;,NN), subtitle = paste0(&amp;#39;SD of Bayes Err: &amp;#39;,SD.of.Bayes.Error)) +
+                      theme_bw()
+
+
+
+FinalPlot&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/example/Code_Aggregated_files/figure-html/unnamed-chunk-1-2.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;## This is going to aggregate your results for you:
+if(!exists(&amp;#39;FinalResults&amp;#39;)) FinalResults = list()
+
+FinalResults[[paste0(&amp;#39;finalPlot.NN.&amp;#39;,NN,&amp;#39;.SDBayes.&amp;#39;,SD.of.Bayes.Error)]] = FinalPlot
+
+# 
+# boxplot(value ~ key, data = tall_predictions, border = &amp;quot;darkgrey&amp;quot;, xlab = &amp;quot;Polynomial Degree&amp;quot;, ylab = &amp;quot;Predictions&amp;quot;,
+#         main = &amp;quot;Simulated Predictions for Polynomial Models&amp;quot;)
+# grid()
+# stripchart(value ~ key, data = tall_predictions, add = TRUE, vertical = TRUE, method = &amp;quot;jitter&amp;quot;, jitter = 0.15, pch = 1, col = c(&amp;quot;dodgerblue&amp;quot;, &amp;quot;firebrick&amp;quot;, &amp;quot;springgreen&amp;quot;, &amp;quot;darkorange&amp;quot;))
+# abline(h = f(x = 0.90), lwd = 2)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;## This not run automatically.
+## To plot the whole list of ggplot objects in FinalResults:
+wrap_plots(FinalResults, nrow = 2, guides = &amp;#39;collect&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Illustrating Bias vs. Variance</title>
       <link>https://datavizm20.classes.andrewheiss.com/example/09-example/</link>
       <pubDate>Thu, 25 Mar 2021 00:00:00 +0000</pubDate>
       <guid>https://datavizm20.classes.andrewheiss.com/example/09-example/</guid>
