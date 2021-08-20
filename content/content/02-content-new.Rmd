@@ -220,7 +220,7 @@ ggplot(AAPLNFLX, aes(x = date, y = close, group = symbol)) +
   labs(x = 'Date', y = 'Closing price', title = 'Apple and Netflix stock price')
 ```
 
-Similar result as `geom_line`, but without the color difference (which makes it rather hard to tell what you're looking at). But if we add labels using `geom_label`, we'll get one label for every point, which will be overwhelming. The solution? Use some filtered data.
+Similar result as `geom_line`, but without the color difference (which makes it rather hard to tell what you're looking at). But if we add labels using `geom_label`, we'll get one label for every point, which will be overwhelming. The solution? Use some filtered data so that there is only one point for each label. But that means replacing the `data` in `ggplot`. Here's how.
 
 ### Using different data with different geometries
 Just as we can use different aesthetic mappings on each geometry, we can use different *data* entirely. This is useful when we want one geometry to have one set of data (like the stock prices above), but another geometry to only have a subset of the data. Why would we want that? Well, we'd like to label just *one* part of each of the lines in our plot, right? That means we want to label a *subset* of the stock data.
@@ -240,7 +240,7 @@ In `geom_label`, we specified we wanted the 100th observation from each symbol t
 
 R also has a very useful `ggrepel` package that gives us `geom_label_repel` which takes care of the nudging for us, even in complicated situations (lots of points, lines, etc.). It does a decent job here of moving the label to a point where it doesn't cover a lot of data.
 
-```{r, echo=T}
+```{r, echo=T, message = F, warning = F, error = F}
 library(ggrepel)
 ggplot(AAPLNFLX, aes(x = date, y = close, group = symbol)) +
   geom_line() +
