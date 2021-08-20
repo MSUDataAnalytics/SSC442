@@ -514,7 +514,7 @@ heights %>%
 
 ```
 
-```{r, eval = FALSE}
+```{r, eval = TRUE}
 p2 <- heights %>%
   ggplot(aes(height)) +
   geom_histogram(binwidth = 1, color="black") +
@@ -560,22 +560,203 @@ gapminder::gapminder %>%
 This makes it easy to read the life expectancy distribution over time (left-to-right) and across continents (up-and-down). It makes it easy to see that Africa has spread it's life expectancy distribution (some improved, some didn't), while Europe nhas become more clustered at the top end over time. Faceting in a grid is very helpful when you have a time dimension.
 
 
+### Visual cues to be compared should be adjacent, continued
+For each continent, let's compare income in 1970 versus 2010. When comparing income data across regions between 1970 and 2010, we made a figure similar to the one below, but this time we investigate continents rather than regions.
+
+Note that there are two `gapminder` datasets, one in `dslabs` and one in the `gapminder` package. The `dslabs` version has more data, so I will switch to that here by using `dslabs::gapminder` as our data.
+
+```{r boxplots-not-adjacent, echo=TRUE}
+dslabs::gapminder %>%
+  filter(year %in% c(1970, 2010) & !is.na(gdp)) %>%
+  mutate(dollars_per_day = gdp/population/365) %>%
+  mutate(labels = paste(year, continent)) %>%  # creating text labels
+  ggplot(aes(x = labels, y = dollars_per_day)) +
+  geom_boxplot() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.25)) +
+  scale_y_continuous(trans = "log2") +
+  ylab("Income in dollars per day")
+```
+
+
+The default in __ggplot2__ is to order labels alphabetically so the labels with 1970 come before the labels with 2010, making the comparisons challenging because a continent's distribution in 1970 is visually far from its distribution in 2010. It is much easier to make the comparison between 1970 and 2010 for each continent when the boxplots for that continent are next to each other:
+
+```{r boxplot-adjacent-comps, echo=TRUE}
+dslabs::gapminder %>%
+  filter(year %in% c(1970, 2010) & !is.na(gdp)) %>%
+  mutate(dollars_per_day = gdp/population/365) %>%
+  mutate(labels = paste(continent, year)) %>%
+  ggplot(aes(labels, dollars_per_day)) +
+  geom_boxplot() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = .25)) +
+  scale_y_continuous(trans = "log2") +
+  ylab("Income in dollars per day")
+```
+
+### Use color
+
+The comparison becomes even easier to make if we use color to denote the two things we want to compare. Now we do not have to make the labels column and can just use `continent` on the x-axis:
+
+
+```{r boxplot-adjacent-comps-with-color, echo=FALSE}
+ dslabs::gapminder %>%
+  filter(year %in% c(1970, 2010) & !is.na(gdp)) %>%
+  mutate(dollars_per_day = gdp/population/365, year = factor(year)) %>%
+  ggplot(aes(x = continent, y = dollars_per_day, fill = year)) +
+  geom_boxplot() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  scale_y_continuous(trans = "log2") +
+  ylab("Income in dollars per day")
+```
+
+
+## Think of the color blind
+
+About 10% of the population is color blind. Unfortunately, the default colors used in __ggplot2__ are not optimal for this group. However, __ggplot2__ does make it easy to change the color palette used in the plots. An example of how we can use a color blind friendly palette is described here: [http://www.cookbook-r.com/Graphs/Colors_(ggplot2)/#a-colorblind-friendly-palette](http://www.cookbook-r.com/Graphs/Colors_(ggplot2)/#a-colorblind-friendly-palette):
+
+```{r, eval=TRUE}
+color_blind_friendly_cols <-
+  c("#999999", "#E69F00", "#56B4E9", "#009E73",
+    "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
+```
+
+Here are the colors
+```{r color-blind-friendly-colors, echo=FALSE, fig.height=0.5}
+color_blind_friendly_cols <-
+  c("#999999", "#E69F00", "#56B4E9", "#009E73",
+    "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
+
+p1 <- data.frame(x=1:8, y=rep(1,8), col = as.character(1:8)) %>%
+  ggplot(aes(x, y, color = col)) +
+  geom_point(size=8, show.legend = FALSE) +
+  theme(axis.title.x=element_blank(),
+        axis.text.x=element_blank(),
+        axis.ticks.x=element_blank(),
+        axis.title.y=element_blank(),
+        axis.text.y=element_blank(),
+        axis.ticks.y=element_blank(),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank())
+
+p1 + scale_color_manual(values=color_blind_friendly_cols)
+```
+
+From [Seafood Prices Reveal Impacts of a Major Ecological Disturbance](http://www.pnas.org/content/pnas/early/2017/01/24/1617948114.full.pdf):
+
+![](/content/02-content_files/Colorblind_example.png) 
 
 
 
+```{r seafood, echo=F, eval = F} 
+knitr::include_graphics('/content/02content-files/Colorblind_example.png')
+
+'Above, I copy the file to the path: static/content/02-content_files/...png
+and then reference it here AS IF THE ROOT WERE STATIC.
+https://bookdown.org/yihui/blogdown/dep-path.html says that any local files should be copied on Knit (or maybe on build_site?) to static, but
+this just does not happen.
+
+![](/content/02-content_files/Colorblind_example.png) 
+```
+
+There are several resources that can help you select colors, for example this one:  [http://bconnelly.net/2013/10/creating-colorblind-friendly-figures/](http://bconnelly.net/2013/10/creating-colorblind-friendly-figures/).
 
 
 
+### Using a discrete color palette
+If you're simply trying to differentiate between groups by using color, there are many ways of changing your color palette in `ggplot`. Most use `scale_fill_discrete` or `scale_color_discrete` (depending on the aesthetic for which you're setting the color).
+
+The easiest way of getting good-looking (e.g. non-default) colors is the `scale_fill_viridis_d` function, which "inherits" (takes the place of and has the properties of) `scale_fill_discrete`. Viridis has four color palettes and each is designed to be used to maximize the differentiation between colors.
+
+We will subset our `dslabs::gapminder` dataset to five different years and take a look at what Viridis colors can do across those five:
+
+```{r, echo=TRUE, error = F, warning=F}
+gp = dslabs::gapminder %>% 
+filter(year == 1990 | year == 1995 | year==2000 |  year == 2005 | year==2010 ) %>%
+ggplot(aes(x = continent, y = gdp/population, fill = as.factor(year)))  + coord_flip()
+
+gp + geom_boxplot()  + labs(title = 'Default')
+```
+
+The default uses five different colors plucked seemingly at random. They are actually drawn from a palette of default ggplot colors.
+
+Let's try Viridis
+
+```{r, echo=TRUE, warning=FALSE, error = FALSE}
+gp = dslabs::gapminder %>% 
+filter(year == 1990 | year == 1995 | year==2000 |  year == 2005 | year==2010 ) %>%
+ggplot(aes(x = continent, y = gdp/population, fill = as.factor(year)))  + coord_flip() + labs(fill = 'Year')
+
+viridis_a = gp + geom_boxplot()  + labs(title = 'Viridis A') + scale_fill_viridis_d(option = 'A')
+viridis_b = gp + geom_boxplot()  + labs(title = 'Viridis B') + scale_fill_viridis_d(option = 'B')
+viridis_c = gp + geom_boxplot()  + labs(title = 'Viridis C') + scale_fill_viridis_d(option = 'C')
+viridis_d = gp + geom_boxplot()  + labs(title = 'Viridis D') + scale_fill_viridis_d(option = 'D')
+
+grid.arrange(viridis_a, viridis_b, viridis_c, viridis_d)
+```
+
+Viridis uses a better palette of colors that, though distinct, have some cohesiveness to them. 
+
+We can also use a custom palette, like the colorblind palette from before. If the palette has more entries than we have (N) distinct categories, R reverts to the default.
+
+```{r, echo=TRUE, warning=FALSE, error = FALSE}
+gp = dslabs::gapminder %>% 
+filter(year == 1990 | year == 1995 | year==2000 |  year == 2005 | year==2010 ) %>%
+ggplot(aes(x = continent, y = gdp/population, fill = as.factor(year)))  + coord_flip() + labs(fill = 'Year') 
+
+custom_a = gp + geom_boxplot()  + labs(title = 'Viridis A') + scale_fill_discrete(type = color_blind_friendly_cols)
+custom_b = gp + geom_boxplot()  + labs(title = 'Viridis A') + scale_fill_discrete(type = color_blind_friendly_cols[1:3])
+
+grid.arrange(custom_a, custom_b)
+```
+
+In the lower plot, we only give it a length-3 vector of colors, and it needs 5, so it returns to default.
 
 
 
+### Using a continuous color palette
+We may often want to use the color to indicate a numeric value instead of simply using it to delineate groupings. When this is the case, the `fill` or `color` aesthetic is set to a continuous value. For instance, if one were to plot election results by precinct, we may represent precincts with heavy Republican support as dark red, swing districts as purple or white, and Democratic districts as blue. The intensity of red/blue indicates how heavily slanted votes in that precinct were in the election. This is known as a *color ramp*. 
+
+Lets plot one country's GDP by year, but have the color indicate the life expectancy:
+
+```{r, echo=T, warning=F, error=F, message=F}
+dslabs::gapminder %>%
+  filter(country=='Romania' & year>1980) %>%
+  ggplot(aes(x = year, y = gdp/population, color = life_expectancy)) + 
+  scale_fill_continuous() + 
+  geom_point(size = 5) +
+  labs(x = 'Year', y = 'GDP Per Capita', fill = 'Life Expectancy')
+```
 
 
+We can see that GDP per capita went up, then down in 1989 (fall of the Soviet Union), then up after that. The color ramp tells us that life expectancy reached 75 years near the end, and it certainly improved in the post-2000 era.
+
+We can set some of the points on the ramp manually - here, the ramp starts at dark blue and ends at light blue, but what if we wanted to start at red, and at blue, and cross white in the middle? Easy! We use `scale_color_gradient2` and specify the colors for low, mid, and high, and specify the midpoint at 72.5 years.
 
 
+```{r, echo=T, warning=F, error=F, message=F}
+dslabs::gapminder %>%
+  filter(country=='Romania' & year>1980) %>%
+  ggplot(aes(x = year, y = gdp/population, color = life_expectancy)) + 
+  scale_color_gradient2(low = 'red', mid = 'white', high = 'blue', midpoint = 72.5) + 
+  geom_point(size = 5) +
+  labs(x = 'Year', y = 'GDP Per Capita', fill = 'Life Expectancy')
+```
+
+The midpoint specification is extra useful when there is a threshold (like 50% of the vote) that indicates a different qualitative outcome.
+
+The gradient2 method does not always work with the colorblind discrete palette - the colors interpolated may be in the range in which colorblindness tends to be a problem: 
+
+```{r, echo=T, warning=F, error=F, message=F}
+dslabs::gapminder %>%
+  filter(country=='Romania' & year>1980) %>%
+  ggplot(aes(x = year, y = gdp/population, color = life_expectancy)) + 
+  scale_color_gradient2(low = color_blind_friendly_cols[3], mid = color_blind_friendly_cols[4], high = color_blind_friendly_cols[5], midpoint = 72.5) + 
+  geom_point(size = 5) +
+  labs(x = 'Year', y = 'GDP Per Capita', fill = 'Life Expectancy')
+```
 
 
+## gridExtra and `grid.arrange`
+The `gridExtra` package has been used a few times in this lesson to combine plots using the `grid.arrange` function. The use is pretty intuitive - you save your plots as objects `plot1 <- ggplot(data, aes(x = var1))` and `plot2 <- ggplot(data, aes(x = var2))`, and then use `grid.arrange(plot1, plot2)` to combine. The function will align as best it can, and there are more advanced [grob-based functions](https://cran.r-project.org/web/packages/gridExtra/vignettes/arrangeGrob.html) that can adjust and align axes between plots, but we won't get into them. If we want to set the layout, we can specify `nrow` and `ncol` to set the rows and columns.
 
-
-
+The very-useful `patchwork` package is quickly replacing `grid.arrange` and provides more flexibility.
 
