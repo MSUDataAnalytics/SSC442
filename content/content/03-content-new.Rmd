@@ -476,7 +476,7 @@ Sometimes, putting the plots on top of each other, even with a well-chosen alpha
 
 Two functions in `ggplot` give facets: `facet_wrap` and `facet_grid`. We'll use `facet_grid` as this is a little more powerful.
 
-Facets are added as an additional layer like this: `+ facet_grid(. ~ sex)`. Since `facet_grid` takes a "formula", all we have to do to facet is decide how we want to lay out our plots. If we want each of the faceting groups to lie along the vertical axis, we put the variable before the "~". If we want the groups to lie along the horizontal axis, we put the variable after the "~". In the example, we'll separate the histogram by drawing them side by side along the horizontal axis.
+Facets are added as an additional layer like this: `+ facet_grid(. ~ sex)`. Inside the function, we have a "formula" that is written without quotes (which is unusual for R). Since `facet_grid` takes a "formula", all we have to do to facet is decide how we want to lay out our plots. If we want each of the faceting groups to lie along the vertical axis, we put the variable on which we want to facet before the "~", and after the "~" we simply put a period. If we want the groups to lie along the horizontal axis, we put the variable after the "~" and the period before. In the example, we'll separate the histogram by drawing them side by side along the horizontal axis.
 
 ```{r, echo=T}
 heights %>%
@@ -484,7 +484,7 @@ heights %>%
   geom_histogram(binwidth = 1, color="black") +
   facet_grid(.~sex)
 ```
-This would be the result if we took the females, plotted the histogram, then took the males, made another histogram, and then put them side by side.
+This would be the result if we took the females, plotted the histogram, then took the males, made another histogram, and then put them side by side. But we do it in one command by adding `+facet_grid(...)`
 
 ### Use common axes with facets
 Since we have plots side-by-side, they can have different scales along the x-axis (or along the y-axis if we were stacking with `sex ~ .`). We want to be careful here - if we don't have matching scales on these axes, then it'll be really hard to visually see differences in the distribution. 
@@ -522,17 +522,29 @@ p2 <- heights %>%
 p2
 ```
 
-This plot makes it much easier to notice that men are, on average, taller.
+This plot makes it much easier to notice that men's heights are, on average, higher.
+
+The sample size of females is smaller than of males -- that is, we have more males in the data. Try `table(heights$sex)` to see this. It's also clear from the above plot because the height of the bars on the y-axis (`count`) are smaller for females. If we are interested in the distribution within our sample, this is useful. If we're interested in the distribution of females vs. the distribution of males, we might want to re-scale the y-axis.
+
+```{r, eval = TRUE}
+p2 <- heights %>%
+  ggplot(aes(height)) +
+  geom_histogram(binwidth = 1, color="black") +
+  facet_grid(sex~., scales = 'free_y')
+p2
+```
+
+We still have `count` on the y-axis, so we didn't switch to density (though it would look the same). Instead, we rescaled the y-axis, which gives us a different perspective but still contains the count information.
 
 If we want the more compact summary provided by boxplots, we then align them horizontally since, by default, boxplots move up and down with changes in height. Following our _show the data_ principle, we then overlay all the data points:
 
 ```{r boxplot-with-points-with-jitter, echo=TRUE}
-p3 <- heights %>%
+heights %>%
   ggplot(aes(sex, height)) +
   geom_boxplot(coef=3) +
   geom_jitter(width = 0.1, alpha = 0.2) +
   ylab("Height in inches")
-p3
+
 ```
 
 Now contrast and compare these three plots, based on exactly the same data:
@@ -557,7 +569,7 @@ gapminder::gapminder %>%
   facet_grid(continent ~ year)
 ```
 
-This makes it easy to read the life expectancy distribution over time (left-to-right) and across continents (up-and-down). It makes it easy to see that Africa has spread it's life expectancy distribution (some improved, some didn't), while Europe nhas become more clustered at the top end over time. Faceting in a grid is very helpful when you have a time dimension.
+This makes it easy to read the life expectancy distribution over time (left-to-right) and across continents (up-and-down). It makes it easy to see that Africa has spread it's life expectancy distribution (some improved, some didn't), while Europe has become more clustered at the top end over time. Faceting in a grid is very helpful when you have a time dimension.
 
 
 ### Visual cues to be compared should be adjacent, continued
