@@ -16,7 +16,7 @@ output:
     toc: true
 ---
 
-## Readings  
+## Readings
 
 - This page.
 - Chapter 1 of Introduction to Statistical Learning, available [here.](https://www.statlearning.com/)
@@ -29,68 +29,40 @@ For future lectures, the guiding questions will be more pointed and at a higher 
 - Why do we want tidy data?
 - What are the challenges associated with shaping things into a tidy format?
 
-<!---
-## Slides
 
-The slides below are a much broader overview about goals for the class and thinking about relationships that we might explore with data. The technical aspects of this lecture will be explored in greater detail in the Thursday practical lecture.
-
-```{r show-slide-tabs, echo=FALSE, results="asis", warning=F, message = F}
-# detach("package:dplyr")
-# library(dplyr)
-
-
-source(here::here("R", "slide_tabs.R"))
-sections <- tibble::tribble(
-  ~name, ~slide, ~active,
-  "Overview", "Overview", TRUE,
-)
-slide_tabs(sections, "/slides/01-slides.html")
-```
--->
-
-## Group Projects
-Your final is a group project.
-
-You need to start planning soon.
+## Final Projects
+Your final is a group project. Accordingly, you need to start planning soon.
 
 To aid in your planning, here are the required elements of your project (**note: the assignment that currently exists on this site, if you find it, is old and will change a lot between now and next week**).
 
 1. You must find existing data to analyze. Aggregating and merging data from multiple sources is encouraged.
-
 2. You must visualize 3 intersting features of that data.
-
 3. You must come up with some analysis---using tools from this course---which relates your data to either a prediction or a policy conclusion.
-
 4. You must think critically about your analysis and be able to identify potential issues/
-
 5. You must present your analysis as if presenting to a C-suite executive.
 
+If you have any additional questions, you can find some more information in the Assignments section of this website.
+
 ### Teams
-Please form teams of 2-4 and use the survey link I will send out via email to "establish" your teams.
 
-If you opt to not form a team, you will be automatically added to the "willing to be randomly assigned" pool and will be paired with another person.
+You must form teams of 3-4 people. I will send out a survey link via email to better understand your teams. If you are in a group (and everyone agrees you're in a group) then only one of you needs to respond to the survey.
 
-#### More on your team
-- You should strongly consider coordinating your work via Github
-
-- Your team will earn the same scores on all projects
-
-- Teams will submit only one write-up for the mini-projects and the final
-
-To combat additional freeloading, we will use a reporting system. More details will follow. 
+If you are not listed on another person's team and do not respond to the survey, I will interpret this as evidence that you have opted to not form a team---or you like adventure! Accordingly, you will be automatically added to the "willing to be randomly assigned" pool and will be paired with others in the class.
 
 
+#### More Information on Teams
+- You should strongly consider coordinating your work via Github.
+- Your team will earn the same scores on all projects. (Note that projects are not labs / writings. They are the shorter two projects and the final project.)
+- Teams will submit only one write-up for the mini-projects and the final.
+
+To combat additional freeloading, we will use a reporting system. We'll discuss that a bit later.
 
 
 
 ## Randomness and Data Analytics
 And the fabulous importance of probabilistic inference...
 
-This lecture is very "high-level," which means it is talking about abstract concepts. It is also quite important.
-
-We want to discuss **why** we eventually will need ot utilize tons of difficult mathematics. Why do we care so much about hypothesis tests and the like?
-
-Moreover, we can highlight why we want our data structured to behave nicely.
+This lecture is very "high-level," which means it is talking about abstract concepts. It is also quite important. We want to discuss **why** we eventually will need ot utilize tons of difficult mathematics. Why do we care so much about hypothesis tests and the like? Moreover, we can highlight why we want our data structured to behave nicely.
 
 ### Learning From Data
 The following are the baisc requirements for statistical learning
@@ -112,7 +84,7 @@ Other aspects of the data are known as **features, inputs, predictors**, or **re
 
 We can refer to the input vector collectively as:
 
-$$X = \begin{bmatrix} 
+$$X = \begin{bmatrix}
 x_{11} & x_{12} \\
 x_{21} & x_{22} \\
 \vdots & \vdots \\
@@ -156,7 +128,7 @@ Depending on the complexity of $f$, we may be able to meaningfully understand ho
 
 Imagine a bag of marbles with two types of marbles: `r emo::ji('club suit')` and `r emo::ji('diamond suit')`.
 
-We are going to pick a **sample** of $n$ marbles (with replacement). 
+We are going to pick a **sample** of $n$ marbles (with replacement).
 
 We want to learn something about $\mu$, the **objective** probability to pick a `r emo::ji('club suit')`.
 
@@ -167,9 +139,9 @@ In addition to defining the **objective** probability of picking a `r emo::ji('c
 - No. It is possible for the sample to be all `r rep(emo::ji('club suit'), 5)` even when the bag is is 50/50 `r emo::ji('club suit'); emo::ji('diamond suit')`
 
   - No matter what we draw, we can't (based on that draw alone) eliminate the possibility of drawing a `r emo::ji('diamond suit')`.
-  
+
   - And unless we assume that the only two values in the world are `r emo::ji('diamond suit')` and `r emo::ji('club suit')`, we can't rule out `r emo::ji('poop')`^[I discovered the `emo::ji()` function at 8:55am. My wife joked that I would find a way to use the poop emoji by 9:00am. It is now 8:59am. She was right.]
-  
+
 **Question**: Then why do we do things like polling (e.g. to predict the outcome of a presidential election)?
 
 - The bad case, that we draw something that has is completely misleading, is *possible* but not **probable**.
@@ -219,14 +191,14 @@ On any particular sample you may be wrong, but not often.
 
 
 :::fyi
-**NOTE** 
+**NOTE**
 
 This week's content is split into two "halves": the critical data manipulation information contained below and a more-entertaining discussion of visualization included in the Exercises.
 :::
 
 # The tidyverse  {#tidyverse}
 
-In the first weeks' content, we demonstrated how to manipulate vectors by reordering and subsetting them through indexing. However, once we start more advanced analyses, the preferred unit for data storage is not the vector but the data frame.  In this lecture, we learn to work directly with data frames, which greatly facilitate the organization of information. We will be using data frames for the majority of this class and you will use them for the majority of your data science life (however long that might be). We will focus on a specific data format referred to as _tidy_ and on specific collection of packages that are particularly helpful for working with _tidy_ data referred to as the _tidyverse_.
+In the first weeks' content (or maybe that is week zero?), we demonstrated how to manipulate vectors by reordering and subsetting them through indexing. However, once we start more advanced analyses, the preferred unit for data storage is not the vector but the data frame.  In this lecture, we learn to work directly with data frames, which greatly facilitate the organization of information. We will be using data frames for the majority of this class and you will use them for the majority of your data science life (however long that might be). We will focus on a specific data format referred to as _tidy_ and on specific collection of packages that are particularly helpful for working with _tidy_ data referred to as the _tidyverse_.
 
 We can load all the tidyverse packages at once by installing and loading the __tidyverse__ package:^[If you have not installed this package already, you must use `install.packages("tidyverse")` prior to the `library()` call you see below.]
 
