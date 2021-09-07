@@ -13,289 +13,9 @@
     </image>
     
     <item>
-      <title>Working with R and RStudio</title>
-      <link>https://ssc442.netlify.app/example/00-example/</link>
-      <pubDate>Fri, 10 Jan 2020 00:00:00 +0000</pubDate>
-      <guid>https://ssc442.netlify.app/example/00-example/</guid>
-      <description>
-&lt;script src=&#34;https://ssc442.netlify.app/rmarkdown-libs/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
-
-&lt;div id=&#34;TOC&#34;&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;a href=&#34;#introduction-to-examples&#34;&gt;Introduction to Examples&lt;/a&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;a href=&#34;#getting-started&#34;&gt;Getting started with &lt;code&gt;R&lt;/code&gt; and RStudio&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;#the-r-console&#34;&gt;The &lt;code&gt;R&lt;/code&gt; console&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;#scripts&#34;&gt;Scripts&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;#rstudio&#34;&gt;RStudio&lt;/a&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;a href=&#34;#the-panes&#34;&gt;The panes&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;#key-bindings&#34;&gt;Key bindings&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;#running-commands-while-editing-scripts&#34;&gt;Running commands while editing scripts&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;#installing-r-packages&#34;&gt;Installing &lt;code&gt;R&lt;/code&gt; packages&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;#rmarkdown&#34;&gt;Rmarkdown&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;#lecture-video&#34;&gt;Lecture Video&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/div&gt;
-
-&lt;div id=&#34;introduction-to-examples&#34; class=&#34;section level1&#34;&gt;
-&lt;h1&gt;Introduction to Examples&lt;/h1&gt;
-&lt;p&gt;Examples in this class are designed to be presented in-class. Accordingly, the notes here are &lt;em&gt;not&lt;/em&gt; comprehensive. Instead, they are intended to guide students through&lt;/p&gt;
-&lt;p&gt;I’m also aware that my writing is dry and lifeless. If you’re reading this online without the advantage of seeing it in person, don’t worry—I’ll be “funnier” in class.&lt;a href=&#34;#fn1&#34; class=&#34;footnote-ref&#34; id=&#34;fnref1&#34;&gt;&lt;sup&gt;1&lt;/sup&gt;&lt;/a&gt;&lt;/p&gt;
-&lt;div id=&#34;getting-started&#34; class=&#34;section level2&#34;&gt;
-&lt;h2&gt;Getting started with &lt;code&gt;R&lt;/code&gt; and RStudio&lt;/h2&gt;
-&lt;p&gt;&lt;code&gt;R&lt;/code&gt; is not a programming language like &lt;code&gt;C&lt;/code&gt; or &lt;code&gt;Java&lt;/code&gt;. It was not created by software engineers for software development. Instead, it was developed by statisticians as an interactive environment for data analysis. You can read the full history in the paper A Brief History of S&lt;a href=&#34;#fn2&#34; class=&#34;footnote-ref&#34; id=&#34;fnref2&#34;&gt;&lt;sup&gt;2&lt;/sup&gt;&lt;/a&gt;. The interactivity is an indispensable feature in data science because, as you will soon learn, the ability to quickly explore data is a necessity for success in this field. However, like in other programming languages, you can save your work as scripts that can be easily executed at any moment. These scripts serve as a record of the analysis you performed, a key feature that facilitates reproducible work. If you are an expert programmer, you should not expect &lt;code&gt;R&lt;/code&gt; to follow the conventions you are used—assuming this will leave you disappointed. If you are patient, you will come to appreciate the unequal power of &lt;code&gt;R&lt;/code&gt; when it comes to data analysis and data visualization.&lt;/p&gt;
-&lt;p&gt;Other attractive features of &lt;code&gt;R&lt;/code&gt; are:&lt;/p&gt;
-&lt;ol style=&#34;list-style-type: decimal&#34;&gt;
-&lt;li&gt;&lt;code&gt;R&lt;/code&gt; is free and open source&lt;a href=&#34;#fn3&#34; class=&#34;footnote-ref&#34; id=&#34;fnref3&#34;&gt;&lt;sup&gt;3&lt;/sup&gt;&lt;/a&gt;.&lt;/li&gt;
-&lt;li&gt;It runs on all major platforms: Windows, Mac OS, UNIX/Linux.&lt;/li&gt;
-&lt;li&gt;Scripts and data objects can be shared seamlessly across platforms.&lt;/li&gt;
-&lt;li&gt;There is a large, growing, and active community of &lt;code&gt;R&lt;/code&gt; users and, as a result, there are numerous resources for learning and asking questions&lt;a href=&#34;#fn4&#34; class=&#34;footnote-ref&#34; id=&#34;fnref4&#34;&gt;&lt;sup&gt;4&lt;/sup&gt;&lt;/a&gt; &lt;a href=&#34;#fn5&#34; class=&#34;footnote-ref&#34; id=&#34;fnref5&#34;&gt;&lt;sup&gt;5&lt;/sup&gt;&lt;/a&gt; &lt;a href=&#34;#fn6&#34; class=&#34;footnote-ref&#34; id=&#34;fnref6&#34;&gt;&lt;sup&gt;6&lt;/sup&gt;&lt;/a&gt;.&lt;/li&gt;
-&lt;li&gt;It is easy for others to contribute add-ons which enables developers to share software implementations of new data science methodologies. The latest methods and tools are developed in &lt;code&gt;R&lt;/code&gt; for a wide variety of disciplines and since social science is so broad, &lt;code&gt;R&lt;/code&gt; is one of the few tools that spans the varied social sciences.&lt;/li&gt;
-&lt;/ol&gt;
-&lt;/div&gt;
-&lt;div id=&#34;the-r-console&#34; class=&#34;section level2&#34;&gt;
-&lt;h2&gt;The &lt;code&gt;R&lt;/code&gt; console&lt;/h2&gt;
-&lt;p&gt;Interactive data analysis usually occurs on the &lt;em&gt;R console&lt;/em&gt; that executes commands as you type them. There are several ways to gain access to an &lt;code&gt;R&lt;/code&gt; console. One way is to simply start &lt;code&gt;R&lt;/code&gt; on your computer. The console looks something like this:&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/img/R_console2.png&#34; /&gt;&lt;/p&gt;
-&lt;p&gt;As a quick example, try using the console to calculate a 15% tip on a meal that cost $19.71:&lt;a href=&#34;#fn7&#34; class=&#34;footnote-ref&#34; id=&#34;fnref7&#34;&gt;&lt;sup&gt;7&lt;/sup&gt;&lt;/a&gt;&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;0.15 * 19.71  &lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## [1] 2.9565&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;strong&gt;Note that in this course (at least, on most browsers), grey boxes are used to show &lt;code&gt;R&lt;/code&gt; code typed into the &lt;code&gt;R&lt;/code&gt; console. The symbol &lt;code&gt;##&lt;/code&gt; is used to denote what the &lt;code&gt;R&lt;/code&gt; console outputs.&lt;/strong&gt;&lt;/p&gt;
-&lt;/div&gt;
-&lt;div id=&#34;scripts&#34; class=&#34;section level2&#34;&gt;
-&lt;h2&gt;Scripts&lt;/h2&gt;
-&lt;p&gt;One of the great advantages of &lt;code&gt;R&lt;/code&gt; over point-and-click analysis software is that you can save your work as scripts. You can edit and save these scripts using a text editor. The material in this course was developed using the interactive &lt;em&gt;integrated development environment&lt;/em&gt; (IDE) RStudio&lt;a href=&#34;#fn8&#34; class=&#34;footnote-ref&#34; id=&#34;fnref8&#34;&gt;&lt;sup&gt;8&lt;/sup&gt;&lt;/a&gt;. RStudio includes an editor with many &lt;code&gt;R&lt;/code&gt; specific features, a console to execute your code, and other useful panes, including one to show figures.&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/img/RStudio.png&#34; /&gt;&lt;/p&gt;
-&lt;p&gt;Most web-based &lt;code&gt;R&lt;/code&gt; consoles also provide a pane to edit scripts, but not all permit you to save the scripts for later use. On the upper-right part of this webpage you’ll see a little button with the &lt;code&gt;R&lt;/code&gt; logo. You can access a web-based console there.&lt;/p&gt;
-&lt;/div&gt;
-&lt;div id=&#34;rstudio&#34; class=&#34;section level2&#34;&gt;
-&lt;h2&gt;RStudio&lt;/h2&gt;
-&lt;p&gt;RStudio will be our launching pad for data science projects. It not only provides an editor for us to create and edit our scripts but also provides many other useful tools. In this section, we go over some of the basics.&lt;/p&gt;
-&lt;div id=&#34;the-panes&#34; class=&#34;section level3&#34;&gt;
-&lt;h3&gt;The panes&lt;/h3&gt;
-&lt;p&gt;When you start RStudio for the first time, you will see three panes. The left pane shows the &lt;code&gt;R&lt;/code&gt; console. On the right, the top pane includes tabs such as &lt;em&gt;Environment&lt;/em&gt; and &lt;em&gt;History&lt;/em&gt;, while the bottom pane shows five tabs: &lt;em&gt;File&lt;/em&gt;, &lt;em&gt;Plots&lt;/em&gt;, &lt;em&gt;Packages&lt;/em&gt;, &lt;em&gt;Help&lt;/em&gt;, and &lt;em&gt;Viewer&lt;/em&gt; (these tabs may change in new versions). You can click on each tab to move across the different features.&lt;/p&gt;
-&lt;p&gt;To start a new script, you can click on File, then New File, then &lt;code&gt;R&lt;/code&gt; Script.&lt;/p&gt;
-&lt;p&gt;This starts a new pane on the left and it is here where you can start writing your script.&lt;/p&gt;
-&lt;/div&gt;
-&lt;div id=&#34;key-bindings&#34; class=&#34;section level3&#34;&gt;
-&lt;h3&gt;Key bindings&lt;/h3&gt;
-&lt;p&gt;Many tasks we perform with the mouse can be achieved with a combination of key strokes instead. These keyboard versions for performing tasks are referred to as &lt;em&gt;key bindings&lt;/em&gt;. For example, we just showed how to use the mouse to start a new script, but you can also use a key binding: Ctrl+Shift+N on Windows and command+shift+N on the Mac.&lt;/p&gt;
-&lt;p&gt;Although in this tutorial we often show how to use the mouse, &lt;strong&gt;we highly recommend that you memorize key bindings for the operations you use most&lt;/strong&gt;. RStudio provides a useful cheat sheet with the most widely used commands. You might want to keep this handy so you can look up key-bindings when you find yourself performing repetitive point-and-clicking.&lt;/p&gt;
-&lt;/div&gt;
-&lt;div id=&#34;running-commands-while-editing-scripts&#34; class=&#34;section level3&#34;&gt;
-&lt;h3&gt;Running commands while editing scripts&lt;/h3&gt;
-&lt;p&gt;There are many editors specifically made for coding. These are useful because color and indentation are automatically added to make code more readable. RStudio is one of these editors, and it was specifically developed for R. One of the main advantages provided by RStudio over other editors is that we can test our code easily as we edit our scripts. Below we show an example.&lt;/p&gt;
-&lt;p&gt;Let’s start by opening a new script as we did before. A next step is to give the script a name. We can do this through the editor by saving the current new unnamed script. To do this, click on the save icon or use the key binding Ctrl+S on Windows and command+S on the Mac.&lt;/p&gt;
-&lt;p&gt;When you ask for the document to be saved for the first time, RStudio will prompt you for a name. A good convention is to use a descriptive name, with lower case letters, no spaces, only hyphens to separate words, and then followed by the suffix &lt;em&gt;.R&lt;/em&gt;. We will call this script &lt;em&gt;my-first-script.R&lt;/em&gt;.&lt;/p&gt;
-&lt;p&gt;Now we are ready to start editing our first script. The first lines of code in an &lt;code&gt;R&lt;/code&gt; script are dedicated to loading the libraries we will use. Another useful RStudio feature is that once we type &lt;code&gt;library()&lt;/code&gt; it starts auto-completing with libraries that we have installed. Note what happens when we type &lt;code&gt;library(ti)&lt;/code&gt;:&lt;/p&gt;
-&lt;p&gt;Another feature you may have noticed is that when you type &lt;code&gt;library(&lt;/code&gt; the second parenthesis is automatically added. This will help you avoid one of the most common errors in coding: forgetting to close a parenthesis.&lt;/p&gt;
-&lt;p&gt;Now we can continue to write code. As an example, we will make a graph showing murder totals versus population totals by state. Once you are done writing the code needed to make this plot, you can try it out by &lt;em&gt;executing&lt;/em&gt; the code. To do this, click on the &lt;em&gt;Run&lt;/em&gt; button on the upper right side of the editing pane. You can also use the key binding: Ctrl+Shift+Enter on Windows or command+shift+return on the Mac.&lt;/p&gt;
-&lt;p&gt;Once you run the code, you will see it appear in the &lt;code&gt;R&lt;/code&gt; console and, in this case, the generated plot appears in the plots console. Note that the plot console has a useful interface that permits you to click back and forward across different plots, zoom in to the plot, or save the plots as files.&lt;/p&gt;
-&lt;p&gt;To run one line at a time instead of the entire script, you can use Control-Enter on Windows and command-return on the Mac.&lt;/p&gt;
-&lt;div class=&#34;fyi&#34;&gt;
-&lt;p&gt;&lt;strong&gt;SETUP TIP&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;Change the option &lt;em&gt;Save workspace to .RData on exit&lt;/em&gt; to &lt;em&gt;Never&lt;/em&gt; and uncheck the &lt;em&gt;Restore .RData into workspace at start&lt;/em&gt;. By default, when you exit &lt;code&gt;R&lt;/code&gt; saves all the objects you have created into a file called .RData. This is done so that when you restart the session in the same folder, it will load these objects. I find that this causes confusion especially when sharing code with colleagues or peers.&lt;/p&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div id=&#34;installing-r-packages&#34; class=&#34;section level2&#34;&gt;
-&lt;h2&gt;Installing &lt;code&gt;R&lt;/code&gt; packages&lt;/h2&gt;
-&lt;p&gt;The functionality provided by a fresh install of &lt;code&gt;R&lt;/code&gt; is only a small fraction of what is possible. In fact, we refer to what you get after your first install as &lt;em&gt;base R&lt;/em&gt;. The extra functionality comes from add-ons available from developers. There are currently hundreds of these available from CRAN and many others shared via other repositories such as GitHub. However, because not everybody needs all available functionality, &lt;code&gt;R&lt;/code&gt; instead makes different components available via &lt;em&gt;packages&lt;/em&gt;. &lt;code&gt;R&lt;/code&gt; makes it very easy to install packages from within R. For example, to install the &lt;strong&gt;dslabs&lt;/strong&gt; package, which we use to share datasets and code related to this book, you would type:&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;install.packages(&amp;quot;dslabs&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;In RStudio, you can navigate to the &lt;em&gt;Tools&lt;/em&gt; tab and select install packages. We can then load the package into our &lt;code&gt;R&lt;/code&gt; sessions using the &lt;code&gt;library&lt;/code&gt; function:&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(dslabs)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## 
-## Attaching package: &amp;#39;dslabs&amp;#39;&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## The following object is masked from &amp;#39;package:gapminder&amp;#39;:
-## 
-##     gapminder&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;As you go through this book, you will see that we load packages without installing them. This is because once you install a package, it remains installed and only needs to be loaded with &lt;code&gt;library&lt;/code&gt;. The package remains loaded until we quit the &lt;code&gt;R&lt;/code&gt; session. If you try to load a package and get an error, it probably means you need to
-install it first.&lt;/p&gt;
-&lt;p&gt;We can install more than one package at once by feeding a character vector to this function:&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;install.packages(c(&amp;quot;tidyverse&amp;quot;, &amp;quot;dslabs&amp;quot;))&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;One advantage of using RStudio is that it auto-completes package names once you start typing, which is helpful when you do not remember the exact spelling of the package. Once you select your package, we recommend selecting all the defaults. Note that installing &lt;strong&gt;tidyverse&lt;/strong&gt; actually installs several packages. This commonly occurs when a package has &lt;em&gt;dependencies&lt;/em&gt;, or uses functions from other packages. When you load a package using &lt;code&gt;library&lt;/code&gt;, you also load its dependencies.&lt;/p&gt;
-&lt;p&gt;Once packages are installed, you can load them into &lt;code&gt;R&lt;/code&gt; and you do not need to install them again, unless you install a fresh version of R. Remember packages are installed in &lt;code&gt;R&lt;/code&gt; not RStudio.&lt;/p&gt;
-&lt;p&gt;It is helpful to keep a list of all the packages you need for your work in a script because if you need to perform a fresh install of R, you can re-install all your packages by simply running a script.&lt;/p&gt;
-&lt;p&gt;You can see all the packages you have installed using the following function:&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;installed.packages()&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;As we move through this course, we will constantly be adding to our toolbox of packages. Accordingly, you will need to keep track to ensure you have the requisite package for any given lecture.&lt;/p&gt;
-&lt;/div&gt;
-&lt;div id=&#34;rmarkdown&#34; class=&#34;section level2&#34;&gt;
-&lt;h2&gt;Rmarkdown&lt;/h2&gt;
-&lt;p&gt;Markdown is a general-purpose syntax for laying out documents. Rmarkdown is a combination of R and markdown, as the name implies. When using markdown, one can define headers and tables using specific notation, and depending on the rendering engine, the headers and tables (and a whole lot more) are customized. In fact, this whole website is built in R using Rmarkdown (and a lot of add-ons like Hugo and blogdown). In other contexts, the rendering engine may recognize that your headers are likely to be entries in a table of contents, and does so for you. The table of contents at the top of this document is built from the markdown headers.&lt;/p&gt;
-&lt;p&gt;The power of Rmarkdown is that it lets us mix formatted text with R code. That is, you can have a section of the document that understands R code, and a separate section right after that discusses the results from the R code.&lt;/p&gt;
-&lt;p&gt;&lt;a href=&#34;https://raw.githubusercontent.com/ajkirkpatrick/FS20/Spring2021/Rmarkdown_templates/SSC442_Weekly_Writing_Template.Rmd&#34;&gt;Try it out using the Weekly Writing Template&lt;/a&gt;. If it opens in your web browser, just right-click the link and select Save As…. &lt;strong&gt;Make sure you save the file to its own folder on your hard drive&lt;/strong&gt;. In converting your Rmarkdown .Rmd file to a .pdf, your system will make multiple interim files&lt;a href=&#34;#fn9&#34; class=&#34;footnote-ref&#34; id=&#34;fnref9&#34;&gt;&lt;sup&gt;9&lt;/sup&gt;&lt;/a&gt;. It also creates folders to store the output of any plots or graphics you create with your R code.&lt;/p&gt;
-&lt;p&gt;If we have time today, let’s open the template linked above and see what happens when we select “knit to pdf”.&lt;/p&gt;
-&lt;/div&gt;
-&lt;div id=&#34;lecture-video&#34; class=&#34;section level2&#34;&gt;
-&lt;h2&gt;Lecture Video&lt;/h2&gt;
-&lt;p&gt;Video from lecture &lt;a href=&#34;https://mediaspace.msu.edu/media/Jan19_Example0/1_e4uuw4e0&#34;&gt;hosted on Mediaspace &lt;i class=&#34;fas fa-film&#34;&gt;&lt;/i&gt;&lt;/a&gt;&lt;/p&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class=&#34;footnotes&#34;&gt;
-&lt;hr /&gt;
-&lt;ol&gt;
-&lt;li id=&#34;fn1&#34;&gt;&lt;p&gt;Comments from previous classes indicate that I am not, in fact, funny.&lt;a href=&#34;#fnref1&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
-&lt;li id=&#34;fn2&#34;&gt;&lt;p&gt;&lt;a href=&#34;https://pdfs.semanticscholar.org/9b48/46f192aa37ca122cfabb1ed1b59866d8bfda.pdf&#34; class=&#34;uri&#34;&gt;https://pdfs.semanticscholar.org/9b48/46f192aa37ca122cfabb1ed1b59866d8bfda.pdf&lt;/a&gt;&lt;a href=&#34;#fnref2&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
-&lt;li id=&#34;fn3&#34;&gt;&lt;p&gt;&lt;a href=&#34;https://opensource.org/history&#34; class=&#34;uri&#34;&gt;https://opensource.org/history&lt;/a&gt;&lt;a href=&#34;#fnref3&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
-&lt;li id=&#34;fn4&#34;&gt;&lt;p&gt;&lt;a href=&#34;https://stats.stackexchange.com/questions/138/free-resources-for-learning-r&#34; class=&#34;uri&#34;&gt;https://stats.stackexchange.com/questions/138/free-resources-for-learning-r&lt;/a&gt;&lt;a href=&#34;#fnref4&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
-&lt;li id=&#34;fn5&#34;&gt;&lt;p&gt;&lt;a href=&#34;https://www.r-project.org/help.html&#34; class=&#34;uri&#34;&gt;https://www.r-project.org/help.html&lt;/a&gt;&lt;a href=&#34;#fnref5&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
-&lt;li id=&#34;fn6&#34;&gt;&lt;p&gt;&lt;a href=&#34;https://stackoverflow.com/documentation/r/topics&#34; class=&#34;uri&#34;&gt;https://stackoverflow.com/documentation/r/topics&lt;/a&gt;&lt;a href=&#34;#fnref6&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
-&lt;li id=&#34;fn7&#34;&gt;&lt;p&gt;But probably tip more than 15%. Times are tough, man.&lt;a href=&#34;#fnref7&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
-&lt;li id=&#34;fn8&#34;&gt;&lt;p&gt;&lt;a href=&#34;https://www.rstudio.com/&#34; class=&#34;uri&#34;&gt;https://www.rstudio.com/&lt;/a&gt;&lt;a href=&#34;#fnref8&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
-&lt;li id=&#34;fn9&#34;&gt;&lt;p&gt;Specifically, knitr will create an intermediate .md file which is then processed with Pandoc using Latex to create a pdf. Whew!&lt;a href=&#34;#fnref9&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
-&lt;/ol&gt;
-&lt;/div&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>Working with R and RStudio</title>
-      <link>https://ssc442.netlify.app/example/01-example/</link>
-      <pubDate>Fri, 10 Jan 2020 00:00:00 +0000</pubDate>
-      <guid>https://ssc442.netlify.app/example/01-example/</guid>
-      <description>
-&lt;script src=&#34;https://ssc442.netlify.app/rmarkdown-libs/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
-
-&lt;div id=&#34;TOC&#34;&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;a href=&#34;#introduction-to-examples&#34;&gt;Introduction to Examples&lt;/a&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;a href=&#34;#getting-started&#34;&gt;Getting started with &lt;code&gt;R&lt;/code&gt; and RStudio&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;#the-r-console&#34;&gt;The &lt;code&gt;R&lt;/code&gt; console&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;#scripts&#34;&gt;Scripts&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;#rstudio&#34;&gt;RStudio&lt;/a&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;a href=&#34;#the-panes&#34;&gt;The panes&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;#key-bindings&#34;&gt;Key bindings&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;#running-commands-while-editing-scripts&#34;&gt;Running commands while editing scripts&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;#installing-r-packages&#34;&gt;Installing &lt;code&gt;R&lt;/code&gt; packages&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;#rmarkdown&#34;&gt;Rmarkdown&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;#lecture-video&#34;&gt;Lecture Video&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/div&gt;
-
-&lt;div id=&#34;introduction-to-examples&#34; class=&#34;section level1&#34;&gt;
-&lt;h1&gt;Introduction to Examples&lt;/h1&gt;
-&lt;p&gt;Examples in this class are designed to be presented in-class. Accordingly, the notes here are &lt;em&gt;not&lt;/em&gt; comprehensive. Instead, they are intended to guide students through&lt;/p&gt;
-&lt;p&gt;I’m also aware that my writing is dry and lifeless. If you’re reading this online without the advantage of seeing it in person, don’t worry—I’ll be “funnier” in class.&lt;a href=&#34;#fn1&#34; class=&#34;footnote-ref&#34; id=&#34;fnref1&#34;&gt;&lt;sup&gt;1&lt;/sup&gt;&lt;/a&gt;&lt;/p&gt;
-&lt;div id=&#34;getting-started&#34; class=&#34;section level2&#34;&gt;
-&lt;h2&gt;Getting started with &lt;code&gt;R&lt;/code&gt; and RStudio&lt;/h2&gt;
-&lt;p&gt;&lt;code&gt;R&lt;/code&gt; is not a programming language like &lt;code&gt;C&lt;/code&gt; or &lt;code&gt;Java&lt;/code&gt;. It was not created by software engineers for software development. Instead, it was developed by statisticians as an interactive environment for data analysis. You can read the full history in the paper A Brief History of S&lt;a href=&#34;#fn2&#34; class=&#34;footnote-ref&#34; id=&#34;fnref2&#34;&gt;&lt;sup&gt;2&lt;/sup&gt;&lt;/a&gt;. The interactivity is an indispensable feature in data science because, as you will soon learn, the ability to quickly explore data is a necessity for success in this field. However, like in other programming languages, you can save your work as scripts that can be easily executed at any moment. These scripts serve as a record of the analysis you performed, a key feature that facilitates reproducible work. If you are an expert programmer, you should not expect &lt;code&gt;R&lt;/code&gt; to follow the conventions you are used—assuming this will leave you disappointed. If you are patient, you will come to appreciate the unequal power of &lt;code&gt;R&lt;/code&gt; when it comes to data analysis and data visualization.&lt;/p&gt;
-&lt;p&gt;Other attractive features of &lt;code&gt;R&lt;/code&gt; are:&lt;/p&gt;
-&lt;ol style=&#34;list-style-type: decimal&#34;&gt;
-&lt;li&gt;&lt;code&gt;R&lt;/code&gt; is free and open source&lt;a href=&#34;#fn3&#34; class=&#34;footnote-ref&#34; id=&#34;fnref3&#34;&gt;&lt;sup&gt;3&lt;/sup&gt;&lt;/a&gt;.&lt;/li&gt;
-&lt;li&gt;It runs on all major platforms: Windows, Mac OS, UNIX/Linux.&lt;/li&gt;
-&lt;li&gt;Scripts and data objects can be shared seamlessly across platforms.&lt;/li&gt;
-&lt;li&gt;There is a large, growing, and active community of &lt;code&gt;R&lt;/code&gt; users and, as a result, there are numerous resources for learning and asking questions&lt;a href=&#34;#fn4&#34; class=&#34;footnote-ref&#34; id=&#34;fnref4&#34;&gt;&lt;sup&gt;4&lt;/sup&gt;&lt;/a&gt; &lt;a href=&#34;#fn5&#34; class=&#34;footnote-ref&#34; id=&#34;fnref5&#34;&gt;&lt;sup&gt;5&lt;/sup&gt;&lt;/a&gt; &lt;a href=&#34;#fn6&#34; class=&#34;footnote-ref&#34; id=&#34;fnref6&#34;&gt;&lt;sup&gt;6&lt;/sup&gt;&lt;/a&gt;.&lt;/li&gt;
-&lt;li&gt;It is easy for others to contribute add-ons which enables developers to share software implementations of new data science methodologies. The latest methods and tools are developed in &lt;code&gt;R&lt;/code&gt; for a wide variety of disciplines and since social science is so broad, &lt;code&gt;R&lt;/code&gt; is one of the few tools that spans the varied social sciences.&lt;/li&gt;
-&lt;/ol&gt;
-&lt;/div&gt;
-&lt;div id=&#34;the-r-console&#34; class=&#34;section level2&#34;&gt;
-&lt;h2&gt;The &lt;code&gt;R&lt;/code&gt; console&lt;/h2&gt;
-&lt;p&gt;Interactive data analysis usually occurs on the &lt;em&gt;R console&lt;/em&gt; that executes commands as you type them. There are several ways to gain access to an &lt;code&gt;R&lt;/code&gt; console. One way is to simply start &lt;code&gt;R&lt;/code&gt; on your computer. The console looks something like this:&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/img/R_console2.png&#34; /&gt;&lt;/p&gt;
-&lt;p&gt;As a quick example, try using the console to calculate a 15% tip on a meal that cost $19.71:&lt;a href=&#34;#fn7&#34; class=&#34;footnote-ref&#34; id=&#34;fnref7&#34;&gt;&lt;sup&gt;7&lt;/sup&gt;&lt;/a&gt;&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;0.15 * 19.71&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## [1] 2.9565&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;strong&gt;Note that in this course (at least, on most browsers), grey boxes are used to show &lt;code&gt;R&lt;/code&gt; code typed into the &lt;code&gt;R&lt;/code&gt; console. The symbol &lt;code&gt;##&lt;/code&gt; is used to denote what the &lt;code&gt;R&lt;/code&gt; console outputs.&lt;/strong&gt;&lt;/p&gt;
-&lt;/div&gt;
-&lt;div id=&#34;scripts&#34; class=&#34;section level2&#34;&gt;
-&lt;h2&gt;Scripts&lt;/h2&gt;
-&lt;p&gt;One of the great advantages of &lt;code&gt;R&lt;/code&gt; over point-and-click analysis software is that you can save your work as scripts. You can edit and save these scripts using a text editor. The material in this course was developed using the interactive &lt;em&gt;integrated development environment&lt;/em&gt; (IDE) RStudio&lt;a href=&#34;#fn8&#34; class=&#34;footnote-ref&#34; id=&#34;fnref8&#34;&gt;&lt;sup&gt;8&lt;/sup&gt;&lt;/a&gt;. RStudio includes an editor with many &lt;code&gt;R&lt;/code&gt; specific features, a console to execute your code, and other useful panes, including one to show figures.&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/img/RStudio.png&#34; /&gt;&lt;/p&gt;
-&lt;p&gt;Most web-based &lt;code&gt;R&lt;/code&gt; consoles also provide a pane to edit scripts, but not all permit you to save the scripts for later use. On the upper-right part of this webpage you’ll see a little button with the &lt;code&gt;R&lt;/code&gt; logo. You can access a web-based console there.&lt;/p&gt;
-&lt;/div&gt;
-&lt;div id=&#34;rstudio&#34; class=&#34;section level2&#34;&gt;
-&lt;h2&gt;RStudio&lt;/h2&gt;
-&lt;p&gt;RStudio will be our launching pad for data science projects. It not only provides an editor for us to create and edit our scripts but also provides many other useful tools. In this section, we go over some of the basics.&lt;/p&gt;
-&lt;div id=&#34;the-panes&#34; class=&#34;section level3&#34;&gt;
-&lt;h3&gt;The panes&lt;/h3&gt;
-&lt;p&gt;When you start RStudio for the first time, you will see three panes. The left pane shows the &lt;code&gt;R&lt;/code&gt; console. On the right, the top pane includes tabs such as &lt;em&gt;Environment&lt;/em&gt; and &lt;em&gt;History&lt;/em&gt;, while the bottom pane shows five tabs: &lt;em&gt;File&lt;/em&gt;, &lt;em&gt;Plots&lt;/em&gt;, &lt;em&gt;Packages&lt;/em&gt;, &lt;em&gt;Help&lt;/em&gt;, and &lt;em&gt;Viewer&lt;/em&gt; (these tabs may change in new versions). You can click on each tab to move across the different features.&lt;/p&gt;
-&lt;p&gt;To start a new script, you can click on File, then New File, then &lt;code&gt;R&lt;/code&gt; Script.&lt;/p&gt;
-&lt;p&gt;This starts a new pane on the left and it is here where you can start writing your script.&lt;/p&gt;
-&lt;/div&gt;
-&lt;div id=&#34;key-bindings&#34; class=&#34;section level3&#34;&gt;
-&lt;h3&gt;Key bindings&lt;/h3&gt;
-&lt;p&gt;Many tasks we perform with the mouse can be achieved with a combination of key strokes instead. These keyboard versions for performing tasks are referred to as &lt;em&gt;key bindings&lt;/em&gt;. For example, we just showed how to use the mouse to start a new script, but you can also use a key binding: Ctrl+Shift+N on Windows and command+shift+N on the Mac.&lt;/p&gt;
-&lt;p&gt;Although in this tutorial we often show how to use the mouse, &lt;strong&gt;we highly recommend that you memorize key bindings for the operations you use most&lt;/strong&gt;. RStudio provides a useful cheat sheet with the most widely used commands. You might want to keep this handy so you can look up key-bindings when you find yourself performing repetitive point-and-clicking.&lt;/p&gt;
-&lt;/div&gt;
-&lt;div id=&#34;running-commands-while-editing-scripts&#34; class=&#34;section level3&#34;&gt;
-&lt;h3&gt;Running commands while editing scripts&lt;/h3&gt;
-&lt;p&gt;There are many editors specifically made for coding. These are useful because color and indentation are automatically added to make code more readable. RStudio is one of these editors, and it was specifically developed for R. One of the main advantages provided by RStudio over other editors is that we can test our code easily as we edit our scripts. Below we show an example.&lt;/p&gt;
-&lt;p&gt;Let’s start by opening a new script as we did before. A next step is to give the script a name. We can do this through the editor by saving the current new unnamed script. To do this, click on the save icon or use the key binding Ctrl+S on Windows and command+S on the Mac.&lt;/p&gt;
-&lt;p&gt;When you ask for the document to be saved for the first time, RStudio will prompt you for a name. A good convention is to use a descriptive name, with lower case letters, no spaces, only hyphens to separate words, and then followed by the suffix &lt;em&gt;.R&lt;/em&gt;. We will call this script &lt;em&gt;my-first-script.R&lt;/em&gt;.&lt;/p&gt;
-&lt;p&gt;Now we are ready to start editing our first script. The first lines of code in an &lt;code&gt;R&lt;/code&gt; script are dedicated to loading the libraries we will use. Another useful RStudio feature is that once we type &lt;code&gt;library()&lt;/code&gt; it starts auto-completing with libraries that we have installed. Note what happens when we type &lt;code&gt;library(ti)&lt;/code&gt;:&lt;/p&gt;
-&lt;p&gt;Another feature you may have noticed is that when you type &lt;code&gt;library(&lt;/code&gt; the second parenthesis is automatically added. This will help you avoid one of the most common errors in coding: forgetting to close a parenthesis.&lt;/p&gt;
-&lt;p&gt;Now we can continue to write code. As an example, we will make a graph showing murder totals versus population totals by state. Once you are done writing the code needed to make this plot, you can try it out by &lt;em&gt;executing&lt;/em&gt; the code. To do this, click on the &lt;em&gt;Run&lt;/em&gt; button on the upper right side of the editing pane. You can also use the key binding: Ctrl+Shift+Enter on Windows or command+shift+return on the Mac.&lt;/p&gt;
-&lt;p&gt;Once you run the code, you will see it appear in the &lt;code&gt;R&lt;/code&gt; console and, in this case, the generated plot appears in the plots console. Note that the plot console has a useful interface that permits you to click back and forward across different plots, zoom in to the plot, or save the plots as files.&lt;/p&gt;
-&lt;p&gt;To run one line at a time instead of the entire script, you can use Control-Enter on Windows and command-return on the Mac.&lt;/p&gt;
-&lt;div class=&#34;fyi&#34;&gt;
-&lt;p&gt;&lt;strong&gt;SETUP TIP&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;Change the option &lt;em&gt;Save workspace to .RData on exit&lt;/em&gt; to &lt;em&gt;Never&lt;/em&gt; and uncheck the &lt;em&gt;Restore .RData into workspace at start&lt;/em&gt;. By default, when you exit &lt;code&gt;R&lt;/code&gt; saves all the objects you have created into a file called .RData. This is done so that when you restart the session in the same folder, it will load these objects. I find that this causes confusion especially when sharing code with colleagues or peers.&lt;/p&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div id=&#34;installing-r-packages&#34; class=&#34;section level2&#34;&gt;
-&lt;h2&gt;Installing &lt;code&gt;R&lt;/code&gt; packages&lt;/h2&gt;
-&lt;p&gt;The functionality provided by a fresh install of &lt;code&gt;R&lt;/code&gt; is only a small fraction of what is possible. In fact, we refer to what you get after your first install as &lt;em&gt;base R&lt;/em&gt;. The extra functionality comes from add-ons available from developers. There are currently hundreds of these available from CRAN and many others shared via other repositories such as GitHub. However, because not everybody needs all available functionality, &lt;code&gt;R&lt;/code&gt; instead makes different components available via &lt;em&gt;packages&lt;/em&gt;. &lt;code&gt;R&lt;/code&gt; makes it very easy to install packages from within R. For example, to install the &lt;strong&gt;dslabs&lt;/strong&gt; package, which we use to share datasets and code related to this book, you would type:&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;install.packages(&amp;quot;dslabs&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;In RStudio, you can navigate to the &lt;em&gt;Tools&lt;/em&gt; tab and select install packages. We can then load the package into our &lt;code&gt;R&lt;/code&gt; sessions using the &lt;code&gt;library&lt;/code&gt; function:&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(dslabs)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## 
-## Attaching package: &amp;#39;dslabs&amp;#39;&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## The following object is masked from &amp;#39;package:gapminder&amp;#39;:
-## 
-##     gapminder&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;As you go through this book, you will see that we load packages without installing them. This is because once you install a package, it remains installed and only needs to be loaded with &lt;code&gt;library&lt;/code&gt;. The package remains loaded until we quit the &lt;code&gt;R&lt;/code&gt; session. If you try to load a package and get an error, it probably means you need to
-install it first.&lt;/p&gt;
-&lt;p&gt;We can install more than one package at once by feeding a character vector to this function:&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;install.packages(c(&amp;quot;tidyverse&amp;quot;, &amp;quot;dslabs&amp;quot;))&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;One advantage of using RStudio is that it auto-completes package names once you start typing, which is helpful when you do not remember the exact spelling of the package. Once you select your package, we recommend selecting all the defaults. Note that installing &lt;strong&gt;tidyverse&lt;/strong&gt; actually installs several packages. This commonly occurs when a package has &lt;em&gt;dependencies&lt;/em&gt;, or uses functions from other packages. When you load a package using &lt;code&gt;library&lt;/code&gt;, you also load its dependencies.&lt;/p&gt;
-&lt;p&gt;Once packages are installed, you can load them into &lt;code&gt;R&lt;/code&gt; and you do not need to install them again, unless you install a fresh version of R. Remember packages are installed in &lt;code&gt;R&lt;/code&gt; not RStudio.&lt;/p&gt;
-&lt;p&gt;It is helpful to keep a list of all the packages you need for your work in a script because if you need to perform a fresh install of R, you can re-install all your packages by simply running a script.&lt;/p&gt;
-&lt;p&gt;You can see all the packages you have installed using the following function:&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;installed.packages()&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;As we move through this course, we will constantly be adding to our toolbox of packages. Accordingly, you will need to keep track to ensure you have the requisite package for any given lecture.&lt;/p&gt;
-&lt;/div&gt;
-&lt;div id=&#34;rmarkdown&#34; class=&#34;section level2&#34;&gt;
-&lt;h2&gt;Rmarkdown&lt;/h2&gt;
-&lt;p&gt;Markdown is a general-purpose syntax for laying out documents. Rmarkdown is a combination of R and markdown, as the name implies. When using markdown, one can define headers and tables using specific notation, and depending on the rendering engine, the headers and tables (and a whole lot more) are customized. In fact, this whole website is built in R using Rmarkdown (and a lot of add-ons like Hugo and blogdown). In other contexts, the rendering engine may recognize that your headers are likely to be entries in a table of contents, and does so for you. The table of contents at the top of this document is built from the markdown headers.&lt;/p&gt;
-&lt;p&gt;The power of Rmarkdown is that it lets us mix formatted text with R code. That is, you can have a section of the document that understands R code, and a separate section right after that discusses the results from the R code.&lt;/p&gt;
-&lt;p&gt;&lt;a href=&#34;https://raw.githubusercontent.com/ajkirkpatrick/FS20/Spring2021/Rmarkdown_templates/SSC442_Weekly_Writing_Template.Rmd&#34;&gt;Try it out using the Weekly Writing Template&lt;/a&gt;. If it opens in your web browser, just right-click the link and select Save As…. &lt;strong&gt;Make sure you save the file to its own folder on your hard drive&lt;/strong&gt;. In converting your Rmarkdown .Rmd file to a .pdf, your system will make multiple interim files&lt;a href=&#34;#fn9&#34; class=&#34;footnote-ref&#34; id=&#34;fnref9&#34;&gt;&lt;sup&gt;9&lt;/sup&gt;&lt;/a&gt;. It also creates folders to store the output of any plots or graphics you create with your R code.&lt;/p&gt;
-&lt;p&gt;If we have time today, let’s open the template linked above and see what happens when we select “knit to pdf”.&lt;/p&gt;
-&lt;/div&gt;
-&lt;div id=&#34;lecture-video&#34; class=&#34;section level2&#34;&gt;
-&lt;h2&gt;Lecture Video&lt;/h2&gt;
-&lt;p&gt;Video from lecture &lt;a href=&#34;https://mediaspace.msu.edu/media/Jan19_Example0/1_e4uuw4e0&#34;&gt;hosted on Mediaspace &lt;i class=&#34;fas fa-film&#34;&gt;&lt;/i&gt;&lt;/a&gt;&lt;/p&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class=&#34;footnotes&#34;&gt;
-&lt;hr /&gt;
-&lt;ol&gt;
-&lt;li id=&#34;fn1&#34;&gt;&lt;p&gt;Comments from previous classes indicate that I am not, in fact, funny.&lt;a href=&#34;#fnref1&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
-&lt;li id=&#34;fn2&#34;&gt;&lt;p&gt;&lt;a href=&#34;https://pdfs.semanticscholar.org/9b48/46f192aa37ca122cfabb1ed1b59866d8bfda.pdf&#34; class=&#34;uri&#34;&gt;https://pdfs.semanticscholar.org/9b48/46f192aa37ca122cfabb1ed1b59866d8bfda.pdf&lt;/a&gt;&lt;a href=&#34;#fnref2&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
-&lt;li id=&#34;fn3&#34;&gt;&lt;p&gt;&lt;a href=&#34;https://opensource.org/history&#34; class=&#34;uri&#34;&gt;https://opensource.org/history&lt;/a&gt;&lt;a href=&#34;#fnref3&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
-&lt;li id=&#34;fn4&#34;&gt;&lt;p&gt;&lt;a href=&#34;https://stats.stackexchange.com/questions/138/free-resources-for-learning-r&#34; class=&#34;uri&#34;&gt;https://stats.stackexchange.com/questions/138/free-resources-for-learning-r&lt;/a&gt;&lt;a href=&#34;#fnref4&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
-&lt;li id=&#34;fn5&#34;&gt;&lt;p&gt;&lt;a href=&#34;https://www.r-project.org/help.html&#34; class=&#34;uri&#34;&gt;https://www.r-project.org/help.html&lt;/a&gt;&lt;a href=&#34;#fnref5&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
-&lt;li id=&#34;fn6&#34;&gt;&lt;p&gt;&lt;a href=&#34;https://stackoverflow.com/documentation/r/topics&#34; class=&#34;uri&#34;&gt;https://stackoverflow.com/documentation/r/topics&lt;/a&gt;&lt;a href=&#34;#fnref6&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
-&lt;li id=&#34;fn7&#34;&gt;&lt;p&gt;But probably tip more than 15%. Times are tough, man.&lt;a href=&#34;#fnref7&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
-&lt;li id=&#34;fn8&#34;&gt;&lt;p&gt;&lt;a href=&#34;https://www.rstudio.com/&#34; class=&#34;uri&#34;&gt;https://www.rstudio.com/&lt;/a&gt;&lt;a href=&#34;#fnref8&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
-&lt;li id=&#34;fn9&#34;&gt;&lt;p&gt;Specifically, knitr will create an intermediate .md file which is then processed with Pandoc using Latex to create a pdf. Whew!&lt;a href=&#34;#fnref9&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
-&lt;/ol&gt;
-&lt;/div&gt;
-</description>
-    </item>
-    
-    <item>
       <title>Introduction to Visualization</title>
       <link>https://ssc442.netlify.app/example/02-example/</link>
-      <pubDate>Fri, 10 Jan 2020 00:00:00 +0000</pubDate>
+      <pubDate>Thu, 09 Sep 2021 00:00:00 +0000</pubDate>
       <guid>https://ssc442.netlify.app/example/02-example/</guid>
       <description>
 &lt;script src=&#34;https://ssc442.netlify.app/rmarkdown-libs/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
@@ -397,6 +117,141 @@ Turning tables into graphs. The American Statistician 56:121-130.&lt;/li&gt;
 &lt;li id=&#34;fn4&#34;&gt;&lt;p&gt;&lt;a href=&#34;https://en.wikipedia.org/wiki/John_Tukey&#34; class=&#34;uri&#34;&gt;https://en.wikipedia.org/wiki/John_Tukey&lt;/a&gt;&lt;a href=&#34;#fnref4&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
 &lt;li id=&#34;fn5&#34;&gt;&lt;p&gt;&lt;a href=&#34;https://www.ted.com/talks/hans_rosling_reveals_new_insights_on_poverty?language=en&#34; class=&#34;uri&#34;&gt;https://www.ted.com/talks/hans_rosling_reveals_new_insights_on_poverty?language=en&lt;/a&gt;&lt;a href=&#34;#fnref5&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
 &lt;li id=&#34;fn6&#34;&gt;&lt;p&gt;&lt;a href=&#34;https://www.ted.com/talks/hans_rosling_shows_the_best_stats_you_ve_ever_seen&#34; class=&#34;uri&#34;&gt;https://www.ted.com/talks/hans_rosling_shows_the_best_stats_you_ve_ever_seen&lt;/a&gt;&lt;a href=&#34;#fnref6&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Working with R and RStudio</title>
+      <link>https://ssc442.netlify.app/example/01-example/</link>
+      <pubDate>Fri, 10 Jan 2020 00:00:00 +0000</pubDate>
+      <guid>https://ssc442.netlify.app/example/01-example/</guid>
+      <description>
+&lt;script src=&#34;https://ssc442.netlify.app/rmarkdown-libs/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
+
+&lt;div id=&#34;TOC&#34;&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#introduction-to-examples&#34;&gt;Introduction to Examples&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#getting-started&#34;&gt;Getting started with &lt;code&gt;R&lt;/code&gt; and RStudio&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#the-r-console&#34;&gt;The &lt;code&gt;R&lt;/code&gt; console&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#scripts&#34;&gt;Scripts&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#rstudio&#34;&gt;RStudio&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#the-panes&#34;&gt;The panes&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#key-bindings&#34;&gt;Key bindings&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#running-commands-while-editing-scripts&#34;&gt;Running commands while editing scripts&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#installing-r-packages&#34;&gt;Installing &lt;code&gt;R&lt;/code&gt; packages&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#rmarkdown&#34;&gt;Rmarkdown&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+
+&lt;div id=&#34;introduction-to-examples&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Introduction to Examples&lt;/h1&gt;
+&lt;p&gt;Examples in this class are designed to be presented in-class. Accordingly, the notes here are &lt;em&gt;not&lt;/em&gt; comprehensive. Instead, they are intended to guide students through&lt;/p&gt;
+&lt;p&gt;I’m also aware that my writing is dry and lifeless. If you’re reading this online without the advantage of seeing it in person, don’t worry—I’ll be “funnier” in class.&lt;a href=&#34;#fn1&#34; class=&#34;footnote-ref&#34; id=&#34;fnref1&#34;&gt;&lt;sup&gt;1&lt;/sup&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;div id=&#34;getting-started&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Getting started with &lt;code&gt;R&lt;/code&gt; and RStudio&lt;/h2&gt;
+&lt;p&gt;&lt;code&gt;R&lt;/code&gt; is not a programming language like &lt;code&gt;C&lt;/code&gt; or &lt;code&gt;Java&lt;/code&gt;. It was not created by software engineers for software development. Instead, it was developed by statisticians as an interactive environment for data analysis. You can read the full history in the paper A Brief History of S&lt;a href=&#34;#fn2&#34; class=&#34;footnote-ref&#34; id=&#34;fnref2&#34;&gt;&lt;sup&gt;2&lt;/sup&gt;&lt;/a&gt;. The interactivity is an indispensable feature in data science because, as you will soon learn, the ability to quickly explore data is a necessity for success in this field. However, like in other programming languages, you can save your work as scripts that can be easily executed at any moment. These scripts serve as a record of the analysis you performed, a key feature that facilitates reproducible work. If you are an expert programmer, you should not expect &lt;code&gt;R&lt;/code&gt; to follow the conventions you are used—assuming this will leave you disappointed. If you are patient, you will come to appreciate the unequal power of &lt;code&gt;R&lt;/code&gt; when it comes to data analysis and data visualization.&lt;/p&gt;
+&lt;p&gt;Other attractive features of &lt;code&gt;R&lt;/code&gt; are:&lt;/p&gt;
+&lt;ol style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;&lt;code&gt;R&lt;/code&gt; is free and open source&lt;a href=&#34;#fn3&#34; class=&#34;footnote-ref&#34; id=&#34;fnref3&#34;&gt;&lt;sup&gt;3&lt;/sup&gt;&lt;/a&gt;.&lt;/li&gt;
+&lt;li&gt;It runs on all major platforms: Windows, Mac OS, UNIX/Linux.&lt;/li&gt;
+&lt;li&gt;Scripts and data objects can be shared seamlessly across platforms.&lt;/li&gt;
+&lt;li&gt;There is a large, growing, and active community of &lt;code&gt;R&lt;/code&gt; users and, as a result, there are numerous resources for learning and asking questions&lt;a href=&#34;#fn4&#34; class=&#34;footnote-ref&#34; id=&#34;fnref4&#34;&gt;&lt;sup&gt;4&lt;/sup&gt;&lt;/a&gt; &lt;a href=&#34;#fn5&#34; class=&#34;footnote-ref&#34; id=&#34;fnref5&#34;&gt;&lt;sup&gt;5&lt;/sup&gt;&lt;/a&gt; &lt;a href=&#34;#fn6&#34; class=&#34;footnote-ref&#34; id=&#34;fnref6&#34;&gt;&lt;sup&gt;6&lt;/sup&gt;&lt;/a&gt;.&lt;/li&gt;
+&lt;li&gt;It is easy for others to contribute add-ons which enables developers to share software implementations of new data science methodologies. The latest methods and tools are developed in &lt;code&gt;R&lt;/code&gt; for a wide variety of disciplines and since social science is so broad, &lt;code&gt;R&lt;/code&gt; is one of the few tools that spans the varied social sciences.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;
+&lt;div id=&#34;the-r-console&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;The &lt;code&gt;R&lt;/code&gt; console&lt;/h2&gt;
+&lt;p&gt;Interactive data analysis usually occurs on the &lt;em&gt;R console&lt;/em&gt; that executes commands as you type them. There are several ways to gain access to an &lt;code&gt;R&lt;/code&gt; console. One way is to simply start &lt;code&gt;R&lt;/code&gt; on your computer. The console looks something like this:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/img/R_console2.png&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;As a quick example, try using the console to calculate a 15% tip on a meal that cost $19.71:&lt;a href=&#34;#fn7&#34; class=&#34;footnote-ref&#34; id=&#34;fnref7&#34;&gt;&lt;sup&gt;7&lt;/sup&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;0.15 * 19.71&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 2.9565&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;Note that in this course (at least, on most browsers), grey boxes are used to show &lt;code&gt;R&lt;/code&gt; code typed into the &lt;code&gt;R&lt;/code&gt; console. The symbol &lt;code&gt;##&lt;/code&gt; is used to denote what the &lt;code&gt;R&lt;/code&gt; console outputs.&lt;/strong&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;scripts&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Scripts&lt;/h2&gt;
+&lt;p&gt;One of the great advantages of &lt;code&gt;R&lt;/code&gt; over point-and-click analysis software is that you can save your work as scripts. You can edit and save these scripts using a text editor. The material in this course was developed using the interactive &lt;em&gt;integrated development environment&lt;/em&gt; (IDE) RStudio&lt;a href=&#34;#fn8&#34; class=&#34;footnote-ref&#34; id=&#34;fnref8&#34;&gt;&lt;sup&gt;8&lt;/sup&gt;&lt;/a&gt;. RStudio includes an editor with many &lt;code&gt;R&lt;/code&gt; specific features, a console to execute your code, and other useful panes, including one to show figures.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/img/RStudio.png&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Most web-based &lt;code&gt;R&lt;/code&gt; consoles also provide a pane to edit scripts, but not all permit you to save the scripts for later use. On the upper-right part of this webpage you’ll see a little button with the &lt;code&gt;R&lt;/code&gt; logo. You can access a web-based console there.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;rstudio&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;RStudio&lt;/h2&gt;
+&lt;p&gt;RStudio will be our launching pad for data science projects. It not only provides an editor for us to create and edit our scripts but also provides many other useful tools. In this section, we go over some of the basics.&lt;/p&gt;
+&lt;div id=&#34;the-panes&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;The panes&lt;/h3&gt;
+&lt;p&gt;When you start RStudio for the first time, you will see three panes. The left pane shows the &lt;code&gt;R&lt;/code&gt; console. On the right, the top pane includes tabs such as &lt;em&gt;Environment&lt;/em&gt; and &lt;em&gt;History&lt;/em&gt;, while the bottom pane shows five tabs: &lt;em&gt;File&lt;/em&gt;, &lt;em&gt;Plots&lt;/em&gt;, &lt;em&gt;Packages&lt;/em&gt;, &lt;em&gt;Help&lt;/em&gt;, and &lt;em&gt;Viewer&lt;/em&gt; (these tabs may change in new versions). You can click on each tab to move across the different features.&lt;/p&gt;
+&lt;p&gt;To start a new script, you can click on File, then New File, then &lt;code&gt;R&lt;/code&gt; Script.&lt;/p&gt;
+&lt;p&gt;This starts a new pane on the left and it is here where you can start writing your script.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;key-bindings&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Key bindings&lt;/h3&gt;
+&lt;p&gt;Many tasks we perform with the mouse can be achieved with a combination of key strokes instead. These keyboard versions for performing tasks are referred to as &lt;em&gt;key bindings&lt;/em&gt;. For example, we just showed how to use the mouse to start a new script, but you can also use a key binding: Ctrl+Shift+N on Windows and command+shift+N on the Mac.&lt;/p&gt;
+&lt;p&gt;Although in this tutorial we often show how to use the mouse, &lt;strong&gt;we highly recommend that you memorize key bindings for the operations you use most&lt;/strong&gt;. RStudio provides a useful cheat sheet with the most widely used commands. You might want to keep this handy so you can look up key-bindings when you find yourself performing repetitive point-and-clicking.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;running-commands-while-editing-scripts&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Running commands while editing scripts&lt;/h3&gt;
+&lt;p&gt;There are many editors specifically made for coding. These are useful because color and indentation are automatically added to make code more readable. RStudio is one of these editors, and it was specifically developed for R. One of the main advantages provided by RStudio over other editors is that we can test our code easily as we edit our scripts. Below we show an example.&lt;/p&gt;
+&lt;p&gt;Let’s start by opening a new script as we did before. A next step is to give the script a name. We can do this through the editor by saving the current new unnamed script. To do this, click on the save icon or use the key binding Ctrl+S on Windows and command+S on the Mac.&lt;/p&gt;
+&lt;p&gt;When you ask for the document to be saved for the first time, RStudio will prompt you for a name. A good convention is to use a descriptive name, with lower case letters, no spaces, only hyphens to separate words, and then followed by the suffix &lt;em&gt;.R&lt;/em&gt;. We will call this script &lt;em&gt;my-first-script.R&lt;/em&gt;.&lt;/p&gt;
+&lt;p&gt;Now we are ready to start editing our first script. The first lines of code in an &lt;code&gt;R&lt;/code&gt; script are dedicated to loading the libraries we will use. Another useful RStudio feature is that once we type &lt;code&gt;library()&lt;/code&gt; it starts auto-completing with libraries that we have installed. Note what happens when we type &lt;code&gt;library(ti)&lt;/code&gt;:&lt;/p&gt;
+&lt;p&gt;Another feature you may have noticed is that when you type &lt;code&gt;library(&lt;/code&gt; the second parenthesis is automatically added. This will help you avoid one of the most common errors in coding: forgetting to close a parenthesis.&lt;/p&gt;
+&lt;p&gt;Now we can continue to write code. As an example, we will make a graph showing murder totals versus population totals by state. Once you are done writing the code needed to make this plot, you can try it out by &lt;em&gt;executing&lt;/em&gt; the code. To do this, click on the &lt;em&gt;Run&lt;/em&gt; button on the upper right side of the editing pane. You can also use the key binding: Ctrl+Shift+Enter on Windows or command+shift+return on the Mac.&lt;/p&gt;
+&lt;p&gt;Once you run the code, you will see it appear in the &lt;code&gt;R&lt;/code&gt; console and, in this case, the generated plot appears in the plots console. Note that the plot console has a useful interface that permits you to click back and forward across different plots, zoom in to the plot, or save the plots as files.&lt;/p&gt;
+&lt;p&gt;To run one line at a time instead of the entire script, you can use Control-Enter on Windows and command-return on the Mac.&lt;/p&gt;
+&lt;div class=&#34;fyi&#34;&gt;
+&lt;p&gt;&lt;strong&gt;SETUP TIP&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Change the option &lt;em&gt;Save workspace to .RData on exit&lt;/em&gt; to &lt;em&gt;Never&lt;/em&gt; and uncheck the &lt;em&gt;Restore .RData into workspace at start&lt;/em&gt;. By default, when you exit &lt;code&gt;R&lt;/code&gt; saves all the objects you have created into a file called .RData. This is done so that when you restart the session in the same folder, it will load these objects. I find that this causes confusion especially when sharing code with colleagues or peers.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;installing-r-packages&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Installing &lt;code&gt;R&lt;/code&gt; packages&lt;/h2&gt;
+&lt;p&gt;The functionality provided by a fresh install of &lt;code&gt;R&lt;/code&gt; is only a small fraction of what is possible. In fact, we refer to what you get after your first install as &lt;em&gt;base R&lt;/em&gt;. The extra functionality comes from add-ons available from developers. There are currently hundreds of these available from CRAN and many others shared via other repositories such as GitHub. However, because not everybody needs all available functionality, &lt;code&gt;R&lt;/code&gt; instead makes different components available via &lt;em&gt;packages&lt;/em&gt;. &lt;code&gt;R&lt;/code&gt; makes it very easy to install packages from within R. For example, to install the &lt;strong&gt;dslabs&lt;/strong&gt; package, which we use to share datasets and code related to this book, you would type:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;install.packages(&amp;quot;dslabs&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;In RStudio, you can navigate to the &lt;em&gt;Tools&lt;/em&gt; tab and select install packages. We can then load the package into our &lt;code&gt;R&lt;/code&gt; sessions using the &lt;code&gt;library&lt;/code&gt; function:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(dslabs)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## 
+## Attaching package: &amp;#39;dslabs&amp;#39;&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## The following object is masked from &amp;#39;package:gapminder&amp;#39;:
+## 
+##     gapminder&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;As you go through this book, you will see that we load packages without installing them. This is because once you install a package, it remains installed and only needs to be loaded with &lt;code&gt;library&lt;/code&gt;. The package remains loaded until we quit the &lt;code&gt;R&lt;/code&gt; session. If you try to load a package and get an error, it probably means you need to
+install it first.&lt;/p&gt;
+&lt;p&gt;We can install more than one package at once by feeding a character vector to this function:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;install.packages(c(&amp;quot;tidyverse&amp;quot;, &amp;quot;dslabs&amp;quot;))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;One advantage of using RStudio is that it auto-completes package names once you start typing, which is helpful when you do not remember the exact spelling of the package. Once you select your package, we recommend selecting all the defaults. Note that installing &lt;strong&gt;tidyverse&lt;/strong&gt; actually installs several packages. This commonly occurs when a package has &lt;em&gt;dependencies&lt;/em&gt;, or uses functions from other packages. When you load a package using &lt;code&gt;library&lt;/code&gt;, you also load its dependencies.&lt;/p&gt;
+&lt;p&gt;Once packages are installed, you can load them into &lt;code&gt;R&lt;/code&gt; and you do not need to install them again, unless you install a fresh version of R. Remember packages are installed in &lt;code&gt;R&lt;/code&gt; not RStudio.&lt;/p&gt;
+&lt;p&gt;It is helpful to keep a list of all the packages you need for your work in a script because if you need to perform a fresh install of R, you can re-install all your packages by simply running a script.&lt;/p&gt;
+&lt;p&gt;You can see all the packages you have installed using the following function:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;installed.packages()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;As we move through this course, we will constantly be adding to our toolbox of packages. Accordingly, you will need to keep track to ensure you have the requisite package for any given lecture.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;rmarkdown&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Rmarkdown&lt;/h2&gt;
+&lt;p&gt;Markdown is a general-purpose syntax for laying out documents. Rmarkdown is a combination of R and markdown, as the name implies. When using markdown, one can define headers and tables using specific notation, and depending on the rendering engine, the headers and tables (and a whole lot more) are customized. In fact, this whole website is built in R using Rmarkdown (and a lot of add-ons like Hugo and blogdown). In other contexts, the rendering engine may recognize that your headers are likely to be entries in a table of contents, and does so for you. The table of contents at the top of this document is built from the markdown headers.&lt;/p&gt;
+&lt;p&gt;The power of Rmarkdown is that it lets us mix formatted text with R code. That is, you can have a section of the document that understands R code, and a separate section right after that discusses the results from the R code.&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://raw.githubusercontent.com/ajkirkpatrick/FS20/Spring2021/Rmarkdown_templates/SSC442_Weekly_Writing_Template.Rmd&#34;&gt;Try it out using the Weekly Writing Template&lt;/a&gt;. If it opens in your web browser, just right-click the link and select Save As…. &lt;strong&gt;Make sure you save the file to its own folder on your hard drive&lt;/strong&gt;. In converting your Rmarkdown .Rmd file to a .pdf, your system will make multiple interim files&lt;a href=&#34;#fn9&#34; class=&#34;footnote-ref&#34; id=&#34;fnref9&#34;&gt;&lt;sup&gt;9&lt;/sup&gt;&lt;/a&gt;. It also creates folders to store the output of any plots or graphics you create with your R code.&lt;/p&gt;
+&lt;p&gt;If we have time today, let’s open the template linked above and see what happens when we select “knit to pdf”.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&#34;footnotes&#34;&gt;
+&lt;hr /&gt;
+&lt;ol&gt;
+&lt;li id=&#34;fn1&#34;&gt;&lt;p&gt;Comments from previous classes indicate that I am not, in fact, funny.&lt;a href=&#34;#fnref1&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li id=&#34;fn2&#34;&gt;&lt;p&gt;&lt;a href=&#34;https://pdfs.semanticscholar.org/9b48/46f192aa37ca122cfabb1ed1b59866d8bfda.pdf&#34; class=&#34;uri&#34;&gt;https://pdfs.semanticscholar.org/9b48/46f192aa37ca122cfabb1ed1b59866d8bfda.pdf&lt;/a&gt;&lt;a href=&#34;#fnref2&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li id=&#34;fn3&#34;&gt;&lt;p&gt;&lt;a href=&#34;https://opensource.org/history&#34; class=&#34;uri&#34;&gt;https://opensource.org/history&lt;/a&gt;&lt;a href=&#34;#fnref3&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li id=&#34;fn4&#34;&gt;&lt;p&gt;&lt;a href=&#34;https://stats.stackexchange.com/questions/138/free-resources-for-learning-r&#34; class=&#34;uri&#34;&gt;https://stats.stackexchange.com/questions/138/free-resources-for-learning-r&lt;/a&gt;&lt;a href=&#34;#fnref4&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li id=&#34;fn5&#34;&gt;&lt;p&gt;&lt;a href=&#34;https://www.r-project.org/help.html&#34; class=&#34;uri&#34;&gt;https://www.r-project.org/help.html&lt;/a&gt;&lt;a href=&#34;#fnref5&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li id=&#34;fn6&#34;&gt;&lt;p&gt;&lt;a href=&#34;https://stackoverflow.com/documentation/r/topics&#34; class=&#34;uri&#34;&gt;https://stackoverflow.com/documentation/r/topics&lt;/a&gt;&lt;a href=&#34;#fnref6&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li id=&#34;fn7&#34;&gt;&lt;p&gt;But probably tip more than 15%. Times are tough, man.&lt;a href=&#34;#fnref7&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li id=&#34;fn8&#34;&gt;&lt;p&gt;&lt;a href=&#34;https://www.rstudio.com/&#34; class=&#34;uri&#34;&gt;https://www.rstudio.com/&lt;/a&gt;&lt;a href=&#34;#fnref8&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li id=&#34;fn9&#34;&gt;&lt;p&gt;Specifically, knitr will create an intermediate .md file which is then processed with Pandoc using Latex to create a pdf. Whew!&lt;a href=&#34;#fnref9&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
 &lt;/ol&gt;
 &lt;/div&gt;
 </description>
