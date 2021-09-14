@@ -1,0 +1,775 @@
+---
+title: "Effective Visualizations"
+linktitle: "2: Visualizations I"
+date: "2021-09-14"
+read_date: "2021-09-14"
+publishDate: "2021-09-14"
+draft: false
+menu:
+  content:
+    parent: Course content
+    weight: 1
+type: docs
+output:
+  blogdown::html_page:
+    toc: true
+---
+
+## Readings
+
+- This page.
+
+
+### Guiding Questions
+
+- No guiding questions today; we're mostly learning some technical aspects of `ggplot`
+
+
+# ggplot2 {#ggplot2}
+
+Exploratory data visualization is perhaps the greatest strength of `R`. One can quickly go from idea to data to plot with a unique balance of flexibility and ease. For example, Excel may be easier than `R` for some plots, but it is nowhere near as flexible. `D3.js` may be more flexible and powerful than `R`, but it takes much longer to generate a plot. One of the reasons we use `R` is its incredible flexibility **and** ease.
+
+Throughout this course, we will be creating plots using the __ggplot2__^[https://ggplot2.tidyverse.org/] package.
+
+```{r, message=FALSE, warning=FALSE, echo=TRUE}
+library(dplyr)
+library(ggplot2)
+```
+
+Many other approaches are available for creating plots in `R`. In fact, the plotting capabilities that come with a basic installation of `R` are already quite powerful. There are also other packages for creating graphics such as __grid__ and __lattice__. We chose to use __ggplot2__ in this course because it breaks plots into components in a way that permits beginners to create relatively complex and aesthetically pleasing plots using syntax that is intuitive and comparatively easy to remember.
+
+One reason __ggplot2__ is generally more intuitive for beginners is that it uses a so-called "grammar of graphics"^[http://www.springer.com/us/book/9780387245447], the letters _gg_ in __ggplot2__. This is analogous to the way learning grammar can help a beginner construct hundreds of different sentences by learning just a handful of verbs, nouns and adjectives without having to memorize each specific sentence. Similarly, by learning a handful of __ggplot2__ building blocks and its grammar, you will be able to create hundreds of different plots.
+
+Another reason __ggplot2__ is easy for beginners is that its default behavior is carefully chosen to satisfy the great majority of cases and is visually pleasing. As a result, it is possible to create informative and elegant graphs with relatively simple and readable code.
+
+One limitation is that __ggplot2__ is designed to work exclusively with data tables in tidy format (where rows are observations and columns are variables). However, a substantial percentage of datasets that beginners work with are in, or can be converted into, this format. An advantage of this approach is that, assuming that our data is tidy, __ggplot2__ simplifies plotting code and the learning of grammar for a variety of plots. You should review the previous content about tidy data if you are feeling lost.
+
+To use __ggplot2__  you will have to learn several functions and arguments. These are hard to memorize, so we highly recommend you have the ggplot2 cheat sheet handy. You can get a copy here: [https://www.rstudio.com/wp-content/uploads/2015/03/ggplot2-cheatsheet.pdf](https://www.rstudio.com/wp-content/uploads/2015/03/ggplot2-cheatsheet.pdf) or simply perform an internet search for "ggplot2 cheat sheet".
+
+## The components of a graph
+We will eventually construct a graph that summarizes the US murders dataset that looks like this:
+
+```{r ggplot-example-plot, echo=FALSE}
+library(dslabs)
+data(murders)
+library(ggthemes)
+library(ggrepel)
+r <- murders %>%
+  summarize(pop=sum(population), tot=sum(total)) %>%
+  mutate(rate = tot/pop*10^6) %>% pull(rate)
+murders %>% ggplot(aes(x = population/10^6, y = total, label = abb)) +
+  geom_abline(intercept = log10(r), lty=2, col="darkgrey") +
+  geom_point(aes(color=region), size = 3) +
+  geom_text_repel() +
+  scale_x_log10() +
+  scale_y_log10() +
+  xlab("Populations in millions (log scale)") +
+  ylab("Total number of murders (log scale)") +
+  ggtitle("US Gun Murders in 2010") +
+  scale_color_discrete(name="Region") +
+  theme_economist_white()
+```
+
+We can clearly see how much states vary across population size and the total number of murders. Not surprisingly, we also see a clear relationship between murder totals and population size. A state falling on the dashed grey line has the same murder rate as the US average. The four geographic regions are denoted with color, which depicts how most southern states have murder rates above the average.
+
+This data visualization shows us pretty much all the information in the data table. The code needed to make this plot is relatively simple. We will learn to create the plot part by part.
+
+The first step in learning __ggplot2__ is to be able to break a graph apart into components. Let's break down the plot above and introduce some of the __ggplot2__ terminology. The main five components to note are:
+
+* __Data__: The US murders data table is being summarized. We refer to this as the __data__ component.
+
+* __Geometry__: The plot above is a scatterplot. This is referred to as the
+__geometry__ component. Other possible geometries are barplot, histogram, smooth densities, qqplot, boxplot, pie (ew!), and many, many more. We will learn about these later.
+
+* __Aesthetic mapping__: The plot uses several visual cues to represent the information provided by the dataset. The two most important cues in this plot are the point positions on the x-axis and y-axis, which represent population size and the total number of murders, respectively. Each point represents a different observation, and we _map_ data about these observations to visual cues like x- and y-scale. Color is another visual cue that we map to region. We refer to this as the __aesthetic mapping__ component. How we define the mapping depends on what __geometry__ we are using.
+
+* __Annotations__: These are things like axis labels, axis ticks (the lines along the axis at regular intervals or specific points of interest), axis scales (e.g. log-scale), titles, legends, etc.
+
+* __Style__: An overall appearance of the graph determined by fonts, color palattes, layout, blank spaces, and more.
+
+We also note that:
+
+* The points are labeled with the state abbreviations.
+* The range of the x-axis and y-axis appears to be defined by the range of the data. They are both on log-scales.
+* There are labels, a title, a legend, and we use the style of The Economist magazine.
+
+All of the flexibility and visualization power of `ggplot` is contained in these four elements (plus your data)
+
+
+## `ggplot` objects
+We will now construct the plot piece by piece.
+
+We start by loading the dataset:
+
+```{r}
+library(dslabs)
+data(murders)
+```
+
+```{r, echo=FALSE, eval = FALSE}
+theme_set(theme_grey()) ## to imitate what happens with setting theme
+```
+
+The first step in creating a __ggplot2__ graph is to define a `ggplot` object. We do this with the function `ggplot`, which initializes the graph. If we read the help file for this function, we see that the first argument is used to specify what data is associated with this object:
+
+```{r ggplot-example-1, eval=FALSE}
+ggplot(data = murders)
+```
+
+We can also pipe the data in as the first argument. So this line of code is equivalent to the one above:
+
+```{r ggplot-example-2}
+murders %>% ggplot()
+```
+
+It renders a plot. But in this case, it renders a blank slate. The object was created and, because it was not assigned to an object, it was automatically evaluated. Of course, we can assign our plot to an object, for example like this:
+
+```{r}
+p <- ggplot(data = murders)
+class(p)
+```
+
+To render the plot associated with this object, we simply print the object `p`. The following two lines of code each produce the same plot we see above:
+
+```{r, eval=FALSE}
+print(p)
+p
+```
+
+## Geometries (briefly)
+
+The plot above is incredibly boring (it's only a blank slate). It's boring because we didn't tell `ggplot2` what to do. In general, if `R` is doing something unexpected, it's because you (the user) failed to tell it what you had in *mind*. Here, we want to make an actual plot, but we didn't tell `R` what sort of plot to make. In order to tell it what sort of plot we want, we use "geometries".
+
+Specifically, in `ggplot2` we create graphs by adding geometry _layers_. Layers can define geometries, compute summary statistics, define what scales to use, create annotations, or even change styles. To add layers, we use the symbol `+`. In general, a line of code will look like this:
+
+> `DATA %>% ggplot() + LAYER 1 + LAYER 2 + ... + LAYER N`
+Usually, the first __added__ layer after `ggplot() +` defines the geometry. After that, we may add additional geometries, we may rescale an axis, we may add annotations and labels, or we may change the style. For now, we want to make a scatterplot. What geometry do we use?
+
+Taking a quick look at the cheat sheet, we see that the function used to create plots with this geometry is `geom_point`.
+
+![](/example/02-example_files/ggplot2-cheatsheeta.png)
+![](/example/02-example_files/ggplot2-cheatsheetb.png)
+
+(Image courtesy of RStudio^[https://github.com/rstudio/cheatsheets].  CC-BY-4.0 license^[https://github.com/rstudio/cheatsheets/blob/master/LICENSE].)
+
+<!--(Source: [RStudio](https://github.com/rstudio/cheatsheets/raw/master/data-visualization-2.1.pdf))-->
+
+
+Geometry function names follow the pattern: `geom_X` where X is the name of some specific geometry. Some examples include `geom_point`, `geom_bar`, and `geom_histogram`. You've already seen a few of these. We will start with a scatterplot created using `geom_point()` for now, then circle back to more geometries after we cover aesthetic mappings, layers, and annotations.
+
+For `geom_point` to run properly we need to provide data and an __aesthetic mapping__. The simplest mapping for a scatter plot is to say we want one variable on the X-axis, and a different one on the Y-axis, so each point is an {X,Y} pair. That is an __aesthetic mapping__ because X and Y are __aesthetics__ in a `geom_point` scatterplot.
+
+We have already connected the object `p` with the `murders` data table, and if we add the layer `geom_point` it defaults to using this data. To find out what mappings are expected, we read the __Aesthetics__ section of the help file `?geom_point` help file:
+
+```
+> Aesthetics
+>
+> geom_point understands the following aesthetics (required aesthetics are in bold):
+>
+> **x**
+>
+> **y**
+>
+> alpha
+>
+> colour
+>
+> fill
+>
+> group
+>
+> shape
+>
+> size
+>
+> stroke
+```
+
+and---although it does not show in bold above---we see that at least two arguments are required: `x` and `y`. You can't have a `geom_point` scatterplot unless you state what you want on the X and Y axes.
+
+
+## Aesthetic mappings
+
+  __Aesthetic mappings__ describe how properties of the data connect with features of the graph, such as distance along an axis, size, or color. The `aes` function connects data with what we see on the graph by defining aesthetic mappings and will be one of the functions you use most often when plotting. The outcome of the `aes` function is often used as the argument of a geometry function. This example produces a scatterplot of population in millions (x-axis) versus total murders (y-axis):
+
+```{r, eval = FALSE}
+murders %>% ggplot() +
+  geom_point(aes(x = population/10^6, y = total))
+```
+
+Instead of defining our plot from scratch, we can also add a layer to the `p` object that was defined above as `p <- ggplot(data = murders)`:
+
+```{r ggplot-example-3}
+p + geom_point(aes(x = population/10^6, y = total))
+```
+
+The scales and annotations like axis labels are defined by default when adding this layer (note the x-axis label is exactly what we wrote in the function call). Like  __dplyr__ functions, `aes` also uses the variable names from the object component: we can use `population` and `total` without having to call them as `murders$population` and `murders$total`. The behavior of recognizing the variables from the data component is quite specific to `aes`. With most functions, if you try to access the values of `population` or `total` outside of `aes` you receive an error.
+
+Note that we did some rescaling within the `aes()` call - we can do simple things like multiplication or division on the variable names in the `ggplot` call. The axis labels reflect this. We will change the axis labels later.
+
+The __aesthetic mappings__ are very powerful - changing the variable in `x=` or `y=` changes the meaning of the plot entirely. We'll come back to additional __aesthetic mappings__ once we talk about aesthetics in general.
+
+### Aesthetics in general
+Even without mappings, a plots aesthetics can be useful. Things like color, fill, alpha, and size are aesthetics that can be changed.
+
+Let's say we want larger points in our scatterplot. The `size` aesthetic can be used to set the size. The scale of `size` is "multiples of the defaults" (so `size = 1` is the default)
+
+```{r ggplot-example-5}
+p + geom_point(aes(x = population/10^6, y = total), size = 3)
+```
+
+`size` is __not__ a mapping so it is __not__ in the `aes()` part: whereas mappings use data from specific observations and need to be inside `aes()`, operations we want to affect all the points the same way do not need to be included inside `aes`. We'll see what happens if `size` is inside `aes(size = xxx)` in a second.
+
+We can change the `shape` to one of the many different base-R options found [here](http://www.sthda.com/english/wiki/r-plot-pch-symbols-the-different-point-shapes-available-in-r):
+
+```{r ggplot-example-5shape}
+p + geom_point(aes(x = population/10^6, y = total), size = 3, shape = 17)
+```
+
+We can also change the `fill` and the `color`:
+
+```{r ggplot-example-5b}
+p + geom_point(aes(x = population/10^6, y = total), size = 4, shape = 23, fill = '#18453B')
+```
+
+`fill` can take a common name like `'green'`, or can take a hex color like `'#18453B'`, which is [MSU Green according to MSU's branding site](https://brand.msu.edu/design-visual/index.html#color). You can also find [UM Maize](https://youtu.be/0BxNHwJi1y4) and [OSU Scarlet](https://youtu.be/dQw4w9WgXcQ) on respective branding pages, or google "XXX color hex." We'll learn how to build a color palatte later on.
+
+`color` (or `colour`, same thing because `ggplot` creators allow both spellings) is a little tricky with points - it changes the outline of the geometry rather than the fill color, but in `geom_point()` most shapes are only the outline, including the default. This is more useful with, say, a barplot where the outline and the fill might be different colors. Still, shapes 21-25 have both `fill` and `color`:
+
+
+```{r ggplot-example-5c}
+p + geom_point(aes(x = population/10^6, y = total), size = 5, shape = 23, fill = '#18453B', color = 'white')
+```
+
+The `color = 'white'` makes the outline of the shape white, which you can see if you look closely in the areas where the shapes overlap. This only works with shapes 21-25, or any other geometry that has both an outline and a fill.
+
+### Now, back to aesthetic mappings
+Now that we've seen a few aesthetics (and know we can find more by looking at which aesthetics work with our geometry in the help file), let's return to the power of aesthetic mappings.
+
+An __aesthetic mapping__ means we can vary an aesthetic (like fill or shape or size) according to some __variable in our data__. This opens up a world of possibilities! Let's try adding to our `x` and `y` aesthetics with a `color` aesthetic (since points respond to `color` better than `fill`) that varies by `region`, which is a column in our data:
+
+```{r ggplot-example-color}
+p + geom_point(aes(x = population/10^6, y = total, color = region), size = 3)
+```
+
+We include `color=region` **inside** the `aes` call, which tells R to find a variable called `region` and change color based on that. R will choose a somewhat ghastly color palatte, and **every** unique value in the data for `region` will get a different color if the variable is discrete. If the variable is a continuous value, then `ggplot` will automatically make a color ramp. Thus, __discrete__ and __continuous__ values for aesthetic mappings work differently.
+
+Let's see a useful example of a continuous aesthetic mapping to `color`. In our data, we are making a scatterplot of population and total murders, which really just shows that states with higher populations have higher murders. What we really want is murders per capita (I think COVID taught us a lot about rates vs. levels like "cases" and "cases per 100,000 people"). We can create a variable of "murders per capita" on the fly. Since "murders per capita" is a very small number and hard to read, we'll multiply by 100 so that we get "percent of population murdered per year":
+
+```{r ggplot-example-colfill}
+p + geom_point(aes(x = population/10^5, y = total, color = 100*total/population), size = 3)
+```
+
+While the clear pattern of "more population means more murders" is still there, look at the outlier in light blue in the bottom left. With the color ramp, see how easy it is to see here that there is one location where murders per capita is quite high?
+
+Note that `size` is outside of `aes` and is set to an explicit value, not to a variable. What if we set size to a variable in the data?
+
+```{r ggplot-example-color2}
+p + geom_point(aes(x = population/10^6, y = total, color = region, size = population/10^6))
+```
+
+### Legends for aesthetics
+Here we see yet another useful default behavior: __ggplot2__ automatically adds a legend that maps color to region, and size to population (which we scaled by 1,000,000). To avoid adding this legend we set the `geom_point` argument `show.legend = FALSE`. This removes both the `size` and the `color` legend.
+
+```{r ggplot-example-color3}
+p + geom_point(aes(x = population/10^6, y = total, color = region, size = population/10^6), show.legend = FALSE)
+```
+
+Later on, when we get to __annotation layers__, we'll talk about controlling the legend text and layout. For now, we just need to know how to turn them off.
+
+
+## Annotation Layers
+
+A second layer in the plot we wish to make involves adding a label to each point to identify the state. The `geom_label` and `geom_text` functions permit us to add text to the plot with and without a rectangle behind the text, respectively.
+
+Because each point (each state in this case) has a label, we need an __aesthetic mapping__ to make the connection between points and labels. By reading the help file `?geom_text`, we learn that we supply the mapping between point and label through the `label` argument of `aes`. That is, `label` is an __aesthetic__ that we can map. So the code looks like this:
+
+```{r  ggplot-example-4}
+p + geom_point(aes(x = population/10^6, y = total)) +
+  geom_text(aes(x = population/10^6, y = total, label = abb))
+```
+
+We have successfully added a second layer to the plot.
+
+As an example of the unique behavior of `aes` mentioned above, note that this call:
+
+```{r, eval=FALSE}
+p + geom_point(aes(x = population/10^6, y = total)) +
+  geom_text(aes(population/10^6, total, label = abb))
+```
+
+is fine, whereas this call:
+
+```{r, eval=FALSE}
+p + geom_point(aes(x = population/10^6, y = total)) +
+  geom_text(aes(population/10^6, total), label = abb)
+```
+
+will give you an error since `abb` is not found because it is outside of the `aes` function. The layer `geom_text` does not know where to find `abb` since it is a column name and not a global variable, and `ggplot` does not look for column names for non-mapped aesthetics. For a trivial example:
+
+```{r, eval=TRUE}
+p + geom_point(aes(x = population/10^6, y = total)) +
+  geom_text(aes(population/10^6, total), label = 'abb')
+```
+
+
+### Global versus local aesthetic mappings
+
+In the previous line of code, we define the mapping `aes(population/10^6, total)` twice, once in each geometry. We can avoid this by using a _global_ aesthetic mapping. We can do this when we define the blank slate `ggplot` object. Remember that the function `ggplot` contains an argument that permits us to define aesthetic mappings:
+
+```{r}
+args(ggplot)
+```
+
+If we define a mapping in `ggplot`, all the geometries that are added as layers will default to this mapping. We redefine `p`:
+
+```{r}
+p <- murders %>% ggplot(aes(x = population/10^6, y = total, label = abb))
+```
+
+and then we can simply write the following code to produce the previous plot:
+
+```{r ggplot-example-7, eval=FALSE}
+p + geom_point(size = 3) +
+  geom_text(nudge_x = 1.5) # offsets the label
+```
+
+We keep the `size` and `nudge_x` arguments in `geom_point` and `geom_text`, respectively, because we want to only increase the size of points and only nudge the labels. If we put those arguments in `aes` then they would apply to both plots. Also note that the `geom_point` function does not need a `label` argument and therefore ignores that aesthetic.
+
+If necessary, we can override the global mapping by defining a new mapping within each layer. These _local_ definitions override the _global_. Here is an example:
+
+```{r ggplot-example-8}
+p + geom_point(size = 3) +
+  geom_text(aes(x = 10, y = 800, label = "Hello there!"))
+```
+
+Clearly, the second call to `geom_text` does not use `x = population` and `y = total`.
+
+## Try it!
+
+::: fyi
+Let's break in to smaller groups and try playing with some of the aesthetics and aesthetic mappings. If we're online, we'll use Zoom Breakout Rooms. Each of the rooms have a room number which will correspond with one of the tasks below. If we're in person (woohoo!), we'll form the same number of groups in class.
+
+In each group, one person should be the main coder - someone who has the packages like `dslabs` installed and has successfully run the plots above. Each set of tasks ask you to learn about an aesthetic and put it into action with the `murder` data. We'll leave about 5 minutes to do the task, then have you come back and share your results with the class.
+
+For each group, we'll start with the following code:
+
+```
+p + geom_point(aes(x = population/10^6, y = total)) +
+  geom_text(aes(x = population/10^6, y = total, label = abb))
+```
+
+
+1. The `alpha` aesthetic mapping.
+    a. The `alpha` aesthetic can only take a number between 0 and 1. So first, in `murders`, create a `murders_per_capita` column by dividing `total` by `population`. Second, find the `max(murders$murders_per_capita)` and then create another new column called `murders_per_capita_rescaled` which divides `murders_per_capita` by the max value. `murders_per_capita_rescaled` will be between 0 and 1, with the value of 1 for the state with the max murder rate. This is a little hard to do on the fly in `ggplot`.
+    b. Set the `alpha` aesthetic mapping to `murders_per_capita_rescaled` for `geom_point`.
+    c. Turn off the legend using `show.legend=FALSE`
+    d. Include the `geom_text` labels, but make sure the aesthetic mapping does **not** apply to the labels.
+    e. Use `nudge_x = 1.5` as before to offset the labels.
+    f. Be able to explain the plot.
+        - Does the `alpha` aesthetic help present the data here? It's OK if it doesn't!
+
+2. The `stroke` aesthetic mapping.
+    a. The `stroke` aesthetic works a bit like the `size` aesthetic. It must be used with a plot that has both a border and a fill, like shapes 21-25, so use one of those.
+    b. Use the `stroke` aesthetic mapping (meaning the stroke will change according to a value in the data) to set a different stroke size based on murders *per capita*. You can create a murders per capita variable on the fly, or add it to your `murders` data.
+        - Include the text labels as before and use `nudge_x = 1.5`.
+        - Make sure you're only setting the aesthetic for the points on the scatterplot!
+
+3. The `angle` aesthetic
+    a. Using the `?geom_text` help, note that `geom_text` takes an aesthetic of `angle`.
+    b. Use the `angle` aesthetic (not aesthetic mapping) in the appropriate place (e.g. on `geom_text` and not on other geometries) to adjust the labels on our plot.
+    c. Now, try using the `angle` aesthetic mapping by using the `total` field as both the `y` value **and** the `angle` value in the `geom_text` layer.
+    d. Does using `angle` as an aesthetic help? What about as an aesthetic mapping?
+
+
+
+4. The `color` aesthetic mapping
+    a. Set the `color` aesthetic mapping in `geom_text` to `total/population`.
+        - Use the `nudge_x = 1.5` aesthetic in `geom_text` still
+    b. Try it with and without the legend using `show.legend`.
+    c. Be able to explain the plot.
+        - Does the `color` aesthetic mapping help present the data here?
+
+5. `geom_label` and the `fill` aesthetic
+    a. Looking at `?geom_label` (which is the same help as `geom_text`), we note that "The `fill` aesthetic controls the backgreound colour of the label".
+    b. Set the `fill` aesthetic mapping to `total/population` in `geom_label` (replacing `geom_text` but still using `nudge_x=1.5`)
+    c. Set the `fill` aesthetic (not mapping) to the color of your choice.
+    d. Be able to explain the plots.
+    - Does the `fill` aesthetic mapping help present the data here?
+    - What color did you choose for the non-mapped fill aesthetic?
+
+:::
+
+
+
+## Some Quirky Stuff
+Load up our `murders` data
+
+```{r, warning = FALSE, error = FALSE, message = FALSE}
+library(dslabs)
+library(ggplot2)
+library(dplyr)
+data(murders)
+p <- ggplot(data = murders, aes(x = population, y = total, label = abb))
+```
+
+
+
+## Scales and transformations
+
+### Log transformations
+Last lecture, we re-scaled our population by 10^6 (millions), but still had a lot of variation because some states are tiny and some are huge. Sometimes, we want to have one (or both) of our axes scaled non-linearly. For instance, if we wanted to have our x-axis be in log base 10, then each major tick would represent a factor of 10 over the last. This is not the default, so this change needs to be added through a _scales_ layer. A quick look at the cheat sheet reveals the `scale_x_continuous` function lets us control the behavior of scales. We use them like this:
+
+
+```{r ggplot-example-9}
+p + geom_point(size = 3) +
+  geom_text(nudge_x = 0.05) +
+  scale_x_continuous(trans = "log10") +
+  scale_y_continuous(trans = "log10")
+```
+
+A couple of things here: adding things like `scale_x_continuous(...)` operates on the whole plot. In some cases, order matters, but it doesn't here, so we can throw `scale_x_continuous` anywhere. Because we have altered the whole plot's scale to be in the log-scale now, the _nudge_ must be made smaller. It is in log-base-10 units. Using `?scale_x_continuous` brings us to the help for both `scale_x_continuous` and `scale_y_continuous`, which shows us the options for transformations `trans = ...`
+
+This particular transformation is so common that __ggplot2__ provides the specialized functions `scale_x_log10` and `scale_y_log10` which "inherit" (take the place of) the `scale_x_continuous` functions but have log base 10 as default. We can use these to rewrite the code like this:
+
+```{r, echo=TRUE}
+p + geom_point(size = 3) +
+  geom_text(nudge_x = 0.05) +
+  scale_x_log10() +
+  scale_y_log10()
+```
+
+This can make a plot much easier to read, though one has to be sure to pay attention to the values on the axes. Plotting anything with very large outliers will almost always be better if done in log-scale. Adding the scale layer is an easy way to fix this.
+
+We can also use one of many built-in transformations. Of note: **reverse** just inverts the scale, which can be helpful, **log** uses the natural log, **sqrt** takes the square root (dropping anything with a negative value), **reciprocal** takes 1/x. If your x-axis is in a date format, you can also scale to **hms** (hour-minute-second) or **date**.
+
+
+### Transforming data vs. transforming using `scale_...`
+We could simply take the log of population and log of total in the call and we'd get something very similar. Note that we had to override the aesthetic mapping set in `p` in each of the geometries:
+
+```{r, eval=TRUE}
+p + geom_point(aes(x = log(population, base=10), y = log(total, base=10)), size = 3) +
+  geom_text(aes(x = log(population, base=10), y = log(total, base=10)), nudge_x = 0.05)
+```
+
+This avoids using `scale_x_continuous` or it's child function `scale_x_log10`. One advantage to using `scale_x...` is that the axes are correctly labeled. When we transform the data directly, the axis labels only show the transformed values, so 7,000,000 becomes 7.0. This could be confusing! We could update the axis labels to say "total murders (log base 10)" and "total population (log base 10)", but that's cumbersome. Using `scale_x...` is a lot more refined and easy.
+
+## Axis labels, legends, and titles
+But let's say we did want to re-name our x-axis label. Or maybe we don't like that the variable column name is lower-case "p".
+
+As with many things in `ggplot`, there are many ways to get the same result. We'll go over one way of changing titles and labels, but know that there are many more.
+
+### Changing axis titles
+We'll use the `labs(...)` annotation layer to do this, which is pretty straightforward. `?labs` shows us what we can change, and while it looks pretty basic, the real meat is in the `...` argument, which the help says is "A list of new name-value pairs". This means we can re-define the label on anything that is an aesthetic mapping. X and Y are aesthetic mappings, so...
+
+```{r, echo=TRUE}
+p + geom_point(size = 3) +
+  geom_text(nudge_x = 0.05) +
+  scale_x_log10() +
+  scale_y_log10() +
+  labs(x = 'Population', y = 'Total murders')
+```
+
+Now, let's use an aesthetic mapping that generates a legend, like `color`, and see what `labs` renames:
+
+
+```{r, echo=TRUE}
+p + geom_point(aes(color = region), size = 3) +
+  geom_text(nudge_x = 0.05) +
+  scale_x_log10() +
+  scale_y_log10() +
+  labs(x = 'Population', y = 'Total murders', color = 'US Region')
+```
+We can rename the aesthetic mapping-relevant label using `labs`. Even if there are multiple mapped aesthetics:
+
+```{r, echo=TRUE}
+p + geom_point(aes(color = region, size = total/population)) +
+  geom_text(nudge_x = 0.05) +
+  scale_x_log10() +
+  scale_y_log10() +
+  labs(x = 'Population', y = 'Total murders', color = 'US Region', size = 'Murder rate')
+```
+
+### Titles
+In `?labs`, we also see some things that look like titles and captions. We can include those:
+
+```{r, echo=TRUE}
+p + geom_point(aes(color = region, size = total/population)) +
+  geom_text(nudge_x = 0.05) +
+  scale_x_log10() +
+  scale_y_log10() +
+  labs(x = 'Population', y = 'Total murders', color = 'US Region', size = 'Murder rate',
+       title = 'This is a title', subtitle = 'This is a subtitle', caption = 'This is a caption', tag = 'This is a tag')
+```
+
+Now that you know how, **always label your plots with at least a title and have meaningful axis and legend labels**.
+
+## Axis ticks
+In addition to the axis labels, we may want to format or change the axis tick labels (like "1e+06" above) or even where the tick marks and lines are drawn. If we don't specify anything, the axis labels and tick marks are drawn as best as `ggplot` can do, but we can change this. This might be especially useful if our data has some meaningful cutoffs that aren't found by the default, or we just don't like where the marks fall or  how they are labeled. This is easy to fix with `ggplot`.
+
+To change the tick mark labels, we have to set the tick mark locations. Then we can set a label for each tick mark. Let's go back to our `murders` data and, for simplicity, take the log transformation off the Y axis. We'll use `scale_y_continuous` to tell R *where* to put the breaks (`breaks = `) and *what to label* the breaks. We have to give it one label for every break. Let's say we just want a line at the 500's and let's say we want to (absurdly) use written numerics for each of the Y-axis lines. Since `scale_y_log10` **inherits from** `scale_y_continuous`, we can just use that and add the breaks and labels:
+
+```{r, echo=TRUE}
+p + geom_point(aes(color = region), size = 3) +
+  geom_text(nudge_x = .05) +
+  scale_x_log10() +
+  scale_y_log10(breaks = c(0,50, 100, 500,1000,1500),
+                     labels = c('Zero','Fifty','One hundred','Five hundred','One thousand','Fifteen hundred')) +
+  labs(x = 'Population', y = 'Total murders', color = 'US Region')
+```
+We have manually set both the location and the label for the y-axis. Note that R filled in the in-between "minor" tick lines, but we can take those out. Since we are setting the location of the lines, we can do anything we want:
+
+```{r, echo=TRUE}
+p + geom_point(aes(color = region), size = 3) +
+  geom_text(nudge_x = .05) +
+  scale_x_log10() +
+  scale_y_log10(breaks = c(0,50, 100, 721, 1000,1500),
+                     labels = c('Zero','Fifty','One hundred','Seven hundred twenty one','One thousand','Fifteen hundred'),
+                     minor_breaks = NULL) +
+  labs(x = 'Population', y = 'Total murders', color = 'US Region')
+```
+
+So we can now define where axis tick lines should lie and how they should be labeled.
+
+
+## Additional geometries
+Let's say we are happy with our axis tick locations, but we want to add a single additional line. Maybe we want to divide at 1,000,000 population (a vertical line at 1,000,000) becuase we think those over 1,000,000 are somehow different, and we want to call attention to the data around that point. As a more general example, if we were to plot, say, car accidents by age, we would maybe want to label age 21, when people can legally purchase alcohol (and subsequently cause car accidents).
+
+This brings us to our first additional geometry beyond `geom_point` (OK, we used `geom_text`, but that's more of an annotation). `geom_vline` lets us add a single vertical line (without aesthetic mappings). If we look at `?geom_vline` we see that it requires ones aesthetic:`xintercept`. It also takes aesthetics like color and size, and introduces the `linetype` aesthetic:
+
+```{r, echo=TRUE}
+p + geom_point(aes(color = region), size = 3) +
+  geom_text(nudge_x = .05) +
+  geom_vline(aes(xintercept = 1000000), col = 'red', size = 2, linetype = 2) +
+  scale_x_log10() +
+  scale_y_log10(breaks = c(0,50, 100, 721, 1000,1500),
+                     labels = c('Zero','Fifty','One hundred','Seven hundred twenty one','One thousand','Fifteen hundred'),
+                     minor_breaks = NULL) +
+  labs(x = 'Population', y = 'Total murders', color = 'US Region')
+```
+
+Combining geometries is as easy as adding the layers with `+`.
+
+### `geom_line`
+For a good old line plot, we use the line geometry at `geom_line`. The help for `?geom_line` tells us that we need an x and a y aesthetic (much like `geom_points`). Since our `murders` data isn't really suited to a line graph, we'll use a daily stock price. We'll get this using `tidyquant`, which pulls stock prices from Yahoo Finance and maintains the "tidy" format. You'll need to `install.packages('tidyquant')` before you run this the first time.
+
+```{r getStock, echo=T, warning = FALSE, error = FALSE, message = FALSE}
+library(tidyquant)
+AAPL = tq_get("AAPL", from = '2009-01-01', to = '2021-08-01', get = 'stock.prices')
+head(AAPL)
+```
+
+Now, we can plot a line graph of the Apple closing stock price over the requested date range. We want this to be a time series, so the x-axis will be the date and the y-axis will be the closing price.
+
+```{r geomPath, echo=T}
+ggplot(AAPL, aes(x = date, y = close)) +
+  geom_line() +
+  labs(x = 'Date', y = 'Closing price', title = 'Apple stock price')
+```
+
+In `geom_line`, R will automatically sort on the x-variable. If you don't want this, then `geom_path` will use whatever order the data is in. Either way, if you have multiple observations for the same value on the x-axis, then you'll get something pretty messy because R will try to connect, in some order, all the points. Let's see an example with two stocks:
+
+```{r, echo=T}
+AAPLNFLX = tq_get(c("AAPL","NFLX"), from = '2021-01-01', to = '2021-08-01', get = 'stock.prices')
+ggplot(AAPLNFLX, aes(x = date, y = close)) +
+  geom_line() +
+  labs(x = 'Date', y = 'Closing price', title = 'Apple and Netflix stock price')
+```
+
+That looks kinda strange. That's because, for every date, we have two values - the NFLX and the AAPL value, so each day has a vertical line drawn between the two prices. This is nonsense, especially since what we want to see is the history of NFLX and AAPL over time.
+
+Aesthetics to the rescue! Remember, when we use an aesthetic mapping, we are able to separate out data by things like color or linetype. Let's use color as the aesthetic here, and map it to the stock ticker:
+
+```{r, echo=T}
+AAPLNFLX = tq_get(c("AAPL","NFLX"), from = '2021-01-01', to = '2021-08-01', get = 'stock.prices')
+ggplot(AAPLNFLX, aes(x = date, y = close, color = symbol)) +
+  geom_line() +
+  labs(x = 'Date', y = 'Closing price', title = 'Apple and Netflix stock price')
+```
+Well there we go! We can now see each stock price over time, with a convenient legend. Later on, we'll learn how to change the color palatte. If we don't necessarily want a different color but we do want to separate the lines, we can use the `group` aesthetic.
+
+```{r, echo=T}
+AAPLNFLX = tq_get(c("AAPL","NFLX"), from = '2021-01-01', to = '2021-08-01', get = 'stock.prices')
+ggplot(AAPLNFLX, aes(x = date, y = close, group = symbol)) +
+  geom_line() +
+  labs(x = 'Date', y = 'Closing price', title = 'Apple and Netflix stock price')
+```
+
+Similar result as `geom_line`, but without the color difference (which makes it rather hard to tell what you're looking at). But if we add labels using `geom_label`, we'll get one label for every point, which will be overwhelming. The solution? Use some filtered data so that there is only one point for each label. But that means replacing the `data` in `ggplot`. Here's how.
+
+### Using different data with different geometries
+Just as we can use different aesthetic mappings on each geometry, we can use different *data* entirely. This is useful when we want one geometry to have one set of data (like the stock prices above), but another geometry to only have a subset of the data. Why would we want that? Well, we'd like to label just *one* part of each of the lines in our plot, right? That means we want to label a *subset* of the stock data.
+
+To replace data in a geometry, we just need to specify the `data = ` argument separately:
+
+```{r, echo=T}
+ggplot(AAPLNFLX, aes(x = date, y = close, group = symbol)) +
+  geom_line() +
+  geom_label(data = AAPLNFLX %>% group_by(symbol) %>% slice(100),
+             aes(label = symbol),
+             nudge_y = 20) +
+  labs(x = 'Date', y = 'Closing price', title = 'Apple and Netflix stock price')
+```
+
+In `geom_label`, we specified we wanted the 100th observation from each symbol to be the label location. Then, we nudged it up along y by 20 so that it's clear of the line.
+
+R also has a very useful `ggrepel` package that gives us `geom_label_repel` which takes care of the nudging for us, even in complicated situations (lots of points, lines, etc.). It does a decent job here of moving the label to a point where it doesn't cover a lot of data.
+
+```{r, echo=T, message = F, warning = F, error = F}
+library(ggrepel)
+ggplot(AAPLNFLX, aes(x = date, y = close, group = symbol)) +
+  geom_line() +
+  geom_label_repel(data = AAPLNFLX %>% group_by(symbol) %>% slice(100),
+             aes(label = symbol)) +
+  labs(x = 'Date', y = 'Closing price', title = 'Apple and Netflix stock price')
+```
+
+Now, we don't lose a lot of space to a legend, and we haven't had to use color to separate the stock symbols.
+
+
+### Multiple geometries
+Since this section is about adding geometries, we *can* combine points and lines. Since lines connect points, it will look like a giant connect-the-dots.
+
+```{r, echo=T}
+library(ggrepel)
+ggplot(AAPLNFLX, aes(x = date, y = close, group = symbol)) +
+  geom_line() +
+  geom_point() +
+  geom_label_repel(data = AAPLNFLX %>% group_by(symbol) %>% slice(100),
+             aes(label = symbol)) +
+  labs(x = 'Date', y = 'Closing price', title = 'Apple and Netflix stock price')
+```
+
+## Try it!
+
+:::fyi
+
+__TRY IT__
+
+Start by loading the __dplyr__ and __ggplot2__ library as well as the `murders` and `heights` data.
+
+```{r}
+library(dplyr)
+library(ggplot2)
+library(dslabs)
+data(heights)
+data(murders)
+```
+
+1. With __ggplot2__ plots can be saved as objects. For example we can associate a dataset with a plot object like this
+
+```{r, eval = FALSE}
+p <- ggplot(data = murders)
+```
+
+Because `data` is the first argument we don't need to spell it out
+
+```{r, eval = FALSE}
+p <- ggplot(murders)
+```
+
+and we can also use the pipe:
+
+```{r, eval = FALSE}
+p <- murders %>% ggplot()
+```
+
+What is class of the object `p`?
+
+
+2. Remember that to print an object you can use the command `print` or simply type the object.
+Print the object `p` defined in exercise one and describe what you see.
+
+a. Nothing happens.
+b. A blank slate plot.
+c. A scatterplot.
+d. A histogram.
+
+
+3. Using the pipe `%>%`, create an object `p` but this time associated with the `heights` dataset instead of the `murders` dataset.
+
+
+4. What is the class of the object `p` you have just created?
+
+
+5. Now we are going to add a layer and the corresponding aesthetic mappings. For the murders data we plotted total murders versus population sizes. Explore the `murders` data frame to remind yourself what are the names for these two variables and select the correct answer. __Hint__: Look at `?murders`.
+
+a. `state` and `abb`.
+b. `total_murders` and `population_size`.
+c. `total` and `population`.
+d. `murders` and `size`.
+
+6. To create the scatterplot we add a layer with `geom_point`. The aesthetic mappings require us to define the x-axis and y-axis variables, respectively. So the code looks like this:
+
+```{r, eval=FALSE}
+murders %>% ggplot(aes(x = , y = )) +
+  geom_point()
+```
+
+except we have to define the two variables `x` and `y`. Fill this out with the correct variable names.
+
+
+7. Note that if we don't use argument names, we can obtain the same plot by making sure we enter the variable names in the right order like this:
+
+```{r, eval=FALSE}
+murders %>% ggplot(aes(population, total)) +
+  geom_point()
+```
+
+Remake the plot but now with total in the x-axis and population in the y-axis.
+
+
+8. If instead of points we want to add text, we can use the `geom_text()` or `geom_label()` geometries. The following code
+
+```{r, eval=FALSE}
+murders %>% ggplot(aes(population, total)) + geom_label()
+```
+
+will give us the error message: `Error: geom_label requires the following missing aesthetics: label`
+
+Why is this?
+
+a. We need to map a character to each point through the label argument in aes.
+b. We need to let `geom_label` know what character to use in the plot.
+c. The `geom_label` geometry does not require  x-axis and y-axis values.
+d. `geom_label` is not a ggplot2 command.
+
+
+9. Rewrite the code above to use abbreviation as the label through `aes`
+
+
+10. Change the color of the labels to blue. How will we do this?
+
+a. Adding a column called `blue` to `murders`.
+b. Because each label needs a different color we map the colors through `aes`.
+c. Use the `color` argument in `ggplot`.
+d. Because we want all colors to be blue, we do not need to map colors, just use the color argument in `geom_label`.
+
+
+11. Rewrite the code above to make the labels blue.
+
+
+12. Now suppose we want to use color to represent the different regions. In this case which of the following is most appropriate:
+
+a. Adding a column called `color` to `murders` with the color we want to use.
+b. Because each label needs a different color we map the colors through the color argument of `aes` .
+c. Use the `color` argument in `ggplot`.
+d. Because we want all colors to be blue, we do not need to map colors, just use the color argument in `geom_label`.
+
+
+13. Rewrite the code above to make the labels' color be determined by the state's region.
+
+14. Now we are going to change the x-axis to a log scale to account for the fact the distribution of population is skewed. Let's start by defining an object `p` holding the plot we have made up to now
+
+```{r, eval=FALSE}
+p <- murders %>%
+  ggplot(aes(population, total, label = abb, color = region)) +
+  geom_label()
+```
+
+To change the y-axis to a log scale we learned about the `scale_x_log10()` function. Add this layer to the object `p` to change the scale and render the plot.
+
+15. Repeat the previous exercise but now change both axes to be in the log scale.
+
+16. Now edit the code above to add the title "Gun murder data" to the plot. Hint: use the `labs` function or the `ggtitle` function.
+:::

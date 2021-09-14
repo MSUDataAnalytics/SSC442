@@ -13,6 +13,633 @@
     </image>
     
     <item>
+      <title>Effective Visualizations</title>
+      <link>https://ssc442.netlify.app/content/03-content/</link>
+      <pubDate>Tue, 14 Sep 2021 00:00:00 +0000</pubDate>
+      <guid>https://ssc442.netlify.app/content/03-content/</guid>
+      <description>
+&lt;script src=&#34;https://ssc442.netlify.app/rmarkdown-libs/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
+
+&lt;div id=&#34;TOC&#34;&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#readings&#34;&gt;Readings&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#guiding-questions&#34;&gt;Guiding Questions&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#ggplot2&#34;&gt;ggplot2&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#the-components-of-a-graph&#34;&gt;The components of a graph&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#ggplot-objects&#34;&gt;&lt;code&gt;ggplot&lt;/code&gt; objects&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#geometries-briefly&#34;&gt;Geometries (briefly)&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#aesthetic-mappings&#34;&gt;Aesthetic mappings&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#aesthetics-in-general&#34;&gt;Aesthetics in general&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#now-back-to-aesthetic-mappings&#34;&gt;Now, back to aesthetic mappings&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#legends-for-aesthetics&#34;&gt;Legends for aesthetics&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#annotation-layers&#34;&gt;Annotation Layers&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#global-versus-local-aesthetic-mappings&#34;&gt;Global versus local aesthetic mappings&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#try-it&#34;&gt;Try it!&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#some-quirky-stuff&#34;&gt;Some Quirky Stuff&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#scales-and-transformations&#34;&gt;Scales and transformations&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#log-transformations&#34;&gt;Log transformations&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#transforming-data-vs.-transforming-using-scale_...&#34;&gt;Transforming data vs. transforming using &lt;code&gt;scale_...&lt;/code&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#axis-labels-legends-and-titles&#34;&gt;Axis labels, legends, and titles&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#changing-axis-titles&#34;&gt;Changing axis titles&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#titles&#34;&gt;Titles&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#axis-ticks&#34;&gt;Axis ticks&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#additional-geometries&#34;&gt;Additional geometries&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#geom_line&#34;&gt;&lt;code&gt;geom_line&lt;/code&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#using-different-data-with-different-geometries&#34;&gt;Using different data with different geometries&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#multiple-geometries&#34;&gt;Multiple geometries&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#try-it-1&#34;&gt;Try it!&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+
+&lt;div id=&#34;readings&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Readings&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;This page.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div id=&#34;guiding-questions&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Guiding Questions&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;No guiding questions today; we’re mostly learning some technical aspects of &lt;code&gt;ggplot&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;ggplot2&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;ggplot2&lt;/h1&gt;
+&lt;p&gt;Exploratory data visualization is perhaps the greatest strength of &lt;code&gt;R&lt;/code&gt;. One can quickly go from idea to data to plot with a unique balance of flexibility and ease. For example, Excel may be easier than &lt;code&gt;R&lt;/code&gt; for some plots, but it is nowhere near as flexible. &lt;code&gt;D3.js&lt;/code&gt; may be more flexible and powerful than &lt;code&gt;R&lt;/code&gt;, but it takes much longer to generate a plot. One of the reasons we use &lt;code&gt;R&lt;/code&gt; is its incredible flexibility &lt;strong&gt;and&lt;/strong&gt; ease.&lt;/p&gt;
+&lt;p&gt;Throughout this course, we will be creating plots using the &lt;strong&gt;ggplot2&lt;/strong&gt;&lt;a href=&#34;#fn1&#34; class=&#34;footnote-ref&#34; id=&#34;fnref1&#34;&gt;&lt;sup&gt;1&lt;/sup&gt;&lt;/a&gt; package.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(dplyr)
+library(ggplot2)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Many other approaches are available for creating plots in &lt;code&gt;R&lt;/code&gt;. In fact, the plotting capabilities that come with a basic installation of &lt;code&gt;R&lt;/code&gt; are already quite powerful. There are also other packages for creating graphics such as &lt;strong&gt;grid&lt;/strong&gt; and &lt;strong&gt;lattice&lt;/strong&gt;. We chose to use &lt;strong&gt;ggplot2&lt;/strong&gt; in this course because it breaks plots into components in a way that permits beginners to create relatively complex and aesthetically pleasing plots using syntax that is intuitive and comparatively easy to remember.&lt;/p&gt;
+&lt;p&gt;One reason &lt;strong&gt;ggplot2&lt;/strong&gt; is generally more intuitive for beginners is that it uses a so-called “grammar of graphics”&lt;a href=&#34;#fn2&#34; class=&#34;footnote-ref&#34; id=&#34;fnref2&#34;&gt;&lt;sup&gt;2&lt;/sup&gt;&lt;/a&gt;, the letters &lt;em&gt;gg&lt;/em&gt; in &lt;strong&gt;ggplot2&lt;/strong&gt;. This is analogous to the way learning grammar can help a beginner construct hundreds of different sentences by learning just a handful of verbs, nouns and adjectives without having to memorize each specific sentence. Similarly, by learning a handful of &lt;strong&gt;ggplot2&lt;/strong&gt; building blocks and its grammar, you will be able to create hundreds of different plots.&lt;/p&gt;
+&lt;p&gt;Another reason &lt;strong&gt;ggplot2&lt;/strong&gt; is easy for beginners is that its default behavior is carefully chosen to satisfy the great majority of cases and is visually pleasing. As a result, it is possible to create informative and elegant graphs with relatively simple and readable code.&lt;/p&gt;
+&lt;p&gt;One limitation is that &lt;strong&gt;ggplot2&lt;/strong&gt; is designed to work exclusively with data tables in tidy format (where rows are observations and columns are variables). However, a substantial percentage of datasets that beginners work with are in, or can be converted into, this format. An advantage of this approach is that, assuming that our data is tidy, &lt;strong&gt;ggplot2&lt;/strong&gt; simplifies plotting code and the learning of grammar for a variety of plots. You should review the previous content about tidy data if you are feeling lost.&lt;/p&gt;
+&lt;p&gt;To use &lt;strong&gt;ggplot2&lt;/strong&gt; you will have to learn several functions and arguments. These are hard to memorize, so we highly recommend you have the ggplot2 cheat sheet handy. You can get a copy here: &lt;a href=&#34;https://www.rstudio.com/wp-content/uploads/2015/03/ggplot2-cheatsheet.pdf&#34;&gt;https://www.rstudio.com/wp-content/uploads/2015/03/ggplot2-cheatsheet.pdf&lt;/a&gt; or simply perform an internet search for “ggplot2 cheat sheet”.&lt;/p&gt;
+&lt;div id=&#34;the-components-of-a-graph&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;The components of a graph&lt;/h2&gt;
+&lt;p&gt;We will eventually construct a graph that summarizes the US murders dataset that looks like this:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/content/03-content_files/figure-html/ggplot-example-plot-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;We can clearly see how much states vary across population size and the total number of murders. Not surprisingly, we also see a clear relationship between murder totals and population size. A state falling on the dashed grey line has the same murder rate as the US average. The four geographic regions are denoted with color, which depicts how most southern states have murder rates above the average.&lt;/p&gt;
+&lt;p&gt;This data visualization shows us pretty much all the information in the data table. The code needed to make this plot is relatively simple. We will learn to create the plot part by part.&lt;/p&gt;
+&lt;p&gt;The first step in learning &lt;strong&gt;ggplot2&lt;/strong&gt; is to be able to break a graph apart into components. Let’s break down the plot above and introduce some of the &lt;strong&gt;ggplot2&lt;/strong&gt; terminology. The main five components to note are:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;Data&lt;/strong&gt;: The US murders data table is being summarized. We refer to this as the &lt;strong&gt;data&lt;/strong&gt; component.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;Geometry&lt;/strong&gt;: The plot above is a scatterplot. This is referred to as the
+&lt;strong&gt;geometry&lt;/strong&gt; component. Other possible geometries are barplot, histogram, smooth densities, qqplot, boxplot, pie (ew!), and many, many more. We will learn about these later.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;Aesthetic mapping&lt;/strong&gt;: The plot uses several visual cues to represent the information provided by the dataset. The two most important cues in this plot are the point positions on the x-axis and y-axis, which represent population size and the total number of murders, respectively. Each point represents a different observation, and we &lt;em&gt;map&lt;/em&gt; data about these observations to visual cues like x- and y-scale. Color is another visual cue that we map to region. We refer to this as the &lt;strong&gt;aesthetic mapping&lt;/strong&gt; component. How we define the mapping depends on what &lt;strong&gt;geometry&lt;/strong&gt; we are using.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;Annotations&lt;/strong&gt;: These are things like axis labels, axis ticks (the lines along the axis at regular intervals or specific points of interest), axis scales (e.g. log-scale), titles, legends, etc.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;Style&lt;/strong&gt;: An overall appearance of the graph determined by fonts, color palattes, layout, blank spaces, and more.&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;We also note that:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;The points are labeled with the state abbreviations.&lt;/li&gt;
+&lt;li&gt;The range of the x-axis and y-axis appears to be defined by the range of the data. They are both on log-scales.&lt;/li&gt;
+&lt;li&gt;There are labels, a title, a legend, and we use the style of The Economist magazine.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;All of the flexibility and visualization power of &lt;code&gt;ggplot&lt;/code&gt; is contained in these four elements (plus your data)&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;ggplot-objects&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;&lt;code&gt;ggplot&lt;/code&gt; objects&lt;/h2&gt;
+&lt;p&gt;We will now construct the plot piece by piece.&lt;/p&gt;
+&lt;p&gt;We start by loading the dataset:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(dslabs)
+data(murders)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The first step in creating a &lt;strong&gt;ggplot2&lt;/strong&gt; graph is to define a &lt;code&gt;ggplot&lt;/code&gt; object. We do this with the function &lt;code&gt;ggplot&lt;/code&gt;, which initializes the graph. If we read the help file for this function, we see that the first argument is used to specify what data is associated with this object:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(data = murders)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;We can also pipe the data in as the first argument. So this line of code is equivalent to the one above:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;murders %&amp;gt;% ggplot()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/content/03-content_files/figure-html/ggplot-example-2-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;It renders a plot. But in this case, it renders a blank slate. The object was created and, because it was not assigned to an object, it was automatically evaluated. Of course, we can assign our plot to an object, for example like this:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p &amp;lt;- ggplot(data = murders)
+class(p)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;gg&amp;quot;     &amp;quot;ggplot&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;To render the plot associated with this object, we simply print the object &lt;code&gt;p&lt;/code&gt;. The following two lines of code each produce the same plot we see above:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;print(p)
+p&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;geometries-briefly&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Geometries (briefly)&lt;/h2&gt;
+&lt;p&gt;The plot above is incredibly boring (it’s only a blank slate). It’s boring because we didn’t tell &lt;code&gt;ggplot2&lt;/code&gt; what to do. In general, if &lt;code&gt;R&lt;/code&gt; is doing something unexpected, it’s because you (the user) failed to tell it what you had in &lt;em&gt;mind&lt;/em&gt;. Here, we want to make an actual plot, but we didn’t tell &lt;code&gt;R&lt;/code&gt; what sort of plot to make. In order to tell it what sort of plot we want, we use “geometries”.&lt;/p&gt;
+&lt;p&gt;Specifically, in &lt;code&gt;ggplot2&lt;/code&gt; we create graphs by adding geometry &lt;em&gt;layers&lt;/em&gt;. Layers can define geometries, compute summary statistics, define what scales to use, create annotations, or even change styles. To add layers, we use the symbol &lt;code&gt;+&lt;/code&gt;. In general, a line of code will look like this:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;code&gt;DATA %&amp;gt;% ggplot() + LAYER 1 + LAYER 2 + ... + LAYER N&lt;/code&gt;
+Usually, the first &lt;strong&gt;added&lt;/strong&gt; layer after &lt;code&gt;ggplot() +&lt;/code&gt; defines the geometry. After that, we may add additional geometries, we may rescale an axis, we may add annotations and labels, or we may change the style. For now, we want to make a scatterplot. What geometry do we use?&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Taking a quick look at the cheat sheet, we see that the function used to create plots with this geometry is &lt;code&gt;geom_point&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/example/02-example_files/ggplot2-cheatsheeta.png&#34; /&gt;
+&lt;img src=&#34;https://ssc442.netlify.app/example/02-example_files/ggplot2-cheatsheetb.png&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;(Image courtesy of RStudio&lt;a href=&#34;#fn3&#34; class=&#34;footnote-ref&#34; id=&#34;fnref3&#34;&gt;&lt;sup&gt;3&lt;/sup&gt;&lt;/a&gt;. CC-BY-4.0 license&lt;a href=&#34;#fn4&#34; class=&#34;footnote-ref&#34; id=&#34;fnref4&#34;&gt;&lt;sup&gt;4&lt;/sup&gt;&lt;/a&gt;.)&lt;/p&gt;
+&lt;!--(Source: [RStudio](https://github.com/rstudio/cheatsheets/raw/master/data-visualization-2.1.pdf))--&gt;
+&lt;p&gt;Geometry function names follow the pattern: &lt;code&gt;geom_X&lt;/code&gt; where X is the name of some specific geometry. Some examples include &lt;code&gt;geom_point&lt;/code&gt;, &lt;code&gt;geom_bar&lt;/code&gt;, and &lt;code&gt;geom_histogram&lt;/code&gt;. You’ve already seen a few of these. We will start with a scatterplot created using &lt;code&gt;geom_point()&lt;/code&gt; for now, then circle back to more geometries after we cover aesthetic mappings, layers, and annotations.&lt;/p&gt;
+&lt;p&gt;For &lt;code&gt;geom_point&lt;/code&gt; to run properly we need to provide data and an &lt;strong&gt;aesthetic mapping&lt;/strong&gt;. The simplest mapping for a scatter plot is to say we want one variable on the X-axis, and a different one on the Y-axis, so each point is an {X,Y} pair. That is an &lt;strong&gt;aesthetic mapping&lt;/strong&gt; because X and Y are &lt;strong&gt;aesthetics&lt;/strong&gt; in a &lt;code&gt;geom_point&lt;/code&gt; scatterplot.&lt;/p&gt;
+&lt;p&gt;We have already connected the object &lt;code&gt;p&lt;/code&gt; with the &lt;code&gt;murders&lt;/code&gt; data table, and if we add the layer &lt;code&gt;geom_point&lt;/code&gt; it defaults to using this data. To find out what mappings are expected, we read the &lt;strong&gt;Aesthetics&lt;/strong&gt; section of the help file &lt;code&gt;?geom_point&lt;/code&gt; help file:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;gt; Aesthetics
+&amp;gt;
+&amp;gt; geom_point understands the following aesthetics (required aesthetics are in bold):
+&amp;gt;
+&amp;gt; **x**
+&amp;gt;
+&amp;gt; **y**
+&amp;gt;
+&amp;gt; alpha
+&amp;gt;
+&amp;gt; colour
+&amp;gt;
+&amp;gt; fill
+&amp;gt;
+&amp;gt; group
+&amp;gt;
+&amp;gt; shape
+&amp;gt;
+&amp;gt; size
+&amp;gt;
+&amp;gt; stroke&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;and—although it does not show in bold above—we see that at least two arguments are required: &lt;code&gt;x&lt;/code&gt; and &lt;code&gt;y&lt;/code&gt;. You can’t have a &lt;code&gt;geom_point&lt;/code&gt; scatterplot unless you state what you want on the X and Y axes.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;aesthetic-mappings&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Aesthetic mappings&lt;/h2&gt;
+&lt;p&gt;&lt;strong&gt;Aesthetic mappings&lt;/strong&gt; describe how properties of the data connect with features of the graph, such as distance along an axis, size, or color. The &lt;code&gt;aes&lt;/code&gt; function connects data with what we see on the graph by defining aesthetic mappings and will be one of the functions you use most often when plotting. The outcome of the &lt;code&gt;aes&lt;/code&gt; function is often used as the argument of a geometry function. This example produces a scatterplot of population in millions (x-axis) versus total murders (y-axis):&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;murders %&amp;gt;% ggplot() +
+  geom_point(aes(x = population/10^6, y = total))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Instead of defining our plot from scratch, we can also add a layer to the &lt;code&gt;p&lt;/code&gt; object that was defined above as &lt;code&gt;p &amp;lt;- ggplot(data = murders)&lt;/code&gt;:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p + geom_point(aes(x = population/10^6, y = total))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/content/03-content_files/figure-html/ggplot-example-3-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;The scales and annotations like axis labels are defined by default when adding this layer (note the x-axis label is exactly what we wrote in the function call). Like &lt;strong&gt;dplyr&lt;/strong&gt; functions, &lt;code&gt;aes&lt;/code&gt; also uses the variable names from the object component: we can use &lt;code&gt;population&lt;/code&gt; and &lt;code&gt;total&lt;/code&gt; without having to call them as &lt;code&gt;murders$population&lt;/code&gt; and &lt;code&gt;murders$total&lt;/code&gt;. The behavior of recognizing the variables from the data component is quite specific to &lt;code&gt;aes&lt;/code&gt;. With most functions, if you try to access the values of &lt;code&gt;population&lt;/code&gt; or &lt;code&gt;total&lt;/code&gt; outside of &lt;code&gt;aes&lt;/code&gt; you receive an error.&lt;/p&gt;
+&lt;p&gt;Note that we did some rescaling within the &lt;code&gt;aes()&lt;/code&gt; call - we can do simple things like multiplication or division on the variable names in the &lt;code&gt;ggplot&lt;/code&gt; call. The axis labels reflect this. We will change the axis labels later.&lt;/p&gt;
+&lt;p&gt;The &lt;strong&gt;aesthetic mappings&lt;/strong&gt; are very powerful - changing the variable in &lt;code&gt;x=&lt;/code&gt; or &lt;code&gt;y=&lt;/code&gt; changes the meaning of the plot entirely. We’ll come back to additional &lt;strong&gt;aesthetic mappings&lt;/strong&gt; once we talk about aesthetics in general.&lt;/p&gt;
+&lt;div id=&#34;aesthetics-in-general&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Aesthetics in general&lt;/h3&gt;
+&lt;p&gt;Even without mappings, a plots aesthetics can be useful. Things like color, fill, alpha, and size are aesthetics that can be changed.&lt;/p&gt;
+&lt;p&gt;Let’s say we want larger points in our scatterplot. The &lt;code&gt;size&lt;/code&gt; aesthetic can be used to set the size. The scale of &lt;code&gt;size&lt;/code&gt; is “multiples of the defaults” (so &lt;code&gt;size = 1&lt;/code&gt; is the default)&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p + geom_point(aes(x = population/10^6, y = total), size = 3)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/content/03-content_files/figure-html/ggplot-example-5-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;size&lt;/code&gt; is &lt;strong&gt;not&lt;/strong&gt; a mapping so it is &lt;strong&gt;not&lt;/strong&gt; in the &lt;code&gt;aes()&lt;/code&gt; part: whereas mappings use data from specific observations and need to be inside &lt;code&gt;aes()&lt;/code&gt;, operations we want to affect all the points the same way do not need to be included inside &lt;code&gt;aes&lt;/code&gt;. We’ll see what happens if &lt;code&gt;size&lt;/code&gt; is inside &lt;code&gt;aes(size = xxx)&lt;/code&gt; in a second.&lt;/p&gt;
+&lt;p&gt;We can change the &lt;code&gt;shape&lt;/code&gt; to one of the many different base-R options found &lt;a href=&#34;http://www.sthda.com/english/wiki/r-plot-pch-symbols-the-different-point-shapes-available-in-r&#34;&gt;here&lt;/a&gt;:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p + geom_point(aes(x = population/10^6, y = total), size = 3, shape = 17)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/content/03-content_files/figure-html/ggplot-example-5shape-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;We can also change the &lt;code&gt;fill&lt;/code&gt; and the &lt;code&gt;color&lt;/code&gt;:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p + geom_point(aes(x = population/10^6, y = total), size = 4, shape = 23, fill = &amp;#39;#18453B&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/content/03-content_files/figure-html/ggplot-example-5b-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;fill&lt;/code&gt; can take a common name like &lt;code&gt;&#39;green&#39;&lt;/code&gt;, or can take a hex color like &lt;code&gt;&#39;#18453B&#39;&lt;/code&gt;, which is &lt;a href=&#34;https://brand.msu.edu/design-visual/index.html#color&#34;&gt;MSU Green according to MSU’s branding site&lt;/a&gt;. You can also find &lt;a href=&#34;https://youtu.be/0BxNHwJi1y4&#34;&gt;UM Maize&lt;/a&gt; and &lt;a href=&#34;https://youtu.be/dQw4w9WgXcQ&#34;&gt;OSU Scarlet&lt;/a&gt; on respective branding pages, or google “XXX color hex.” We’ll learn how to build a color palatte later on.&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;color&lt;/code&gt; (or &lt;code&gt;colour&lt;/code&gt;, same thing because &lt;code&gt;ggplot&lt;/code&gt; creators allow both spellings) is a little tricky with points - it changes the outline of the geometry rather than the fill color, but in &lt;code&gt;geom_point()&lt;/code&gt; most shapes are only the outline, including the default. This is more useful with, say, a barplot where the outline and the fill might be different colors. Still, shapes 21-25 have both &lt;code&gt;fill&lt;/code&gt; and &lt;code&gt;color&lt;/code&gt;:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p + geom_point(aes(x = population/10^6, y = total), size = 5, shape = 23, fill = &amp;#39;#18453B&amp;#39;, color = &amp;#39;white&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/content/03-content_files/figure-html/ggplot-example-5c-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;The &lt;code&gt;color = &#39;white&#39;&lt;/code&gt; makes the outline of the shape white, which you can see if you look closely in the areas where the shapes overlap. This only works with shapes 21-25, or any other geometry that has both an outline and a fill.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;now-back-to-aesthetic-mappings&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Now, back to aesthetic mappings&lt;/h3&gt;
+&lt;p&gt;Now that we’ve seen a few aesthetics (and know we can find more by looking at which aesthetics work with our geometry in the help file), let’s return to the power of aesthetic mappings.&lt;/p&gt;
+&lt;p&gt;An &lt;strong&gt;aesthetic mapping&lt;/strong&gt; means we can vary an aesthetic (like fill or shape or size) according to some &lt;strong&gt;variable in our data&lt;/strong&gt;. This opens up a world of possibilities! Let’s try adding to our &lt;code&gt;x&lt;/code&gt; and &lt;code&gt;y&lt;/code&gt; aesthetics with a &lt;code&gt;color&lt;/code&gt; aesthetic (since points respond to &lt;code&gt;color&lt;/code&gt; better than &lt;code&gt;fill&lt;/code&gt;) that varies by &lt;code&gt;region&lt;/code&gt;, which is a column in our data:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p + geom_point(aes(x = population/10^6, y = total, color = region), size = 3)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/content/03-content_files/figure-html/ggplot-example-color-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;We include &lt;code&gt;color=region&lt;/code&gt; &lt;strong&gt;inside&lt;/strong&gt; the &lt;code&gt;aes&lt;/code&gt; call, which tells R to find a variable called &lt;code&gt;region&lt;/code&gt; and change color based on that. R will choose a somewhat ghastly color palatte, and &lt;strong&gt;every&lt;/strong&gt; unique value in the data for &lt;code&gt;region&lt;/code&gt; will get a different color if the variable is discrete. If the variable is a continuous value, then &lt;code&gt;ggplot&lt;/code&gt; will automatically make a color ramp. Thus, &lt;strong&gt;discrete&lt;/strong&gt; and &lt;strong&gt;continuous&lt;/strong&gt; values for aesthetic mappings work differently.&lt;/p&gt;
+&lt;p&gt;Let’s see a useful example of a continuous aesthetic mapping to &lt;code&gt;color&lt;/code&gt;. In our data, we are making a scatterplot of population and total murders, which really just shows that states with higher populations have higher murders. What we really want is murders per capita (I think COVID taught us a lot about rates vs. levels like “cases” and “cases per 100,000 people”). We can create a variable of “murders per capita” on the fly. Since “murders per capita” is a very small number and hard to read, we’ll multiply by 100 so that we get “percent of population murdered per year”:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p + geom_point(aes(x = population/10^5, y = total, color = 100*total/population), size = 3)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/content/03-content_files/figure-html/ggplot-example-colfill-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;While the clear pattern of “more population means more murders” is still there, look at the outlier in light blue in the bottom left. With the color ramp, see how easy it is to see here that there is one location where murders per capita is quite high?&lt;/p&gt;
+&lt;p&gt;Note that &lt;code&gt;size&lt;/code&gt; is outside of &lt;code&gt;aes&lt;/code&gt; and is set to an explicit value, not to a variable. What if we set size to a variable in the data?&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p + geom_point(aes(x = population/10^6, y = total, color = region, size = population/10^6))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/content/03-content_files/figure-html/ggplot-example-color2-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;legends-for-aesthetics&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Legends for aesthetics&lt;/h3&gt;
+&lt;p&gt;Here we see yet another useful default behavior: &lt;strong&gt;ggplot2&lt;/strong&gt; automatically adds a legend that maps color to region, and size to population (which we scaled by 1,000,000). To avoid adding this legend we set the &lt;code&gt;geom_point&lt;/code&gt; argument &lt;code&gt;show.legend = FALSE&lt;/code&gt;. This removes both the &lt;code&gt;size&lt;/code&gt; and the &lt;code&gt;color&lt;/code&gt; legend.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p + geom_point(aes(x = population/10^6, y = total, color = region, size = population/10^6), show.legend = FALSE)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/content/03-content_files/figure-html/ggplot-example-color3-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Later on, when we get to &lt;strong&gt;annotation layers&lt;/strong&gt;, we’ll talk about controlling the legend text and layout. For now, we just need to know how to turn them off.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;annotation-layers&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Annotation Layers&lt;/h2&gt;
+&lt;p&gt;A second layer in the plot we wish to make involves adding a label to each point to identify the state. The &lt;code&gt;geom_label&lt;/code&gt; and &lt;code&gt;geom_text&lt;/code&gt; functions permit us to add text to the plot with and without a rectangle behind the text, respectively.&lt;/p&gt;
+&lt;p&gt;Because each point (each state in this case) has a label, we need an &lt;strong&gt;aesthetic mapping&lt;/strong&gt; to make the connection between points and labels. By reading the help file &lt;code&gt;?geom_text&lt;/code&gt;, we learn that we supply the mapping between point and label through the &lt;code&gt;label&lt;/code&gt; argument of &lt;code&gt;aes&lt;/code&gt;. That is, &lt;code&gt;label&lt;/code&gt; is an &lt;strong&gt;aesthetic&lt;/strong&gt; that we can map. So the code looks like this:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p + geom_point(aes(x = population/10^6, y = total)) +
+  geom_text(aes(x = population/10^6, y = total, label = abb))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/content/03-content_files/figure-html/ggplot-example-4-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;We have successfully added a second layer to the plot.&lt;/p&gt;
+&lt;p&gt;As an example of the unique behavior of &lt;code&gt;aes&lt;/code&gt; mentioned above, note that this call:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p + geom_point(aes(x = population/10^6, y = total)) +
+  geom_text(aes(population/10^6, total, label = abb))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;is fine, whereas this call:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p + geom_point(aes(x = population/10^6, y = total)) +
+  geom_text(aes(population/10^6, total), label = abb)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;will give you an error since &lt;code&gt;abb&lt;/code&gt; is not found because it is outside of the &lt;code&gt;aes&lt;/code&gt; function. The layer &lt;code&gt;geom_text&lt;/code&gt; does not know where to find &lt;code&gt;abb&lt;/code&gt; since it is a column name and not a global variable, and &lt;code&gt;ggplot&lt;/code&gt; does not look for column names for non-mapped aesthetics. For a trivial example:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p + geom_point(aes(x = population/10^6, y = total)) +
+  geom_text(aes(population/10^6, total), label = &amp;#39;abb&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/content/03-content_files/figure-html/unnamed-chunk-9-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;div id=&#34;global-versus-local-aesthetic-mappings&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Global versus local aesthetic mappings&lt;/h3&gt;
+&lt;p&gt;In the previous line of code, we define the mapping &lt;code&gt;aes(population/10^6, total)&lt;/code&gt; twice, once in each geometry. We can avoid this by using a &lt;em&gt;global&lt;/em&gt; aesthetic mapping. We can do this when we define the blank slate &lt;code&gt;ggplot&lt;/code&gt; object. Remember that the function &lt;code&gt;ggplot&lt;/code&gt; contains an argument that permits us to define aesthetic mappings:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;args(ggplot)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## function (data = NULL, mapping = aes(), ..., environment = parent.frame()) 
+## NULL&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;If we define a mapping in &lt;code&gt;ggplot&lt;/code&gt;, all the geometries that are added as layers will default to this mapping. We redefine &lt;code&gt;p&lt;/code&gt;:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p &amp;lt;- murders %&amp;gt;% ggplot(aes(x = population/10^6, y = total, label = abb))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;and then we can simply write the following code to produce the previous plot:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p + geom_point(size = 3) +
+  geom_text(nudge_x = 1.5) # offsets the label&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;We keep the &lt;code&gt;size&lt;/code&gt; and &lt;code&gt;nudge_x&lt;/code&gt; arguments in &lt;code&gt;geom_point&lt;/code&gt; and &lt;code&gt;geom_text&lt;/code&gt;, respectively, because we want to only increase the size of points and only nudge the labels. If we put those arguments in &lt;code&gt;aes&lt;/code&gt; then they would apply to both plots. Also note that the &lt;code&gt;geom_point&lt;/code&gt; function does not need a &lt;code&gt;label&lt;/code&gt; argument and therefore ignores that aesthetic.&lt;/p&gt;
+&lt;p&gt;If necessary, we can override the global mapping by defining a new mapping within each layer. These &lt;em&gt;local&lt;/em&gt; definitions override the &lt;em&gt;global&lt;/em&gt;. Here is an example:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p + geom_point(size = 3) +
+  geom_text(aes(x = 10, y = 800, label = &amp;quot;Hello there!&amp;quot;))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/content/03-content_files/figure-html/ggplot-example-8-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Clearly, the second call to &lt;code&gt;geom_text&lt;/code&gt; does not use &lt;code&gt;x = population&lt;/code&gt; and &lt;code&gt;y = total&lt;/code&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;try-it&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Try it!&lt;/h2&gt;
+&lt;div class=&#34;fyi&#34;&gt;
+&lt;p&gt;Let’s break in to smaller groups and try playing with some of the aesthetics and aesthetic mappings. If we’re online, we’ll use Zoom Breakout Rooms. Each of the rooms have a room number which will correspond with one of the tasks below. If we’re in person (woohoo!), we’ll form the same number of groups in class.&lt;/p&gt;
+&lt;p&gt;In each group, one person should be the main coder - someone who has the packages like &lt;code&gt;dslabs&lt;/code&gt; installed and has successfully run the plots above. Each set of tasks ask you to learn about an aesthetic and put it into action with the &lt;code&gt;murder&lt;/code&gt; data. We’ll leave about 5 minutes to do the task, then have you come back and share your results with the class.&lt;/p&gt;
+&lt;p&gt;For each group, we’ll start with the following code:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;p + geom_point(aes(x = population/10^6, y = total)) +
+  geom_text(aes(x = population/10^6, y = total, label = abb))&lt;/code&gt;&lt;/pre&gt;
+&lt;ol style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;The &lt;code&gt;alpha&lt;/code&gt; aesthetic mapping.
+&lt;ol style=&#34;list-style-type: lower-alpha&#34;&gt;
+&lt;li&gt;The &lt;code&gt;alpha&lt;/code&gt; aesthetic can only take a number between 0 and 1. So first, in &lt;code&gt;murders&lt;/code&gt;, create a &lt;code&gt;murders_per_capita&lt;/code&gt; column by dividing &lt;code&gt;total&lt;/code&gt; by &lt;code&gt;population&lt;/code&gt;. Second, find the &lt;code&gt;max(murders$murders_per_capita)&lt;/code&gt; and then create another new column called &lt;code&gt;murders_per_capita_rescaled&lt;/code&gt; which divides &lt;code&gt;murders_per_capita&lt;/code&gt; by the max value. &lt;code&gt;murders_per_capita_rescaled&lt;/code&gt; will be between 0 and 1, with the value of 1 for the state with the max murder rate. This is a little hard to do on the fly in &lt;code&gt;ggplot&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;Set the &lt;code&gt;alpha&lt;/code&gt; aesthetic mapping to &lt;code&gt;murders_per_capita_rescaled&lt;/code&gt; for &lt;code&gt;geom_point&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;Turn off the legend using &lt;code&gt;show.legend=FALSE&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;Include the &lt;code&gt;geom_text&lt;/code&gt; labels, but make sure the aesthetic mapping does &lt;strong&gt;not&lt;/strong&gt; apply to the labels.&lt;/li&gt;
+&lt;li&gt;Use &lt;code&gt;nudge_x = 1.5&lt;/code&gt; as before to offset the labels.&lt;/li&gt;
+&lt;li&gt;Be able to explain the plot.
+&lt;ul&gt;
+&lt;li&gt;Does the &lt;code&gt;alpha&lt;/code&gt; aesthetic help present the data here? It’s OK if it doesn’t!&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ol&gt;&lt;/li&gt;
+&lt;li&gt;The &lt;code&gt;stroke&lt;/code&gt; aesthetic mapping.
+&lt;ol style=&#34;list-style-type: lower-alpha&#34;&gt;
+&lt;li&gt;The &lt;code&gt;stroke&lt;/code&gt; aesthetic works a bit like the &lt;code&gt;size&lt;/code&gt; aesthetic. It must be used with a plot that has both a border and a fill, like shapes 21-25, so use one of those.&lt;/li&gt;
+&lt;li&gt;Use the &lt;code&gt;stroke&lt;/code&gt; aesthetic mapping (meaning the stroke will change according to a value in the data) to set a different stroke size based on murders &lt;em&gt;per capita&lt;/em&gt;. You can create a murders per capita variable on the fly, or add it to your &lt;code&gt;murders&lt;/code&gt; data.
+&lt;ul&gt;
+&lt;li&gt;Include the text labels as before and use &lt;code&gt;nudge_x = 1.5&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;Make sure you’re only setting the aesthetic for the points on the scatterplot!&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ol&gt;&lt;/li&gt;
+&lt;li&gt;The &lt;code&gt;angle&lt;/code&gt; aesthetic
+&lt;ol style=&#34;list-style-type: lower-alpha&#34;&gt;
+&lt;li&gt;Using the &lt;code&gt;?geom_text&lt;/code&gt; help, note that &lt;code&gt;geom_text&lt;/code&gt; takes an aesthetic of &lt;code&gt;angle&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;Use the &lt;code&gt;angle&lt;/code&gt; aesthetic (not aesthetic mapping) in the appropriate place (e.g. on &lt;code&gt;geom_text&lt;/code&gt; and not on other geometries) to adjust the labels on our plot.&lt;/li&gt;
+&lt;li&gt;Now, try using the &lt;code&gt;angle&lt;/code&gt; aesthetic mapping by using the &lt;code&gt;total&lt;/code&gt; field as both the &lt;code&gt;y&lt;/code&gt; value &lt;strong&gt;and&lt;/strong&gt; the &lt;code&gt;angle&lt;/code&gt; value in the &lt;code&gt;geom_text&lt;/code&gt; layer.&lt;/li&gt;
+&lt;li&gt;Does using &lt;code&gt;angle&lt;/code&gt; as an aesthetic help? What about as an aesthetic mapping?&lt;/li&gt;
+&lt;/ol&gt;&lt;/li&gt;
+&lt;li&gt;The &lt;code&gt;color&lt;/code&gt; aesthetic mapping
+&lt;ol style=&#34;list-style-type: lower-alpha&#34;&gt;
+&lt;li&gt;Set the &lt;code&gt;color&lt;/code&gt; aesthetic mapping in &lt;code&gt;geom_text&lt;/code&gt; to &lt;code&gt;total/population&lt;/code&gt;.
+&lt;ul&gt;
+&lt;li&gt;Use the &lt;code&gt;nudge_x = 1.5&lt;/code&gt; aesthetic in &lt;code&gt;geom_text&lt;/code&gt; still&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;Try it with and without the legend using &lt;code&gt;show.legend&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;Be able to explain the plot.
+&lt;ul&gt;
+&lt;li&gt;Does the &lt;code&gt;color&lt;/code&gt; aesthetic mapping help present the data here?&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ol&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;geom_label&lt;/code&gt; and the &lt;code&gt;fill&lt;/code&gt; aesthetic
+&lt;ol style=&#34;list-style-type: lower-alpha&#34;&gt;
+&lt;li&gt;Looking at &lt;code&gt;?geom_label&lt;/code&gt; (which is the same help as &lt;code&gt;geom_text&lt;/code&gt;), we note that “The &lt;code&gt;fill&lt;/code&gt; aesthetic controls the backgreound colour of the label”.&lt;/li&gt;
+&lt;li&gt;Set the &lt;code&gt;fill&lt;/code&gt; aesthetic mapping to &lt;code&gt;total/population&lt;/code&gt; in &lt;code&gt;geom_label&lt;/code&gt; (replacing &lt;code&gt;geom_text&lt;/code&gt; but still using &lt;code&gt;nudge_x=1.5&lt;/code&gt;)&lt;/li&gt;
+&lt;li&gt;Set the &lt;code&gt;fill&lt;/code&gt; aesthetic (not mapping) to the color of your choice.&lt;/li&gt;
+&lt;li&gt;Be able to explain the plots.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;ul&gt;
+&lt;li&gt;Does the &lt;code&gt;fill&lt;/code&gt; aesthetic mapping help present the data here?&lt;/li&gt;
+&lt;li&gt;What color did you choose for the non-mapped fill aesthetic?&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;some-quirky-stuff&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Some Quirky Stuff&lt;/h2&gt;
+&lt;p&gt;Load up our &lt;code&gt;murders&lt;/code&gt; data&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(dslabs)
+library(ggplot2)
+library(dplyr)
+data(murders)
+p &amp;lt;- ggplot(data = murders, aes(x = population, y = total, label = abb))&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;scales-and-transformations&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Scales and transformations&lt;/h2&gt;
+&lt;div id=&#34;log-transformations&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Log transformations&lt;/h3&gt;
+&lt;p&gt;Last lecture, we re-scaled our population by 10^6 (millions), but still had a lot of variation because some states are tiny and some are huge. Sometimes, we want to have one (or both) of our axes scaled non-linearly. For instance, if we wanted to have our x-axis be in log base 10, then each major tick would represent a factor of 10 over the last. This is not the default, so this change needs to be added through a &lt;em&gt;scales&lt;/em&gt; layer. A quick look at the cheat sheet reveals the &lt;code&gt;scale_x_continuous&lt;/code&gt; function lets us control the behavior of scales. We use them like this:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p + geom_point(size = 3) +
+  geom_text(nudge_x = 0.05) +
+  scale_x_continuous(trans = &amp;quot;log10&amp;quot;) +
+  scale_y_continuous(trans = &amp;quot;log10&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/content/03-content_files/figure-html/ggplot-example-9-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;A couple of things here: adding things like &lt;code&gt;scale_x_continuous(...)&lt;/code&gt; operates on the whole plot. In some cases, order matters, but it doesn’t here, so we can throw &lt;code&gt;scale_x_continuous&lt;/code&gt; anywhere. Because we have altered the whole plot’s scale to be in the log-scale now, the &lt;em&gt;nudge&lt;/em&gt; must be made smaller. It is in log-base-10 units. Using &lt;code&gt;?scale_x_continuous&lt;/code&gt; brings us to the help for both &lt;code&gt;scale_x_continuous&lt;/code&gt; and &lt;code&gt;scale_y_continuous&lt;/code&gt;, which shows us the options for transformations &lt;code&gt;trans = ...&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;This particular transformation is so common that &lt;strong&gt;ggplot2&lt;/strong&gt; provides the specialized functions &lt;code&gt;scale_x_log10&lt;/code&gt; and &lt;code&gt;scale_y_log10&lt;/code&gt; which “inherit” (take the place of) the &lt;code&gt;scale_x_continuous&lt;/code&gt; functions but have log base 10 as default. We can use these to rewrite the code like this:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p + geom_point(size = 3) +
+  geom_text(nudge_x = 0.05) +
+  scale_x_log10() +
+  scale_y_log10()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/content/03-content_files/figure-html/unnamed-chunk-13-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;This can make a plot much easier to read, though one has to be sure to pay attention to the values on the axes. Plotting anything with very large outliers will almost always be better if done in log-scale. Adding the scale layer is an easy way to fix this.&lt;/p&gt;
+&lt;p&gt;We can also use one of many built-in transformations. Of note: &lt;strong&gt;reverse&lt;/strong&gt; just inverts the scale, which can be helpful, &lt;strong&gt;log&lt;/strong&gt; uses the natural log, &lt;strong&gt;sqrt&lt;/strong&gt; takes the square root (dropping anything with a negative value), &lt;strong&gt;reciprocal&lt;/strong&gt; takes 1/x. If your x-axis is in a date format, you can also scale to &lt;strong&gt;hms&lt;/strong&gt; (hour-minute-second) or &lt;strong&gt;date&lt;/strong&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;transforming-data-vs.-transforming-using-scale_...&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Transforming data vs. transforming using &lt;code&gt;scale_...&lt;/code&gt;&lt;/h3&gt;
+&lt;p&gt;We could simply take the log of population and log of total in the call and we’d get something very similar. Note that we had to override the aesthetic mapping set in &lt;code&gt;p&lt;/code&gt; in each of the geometries:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p + geom_point(aes(x = log(population, base=10), y = log(total, base=10)), size = 3) +
+  geom_text(aes(x = log(population, base=10), y = log(total, base=10)), nudge_x = 0.05)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/content/03-content_files/figure-html/unnamed-chunk-14-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;This avoids using &lt;code&gt;scale_x_continuous&lt;/code&gt; or it’s child function &lt;code&gt;scale_x_log10&lt;/code&gt;. One advantage to using &lt;code&gt;scale_x...&lt;/code&gt; is that the axes are correctly labeled. When we transform the data directly, the axis labels only show the transformed values, so 7,000,000 becomes 7.0. This could be confusing! We could update the axis labels to say “total murders (log base 10)” and “total population (log base 10)”, but that’s cumbersome. Using &lt;code&gt;scale_x...&lt;/code&gt; is a lot more refined and easy.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;axis-labels-legends-and-titles&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Axis labels, legends, and titles&lt;/h2&gt;
+&lt;p&gt;But let’s say we did want to re-name our x-axis label. Or maybe we don’t like that the variable column name is lower-case “p”.&lt;/p&gt;
+&lt;p&gt;As with many things in &lt;code&gt;ggplot&lt;/code&gt;, there are many ways to get the same result. We’ll go over one way of changing titles and labels, but know that there are many more.&lt;/p&gt;
+&lt;div id=&#34;changing-axis-titles&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Changing axis titles&lt;/h3&gt;
+&lt;p&gt;We’ll use the &lt;code&gt;labs(...)&lt;/code&gt; annotation layer to do this, which is pretty straightforward. &lt;code&gt;?labs&lt;/code&gt; shows us what we can change, and while it looks pretty basic, the real meat is in the &lt;code&gt;...&lt;/code&gt; argument, which the help says is “A list of new name-value pairs”. This means we can re-define the label on anything that is an aesthetic mapping. X and Y are aesthetic mappings, so…&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p + geom_point(size = 3) +
+  geom_text(nudge_x = 0.05) +
+  scale_x_log10() +
+  scale_y_log10() +
+  labs(x = &amp;#39;Population&amp;#39;, y = &amp;#39;Total murders&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/content/03-content_files/figure-html/unnamed-chunk-15-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Now, let’s use an aesthetic mapping that generates a legend, like &lt;code&gt;color&lt;/code&gt;, and see what &lt;code&gt;labs&lt;/code&gt; renames:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p + geom_point(aes(color = region), size = 3) +
+  geom_text(nudge_x = 0.05) +
+  scale_x_log10() +
+  scale_y_log10() +
+  labs(x = &amp;#39;Population&amp;#39;, y = &amp;#39;Total murders&amp;#39;, color = &amp;#39;US Region&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/content/03-content_files/figure-html/unnamed-chunk-16-1.png&#34; width=&#34;672&#34; /&gt;
+We can rename the aesthetic mapping-relevant label using &lt;code&gt;labs&lt;/code&gt;. Even if there are multiple mapped aesthetics:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p + geom_point(aes(color = region, size = total/population)) +
+  geom_text(nudge_x = 0.05) +
+  scale_x_log10() +
+  scale_y_log10() +
+  labs(x = &amp;#39;Population&amp;#39;, y = &amp;#39;Total murders&amp;#39;, color = &amp;#39;US Region&amp;#39;, size = &amp;#39;Murder rate&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/content/03-content_files/figure-html/unnamed-chunk-17-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;titles&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Titles&lt;/h3&gt;
+&lt;p&gt;In &lt;code&gt;?labs&lt;/code&gt;, we also see some things that look like titles and captions. We can include those:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p + geom_point(aes(color = region, size = total/population)) +
+  geom_text(nudge_x = 0.05) +
+  scale_x_log10() +
+  scale_y_log10() +
+  labs(x = &amp;#39;Population&amp;#39;, y = &amp;#39;Total murders&amp;#39;, color = &amp;#39;US Region&amp;#39;, size = &amp;#39;Murder rate&amp;#39;,
+       title = &amp;#39;This is a title&amp;#39;, subtitle = &amp;#39;This is a subtitle&amp;#39;, caption = &amp;#39;This is a caption&amp;#39;, tag = &amp;#39;This is a tag&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/content/03-content_files/figure-html/unnamed-chunk-18-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Now that you know how, &lt;strong&gt;always label your plots with at least a title and have meaningful axis and legend labels&lt;/strong&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;axis-ticks&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Axis ticks&lt;/h2&gt;
+&lt;p&gt;In addition to the axis labels, we may want to format or change the axis tick labels (like “1e+06” above) or even where the tick marks and lines are drawn. If we don’t specify anything, the axis labels and tick marks are drawn as best as &lt;code&gt;ggplot&lt;/code&gt; can do, but we can change this. This might be especially useful if our data has some meaningful cutoffs that aren’t found by the default, or we just don’t like where the marks fall or how they are labeled. This is easy to fix with &lt;code&gt;ggplot&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;To change the tick mark labels, we have to set the tick mark locations. Then we can set a label for each tick mark. Let’s go back to our &lt;code&gt;murders&lt;/code&gt; data and, for simplicity, take the log transformation off the Y axis. We’ll use &lt;code&gt;scale_y_continuous&lt;/code&gt; to tell R &lt;em&gt;where&lt;/em&gt; to put the breaks (&lt;code&gt;breaks =&lt;/code&gt;) and &lt;em&gt;what to label&lt;/em&gt; the breaks. We have to give it one label for every break. Let’s say we just want a line at the 500’s and let’s say we want to (absurdly) use written numerics for each of the Y-axis lines. Since &lt;code&gt;scale_y_log10&lt;/code&gt; &lt;strong&gt;inherits from&lt;/strong&gt; &lt;code&gt;scale_y_continuous&lt;/code&gt;, we can just use that and add the breaks and labels:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p + geom_point(aes(color = region), size = 3) +
+  geom_text(nudge_x = .05) +
+  scale_x_log10() +
+  scale_y_log10(breaks = c(0,50, 100, 500,1000,1500),
+                     labels = c(&amp;#39;Zero&amp;#39;,&amp;#39;Fifty&amp;#39;,&amp;#39;One hundred&amp;#39;,&amp;#39;Five hundred&amp;#39;,&amp;#39;One thousand&amp;#39;,&amp;#39;Fifteen hundred&amp;#39;)) +
+  labs(x = &amp;#39;Population&amp;#39;, y = &amp;#39;Total murders&amp;#39;, color = &amp;#39;US Region&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/content/03-content_files/figure-html/unnamed-chunk-19-1.png&#34; width=&#34;672&#34; /&gt;
+We have manually set both the location and the label for the y-axis. Note that R filled in the in-between “minor” tick lines, but we can take those out. Since we are setting the location of the lines, we can do anything we want:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p + geom_point(aes(color = region), size = 3) +
+  geom_text(nudge_x = .05) +
+  scale_x_log10() +
+  scale_y_log10(breaks = c(0,50, 100, 721, 1000,1500),
+                     labels = c(&amp;#39;Zero&amp;#39;,&amp;#39;Fifty&amp;#39;,&amp;#39;One hundred&amp;#39;,&amp;#39;Seven hundred twenty one&amp;#39;,&amp;#39;One thousand&amp;#39;,&amp;#39;Fifteen hundred&amp;#39;),
+                     minor_breaks = NULL) +
+  labs(x = &amp;#39;Population&amp;#39;, y = &amp;#39;Total murders&amp;#39;, color = &amp;#39;US Region&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/content/03-content_files/figure-html/unnamed-chunk-20-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;So we can now define where axis tick lines should lie and how they should be labeled.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;additional-geometries&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Additional geometries&lt;/h2&gt;
+&lt;p&gt;Let’s say we are happy with our axis tick locations, but we want to add a single additional line. Maybe we want to divide at 1,000,000 population (a vertical line at 1,000,000) becuase we think those over 1,000,000 are somehow different, and we want to call attention to the data around that point. As a more general example, if we were to plot, say, car accidents by age, we would maybe want to label age 21, when people can legally purchase alcohol (and subsequently cause car accidents).&lt;/p&gt;
+&lt;p&gt;This brings us to our first additional geometry beyond &lt;code&gt;geom_point&lt;/code&gt; (OK, we used &lt;code&gt;geom_text&lt;/code&gt;, but that’s more of an annotation). &lt;code&gt;geom_vline&lt;/code&gt; lets us add a single vertical line (without aesthetic mappings). If we look at &lt;code&gt;?geom_vline&lt;/code&gt; we see that it requires ones aesthetic:&lt;code&gt;xintercept&lt;/code&gt;. It also takes aesthetics like color and size, and introduces the &lt;code&gt;linetype&lt;/code&gt; aesthetic:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p + geom_point(aes(color = region), size = 3) +
+  geom_text(nudge_x = .05) +
+  geom_vline(aes(xintercept = 1000000), col = &amp;#39;red&amp;#39;, size = 2, linetype = 2) +
+  scale_x_log10() +
+  scale_y_log10(breaks = c(0,50, 100, 721, 1000,1500),
+                     labels = c(&amp;#39;Zero&amp;#39;,&amp;#39;Fifty&amp;#39;,&amp;#39;One hundred&amp;#39;,&amp;#39;Seven hundred twenty one&amp;#39;,&amp;#39;One thousand&amp;#39;,&amp;#39;Fifteen hundred&amp;#39;),
+                     minor_breaks = NULL) +
+  labs(x = &amp;#39;Population&amp;#39;, y = &amp;#39;Total murders&amp;#39;, color = &amp;#39;US Region&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/content/03-content_files/figure-html/unnamed-chunk-21-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Combining geometries is as easy as adding the layers with &lt;code&gt;+&lt;/code&gt;.&lt;/p&gt;
+&lt;div id=&#34;geom_line&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;&lt;code&gt;geom_line&lt;/code&gt;&lt;/h3&gt;
+&lt;p&gt;For a good old line plot, we use the line geometry at &lt;code&gt;geom_line&lt;/code&gt;. The help for &lt;code&gt;?geom_line&lt;/code&gt; tells us that we need an x and a y aesthetic (much like &lt;code&gt;geom_points&lt;/code&gt;). Since our &lt;code&gt;murders&lt;/code&gt; data isn’t really suited to a line graph, we’ll use a daily stock price. We’ll get this using &lt;code&gt;tidyquant&lt;/code&gt;, which pulls stock prices from Yahoo Finance and maintains the “tidy” format. You’ll need to &lt;code&gt;install.packages(&#39;tidyquant&#39;)&lt;/code&gt; before you run this the first time.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(tidyquant)
+AAPL = tq_get(&amp;quot;AAPL&amp;quot;, from = &amp;#39;2009-01-01&amp;#39;, to = &amp;#39;2021-08-01&amp;#39;, get = &amp;#39;stock.prices&amp;#39;)
+head(AAPL)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 6 × 8
+##   symbol date        open  high   low close     volume adjusted
+##   &amp;lt;chr&amp;gt;  &amp;lt;date&amp;gt;     &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt;      &amp;lt;dbl&amp;gt;    &amp;lt;dbl&amp;gt;
+## 1 AAPL   2009-01-02  3.07  3.25  3.04  3.24  746015200     2.78
+## 2 AAPL   2009-01-05  3.33  3.44  3.31  3.38 1181608400     2.90
+## 3 AAPL   2009-01-06  3.43  3.47  3.30  3.32 1289310400     2.85
+## 4 AAPL   2009-01-07  3.28  3.30  3.22  3.25  753048800     2.79
+## 5 AAPL   2009-01-08  3.23  3.33  3.22  3.31  673500800     2.84
+## 6 AAPL   2009-01-09  3.33  3.34  3.22  3.24  546845600     2.78&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Now, we can plot a line graph of the Apple closing stock price over the requested date range. We want this to be a time series, so the x-axis will be the date and the y-axis will be the closing price.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(AAPL, aes(x = date, y = close)) +
+  geom_line() +
+  labs(x = &amp;#39;Date&amp;#39;, y = &amp;#39;Closing price&amp;#39;, title = &amp;#39;Apple stock price&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/content/03-content_files/figure-html/geomPath-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;In &lt;code&gt;geom_line&lt;/code&gt;, R will automatically sort on the x-variable. If you don’t want this, then &lt;code&gt;geom_path&lt;/code&gt; will use whatever order the data is in. Either way, if you have multiple observations for the same value on the x-axis, then you’ll get something pretty messy because R will try to connect, in some order, all the points. Let’s see an example with two stocks:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;AAPLNFLX = tq_get(c(&amp;quot;AAPL&amp;quot;,&amp;quot;NFLX&amp;quot;), from = &amp;#39;2021-01-01&amp;#39;, to = &amp;#39;2021-08-01&amp;#39;, get = &amp;#39;stock.prices&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Warning: `type_convert()` only converts columns of type &amp;#39;character&amp;#39;.
+## - `df` has no columns of type &amp;#39;character&amp;#39;
+
+## Warning: `type_convert()` only converts columns of type &amp;#39;character&amp;#39;.
+## - `df` has no columns of type &amp;#39;character&amp;#39;&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(AAPLNFLX, aes(x = date, y = close)) +
+  geom_line() +
+  labs(x = &amp;#39;Date&amp;#39;, y = &amp;#39;Closing price&amp;#39;, title = &amp;#39;Apple and Netflix stock price&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/content/03-content_files/figure-html/unnamed-chunk-22-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;That looks kinda strange. That’s because, for every date, we have two values - the NFLX and the AAPL value, so each day has a vertical line drawn between the two prices. This is nonsense, especially since what we want to see is the history of NFLX and AAPL over time.&lt;/p&gt;
+&lt;p&gt;Aesthetics to the rescue! Remember, when we use an aesthetic mapping, we are able to separate out data by things like color or linetype. Let’s use color as the aesthetic here, and map it to the stock ticker:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;AAPLNFLX = tq_get(c(&amp;quot;AAPL&amp;quot;,&amp;quot;NFLX&amp;quot;), from = &amp;#39;2021-01-01&amp;#39;, to = &amp;#39;2021-08-01&amp;#39;, get = &amp;#39;stock.prices&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Warning: `type_convert()` only converts columns of type &amp;#39;character&amp;#39;.
+## - `df` has no columns of type &amp;#39;character&amp;#39;
+
+## Warning: `type_convert()` only converts columns of type &amp;#39;character&amp;#39;.
+## - `df` has no columns of type &amp;#39;character&amp;#39;&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(AAPLNFLX, aes(x = date, y = close, color = symbol)) +
+  geom_line() +
+  labs(x = &amp;#39;Date&amp;#39;, y = &amp;#39;Closing price&amp;#39;, title = &amp;#39;Apple and Netflix stock price&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/content/03-content_files/figure-html/unnamed-chunk-23-1.png&#34; width=&#34;672&#34; /&gt;
+Well there we go! We can now see each stock price over time, with a convenient legend. Later on, we’ll learn how to change the color palatte. If we don’t necessarily want a different color but we do want to separate the lines, we can use the &lt;code&gt;group&lt;/code&gt; aesthetic.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;AAPLNFLX = tq_get(c(&amp;quot;AAPL&amp;quot;,&amp;quot;NFLX&amp;quot;), from = &amp;#39;2021-01-01&amp;#39;, to = &amp;#39;2021-08-01&amp;#39;, get = &amp;#39;stock.prices&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Warning: `type_convert()` only converts columns of type &amp;#39;character&amp;#39;.
+## - `df` has no columns of type &amp;#39;character&amp;#39;
+
+## Warning: `type_convert()` only converts columns of type &amp;#39;character&amp;#39;.
+## - `df` has no columns of type &amp;#39;character&amp;#39;&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(AAPLNFLX, aes(x = date, y = close, group = symbol)) +
+  geom_line() +
+  labs(x = &amp;#39;Date&amp;#39;, y = &amp;#39;Closing price&amp;#39;, title = &amp;#39;Apple and Netflix stock price&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/content/03-content_files/figure-html/unnamed-chunk-24-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Similar result as &lt;code&gt;geom_line&lt;/code&gt;, but without the color difference (which makes it rather hard to tell what you’re looking at). But if we add labels using &lt;code&gt;geom_label&lt;/code&gt;, we’ll get one label for every point, which will be overwhelming. The solution? Use some filtered data so that there is only one point for each label. But that means replacing the &lt;code&gt;data&lt;/code&gt; in &lt;code&gt;ggplot&lt;/code&gt;. Here’s how.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;using-different-data-with-different-geometries&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Using different data with different geometries&lt;/h3&gt;
+&lt;p&gt;Just as we can use different aesthetic mappings on each geometry, we can use different &lt;em&gt;data&lt;/em&gt; entirely. This is useful when we want one geometry to have one set of data (like the stock prices above), but another geometry to only have a subset of the data. Why would we want that? Well, we’d like to label just &lt;em&gt;one&lt;/em&gt; part of each of the lines in our plot, right? That means we want to label a &lt;em&gt;subset&lt;/em&gt; of the stock data.&lt;/p&gt;
+&lt;p&gt;To replace data in a geometry, we just need to specify the &lt;code&gt;data =&lt;/code&gt; argument separately:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(AAPLNFLX, aes(x = date, y = close, group = symbol)) +
+  geom_line() +
+  geom_label(data = AAPLNFLX %&amp;gt;% group_by(symbol) %&amp;gt;% slice(100),
+             aes(label = symbol),
+             nudge_y = 20) +
+  labs(x = &amp;#39;Date&amp;#39;, y = &amp;#39;Closing price&amp;#39;, title = &amp;#39;Apple and Netflix stock price&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/content/03-content_files/figure-html/unnamed-chunk-25-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;In &lt;code&gt;geom_label&lt;/code&gt;, we specified we wanted the 100th observation from each symbol to be the label location. Then, we nudged it up along y by 20 so that it’s clear of the line.&lt;/p&gt;
+&lt;p&gt;R also has a very useful &lt;code&gt;ggrepel&lt;/code&gt; package that gives us &lt;code&gt;geom_label_repel&lt;/code&gt; which takes care of the nudging for us, even in complicated situations (lots of points, lines, etc.). It does a decent job here of moving the label to a point where it doesn’t cover a lot of data.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(ggrepel)
+ggplot(AAPLNFLX, aes(x = date, y = close, group = symbol)) +
+  geom_line() +
+  geom_label_repel(data = AAPLNFLX %&amp;gt;% group_by(symbol) %&amp;gt;% slice(100),
+             aes(label = symbol)) +
+  labs(x = &amp;#39;Date&amp;#39;, y = &amp;#39;Closing price&amp;#39;, title = &amp;#39;Apple and Netflix stock price&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/content/03-content_files/figure-html/unnamed-chunk-26-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Now, we don’t lose a lot of space to a legend, and we haven’t had to use color to separate the stock symbols.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;multiple-geometries&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Multiple geometries&lt;/h3&gt;
+&lt;p&gt;Since this section is about adding geometries, we &lt;em&gt;can&lt;/em&gt; combine points and lines. Since lines connect points, it will look like a giant connect-the-dots.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(ggrepel)
+ggplot(AAPLNFLX, aes(x = date, y = close, group = symbol)) +
+  geom_line() +
+  geom_point() +
+  geom_label_repel(data = AAPLNFLX %&amp;gt;% group_by(symbol) %&amp;gt;% slice(100),
+             aes(label = symbol)) +
+  labs(x = &amp;#39;Date&amp;#39;, y = &amp;#39;Closing price&amp;#39;, title = &amp;#39;Apple and Netflix stock price&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/content/03-content_files/figure-html/unnamed-chunk-27-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;try-it-1&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Try it!&lt;/h2&gt;
+&lt;div class=&#34;fyi&#34;&gt;
+&lt;p&gt;&lt;strong&gt;TRY IT&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Start by loading the &lt;strong&gt;dplyr&lt;/strong&gt; and &lt;strong&gt;ggplot2&lt;/strong&gt; library as well as the &lt;code&gt;murders&lt;/code&gt; and &lt;code&gt;heights&lt;/code&gt; data.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(dplyr)
+library(ggplot2)
+library(dslabs)
+data(heights)
+data(murders)&lt;/code&gt;&lt;/pre&gt;
+&lt;ol style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;With &lt;strong&gt;ggplot2&lt;/strong&gt; plots can be saved as objects. For example we can associate a dataset with a plot object like this&lt;/li&gt;
+&lt;/ol&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p &amp;lt;- ggplot(data = murders)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Because &lt;code&gt;data&lt;/code&gt; is the first argument we don’t need to spell it out&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p &amp;lt;- ggplot(murders)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;and we can also use the pipe:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p &amp;lt;- murders %&amp;gt;% ggplot()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;What is class of the object &lt;code&gt;p&lt;/code&gt;?&lt;/p&gt;
+&lt;ol start=&#34;2&#34; style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;Remember that to print an object you can use the command &lt;code&gt;print&lt;/code&gt; or simply type the object.
+Print the object &lt;code&gt;p&lt;/code&gt; defined in exercise one and describe what you see.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;ol style=&#34;list-style-type: lower-alpha&#34;&gt;
+&lt;li&gt;Nothing happens.&lt;/li&gt;
+&lt;li&gt;A blank slate plot.&lt;/li&gt;
+&lt;li&gt;A scatterplot.&lt;/li&gt;
+&lt;li&gt;A histogram.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;ol start=&#34;3&#34; style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;&lt;p&gt;Using the pipe &lt;code&gt;%&amp;gt;%&lt;/code&gt;, create an object &lt;code&gt;p&lt;/code&gt; but this time associated with the &lt;code&gt;heights&lt;/code&gt; dataset instead of the &lt;code&gt;murders&lt;/code&gt; dataset.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;What is the class of the object &lt;code&gt;p&lt;/code&gt; you have just created?&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Now we are going to add a layer and the corresponding aesthetic mappings. For the murders data we plotted total murders versus population sizes. Explore the &lt;code&gt;murders&lt;/code&gt; data frame to remind yourself what are the names for these two variables and select the correct answer. &lt;strong&gt;Hint&lt;/strong&gt;: Look at &lt;code&gt;?murders&lt;/code&gt;.&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;ol style=&#34;list-style-type: lower-alpha&#34;&gt;
+&lt;li&gt;&lt;code&gt;state&lt;/code&gt; and &lt;code&gt;abb&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;total_murders&lt;/code&gt; and &lt;code&gt;population_size&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;total&lt;/code&gt; and &lt;code&gt;population&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;murders&lt;/code&gt; and &lt;code&gt;size&lt;/code&gt;.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;ol start=&#34;6&#34; style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;To create the scatterplot we add a layer with &lt;code&gt;geom_point&lt;/code&gt;. The aesthetic mappings require us to define the x-axis and y-axis variables, respectively. So the code looks like this:&lt;/li&gt;
+&lt;/ol&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;murders %&amp;gt;% ggplot(aes(x = , y = )) +
+  geom_point()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;except we have to define the two variables &lt;code&gt;x&lt;/code&gt; and &lt;code&gt;y&lt;/code&gt;. Fill this out with the correct variable names.&lt;/p&gt;
+&lt;ol start=&#34;7&#34; style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;Note that if we don’t use argument names, we can obtain the same plot by making sure we enter the variable names in the right order like this:&lt;/li&gt;
+&lt;/ol&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;murders %&amp;gt;% ggplot(aes(population, total)) +
+  geom_point()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Remake the plot but now with total in the x-axis and population in the y-axis.&lt;/p&gt;
+&lt;ol start=&#34;8&#34; style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;If instead of points we want to add text, we can use the &lt;code&gt;geom_text()&lt;/code&gt; or &lt;code&gt;geom_label()&lt;/code&gt; geometries. The following code&lt;/li&gt;
+&lt;/ol&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;murders %&amp;gt;% ggplot(aes(population, total)) + geom_label()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;will give us the error message: &lt;code&gt;Error: geom_label requires the following missing aesthetics: label&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;Why is this?&lt;/p&gt;
+&lt;ol style=&#34;list-style-type: lower-alpha&#34;&gt;
+&lt;li&gt;We need to map a character to each point through the label argument in aes.&lt;/li&gt;
+&lt;li&gt;We need to let &lt;code&gt;geom_label&lt;/code&gt; know what character to use in the plot.&lt;/li&gt;
+&lt;li&gt;The &lt;code&gt;geom_label&lt;/code&gt; geometry does not require x-axis and y-axis values.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;geom_label&lt;/code&gt; is not a ggplot2 command.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;ol start=&#34;9&#34; style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;&lt;p&gt;Rewrite the code above to use abbreviation as the label through &lt;code&gt;aes&lt;/code&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Change the color of the labels to blue. How will we do this?&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;ol style=&#34;list-style-type: lower-alpha&#34;&gt;
+&lt;li&gt;Adding a column called &lt;code&gt;blue&lt;/code&gt; to &lt;code&gt;murders&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;Because each label needs a different color we map the colors through &lt;code&gt;aes&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;Use the &lt;code&gt;color&lt;/code&gt; argument in &lt;code&gt;ggplot&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;Because we want all colors to be blue, we do not need to map colors, just use the color argument in &lt;code&gt;geom_label&lt;/code&gt;.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;ol start=&#34;11&#34; style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;&lt;p&gt;Rewrite the code above to make the labels blue.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Now suppose we want to use color to represent the different regions. In this case which of the following is most appropriate:&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;ol style=&#34;list-style-type: lower-alpha&#34;&gt;
+&lt;li&gt;Adding a column called &lt;code&gt;color&lt;/code&gt; to &lt;code&gt;murders&lt;/code&gt; with the color we want to use.&lt;/li&gt;
+&lt;li&gt;Because each label needs a different color we map the colors through the color argument of &lt;code&gt;aes&lt;/code&gt; .&lt;/li&gt;
+&lt;li&gt;Use the &lt;code&gt;color&lt;/code&gt; argument in &lt;code&gt;ggplot&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;Because we want all colors to be blue, we do not need to map colors, just use the color argument in &lt;code&gt;geom_label&lt;/code&gt;.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;ol start=&#34;13&#34; style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;&lt;p&gt;Rewrite the code above to make the labels’ color be determined by the state’s region.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Now we are going to change the x-axis to a log scale to account for the fact the distribution of population is skewed. Let’s start by defining an object &lt;code&gt;p&lt;/code&gt; holding the plot we have made up to now&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p &amp;lt;- murders %&amp;gt;%
+  ggplot(aes(population, total, label = abb, color = region)) +
+  geom_label()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;To change the y-axis to a log scale we learned about the &lt;code&gt;scale_x_log10()&lt;/code&gt; function. Add this layer to the object &lt;code&gt;p&lt;/code&gt; to change the scale and render the plot.&lt;/p&gt;
+&lt;ol start=&#34;15&#34; style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;&lt;p&gt;Repeat the previous exercise but now change both axes to be in the log scale.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Now edit the code above to add the title “Gun murder data” to the plot. Hint: use the &lt;code&gt;labs&lt;/code&gt; function or the &lt;code&gt;ggtitle&lt;/code&gt; function.&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&#34;footnotes&#34;&gt;
+&lt;hr /&gt;
+&lt;ol&gt;
+&lt;li id=&#34;fn1&#34;&gt;&lt;p&gt;&lt;a href=&#34;https://ggplot2.tidyverse.org/&#34; class=&#34;uri&#34;&gt;https://ggplot2.tidyverse.org/&lt;/a&gt;&lt;a href=&#34;#fnref1&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li id=&#34;fn2&#34;&gt;&lt;p&gt;&lt;a href=&#34;http://www.springer.com/us/book/9780387245447&#34; class=&#34;uri&#34;&gt;http://www.springer.com/us/book/9780387245447&lt;/a&gt;&lt;a href=&#34;#fnref2&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li id=&#34;fn3&#34;&gt;&lt;p&gt;&lt;a href=&#34;https://github.com/rstudio/cheatsheets&#34; class=&#34;uri&#34;&gt;https://github.com/rstudio/cheatsheets&lt;/a&gt;&lt;a href=&#34;#fnref3&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li id=&#34;fn4&#34;&gt;&lt;p&gt;&lt;a href=&#34;https://github.com/rstudio/cheatsheets/blob/master/LICENSE&#34; class=&#34;uri&#34;&gt;https://github.com/rstudio/cheatsheets/blob/master/LICENSE&lt;/a&gt;&lt;a href=&#34;#fnref4&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    
+    <item>
       <title>Introduction to the tidyverse</title>
       <link>https://ssc442.netlify.app/content/02-content/</link>
       <pubDate>Tue, 07 Sep 2021 00:00:00 +0000</pubDate>

@@ -13,6 +13,470 @@
     </image>
     
     <item>
+      <title>ggplot2: Everything you ever wanted to know</title>
+      <link>https://ssc442.netlify.app/example/03-example/</link>
+      <pubDate>Thu, 16 Sep 2021 00:00:00 +0000</pubDate>
+      <guid>https://ssc442.netlify.app/example/03-example/</guid>
+      <description>
+&lt;script src=&#34;https://ssc442.netlify.app/rmarkdown-libs/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
+
+&lt;div id=&#34;TOC&#34;&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#distributions&#34;&gt;Visualizing data distributions&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#variable-types&#34;&gt;Variable types&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#case-study-describing-student-heights&#34;&gt;Case study: describing student heights&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#distribution-function&#34;&gt;Distribution function&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#cdf-intro&#34;&gt;Cumulative distribution functions&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#geometries-for-describing-distributions&#34;&gt;Geometries for describing distributions&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#histograms&#34;&gt;Histograms&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#smoothed-density&#34;&gt;Smoothed density&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#interpreting-the-y-axis&#34;&gt;Interpreting the y-axis&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#densities-permit-stratification&#34;&gt;Densities permit stratification&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#normal-distribution&#34;&gt;The normal distribution&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#standard-units&#34;&gt;Standard units&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#quantile-quantile-plots&#34;&gt;Quantile-quantile plots&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#percentiles&#34;&gt;Percentiles&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#other-geometries&#34;&gt;ggplot2 geometries&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#barplots&#34;&gt;Barplots&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#histograms-1&#34;&gt;Histograms&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#density-plots&#34;&gt;Density plots&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#boxplots&#34;&gt;Boxplots&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#try-it&#34;&gt;Try it!&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+
+&lt;div id=&#34;distributions&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Visualizing data distributions&lt;/h1&gt;
+&lt;p&gt;Throughout your education, you may have noticed that numerical data is often summarized with the &lt;em&gt;average&lt;/em&gt; value. For example, the quality of a high school is sometimes summarized with one number: the average score on a standardized test. Occasionally, a second number is reported: the &lt;em&gt;standard deviation&lt;/em&gt;. For example, you might read a report stating that scores were 680 plus or minus 50 (the standard deviation). The report has summarized an entire vector of scores with just two numbers. Is this appropriate? Is there any important piece of information that we are missing by only looking at this summary rather than the entire list?&lt;/p&gt;
+&lt;p&gt;Our first data visualization building block is learning to summarize lists of factors or numeric vectors—the two primary data types that we encounter in data analytics. More often than not, the best way to share or explore this summary is through data visualization. The most basic statistical summary of a list of objects or numbers is its distribution. Once a vector has been summarized as a distribution, there are several data visualization techniques to effectively relay this information.&lt;/p&gt;
+&lt;p&gt;In this section, we first discuss properties of a variety of distributions and how to visualize distributions using a motivating example of student heights. We then discuss some principles of data visualizations more broadly, and introduce new ggplot geometries to help us along the way.&lt;/p&gt;
+&lt;div id=&#34;variable-types&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Variable types&lt;/h2&gt;
+&lt;p&gt;We will be working with two types of variables: categorical and numeric. Each can be divided into two other groups: categorical can be ordinal or not, whereas numerical variables can be discrete or continuous.&lt;/p&gt;
+&lt;p&gt;When each entry in a vector comes from one of a small number of groups, we refer to the data as &lt;em&gt;categorical data&lt;/em&gt;. Two simple examples are sex (male or female) and regions (Northeast, South, North Central, West). Some categorical data can be ordered even if they are not numbers per se, such as spiciness (mild, medium, hot). In statistics textbooks, ordered categorical data are referred to as &lt;em&gt;ordinal&lt;/em&gt; data. In psychology, a number of different terms are used for this same idea.&lt;/p&gt;
+&lt;p&gt;Examples of numerical data are population sizes, murder rates, and heights. Some numerical data can be treated as ordered categorical. We can further divide numerical data into continuous and discrete. Continuous variables are those that can take any value, such as heights, if measured with enough precision. For example, a pair of twins may be 68.12 and 68.11 inches, respectively. Counts, such as population sizes, are discrete because they have to be integers—that’s how we count.&lt;a href=&#34;#fn1&#34; class=&#34;footnote-ref&#34; id=&#34;fnref1&#34;&gt;&lt;sup&gt;1&lt;/sup&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;case-study-describing-student-heights&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Case study: describing student heights&lt;/h2&gt;
+&lt;p&gt;Here we consider an artificial problem to help us illustrate the underlying concepts.&lt;/p&gt;
+&lt;p&gt;Pretend that we have to describe the heights of our classmates to ET, an extraterrestrial that has never seen humans. As a first step, we need to collect data. To do this, we ask students to report their heights in inches. We ask them to provide sex information because we know there are two different distributions by sex. We collect the data and save it in the &lt;code&gt;heights&lt;/code&gt; data frame:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(tidyverse)
+library(dslabs)
+data(heights)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;One way to convey the heights to ET is to simply send him this list of 1050 heights. But there are much more effective ways to convey this information, and understanding the concept of a distribution will help. To simplify the explanation, we first focus on male heights.&lt;/p&gt;
+&lt;div id=&#34;distribution-function&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Distribution function&lt;/h3&gt;
+&lt;p&gt;It turns out that, in some cases, the average and the standard deviation are pretty much all we need to understand the data. We will learn data visualization techniques that will help us determine when this two number summary is appropriate. These same techniques will serve as an alternative for when two numbers are not enough.&lt;/p&gt;
+&lt;p&gt;The most basic statistical summary of a list of objects or numbers is its distribution. The simplest way to think of a distribution is as a compact description of a list with many entries. This concept should not be new for readers of this book. For example, with categorical data, the distribution simply describes the proportion of each unique category. The sex represented in the heights dataset is:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;## 
+##    Female      Male 
+## 0.2266667 0.7733333&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;This two-category &lt;em&gt;frequency table&lt;/em&gt; is the simplest form of a distribution. We don’t really need to visualize it since one number describes everything we need to know: 23% are females and the rest are males. When there are more categories, then a simple barplot describes the distribution. Here is an example with US state regions:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/example/03-example_files/figure-html/state-region-distribution-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;This particular plot simply shows us four numbers, one for each category. We usually use barplots to display a few numbers. Although this particular plot does not provide much more insight than a frequency table itself, it is a first example of how we convert a vector into a plot that succinctly summarizes all the information in the vector. When the data is numerical, the task of displaying distributions is more challenging.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;cdf-intro&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Cumulative distribution functions&lt;/h3&gt;
+&lt;p&gt;Numerical data that are not categorical also have distributions. In general, when data is not categorical, reporting the frequency of each entry is not an effective summary since most entries are unique. In our case study, while several students reported a height of 68 inches, only one student reported a height of &lt;code&gt;68.503937007874&lt;/code&gt; inches and only one student reported a height &lt;code&gt;68.8976377952756&lt;/code&gt; inches. We assume that they converted from 174 and 175 centimeters, respectively.&lt;/p&gt;
+&lt;p&gt;Statistics textbooks teach us that a more useful way to define a distribution for numeric data is to define a function that reports the proportion of the data below &lt;span class=&#34;math inline&#34;&gt;\(a\)&lt;/span&gt; for all possible values of &lt;span class=&#34;math inline&#34;&gt;\(a\)&lt;/span&gt;. This function is called the cumulative distribution function (CDF). In statistics, the following notation is used:&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[ F(a) = \mbox{Pr}(x \leq a) \]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;Here is a plot of &lt;span class=&#34;math inline&#34;&gt;\(F\)&lt;/span&gt; for the male height data:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/example/03-example_files/figure-html/ecdf-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Similar to what the frequency table does for categorical data, the CDF
+defines the distribution for numerical data. From the plot, we can see that 16% of the values are below 65, since &lt;span class=&#34;math inline&#34;&gt;\(F(66)=\)&lt;/span&gt; 0.1637931, or that 84% of the values are below 72, since &lt;span class=&#34;math inline&#34;&gt;\(F(72)=\)&lt;/span&gt; 0.841133,
+and so on. In fact, we can report the proportion of values between any two heights, say &lt;span class=&#34;math inline&#34;&gt;\(a\)&lt;/span&gt; and &lt;span class=&#34;math inline&#34;&gt;\(b\)&lt;/span&gt;, by computing &lt;span class=&#34;math inline&#34;&gt;\(F(b) - F(a)\)&lt;/span&gt;. This means that if we send this plot above to ET, he will have all the information needed to reconstruct the entire list. Paraphrasing the expression “a picture is worth a thousand words”, in this case, a picture is as informative as 812 numbers.&lt;/p&gt;
+&lt;p&gt;A final note: because CDFs can be defined mathematically—and absent any data—the word &lt;em&gt;empirical&lt;/em&gt; is added to make the distinction when data is used. We therefore use the term empirical CDF (eCDF).&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;geometries-for-describing-distributions&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Geometries for describing distributions&lt;/h2&gt;
+&lt;p&gt;Now, we’ll introduce ggplot geometries useful for describing distributions (or for many other things).&lt;/p&gt;
+&lt;div id=&#34;histograms&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Histograms&lt;/h3&gt;
+&lt;p&gt;Although the CDF concept is widely discussed in statistics textbooks, the plot is actually not very popular in practice. The main reason is that it does not easily convey characteristics of interest such as: at what value is the distribution centered? Is the distribution symmetric? What ranges contain 95% of the values? I doubt you can figure these out from glancing at the plot above. Histograms are much preferred because they greatly facilitate answering such questions. Histograms sacrifice just a bit of information to produce plots that are much easier to interpret.&lt;/p&gt;
+&lt;p&gt;The simplest way to make a histogram is to divide the span of our data into non-overlapping bins of the same size. Then, for each bin, we count the number of values that fall in that interval. The histogram plots these counts as bars with the base of the bar defined by the intervals. Here is the histogram for the height data splitting the range of values into one inch intervals: &lt;span class=&#34;math inline&#34;&gt;\((49.5, 50.5],(50.5, 51.5],(51.5,52.5],(52.5,53.5],...,(82.5,83.5]\)&lt;/span&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;heights %&amp;gt;%
+  filter(sex==&amp;quot;Male&amp;quot;) %&amp;gt;%
+  ggplot(aes(x = height)) +
+  geom_histogram(binwidth = 1, color = &amp;quot;black&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/example/03-example_files/figure-html/height-histogram-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;If we send this &lt;strong&gt;histogram&lt;/strong&gt; plot to some uninformed reader, she will immediately learn some important properties about our data. First, the range of the data is from 50 to 84 with the majority (more than 95%) between 63 and 75 inches. Second, the heights are close to symmetric around 69 inches. Also, by adding up counts, this reader could obtain a very good approximation of the proportion of the data in any interval. Therefore, the histogram above is not only easy to interpret, but also provides almost all the information contained in the raw list of 812 heights with about 30 bin counts.&lt;/p&gt;
+&lt;p&gt;What information do we lose? Note that all values in each interval are treated the same when computing bin heights. So, for example, the histogram does not distinguish between 64, 64.1, and 64.2 inches. Given that these differences are almost unnoticeable to the eye, the practical implications are negligible and we were able to summarize the data to just 23 numbers.&lt;/p&gt;
+&lt;p&gt;The &lt;code&gt;geom_histogram&lt;/code&gt; layer only requires one aesthetic mapping - the x-axis. This is because the y-axis is computed from counts of the x-axis. Giving an aesthetic mapping to an additional variable for y will result in an error. Using an aesthetic mapping like &lt;code&gt;fill&lt;/code&gt; will work - it’ll give you two histograms on top of each other. Try it! Try setting the &lt;code&gt;alpha&lt;/code&gt; aesthetic to .5 (not an aesthetic mapping) so you can see both layers when they overlap.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;smoothed-density&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Smoothed density&lt;/h3&gt;
+&lt;p&gt;Smooth density plots are aesthetically more appealing than histograms. &lt;code&gt;geom_density&lt;/code&gt; is the geometry that gives a smoothed density. Here is what a smooth density plot looks like for our heights data:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;heights %&amp;gt;%
+  filter(sex==&amp;quot;Male&amp;quot;) %&amp;gt;%
+  ggplot(aes(height)) +
+  geom_density(alpha = .2, fill= &amp;quot;#00BFC4&amp;quot;, color = &amp;#39;gray50&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/example/03-example_files/figure-html/example-of-smoothed-density-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;In this plot, we no longer have sharp edges at the interval boundaries and many of the local peaks have been removed. Also, the scale of the y-axis changed from counts to &lt;em&gt;density&lt;/em&gt;. That is, the area under the curve will add up to 1, so we can read it like a probability density.&lt;/p&gt;
+&lt;p&gt;To understand the smooth densities, we have to understand &lt;em&gt;estimates&lt;/em&gt;, a topic we don’t cover until later. However, we provide a heuristic explanation to help you understand the basics so you can use this useful data visualization tool.&lt;/p&gt;
+&lt;p&gt;The main new concept you must understand is that we assume that our list of observed values is a subset of a much larger list of unobserved values. In the case of heights, you can imagine that our list of 812 male students comes from a hypothetical list containing all the heights of all the male students in all the world measured very precisely. Let’s say there are 1,000,000 of these measurements. This list of values has a distribution, like any list of values, and this larger distribution is really what we want to report to ET since it is much more general. Unfortunately, we don’t get to see it.&lt;/p&gt;
+&lt;p&gt;However, we make an assumption that helps us perhaps approximate it. If we had 1,000,000 values, measured very precisely, we could make a histogram with very, very small bins. The assumption is that if we show this, the height of consecutive bins will be similar. This is what we mean by smooth: we don’t have big jumps in the heights of consecutive bins. Below we have a hypothetical histogram with bins of size 1:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/example/03-example_files/figure-html/simulated-data-histogram-1-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;The smaller we make the bins, the smoother the histogram gets. Here are the histograms with bin width of 1, 0.5, and 0.1:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/example/03-example_files/figure-html/simulated-data-histogram-2-1.png&#34; width=&#34;100%&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;The smooth density is basically the curve that goes through the top of the histogram bars when the bins are very, very small. To make the curve not depend on the hypothetical size of the hypothetical list, we compute the curve on frequencies rather than counts. We do this by using the double-dot object &lt;code&gt;..density..&lt;/code&gt;. Objects surrounded by &lt;code&gt;..&lt;/code&gt; are objects that are &lt;em&gt;calculated by ggplot&lt;/em&gt;. If we look at &lt;code&gt;?geom_histogram&lt;/code&gt;, and go down to “Computed variables”, we see that we could use &lt;code&gt;..count..&lt;/code&gt; to get “number of points in a bin”; &lt;code&gt;..ncount..&lt;/code&gt; for the count scaled to a max of 1; or &lt;code&gt;..ndensity..&lt;/code&gt; which scales the density to a max of 1 (which is a strange one). We can manually set the y aesthetic mapping, which defaults to &lt;code&gt;..count..&lt;/code&gt;, to &lt;code&gt;..density..&lt;/code&gt;:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;x %&amp;gt;% ggplot(aes(x = height)) +
+  geom_histogram(aes(y=..density..), binwidth = 0.1, color = &amp;quot;black&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/example/03-example_files/figure-html/simulated-density-1-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Now, back to reality. We don’t have millions of measurements. In this concrete example, we have 812 and we can’t make a histogram with very small bins.&lt;/p&gt;
+&lt;p&gt;We therefore make a histogram, using bin sizes appropriate for our data and computing frequencies rather than counts, and we draw a smooth curve that goes through the tops of the histogram bars. The following plots (loosely) demonstrate the steps that the computer goes through to ultimately create a smooth density:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/example/03-example_files/figure-html/smooth-density-2-1.png&#34; width=&#34;100%&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;interpreting-the-y-axis&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Interpreting the y-axis&lt;/h3&gt;
+&lt;p&gt;Note that interpreting the y-axis of a smooth density plot is not straightforward. It is scaled so that the area under the density curve adds up to 1. If you imagine we form a bin with a base 1 unit in length, the y-axis value tells us the proportion of values in that bin. However, this is only true for bins of size 1. For other size intervals, the best way to determine the proportion of data in that interval is by computing the proportion of the total area contained in that interval. For example, here are the proportion of values between 65 and 68:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/example/03-example_files/figure-html/area-under-curve-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;The proportion of this area is about
+0.3,
+meaning that about
+30%
+of male heights are between 65 and 68 inches.&lt;/p&gt;
+&lt;p&gt;By understanding this, we are ready to use the smooth density as a summary. For this dataset, we would feel quite comfortable with the smoothness assumption, and therefore with sharing this aesthetically pleasing figure with ET, which he could use to understand our male heights data:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;heights %&amp;gt;%
+  filter(sex==&amp;quot;Male&amp;quot;) %&amp;gt;%
+  ggplot(aes(x = height)) +
+  geom_density(alpha=.2, fill= &amp;quot;#00BFC4&amp;quot;, color = &amp;#39;black&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/example/03-example_files/figure-html/example-of-smoothed-density-2-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Note that the only aesthetic mapping is &lt;code&gt;x = height&lt;/code&gt;, while the fill and color are set as un-mapped aesthetics.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;densities-permit-stratification&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Densities permit stratification&lt;/h3&gt;
+&lt;p&gt;As a final note, we point out that an advantage of smooth densities over histograms for visualization purposes is that densities make it easier to compare two distributions. This is in large part because the jagged edges of the histogram add clutter. Here is an example comparing male and female heights:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;heights %&amp;gt;%
+  ggplot(aes(height, fill=sex)) +
+  geom_density(alpha = 0.2, color = &amp;#39;black&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/example/03-example_files/figure-html/two-densities-one-plot-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;With the right argument, &lt;code&gt;ggplot&lt;/code&gt; automatically shades the intersecting region with a different color.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;normal-distribution&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;The normal distribution&lt;/h2&gt;
+&lt;p&gt;Histograms and density plots provide excellent summaries of a distribution. But can we summarize even further? We often see the average and standard deviation used as summary statistics: a two-number summary! To understand what these summaries are and why they are so widely used, we need to understand the normal distribution.&lt;/p&gt;
+&lt;p&gt;The normal distribution, also known as the bell curve and as the Gaussian distribution, is one of the most famous mathematical concepts in history. A reason for this is that approximately normal distributions occur in many situations, including gambling winnings, heights, weights, blood pressure, standardized test scores, and experimental measurement errors. There are explanations for this, but we describe these later. Here we focus on how the normal distribution helps us summarize data.&lt;/p&gt;
+&lt;p&gt;Rather than using data, the normal distribution is defined with a mathematical formula. For any interval &lt;span class=&#34;math inline&#34;&gt;\((a,b)\)&lt;/span&gt;, the proportion of values in that interval can be computed using this formula:&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[\mbox{Pr}(a &amp;lt; x &amp;lt; b) = \int_a^b \frac{1}{\sqrt{2\pi}s} e^{-\frac{1}{2}\left( \frac{x-m}{s} \right)^2} \, dx\]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;You don’t need to memorize or understand the details of the formula. But note that it is completely defined by just two parameters: &lt;span class=&#34;math inline&#34;&gt;\(m\)&lt;/span&gt; and &lt;span class=&#34;math inline&#34;&gt;\(s\)&lt;/span&gt;. The rest of the symbols in the formula represent the interval ends that we determine, &lt;span class=&#34;math inline&#34;&gt;\(a\)&lt;/span&gt; and &lt;span class=&#34;math inline&#34;&gt;\(b\)&lt;/span&gt;, and known mathematical constants &lt;span class=&#34;math inline&#34;&gt;\(\pi\)&lt;/span&gt; and &lt;span class=&#34;math inline&#34;&gt;\(e\)&lt;/span&gt;. These two parameters, &lt;span class=&#34;math inline&#34;&gt;\(m\)&lt;/span&gt; and &lt;span class=&#34;math inline&#34;&gt;\(s\)&lt;/span&gt;, are referred to as the &lt;em&gt;average&lt;/em&gt; (also called the &lt;em&gt;mean&lt;/em&gt;) and the &lt;em&gt;standard deviation&lt;/em&gt; (SD) of the distribution, respectively.&lt;/p&gt;
+&lt;p&gt;The distribution is symmetric, centered at the average, and most values (about 95%) are within 2 SDs from the average. Here is what the normal distribution looks like when the average is 0 and the SD is 1:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/example/03-example_files/figure-html/normal-distribution-density-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;The fact that the distribution is defined by just two parameters implies that if a dataset is approximated by a normal distribution, all the information needed to describe the distribution can be encoded in just two numbers: the average and the standard deviation. We now define these values for an arbitrary list of numbers.&lt;/p&gt;
+&lt;p&gt;For a list of numbers contained in a vector &lt;code&gt;x&lt;/code&gt;, the average is defined as:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;m &amp;lt;- sum(x) / length(x)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;and the SD is defined as:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;s &amp;lt;- sqrt(sum((x-mu)^2) / length(x))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;which can be interpreted as the average distance between values and their average.&lt;/p&gt;
+&lt;p&gt;Let’s compute the values for the height for males which we will store in the object &lt;span class=&#34;math inline&#34;&gt;\(x\)&lt;/span&gt;:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;index &amp;lt;- heights$sex == &amp;quot;Male&amp;quot;
+x &amp;lt;- heights$height[index]&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The pre-built functions &lt;code&gt;mean&lt;/code&gt; and &lt;code&gt;sd&lt;/code&gt; (note that for reasons explained later, &lt;code&gt;sd&lt;/code&gt; divides by &lt;code&gt;length(x)-1&lt;/code&gt; rather than &lt;code&gt;length(x)&lt;/code&gt;) can be used here:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;m &amp;lt;- mean(x)
+s &amp;lt;- sd(x)
+c(average = m, sd = s)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;##   average        sd 
+## 69.314755  3.611024&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Here is a plot of the smooth density and the normal distribution with mean = 69.3 and SD = 3.6 plotted as a black line with our student height smooth density in blue:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/example/03-example_files/figure-html/data-and-normal-densities-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Now, we can ask the question “is our height data approximately normally distributed?”. The normal distribution does appear to be quite a good approximation here. We now will see how well this approximation works at predicting the proportion of values within intervals.&lt;/p&gt;
+&lt;div id=&#34;standard-units&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Standard units&lt;/h3&gt;
+&lt;p&gt;For data that is approximately normally distributed, it is convenient to think in terms of &lt;em&gt;standard units&lt;/em&gt;. The standard unit of a value tells us how many standard deviations away from the average it is. Specifically, for a value &lt;code&gt;x&lt;/code&gt; from a vector &lt;code&gt;X&lt;/code&gt;, we define the value of &lt;code&gt;x&lt;/code&gt; in standard units as &lt;code&gt;z = (x - m)/s&lt;/code&gt; with &lt;code&gt;m&lt;/code&gt; and &lt;code&gt;s&lt;/code&gt; the average and standard deviation of &lt;code&gt;X&lt;/code&gt;, respectively. Why is this convenient?&lt;/p&gt;
+&lt;p&gt;First look back at the formula for the normal distribution and note that what is being exponentiated is &lt;span class=&#34;math inline&#34;&gt;\(-z^2/2\)&lt;/span&gt; with &lt;span class=&#34;math inline&#34;&gt;\(z\)&lt;/span&gt; equivalent to &lt;span class=&#34;math inline&#34;&gt;\(x\)&lt;/span&gt; in standard units. Because the maximum of &lt;span class=&#34;math inline&#34;&gt;\(e^{-z^2/2}\)&lt;/span&gt; is when &lt;span class=&#34;math inline&#34;&gt;\(z=0\)&lt;/span&gt;, this explains why the maximum of the distribution occurs at the average. It also explains the symmetry since &lt;span class=&#34;math inline&#34;&gt;\(- z^2/2\)&lt;/span&gt; is symmetric around 0. Second, note that if we convert the normally distributed data to standard units, we can quickly know if, for example, a person is about average (&lt;span class=&#34;math inline&#34;&gt;\(z=0\)&lt;/span&gt;), one of the largest (&lt;span class=&#34;math inline&#34;&gt;\(z \approx 2\)&lt;/span&gt;), one of the smallest (&lt;span class=&#34;math inline&#34;&gt;\(z \approx -2\)&lt;/span&gt;), or an extremely rare occurrence (&lt;span class=&#34;math inline&#34;&gt;\(z &amp;gt; 3\)&lt;/span&gt; or &lt;span class=&#34;math inline&#34;&gt;\(z &amp;lt; -3\)&lt;/span&gt;). Remember that it does not matter what the original units are, these rules apply to any data that is approximately normal.&lt;/p&gt;
+&lt;p&gt;In R, we can obtain standard units using the function &lt;code&gt;scale&lt;/code&gt;:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;z &amp;lt;- scale(x)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Now to see how many men are within 2 SDs from the average, we simply type:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;mean(abs(z) &amp;lt; 2)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 0.9495074&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The proportion is about 95%, which is what the normal distribution predicts! To further confirm that, in fact, the approximation is a good one, we can use quantile-quantile plots.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;quantile-quantile-plots&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Quantile-quantile plots&lt;/h3&gt;
+&lt;p&gt;A systematic way to assess how well the normal distribution fits the data is to check if the observed and predicted proportions match. In general, this is the approach of the quantile-quantile plot (QQ-plot). If our heights distribution is really normal, then the 10th percentile of our heights data should be the same as the 10th percentile of a theoretical normal, as should the 20th, 30th, 33rd, 37.5th, etc. percentiles.&lt;/p&gt;
+&lt;p&gt;First let’s define the theoretical quantiles (percentiles) for the normal distribution. In statistics books we use the symbol &lt;span class=&#34;math inline&#34;&gt;\(\Phi(x)\)&lt;/span&gt; to define the function that gives us the probability of a standard normal distribution being smaller than &lt;span class=&#34;math inline&#34;&gt;\(x\)&lt;/span&gt;. So, for example, &lt;span class=&#34;math inline&#34;&gt;\(\Phi(-1.96) = 0.025\)&lt;/span&gt; and &lt;span class=&#34;math inline&#34;&gt;\(\Phi(1.96) = 0.975\)&lt;/span&gt;. In R, we can evaluate &lt;span class=&#34;math inline&#34;&gt;\(\Phi\)&lt;/span&gt; using the &lt;code&gt;pnorm&lt;/code&gt; function:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;pnorm(-1.96)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 0.0249979&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The inverse function &lt;span class=&#34;math inline&#34;&gt;\(\Phi^{-1}(x)\)&lt;/span&gt; gives us the &lt;em&gt;theoretical quantiles&lt;/em&gt; for the normal distribution. So, for example, &lt;span class=&#34;math inline&#34;&gt;\(\Phi^{-1}(0.975) = 1.96\)&lt;/span&gt;. In R, we can evaluate the inverse of &lt;span class=&#34;math inline&#34;&gt;\(\Phi\)&lt;/span&gt; using the &lt;code&gt;qnorm&lt;/code&gt; function.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;qnorm(0.975)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 1.959964&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Note that these calculations are for the standard normal distribution by default (mean = 0, standard deviation = 1), but we can also define these for any normal distribution. We can do this using the &lt;code&gt;mean&lt;/code&gt; and &lt;code&gt;sd&lt;/code&gt; arguments in the &lt;code&gt;pnorm&lt;/code&gt; and &lt;code&gt;qnorm&lt;/code&gt; function. For example, we can use &lt;code&gt;qnorm&lt;/code&gt; to determine quantiles of a distribution with a specific average and standard deviation&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;qnorm(0.975, mean = 5, sd = 2)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 8.919928&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;For the normal distribution, all the calculations related to quantiles are done without data, thus the name &lt;em&gt;theoretical quantiles&lt;/em&gt;. But quantiles can be defined for any distribution, including an empirical one. So if we have data in a vector &lt;span class=&#34;math inline&#34;&gt;\(x\)&lt;/span&gt;, we can define the quantile associated with any proportion &lt;span class=&#34;math inline&#34;&gt;\(p\)&lt;/span&gt; as the &lt;span class=&#34;math inline&#34;&gt;\(q\)&lt;/span&gt; for which the proportion of values below &lt;span class=&#34;math inline&#34;&gt;\(q\)&lt;/span&gt; is &lt;span class=&#34;math inline&#34;&gt;\(p\)&lt;/span&gt;. Using R code, we can define &lt;code&gt;q&lt;/code&gt; as the value for which &lt;code&gt;mean(x &amp;lt;= q) = p&lt;/code&gt;. Notice that not all &lt;span class=&#34;math inline&#34;&gt;\(p\)&lt;/span&gt; have a &lt;span class=&#34;math inline&#34;&gt;\(q\)&lt;/span&gt; for which the proportion is exactly &lt;span class=&#34;math inline&#34;&gt;\(p\)&lt;/span&gt;. There are several ways of defining the best &lt;span class=&#34;math inline&#34;&gt;\(q\)&lt;/span&gt; as discussed in the help for the &lt;code&gt;quantile&lt;/code&gt; function.&lt;/p&gt;
+&lt;p&gt;To give a quick example, for the male heights data, we have that:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;mean(x &amp;lt;= 69.5)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 0.5147783&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;So about 50% are shorter or equal to 69 inches. This implies that if &lt;span class=&#34;math inline&#34;&gt;\(p=0.50\)&lt;/span&gt; then &lt;span class=&#34;math inline&#34;&gt;\(q=69.5\)&lt;/span&gt;.&lt;/p&gt;
+&lt;p&gt;The idea of a QQ-plot is that if your data is well approximated by normal distribution then the quantiles of your data should be similar to the quantiles of a normal distribution. To construct a QQ-plot, we do the following:&lt;/p&gt;
+&lt;ol style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;Define a vector of &lt;span class=&#34;math inline&#34;&gt;\(m\)&lt;/span&gt; proportions &lt;span class=&#34;math inline&#34;&gt;\(p_1, p_2, \dots, p_m\)&lt;/span&gt;.&lt;/li&gt;
+&lt;li&gt;Define a vector of quantiles &lt;span class=&#34;math inline&#34;&gt;\(q_1, \dots, q_m\)&lt;/span&gt; for your data for the proportions &lt;span class=&#34;math inline&#34;&gt;\(p_1, \dots, p_m\)&lt;/span&gt;. We refer to these as the &lt;em&gt;sample quantiles&lt;/em&gt;.&lt;/li&gt;
+&lt;li&gt;Define a vector of theoretical quantiles for the proportions &lt;span class=&#34;math inline&#34;&gt;\(p_1, \dots, p_m\)&lt;/span&gt; for a normal distribution with the same average and standard deviation as the data.&lt;/li&gt;
+&lt;li&gt;Plot the sample quantiles versus the theoretical quantiles.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;Let’s construct a QQ-plot using R code. Start by defining the vector of proportions.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p &amp;lt;- seq(0.005, 0.995, 0.01)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;To obtain the quantiles from the data, we can use the &lt;code&gt;quantile&lt;/code&gt; function like this:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;sample_quantiles &amp;lt;- quantile(x, p)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;To obtain the theoretical normal distribution quantiles with the corresponding average and SD, we use the &lt;code&gt;qnorm&lt;/code&gt; function:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;theoretical_quantiles &amp;lt;- qnorm(p, mean = mean(x), sd = sd(x))
+df = data.frame(sample_quantiles, theoretical_quantiles)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;To see if they match or not, we plot them against each other and draw the identity line:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(data = df, aes(x = theoretical_quantiles, y = sample_quantiles)) +
+  geom_point() +
+  geom_abline() # a 45-degree line&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/example/03-example_files/figure-html/qqplot-original-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Notice that this code becomes much cleaner if we use standard units:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;sample_quantiles &amp;lt;- quantile(z, p)
+theoretical_quantiles &amp;lt;- qnorm(p)
+df2 =  data.frame(sample_quantiles, theoretical_quantiles)
+ggplot(data = df2, aes(x = theoretical_quantiles, y = sample_quantiles)) +
+  geom_point() +
+  geom_abline()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/example/03-example_files/figure-html/qqplot-standardized-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;The above code is included to help describe QQ-plots. However, in practice it is easier to use the &lt;code&gt;ggplot&lt;/code&gt; geometry &lt;code&gt;geom_qq&lt;/code&gt;:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;heights %&amp;gt;% filter(sex == &amp;quot;Male&amp;quot;) %&amp;gt;%
+  ggplot(aes(sample = scale(height))) +
+  geom_qq() +
+  geom_abline()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/example/03-example_files/figure-html/unnamed-chunk-15-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;While for the illustration above we used 100 quantiles, the default from the &lt;code&gt;geom_qq&lt;/code&gt; function is to use as many quantiles as data points.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;percentiles&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Percentiles&lt;/h3&gt;
+&lt;p&gt;Before we move on, let’s define some terms that are commonly used in exploratory data analysis.&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Percentiles&lt;/em&gt; are special cases of &lt;em&gt;quantiles&lt;/em&gt; that are commonly used. The percentiles are the quantiles you obtain when setting the &lt;span class=&#34;math inline&#34;&gt;\(p\)&lt;/span&gt; at &lt;span class=&#34;math inline&#34;&gt;\(0.01, 0.02, ..., 0.99\)&lt;/span&gt;. We call, for example, the case of &lt;span class=&#34;math inline&#34;&gt;\(p=0.25\)&lt;/span&gt; the 25th percentile, which gives us a number for which 25% of the data is below. The most famous percentile is the 50th, also known as the &lt;em&gt;median&lt;/em&gt;.&lt;/p&gt;
+&lt;p&gt;For the normal distribution the &lt;em&gt;median&lt;/em&gt; and average are the same, but this is generally not the case.&lt;/p&gt;
+&lt;p&gt;Another special case that receives a name are the &lt;em&gt;quartiles&lt;/em&gt;, which are obtained when setting &lt;span class=&#34;math inline&#34;&gt;\(p=0.25,0.50\)&lt;/span&gt;, and &lt;span class=&#34;math inline&#34;&gt;\(0.75\)&lt;/span&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;other-geometries&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;ggplot2 geometries&lt;/h2&gt;
+&lt;p&gt;Alhough we haven’t gone into detain about the &lt;strong&gt;ggplot2&lt;/strong&gt; package for data visualization, we now will briefly discuss some of the geometries involved in the plots above. We will discuss &lt;strong&gt;ggplot2&lt;/strong&gt; in (excruciating) detail later this week. For now, we will briefly demonstrate how to generate plots related to distributions.&lt;/p&gt;
+&lt;div id=&#34;barplots&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Barplots&lt;/h3&gt;
+&lt;p&gt;To generate a barplot we can use the &lt;code&gt;geom_bar&lt;/code&gt; geometry. The default is to count the number of each category and draw a bar. Here is the plot for the regions of the US.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;murders %&amp;gt;% ggplot(aes(region)) + geom_bar()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/example/03-example_files/figure-html/barplot-geom-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;We often already have a table with a distribution that we want to present as a barplot. Here is an example of such a table:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data(murders)
+tab &amp;lt;- murders %&amp;gt;%
+  count(region) %&amp;gt;%
+  mutate(proportion = n/sum(n))
+tab&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;##          region  n proportion
+## 1     Northeast  9  0.1764706
+## 2         South 17  0.3333333
+## 3 North Central 12  0.2352941
+## 4          West 13  0.2549020&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;We no longer want &lt;code&gt;geom_bar&lt;/code&gt; to count, but rather just plot a bar to the height provided by the &lt;code&gt;proportion&lt;/code&gt; variable. For this we need to provide &lt;code&gt;x&lt;/code&gt; (the categories) and &lt;code&gt;y&lt;/code&gt; (the values) and use the &lt;code&gt;stat=&#34;identity&#34;&lt;/code&gt; option. This tells R to just use the actual value in &lt;code&gt;proportion&lt;/code&gt; for the y aesthetic. This is only necessary when you’re telling R that you have your own field (&lt;code&gt;proportion&lt;/code&gt;) that you want to use instead of just the count.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;tab %&amp;gt;% ggplot(aes(x = region, y = proportion)) + geom_bar(stat = &amp;quot;identity&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/example/03-example_files/figure-html/region-freq-barplot-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;histograms-1&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Histograms&lt;/h3&gt;
+&lt;p&gt;To generate histograms we use &lt;code&gt;geom_histogram&lt;/code&gt;. By looking at the help file for this function, we learn that the only required argument is &lt;code&gt;x&lt;/code&gt;, the variable for which we will construct a histogram. We dropped the &lt;code&gt;x&lt;/code&gt; because we know it is the first argument.
+The code looks like this:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;heights %&amp;gt;%
+  filter(sex == &amp;quot;Female&amp;quot;) %&amp;gt;%
+  ggplot(aes(height)) +
+  geom_histogram()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;If we run the code above, it gives us a message:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;code&gt;stat_bin()&lt;/code&gt; using &lt;code&gt;bins = 30&lt;/code&gt;. Pick better value with
+&lt;code&gt;binwidth&lt;/code&gt;.
+We previously used a bin size of 1 inch (of observed height), so the code looks like this:&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;heights %&amp;gt;%
+  filter(sex == &amp;quot;Female&amp;quot;) %&amp;gt;%
+  ggplot(aes(height)) +
+  geom_histogram(binwidth = 1)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Finally, if for aesthetic reasons we want to add color, we use the arguments described in the help file. We also add labels and a title:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;heights %&amp;gt;%
+  filter(sex == &amp;quot;Female&amp;quot;) %&amp;gt;%
+  ggplot(aes(height)) +
+  geom_histogram(binwidth = 1, fill = &amp;quot;blue&amp;quot;, col = &amp;quot;black&amp;quot;) +
+  labs(x = &amp;quot;Male heights in inches&amp;quot;, title = &amp;quot;Histogram&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/example/03-example_files/figure-html/height-histogram-geom-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;density-plots&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Density plots&lt;/h3&gt;
+&lt;p&gt;To create a smooth density, we use the &lt;code&gt;geom_density&lt;/code&gt;. To make a smooth density plot with the data previously shown as a histogram we can use this code:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;heights %&amp;gt;%
+  filter(sex == &amp;quot;Female&amp;quot;) %&amp;gt;%
+  ggplot(aes(x = height)) +
+  geom_density()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;To fill in with color, we can use the &lt;code&gt;fill&lt;/code&gt; argument.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;heights %&amp;gt;%
+  filter(sex == &amp;quot;Female&amp;quot;) %&amp;gt;%
+  ggplot(aes(x = height)) +
+  geom_density(fill=&amp;quot;blue&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/example/03-example_files/figure-html/ggplot-density-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;To change the smoothness of the density, we use the &lt;code&gt;adjust&lt;/code&gt; argument to multiply the default value by that &lt;code&gt;adjust&lt;/code&gt;. For example, if we want the bandwidth to be twice as big we use:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;heights %&amp;gt;%
+  filter(sex == &amp;quot;Female&amp;quot;) %&amp;gt;%
+  ggplot(aes(x = height)) +
+  geom_density(fill=&amp;quot;blue&amp;quot;, adjust = 2)&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;boxplots&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Boxplots&lt;/h3&gt;
+&lt;p&gt;The geometry for boxplot is &lt;code&gt;geom_boxplot&lt;/code&gt;. As discussed, boxplots are useful for comparing distributions. For example, below are the previously shown heights for women, but compared to men. For this geometry, we need arguments &lt;code&gt;x&lt;/code&gt; as the categories, and &lt;code&gt;y&lt;/code&gt; as the values.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/example/03-example_files/figure-html/female-male-boxplots-geom-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Note that our x-axis is a categorical variable. The order is determined by either the factor variable levels in &lt;code&gt;heights&lt;/code&gt; or, if no levels are set, in the order in which the &lt;code&gt;sex&lt;/code&gt; variable first encounters them. Later on, we’ll learn how to change the ordering.&lt;/p&gt;
+&lt;p&gt;We can do much more with boxplots when we have more data. Right now, our &lt;code&gt;heights&lt;/code&gt; data has only two variables - &lt;code&gt;sex&lt;/code&gt; and &lt;code&gt;height&lt;/code&gt;. Let’s say we took the measurements over two different years - 2010 and 2020. That’s not in our data, so &lt;strong&gt;purely for exposition&lt;/strong&gt;, we’ll add it by randomly drawing a year for each observation. We’ll do this with &lt;code&gt;sample&lt;/code&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;heights = heights %&amp;gt;%
+  dplyr::mutate(year = sample(x = c(2010, 2020), size = n(), replace = TRUE, prob = c(.5, .5)))
+head(heights)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;##      sex height year
+## 1   Male     75 2020
+## 2   Male     70 2010
+## 3   Male     68 2020
+## 4   Male     74 2010
+## 5   Male     61 2020
+## 6 Female     65 2010&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Now, let’s look at the boxplot of heights by sex, but broken out by year. We can do this by adding &lt;code&gt;year&lt;/code&gt; as an aesthetic mapping. Because our &lt;code&gt;year&lt;/code&gt; variable is an integer, R will start by thinking it’s a continuous numeric, but we want to treat it as a discrete variable. So, we wrap it in &lt;code&gt;as.factor()&lt;/code&gt; to force R to recognize it as a discrete variable.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;heights %&amp;gt;% ggplot(aes(x = sex, y = height, fill = as.factor(year))) +
+  geom_boxplot() +
+  labs(fill = &amp;#39;Year&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/example/03-example_files/figure-html/addYear-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Now we have each sex broken out by year! Since we randomly assigned year to our data (and didn’t actually take samples in two different decades), the distribution between years and within sex is nearly identical.&lt;/p&gt;
+&lt;p&gt;What if we wanted to have &lt;code&gt;year&lt;/code&gt; on the x-axis, but then put the sex boxplots next to each other. This would let us compare the difference in heights by sex over the two sample years.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;heights %&amp;gt;% ggplot(aes(x = year, y = height, fill = sex)) +
+  geom_boxplot() +
+  labs(fill = &amp;#39;Sex&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/example/03-example_files/figure-html/addYear2-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Woah. Wait. What? Remember, in our data, &lt;code&gt;class(heights$year)&lt;/code&gt; is numeric, so when we ask R to put &lt;code&gt;year&lt;/code&gt; on the x-axis, it thinks it’s plotting a number. It gives us a nonsense x-axis. How do we fix this? We force &lt;code&gt;as.factor(year)&lt;/code&gt; to tell R that yes, &lt;code&gt;year&lt;/code&gt; is a categorical variable. Note that we &lt;strong&gt;didn’t&lt;/strong&gt; have to use &lt;code&gt;as.factor(sex)&lt;/code&gt; - that’s because sex is already a categorical variable.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;heights %&amp;gt;% ggplot(aes(x = as.factor(year), y = height, fill = sex)) +
+  geom_boxplot() +
+  labs(fill = &amp;#39;Sex&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/example/03-example_files/figure-html/unnamed-chunk-21-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Now we can see the height difference by sex, by year.&lt;/p&gt;
+&lt;p&gt;We will explore more with boxplots and colors in our next lecture.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;try-it&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Try it!&lt;/h2&gt;
+&lt;div class=&#34;fyi&#34;&gt;
+&lt;p&gt;&lt;strong&gt;Try it!&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;TRY IT&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Start by loading the &lt;strong&gt;dplyr&lt;/strong&gt; and &lt;strong&gt;ggplot2&lt;/strong&gt; library as well as the &lt;code&gt;murders&lt;/code&gt; and &lt;code&gt;heights&lt;/code&gt; data.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(dplyr)
+library(ggplot2)
+library(dslabs)
+data(heights)
+data(murders)&lt;/code&gt;&lt;/pre&gt;
+&lt;ol style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;First, create a new variable in &lt;code&gt;murders&lt;/code&gt; that has &lt;code&gt;murders_per_capita&lt;/code&gt;.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;murders = murders %&amp;gt;%
+  mutate(........)&lt;/code&gt;&lt;/pre&gt;
+&lt;ol start=&#34;2&#34; style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;&lt;p&gt;Make a histogram of murders per capita. Use the default values for color and fill, but make sure you label the x-axis with a meaningful label.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Make the same histogram, but set the fill aesthetic to MSU Green and the color to black.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Do the same, but make it a smooth density plot&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Finally, plot the smooth density but use a &lt;code&gt;fill&lt;/code&gt; aesthetic mapping so that each &lt;code&gt;region&lt;/code&gt;’s density is shown. Set a meaningful title on the legend, and make sure you make the density transparent so we can see all of the region’s densities (see &lt;code&gt;alpha&lt;/code&gt; aesthetic).&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Now, try making a boxplot to show the same data - the distribution across states of murders per capita by region. What is the average Northeastern state’s murder rate? What about the average Southern state?&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&#34;footnotes&#34;&gt;
+&lt;hr /&gt;
+&lt;ol&gt;
+&lt;li id=&#34;fn1&#34;&gt;&lt;p&gt;Keep in mind that discrete numeric data can be considered ordinal. Although this is technically true, we usually reserve the term ordinal data for variables belonging to a small number of different groups, with each group having many members. In contrast, when we have many groups with few cases in each group, we typically refer to them as discrete numerical variables. So, for example, the number of packs of cigarettes a person smokes a day, rounded to the closest pack, would be considered ordinal, while the actual number of cigarettes would be considered a numerical variable. But, indeed, there are examples that can be considered both numerical and ordinal when it comes to visualizing data.&lt;a href=&#34;#fnref1&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Applying ggplot2 to Real Data</title>
+      <link>https://ssc442.netlify.app/assignment/03-assignment/</link>
+      <pubDate>Tue, 14 Sep 2021 00:00:00 +0000</pubDate>
+      <guid>https://ssc442.netlify.app/assignment/03-assignment/</guid>
+      <description>
+&lt;script src=&#34;https://ssc442.netlify.app/rmarkdown-libs/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
+
+&lt;div id=&#34;TOC&#34;&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#preliminaries&#34;&gt;Preliminaries&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#background&#34;&gt;Background&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#r-markdown&#34;&gt;R Markdown&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#data-prep&#34;&gt;Data Prep&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#getting-help&#34;&gt;Getting help&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#turning-everything-in&#34;&gt;Turning everything in&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+
+&lt;div class=&#34;fyi&#34;&gt;
+&lt;p&gt;&lt;strong&gt;NOTE&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;You must turn in a PDF document of your &lt;code&gt;R Markdown&lt;/code&gt; code. Submit this to D2L by 11:59 PM Eastern Time on Sunday, September 19th.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;preliminaries&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Preliminaries&lt;/h2&gt;
+&lt;p&gt;As always, we will first have to load &lt;code&gt;ggplot2&lt;/code&gt;. To do this, we will load the tidyverse by running this code:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;library(tidyverse)&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;background&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Background&lt;/h2&gt;
+&lt;p&gt;The New York City Department of Buildings (DOB) maintains a list of construction sites that have been categorized as “essential” during the city’s shelter-in-place pandemic order. They’ve provided &lt;a href=&#34;https://www1.nyc.gov/assets/buildings/html/essential-active-construction.html&#34;&gt;an interactive map here&lt;/a&gt; where you can see the different projects. There’s also a link there to download the complete dataset.&lt;/p&gt;
+&lt;p&gt;For this exercise, you’re going to use this data to visualize the amounts or proportions of different types of essential projects in the five boroughs of New York City (Brooklyn, Manhattan, the Bronx, Queens, and Staten Island).&lt;/p&gt;
+&lt;p&gt;As you hopefully figured out by now, you’ll be doing all your &lt;code&gt;R&lt;/code&gt; work in &lt;code&gt;R Markdown&lt;/code&gt;. You can use an RStudio Project to keep your files well organized (either on your computer or on RStudio.cloud), but this is optional. If you decide to do so, either create a new project for this exercise only, or make a project for all your work in this class.&lt;/p&gt;
+&lt;p&gt;You’ll need to download one CSV file and put it somewhere on your computer or upload it to RStudio.cloud—preferably in a folder named &lt;code&gt;data&lt;/code&gt; in your project folder. You can download the data from &lt;a href=&#34;https://www1.nyc.gov/assets/buildings/html/essential-active-construction.html&#34;&gt;the DOB’s map&lt;/a&gt;, or use this link to get it directly:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://ssc442.netlify.app/data/EssentialConstruction.csv&#34;&gt;&lt;i class=&#34;fas fa-file-csv&#34;&gt;&lt;/i&gt; &lt;code&gt;EssentialConstruction.csv&lt;/code&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div id=&#34;r-markdown&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;R Markdown&lt;/h3&gt;
+&lt;p&gt;Writing regular text with &lt;code&gt;R Markdown&lt;/code&gt; follows the rules of Markdown. You can make lists; different-size headers, etc. This should be relatively straightfoward. We talked about a few Markdown features like &lt;strong&gt;bold&lt;/strong&gt; and &lt;em&gt;italics&lt;/em&gt; in class. See &lt;a href=&#34;https://ssc442kirkpatrick.netlify.app/resource/&#34;&gt;this resource for more formatting&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;You’ll also need to insert your own code chunks where needed. Rather than typing them by hand (that’s tedious and you might miscount the number of backticks!), use the “Insert” button at the top of the editing window, or type &lt;kbd&gt;ctrl&lt;/kbd&gt; + &lt;kbd&gt;alt&lt;/kbd&gt; + &lt;kbd&gt;i&lt;/kbd&gt; on Windows, or &lt;kbd&gt;⌘&lt;/kbd&gt; + &lt;kbd&gt;⌥&lt;/kbd&gt; + &lt;kbd&gt;i&lt;/kbd&gt; on macOS.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/img/assignments/insert-chunk-button.png&#34; width=&#34;19%&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;data-prep&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Data Prep&lt;/h3&gt;
+&lt;p&gt;Once you download the &lt;code&gt;EssentialConstruction.csv&lt;/code&gt; file and save it in your project folder, you can open it and start cleaning. I’ll help with that. I’ll give you a .Rmd that will get you started on the Exercises below. Download this and use it in place of your lab assignment template.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://ssc442.netlify.app/projects/02-lab/02-lab.Rmd&#34;&gt;&lt;i class=&#34;fab fa-r-project&#34;&gt;&lt;/i&gt; &lt;code&gt;02-lab.Rmd&lt;/code&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;NOTE: You must change the title to Lab Assignment 02&lt;/strong&gt;&lt;/p&gt;
+&lt;div class=&#34;fyi&#34;&gt;
+&lt;p&gt;&lt;strong&gt;Exercise 1 of 1: Essential pandemic construction&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Using the Lab 02 template above, do the following:&lt;/p&gt;
+&lt;p&gt;A. Show the count or proportion of approved projects by borough using a bar chart.&lt;/p&gt;
+&lt;p&gt;B. Show the count or proportion of approved projects by category using a lollipop chart. Not sure of what a lollipop chart is? Google &lt;code&gt;R ggplot lollipop&lt;/code&gt;. A huge portion of knowing how to code is knowing how to google, find examples, and figure out where to put your variables from your data!&lt;/p&gt;
+&lt;p&gt;C. Show the proportion of approved projects by borough and category &lt;em&gt;simultaneously&lt;/em&gt; using a heatmap.&lt;/p&gt;
+&lt;p&gt;You don’t need to make these super fancy, but if you’re feeling brave, experiment with adding a &lt;code&gt;labs()&lt;/code&gt; layer or changing fill colors with &lt;code&gt;scale_fill_manual()&lt;/code&gt; or with palettes.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Bonus&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Overlay the data from Part 1 above onto a map of NYC. For double bonus, color the boroughs.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;getting-help&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Getting help&lt;/h2&gt;
+&lt;p&gt;Use the SSC442 Slack if you get stuck (click the Slack logo at the top right of this website header).&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;turning-everything-in&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Turning everything in&lt;/h2&gt;
+&lt;p&gt;When you’re all done, click on the “Knit” button at the top of the editing window and create a PDF. Upload the PDF file to D2L.&lt;/p&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    
+    <item>
       <title>Introduction to Visualization</title>
       <link>https://ssc442.netlify.app/example/02-example/</link>
       <pubDate>Thu, 09 Sep 2021 00:00:00 +0000</pubDate>
@@ -1890,6 +2354,633 @@ mpg %&amp;gt;%
 &lt;li&gt;&lt;a href=&#34;https://github.com/erikgahner/PolData&#34;&gt;&lt;strong&gt;Erik Gahner’s list of political science datasets&lt;/strong&gt;&lt;/a&gt;: Huge list of useful datasets, divided by topic (governance, elections, policy, political elites, etc.)&lt;/li&gt;
 &lt;/ul&gt;&lt;/li&gt;
 &lt;/ul&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Effective Visualizations</title>
+      <link>https://ssc442.netlify.app/content/03-content/</link>
+      <pubDate>Tue, 14 Sep 2021 00:00:00 +0000</pubDate>
+      <guid>https://ssc442.netlify.app/content/03-content/</guid>
+      <description>
+&lt;script src=&#34;https://ssc442.netlify.app/rmarkdown-libs/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
+
+&lt;div id=&#34;TOC&#34;&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#readings&#34;&gt;Readings&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#guiding-questions&#34;&gt;Guiding Questions&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#ggplot2&#34;&gt;ggplot2&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#the-components-of-a-graph&#34;&gt;The components of a graph&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#ggplot-objects&#34;&gt;&lt;code&gt;ggplot&lt;/code&gt; objects&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#geometries-briefly&#34;&gt;Geometries (briefly)&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#aesthetic-mappings&#34;&gt;Aesthetic mappings&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#aesthetics-in-general&#34;&gt;Aesthetics in general&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#now-back-to-aesthetic-mappings&#34;&gt;Now, back to aesthetic mappings&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#legends-for-aesthetics&#34;&gt;Legends for aesthetics&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#annotation-layers&#34;&gt;Annotation Layers&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#global-versus-local-aesthetic-mappings&#34;&gt;Global versus local aesthetic mappings&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#try-it&#34;&gt;Try it!&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#some-quirky-stuff&#34;&gt;Some Quirky Stuff&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#scales-and-transformations&#34;&gt;Scales and transformations&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#log-transformations&#34;&gt;Log transformations&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#transforming-data-vs.-transforming-using-scale_...&#34;&gt;Transforming data vs. transforming using &lt;code&gt;scale_...&lt;/code&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#axis-labels-legends-and-titles&#34;&gt;Axis labels, legends, and titles&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#changing-axis-titles&#34;&gt;Changing axis titles&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#titles&#34;&gt;Titles&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#axis-ticks&#34;&gt;Axis ticks&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#additional-geometries&#34;&gt;Additional geometries&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#geom_line&#34;&gt;&lt;code&gt;geom_line&lt;/code&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#using-different-data-with-different-geometries&#34;&gt;Using different data with different geometries&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#multiple-geometries&#34;&gt;Multiple geometries&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#try-it-1&#34;&gt;Try it!&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+
+&lt;div id=&#34;readings&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Readings&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;This page.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div id=&#34;guiding-questions&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Guiding Questions&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;No guiding questions today; we’re mostly learning some technical aspects of &lt;code&gt;ggplot&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;ggplot2&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;ggplot2&lt;/h1&gt;
+&lt;p&gt;Exploratory data visualization is perhaps the greatest strength of &lt;code&gt;R&lt;/code&gt;. One can quickly go from idea to data to plot with a unique balance of flexibility and ease. For example, Excel may be easier than &lt;code&gt;R&lt;/code&gt; for some plots, but it is nowhere near as flexible. &lt;code&gt;D3.js&lt;/code&gt; may be more flexible and powerful than &lt;code&gt;R&lt;/code&gt;, but it takes much longer to generate a plot. One of the reasons we use &lt;code&gt;R&lt;/code&gt; is its incredible flexibility &lt;strong&gt;and&lt;/strong&gt; ease.&lt;/p&gt;
+&lt;p&gt;Throughout this course, we will be creating plots using the &lt;strong&gt;ggplot2&lt;/strong&gt;&lt;a href=&#34;#fn1&#34; class=&#34;footnote-ref&#34; id=&#34;fnref1&#34;&gt;&lt;sup&gt;1&lt;/sup&gt;&lt;/a&gt; package.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(dplyr)
+library(ggplot2)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Many other approaches are available for creating plots in &lt;code&gt;R&lt;/code&gt;. In fact, the plotting capabilities that come with a basic installation of &lt;code&gt;R&lt;/code&gt; are already quite powerful. There are also other packages for creating graphics such as &lt;strong&gt;grid&lt;/strong&gt; and &lt;strong&gt;lattice&lt;/strong&gt;. We chose to use &lt;strong&gt;ggplot2&lt;/strong&gt; in this course because it breaks plots into components in a way that permits beginners to create relatively complex and aesthetically pleasing plots using syntax that is intuitive and comparatively easy to remember.&lt;/p&gt;
+&lt;p&gt;One reason &lt;strong&gt;ggplot2&lt;/strong&gt; is generally more intuitive for beginners is that it uses a so-called “grammar of graphics”&lt;a href=&#34;#fn2&#34; class=&#34;footnote-ref&#34; id=&#34;fnref2&#34;&gt;&lt;sup&gt;2&lt;/sup&gt;&lt;/a&gt;, the letters &lt;em&gt;gg&lt;/em&gt; in &lt;strong&gt;ggplot2&lt;/strong&gt;. This is analogous to the way learning grammar can help a beginner construct hundreds of different sentences by learning just a handful of verbs, nouns and adjectives without having to memorize each specific sentence. Similarly, by learning a handful of &lt;strong&gt;ggplot2&lt;/strong&gt; building blocks and its grammar, you will be able to create hundreds of different plots.&lt;/p&gt;
+&lt;p&gt;Another reason &lt;strong&gt;ggplot2&lt;/strong&gt; is easy for beginners is that its default behavior is carefully chosen to satisfy the great majority of cases and is visually pleasing. As a result, it is possible to create informative and elegant graphs with relatively simple and readable code.&lt;/p&gt;
+&lt;p&gt;One limitation is that &lt;strong&gt;ggplot2&lt;/strong&gt; is designed to work exclusively with data tables in tidy format (where rows are observations and columns are variables). However, a substantial percentage of datasets that beginners work with are in, or can be converted into, this format. An advantage of this approach is that, assuming that our data is tidy, &lt;strong&gt;ggplot2&lt;/strong&gt; simplifies plotting code and the learning of grammar for a variety of plots. You should review the previous content about tidy data if you are feeling lost.&lt;/p&gt;
+&lt;p&gt;To use &lt;strong&gt;ggplot2&lt;/strong&gt; you will have to learn several functions and arguments. These are hard to memorize, so we highly recommend you have the ggplot2 cheat sheet handy. You can get a copy here: &lt;a href=&#34;https://www.rstudio.com/wp-content/uploads/2015/03/ggplot2-cheatsheet.pdf&#34;&gt;https://www.rstudio.com/wp-content/uploads/2015/03/ggplot2-cheatsheet.pdf&lt;/a&gt; or simply perform an internet search for “ggplot2 cheat sheet”.&lt;/p&gt;
+&lt;div id=&#34;the-components-of-a-graph&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;The components of a graph&lt;/h2&gt;
+&lt;p&gt;We will eventually construct a graph that summarizes the US murders dataset that looks like this:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/content/03-content_files/figure-html/ggplot-example-plot-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;We can clearly see how much states vary across population size and the total number of murders. Not surprisingly, we also see a clear relationship between murder totals and population size. A state falling on the dashed grey line has the same murder rate as the US average. The four geographic regions are denoted with color, which depicts how most southern states have murder rates above the average.&lt;/p&gt;
+&lt;p&gt;This data visualization shows us pretty much all the information in the data table. The code needed to make this plot is relatively simple. We will learn to create the plot part by part.&lt;/p&gt;
+&lt;p&gt;The first step in learning &lt;strong&gt;ggplot2&lt;/strong&gt; is to be able to break a graph apart into components. Let’s break down the plot above and introduce some of the &lt;strong&gt;ggplot2&lt;/strong&gt; terminology. The main five components to note are:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;Data&lt;/strong&gt;: The US murders data table is being summarized. We refer to this as the &lt;strong&gt;data&lt;/strong&gt; component.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;Geometry&lt;/strong&gt;: The plot above is a scatterplot. This is referred to as the
+&lt;strong&gt;geometry&lt;/strong&gt; component. Other possible geometries are barplot, histogram, smooth densities, qqplot, boxplot, pie (ew!), and many, many more. We will learn about these later.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;Aesthetic mapping&lt;/strong&gt;: The plot uses several visual cues to represent the information provided by the dataset. The two most important cues in this plot are the point positions on the x-axis and y-axis, which represent population size and the total number of murders, respectively. Each point represents a different observation, and we &lt;em&gt;map&lt;/em&gt; data about these observations to visual cues like x- and y-scale. Color is another visual cue that we map to region. We refer to this as the &lt;strong&gt;aesthetic mapping&lt;/strong&gt; component. How we define the mapping depends on what &lt;strong&gt;geometry&lt;/strong&gt; we are using.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;Annotations&lt;/strong&gt;: These are things like axis labels, axis ticks (the lines along the axis at regular intervals or specific points of interest), axis scales (e.g. log-scale), titles, legends, etc.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;Style&lt;/strong&gt;: An overall appearance of the graph determined by fonts, color palattes, layout, blank spaces, and more.&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;We also note that:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;The points are labeled with the state abbreviations.&lt;/li&gt;
+&lt;li&gt;The range of the x-axis and y-axis appears to be defined by the range of the data. They are both on log-scales.&lt;/li&gt;
+&lt;li&gt;There are labels, a title, a legend, and we use the style of The Economist magazine.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;All of the flexibility and visualization power of &lt;code&gt;ggplot&lt;/code&gt; is contained in these four elements (plus your data)&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;ggplot-objects&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;&lt;code&gt;ggplot&lt;/code&gt; objects&lt;/h2&gt;
+&lt;p&gt;We will now construct the plot piece by piece.&lt;/p&gt;
+&lt;p&gt;We start by loading the dataset:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(dslabs)
+data(murders)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The first step in creating a &lt;strong&gt;ggplot2&lt;/strong&gt; graph is to define a &lt;code&gt;ggplot&lt;/code&gt; object. We do this with the function &lt;code&gt;ggplot&lt;/code&gt;, which initializes the graph. If we read the help file for this function, we see that the first argument is used to specify what data is associated with this object:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(data = murders)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;We can also pipe the data in as the first argument. So this line of code is equivalent to the one above:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;murders %&amp;gt;% ggplot()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/content/03-content_files/figure-html/ggplot-example-2-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;It renders a plot. But in this case, it renders a blank slate. The object was created and, because it was not assigned to an object, it was automatically evaluated. Of course, we can assign our plot to an object, for example like this:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p &amp;lt;- ggplot(data = murders)
+class(p)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;gg&amp;quot;     &amp;quot;ggplot&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;To render the plot associated with this object, we simply print the object &lt;code&gt;p&lt;/code&gt;. The following two lines of code each produce the same plot we see above:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;print(p)
+p&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;geometries-briefly&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Geometries (briefly)&lt;/h2&gt;
+&lt;p&gt;The plot above is incredibly boring (it’s only a blank slate). It’s boring because we didn’t tell &lt;code&gt;ggplot2&lt;/code&gt; what to do. In general, if &lt;code&gt;R&lt;/code&gt; is doing something unexpected, it’s because you (the user) failed to tell it what you had in &lt;em&gt;mind&lt;/em&gt;. Here, we want to make an actual plot, but we didn’t tell &lt;code&gt;R&lt;/code&gt; what sort of plot to make. In order to tell it what sort of plot we want, we use “geometries”.&lt;/p&gt;
+&lt;p&gt;Specifically, in &lt;code&gt;ggplot2&lt;/code&gt; we create graphs by adding geometry &lt;em&gt;layers&lt;/em&gt;. Layers can define geometries, compute summary statistics, define what scales to use, create annotations, or even change styles. To add layers, we use the symbol &lt;code&gt;+&lt;/code&gt;. In general, a line of code will look like this:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;code&gt;DATA %&amp;gt;% ggplot() + LAYER 1 + LAYER 2 + ... + LAYER N&lt;/code&gt;
+Usually, the first &lt;strong&gt;added&lt;/strong&gt; layer after &lt;code&gt;ggplot() +&lt;/code&gt; defines the geometry. After that, we may add additional geometries, we may rescale an axis, we may add annotations and labels, or we may change the style. For now, we want to make a scatterplot. What geometry do we use?&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Taking a quick look at the cheat sheet, we see that the function used to create plots with this geometry is &lt;code&gt;geom_point&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/example/02-example_files/ggplot2-cheatsheeta.png&#34; /&gt;
+&lt;img src=&#34;https://ssc442.netlify.app/example/02-example_files/ggplot2-cheatsheetb.png&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;(Image courtesy of RStudio&lt;a href=&#34;#fn3&#34; class=&#34;footnote-ref&#34; id=&#34;fnref3&#34;&gt;&lt;sup&gt;3&lt;/sup&gt;&lt;/a&gt;. CC-BY-4.0 license&lt;a href=&#34;#fn4&#34; class=&#34;footnote-ref&#34; id=&#34;fnref4&#34;&gt;&lt;sup&gt;4&lt;/sup&gt;&lt;/a&gt;.)&lt;/p&gt;
+&lt;!--(Source: [RStudio](https://github.com/rstudio/cheatsheets/raw/master/data-visualization-2.1.pdf))--&gt;
+&lt;p&gt;Geometry function names follow the pattern: &lt;code&gt;geom_X&lt;/code&gt; where X is the name of some specific geometry. Some examples include &lt;code&gt;geom_point&lt;/code&gt;, &lt;code&gt;geom_bar&lt;/code&gt;, and &lt;code&gt;geom_histogram&lt;/code&gt;. You’ve already seen a few of these. We will start with a scatterplot created using &lt;code&gt;geom_point()&lt;/code&gt; for now, then circle back to more geometries after we cover aesthetic mappings, layers, and annotations.&lt;/p&gt;
+&lt;p&gt;For &lt;code&gt;geom_point&lt;/code&gt; to run properly we need to provide data and an &lt;strong&gt;aesthetic mapping&lt;/strong&gt;. The simplest mapping for a scatter plot is to say we want one variable on the X-axis, and a different one on the Y-axis, so each point is an {X,Y} pair. That is an &lt;strong&gt;aesthetic mapping&lt;/strong&gt; because X and Y are &lt;strong&gt;aesthetics&lt;/strong&gt; in a &lt;code&gt;geom_point&lt;/code&gt; scatterplot.&lt;/p&gt;
+&lt;p&gt;We have already connected the object &lt;code&gt;p&lt;/code&gt; with the &lt;code&gt;murders&lt;/code&gt; data table, and if we add the layer &lt;code&gt;geom_point&lt;/code&gt; it defaults to using this data. To find out what mappings are expected, we read the &lt;strong&gt;Aesthetics&lt;/strong&gt; section of the help file &lt;code&gt;?geom_point&lt;/code&gt; help file:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;gt; Aesthetics
+&amp;gt;
+&amp;gt; geom_point understands the following aesthetics (required aesthetics are in bold):
+&amp;gt;
+&amp;gt; **x**
+&amp;gt;
+&amp;gt; **y**
+&amp;gt;
+&amp;gt; alpha
+&amp;gt;
+&amp;gt; colour
+&amp;gt;
+&amp;gt; fill
+&amp;gt;
+&amp;gt; group
+&amp;gt;
+&amp;gt; shape
+&amp;gt;
+&amp;gt; size
+&amp;gt;
+&amp;gt; stroke&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;and—although it does not show in bold above—we see that at least two arguments are required: &lt;code&gt;x&lt;/code&gt; and &lt;code&gt;y&lt;/code&gt;. You can’t have a &lt;code&gt;geom_point&lt;/code&gt; scatterplot unless you state what you want on the X and Y axes.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;aesthetic-mappings&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Aesthetic mappings&lt;/h2&gt;
+&lt;p&gt;&lt;strong&gt;Aesthetic mappings&lt;/strong&gt; describe how properties of the data connect with features of the graph, such as distance along an axis, size, or color. The &lt;code&gt;aes&lt;/code&gt; function connects data with what we see on the graph by defining aesthetic mappings and will be one of the functions you use most often when plotting. The outcome of the &lt;code&gt;aes&lt;/code&gt; function is often used as the argument of a geometry function. This example produces a scatterplot of population in millions (x-axis) versus total murders (y-axis):&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;murders %&amp;gt;% ggplot() +
+  geom_point(aes(x = population/10^6, y = total))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Instead of defining our plot from scratch, we can also add a layer to the &lt;code&gt;p&lt;/code&gt; object that was defined above as &lt;code&gt;p &amp;lt;- ggplot(data = murders)&lt;/code&gt;:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p + geom_point(aes(x = population/10^6, y = total))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/content/03-content_files/figure-html/ggplot-example-3-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;The scales and annotations like axis labels are defined by default when adding this layer (note the x-axis label is exactly what we wrote in the function call). Like &lt;strong&gt;dplyr&lt;/strong&gt; functions, &lt;code&gt;aes&lt;/code&gt; also uses the variable names from the object component: we can use &lt;code&gt;population&lt;/code&gt; and &lt;code&gt;total&lt;/code&gt; without having to call them as &lt;code&gt;murders$population&lt;/code&gt; and &lt;code&gt;murders$total&lt;/code&gt;. The behavior of recognizing the variables from the data component is quite specific to &lt;code&gt;aes&lt;/code&gt;. With most functions, if you try to access the values of &lt;code&gt;population&lt;/code&gt; or &lt;code&gt;total&lt;/code&gt; outside of &lt;code&gt;aes&lt;/code&gt; you receive an error.&lt;/p&gt;
+&lt;p&gt;Note that we did some rescaling within the &lt;code&gt;aes()&lt;/code&gt; call - we can do simple things like multiplication or division on the variable names in the &lt;code&gt;ggplot&lt;/code&gt; call. The axis labels reflect this. We will change the axis labels later.&lt;/p&gt;
+&lt;p&gt;The &lt;strong&gt;aesthetic mappings&lt;/strong&gt; are very powerful - changing the variable in &lt;code&gt;x=&lt;/code&gt; or &lt;code&gt;y=&lt;/code&gt; changes the meaning of the plot entirely. We’ll come back to additional &lt;strong&gt;aesthetic mappings&lt;/strong&gt; once we talk about aesthetics in general.&lt;/p&gt;
+&lt;div id=&#34;aesthetics-in-general&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Aesthetics in general&lt;/h3&gt;
+&lt;p&gt;Even without mappings, a plots aesthetics can be useful. Things like color, fill, alpha, and size are aesthetics that can be changed.&lt;/p&gt;
+&lt;p&gt;Let’s say we want larger points in our scatterplot. The &lt;code&gt;size&lt;/code&gt; aesthetic can be used to set the size. The scale of &lt;code&gt;size&lt;/code&gt; is “multiples of the defaults” (so &lt;code&gt;size = 1&lt;/code&gt; is the default)&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p + geom_point(aes(x = population/10^6, y = total), size = 3)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/content/03-content_files/figure-html/ggplot-example-5-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;size&lt;/code&gt; is &lt;strong&gt;not&lt;/strong&gt; a mapping so it is &lt;strong&gt;not&lt;/strong&gt; in the &lt;code&gt;aes()&lt;/code&gt; part: whereas mappings use data from specific observations and need to be inside &lt;code&gt;aes()&lt;/code&gt;, operations we want to affect all the points the same way do not need to be included inside &lt;code&gt;aes&lt;/code&gt;. We’ll see what happens if &lt;code&gt;size&lt;/code&gt; is inside &lt;code&gt;aes(size = xxx)&lt;/code&gt; in a second.&lt;/p&gt;
+&lt;p&gt;We can change the &lt;code&gt;shape&lt;/code&gt; to one of the many different base-R options found &lt;a href=&#34;http://www.sthda.com/english/wiki/r-plot-pch-symbols-the-different-point-shapes-available-in-r&#34;&gt;here&lt;/a&gt;:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p + geom_point(aes(x = population/10^6, y = total), size = 3, shape = 17)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/content/03-content_files/figure-html/ggplot-example-5shape-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;We can also change the &lt;code&gt;fill&lt;/code&gt; and the &lt;code&gt;color&lt;/code&gt;:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p + geom_point(aes(x = population/10^6, y = total), size = 4, shape = 23, fill = &amp;#39;#18453B&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/content/03-content_files/figure-html/ggplot-example-5b-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;fill&lt;/code&gt; can take a common name like &lt;code&gt;&#39;green&#39;&lt;/code&gt;, or can take a hex color like &lt;code&gt;&#39;#18453B&#39;&lt;/code&gt;, which is &lt;a href=&#34;https://brand.msu.edu/design-visual/index.html#color&#34;&gt;MSU Green according to MSU’s branding site&lt;/a&gt;. You can also find &lt;a href=&#34;https://youtu.be/0BxNHwJi1y4&#34;&gt;UM Maize&lt;/a&gt; and &lt;a href=&#34;https://youtu.be/dQw4w9WgXcQ&#34;&gt;OSU Scarlet&lt;/a&gt; on respective branding pages, or google “XXX color hex.” We’ll learn how to build a color palatte later on.&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;color&lt;/code&gt; (or &lt;code&gt;colour&lt;/code&gt;, same thing because &lt;code&gt;ggplot&lt;/code&gt; creators allow both spellings) is a little tricky with points - it changes the outline of the geometry rather than the fill color, but in &lt;code&gt;geom_point()&lt;/code&gt; most shapes are only the outline, including the default. This is more useful with, say, a barplot where the outline and the fill might be different colors. Still, shapes 21-25 have both &lt;code&gt;fill&lt;/code&gt; and &lt;code&gt;color&lt;/code&gt;:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p + geom_point(aes(x = population/10^6, y = total), size = 5, shape = 23, fill = &amp;#39;#18453B&amp;#39;, color = &amp;#39;white&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/content/03-content_files/figure-html/ggplot-example-5c-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;The &lt;code&gt;color = &#39;white&#39;&lt;/code&gt; makes the outline of the shape white, which you can see if you look closely in the areas where the shapes overlap. This only works with shapes 21-25, or any other geometry that has both an outline and a fill.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;now-back-to-aesthetic-mappings&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Now, back to aesthetic mappings&lt;/h3&gt;
+&lt;p&gt;Now that we’ve seen a few aesthetics (and know we can find more by looking at which aesthetics work with our geometry in the help file), let’s return to the power of aesthetic mappings.&lt;/p&gt;
+&lt;p&gt;An &lt;strong&gt;aesthetic mapping&lt;/strong&gt; means we can vary an aesthetic (like fill or shape or size) according to some &lt;strong&gt;variable in our data&lt;/strong&gt;. This opens up a world of possibilities! Let’s try adding to our &lt;code&gt;x&lt;/code&gt; and &lt;code&gt;y&lt;/code&gt; aesthetics with a &lt;code&gt;color&lt;/code&gt; aesthetic (since points respond to &lt;code&gt;color&lt;/code&gt; better than &lt;code&gt;fill&lt;/code&gt;) that varies by &lt;code&gt;region&lt;/code&gt;, which is a column in our data:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p + geom_point(aes(x = population/10^6, y = total, color = region), size = 3)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/content/03-content_files/figure-html/ggplot-example-color-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;We include &lt;code&gt;color=region&lt;/code&gt; &lt;strong&gt;inside&lt;/strong&gt; the &lt;code&gt;aes&lt;/code&gt; call, which tells R to find a variable called &lt;code&gt;region&lt;/code&gt; and change color based on that. R will choose a somewhat ghastly color palatte, and &lt;strong&gt;every&lt;/strong&gt; unique value in the data for &lt;code&gt;region&lt;/code&gt; will get a different color if the variable is discrete. If the variable is a continuous value, then &lt;code&gt;ggplot&lt;/code&gt; will automatically make a color ramp. Thus, &lt;strong&gt;discrete&lt;/strong&gt; and &lt;strong&gt;continuous&lt;/strong&gt; values for aesthetic mappings work differently.&lt;/p&gt;
+&lt;p&gt;Let’s see a useful example of a continuous aesthetic mapping to &lt;code&gt;color&lt;/code&gt;. In our data, we are making a scatterplot of population and total murders, which really just shows that states with higher populations have higher murders. What we really want is murders per capita (I think COVID taught us a lot about rates vs. levels like “cases” and “cases per 100,000 people”). We can create a variable of “murders per capita” on the fly. Since “murders per capita” is a very small number and hard to read, we’ll multiply by 100 so that we get “percent of population murdered per year”:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p + geom_point(aes(x = population/10^5, y = total, color = 100*total/population), size = 3)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/content/03-content_files/figure-html/ggplot-example-colfill-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;While the clear pattern of “more population means more murders” is still there, look at the outlier in light blue in the bottom left. With the color ramp, see how easy it is to see here that there is one location where murders per capita is quite high?&lt;/p&gt;
+&lt;p&gt;Note that &lt;code&gt;size&lt;/code&gt; is outside of &lt;code&gt;aes&lt;/code&gt; and is set to an explicit value, not to a variable. What if we set size to a variable in the data?&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p + geom_point(aes(x = population/10^6, y = total, color = region, size = population/10^6))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/content/03-content_files/figure-html/ggplot-example-color2-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;legends-for-aesthetics&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Legends for aesthetics&lt;/h3&gt;
+&lt;p&gt;Here we see yet another useful default behavior: &lt;strong&gt;ggplot2&lt;/strong&gt; automatically adds a legend that maps color to region, and size to population (which we scaled by 1,000,000). To avoid adding this legend we set the &lt;code&gt;geom_point&lt;/code&gt; argument &lt;code&gt;show.legend = FALSE&lt;/code&gt;. This removes both the &lt;code&gt;size&lt;/code&gt; and the &lt;code&gt;color&lt;/code&gt; legend.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p + geom_point(aes(x = population/10^6, y = total, color = region, size = population/10^6), show.legend = FALSE)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/content/03-content_files/figure-html/ggplot-example-color3-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Later on, when we get to &lt;strong&gt;annotation layers&lt;/strong&gt;, we’ll talk about controlling the legend text and layout. For now, we just need to know how to turn them off.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;annotation-layers&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Annotation Layers&lt;/h2&gt;
+&lt;p&gt;A second layer in the plot we wish to make involves adding a label to each point to identify the state. The &lt;code&gt;geom_label&lt;/code&gt; and &lt;code&gt;geom_text&lt;/code&gt; functions permit us to add text to the plot with and without a rectangle behind the text, respectively.&lt;/p&gt;
+&lt;p&gt;Because each point (each state in this case) has a label, we need an &lt;strong&gt;aesthetic mapping&lt;/strong&gt; to make the connection between points and labels. By reading the help file &lt;code&gt;?geom_text&lt;/code&gt;, we learn that we supply the mapping between point and label through the &lt;code&gt;label&lt;/code&gt; argument of &lt;code&gt;aes&lt;/code&gt;. That is, &lt;code&gt;label&lt;/code&gt; is an &lt;strong&gt;aesthetic&lt;/strong&gt; that we can map. So the code looks like this:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p + geom_point(aes(x = population/10^6, y = total)) +
+  geom_text(aes(x = population/10^6, y = total, label = abb))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/content/03-content_files/figure-html/ggplot-example-4-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;We have successfully added a second layer to the plot.&lt;/p&gt;
+&lt;p&gt;As an example of the unique behavior of &lt;code&gt;aes&lt;/code&gt; mentioned above, note that this call:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p + geom_point(aes(x = population/10^6, y = total)) +
+  geom_text(aes(population/10^6, total, label = abb))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;is fine, whereas this call:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p + geom_point(aes(x = population/10^6, y = total)) +
+  geom_text(aes(population/10^6, total), label = abb)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;will give you an error since &lt;code&gt;abb&lt;/code&gt; is not found because it is outside of the &lt;code&gt;aes&lt;/code&gt; function. The layer &lt;code&gt;geom_text&lt;/code&gt; does not know where to find &lt;code&gt;abb&lt;/code&gt; since it is a column name and not a global variable, and &lt;code&gt;ggplot&lt;/code&gt; does not look for column names for non-mapped aesthetics. For a trivial example:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p + geom_point(aes(x = population/10^6, y = total)) +
+  geom_text(aes(population/10^6, total), label = &amp;#39;abb&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/content/03-content_files/figure-html/unnamed-chunk-9-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;div id=&#34;global-versus-local-aesthetic-mappings&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Global versus local aesthetic mappings&lt;/h3&gt;
+&lt;p&gt;In the previous line of code, we define the mapping &lt;code&gt;aes(population/10^6, total)&lt;/code&gt; twice, once in each geometry. We can avoid this by using a &lt;em&gt;global&lt;/em&gt; aesthetic mapping. We can do this when we define the blank slate &lt;code&gt;ggplot&lt;/code&gt; object. Remember that the function &lt;code&gt;ggplot&lt;/code&gt; contains an argument that permits us to define aesthetic mappings:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;args(ggplot)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## function (data = NULL, mapping = aes(), ..., environment = parent.frame()) 
+## NULL&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;If we define a mapping in &lt;code&gt;ggplot&lt;/code&gt;, all the geometries that are added as layers will default to this mapping. We redefine &lt;code&gt;p&lt;/code&gt;:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p &amp;lt;- murders %&amp;gt;% ggplot(aes(x = population/10^6, y = total, label = abb))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;and then we can simply write the following code to produce the previous plot:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p + geom_point(size = 3) +
+  geom_text(nudge_x = 1.5) # offsets the label&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;We keep the &lt;code&gt;size&lt;/code&gt; and &lt;code&gt;nudge_x&lt;/code&gt; arguments in &lt;code&gt;geom_point&lt;/code&gt; and &lt;code&gt;geom_text&lt;/code&gt;, respectively, because we want to only increase the size of points and only nudge the labels. If we put those arguments in &lt;code&gt;aes&lt;/code&gt; then they would apply to both plots. Also note that the &lt;code&gt;geom_point&lt;/code&gt; function does not need a &lt;code&gt;label&lt;/code&gt; argument and therefore ignores that aesthetic.&lt;/p&gt;
+&lt;p&gt;If necessary, we can override the global mapping by defining a new mapping within each layer. These &lt;em&gt;local&lt;/em&gt; definitions override the &lt;em&gt;global&lt;/em&gt;. Here is an example:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p + geom_point(size = 3) +
+  geom_text(aes(x = 10, y = 800, label = &amp;quot;Hello there!&amp;quot;))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/content/03-content_files/figure-html/ggplot-example-8-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Clearly, the second call to &lt;code&gt;geom_text&lt;/code&gt; does not use &lt;code&gt;x = population&lt;/code&gt; and &lt;code&gt;y = total&lt;/code&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;try-it&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Try it!&lt;/h2&gt;
+&lt;div class=&#34;fyi&#34;&gt;
+&lt;p&gt;Let’s break in to smaller groups and try playing with some of the aesthetics and aesthetic mappings. If we’re online, we’ll use Zoom Breakout Rooms. Each of the rooms have a room number which will correspond with one of the tasks below. If we’re in person (woohoo!), we’ll form the same number of groups in class.&lt;/p&gt;
+&lt;p&gt;In each group, one person should be the main coder - someone who has the packages like &lt;code&gt;dslabs&lt;/code&gt; installed and has successfully run the plots above. Each set of tasks ask you to learn about an aesthetic and put it into action with the &lt;code&gt;murder&lt;/code&gt; data. We’ll leave about 5 minutes to do the task, then have you come back and share your results with the class.&lt;/p&gt;
+&lt;p&gt;For each group, we’ll start with the following code:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;p + geom_point(aes(x = population/10^6, y = total)) +
+  geom_text(aes(x = population/10^6, y = total, label = abb))&lt;/code&gt;&lt;/pre&gt;
+&lt;ol style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;The &lt;code&gt;alpha&lt;/code&gt; aesthetic mapping.
+&lt;ol style=&#34;list-style-type: lower-alpha&#34;&gt;
+&lt;li&gt;The &lt;code&gt;alpha&lt;/code&gt; aesthetic can only take a number between 0 and 1. So first, in &lt;code&gt;murders&lt;/code&gt;, create a &lt;code&gt;murders_per_capita&lt;/code&gt; column by dividing &lt;code&gt;total&lt;/code&gt; by &lt;code&gt;population&lt;/code&gt;. Second, find the &lt;code&gt;max(murders$murders_per_capita)&lt;/code&gt; and then create another new column called &lt;code&gt;murders_per_capita_rescaled&lt;/code&gt; which divides &lt;code&gt;murders_per_capita&lt;/code&gt; by the max value. &lt;code&gt;murders_per_capita_rescaled&lt;/code&gt; will be between 0 and 1, with the value of 1 for the state with the max murder rate. This is a little hard to do on the fly in &lt;code&gt;ggplot&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;Set the &lt;code&gt;alpha&lt;/code&gt; aesthetic mapping to &lt;code&gt;murders_per_capita_rescaled&lt;/code&gt; for &lt;code&gt;geom_point&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;Turn off the legend using &lt;code&gt;show.legend=FALSE&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;Include the &lt;code&gt;geom_text&lt;/code&gt; labels, but make sure the aesthetic mapping does &lt;strong&gt;not&lt;/strong&gt; apply to the labels.&lt;/li&gt;
+&lt;li&gt;Use &lt;code&gt;nudge_x = 1.5&lt;/code&gt; as before to offset the labels.&lt;/li&gt;
+&lt;li&gt;Be able to explain the plot.
+&lt;ul&gt;
+&lt;li&gt;Does the &lt;code&gt;alpha&lt;/code&gt; aesthetic help present the data here? It’s OK if it doesn’t!&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ol&gt;&lt;/li&gt;
+&lt;li&gt;The &lt;code&gt;stroke&lt;/code&gt; aesthetic mapping.
+&lt;ol style=&#34;list-style-type: lower-alpha&#34;&gt;
+&lt;li&gt;The &lt;code&gt;stroke&lt;/code&gt; aesthetic works a bit like the &lt;code&gt;size&lt;/code&gt; aesthetic. It must be used with a plot that has both a border and a fill, like shapes 21-25, so use one of those.&lt;/li&gt;
+&lt;li&gt;Use the &lt;code&gt;stroke&lt;/code&gt; aesthetic mapping (meaning the stroke will change according to a value in the data) to set a different stroke size based on murders &lt;em&gt;per capita&lt;/em&gt;. You can create a murders per capita variable on the fly, or add it to your &lt;code&gt;murders&lt;/code&gt; data.
+&lt;ul&gt;
+&lt;li&gt;Include the text labels as before and use &lt;code&gt;nudge_x = 1.5&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;Make sure you’re only setting the aesthetic for the points on the scatterplot!&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ol&gt;&lt;/li&gt;
+&lt;li&gt;The &lt;code&gt;angle&lt;/code&gt; aesthetic
+&lt;ol style=&#34;list-style-type: lower-alpha&#34;&gt;
+&lt;li&gt;Using the &lt;code&gt;?geom_text&lt;/code&gt; help, note that &lt;code&gt;geom_text&lt;/code&gt; takes an aesthetic of &lt;code&gt;angle&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;Use the &lt;code&gt;angle&lt;/code&gt; aesthetic (not aesthetic mapping) in the appropriate place (e.g. on &lt;code&gt;geom_text&lt;/code&gt; and not on other geometries) to adjust the labels on our plot.&lt;/li&gt;
+&lt;li&gt;Now, try using the &lt;code&gt;angle&lt;/code&gt; aesthetic mapping by using the &lt;code&gt;total&lt;/code&gt; field as both the &lt;code&gt;y&lt;/code&gt; value &lt;strong&gt;and&lt;/strong&gt; the &lt;code&gt;angle&lt;/code&gt; value in the &lt;code&gt;geom_text&lt;/code&gt; layer.&lt;/li&gt;
+&lt;li&gt;Does using &lt;code&gt;angle&lt;/code&gt; as an aesthetic help? What about as an aesthetic mapping?&lt;/li&gt;
+&lt;/ol&gt;&lt;/li&gt;
+&lt;li&gt;The &lt;code&gt;color&lt;/code&gt; aesthetic mapping
+&lt;ol style=&#34;list-style-type: lower-alpha&#34;&gt;
+&lt;li&gt;Set the &lt;code&gt;color&lt;/code&gt; aesthetic mapping in &lt;code&gt;geom_text&lt;/code&gt; to &lt;code&gt;total/population&lt;/code&gt;.
+&lt;ul&gt;
+&lt;li&gt;Use the &lt;code&gt;nudge_x = 1.5&lt;/code&gt; aesthetic in &lt;code&gt;geom_text&lt;/code&gt; still&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;Try it with and without the legend using &lt;code&gt;show.legend&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;Be able to explain the plot.
+&lt;ul&gt;
+&lt;li&gt;Does the &lt;code&gt;color&lt;/code&gt; aesthetic mapping help present the data here?&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ol&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;geom_label&lt;/code&gt; and the &lt;code&gt;fill&lt;/code&gt; aesthetic
+&lt;ol style=&#34;list-style-type: lower-alpha&#34;&gt;
+&lt;li&gt;Looking at &lt;code&gt;?geom_label&lt;/code&gt; (which is the same help as &lt;code&gt;geom_text&lt;/code&gt;), we note that “The &lt;code&gt;fill&lt;/code&gt; aesthetic controls the backgreound colour of the label”.&lt;/li&gt;
+&lt;li&gt;Set the &lt;code&gt;fill&lt;/code&gt; aesthetic mapping to &lt;code&gt;total/population&lt;/code&gt; in &lt;code&gt;geom_label&lt;/code&gt; (replacing &lt;code&gt;geom_text&lt;/code&gt; but still using &lt;code&gt;nudge_x=1.5&lt;/code&gt;)&lt;/li&gt;
+&lt;li&gt;Set the &lt;code&gt;fill&lt;/code&gt; aesthetic (not mapping) to the color of your choice.&lt;/li&gt;
+&lt;li&gt;Be able to explain the plots.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;ul&gt;
+&lt;li&gt;Does the &lt;code&gt;fill&lt;/code&gt; aesthetic mapping help present the data here?&lt;/li&gt;
+&lt;li&gt;What color did you choose for the non-mapped fill aesthetic?&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;some-quirky-stuff&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Some Quirky Stuff&lt;/h2&gt;
+&lt;p&gt;Load up our &lt;code&gt;murders&lt;/code&gt; data&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(dslabs)
+library(ggplot2)
+library(dplyr)
+data(murders)
+p &amp;lt;- ggplot(data = murders, aes(x = population, y = total, label = abb))&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;scales-and-transformations&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Scales and transformations&lt;/h2&gt;
+&lt;div id=&#34;log-transformations&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Log transformations&lt;/h3&gt;
+&lt;p&gt;Last lecture, we re-scaled our population by 10^6 (millions), but still had a lot of variation because some states are tiny and some are huge. Sometimes, we want to have one (or both) of our axes scaled non-linearly. For instance, if we wanted to have our x-axis be in log base 10, then each major tick would represent a factor of 10 over the last. This is not the default, so this change needs to be added through a &lt;em&gt;scales&lt;/em&gt; layer. A quick look at the cheat sheet reveals the &lt;code&gt;scale_x_continuous&lt;/code&gt; function lets us control the behavior of scales. We use them like this:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p + geom_point(size = 3) +
+  geom_text(nudge_x = 0.05) +
+  scale_x_continuous(trans = &amp;quot;log10&amp;quot;) +
+  scale_y_continuous(trans = &amp;quot;log10&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/content/03-content_files/figure-html/ggplot-example-9-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;A couple of things here: adding things like &lt;code&gt;scale_x_continuous(...)&lt;/code&gt; operates on the whole plot. In some cases, order matters, but it doesn’t here, so we can throw &lt;code&gt;scale_x_continuous&lt;/code&gt; anywhere. Because we have altered the whole plot’s scale to be in the log-scale now, the &lt;em&gt;nudge&lt;/em&gt; must be made smaller. It is in log-base-10 units. Using &lt;code&gt;?scale_x_continuous&lt;/code&gt; brings us to the help for both &lt;code&gt;scale_x_continuous&lt;/code&gt; and &lt;code&gt;scale_y_continuous&lt;/code&gt;, which shows us the options for transformations &lt;code&gt;trans = ...&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;This particular transformation is so common that &lt;strong&gt;ggplot2&lt;/strong&gt; provides the specialized functions &lt;code&gt;scale_x_log10&lt;/code&gt; and &lt;code&gt;scale_y_log10&lt;/code&gt; which “inherit” (take the place of) the &lt;code&gt;scale_x_continuous&lt;/code&gt; functions but have log base 10 as default. We can use these to rewrite the code like this:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p + geom_point(size = 3) +
+  geom_text(nudge_x = 0.05) +
+  scale_x_log10() +
+  scale_y_log10()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/content/03-content_files/figure-html/unnamed-chunk-13-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;This can make a plot much easier to read, though one has to be sure to pay attention to the values on the axes. Plotting anything with very large outliers will almost always be better if done in log-scale. Adding the scale layer is an easy way to fix this.&lt;/p&gt;
+&lt;p&gt;We can also use one of many built-in transformations. Of note: &lt;strong&gt;reverse&lt;/strong&gt; just inverts the scale, which can be helpful, &lt;strong&gt;log&lt;/strong&gt; uses the natural log, &lt;strong&gt;sqrt&lt;/strong&gt; takes the square root (dropping anything with a negative value), &lt;strong&gt;reciprocal&lt;/strong&gt; takes 1/x. If your x-axis is in a date format, you can also scale to &lt;strong&gt;hms&lt;/strong&gt; (hour-minute-second) or &lt;strong&gt;date&lt;/strong&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;transforming-data-vs.-transforming-using-scale_...&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Transforming data vs. transforming using &lt;code&gt;scale_...&lt;/code&gt;&lt;/h3&gt;
+&lt;p&gt;We could simply take the log of population and log of total in the call and we’d get something very similar. Note that we had to override the aesthetic mapping set in &lt;code&gt;p&lt;/code&gt; in each of the geometries:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p + geom_point(aes(x = log(population, base=10), y = log(total, base=10)), size = 3) +
+  geom_text(aes(x = log(population, base=10), y = log(total, base=10)), nudge_x = 0.05)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/content/03-content_files/figure-html/unnamed-chunk-14-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;This avoids using &lt;code&gt;scale_x_continuous&lt;/code&gt; or it’s child function &lt;code&gt;scale_x_log10&lt;/code&gt;. One advantage to using &lt;code&gt;scale_x...&lt;/code&gt; is that the axes are correctly labeled. When we transform the data directly, the axis labels only show the transformed values, so 7,000,000 becomes 7.0. This could be confusing! We could update the axis labels to say “total murders (log base 10)” and “total population (log base 10)”, but that’s cumbersome. Using &lt;code&gt;scale_x...&lt;/code&gt; is a lot more refined and easy.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;axis-labels-legends-and-titles&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Axis labels, legends, and titles&lt;/h2&gt;
+&lt;p&gt;But let’s say we did want to re-name our x-axis label. Or maybe we don’t like that the variable column name is lower-case “p”.&lt;/p&gt;
+&lt;p&gt;As with many things in &lt;code&gt;ggplot&lt;/code&gt;, there are many ways to get the same result. We’ll go over one way of changing titles and labels, but know that there are many more.&lt;/p&gt;
+&lt;div id=&#34;changing-axis-titles&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Changing axis titles&lt;/h3&gt;
+&lt;p&gt;We’ll use the &lt;code&gt;labs(...)&lt;/code&gt; annotation layer to do this, which is pretty straightforward. &lt;code&gt;?labs&lt;/code&gt; shows us what we can change, and while it looks pretty basic, the real meat is in the &lt;code&gt;...&lt;/code&gt; argument, which the help says is “A list of new name-value pairs”. This means we can re-define the label on anything that is an aesthetic mapping. X and Y are aesthetic mappings, so…&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p + geom_point(size = 3) +
+  geom_text(nudge_x = 0.05) +
+  scale_x_log10() +
+  scale_y_log10() +
+  labs(x = &amp;#39;Population&amp;#39;, y = &amp;#39;Total murders&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/content/03-content_files/figure-html/unnamed-chunk-15-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Now, let’s use an aesthetic mapping that generates a legend, like &lt;code&gt;color&lt;/code&gt;, and see what &lt;code&gt;labs&lt;/code&gt; renames:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p + geom_point(aes(color = region), size = 3) +
+  geom_text(nudge_x = 0.05) +
+  scale_x_log10() +
+  scale_y_log10() +
+  labs(x = &amp;#39;Population&amp;#39;, y = &amp;#39;Total murders&amp;#39;, color = &amp;#39;US Region&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/content/03-content_files/figure-html/unnamed-chunk-16-1.png&#34; width=&#34;672&#34; /&gt;
+We can rename the aesthetic mapping-relevant label using &lt;code&gt;labs&lt;/code&gt;. Even if there are multiple mapped aesthetics:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p + geom_point(aes(color = region, size = total/population)) +
+  geom_text(nudge_x = 0.05) +
+  scale_x_log10() +
+  scale_y_log10() +
+  labs(x = &amp;#39;Population&amp;#39;, y = &amp;#39;Total murders&amp;#39;, color = &amp;#39;US Region&amp;#39;, size = &amp;#39;Murder rate&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/content/03-content_files/figure-html/unnamed-chunk-17-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;titles&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Titles&lt;/h3&gt;
+&lt;p&gt;In &lt;code&gt;?labs&lt;/code&gt;, we also see some things that look like titles and captions. We can include those:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p + geom_point(aes(color = region, size = total/population)) +
+  geom_text(nudge_x = 0.05) +
+  scale_x_log10() +
+  scale_y_log10() +
+  labs(x = &amp;#39;Population&amp;#39;, y = &amp;#39;Total murders&amp;#39;, color = &amp;#39;US Region&amp;#39;, size = &amp;#39;Murder rate&amp;#39;,
+       title = &amp;#39;This is a title&amp;#39;, subtitle = &amp;#39;This is a subtitle&amp;#39;, caption = &amp;#39;This is a caption&amp;#39;, tag = &amp;#39;This is a tag&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/content/03-content_files/figure-html/unnamed-chunk-18-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Now that you know how, &lt;strong&gt;always label your plots with at least a title and have meaningful axis and legend labels&lt;/strong&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;axis-ticks&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Axis ticks&lt;/h2&gt;
+&lt;p&gt;In addition to the axis labels, we may want to format or change the axis tick labels (like “1e+06” above) or even where the tick marks and lines are drawn. If we don’t specify anything, the axis labels and tick marks are drawn as best as &lt;code&gt;ggplot&lt;/code&gt; can do, but we can change this. This might be especially useful if our data has some meaningful cutoffs that aren’t found by the default, or we just don’t like where the marks fall or how they are labeled. This is easy to fix with &lt;code&gt;ggplot&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;To change the tick mark labels, we have to set the tick mark locations. Then we can set a label for each tick mark. Let’s go back to our &lt;code&gt;murders&lt;/code&gt; data and, for simplicity, take the log transformation off the Y axis. We’ll use &lt;code&gt;scale_y_continuous&lt;/code&gt; to tell R &lt;em&gt;where&lt;/em&gt; to put the breaks (&lt;code&gt;breaks =&lt;/code&gt;) and &lt;em&gt;what to label&lt;/em&gt; the breaks. We have to give it one label for every break. Let’s say we just want a line at the 500’s and let’s say we want to (absurdly) use written numerics for each of the Y-axis lines. Since &lt;code&gt;scale_y_log10&lt;/code&gt; &lt;strong&gt;inherits from&lt;/strong&gt; &lt;code&gt;scale_y_continuous&lt;/code&gt;, we can just use that and add the breaks and labels:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p + geom_point(aes(color = region), size = 3) +
+  geom_text(nudge_x = .05) +
+  scale_x_log10() +
+  scale_y_log10(breaks = c(0,50, 100, 500,1000,1500),
+                     labels = c(&amp;#39;Zero&amp;#39;,&amp;#39;Fifty&amp;#39;,&amp;#39;One hundred&amp;#39;,&amp;#39;Five hundred&amp;#39;,&amp;#39;One thousand&amp;#39;,&amp;#39;Fifteen hundred&amp;#39;)) +
+  labs(x = &amp;#39;Population&amp;#39;, y = &amp;#39;Total murders&amp;#39;, color = &amp;#39;US Region&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/content/03-content_files/figure-html/unnamed-chunk-19-1.png&#34; width=&#34;672&#34; /&gt;
+We have manually set both the location and the label for the y-axis. Note that R filled in the in-between “minor” tick lines, but we can take those out. Since we are setting the location of the lines, we can do anything we want:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p + geom_point(aes(color = region), size = 3) +
+  geom_text(nudge_x = .05) +
+  scale_x_log10() +
+  scale_y_log10(breaks = c(0,50, 100, 721, 1000,1500),
+                     labels = c(&amp;#39;Zero&amp;#39;,&amp;#39;Fifty&amp;#39;,&amp;#39;One hundred&amp;#39;,&amp;#39;Seven hundred twenty one&amp;#39;,&amp;#39;One thousand&amp;#39;,&amp;#39;Fifteen hundred&amp;#39;),
+                     minor_breaks = NULL) +
+  labs(x = &amp;#39;Population&amp;#39;, y = &amp;#39;Total murders&amp;#39;, color = &amp;#39;US Region&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/content/03-content_files/figure-html/unnamed-chunk-20-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;So we can now define where axis tick lines should lie and how they should be labeled.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;additional-geometries&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Additional geometries&lt;/h2&gt;
+&lt;p&gt;Let’s say we are happy with our axis tick locations, but we want to add a single additional line. Maybe we want to divide at 1,000,000 population (a vertical line at 1,000,000) becuase we think those over 1,000,000 are somehow different, and we want to call attention to the data around that point. As a more general example, if we were to plot, say, car accidents by age, we would maybe want to label age 21, when people can legally purchase alcohol (and subsequently cause car accidents).&lt;/p&gt;
+&lt;p&gt;This brings us to our first additional geometry beyond &lt;code&gt;geom_point&lt;/code&gt; (OK, we used &lt;code&gt;geom_text&lt;/code&gt;, but that’s more of an annotation). &lt;code&gt;geom_vline&lt;/code&gt; lets us add a single vertical line (without aesthetic mappings). If we look at &lt;code&gt;?geom_vline&lt;/code&gt; we see that it requires ones aesthetic:&lt;code&gt;xintercept&lt;/code&gt;. It also takes aesthetics like color and size, and introduces the &lt;code&gt;linetype&lt;/code&gt; aesthetic:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p + geom_point(aes(color = region), size = 3) +
+  geom_text(nudge_x = .05) +
+  geom_vline(aes(xintercept = 1000000), col = &amp;#39;red&amp;#39;, size = 2, linetype = 2) +
+  scale_x_log10() +
+  scale_y_log10(breaks = c(0,50, 100, 721, 1000,1500),
+                     labels = c(&amp;#39;Zero&amp;#39;,&amp;#39;Fifty&amp;#39;,&amp;#39;One hundred&amp;#39;,&amp;#39;Seven hundred twenty one&amp;#39;,&amp;#39;One thousand&amp;#39;,&amp;#39;Fifteen hundred&amp;#39;),
+                     minor_breaks = NULL) +
+  labs(x = &amp;#39;Population&amp;#39;, y = &amp;#39;Total murders&amp;#39;, color = &amp;#39;US Region&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/content/03-content_files/figure-html/unnamed-chunk-21-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Combining geometries is as easy as adding the layers with &lt;code&gt;+&lt;/code&gt;.&lt;/p&gt;
+&lt;div id=&#34;geom_line&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;&lt;code&gt;geom_line&lt;/code&gt;&lt;/h3&gt;
+&lt;p&gt;For a good old line plot, we use the line geometry at &lt;code&gt;geom_line&lt;/code&gt;. The help for &lt;code&gt;?geom_line&lt;/code&gt; tells us that we need an x and a y aesthetic (much like &lt;code&gt;geom_points&lt;/code&gt;). Since our &lt;code&gt;murders&lt;/code&gt; data isn’t really suited to a line graph, we’ll use a daily stock price. We’ll get this using &lt;code&gt;tidyquant&lt;/code&gt;, which pulls stock prices from Yahoo Finance and maintains the “tidy” format. You’ll need to &lt;code&gt;install.packages(&#39;tidyquant&#39;)&lt;/code&gt; before you run this the first time.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(tidyquant)
+AAPL = tq_get(&amp;quot;AAPL&amp;quot;, from = &amp;#39;2009-01-01&amp;#39;, to = &amp;#39;2021-08-01&amp;#39;, get = &amp;#39;stock.prices&amp;#39;)
+head(AAPL)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 6 × 8
+##   symbol date        open  high   low close     volume adjusted
+##   &amp;lt;chr&amp;gt;  &amp;lt;date&amp;gt;     &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt;      &amp;lt;dbl&amp;gt;    &amp;lt;dbl&amp;gt;
+## 1 AAPL   2009-01-02  3.07  3.25  3.04  3.24  746015200     2.78
+## 2 AAPL   2009-01-05  3.33  3.44  3.31  3.38 1181608400     2.90
+## 3 AAPL   2009-01-06  3.43  3.47  3.30  3.32 1289310400     2.85
+## 4 AAPL   2009-01-07  3.28  3.30  3.22  3.25  753048800     2.79
+## 5 AAPL   2009-01-08  3.23  3.33  3.22  3.31  673500800     2.84
+## 6 AAPL   2009-01-09  3.33  3.34  3.22  3.24  546845600     2.78&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Now, we can plot a line graph of the Apple closing stock price over the requested date range. We want this to be a time series, so the x-axis will be the date and the y-axis will be the closing price.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(AAPL, aes(x = date, y = close)) +
+  geom_line() +
+  labs(x = &amp;#39;Date&amp;#39;, y = &amp;#39;Closing price&amp;#39;, title = &amp;#39;Apple stock price&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/content/03-content_files/figure-html/geomPath-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;In &lt;code&gt;geom_line&lt;/code&gt;, R will automatically sort on the x-variable. If you don’t want this, then &lt;code&gt;geom_path&lt;/code&gt; will use whatever order the data is in. Either way, if you have multiple observations for the same value on the x-axis, then you’ll get something pretty messy because R will try to connect, in some order, all the points. Let’s see an example with two stocks:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;AAPLNFLX = tq_get(c(&amp;quot;AAPL&amp;quot;,&amp;quot;NFLX&amp;quot;), from = &amp;#39;2021-01-01&amp;#39;, to = &amp;#39;2021-08-01&amp;#39;, get = &amp;#39;stock.prices&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Warning: `type_convert()` only converts columns of type &amp;#39;character&amp;#39;.
+## - `df` has no columns of type &amp;#39;character&amp;#39;
+
+## Warning: `type_convert()` only converts columns of type &amp;#39;character&amp;#39;.
+## - `df` has no columns of type &amp;#39;character&amp;#39;&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(AAPLNFLX, aes(x = date, y = close)) +
+  geom_line() +
+  labs(x = &amp;#39;Date&amp;#39;, y = &amp;#39;Closing price&amp;#39;, title = &amp;#39;Apple and Netflix stock price&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/content/03-content_files/figure-html/unnamed-chunk-22-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;That looks kinda strange. That’s because, for every date, we have two values - the NFLX and the AAPL value, so each day has a vertical line drawn between the two prices. This is nonsense, especially since what we want to see is the history of NFLX and AAPL over time.&lt;/p&gt;
+&lt;p&gt;Aesthetics to the rescue! Remember, when we use an aesthetic mapping, we are able to separate out data by things like color or linetype. Let’s use color as the aesthetic here, and map it to the stock ticker:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;AAPLNFLX = tq_get(c(&amp;quot;AAPL&amp;quot;,&amp;quot;NFLX&amp;quot;), from = &amp;#39;2021-01-01&amp;#39;, to = &amp;#39;2021-08-01&amp;#39;, get = &amp;#39;stock.prices&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Warning: `type_convert()` only converts columns of type &amp;#39;character&amp;#39;.
+## - `df` has no columns of type &amp;#39;character&amp;#39;
+
+## Warning: `type_convert()` only converts columns of type &amp;#39;character&amp;#39;.
+## - `df` has no columns of type &amp;#39;character&amp;#39;&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(AAPLNFLX, aes(x = date, y = close, color = symbol)) +
+  geom_line() +
+  labs(x = &amp;#39;Date&amp;#39;, y = &amp;#39;Closing price&amp;#39;, title = &amp;#39;Apple and Netflix stock price&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/content/03-content_files/figure-html/unnamed-chunk-23-1.png&#34; width=&#34;672&#34; /&gt;
+Well there we go! We can now see each stock price over time, with a convenient legend. Later on, we’ll learn how to change the color palatte. If we don’t necessarily want a different color but we do want to separate the lines, we can use the &lt;code&gt;group&lt;/code&gt; aesthetic.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;AAPLNFLX = tq_get(c(&amp;quot;AAPL&amp;quot;,&amp;quot;NFLX&amp;quot;), from = &amp;#39;2021-01-01&amp;#39;, to = &amp;#39;2021-08-01&amp;#39;, get = &amp;#39;stock.prices&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Warning: `type_convert()` only converts columns of type &amp;#39;character&amp;#39;.
+## - `df` has no columns of type &amp;#39;character&amp;#39;
+
+## Warning: `type_convert()` only converts columns of type &amp;#39;character&amp;#39;.
+## - `df` has no columns of type &amp;#39;character&amp;#39;&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(AAPLNFLX, aes(x = date, y = close, group = symbol)) +
+  geom_line() +
+  labs(x = &amp;#39;Date&amp;#39;, y = &amp;#39;Closing price&amp;#39;, title = &amp;#39;Apple and Netflix stock price&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/content/03-content_files/figure-html/unnamed-chunk-24-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Similar result as &lt;code&gt;geom_line&lt;/code&gt;, but without the color difference (which makes it rather hard to tell what you’re looking at). But if we add labels using &lt;code&gt;geom_label&lt;/code&gt;, we’ll get one label for every point, which will be overwhelming. The solution? Use some filtered data so that there is only one point for each label. But that means replacing the &lt;code&gt;data&lt;/code&gt; in &lt;code&gt;ggplot&lt;/code&gt;. Here’s how.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;using-different-data-with-different-geometries&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Using different data with different geometries&lt;/h3&gt;
+&lt;p&gt;Just as we can use different aesthetic mappings on each geometry, we can use different &lt;em&gt;data&lt;/em&gt; entirely. This is useful when we want one geometry to have one set of data (like the stock prices above), but another geometry to only have a subset of the data. Why would we want that? Well, we’d like to label just &lt;em&gt;one&lt;/em&gt; part of each of the lines in our plot, right? That means we want to label a &lt;em&gt;subset&lt;/em&gt; of the stock data.&lt;/p&gt;
+&lt;p&gt;To replace data in a geometry, we just need to specify the &lt;code&gt;data =&lt;/code&gt; argument separately:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(AAPLNFLX, aes(x = date, y = close, group = symbol)) +
+  geom_line() +
+  geom_label(data = AAPLNFLX %&amp;gt;% group_by(symbol) %&amp;gt;% slice(100),
+             aes(label = symbol),
+             nudge_y = 20) +
+  labs(x = &amp;#39;Date&amp;#39;, y = &amp;#39;Closing price&amp;#39;, title = &amp;#39;Apple and Netflix stock price&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/content/03-content_files/figure-html/unnamed-chunk-25-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;In &lt;code&gt;geom_label&lt;/code&gt;, we specified we wanted the 100th observation from each symbol to be the label location. Then, we nudged it up along y by 20 so that it’s clear of the line.&lt;/p&gt;
+&lt;p&gt;R also has a very useful &lt;code&gt;ggrepel&lt;/code&gt; package that gives us &lt;code&gt;geom_label_repel&lt;/code&gt; which takes care of the nudging for us, even in complicated situations (lots of points, lines, etc.). It does a decent job here of moving the label to a point where it doesn’t cover a lot of data.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(ggrepel)
+ggplot(AAPLNFLX, aes(x = date, y = close, group = symbol)) +
+  geom_line() +
+  geom_label_repel(data = AAPLNFLX %&amp;gt;% group_by(symbol) %&amp;gt;% slice(100),
+             aes(label = symbol)) +
+  labs(x = &amp;#39;Date&amp;#39;, y = &amp;#39;Closing price&amp;#39;, title = &amp;#39;Apple and Netflix stock price&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/content/03-content_files/figure-html/unnamed-chunk-26-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Now, we don’t lose a lot of space to a legend, and we haven’t had to use color to separate the stock symbols.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;multiple-geometries&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Multiple geometries&lt;/h3&gt;
+&lt;p&gt;Since this section is about adding geometries, we &lt;em&gt;can&lt;/em&gt; combine points and lines. Since lines connect points, it will look like a giant connect-the-dots.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(ggrepel)
+ggplot(AAPLNFLX, aes(x = date, y = close, group = symbol)) +
+  geom_line() +
+  geom_point() +
+  geom_label_repel(data = AAPLNFLX %&amp;gt;% group_by(symbol) %&amp;gt;% slice(100),
+             aes(label = symbol)) +
+  labs(x = &amp;#39;Date&amp;#39;, y = &amp;#39;Closing price&amp;#39;, title = &amp;#39;Apple and Netflix stock price&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/content/03-content_files/figure-html/unnamed-chunk-27-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;try-it-1&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Try it!&lt;/h2&gt;
+&lt;div class=&#34;fyi&#34;&gt;
+&lt;p&gt;&lt;strong&gt;TRY IT&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Start by loading the &lt;strong&gt;dplyr&lt;/strong&gt; and &lt;strong&gt;ggplot2&lt;/strong&gt; library as well as the &lt;code&gt;murders&lt;/code&gt; and &lt;code&gt;heights&lt;/code&gt; data.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(dplyr)
+library(ggplot2)
+library(dslabs)
+data(heights)
+data(murders)&lt;/code&gt;&lt;/pre&gt;
+&lt;ol style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;With &lt;strong&gt;ggplot2&lt;/strong&gt; plots can be saved as objects. For example we can associate a dataset with a plot object like this&lt;/li&gt;
+&lt;/ol&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p &amp;lt;- ggplot(data = murders)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Because &lt;code&gt;data&lt;/code&gt; is the first argument we don’t need to spell it out&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p &amp;lt;- ggplot(murders)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;and we can also use the pipe:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p &amp;lt;- murders %&amp;gt;% ggplot()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;What is class of the object &lt;code&gt;p&lt;/code&gt;?&lt;/p&gt;
+&lt;ol start=&#34;2&#34; style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;Remember that to print an object you can use the command &lt;code&gt;print&lt;/code&gt; or simply type the object.
+Print the object &lt;code&gt;p&lt;/code&gt; defined in exercise one and describe what you see.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;ol style=&#34;list-style-type: lower-alpha&#34;&gt;
+&lt;li&gt;Nothing happens.&lt;/li&gt;
+&lt;li&gt;A blank slate plot.&lt;/li&gt;
+&lt;li&gt;A scatterplot.&lt;/li&gt;
+&lt;li&gt;A histogram.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;ol start=&#34;3&#34; style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;&lt;p&gt;Using the pipe &lt;code&gt;%&amp;gt;%&lt;/code&gt;, create an object &lt;code&gt;p&lt;/code&gt; but this time associated with the &lt;code&gt;heights&lt;/code&gt; dataset instead of the &lt;code&gt;murders&lt;/code&gt; dataset.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;What is the class of the object &lt;code&gt;p&lt;/code&gt; you have just created?&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Now we are going to add a layer and the corresponding aesthetic mappings. For the murders data we plotted total murders versus population sizes. Explore the &lt;code&gt;murders&lt;/code&gt; data frame to remind yourself what are the names for these two variables and select the correct answer. &lt;strong&gt;Hint&lt;/strong&gt;: Look at &lt;code&gt;?murders&lt;/code&gt;.&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;ol style=&#34;list-style-type: lower-alpha&#34;&gt;
+&lt;li&gt;&lt;code&gt;state&lt;/code&gt; and &lt;code&gt;abb&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;total_murders&lt;/code&gt; and &lt;code&gt;population_size&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;total&lt;/code&gt; and &lt;code&gt;population&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;murders&lt;/code&gt; and &lt;code&gt;size&lt;/code&gt;.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;ol start=&#34;6&#34; style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;To create the scatterplot we add a layer with &lt;code&gt;geom_point&lt;/code&gt;. The aesthetic mappings require us to define the x-axis and y-axis variables, respectively. So the code looks like this:&lt;/li&gt;
+&lt;/ol&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;murders %&amp;gt;% ggplot(aes(x = , y = )) +
+  geom_point()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;except we have to define the two variables &lt;code&gt;x&lt;/code&gt; and &lt;code&gt;y&lt;/code&gt;. Fill this out with the correct variable names.&lt;/p&gt;
+&lt;ol start=&#34;7&#34; style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;Note that if we don’t use argument names, we can obtain the same plot by making sure we enter the variable names in the right order like this:&lt;/li&gt;
+&lt;/ol&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;murders %&amp;gt;% ggplot(aes(population, total)) +
+  geom_point()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Remake the plot but now with total in the x-axis and population in the y-axis.&lt;/p&gt;
+&lt;ol start=&#34;8&#34; style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;If instead of points we want to add text, we can use the &lt;code&gt;geom_text()&lt;/code&gt; or &lt;code&gt;geom_label()&lt;/code&gt; geometries. The following code&lt;/li&gt;
+&lt;/ol&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;murders %&amp;gt;% ggplot(aes(population, total)) + geom_label()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;will give us the error message: &lt;code&gt;Error: geom_label requires the following missing aesthetics: label&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;Why is this?&lt;/p&gt;
+&lt;ol style=&#34;list-style-type: lower-alpha&#34;&gt;
+&lt;li&gt;We need to map a character to each point through the label argument in aes.&lt;/li&gt;
+&lt;li&gt;We need to let &lt;code&gt;geom_label&lt;/code&gt; know what character to use in the plot.&lt;/li&gt;
+&lt;li&gt;The &lt;code&gt;geom_label&lt;/code&gt; geometry does not require x-axis and y-axis values.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;geom_label&lt;/code&gt; is not a ggplot2 command.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;ol start=&#34;9&#34; style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;&lt;p&gt;Rewrite the code above to use abbreviation as the label through &lt;code&gt;aes&lt;/code&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Change the color of the labels to blue. How will we do this?&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;ol style=&#34;list-style-type: lower-alpha&#34;&gt;
+&lt;li&gt;Adding a column called &lt;code&gt;blue&lt;/code&gt; to &lt;code&gt;murders&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;Because each label needs a different color we map the colors through &lt;code&gt;aes&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;Use the &lt;code&gt;color&lt;/code&gt; argument in &lt;code&gt;ggplot&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;Because we want all colors to be blue, we do not need to map colors, just use the color argument in &lt;code&gt;geom_label&lt;/code&gt;.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;ol start=&#34;11&#34; style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;&lt;p&gt;Rewrite the code above to make the labels blue.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Now suppose we want to use color to represent the different regions. In this case which of the following is most appropriate:&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;ol style=&#34;list-style-type: lower-alpha&#34;&gt;
+&lt;li&gt;Adding a column called &lt;code&gt;color&lt;/code&gt; to &lt;code&gt;murders&lt;/code&gt; with the color we want to use.&lt;/li&gt;
+&lt;li&gt;Because each label needs a different color we map the colors through the color argument of &lt;code&gt;aes&lt;/code&gt; .&lt;/li&gt;
+&lt;li&gt;Use the &lt;code&gt;color&lt;/code&gt; argument in &lt;code&gt;ggplot&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;Because we want all colors to be blue, we do not need to map colors, just use the color argument in &lt;code&gt;geom_label&lt;/code&gt;.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;ol start=&#34;13&#34; style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;&lt;p&gt;Rewrite the code above to make the labels’ color be determined by the state’s region.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Now we are going to change the x-axis to a log scale to account for the fact the distribution of population is skewed. Let’s start by defining an object &lt;code&gt;p&lt;/code&gt; holding the plot we have made up to now&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p &amp;lt;- murders %&amp;gt;%
+  ggplot(aes(population, total, label = abb, color = region)) +
+  geom_label()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;To change the y-axis to a log scale we learned about the &lt;code&gt;scale_x_log10()&lt;/code&gt; function. Add this layer to the object &lt;code&gt;p&lt;/code&gt; to change the scale and render the plot.&lt;/p&gt;
+&lt;ol start=&#34;15&#34; style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;&lt;p&gt;Repeat the previous exercise but now change both axes to be in the log scale.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Now edit the code above to add the title “Gun murder data” to the plot. Hint: use the &lt;code&gt;labs&lt;/code&gt; function or the &lt;code&gt;ggtitle&lt;/code&gt; function.&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&#34;footnotes&#34;&gt;
+&lt;hr /&gt;
+&lt;ol&gt;
+&lt;li id=&#34;fn1&#34;&gt;&lt;p&gt;&lt;a href=&#34;https://ggplot2.tidyverse.org/&#34; class=&#34;uri&#34;&gt;https://ggplot2.tidyverse.org/&lt;/a&gt;&lt;a href=&#34;#fnref1&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li id=&#34;fn2&#34;&gt;&lt;p&gt;&lt;a href=&#34;http://www.springer.com/us/book/9780387245447&#34; class=&#34;uri&#34;&gt;http://www.springer.com/us/book/9780387245447&lt;/a&gt;&lt;a href=&#34;#fnref2&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li id=&#34;fn3&#34;&gt;&lt;p&gt;&lt;a href=&#34;https://github.com/rstudio/cheatsheets&#34; class=&#34;uri&#34;&gt;https://github.com/rstudio/cheatsheets&lt;/a&gt;&lt;a href=&#34;#fnref3&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li id=&#34;fn4&#34;&gt;&lt;p&gt;&lt;a href=&#34;https://github.com/rstudio/cheatsheets/blob/master/LICENSE&#34; class=&#34;uri&#34;&gt;https://github.com/rstudio/cheatsheets/blob/master/LICENSE&lt;/a&gt;&lt;a href=&#34;#fnref4&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;
 </description>
     </item>
     
@@ -4581,18 +5672,13 @@ data(murders)&lt;/code&gt;&lt;/pre&gt;
         &lt;tr&gt;
             &lt;td align=&#34;right&#34; style=&#34;width:18%;text-align:right&#34;&gt;Week 2 (13 September)&lt;/td&gt;
             &lt;td style=&#34;width:50%;text-align:left&#34;&gt;Visualization II&lt;/td&gt;
-            &lt;td align=&#34;center&#34; style=&#34;width:10%;text-align:center&#34;&gt;
-                &lt;font color=&#34;f1f1f1&#34;&gt;
-                    &lt;i class=&#34;fas fa-book-reader fa-lg&#34;&gt;&lt;/i&gt;&lt;/font&gt;
-            &lt;/td&gt;
-            &lt;td align=&#34;center&#34; style=&#34;width:10%;text-align:center&#34;&gt;
-                &lt;font color=&#34;f1f1f1&#34;&gt;
-                    &lt;i class=&#34;fas fa-laptop-code fa-lg&#34;&gt;&lt;/i&gt;&lt;/font&gt;
-            &lt;/td&gt;
-            &lt;td align=&#34;center&#34; style=&#34;width:10%;text-align:center&#34;&gt;
-                &lt;font color=&#34;f1f1f1&#34;&gt;
-                    &lt;i class=&#34;fas fa-pencil-ruler fa-lg&#34;&gt;&lt;/i&gt;&lt;/font&gt;
-            &lt;/td&gt;
+            &lt;td align=&#34;center&#34; style=&#34;width:10%;text-align:center&#34;&gt;&lt;a
+                    href=&#34;https://ssc442.netlify.app/content/03-content/&#34;&gt;
+                    &lt;i class=&#34;fas fa-book-reader fa-lg&#34;&gt;&lt;/i&gt;&lt;/a&gt;&lt;/td&gt;
+            &lt;td align=&#34;center&#34; style=&#34;width:10%;text-align:center&#34;&gt;&lt;a href=&#34;https://ssc442.netlify.app/example/03-example/&#34;&gt;
+                    &lt;i class=&#34;fas fa-laptop-code fa-lg&#34;&gt;&lt;/i&gt;&lt;/a&gt;&lt;/td&gt;
+            &lt;td align=&#34;center&#34; style=&#34;width:10%;text-align:center&#34;&gt;&lt;a href=&#34;https://ssc442.netlify.app/assignment/03-assignment/&#34;&gt;
+                    &lt;i class=&#34;fas fa-pencil-ruler fa-lg&#34;&gt;&lt;/i&gt;&lt;/a&gt;&lt;/td&gt;
         &lt;/tr&gt;
         &lt;tr&gt;
             &lt;td align=&#34;right&#34; style=&#34;width:18%;text-align:right&#34;&gt;Week 3 (20 September)&lt;/td&gt;
