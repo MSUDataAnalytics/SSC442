@@ -1578,7 +1578,7 @@ case_when(x &amp;lt; 0 ~ &amp;quot;Negative&amp;quot;,
 &lt;li&gt;&lt;a href=&#34;#data-visualization-principles&#34;&gt;Data visualization principles&lt;/a&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;a href=&#34;#encoding-data-using-visual-cues&#34;&gt;Encoding data using visual cues&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;#avoid-pseudo-three-dimensional-plots&#34;&gt;Avoid pseudo-three-dimensional plots&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#avoid-psuedo-3d-plots&#34;&gt;Avoid Psuedo-3D Plots&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;#avoid-too-many-significant-digits&#34;&gt;Avoid too many significant digits&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;#know-your-audience&#34;&gt;Know your audience&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;#know-when-to-include-0&#34;&gt;Know when to include 0&lt;/a&gt;&lt;/li&gt;
@@ -1721,8 +1721,8 @@ IE
 &lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/content/04-content_files/figure-html/excel-barplot-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;In general, when displaying quantities, position and length are preferred over angles and/or area. Brightness and color are even harder to quantify than angles. But, as we will see later, they are sometimes useful when more than two dimensions must be displayed at once.&lt;/p&gt;
 &lt;/div&gt;
-&lt;div id=&#34;avoid-pseudo-three-dimensional-plots&#34; class=&#34;section level3&#34;&gt;
-&lt;h3&gt;Avoid pseudo-three-dimensional plots&lt;/h3&gt;
+&lt;div id=&#34;avoid-psuedo-3d-plots&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Avoid Psuedo-3D Plots&lt;/h3&gt;
 &lt;p&gt;The figure below, taken from the scientific literature&lt;a href=&#34;#fn5&#34; class=&#34;footnote-ref&#34; id=&#34;fnref5&#34;&gt;&lt;sup&gt;5&lt;/sup&gt;&lt;/a&gt;,
 shows three variables: dose, drug type and survival. Although your screen/book page is flat and two-dimensional, the plot tries to imitate three dimensions and assigned a dimension to each variable.&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/./02-content_files/fig8b.png&#34; /&gt;&lt;/p&gt;
@@ -1740,8 +1740,8 @@ dat %&amp;gt;% gather(drug, survival, -log.dose) %&amp;gt;%
 &lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/content/04-content_files/figure-html/colors-for-different-lines-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Notice how much easier it is to determine the survival values.&lt;/p&gt;
 &lt;p&gt;Pseudo-3D is sometimes used completely gratuitously: plots are made to look 3D even when the 3rd dimension does not represent a quantity. This only adds confusion and makes it harder to relay your message. Here are two examples:&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/./02-content_files/fig1e.png&#34; /&gt;
-&lt;img src=&#34;https://ssc442.netlify.app/./02-content_files/fig2d.png&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/02-content_files/fig1e.png&#34; /&gt;
+&lt;img src=&#34;https://ssc442.netlify.app/02-content_files/fig2d.png&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;(Images courtesy of Karl Broman)&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;avoid-too-many-significant-digits&#34; class=&#34;section level3&#34;&gt;
@@ -2073,17 +2073,17 @@ NA
 &lt;div id=&#34;know-when-to-include-0&#34; class=&#34;section level3&#34;&gt;
 &lt;h3&gt;Know when to include 0&lt;/h3&gt;
 &lt;p&gt;When using barplots, it is misinformative not to start the bars at 0. This is because, by using a barplot, we are implying the length is proportional to the quantities being displayed. By avoiding 0, relatively small differences can be made to look much bigger than they actually are. This approach is often used by politicians or media organizations trying to exaggerate a difference. Below is an illustrative example used by Peter Aldhous in this lecture: &lt;a href=&#34;http://paldhous.github.io/ucb/2016/dataviz/week2.html&#34;&gt;http://paldhous.github.io/ucb/2016/dataviz/week2.html&lt;/a&gt;.&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/./02-content_files/class2_8.jpg&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/img/04/class2_8.jpg&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;(Source: Fox News, via Media Matters&lt;a href=&#34;#fn6&#34; class=&#34;footnote-ref&#34; id=&#34;fnref6&#34;&gt;&lt;sup&gt;6&lt;/sup&gt;&lt;/a&gt;.)&lt;/p&gt;
 &lt;p&gt;From the plot above, it appears that apprehensions have almost tripled when, in fact, they have only increased by about 16%. Starting the graph at 0 illustrates this clearly:&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/content/04-content_files/figure-html/barplot-from-zero-1-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Here is another example, described in detail in a Flowing Data blog post:&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/./02-content_files/Bush-cuts.png&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/img/04/Bush-cuts.png&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;(Source: Fox News, via Flowing Data&lt;a href=&#34;#fn7&#34; class=&#34;footnote-ref&#34; id=&#34;fnref7&#34;&gt;&lt;sup&gt;7&lt;/sup&gt;&lt;/a&gt;.)&lt;/p&gt;
 &lt;p&gt;This plot makes a 13% increase look like a five fold change. Here is the appropriate plot:&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/content/04-content_files/figure-html/barplot-from-zero-2-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Finally, here is an extreme example that makes a very small difference of under 2% look like a 10-100 fold change:&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/./02-content_files/venezuela-election.png&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/img/04/venezuela-election.png&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;(Source:
 Venezolana de Televisión via Pakistan Today&lt;a href=&#34;#fn8&#34; class=&#34;footnote-ref&#34; id=&#34;fnref8&#34;&gt;&lt;sup&gt;8&lt;/sup&gt;&lt;/a&gt; and Diego Mariano.)&lt;/p&gt;
 &lt;p&gt;Here is the appropriate plot:&lt;/p&gt;
@@ -2095,7 +2095,7 @@ Venezolana de Televisión via Pakistan Today&lt;a href=&#34;#fn8&#34; class=&#34
 &lt;div id=&#34;do-not-distort-quantities&#34; class=&#34;section level3&#34;&gt;
 &lt;h3&gt;Do not distort quantities&lt;/h3&gt;
 &lt;p&gt;During President Barack Obama’s 2011 State of the Union Address, the following chart was used to compare the US GDP to the GDP of four competing nations:&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/./02-content_files/state-of-the-union.png&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/img/04/state-of-the-union.png&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;(Source: The 2011 State of the Union Address&lt;a href=&#34;#fn9&#34; class=&#34;footnote-ref&#34; id=&#34;fnref9&#34;&gt;&lt;sup&gt;9&lt;/sup&gt;&lt;/a&gt;)&lt;/p&gt;
 &lt;p&gt;Judging by the area of the circles, the US appears to have an economy over five times larger than China’s and over 30 times larger than France’s. However, if we look at the actual numbers, we see that this is not the case. The actual ratios are 2.6 and 5.8 times bigger than China and France, respectively. The reason for this distortion is that the radius, rather than the area, was made to be proportional to the quantity, which implies that the proportion between the areas is squared: 2.6 turns into 6.5 and 5.8 turns into 34.1. Here is a comparison of the circles we get if we make the value proportional to the radius and to the area:&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;gdp &amp;lt;- c(14.6, 5.7, 5.3, 3.3, 2.5)
@@ -2288,7 +2288,7 @@ p2&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Here are the colors
 &lt;img src=&#34;https://ssc442.netlify.app/content/04-content_files/figure-html/color-blind-friendly-colors-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;From &lt;a href=&#34;http://www.pnas.org/content/pnas/early/2017/01/24/1617948114.full.pdf&#34;&gt;Seafood Prices Reveal Impacts of a Major Ecological Disturbance&lt;/a&gt;:&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/content/02-content_files/Colorblind_example.png&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/img/04/Colorblind_example.png&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;There are several resources that can help you select colors, for example this one: &lt;a href=&#34;http://bconnelly.net/2013/10/creating-colorblind-friendly-figures/&#34;&gt;http://bconnelly.net/2013/10/creating-colorblind-friendly-figures/&lt;/a&gt;.&lt;/p&gt;
 &lt;div id=&#34;using-a-discrete-color-palette&#34; class=&#34;section level3&#34;&gt;
 &lt;h3&gt;Using a discrete color palette&lt;/h3&gt;

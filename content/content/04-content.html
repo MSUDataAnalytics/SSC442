@@ -1,6 +1,6 @@
 ---
 title: "Visualizations in Practice"
-linktitle: "3: Visualization II"
+linktitle: "4: Visualizations III"
 date: "2021-02-09"
 read_date: "2021-09-21"
 publishDate: "2021-09-21"
@@ -25,7 +25,7 @@ output:
 <li><a href="#data-visualization-principles">Data visualization principles</a>
 <ul>
 <li><a href="#encoding-data-using-visual-cues">Encoding data using visual cues</a></li>
-<li><a href="#avoid-pseudo-three-dimensional-plots">Avoid pseudo-three-dimensional plots</a></li>
+<li><a href="#avoid-psuedo-3d-plots">Avoid Psuedo-3D Plots</a></li>
 <li><a href="#avoid-too-many-significant-digits">Avoid too many significant digits</a></li>
 <li><a href="#know-your-audience">Know your audience</a></li>
 <li><a href="#know-when-to-include-0">Know when to include 0</a></li>
@@ -168,11 +168,11 @@ IE
 <p><img src="/content/04-content_files/figure-html/excel-barplot-1.png" width="672" /></p>
 <p>In general, when displaying quantities, position and length are preferred over angles and/or area. Brightness and color are even harder to quantify than angles. But, as we will see later, they are sometimes useful when more than two dimensions must be displayed at once.</p>
 </div>
-<div id="avoid-pseudo-three-dimensional-plots" class="section level3">
-<h3>Avoid pseudo-three-dimensional plots</h3>
+<div id="avoid-psuedo-3d-plots" class="section level3">
+<h3>Avoid Psuedo-3D Plots</h3>
 <p>The figure below, taken from the scientific literature<a href="#fn5" class="footnote-ref" id="fnref5"><sup>5</sup></a>,
 shows three variables: dose, drug type and survival. Although your screen/book page is flat and two-dimensional, the plot tries to imitate three dimensions and assigned a dimension to each variable.</p>
-<p><img src="/./02-content_files/fig8b.png" /></p>
+<p><img src="/content/04-content_files/fig8b.png" /></p>
 <p>(Image courtesy of Karl Broman)</p>
 <p>Humans are not good at seeing in three dimensions (which explains why it is hard to parallel park) and our limitation is even worse with regard to pseudo-three-dimensions. To see this, try to determine the values of the survival variable in the plot above. Can you tell when the purple ribbon intersects the red one? This is an example in which we can easily use color to represent the categorical variable instead of using a pseudo-3D:</p>
 <pre class="r"><code>##First read data
@@ -187,8 +187,8 @@ dat %&gt;% gather(drug, survival, -log.dose) %&gt;%
 <p><img src="/content/04-content_files/figure-html/colors-for-different-lines-1.png" width="672" /></p>
 <p>Notice how much easier it is to determine the survival values.</p>
 <p>Pseudo-3D is sometimes used completely gratuitously: plots are made to look 3D even when the 3rd dimension does not represent a quantity. This only adds confusion and makes it harder to relay your message. Here are two examples:</p>
-<p><img src="/./02-content_files/fig1e.png" />
-<img src="/./02-content_files/fig2d.png" /></p>
+<p><img src="/content/04-content_files/fig1e.png" />
+<img src="/content/04-content_files/fig2d.png" /></p>
 <p>(Images courtesy of Karl Broman)</p>
 </div>
 <div id="avoid-too-many-significant-digits" class="section level3">
@@ -520,17 +520,17 @@ NA
 <div id="know-when-to-include-0" class="section level3">
 <h3>Know when to include 0</h3>
 <p>When using barplots, it is misinformative not to start the bars at 0. This is because, by using a barplot, we are implying the length is proportional to the quantities being displayed. By avoiding 0, relatively small differences can be made to look much bigger than they actually are. This approach is often used by politicians or media organizations trying to exaggerate a difference. Below is an illustrative example used by Peter Aldhous in this lecture: <a href="http://paldhous.github.io/ucb/2016/dataviz/week2.html">http://paldhous.github.io/ucb/2016/dataviz/week2.html</a>.</p>
-<p><img src="/./02-content_files/class2_8.jpg" /></p>
+<p><img src="/content/04-content_files/class2_8.jpg" /></p>
 <p>(Source: Fox News, via Media Matters<a href="#fn6" class="footnote-ref" id="fnref6"><sup>6</sup></a>.)</p>
 <p>From the plot above, it appears that apprehensions have almost tripled when, in fact, they have only increased by about 16%. Starting the graph at 0 illustrates this clearly:</p>
 <p><img src="/content/04-content_files/figure-html/barplot-from-zero-1-1.png" width="672" /></p>
 <p>Here is another example, described in detail in a Flowing Data blog post:</p>
-<p><img src="/./02-content_files/Bush-cuts.png" /></p>
+<p><img src="/content/04-content_files/Bush-cuts.png" /></p>
 <p>(Source: Fox News, via Flowing Data<a href="#fn7" class="footnote-ref" id="fnref7"><sup>7</sup></a>.)</p>
 <p>This plot makes a 13% increase look like a five fold change. Here is the appropriate plot:</p>
 <p><img src="/content/04-content_files/figure-html/barplot-from-zero-2-1.png" width="672" /></p>
 <p>Finally, here is an extreme example that makes a very small difference of under 2% look like a 10-100 fold change:</p>
-<p><img src="/./02-content_files/venezuela-election.png" /></p>
+<p><img src="/content/04-content_files/venezuela-election.png" /></p>
 <p>(Source:
 Venezolana de Televisión via Pakistan Today<a href="#fn8" class="footnote-ref" id="fnref8"><sup>8</sup></a> and Diego Mariano.)</p>
 <p>Here is the appropriate plot:</p>
@@ -542,7 +542,7 @@ Venezolana de Televisión via Pakistan Today<a href="#fn8" class="footnote-ref" 
 <div id="do-not-distort-quantities" class="section level3">
 <h3>Do not distort quantities</h3>
 <p>During President Barack Obama’s 2011 State of the Union Address, the following chart was used to compare the US GDP to the GDP of four competing nations:</p>
-<p><img src="/./02-content_files/state-of-the-union.png" /></p>
+<p><img src="/content/04-content_files/state-of-the-union.png" /></p>
 <p>(Source: The 2011 State of the Union Address<a href="#fn9" class="footnote-ref" id="fnref9"><sup>9</sup></a>)</p>
 <p>Judging by the area of the circles, the US appears to have an economy over five times larger than China’s and over 30 times larger than France’s. However, if we look at the actual numbers, we see that this is not the case. The actual ratios are 2.6 and 5.8 times bigger than China and France, respectively. The reason for this distortion is that the radius, rather than the area, was made to be proportional to the quantity, which implies that the proportion between the areas is squared: 2.6 turns into 6.5 and 5.8 turns into 34.1. Here is a comparison of the circles we get if we make the value proportional to the radius and to the area:</p>
 <pre class="r"><code>gdp &lt;- c(14.6, 5.7, 5.3, 3.3, 2.5)
@@ -735,7 +735,7 @@ p2</code></pre>
 <p>Here are the colors
 <img src="/content/04-content_files/figure-html/color-blind-friendly-colors-1.png" width="672" /></p>
 <p>From <a href="http://www.pnas.org/content/pnas/early/2017/01/24/1617948114.full.pdf">Seafood Prices Reveal Impacts of a Major Ecological Disturbance</a>:</p>
-<p><img src="/content/02-content_files/Colorblind_example.png" /></p>
+<p><img src="/content/04-content_files/Colorblind_example.png" /></p>
 <p>There are several resources that can help you select colors, for example this one: <a href="http://bconnelly.net/2013/10/creating-colorblind-friendly-figures/">http://bconnelly.net/2013/10/creating-colorblind-friendly-figures/</a>.</p>
 <div id="using-a-discrete-color-palette" class="section level3">
 <h3>Using a discrete color palette</h3>
