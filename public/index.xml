@@ -13,6 +13,579 @@
     </image>
     
     <item>
+      <title>Visualizations</title>
+      <link>https://ssc442.netlify.app/example/04-example/</link>
+      <pubDate>Thu, 23 Sep 2021 00:00:00 +0000</pubDate>
+      <guid>https://ssc442.netlify.app/example/04-example/</guid>
+      <description>
+&lt;script src=&#34;https://ssc442.netlify.app/rmarkdown-libs/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
+&lt;script src=&#34;https://ssc442.netlify.app/rmarkdown-libs/kePrint/kePrint.js&#34;&gt;&lt;/script&gt;
+&lt;link href=&#34;https://ssc442.netlify.app/rmarkdown-libs/lightable/lightable.css&#34; rel=&#34;stylesheet&#34; /&gt;
+
+&lt;div id=&#34;TOC&#34;&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#gapminder&#34;&gt;Data visualization in practice&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#case-study-new-insights-on-poverty&#34;&gt;Case study: new insights on poverty&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#exploring-the-data&#34;&gt;Exploring the Data&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#slope-charts&#34;&gt;Slope charts&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#bland-altman-plot&#34;&gt;Bland-Altman plot&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#bump-charts&#34;&gt;Bump charts&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#themes&#34;&gt;Themes&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#small-multiples&#34;&gt;Small multiples&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#sparklines&#34;&gt;Sparklines&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#the-ecological-fallacy-and-importance-of-showing-the-data&#34;&gt;The ecological fallacy and importance of showing the data&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#logit&#34;&gt;Logistic transformation&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#show-the-data&#34;&gt;Show the data&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#vaccines&#34;&gt;Case study: vaccines and infectious diseases&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#try-it&#34;&gt;&lt;strong&gt;TRY IT&lt;/strong&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+
+&lt;div id=&#34;gapminder&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Data visualization in practice&lt;/h1&gt;
+&lt;p&gt;In this section, we will demonstrate how relatively simple &lt;strong&gt;ggplot2&lt;/strong&gt; code can create insightful and aesthetically pleasing plots. As motivation we will create plots that help us better understand trends in world health and economics. We will implement what we learned in previous sections of the class and learn how to augment the code to perfect the plots. As we go through our case study, we will describe relevant general data visualization principles and learn concepts such as &lt;em&gt;faceting&lt;/em&gt;, &lt;em&gt;time series plots&lt;/em&gt;, &lt;em&gt;transformations&lt;/em&gt;, and &lt;em&gt;ridge plots&lt;/em&gt;.&lt;/p&gt;
+&lt;div id=&#34;case-study-new-insights-on-poverty&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Case study: new insights on poverty&lt;/h2&gt;
+&lt;p&gt;Hans Rosling&lt;a href=&#34;#fn1&#34; class=&#34;footnote-ref&#34; id=&#34;fnref1&#34;&gt;&lt;sup&gt;1&lt;/sup&gt;&lt;/a&gt; was the co-founder of the Gapminder Foundation&lt;a href=&#34;#fn2&#34; class=&#34;footnote-ref&#34; id=&#34;fnref2&#34;&gt;&lt;sup&gt;2&lt;/sup&gt;&lt;/a&gt;, an organization dedicated to educating the public by using data to dispel common myths about the so-called developing world. The organization uses data to show how actual trends in health and economics contradict the narratives that emanate from sensationalist media coverage of catastrophes, tragedies, and other unfortunate events. As stated in the Gapminder Foundation’s website:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Journalists and lobbyists tell dramatic stories. That’s their job. They tell stories about extraordinary events and unusual people. The piles of dramatic stories pile up in peoples’ minds into an over-dramatic worldview and strong negative stress feelings: “The world is getting worse!”, “It’s we vs. them!”, “Other people are strange!”, “The population just keeps growing!” and “Nobody cares!”&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Hans Rosling conveyed actual data-based trends in a dramatic way of his own, using effective data visualization. This section is based on two talks that exemplify this approach to education: [New Insights on Poverty]&lt;a href=&#34;#fn3&#34; class=&#34;footnote-ref&#34; id=&#34;fnref3&#34;&gt;&lt;sup&gt;3&lt;/sup&gt;&lt;/a&gt; and The Best Stats You’ve Ever Seen&lt;a href=&#34;#fn4&#34; class=&#34;footnote-ref&#34; id=&#34;fnref4&#34;&gt;&lt;sup&gt;4&lt;/sup&gt;&lt;/a&gt;. Specifically, in this section, we use data to attempt to answer the following two questions:&lt;/p&gt;
+&lt;ol style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;Is it a fair characterization of today’s world to say it is divided into western rich nations and the developing world in Africa, Asia, and Latin America?&lt;/li&gt;
+&lt;li&gt;Has income inequality across countries worsened during the last 40 years?&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;To answer these questions, we will be using the &lt;code&gt;gapminder&lt;/code&gt; dataset provided in &lt;strong&gt;dslabs&lt;/strong&gt;. This dataset was created using a number of spreadsheets available from the Gapminder Foundation. You can access the table like this:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(tidyverse)
+library(dslabs)
+library(ggrepel)
+library(ggthemes)
+gapminder = dslabs::gapminder %&amp;gt;% as_tibble()&lt;/code&gt;&lt;/pre&gt;
+&lt;div id=&#34;exploring-the-data&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Exploring the Data&lt;/h3&gt;
+&lt;p&gt;Taking an exercise from the &lt;em&gt;New Insights on Poverty&lt;/em&gt; video, we start by testing our knowledge regarding differences in child mortality across different countries. For each of the six pairs of countries below, which country do you think had the highest child mortality rates in 2015? Which pairs do you think are most similar?&lt;/p&gt;
+&lt;ol style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;Sri Lanka or Turkey&lt;/li&gt;
+&lt;li&gt;Poland or South Korea&lt;/li&gt;
+&lt;li&gt;Malaysia or Russia&lt;/li&gt;
+&lt;li&gt;Pakistan or Vietnam&lt;/li&gt;
+&lt;li&gt;Thailand or South Africa&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;When answering these questions without data, the non-European countries are typically picked as having higher child mortality rates: Sri Lanka over Turkey, South Korea over Poland, and Malaysia over Russia. It is also common to assume that countries considered to be part of the developing world: Pakistan, Vietnam, Thailand, and South Africa, have similarly high mortality rates.&lt;/p&gt;
+&lt;p&gt;To answer these questions &lt;strong&gt;with data&lt;/strong&gt;, we can use &lt;strong&gt;dplyr&lt;/strong&gt;. For example, for the first comparison we see that:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;dslabs::gapminder %&amp;gt;%
+  filter(year == 2015 &amp;amp; country %in% c(&amp;quot;Sri Lanka&amp;quot;,&amp;quot;Turkey&amp;quot;)) %&amp;gt;%
+  select(country, infant_mortality)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;##     country infant_mortality
+## 1 Sri Lanka              8.4
+## 2    Turkey             11.6&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Turkey has the higher infant mortality rate.&lt;/p&gt;
+&lt;p&gt;We can use this code on all comparisons and find the following:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;## New names:
+## * country -&amp;gt; country...1
+## * infant_mortality -&amp;gt; infant_mortality...2
+## * country -&amp;gt; country...3
+## * infant_mortality -&amp;gt; infant_mortality...4&lt;/code&gt;&lt;/pre&gt;
+&lt;table class=&#34;table table-striped&#34; style=&#34;width: auto !important; margin-left: auto; margin-right: auto;&#34;&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th style=&#34;text-align:left;&#34;&gt;
+country
+&lt;/th&gt;
+&lt;th style=&#34;text-align:right;&#34;&gt;
+infant mortality
+&lt;/th&gt;
+&lt;th style=&#34;text-align:left;&#34;&gt;
+country
+&lt;/th&gt;
+&lt;th style=&#34;text-align:right;&#34;&gt;
+infant mortality
+&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+Sri Lanka
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+8.4
+&lt;/td&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+Turkey
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+11.6
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+Poland
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+4.5
+&lt;/td&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+South Korea
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+2.9
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+Malaysia
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+6.0
+&lt;/td&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+Russia
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+8.2
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+Pakistan
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+65.8
+&lt;/td&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+Vietnam
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+17.3
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+Thailand
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+10.5
+&lt;/td&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+South Africa
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+33.6
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;We see that the European countries on this list have higher child mortality rates: Poland has a higher rate than South Korea, and Russia has a higher rate than Malaysia. We also see that Pakistan has a much higher rate than Vietnam, and South Africa has a much higher rate than Thailand. It turns out that when Hans Rosling gave this quiz to educated groups of people, the average score was less than 2.5 out of 5, worse than what they would have obtained had they guessed randomly. This implies that more than ignorant, we are misinformed. In this chapter we see how data visualization helps inform us.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;slope-charts&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Slope charts&lt;/h3&gt;
+&lt;p&gt;One exception where another type of plot may be more informative is when you are comparing variables of the same type, but at different time points and for a relatively small number of comparisons. For example, comparing life expectancy between 2010 and 2015. In this case, we might recommend a &lt;em&gt;slope chart&lt;/em&gt;.&lt;/p&gt;
+&lt;p&gt;There is no geometry for slope charts in &lt;strong&gt;ggplot2&lt;/strong&gt;, but we can construct one using &lt;code&gt;geom_line&lt;/code&gt;. We need to do some tinkering to add labels. We’ll paste together a character stright with the country name and the starting life expectancy, then do the same with just the later life expectancy for the right side. Below is an example comparing 2010 to 2015 for large western countries:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;west &amp;lt;- c(&amp;quot;Western Europe&amp;quot;,&amp;quot;Northern Europe&amp;quot;,&amp;quot;Southern Europe&amp;quot;,
+          &amp;quot;Northern America&amp;quot;,&amp;quot;Australia and New Zealand&amp;quot;)
+
+dat &amp;lt;- gapminder %&amp;gt;%
+  filter(year%in% c(2010, 2015) &amp;amp; region %in% west &amp;amp;
+           !is.na(life_expectancy) &amp;amp; population &amp;gt; 10^7) %&amp;gt;%
+    mutate(label_first = ifelse(year == 2010, paste0(country, &amp;quot;: &amp;quot;, round(life_expectancy, 1), &amp;#39; years&amp;#39;), NA),
+           label_last = ifelse(year == 2015,  paste0(round(life_expectancy, 1),&amp;#39; years&amp;#39;), NA))
+
+dat %&amp;gt;%
+  mutate(location = ifelse(year == 2010, 1, 2),
+         location = ifelse(year == 2015 &amp;amp;
+                             country %in% c(&amp;quot;United Kingdom&amp;quot;, &amp;quot;Portugal&amp;quot;),
+                           location+0.22, location),
+         hjust = ifelse(year == 2010, 1, 0)) %&amp;gt;%
+  mutate(year = as.factor(year)) %&amp;gt;%
+  ggplot(aes(year, life_expectancy, group = country)) +
+  geom_line(aes(color = country), show.legend = FALSE) +
+  geom_text_repel(aes(label = label_first, color = country), direction = &amp;#39;y&amp;#39;, nudge_x = -1, seed = 1234, show.legend = FALSE) +
+  geom_text_repel(aes(label = label_last, color = country), direction = &amp;#39;y&amp;#39;, nudge_x =  1, seed = 1234, show.legend = FALSE) +
+  xlab(&amp;quot;&amp;quot;) + ylab(&amp;quot;Life Expectancy&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Warning: Removed 12 rows containing missing values (geom_text_repel).
+
+## Warning: Removed 12 rows containing missing values (geom_text_repel).&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/example/04-example_files/figure-html/slope-plot-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;An advantage of the slope chart is that it permits us to quickly get an idea of changes based on the slope of the lines. Although we are using angle as the visual cue, we also have position to determine the exact values. Comparing the improvements is a bit harder with a scatterplot:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/example/04-example_files/figure-html/scatter-plot-instead-of-slope-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;In the scatterplot, we have followed the principle &lt;em&gt;use common axes&lt;/em&gt; since we are comparing these before and after. However, if we have many points, slope charts stop being useful as it becomes hard to see all the lines.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;bland-altman-plot&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Bland-Altman plot&lt;/h3&gt;
+&lt;p&gt;Since we are primarily interested in the difference, it makes sense to dedicate one of our axes to it. The Bland-Altman plot, also known as the Tukey mean-difference plot and the MA-plot, shows the difference versus the average:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;dat %&amp;gt;%
+  mutate(year = paste0(&amp;quot;life_expectancy_&amp;quot;, year)) %&amp;gt;%
+  select(country, year, life_expectancy) %&amp;gt;%
+  spread(year, life_expectancy) %&amp;gt;%
+  mutate(average = (life_expectancy_2015 + life_expectancy_2010)/2,
+         difference = life_expectancy_2015 - life_expectancy_2010) %&amp;gt;%
+  ggplot(aes(average, difference, label = country)) +
+  geom_point() +
+  geom_text_repel() +
+  geom_abline(lty = 2) +
+  xlab(&amp;quot;Average of 2010 and 2015&amp;quot;) +
+  ylab(&amp;quot;Difference between 2015 and 2010&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/example/04-example_files/figure-html/bland-altman-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Here, by simply looking at the y-axis, we quickly see which countries have shown the most improvement. We also get an idea of the overall value from the x-axis.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;bump-charts&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Bump charts&lt;/h3&gt;
+&lt;p&gt;Finally, we can make a bump chart that shows changes in rankings over time. We’ll look at fertility in South Asia. First we need to calculate a new variable that shows the rank of each country within each year. We can do this if we group by year and then use the &lt;code&gt;rank()&lt;/code&gt; function to rank countries by the &lt;code&gt;fertility&lt;/code&gt; column.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;sa_fe &amp;lt;- gapminder %&amp;gt;%
+  filter(region == &amp;quot;Southern Asia&amp;quot;) %&amp;gt;%
+  filter(year &amp;gt;= 2004, year &amp;lt; 2015) %&amp;gt;%
+  group_by(year) %&amp;gt;%
+  mutate(rank = rank(fertility))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;We then plot this with points and lines, reversing the y-axis so 1 is at the top:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(sa_fe, aes(x = year, y = rank, color = country)) +
+  geom_line() +
+  geom_point() +
+  scale_y_reverse(breaks = 1:8)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/example/04-example_files/figure-html/make-bump-plot-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Iran holds the number 1 spot, while Sri Lanka dropped from 2 to 6, and Bangladesh increased from 4 to 2.&lt;/p&gt;
+&lt;p&gt;As with the slopegraph, there are 8 different colors in the legend and it’s hard to line them all up with the different lines, so we can plot the text directly instead. We’ll use &lt;code&gt;geom_text()&lt;/code&gt; again. We don’t need to repel anything, since the text should fit in each row just fine. We need to change the &lt;code&gt;data&lt;/code&gt; argument in &lt;code&gt;geom_text()&lt;/code&gt; though and filter the data to only include one year, otherwise we’ll get labels on every point, which is excessive. We can also adjust the theme and colors to make it cleaner.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;bumpplot &amp;lt;- ggplot(sa_fe, aes(x = year, y = rank, color = country)) +
+  geom_line(size = 2) +
+  geom_point(size = 4) +
+  geom_text(data = sa_fe %&amp;gt;% dplyr::filter(year==2004) %&amp;gt;% arrange(rank),
+            aes(label = country, x = 2003), fontface = &amp;quot;bold&amp;quot;, angle = 45) +
+ geom_text(data = sa_fe %&amp;gt;% dplyr::filter(year==2014) %&amp;gt;% arrange(rank),
+            aes(label = country, x = 2015), fontface = &amp;quot;bold&amp;quot;, angle = 45) +
+  guides(color = FALSE) +
+  scale_y_reverse(breaks = 1:8) +
+  scale_x_continuous(breaks = 2004:2014) +
+  scale_color_viridis_d(option = &amp;quot;C&amp;quot;, begin = 0.2, end = 0.9) +
+  labs(x = NULL, y = &amp;quot;Rank&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Warning: `guides(&amp;lt;scale&amp;gt; = FALSE)` is deprecated. Please use `guides(&amp;lt;scale&amp;gt; =
+## &amp;quot;none&amp;quot;)` instead.&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;bumpplot&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/example/04-example_files/figure-html/bump-plot-fancier-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;If you want to be &lt;em&gt;super&lt;/em&gt; fancy, you can use flags instead of country codes, but that’s a little more complicated (you need to install the &lt;a href=&#34;https://github.com/rensa/ggflags&#34;&gt;&lt;strong&gt;ggflags&lt;/strong&gt; package&lt;/a&gt;. &lt;a href=&#34;https://dominikkoch.github.io/Bump-Chart/&#34;&gt;See here for an example&lt;/a&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;themes&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Themes&lt;/h3&gt;
+&lt;p&gt;We can go a little further towards a clean, easy-to-read data visualization by using &lt;strong&gt;themes&lt;/strong&gt; in our plots. Themes allow us to set a particular range of plot settings in one command, and let us further tweak things like fonts, background colors, and much more. We’ve used them in passing a few times without highlighting them, but we’ll discuss them here.&lt;/p&gt;
+&lt;p&gt;A pre-constructed set of instructions for making a visual theme can be had by using a theme’s &lt;code&gt;ggplot&lt;/code&gt; function. Let’s look at two of my favorites.&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;theme_bw()&lt;/code&gt; uses the black-and-white theme, which is helpful in making a nice, clean plot:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;bumpplot + theme_bw()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/example/04-example_files/figure-html/unnamed-chunk-3-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;The background shading is gone, which gives the plot a nice, crisp feel. It adds the black outline around the plot, but doesn’t mess with the colors in the plot.&lt;/p&gt;
+&lt;p&gt;Here’s &lt;code&gt;theme_minimal()&lt;/code&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;bumpplot + theme_minimal()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/example/04-example_files/figure-html/unnamed-chunk-4-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Themes can alter things in the plot as well. If we really want to strip it down and remove the Y-axis (which is rarely a good idea, but in a bump chart, it makes sense):&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;bumpplot + theme_void()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/example/04-example_files/figure-html/unnamed-chunk-5-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Now &lt;strong&gt;that’s&lt;/strong&gt; clean!&lt;/p&gt;
+&lt;p&gt;In our opening unit, we had a plot that was styled after the plots in the magazine, &lt;em&gt;The Economist&lt;/em&gt;. That’s a theme (in the &lt;code&gt;ggthemes&lt;/code&gt; package that we loaded at the top)!&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;bumpplot + theme_economist()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/example/04-example_files/figure-html/unnamed-chunk-6-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Themes affect some of the plot elements that we haven’t gotten much into (like length of axis ticks and the color of the panel grid behind the plot). We can use a theme, then make further changes to the theme. We won’t go into a lot of detail, but here’s an example. Use the &lt;code&gt;?theme&lt;/code&gt; to learn more about what you can change. Half the challenge is finding the right term for the thing you want to tweak! Theme changes occur in code order, so you can update a pre-set theme with your own details:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;bumpplot +   theme_bw() + theme(strip.text = element_text(face = &amp;quot;bold&amp;quot;),
+                   plot.title = element_text(face = &amp;quot;bold&amp;quot;),
+                   axis.text.x = element_text(angle = 45, hjust = 1),
+                   panel.grid.major.y = element_blank(), # turn off all of the Y grid
+                   panel.grid.minor.y = element_blank(),
+                   panel.grid.minor.x = element_blank()) # turn off small x grid&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/example/04-example_files/figure-html/bump-plot-fancierest-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;small-multiples&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Small multiples&lt;/h3&gt;
+&lt;p&gt;First we can make some small multiples plots and show life expectancy over time for a handful of countries. We’ll make a list of some countries chosen at random while I scrolled through the data, and then filter our data to include only those rows. We then plot life expectancy, faceting by country.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;life_expectancy_small &amp;lt;- gapminder %&amp;gt;%
+  filter(country %in% c(&amp;quot;Argentina&amp;quot;, &amp;quot;Bolivia&amp;quot;, &amp;quot;Brazil&amp;quot;,
+                        &amp;quot;Belize&amp;quot;, &amp;quot;Canada&amp;quot;, &amp;quot;Chile&amp;quot;))
+ggplot(data = life_expectancy_small,
+       mapping = aes(x = year, y = life_expectancy)) +
+  geom_line(size = 1) +
+  facet_wrap(vars(country))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/example/04-example_files/figure-html/unnamed-chunk-7-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Small multiples! That’s all we need to do.&lt;/p&gt;
+&lt;p&gt;We can do some fancier things, though. We can make this plot hyper minimalist with a &lt;strong&gt;theme&lt;/strong&gt;:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(data = life_expectancy_small,
+       mapping = aes(x = year, y = life_expectancy)) +
+  geom_line(size = 1) +
+  facet_wrap(vars(country), scales = &amp;quot;free_y&amp;quot;) +
+  theme_void() +
+  theme(strip.text = element_text(face = &amp;quot;bold&amp;quot;))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/example/04-example_files/figure-html/life-expectancy-small-minimalist-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;We can do a whole part of a continent (poor Syria 😞)&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;life_expectancy_mena &amp;lt;- gapminder %&amp;gt;%
+  filter(region == &amp;quot;Northern Africa&amp;quot; | region == &amp;quot;Western Asia&amp;quot;)
+
+ggplot(data = life_expectancy_mena,
+       mapping = aes(x = year, y = life_expectancy)) +
+  geom_line(size = 1) +
+  facet_wrap(vars(country), scales = &amp;quot;free_y&amp;quot;, nrow = 3) +
+  theme_void() +
+  theme(strip.text = element_text(face = &amp;quot;bold&amp;quot;))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/example/04-example_files/figure-html/life-expectancy-mena-1.png&#34; width=&#34;960&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;We can use the &lt;a href=&#34;https://hafen.github.io/geofacet/&#34;&gt;&lt;strong&gt;geofacet&lt;/strong&gt; package&lt;/a&gt; to arrange these facets by geography:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(geofacet)
+
+life_expectancy_eu &amp;lt;- gapminder %&amp;gt;%
+  filter(region== &amp;#39;Western Europe&amp;#39; | region==&amp;#39;Northern Europe&amp;#39; | region==&amp;#39;Southern Europe&amp;#39;)
+
+ggplot(life_expectancy_eu, aes(x = year, y = life_expectancy)) +
+  geom_line(size = 1) +
+  facet_geo(vars(country), grid = &amp;quot;europe_countries_grid1&amp;quot;, scales = &amp;quot;free_y&amp;quot;) +
+  labs(x = NULL, y = NULL, title = &amp;quot;Life expectancy from 1960–2015&amp;quot;,
+       caption = &amp;quot;Source: Gapminder&amp;quot;) +
+  theme_minimal() +
+  theme(strip.text = element_text(face = &amp;quot;bold&amp;quot;),
+        plot.title = element_text(face = &amp;quot;bold&amp;quot;),
+        axis.text.x = element_text(angle = 45, hjust = 1))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/example/04-example_files/figure-html/life-expectancy-eu-1.png&#34; width=&#34;960&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Neat!&lt;/p&gt;
+&lt;p&gt;Anybody see any problems here?&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;sparklines&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Sparklines&lt;/h3&gt;
+&lt;p&gt;Sparklines are just line charts (or bar charts) that are really really small.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;india_fert &amp;lt;- gapminder %&amp;gt;%
+  filter(country == &amp;quot;India&amp;quot;)
+plot_india &amp;lt;- ggplot(india_fert, aes(x = year, y = fertility)) +
+  geom_line() +
+  theme_void()
+plot_india&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/example/04-example_files/figure-html/india-spark-1.png&#34; width=&#34;96&#34; /&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggsave(&amp;quot;india_co2.pdf&amp;quot;, plot_india, width = 1, height = 0.15, units = &amp;quot;in&amp;quot;)
+ggsave(&amp;quot;india_co2.png&amp;quot;, plot_india, width = 1, height = 0.15, units = &amp;quot;in&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;china_fert &amp;lt;- gapminder %&amp;gt;%
+  filter(country == &amp;quot;China&amp;quot;)
+plot_china &amp;lt;- ggplot(china_fert, aes(x = year, y = fertility)) +
+  geom_line() +
+  theme_void()
+plot_china&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/example/04-example_files/figure-html/china-spark-1.png&#34; width=&#34;96&#34; /&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggsave(&amp;quot;china_co2.pdf&amp;quot;, plot_china, width = 1, heighlt = 0.15, units = &amp;quot;in&amp;quot;)
+ggsave(&amp;quot;china_co2.png&amp;quot;, plot_china, width = 1, height = 0.15, units = &amp;quot;in&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;You can then use those saved tiny plots in your text (with a little html extra in there).&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;Both India &amp;lt;img class=&amp;quot;img-inline&amp;quot; src=&amp;quot;/your/path/to/india_co2.png&amp;quot; width = &amp;quot;100&amp;quot;/&amp;gt; and
+China &amp;lt;img class=&amp;quot;img-inline&amp;quot; src=&amp;quot;/your/path/to/china-spark-1.png&amp;quot; width = &amp;quot;100&amp;quot;/&amp;gt; have
+seen increased CO~2~ emissions over the past 20 years.&lt;/code&gt;&lt;/pre&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Both India &lt;img class=&#34;img-inline&#34; src=&#34;https://ssc442.netlify.app/example/08-example_files/figure-html/india-spark-1.png&#34; width = &#34;100&#34;/&gt; and China &lt;img class=&#34;img-inline&#34; src=&#34;https://ssc442.netlify.app/example/08-example_files/figure-html/china-spark-1.png&#34; width = &#34;100&#34;/&gt; have seen increased CO&lt;sub&gt;2&lt;/sub&gt; emissions over the past 20 years.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;the-ecological-fallacy-and-importance-of-showing-the-data&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;The ecological fallacy and importance of showing the data&lt;/h2&gt;
+&lt;p&gt;Throughout this section, we have been comparing regions of the world. We have seen that, on average, some regions do better than others. In this section, we focus on describing the importance of variability within the groups when examining the relationship between a country’s infant mortality rates and average income.&lt;/p&gt;
+&lt;p&gt;We define a few more regions and compare the averages across regions:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/example/04-example_files/figure-html/ecological-fallacy-averages-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;The relationship between these two variables is almost perfectly linear and the graph shows a dramatic difference. While in the West less than 0.5% of infants die, in Sub-Saharan Africa the rate is higher than 6%!&lt;/p&gt;
+&lt;p&gt;Note that the plot uses a new transformation, the logistic transformation.&lt;/p&gt;
+&lt;div id=&#34;logit&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Logistic transformation&lt;/h3&gt;
+&lt;p&gt;The logistic or logit transformation for a proportion or rate &lt;span class=&#34;math inline&#34;&gt;\(p\)&lt;/span&gt; is defined as:&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[f(p) = \log \left( \frac{p}{1-p} \right)\]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;When &lt;span class=&#34;math inline&#34;&gt;\(p\)&lt;/span&gt; is a proportion or probability, the quantity that is being logged, &lt;span class=&#34;math inline&#34;&gt;\(p/(1-p)\)&lt;/span&gt;, is called the &lt;em&gt;odds&lt;/em&gt;. In this case &lt;span class=&#34;math inline&#34;&gt;\(p\)&lt;/span&gt; is the proportion of infants that survived. The odds tell us how many more infants are expected to survive than to die. The log transformation makes this symmetric. If the rates are the same, then the log odds is 0. Fold increases or decreases turn into positive and negative increments, respectively.&lt;/p&gt;
+&lt;p&gt;This scale is useful when we want to highlight differences near 0 or 1. For survival rates this is important because a survival rate of 90% is unacceptable, while a survival of 99% is relatively good. We would much prefer a survival rate closer to 99.9%. We want our scale to highlight these difference and the logit does this. Note that 99.9/0.1 is about 10 times bigger than 99/1 which is about 10 times larger than 90/10. By using the log, these fold changes turn into constant increases.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;show-the-data&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Show the data&lt;/h3&gt;
+&lt;p&gt;Now, back to our plot. Based on the plot above, do we conclude that a country with a low income is destined to have low survival rate? Do we conclude that survival rates in Sub-Saharan Africa are all lower than in Southern Asia, which in turn are lower than in the Pacific Islands, and so on?&lt;/p&gt;
+&lt;p&gt;Jumping to this conclusion based on a plot showing averages is referred to as the &lt;em&gt;ecological fallacy&lt;/em&gt;. The almost perfect relationship between survival rates and income is only observed for the averages at the region level. Once we show all the data, we see a somewhat more complicated story:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;## Warning: ggrepel: 1 unlabeled data points (too many overlaps). Consider
+## increasing max.overlaps&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/example/04-example_files/figure-html/ecological-fallacy-all-data-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Specifically, we see that there is a large amount of variability. We see that countries from the same regions can be quite different and that countries with the same income can have different survival rates. For example, while on average Sub-Saharan Africa had the worse health and economic outcomes, there is wide variability within that group. Mauritius and Botswana are doing better than Angola and Sierra Leone, with Mauritius comparable to Western countries.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;vaccines&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Case study: vaccines and infectious diseases&lt;/h2&gt;
+&lt;p&gt;Vaccines have helped save millions of lives. In the 19th century, before herd immunization was achieved through vaccination programs, deaths from infectious diseases, such as smallpox and polio, were common. However, today vaccination programs have become somewhat controversial despite all the scientific evidence for their importance.&lt;/p&gt;
+&lt;p&gt;The controversy started with a paper&lt;a href=&#34;#fn5&#34; class=&#34;footnote-ref&#34; id=&#34;fnref5&#34;&gt;&lt;sup&gt;5&lt;/sup&gt;&lt;/a&gt; published in 1988 and led by Andrew Wakefield claiming
+there was a link between the administration of the measles, mumps, and rubella (MMR) vaccine and the appearance of autism and bowel disease.
+Despite much scientific evidence contradicting this finding, sensationalist media reports and fear-mongering from conspiracy theorists led parts of the public into believing that vaccines were harmful. As a result, many parents ceased to vaccinate their children. This dangerous practice can be potentially disastrous given that the Centers for Disease Control (CDC) estimates that vaccinations will prevent more than 21 million hospitalizations and 732,000 deaths among children born in the last 20 years (see Benefits from Immunization during the Vaccines for Children Program Era — United States, 1994-2013, MMWR&lt;a href=&#34;#fn6&#34; class=&#34;footnote-ref&#34; id=&#34;fnref6&#34;&gt;&lt;sup&gt;6&lt;/sup&gt;&lt;/a&gt;).
+The 1988 paper has since been retracted and Andrew Wakefield was eventually “struck off the UK medical register, with a statement identifying deliberate falsification in the research published in The Lancet, and was thereby barred from practicing medicine in the UK.” (source: Wikipedia&lt;a href=&#34;#fn7&#34; class=&#34;footnote-ref&#34; id=&#34;fnref7&#34;&gt;&lt;sup&gt;7&lt;/sup&gt;&lt;/a&gt;). Yet misconceptions persist, in part due to self-proclaimed activists who continue to disseminate misinformation about vaccines.&lt;/p&gt;
+&lt;p&gt;Effective communication of data is a strong antidote to misinformation and fear-mongering. Earlier we used an example provided by a Wall Street Journal article&lt;a href=&#34;#fn8&#34; class=&#34;footnote-ref&#34; id=&#34;fnref8&#34;&gt;&lt;sup&gt;8&lt;/sup&gt;&lt;/a&gt; showing data related to the impact of vaccines on battling infectious diseases. Here we reconstruct that example.&lt;/p&gt;
+&lt;p&gt;The data used for these plots were collected, organized, and distributed by the Tycho Project&lt;a href=&#34;#fn9&#34; class=&#34;footnote-ref&#34; id=&#34;fnref9&#34;&gt;&lt;sup&gt;9&lt;/sup&gt;&lt;/a&gt;. They include weekly reported counts for seven diseases from 1928 to 2011, from all fifty states. The yearly totals are helpfully included in the &lt;strong&gt;dslabs&lt;/strong&gt; package:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(RColorBrewer)
+data(us_contagious_diseases)
+names(us_contagious_diseases)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;disease&amp;quot;         &amp;quot;state&amp;quot;           &amp;quot;year&amp;quot;            &amp;quot;weeks_reporting&amp;quot;
+## [5] &amp;quot;count&amp;quot;           &amp;quot;population&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;We create a temporary object &lt;code&gt;dat&lt;/code&gt; that stores only the measles data, includes a per 100,000 rate, orders states by average value of disease and removes Alaska and Hawaii since they only became states in the late 1950s. Note that there is a &lt;code&gt;weeks_reporting&lt;/code&gt; column that tells us for how many weeks of the year data was reported. We have to adjust for that value when computing the rate.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;the_disease &amp;lt;- &amp;quot;Measles&amp;quot;
+dat &amp;lt;- us_contagious_diseases %&amp;gt;%
+  filter(!state%in%c(&amp;quot;Hawaii&amp;quot;,&amp;quot;Alaska&amp;quot;) &amp;amp; disease == the_disease) %&amp;gt;%
+  mutate(rate = count / population * 10000 * 52 / weeks_reporting) %&amp;gt;%
+  mutate(state = reorder(state, rate))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;We can now easily plot disease rates per year. Here are the measles data from California:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;dat %&amp;gt;% filter(state == &amp;quot;California&amp;quot; &amp;amp; !is.na(rate)) %&amp;gt;%
+  ggplot(aes(year, rate)) +
+  geom_line() +
+  ylab(&amp;quot;Cases per 10,000&amp;quot;)  +
+  geom_vline(xintercept=1963, col = &amp;quot;blue&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/example/04-example_files/figure-html/california-measles-time-series-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;We add a vertical line at 1963 since this is when the vaccine was introduced [Control, Centers for Disease; Prevention (2014). CDC health information for international travel 2014 (the yellow book). p. 250. ISBN 9780199948505].&lt;/p&gt;
+&lt;p&gt;Now can we show data for all states in one plot? We have three variables to show: year, state, and rate. In the WSJ figure, they use the x-axis for year, the y-axis for state, and color hue to represent rates. However, the color scale they use, which goes from yellow to blue to green to orange to red, can be improved.&lt;/p&gt;
+&lt;p&gt;In our example, we want to use a sequential palette since there is no meaningful center, just low and high rates.&lt;/p&gt;
+&lt;p&gt;We use the geometry &lt;code&gt;geom_tile&lt;/code&gt; to tile the region with colors representing disease rates. We use a square root transformation to avoid having the really high counts dominate the plot. Notice that missing values are shown in grey. Note that once a disease was pretty much eradicated, some states stopped reporting cases all together. This is why we see so much grey after 1980.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;dat %&amp;gt;% ggplot(aes(year, state, fill = rate)) +
+  geom_tile(color = &amp;quot;grey50&amp;quot;) +
+  scale_x_continuous(expand=c(0,0)) +
+  scale_fill_gradientn(colors = brewer.pal(9, &amp;quot;Reds&amp;quot;), trans = &amp;quot;sqrt&amp;quot;) +
+  geom_vline(xintercept=1963, col = &amp;quot;blue&amp;quot;) +
+  theme_minimal() +
+  theme(panel.grid = element_blank(),
+        legend.position=&amp;quot;bottom&amp;quot;,
+        text = element_text(size = 8)) +
+  ggtitle(the_disease) +
+  ylab(&amp;quot;&amp;quot;) + xlab(&amp;quot;&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/example/04-example_files/figure-html/vaccines-plot-1.png&#34; width=&#34;100%&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;This plot makes a very striking argument for the contribution of vaccines. However, one limitation of this plot is that it uses color to represent quantity, which we earlier explained makes it harder to know exactly how high values are going. Position and lengths are better cues. If we are willing to lose state information, we can make a version of the plot that shows the values with position. We can also show the average for the US, which we compute like this:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;avg &amp;lt;- us_contagious_diseases %&amp;gt;%
+  filter(disease==the_disease) %&amp;gt;% group_by(year) %&amp;gt;%
+  summarize(us_rate = sum(count, na.rm = TRUE) /
+              sum(population, na.rm = TRUE) * 10000)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Now to make the plot we simply use the &lt;code&gt;geom_line&lt;/code&gt; geometry:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;dat %&amp;gt;%
+  filter(!is.na(rate)) %&amp;gt;%
+    ggplot() +
+  geom_line(aes(year, rate, group = state),  color = &amp;quot;grey50&amp;quot;,
+            show.legend = FALSE, alpha = 0.2, size = 1) +
+  geom_line(mapping = aes(year, us_rate),  data = avg, size = 1) +
+  scale_y_continuous(trans = &amp;quot;sqrt&amp;quot;, breaks = c(5, 25, 125, 300)) +
+  ggtitle(&amp;quot;Cases per 10,000 by state&amp;quot;) +
+  xlab(&amp;quot;&amp;quot;) + ylab(&amp;quot;&amp;quot;) +
+  geom_text(data = data.frame(x = 1955, y = 50),
+            mapping = aes(x, y, label=&amp;quot;US average&amp;quot;),
+            color=&amp;quot;black&amp;quot;) +
+  geom_vline(xintercept=1963, col = &amp;quot;blue&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/example/04-example_files/figure-html/time-series-vaccines-plot-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;In theory, we could use color to represent the categorical value state, but it is hard to pick 50 distinct colors.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;try-it&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;&lt;strong&gt;TRY IT&lt;/strong&gt;&lt;/h2&gt;
+&lt;div class=&#34;fyi&#34;&gt;
+&lt;p&gt;&lt;strong&gt;TRY IT&lt;/strong&gt;&lt;/p&gt;
+&lt;ol style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;&lt;p&gt;Reproduce the image plot we previously made but for smallpox. For this plot, do not include years in which cases were not reported in 10 or more weeks.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Now reproduce the time series plot we previously made, but this time following the instructions of the previous question for smallpox.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;For the state of California, make a time series plot showing rates for all diseases. Include only years with 10 or more weeks reporting. Use a different color for each disease.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Now do the same for the rates for the US. Hint: compute the US rate by using summarize: the total divided by total population.&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&#34;footnotes&#34;&gt;
+&lt;hr /&gt;
+&lt;ol&gt;
+&lt;li id=&#34;fn1&#34;&gt;&lt;p&gt;&lt;a href=&#34;https://en.wikipedia.org/wiki/Hans_Rosling&#34; class=&#34;uri&#34;&gt;https://en.wikipedia.org/wiki/Hans_Rosling&lt;/a&gt;&lt;a href=&#34;#fnref1&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li id=&#34;fn2&#34;&gt;&lt;p&gt;&lt;a href=&#34;http://www.gapminder.org/&#34; class=&#34;uri&#34;&gt;http://www.gapminder.org/&lt;/a&gt;&lt;a href=&#34;#fnref2&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li id=&#34;fn3&#34;&gt;&lt;p&gt;&lt;a href=&#34;https://www.ted.com/talks/hans_rosling_reveals_new_insights_on_poverty?language=en&#34; class=&#34;uri&#34;&gt;https://www.ted.com/talks/hans_rosling_reveals_new_insights_on_poverty?language=en&lt;/a&gt;&lt;a href=&#34;#fnref3&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li id=&#34;fn4&#34;&gt;&lt;p&gt;&lt;a href=&#34;https://www.ted.com/talks/hans_rosling_shows_the_best_stats_you_ve_ever_seen&#34; class=&#34;uri&#34;&gt;https://www.ted.com/talks/hans_rosling_shows_the_best_stats_you_ve_ever_seen&lt;/a&gt;&lt;a href=&#34;#fnref4&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li id=&#34;fn5&#34;&gt;&lt;p&gt;&lt;a href=&#34;http://www.thelancet.com/journals/lancet/article/PIIS0140-6736(97)11096-0/abstract&#34; class=&#34;uri&#34;&gt;http://www.thelancet.com/journals/lancet/article/PIIS0140-6736(97)11096-0/abstract&lt;/a&gt;&lt;a href=&#34;#fnref5&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li id=&#34;fn6&#34;&gt;&lt;p&gt;&lt;a href=&#34;https://www.cdc.gov/mmwr/preview/mmwrhtml/mm6316a4.htm&#34; class=&#34;uri&#34;&gt;https://www.cdc.gov/mmwr/preview/mmwrhtml/mm6316a4.htm&lt;/a&gt;&lt;a href=&#34;#fnref6&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li id=&#34;fn7&#34;&gt;&lt;p&gt;&lt;a href=&#34;https://en.wikipedia.org/wiki/Andrew_Wakefield&#34; class=&#34;uri&#34;&gt;https://en.wikipedia.org/wiki/Andrew_Wakefield&lt;/a&gt;&lt;a href=&#34;#fnref7&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li id=&#34;fn8&#34;&gt;&lt;p&gt;&lt;a href=&#34;http://graphics.wsj.com/infectious-diseases-and-vaccines/&#34; class=&#34;uri&#34;&gt;http://graphics.wsj.com/infectious-diseases-and-vaccines/&lt;/a&gt;&lt;a href=&#34;#fnref8&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li id=&#34;fn9&#34;&gt;&lt;p&gt;&lt;a href=&#34;http://www.tycho.pitt.edu/&#34; class=&#34;uri&#34;&gt;http://www.tycho.pitt.edu/&lt;/a&gt;&lt;a href=&#34;#fnref9&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Visualizing Large(ish) Data</title>
+      <link>https://ssc442.netlify.app/assignment/04-assignment/</link>
+      <pubDate>Tue, 21 Sep 2021 00:00:00 +0000</pubDate>
+      <guid>https://ssc442.netlify.app/assignment/04-assignment/</guid>
+      <description>
+&lt;script src=&#34;https://ssc442.netlify.app/rmarkdown-libs/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
+
+&lt;div id=&#34;TOC&#34;&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#getting-started&#34;&gt;Getting started&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#bonus-exercise&#34;&gt;Bonus Exercise&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#turning-everything-in&#34;&gt;Turning everything in&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#postscript-how-we-got-this-unemployment-data&#34;&gt;Postscript: how we got this unemployment data&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+
+&lt;div class=&#34;fyi&#34;&gt;
+&lt;p&gt;&lt;strong&gt;NOTE&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;You must turn in a PDF document of your &lt;code&gt;R Markdown&lt;/code&gt; code. Submit this to D2L by 11:59 PM Eastern Time on Sunday, Feb 26th&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;getting-started&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Getting started&lt;/h1&gt;
+&lt;p&gt;For this exercise you’ll use state-level unemployment data from 2006 to 2016 that comes from the US Bureau of Labor Statistics (if you’re curious, &lt;a href=&#34;#postscript-how-we-got-this-unemployment-data&#34;&gt;we describe how we built this dataset down below&lt;/a&gt;).&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://ssc442.netlify.app/projects/03-lab/data/unemployment.csv&#34;&gt;&lt;i class=&#34;fas fa-file-csv&#34;&gt;&lt;/i&gt; &lt;code&gt;unemployment.csv&lt;/code&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;To help you&lt;/strong&gt;, I’ve created a skeleton R Markdown file with a template for this exercise, along with some code to help you clean and summarize the data. Download that here and include it in your project:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://ssc442.netlify.app/projects/03-lab/03-lab.Rmd&#34;&gt;&lt;i class=&#34;fab fa-r-project&#34;&gt;&lt;/i&gt; &lt;code&gt;03-lab.Rmd&lt;/code&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;In the end, to help you master file organization, we suggest that the structure of your project directory should look something like this:&lt;/p&gt;
+&lt;pre class=&#34;text&#34;&gt;&lt;code&gt;your-project-name\
+  03-lab.Rmd
+  your-project-name.Rproj
+  data\
+    unemployment.csv&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;a href=&#34;https://ssc442.netlify.app/example/03-example/&#34;&gt;The example for this week&lt;/a&gt; will be &lt;strong&gt;&lt;em&gt;incredibly&lt;/em&gt;&lt;/strong&gt; helpful for this exercise. Reference it.&lt;/p&gt;
+&lt;p&gt;For this week, you need to start making your plots look nice. For full credit, you will have to label axes, label the plot, and experiment with themes. Experiment with adding a &lt;code&gt;labs()&lt;/code&gt; layer or changing colors. Or, if you’re super brave, try modifying a theme and its elements. Default plots will not receive full credit.&lt;/p&gt;
+&lt;p&gt;You’ll need to insert your own code chunks where needed. Rather than typing them by hand (that’s tedious and you might miscount the number of backticks!), use the “Insert” button at the top of the editing window, or type &lt;kbd&gt;ctrl&lt;/kbd&gt; + &lt;kbd&gt;alt&lt;/kbd&gt; + &lt;kbd&gt;i&lt;/kbd&gt; on Windows, or &lt;kbd&gt;⌘&lt;/kbd&gt; + &lt;kbd&gt;⌥&lt;/kbd&gt; + &lt;kbd&gt;i&lt;/kbd&gt; on macOS.&lt;/p&gt;
+&lt;div class=&#34;fyi&#34;&gt;
+&lt;p&gt;&lt;strong&gt;EXERCISE 1&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Use data from the US Bureau of Labor Statistics (BLS) to show the trends in employment rate for all 50 states between 2006 and 2016. What stories does this plot tell? Which states struggled to recover from the 2008–09 recession?&lt;/p&gt;
+&lt;p&gt;Some hints/tips:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;You won’t need to filter out any missing rows because the data here is complete—there are no state-year combinations with missing unemployment data.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;You’ll be plotting 51 facets. You can filter out DC if you want to have a better grid (like 5 × 10), or you can try using &lt;code&gt;facet_geo()&lt;/code&gt; from the &lt;strong&gt;geofacet&lt;/strong&gt; package to lay out the plots like a map of the US (try this!).&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Plot the &lt;code&gt;date&lt;/code&gt; column along the x-axis, &lt;em&gt;not&lt;/em&gt; the &lt;code&gt;year&lt;/code&gt; column. If you plot by year, you’ll get weird looking lines (try it for fun?), since these observations are monthly. If you really want to plot by year only, you’ll need to create a different data frame where you group by year and state and calculate the average unemployment rate for each year/state combination (i.e. &lt;code&gt;group_by(year, state) %&amp;gt;% summarize(avg_unemployment = mean(unemployment))&lt;/code&gt;)&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Try mapping other aesthetics onto the graph too. You’ll notice there are columns for region and division—play with those as colors, for instance.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;This plot might be big, so make sure you adjust &lt;code&gt;fig.width&lt;/code&gt; and &lt;code&gt;fig.height&lt;/code&gt; in the chunk options so that it’s visible when you knit it. You might also want to used &lt;code&gt;ggsave()&lt;/code&gt; to save it with extra large dimensions.&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;EXERCISE 2&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Use data from the BLS to create a slopegraph that compares the unemployment rate in January 2006 with the unemployment rate in January 2009, either for all 50 states at once (good luck with that!) or for a specific region or division. Make sure the plot doesn’t look too busy or crowded in the end.&lt;/p&gt;
+&lt;p&gt;What story does this plot tell? Which states in the US (or in the specific region you selected) were the most/least affected the Great Recession?&lt;/p&gt;
+&lt;p&gt;Some hints/tips:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;You should use &lt;code&gt;filter()&lt;/code&gt; to only select rows where the year is 2006 or 2009 (i.e. &lt;code&gt;filter(year %in% c(2006, 2009)&lt;/code&gt;) and to select rows where the month is January (&lt;code&gt;filter(month == 1)&lt;/code&gt; or &lt;code&gt;filter(month_name == &#34;January&#34;)&lt;/code&gt;)&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;In order for the year to be plotted as separate categories on the x-axis, it needs to be a factor, so use &lt;code&gt;mutate(year = factor(year))&lt;/code&gt; to convert it.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;To make ggplot draw lines between the 2006 and 2009 categories, you need to include &lt;code&gt;group = state&lt;/code&gt; in the aesthetics.&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;div id=&#34;bonus-exercise&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Bonus Exercise&lt;/h2&gt;
+&lt;p&gt;&lt;strong&gt;This is entirely optional but might be fun.&lt;/strong&gt; Then again, it might not be fun. I don’t know.&lt;/p&gt;
+&lt;p&gt;For extra fun times, if you feel like it, create a bump chart showing something from the unemployment data (perhaps the top 10 states or bottom 10 states in unemployment?) Adapt the code in the &lt;a href=&#34;https://ssc442.netlify.app/example/03-example/&#34;&gt;example for today’s session&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;If you do this, plotting 51 lines is going to be a huge mess. But filtering the data is also a bad idea, because states could drop in and out of the top/bottom 10 over time, and we don’t want to get rid of them. Instead, you can zoom in on a specific range of data in your plot with &lt;code&gt;coord_cartesian(ylim = c(1, 10))&lt;/code&gt;, for instance.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;turning-everything-in&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Turning everything in&lt;/h2&gt;
+&lt;p&gt;When you’re all done, click on the “Knit” button at the top of the editing window and create a PDF. Upload the PDF file to D2L.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;postscript-how-we-got-this-unemployment-data&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Postscript: how we got this unemployment data&lt;/h2&gt;
+&lt;p&gt;For the curious, &lt;a href=&#34;https://ssc442.netlify.app/projects/get_bls_data.R&#34;&gt;here’s the code we used&lt;/a&gt; to download the unemployment data from the BLS.&lt;/p&gt;
+&lt;p&gt;And to pull the curtain back and show how much googling is involved in data visualization (and data analysis and programming in general), here was my process for getting this data:&lt;/p&gt;
+&lt;ol style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;&lt;p&gt;We thought “We want to have students show variation in something domestic over time” and then we googled “us data by state”. Nothing really came up (since it was an exceedingly vague search in the first place), but some results mentioned unemployment rates, so we figured that could be cool.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;We googled “unemployment statistics by state over time” and found that the BLS keeps statistics on this. We clicked on the &lt;a href=&#34;https://www.bls.gov/data/&#34;&gt;“Data Tools” link in their main navigation bar&lt;/a&gt;, clicked on “Unemployment”, and then clicked on the “Multi-screen data search” button for the Local Area Unemployment Statistics (LAUS).&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;We walked through the multiple screens and got excited that we’d be able to download all unemployment stats for all states for a ton of years, &lt;em&gt;but then&lt;/em&gt; the final page had links to 51 individual Excel files, which was dumb.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;So we went back to Google and searched for “download bls data r” and found a few different packages people have written to do this. The first one we clicked on was &lt;a href=&#34;https://github.com/keberwein/blscrapeR&#34;&gt;&lt;code&gt;blscrapeR&lt;/code&gt; at GitHub&lt;/a&gt;, and it looked like it had been updated recently, so we went with it.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;We followed the examples in the &lt;code&gt;blscrapeR&lt;/code&gt; package and downloaded data for every state.&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;Another day in the life of doing modern data science. This is an example of something you will be able to do by the end of this class. we had no idea people had written &lt;code&gt;R&lt;/code&gt; packages to access BLS data, but there are (at least) 3 packages out there. After a few minutes of tinkering, we got it working and it is relatively straightforward.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    
+    <item>
       <title>ggplot2: Everything you ever wanted to know</title>
       <link>https://ssc442.netlify.app/example/03-example/</link>
       <pubDate>Thu, 16 Sep 2021 00:00:00 +0000</pubDate>
@@ -4354,6 +4927,827 @@ These reports may trigger contact from a campus official who will want to talk w
 &lt;ol&gt;
 &lt;li id=&#34;fn1&#34;&gt;&lt;p&gt;Note that &lt;strong&gt;existing&lt;/strong&gt; is taken to mean that you are not permitted to collect data by interacting with other people. That is not to say that you cannot gather data that previously has not been gathered into a single place—this sort of exercise is encouraged. But you cannot stand with a clipboard outside a store and count visitors (for instance).&lt;a href=&#34;#fnref1&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
 &lt;li id=&#34;fn2&#34;&gt;&lt;p&gt;This exercise provides you with an opportunity to identify your marketable skills and to practice them. I encourage those who will be looking for jobs soon to take this exercise seriously.&lt;a href=&#34;#fnref2&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Visualizations in Practice</title>
+      <link>https://ssc442.netlify.app/content/04-content/</link>
+      <pubDate>Tue, 09 Feb 2021 00:00:00 +0000</pubDate>
+      <guid>https://ssc442.netlify.app/content/04-content/</guid>
+      <description>
+&lt;script src=&#34;https://ssc442.netlify.app/rmarkdown-libs/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
+&lt;script src=&#34;https://ssc442.netlify.app/rmarkdown-libs/kePrint/kePrint.js&#34;&gt;&lt;/script&gt;
+&lt;link href=&#34;https://ssc442.netlify.app/rmarkdown-libs/lightable/lightable.css&#34; rel=&#34;stylesheet&#34; /&gt;
+
+&lt;div id=&#34;TOC&#34;&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#readings&#34;&gt;Readings&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#guiding-questions&#34;&gt;Guiding Questions&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#data-visualization-principles&#34;&gt;Data visualization principles&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#encoding-data-using-visual-cues&#34;&gt;Encoding data using visual cues&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#avoid-pseudo-three-dimensional-plots&#34;&gt;Avoid pseudo-three-dimensional plots&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#avoid-too-many-significant-digits&#34;&gt;Avoid too many significant digits&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#know-your-audience&#34;&gt;Know your audience&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#know-when-to-include-0&#34;&gt;Know when to include 0&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#do-not-distort-quantities&#34;&gt;Do not distort quantities&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#order-categories-by-a-meaningful-value&#34;&gt;Order categories by a meaningful value&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#show-the-data&#34;&gt;Show the data&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#faceting&#34;&gt;Faceting&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#use-common-axes-with-facets&#34;&gt;Use common axes with facets&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#align-plots-vertically-to-see-horizontal-changes-and-horizontally-to-see-vertical-changes&#34;&gt;Align plots vertically to see horizontal changes and horizontally to see vertical changes&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#facet-grids&#34;&gt;Facet grids&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#visual-cues-to-be-compared-should-be-adjacent-continued&#34;&gt;Visual cues to be compared should be adjacent, continued&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#use-color&#34;&gt;Use color&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#think-of-the-color-blind&#34;&gt;Think of the color blind&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#using-a-discrete-color-palette&#34;&gt;Using a discrete color palette&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#using-a-continuous-color-palette&#34;&gt;Using a continuous color palette&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#gridextra-and-grid.arrange&#34;&gt;gridExtra and &lt;code&gt;grid.arrange&lt;/code&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+
+&lt;div id=&#34;readings&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Readings&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;This page.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;div id=&#34;guiding-questions&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Guiding Questions&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;Why do we create visualizations? What types of data are best suited for visuals?&lt;/li&gt;
+&lt;li&gt;How do we best visualize the variability in our data?&lt;/li&gt;
+&lt;li&gt;What makes a visual compelling?&lt;/li&gt;
+&lt;li&gt;What are the worst visuals? Which of these are most frequently used? Why?&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;As with last week’s content, the technical aspects of this lecture will be explored in greater detail in the Thursday practical lecture. Today, we will focus on some principles.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;“The greatest value of a picture is when it forces us to notice what we never expected to see.” – John Tukey&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;/div&gt;
+&lt;div id=&#34;data-visualization-principles&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Data visualization principles&lt;/h1&gt;
+&lt;p&gt;We have already provided some rules to follow as we created plots for our examples. Here, we aim to provide some general principles we can use as a guide for effective data visualization. Much of this section is based on a talk by Karl Broman&lt;a href=&#34;#fn1&#34; class=&#34;footnote-ref&#34; id=&#34;fnref1&#34;&gt;&lt;sup&gt;1&lt;/sup&gt;&lt;/a&gt; titled “Creating Effective Figures and Tables”&lt;a href=&#34;#fn2&#34; class=&#34;footnote-ref&#34; id=&#34;fnref2&#34;&gt;&lt;sup&gt;2&lt;/sup&gt;&lt;/a&gt; and includes some of the figures which were made with code that Karl makes available on his GitHub repository&lt;a href=&#34;#fn3&#34; class=&#34;footnote-ref&#34; id=&#34;fnref3&#34;&gt;&lt;sup&gt;3&lt;/sup&gt;&lt;/a&gt;, as well as class notes from Peter Aldhous’ Introduction to Data Visualization course&lt;a href=&#34;#fn4&#34; class=&#34;footnote-ref&#34; id=&#34;fnref4&#34;&gt;&lt;sup&gt;4&lt;/sup&gt;&lt;/a&gt;. Following Karl’s approach, we show some examples of plot styles we should avoid, explain how to improve them, and use these as motivation for a list of principles. We compare and contrast plots that follow these principles to those that don’t.&lt;/p&gt;
+&lt;p&gt;The principles are mostly based on research related to how humans detect patterns and make visual comparisons. The preferred approaches are those that best fit the way our brains process visual information. When deciding on a visualization approach, it is also important to keep our goal in mind. We may be comparing a viewable number of quantities, describing distributions for categories or numeric values, comparing the data from two groups, or describing the relationship between two variables. As a final note, we want to emphasize that for a data scientist it is important to adapt and optimize graphs to the audience. For example, an exploratory plot made for ourselves will be different than a chart intended to communicate a finding to a general audience.&lt;/p&gt;
+&lt;p&gt;As with the discussion above, we will be using these libraries—note the addition of &lt;strong&gt;gridExtra&lt;/strong&gt;:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(tidyverse)
+library(dslabs)
+library(gridExtra)&lt;/code&gt;&lt;/pre&gt;
+&lt;div id=&#34;encoding-data-using-visual-cues&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Encoding data using visual cues&lt;/h3&gt;
+&lt;p&gt;We start by describing some principles for encoding data. There are several approaches at our disposal including position, aligned lengths, angles, area, brightness, and color hue.&lt;/p&gt;
+&lt;p&gt;To illustrate how some of these strategies compare, let’s suppose we want to report the results from two hypothetical polls regarding browser preference taken in 2000 and then 2015. For each year, we are simply comparing five quantities – the five percentages. A widely used graphical representation of percentages, popularized by Microsoft Excel, is the pie chart:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/content/04-content_files/figure-html/piechart-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Here we are representing quantities with both areas and angles, since both the angle and area of each pie slice are proportional to the quantity the slice represents. This turns out to be a sub-optimal choice since, as demonstrated by perception studies, humans are not good at precisely quantifying angles and are even worse when area is the only available visual cue. The donut chart is an example of a plot that uses only area:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/content/04-content_files/figure-html/donutchart-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;To see how hard it is to quantify angles and area, note that the rankings and all the percentages in the plots above changed from 2000 to 2015. Can you determine the actual percentages and rank the browsers’ popularity? Can you see how the percentages changed from 2000 to 2015? It is not easy to tell from the plot. In fact, the &lt;code&gt;pie&lt;/code&gt; R function help file states that:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Pie charts are a very bad way of displaying information. The eye is good at judging linear measures and bad at judging relative areas. A bar chart or dot chart is a preferable way of displaying this type of data.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;In this case, simply showing the numbers is not only clearer, but would also save on printing costs if printing a paper copy:&lt;/p&gt;
+&lt;table class=&#34;table table-striped&#34; style=&#34;width: auto !important; margin-left: auto; margin-right: auto;&#34;&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th style=&#34;text-align:left;&#34;&gt;
+Browser
+&lt;/th&gt;
+&lt;th style=&#34;text-align:right;&#34;&gt;
+2000
+&lt;/th&gt;
+&lt;th style=&#34;text-align:right;&#34;&gt;
+2015
+&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+Opera
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+3
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+2
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+Safari
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+21
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+22
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+Firefox
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+23
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+21
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+Chrome
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+26
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+29
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+IE
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+28
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+27
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;The preferred way to plot these quantities is to use length and position as visual cues, since humans are much better at judging linear measures. The barplot uses this approach by using bars of length proportional to the quantities of interest. By adding horizontal lines at strategically chosen values, in this case at every multiple of 10, we ease the visual burden of quantifying through the position of the top of the bars. Compare and contrast the information we can extract from the two figures.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/content/04-content_files/figure-html/two-barplots-1.png&#34; width=&#34;100%&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Notice how much easier it is to see the differences in the barplot. In fact, we can now determine the actual percentages by following a horizontal line to the x-axis.&lt;/p&gt;
+&lt;p&gt;If for some reason you need to make a pie chart, label each pie slice with its respective percentage so viewers do not have to infer them from the angles or area:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/content/04-content_files/figure-html/excel-barplot-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;In general, when displaying quantities, position and length are preferred over angles and/or area. Brightness and color are even harder to quantify than angles. But, as we will see later, they are sometimes useful when more than two dimensions must be displayed at once.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;avoid-pseudo-three-dimensional-plots&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Avoid pseudo-three-dimensional plots&lt;/h3&gt;
+&lt;p&gt;The figure below, taken from the scientific literature&lt;a href=&#34;#fn5&#34; class=&#34;footnote-ref&#34; id=&#34;fnref5&#34;&gt;&lt;sup&gt;5&lt;/sup&gt;&lt;/a&gt;,
+shows three variables: dose, drug type and survival. Although your screen/book page is flat and two-dimensional, the plot tries to imitate three dimensions and assigned a dimension to each variable.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/./02-content_files/fig8b.png&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;(Image courtesy of Karl Broman)&lt;/p&gt;
+&lt;p&gt;Humans are not good at seeing in three dimensions (which explains why it is hard to parallel park) and our limitation is even worse with regard to pseudo-three-dimensions. To see this, try to determine the values of the survival variable in the plot above. Can you tell when the purple ribbon intersects the red one? This is an example in which we can easily use color to represent the categorical variable instead of using a pseudo-3D:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;##First read data
+url &amp;lt;- &amp;quot;https://github.com/kbroman/Talk_Graphs/raw/master/R/fig8dat.csv&amp;quot;
+dat &amp;lt;- read.csv(url)
+
+##Now make alternative plot
+dat %&amp;gt;% gather(drug, survival, -log.dose) %&amp;gt;%
+  mutate(drug = gsub(&amp;quot;Drug.&amp;quot;,&amp;quot;&amp;quot;,drug)) %&amp;gt;%
+  ggplot(aes(log.dose, survival, color = drug)) +
+  geom_line()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/content/04-content_files/figure-html/colors-for-different-lines-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Notice how much easier it is to determine the survival values.&lt;/p&gt;
+&lt;p&gt;Pseudo-3D is sometimes used completely gratuitously: plots are made to look 3D even when the 3rd dimension does not represent a quantity. This only adds confusion and makes it harder to relay your message. Here are two examples:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/./02-content_files/fig1e.png&#34; /&gt;
+&lt;img src=&#34;https://ssc442.netlify.app/./02-content_files/fig2d.png&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;(Images courtesy of Karl Broman)&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;avoid-too-many-significant-digits&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Avoid too many significant digits&lt;/h3&gt;
+&lt;p&gt;By default, statistical software like R returns many significant digits. The default behavior in R is to show 7 significant digits. That many digits often adds no information and the added visual clutter can make it hard for the viewer to understand the message. As an example, here are the per 10,000 disease rates, computed from totals and population in R, for California across the five decades:&lt;/p&gt;
+&lt;table class=&#34;table table-striped&#34; style=&#34;width: auto !important; margin-left: auto; margin-right: auto;&#34;&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th style=&#34;text-align:left;&#34;&gt;
+state
+&lt;/th&gt;
+&lt;th style=&#34;text-align:right;&#34;&gt;
+year
+&lt;/th&gt;
+&lt;th style=&#34;text-align:right;&#34;&gt;
+Measles
+&lt;/th&gt;
+&lt;th style=&#34;text-align:right;&#34;&gt;
+Pertussis
+&lt;/th&gt;
+&lt;th style=&#34;text-align:right;&#34;&gt;
+Polio
+&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+California
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+1940
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+37.8826320
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+18.3397861
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0.8266512
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+California
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+1950
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+13.9124205
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+4.7467350
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+1.9742639
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+California
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+1960
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+14.1386471
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+NA
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0.2640419
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+California
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+1970
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0.9767889
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+NA
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+NA
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+California
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+1980
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0.3743467
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0.0515466
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+NA
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;We are reporting precision up to 0.00001 cases per 10,000, a very small value in the context of the changes that are occurring across the dates. In this case, two significant figures is more than enough and clearly makes the point that rates are decreasing:&lt;/p&gt;
+&lt;table class=&#34;table table-striped&#34; style=&#34;width: auto !important; margin-left: auto; margin-right: auto;&#34;&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th style=&#34;text-align:left;&#34;&gt;
+state
+&lt;/th&gt;
+&lt;th style=&#34;text-align:right;&#34;&gt;
+year
+&lt;/th&gt;
+&lt;th style=&#34;text-align:right;&#34;&gt;
+Measles
+&lt;/th&gt;
+&lt;th style=&#34;text-align:right;&#34;&gt;
+Pertussis
+&lt;/th&gt;
+&lt;th style=&#34;text-align:right;&#34;&gt;
+Polio
+&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+California
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+1940
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+37.9
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+18.3
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0.8
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+California
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+1950
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+13.9
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+4.7
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+2.0
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+California
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+1960
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+14.1
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+NA
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0.3
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+California
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+1970
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+1.0
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+NA
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+NA
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+California
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+1980
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0.4
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0.1
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+NA
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;Useful ways to change the number of significant digits or to round numbers are &lt;code&gt;signif&lt;/code&gt; and &lt;code&gt;round&lt;/code&gt;. You can define the number of significant digits globally by setting options like this: &lt;code&gt;options(digits = 3)&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;Another principle related to displaying tables is to place values being compared on columns rather than rows. Note that our table above is easier to read than this one:&lt;/p&gt;
+&lt;table class=&#34;table table-striped&#34; style=&#34;width: auto !important; margin-left: auto; margin-right: auto;&#34;&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th style=&#34;text-align:left;&#34;&gt;
+state
+&lt;/th&gt;
+&lt;th style=&#34;text-align:left;&#34;&gt;
+disease
+&lt;/th&gt;
+&lt;th style=&#34;text-align:right;&#34;&gt;
+1940
+&lt;/th&gt;
+&lt;th style=&#34;text-align:right;&#34;&gt;
+1950
+&lt;/th&gt;
+&lt;th style=&#34;text-align:right;&#34;&gt;
+1960
+&lt;/th&gt;
+&lt;th style=&#34;text-align:right;&#34;&gt;
+1970
+&lt;/th&gt;
+&lt;th style=&#34;text-align:right;&#34;&gt;
+1980
+&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+California
+&lt;/td&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+Measles
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+37.9
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+13.9
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+14.1
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+1
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0.4
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+California
+&lt;/td&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+Pertussis
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+18.3
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+4.7
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+NA
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+NA
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0.1
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+California
+&lt;/td&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+Polio
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0.8
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+2.0
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0.3
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+NA
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+NA
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;/div&gt;
+&lt;div id=&#34;know-your-audience&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Know your audience&lt;/h3&gt;
+&lt;p&gt;Graphs can be used for 1) our own exploratory data analysis, 2) to convey a message to experts, or 3) to help tell a story to a general audience. Make sure that the intended audience understands each element of the plot.&lt;/p&gt;
+&lt;p&gt;As a simple example, consider that for your own exploration it may be more useful to log-transform data and then plot it. However, for a general audience that is unfamiliar with converting logged values back to the original measurements, using a log-scale for the axis instead of log-transformed values will be much easier to digest.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;know-when-to-include-0&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Know when to include 0&lt;/h3&gt;
+&lt;p&gt;When using barplots, it is misinformative not to start the bars at 0. This is because, by using a barplot, we are implying the length is proportional to the quantities being displayed. By avoiding 0, relatively small differences can be made to look much bigger than they actually are. This approach is often used by politicians or media organizations trying to exaggerate a difference. Below is an illustrative example used by Peter Aldhous in this lecture: &lt;a href=&#34;http://paldhous.github.io/ucb/2016/dataviz/week2.html&#34;&gt;http://paldhous.github.io/ucb/2016/dataviz/week2.html&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/./02-content_files/class2_8.jpg&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;(Source: Fox News, via Media Matters&lt;a href=&#34;#fn6&#34; class=&#34;footnote-ref&#34; id=&#34;fnref6&#34;&gt;&lt;sup&gt;6&lt;/sup&gt;&lt;/a&gt;.)&lt;/p&gt;
+&lt;p&gt;From the plot above, it appears that apprehensions have almost tripled when, in fact, they have only increased by about 16%. Starting the graph at 0 illustrates this clearly:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/content/04-content_files/figure-html/barplot-from-zero-1-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Here is another example, described in detail in a Flowing Data blog post:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/./02-content_files/Bush-cuts.png&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;(Source: Fox News, via Flowing Data&lt;a href=&#34;#fn7&#34; class=&#34;footnote-ref&#34; id=&#34;fnref7&#34;&gt;&lt;sup&gt;7&lt;/sup&gt;&lt;/a&gt;.)&lt;/p&gt;
+&lt;p&gt;This plot makes a 13% increase look like a five fold change. Here is the appropriate plot:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/content/04-content_files/figure-html/barplot-from-zero-2-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Finally, here is an extreme example that makes a very small difference of under 2% look like a 10-100 fold change:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/./02-content_files/venezuela-election.png&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;(Source:
+Venezolana de Televisión via Pakistan Today&lt;a href=&#34;#fn8&#34; class=&#34;footnote-ref&#34; id=&#34;fnref8&#34;&gt;&lt;sup&gt;8&lt;/sup&gt;&lt;/a&gt; and Diego Mariano.)&lt;/p&gt;
+&lt;p&gt;Here is the appropriate plot:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/content/04-content_files/figure-html/barplot-from-zero-3-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;When using position rather than length, it is then not necessary to include 0. This is particularly the case when we want to compare differences between groups relative to the within-group variability. Here is an illustrative example showing country average life expectancy stratified across continents in 2012:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/content/04-content_files/figure-html/points-plot-not-from-zero-1.png&#34; width=&#34;100%&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Note that in the plot on the left, which includes 0, the space between 0 and 43 adds no information and makes it harder to compare the between and within group variability.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;do-not-distort-quantities&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Do not distort quantities&lt;/h3&gt;
+&lt;p&gt;During President Barack Obama’s 2011 State of the Union Address, the following chart was used to compare the US GDP to the GDP of four competing nations:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/./02-content_files/state-of-the-union.png&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;(Source: The 2011 State of the Union Address&lt;a href=&#34;#fn9&#34; class=&#34;footnote-ref&#34; id=&#34;fnref9&#34;&gt;&lt;sup&gt;9&lt;/sup&gt;&lt;/a&gt;)&lt;/p&gt;
+&lt;p&gt;Judging by the area of the circles, the US appears to have an economy over five times larger than China’s and over 30 times larger than France’s. However, if we look at the actual numbers, we see that this is not the case. The actual ratios are 2.6 and 5.8 times bigger than China and France, respectively. The reason for this distortion is that the radius, rather than the area, was made to be proportional to the quantity, which implies that the proportion between the areas is squared: 2.6 turns into 6.5 and 5.8 turns into 34.1. Here is a comparison of the circles we get if we make the value proportional to the radius and to the area:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;gdp &amp;lt;- c(14.6, 5.7, 5.3, 3.3, 2.5)
+gdp_data &amp;lt;- data.frame(Country = rep(c(&amp;quot;United States&amp;quot;, &amp;quot;China&amp;quot;, &amp;quot;Japan&amp;quot;, &amp;quot;Germany&amp;quot;, &amp;quot;France&amp;quot;),2),
+           y = factor(rep(c(&amp;quot;Radius&amp;quot;,&amp;quot;Area&amp;quot;),each=5), levels = c(&amp;quot;Radius&amp;quot;, &amp;quot;Area&amp;quot;)),
+           GDP= c(gdp^2/min(gdp^2), gdp/min(gdp))) %&amp;gt;%
+   mutate(Country = reorder(Country, GDP))
+gdp_data %&amp;gt;%
+  ggplot(aes(Country, y, size = GDP)) +
+  geom_point(show.legend = FALSE, color = &amp;quot;blue&amp;quot;) +
+  scale_size(range = c(2,25)) +
+  coord_flip() +
+  ylab(&amp;quot;&amp;quot;) + xlab(&amp;quot;&amp;quot;) # identical to labs(y = &amp;quot;&amp;quot;, x = &amp;quot;&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/content/04-content_files/figure-html/area-not-radius-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Not surprisingly, &lt;strong&gt;ggplot2&lt;/strong&gt; defaults to using area rather than
+radius. Of course, in this case, we really should not be using area at all since we can use position and length:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;gdp_data %&amp;gt;%
+  filter(y == &amp;quot;Area&amp;quot;) %&amp;gt;%
+  ggplot(aes(Country, GDP)) +
+  geom_bar(stat = &amp;quot;identity&amp;quot;, width = 0.5) +
+  labs(y = &amp;quot;GDP in trillions of US dollars&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/content/04-content_files/figure-html/barplot-better-than-area-1.png&#34; width=&#34;50%&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;order-categories-by-a-meaningful-value&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Order categories by a meaningful value&lt;/h3&gt;
+&lt;p&gt;When one of the axes is used to show categories, as is done in barplots, the default &lt;strong&gt;ggplot2&lt;/strong&gt; behavior is to order the categories alphabetically when they are defined by character strings. If they are defined by factors, they are ordered by the factor levels. We rarely want to use alphabetical order. Instead, we should order by a meaningful quantity. In all the cases above, the barplots were ordered by the values being displayed. The exception was the graph showing barplots comparing browsers. In this case, we kept the order the same across the barplots to ease the comparison. Specifically, instead of ordering the browsers separately in the two years, we ordered both years by the average value of 2000 and 2015.&lt;/p&gt;
+&lt;p&gt;We previously learned how to use the &lt;code&gt;reorder&lt;/code&gt; function, which helps us achieve this goal.
+To appreciate how the right order can help convey a message, suppose we want to create a plot to compare the murder rate across states. We are particularly interested in the most dangerous and safest states. Note the difference when we order alphabetically (the default) versus when we order by the actual rate:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data(murders)
+p1 &amp;lt;- murders %&amp;gt;% mutate(murder_rate = total / population * 100000) %&amp;gt;%
+  ggplot(aes(x = state, y = murder_rate)) +
+  geom_bar(stat=&amp;quot;identity&amp;quot;) +
+  coord_flip() +
+  theme(axis.text.y = element_text(size = 8))  +
+  xlab(&amp;quot;&amp;quot;)
+
+p2 &amp;lt;- murders %&amp;gt;% mutate(murder_rate = total / population * 100000) %&amp;gt;%
+  mutate(state = reorder(state, murder_rate)) %&amp;gt;% # here&amp;#39;s the magic!
+  ggplot(aes(x = state, y = murder_rate)) +
+  geom_bar(stat=&amp;quot;identity&amp;quot;) +
+  coord_flip() +
+  theme(axis.text.y = element_text(size = 8))  +
+  xlab(&amp;quot;&amp;quot;)
+
+grid.arrange(p1, p2, ncol = 2) # we&amp;#39;ll cover this later&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/content/04-content_files/figure-html/do-not-order-alphabetically-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;We can make the second plot like this:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data(murders)
+murders %&amp;gt;% mutate(murder_rate = total / population * 100000) %&amp;gt;%
+  mutate(state = reorder(state, murder_rate)) %&amp;gt;%
+  ggplot(aes(state, murder_rate)) +
+  geom_bar(stat=&amp;quot;identity&amp;quot;) +
+  coord_flip() +
+  theme(axis.text.y = element_text(size = 6)) +
+  xlab(&amp;quot;&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The &lt;code&gt;reorder&lt;/code&gt; function lets us reorder groups as well. Earlier we saw an example related to income distributions across regions. Here are the two versions plotted against each other:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/content/04-content_files/figure-html/reorder-boxplot-example-1.png&#34; width=&#34;100%&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;The first orders the regions alphabetically, while the second orders them by the group’s median.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;show-the-data&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Show the data&lt;/h2&gt;
+&lt;p&gt;We have focused on displaying single quantities across categories. We now shift our attention to displaying data, with a focus on comparing groups.&lt;/p&gt;
+&lt;p&gt;To motivate our first principle, “show the data”, we go back to our artificial example of describing heights to a person who is unaware of some basic facts about the population of interest (and is otherwise unsophisticated). This time let’s assume that this person is interested in the difference in heights between males and females. A commonly seen plot used for comparisons between groups, popularized by software such as Microsoft Excel, is the dynamite plot, which shows the average and standard errors.&lt;a href=&#34;#fn10&#34; class=&#34;footnote-ref&#34; id=&#34;fnref10&#34;&gt;&lt;sup&gt;10&lt;/sup&gt;&lt;/a&gt; The plot looks like this:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/content/04-content_files/figure-html/show-data-1-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;The average of each group is represented by the top of each bar and the antennae extend out from the average to the average plus two standard errors. If all ET receives is this plot, he will have little information on what to expect if he meets a group of human males and females. The bars go to 0: does this mean there are tiny humans measuring less than one foot? Are all males taller than the tallest females? Is there a range of heights? ET can’t answer these questions since we have provided almost no information on the height distribution.&lt;/p&gt;
+&lt;p&gt;This brings us to our first principle: show the data. This simple &lt;strong&gt;ggplot2&lt;/strong&gt; code already generates a more informative plot than the barplot by simply showing all the data points:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;heights %&amp;gt;%
+  ggplot(aes(sex, height)) +
+  geom_point()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/content/04-content_files/figure-html/show-data-2-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;For example, this plot gives us an idea of the range of the data. However, this plot has limitations as well, since we can’t really see all the 238 and 812 points plotted for females and males, respectively, and many points are plotted on top of each other. As we have previously described, visualizing the distribution is much more informative. But before doing this, we point out two ways we can improve a plot showing all the points.&lt;/p&gt;
+&lt;p&gt;The first is to add &lt;em&gt;jitter&lt;/em&gt;, which adds a small random shift to each point. In this case, adding horizontal jitter does not alter the interpretation, since the point heights do not change, but we minimize the number of points that fall on top of each other and, therefore, get a better visual sense of how the data is distributed. A second improvement comes from using &lt;em&gt;alpha blending&lt;/em&gt;: making the points somewhat transparent. The more points fall on top of each other, the darker the plot, which also helps us get a sense of how the points are distributed. Here is the same plot with jitter and alpha blending:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;heights %&amp;gt;%
+  ggplot(aes(sex, height)) +
+  geom_jitter(width = 0.1, alpha = 0.2)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/content/04-content_files/figure-html/show-points-with-jitter-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Now we start getting a sense that, on average, males are taller than females. We also note dark horizontal bands of points, demonstrating that many report values that are rounded to the nearest integer.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;faceting&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Faceting&lt;/h2&gt;
+&lt;p&gt;Looking at the previous plot, it’s easy to tell that males tend to be taller than females. Before, we showed how we can plot two distributions over each other using an aesthetic mapping. Something like this:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;heights %&amp;gt;%
+  ggplot(aes(x = height, fill = sex)) +
+  geom_histogram(alpha = .5, show.legend = TRUE) +
+  labs(fill = &amp;#39;Sex&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/content/04-content_files/figure-html/unnamed-chunk-9-1.png&#34; width=&#34;672&#34; /&gt;
+Sometimes, putting the plots on top of each other, even with a well-chosen alpha, does not clearly communicate the differences in the distribution. When we want to compare side-by-side, we will often use &lt;strong&gt;facets&lt;/strong&gt;. Facets are a bit like supercharged aesthetic mapping because they let us separate plots based on categorical variables, but instead of putting them together, we can have side-by-side plots.&lt;/p&gt;
+&lt;p&gt;Two functions in &lt;code&gt;ggplot&lt;/code&gt; give facets: &lt;code&gt;facet_wrap&lt;/code&gt; and &lt;code&gt;facet_grid&lt;/code&gt;. We’ll use &lt;code&gt;facet_grid&lt;/code&gt; as this is a little more powerful.&lt;/p&gt;
+&lt;p&gt;Facets are added as an additional layer like this: &lt;code&gt;+ facet_grid(. ~ sex)&lt;/code&gt;. Inside the function, we have a “formula” that is written without quotes (which is unusual for R). Since &lt;code&gt;facet_grid&lt;/code&gt; takes a “formula”, all we have to do to facet is decide how we want to lay out our plots. If we want each of the faceting groups to lie along the vertical axis, we put the variable on which we want to facet before the “~”, and after the “~” we simply put a period. If we want the groups to lie along the horizontal axis, we put the variable after the “~” and the period before. In the example, we’ll separate the histogram by drawing them side by side along the horizontal axis.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;heights %&amp;gt;%
+  ggplot(aes(x = height)) +
+  geom_histogram(binwidth = 1, color=&amp;quot;black&amp;quot;) +
+  facet_grid(.~sex)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/content/04-content_files/figure-html/unnamed-chunk-10-1.png&#34; width=&#34;672&#34; /&gt;
+This would be the result if we took the females, plotted the histogram, then took the males, made another histogram, and then put them side by side. But we do it in one command by adding &lt;code&gt;+facet_grid(...)&lt;/code&gt;&lt;/p&gt;
+&lt;div id=&#34;use-common-axes-with-facets&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Use common axes with facets&lt;/h3&gt;
+&lt;p&gt;Since we have plots side-by-side, they can have different scales along the x-axis (or along the y-axis if we were stacking with &lt;code&gt;sex ~ .&lt;/code&gt;). We want to be careful here - if we don’t have matching scales on these axes, then it’ll be really hard to visually see differences in the distribution.&lt;/p&gt;
+&lt;p&gt;As an example of what not to do, and to show that we can use the &lt;code&gt;scales&lt;/code&gt; argument in &lt;code&gt;facet_grid&lt;/code&gt;, we can allow the x-axis to freely scale between the plots. This makes it hard to tell that males are, on average, taller because the average male height, despite being larger than the average female height (70 vs. 65 or so) &lt;em&gt;falls in the same location within the plot box&lt;/em&gt;. Note that 80 is the extreme edge for the left plot, but not in the right plot.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;heights %&amp;gt;%
+  ggplot(aes(height)) +
+  geom_histogram(binwidth = 1, color=&amp;quot;black&amp;quot;) +
+  facet_grid(. ~ sex, scales = &amp;quot;free_x&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/content/04-content_files/figure-html/common-axes-histograms-wrong-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;align-plots-vertically-to-see-horizontal-changes-and-horizontally-to-see-vertical-changes&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Align plots vertically to see horizontal changes and horizontally to see vertical changes&lt;/h3&gt;
+&lt;p&gt;In these histograms, the visual cue related to decreases or increases in height are shifts to the left or right, respectively: horizontal changes. Aligning the plots vertically helps us see this change when the axes are fixed:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;heights %&amp;gt;%
+  ggplot(aes(height)) +
+  geom_histogram(binwidth = 1, color=&amp;quot;black&amp;quot;) +
+  facet_grid(. ~ sex)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/content/04-content_files/figure-html/common-axes-histograms-right-2-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p2 &amp;lt;- heights %&amp;gt;%
+  ggplot(aes(height)) +
+  geom_histogram(binwidth = 1, color=&amp;quot;black&amp;quot;) +
+  facet_grid(sex~.)
+p2&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/content/04-content_files/figure-html/unnamed-chunk-11-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;This plot makes it much easier to notice that men’s heights are, on average, higher.&lt;/p&gt;
+&lt;p&gt;The sample size of females is smaller than of males – that is, we have more males in the data. Try &lt;code&gt;table(heights$sex)&lt;/code&gt; to see this. It’s also clear from the above plot because the height of the bars on the y-axis (&lt;code&gt;count&lt;/code&gt;) are smaller for females. If we are interested in the distribution within our sample, this is useful. If we’re interested in the distribution of females vs. the distribution of males, we might want to re-scale the y-axis.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p2 &amp;lt;- heights %&amp;gt;%
+  ggplot(aes(height)) +
+  geom_histogram(binwidth = 1, color=&amp;quot;black&amp;quot;) +
+  facet_grid(sex~., scales = &amp;#39;free_y&amp;#39;)
+p2&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/content/04-content_files/figure-html/unnamed-chunk-12-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;We still have &lt;code&gt;count&lt;/code&gt; on the y-axis, so we didn’t switch to density (though it would look the same). Instead, we rescaled the y-axis, which gives us a different perspective but still contains the count information.&lt;/p&gt;
+&lt;p&gt;If we want the more compact summary provided by boxplots, we then align them horizontally since, by default, boxplots move up and down with changes in height. Following our &lt;em&gt;show the data&lt;/em&gt; principle, we then overlay all the data points:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p3 &amp;lt;- heights %&amp;gt;%
+  ggplot(aes(sex, height)) +
+  geom_boxplot(coef=3) +
+  geom_jitter(width = 0.1, alpha = 0.2) +
+  ylab(&amp;quot;Height in inches&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Now contrast and compare these three plots, based on exactly the same data:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/content/04-content_files/figure-html/show-the-data-comparison-1.png&#34; width=&#34;100%&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Notice how much more we learn from the two plots on the right. Barplots are useful for showing one number, but not very useful when we want to describe distributions.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;facet-grids&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Facet grids&lt;/h3&gt;
+&lt;p&gt;As the name implies, &lt;code&gt;facet_grid&lt;/code&gt; can make more than just side-by-plots. If we specify variables on boths sides of the “~”, we get a grid of plots.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;gapminder::gapminder %&amp;gt;%
+  filter(year %in% c(1952,1972, 1992, 2002)) %&amp;gt;%
+  filter(continent != &amp;#39;Oceania&amp;#39;) %&amp;gt;%
+  ggplot(aes(x = lifeExp)) +
+  geom_density() +
+  facet_grid(continent ~ year)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/content/04-content_files/figure-html/unnamed-chunk-13-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;This makes it easy to read the life expectancy distribution over time (left-to-right) and across continents (up-and-down). It makes it easy to see that Africa has spread it’s life expectancy distribution (some improved, some didn’t), while Europe has become more clustered at the top end over time. Faceting in a grid is very helpful when you have a time dimension.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;visual-cues-to-be-compared-should-be-adjacent-continued&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Visual cues to be compared should be adjacent, continued&lt;/h3&gt;
+&lt;p&gt;For each continent, let’s compare income in 1970 versus 2010. When comparing income data across regions between 1970 and 2010, we made a figure similar to the one below, but this time we investigate continents rather than regions.&lt;/p&gt;
+&lt;p&gt;Note that there are two &lt;code&gt;gapminder&lt;/code&gt; datasets, one in &lt;code&gt;dslabs&lt;/code&gt; and one in the &lt;code&gt;gapminder&lt;/code&gt; package. The &lt;code&gt;dslabs&lt;/code&gt; version has more data, so I will switch to that here by using &lt;code&gt;dslabs::gapminder&lt;/code&gt; as our data.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;dslabs::gapminder %&amp;gt;%
+  filter(year %in% c(1970, 2010) &amp;amp; !is.na(gdp)) %&amp;gt;%
+  mutate(dollars_per_day = gdp/population/365) %&amp;gt;%
+  mutate(labels = paste(year, continent)) %&amp;gt;%  # creating text labels
+  ggplot(aes(x = labels, y = dollars_per_day)) +
+  geom_boxplot() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.25)) +
+  scale_y_continuous(trans = &amp;quot;log2&amp;quot;) +
+  ylab(&amp;quot;Income in dollars per day&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/content/04-content_files/figure-html/boxplots-not-adjacent-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;The default in &lt;strong&gt;ggplot2&lt;/strong&gt; is to order labels alphabetically so the labels with 1970 come before the labels with 2010, making the comparisons challenging because a continent’s distribution in 1970 is visually far from its distribution in 2010. It is much easier to make the comparison between 1970 and 2010 for each continent when the boxplots for that continent are next to each other:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;dslabs::gapminder %&amp;gt;%
+  filter(year %in% c(1970, 2010) &amp;amp; !is.na(gdp)) %&amp;gt;%
+  mutate(dollars_per_day = gdp/population/365) %&amp;gt;%
+  mutate(labels = paste(continent, year)) %&amp;gt;%
+  ggplot(aes(labels, dollars_per_day)) +
+  geom_boxplot() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = .25)) +
+  scale_y_continuous(trans = &amp;quot;log2&amp;quot;) +
+  ylab(&amp;quot;Income in dollars per day&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/content/04-content_files/figure-html/boxplot-adjacent-comps-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;use-color&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Use color&lt;/h3&gt;
+&lt;p&gt;The comparison becomes even easier to make if we use color to denote the two things we want to compare. Now we do not have to make the labels column and can just use &lt;code&gt;continent&lt;/code&gt; on the x-axis:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/content/04-content_files/figure-html/boxplot-adjacent-comps-with-color-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;think-of-the-color-blind&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Think of the color blind&lt;/h2&gt;
+&lt;p&gt;About 10% of the population is color blind. Unfortunately, the default colors used in &lt;strong&gt;ggplot2&lt;/strong&gt; are not optimal for this group. However, &lt;strong&gt;ggplot2&lt;/strong&gt; does make it easy to change the color palette used in the plots. An example of how we can use a color blind friendly palette is described here: &lt;a href=&#34;http://www.cookbook-r.com/Graphs/Colors_(ggplot2)/#a-colorblind-friendly-palette&#34;&gt;http://www.cookbook-r.com/Graphs/Colors_(ggplot2)/#a-colorblind-friendly-palette&lt;/a&gt;:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;color_blind_friendly_cols &amp;lt;-
+  c(&amp;quot;#999999&amp;quot;, &amp;quot;#E69F00&amp;quot;, &amp;quot;#56B4E9&amp;quot;, &amp;quot;#009E73&amp;quot;,
+    &amp;quot;#F0E442&amp;quot;, &amp;quot;#0072B2&amp;quot;, &amp;quot;#D55E00&amp;quot;, &amp;quot;#CC79A7&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Here are the colors
+&lt;img src=&#34;https://ssc442.netlify.app/content/04-content_files/figure-html/color-blind-friendly-colors-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;From &lt;a href=&#34;http://www.pnas.org/content/pnas/early/2017/01/24/1617948114.full.pdf&#34;&gt;Seafood Prices Reveal Impacts of a Major Ecological Disturbance&lt;/a&gt;:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/content/02-content_files/Colorblind_example.png&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;There are several resources that can help you select colors, for example this one: &lt;a href=&#34;http://bconnelly.net/2013/10/creating-colorblind-friendly-figures/&#34;&gt;http://bconnelly.net/2013/10/creating-colorblind-friendly-figures/&lt;/a&gt;.&lt;/p&gt;
+&lt;div id=&#34;using-a-discrete-color-palette&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Using a discrete color palette&lt;/h3&gt;
+&lt;p&gt;If you’re simply trying to differentiate between groups by using color, there are many ways of changing your color palette in &lt;code&gt;ggplot&lt;/code&gt;. Most use &lt;code&gt;scale_fill_discrete&lt;/code&gt; or &lt;code&gt;scale_color_discrete&lt;/code&gt; (depending on the aesthetic for which you’re setting the color).&lt;/p&gt;
+&lt;p&gt;The easiest way of getting good-looking (e.g. non-default) colors is the &lt;code&gt;scale_fill_viridis_d&lt;/code&gt; function, which “inherits” (takes the place of and has the properties of) &lt;code&gt;scale_fill_discrete&lt;/code&gt;. Viridis has four color palettes and each is designed to be used to maximize the differentiation between colors.&lt;/p&gt;
+&lt;p&gt;We will subset our &lt;code&gt;dslabs::gapminder&lt;/code&gt; dataset to five different years and take a look at what Viridis colors can do across those five:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;gp = dslabs::gapminder %&amp;gt;%
+filter(year == 1990 | year == 1995 | year==2000 |  year == 2005 | year==2010 ) %&amp;gt;%
+ggplot(aes(x = continent, y = gdp/population, fill = as.factor(year)))  + coord_flip()
+
+gp + geom_boxplot()  + labs(title = &amp;#39;Default&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/content/04-content_files/figure-html/unnamed-chunk-15-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;The default uses five different colors plucked seemingly at random. They are actually drawn from a palette of default ggplot colors.&lt;/p&gt;
+&lt;p&gt;Let’s try Viridis&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;gp = dslabs::gapminder %&amp;gt;%
+filter(year == 1990 | year == 1995 | year==2000 |  year == 2005 | year==2010 ) %&amp;gt;%
+ggplot(aes(x = continent, y = gdp/population, fill = as.factor(year)))  + coord_flip() + labs(fill = &amp;#39;Year&amp;#39;)
+
+viridis_a = gp + geom_boxplot()  + labs(title = &amp;#39;Viridis A&amp;#39;) + scale_fill_viridis_d(option = &amp;#39;A&amp;#39;)
+viridis_b = gp + geom_boxplot()  + labs(title = &amp;#39;Viridis B&amp;#39;) + scale_fill_viridis_d(option = &amp;#39;B&amp;#39;)
+viridis_c = gp + geom_boxplot()  + labs(title = &amp;#39;Viridis C&amp;#39;) + scale_fill_viridis_d(option = &amp;#39;C&amp;#39;)
+viridis_d = gp + geom_boxplot()  + labs(title = &amp;#39;Viridis D&amp;#39;) + scale_fill_viridis_d(option = &amp;#39;D&amp;#39;)
+
+grid.arrange(viridis_a, viridis_b, viridis_c, viridis_d)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/content/04-content_files/figure-html/unnamed-chunk-16-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Viridis uses a better palette of colors that, though distinct, have some cohesiveness to them.&lt;/p&gt;
+&lt;p&gt;We can also use a custom palette, like the colorblind palette from before. If the palette has more entries than we have (N) distinct categories, R reverts to the default.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;gp = dslabs::gapminder %&amp;gt;%
+filter(year == 1990 | year == 1995 | year==2000 |  year == 2005 | year==2010 ) %&amp;gt;%
+ggplot(aes(x = continent, y = gdp/population, fill = as.factor(year)))  + coord_flip() + labs(fill = &amp;#39;Year&amp;#39;)
+
+custom_a = gp + geom_boxplot()  + labs(title = &amp;#39;Viridis A&amp;#39;) + scale_fill_discrete(type = color_blind_friendly_cols)
+custom_b = gp + geom_boxplot()  + labs(title = &amp;#39;Viridis A&amp;#39;) + scale_fill_discrete(type = color_blind_friendly_cols[1:3])
+
+grid.arrange(custom_a, custom_b)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/content/04-content_files/figure-html/unnamed-chunk-17-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;In the lower plot, we only give it a length-3 vector of colors, and it needs 5, so it returns to default.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;using-a-continuous-color-palette&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Using a continuous color palette&lt;/h3&gt;
+&lt;p&gt;We may often want to use the color to indicate a numeric value instead of simply using it to delineate groupings. When this is the case, the &lt;code&gt;fill&lt;/code&gt; or &lt;code&gt;color&lt;/code&gt; aesthetic is set to a continuous value. For instance, if one were to plot election results by precinct, we may represent precincts with heavy Republican support as dark red, swing districts as purple or white, and Democratic districts as blue. The intensity of red/blue indicates how heavily slanted votes in that precinct were in the election. This is known as a &lt;em&gt;color ramp&lt;/em&gt;.&lt;/p&gt;
+&lt;p&gt;Lets plot one country’s GDP by year, but have the color indicate the life expectancy:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;dslabs::gapminder %&amp;gt;%
+  filter(country==&amp;#39;Romania&amp;#39; &amp;amp; year&amp;gt;1980) %&amp;gt;%
+  ggplot(aes(x = year, y = gdp/population, color = life_expectancy)) +
+  scale_fill_continuous() +
+  geom_point(size = 5) +
+  labs(x = &amp;#39;Year&amp;#39;, y = &amp;#39;GDP Per Capita&amp;#39;, fill = &amp;#39;Life Expectancy&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/content/04-content_files/figure-html/unnamed-chunk-18-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;We can see that GDP per capita went up, then down in 1989 (fall of the Soviet Union), then up after that. The color ramp tells us that life expectancy reached 75 years near the end, and it certainly improved in the post-2000 era.&lt;/p&gt;
+&lt;p&gt;We can set some of the points on the ramp manually - here, the ramp starts at dark blue and ends at light blue, but what if we wanted to start at red, and at blue, and cross white in the middle? Easy! We use &lt;code&gt;scale_color_gradient2&lt;/code&gt; and specify the colors for low, mid, and high, and specify the midpoint at 72.5 years.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;dslabs::gapminder %&amp;gt;%
+  filter(country==&amp;#39;Romania&amp;#39; &amp;amp; year&amp;gt;1980) %&amp;gt;%
+  ggplot(aes(x = year, y = gdp/population, color = life_expectancy)) +
+  scale_color_gradient2(low = &amp;#39;red&amp;#39;, mid = &amp;#39;white&amp;#39;, high = &amp;#39;blue&amp;#39;, midpoint = 72.5) +
+  geom_point(size = 5) +
+  labs(x = &amp;#39;Year&amp;#39;, y = &amp;#39;GDP Per Capita&amp;#39;, fill = &amp;#39;Life Expectancy&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/content/04-content_files/figure-html/unnamed-chunk-19-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;The midpoint specification is extra useful when there is a threshold (like 50% of the vote) that indicates a different qualitative outcome.&lt;/p&gt;
+&lt;p&gt;The gradient2 method does not always work with the colorblind discrete palette - the colors interpolated may be in the range in which colorblindness tends to be a problem:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;dslabs::gapminder %&amp;gt;%
+  filter(country==&amp;#39;Romania&amp;#39; &amp;amp; year&amp;gt;1980) %&amp;gt;%
+  ggplot(aes(x = year, y = gdp/population, color = life_expectancy)) +
+  scale_color_gradient2(low = color_blind_friendly_cols[3], mid = color_blind_friendly_cols[4], high = color_blind_friendly_cols[5], midpoint = 72.5) +
+  geom_point(size = 5) +
+  labs(x = &amp;#39;Year&amp;#39;, y = &amp;#39;GDP Per Capita&amp;#39;, fill = &amp;#39;Life Expectancy&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/content/04-content_files/figure-html/unnamed-chunk-20-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;gridextra-and-grid.arrange&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;gridExtra and &lt;code&gt;grid.arrange&lt;/code&gt;&lt;/h2&gt;
+&lt;p&gt;The &lt;code&gt;gridExtra&lt;/code&gt; package has been used a few times in this lesson to combine plots using the &lt;code&gt;grid.arrange&lt;/code&gt; function. The use is pretty intuitive - you save your plots as objects &lt;code&gt;plot1 &amp;lt;- ggplot(data, aes(x = var1))&lt;/code&gt; and &lt;code&gt;plot2 &amp;lt;- ggplot(data, aes(x = var2))&lt;/code&gt;, and then use &lt;code&gt;grid.arrange(plot1, plot2)&lt;/code&gt; to combine. The function will align as best it can, and there are more advanced &lt;a href=&#34;https://cran.r-project.org/web/packages/gridExtra/vignettes/arrangeGrob.html&#34;&gt;grob-based functions&lt;/a&gt; that can adjust and align axes between plots, but we won’t get into them. If we want to set the layout, we can specify &lt;code&gt;nrow&lt;/code&gt; and &lt;code&gt;ncol&lt;/code&gt; to set the rows and columns.&lt;/p&gt;
+&lt;p&gt;The very-useful &lt;code&gt;patchwork&lt;/code&gt; package is quickly replacing &lt;code&gt;grid.arrange&lt;/code&gt; and provides more flexibility.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&#34;footnotes&#34;&gt;
+&lt;hr /&gt;
+&lt;ol&gt;
+&lt;li id=&#34;fn1&#34;&gt;&lt;p&gt;&lt;a href=&#34;http://kbroman.org/&#34; class=&#34;uri&#34;&gt;http://kbroman.org/&lt;/a&gt;&lt;a href=&#34;#fnref1&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li id=&#34;fn2&#34;&gt;&lt;p&gt;&lt;a href=&#34;https://www.biostat.wisc.edu/~kbroman/presentations/graphs2017.pdf&#34; class=&#34;uri&#34;&gt;https://www.biostat.wisc.edu/~kbroman/presentations/graphs2017.pdf&lt;/a&gt;&lt;a href=&#34;#fnref2&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li id=&#34;fn3&#34;&gt;&lt;p&gt;&lt;a href=&#34;https://github.com/kbroman/Talk_Graphs&#34; class=&#34;uri&#34;&gt;https://github.com/kbroman/Talk_Graphs&lt;/a&gt;&lt;a href=&#34;#fnref3&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li id=&#34;fn4&#34;&gt;&lt;p&gt;&lt;a href=&#34;http://paldhous.github.io/ucb/2016/dataviz/index.html&#34; class=&#34;uri&#34;&gt;http://paldhous.github.io/ucb/2016/dataviz/index.html&lt;/a&gt;&lt;a href=&#34;#fnref4&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li id=&#34;fn5&#34;&gt;&lt;p&gt;&lt;a href=&#34;https://projecteuclid.org/download/pdf_1/euclid.ss/1177010488&#34; class=&#34;uri&#34;&gt;https://projecteuclid.org/download/pdf_1/euclid.ss/1177010488&lt;/a&gt;&lt;a href=&#34;#fnref5&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li id=&#34;fn6&#34;&gt;&lt;p&gt;&lt;a href=&#34;http://mediamatters.org/blog/2013/04/05/fox-news-newest-dishonest-chart-immigration-enf/193507&#34; class=&#34;uri&#34;&gt;http://mediamatters.org/blog/2013/04/05/fox-news-newest-dishonest-chart-immigration-enf/193507&lt;/a&gt;&lt;a href=&#34;#fnref6&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li id=&#34;fn7&#34;&gt;&lt;p&gt;&lt;a href=&#34;http://flowingdata.com/2012/08/06/fox-news-continues-charting-excellence/&#34; class=&#34;uri&#34;&gt;http://flowingdata.com/2012/08/06/fox-news-continues-charting-excellence/&lt;/a&gt;&lt;a href=&#34;#fnref7&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li id=&#34;fn8&#34;&gt;&lt;p&gt;&lt;a href=&#34;https://www.pakistantoday.com.pk/2018/05/18/whats-at-stake-in-venezuelan-presidential-vote&#34; class=&#34;uri&#34;&gt;https://www.pakistantoday.com.pk/2018/05/18/whats-at-stake-in-venezuelan-presidential-vote&lt;/a&gt;&lt;a href=&#34;#fnref8&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li id=&#34;fn9&#34;&gt;&lt;p&gt;&lt;a href=&#34;https://www.youtube.com/watch?v=kl2g40GoRxg&#34; class=&#34;uri&#34;&gt;https://www.youtube.com/watch?v=kl2g40GoRxg&lt;/a&gt;&lt;a href=&#34;#fnref9&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li id=&#34;fn10&#34;&gt;&lt;p&gt;If you’re unfamiliar, standard errors are defined later in the course—do not confuse them with the standard deviation of the data.&lt;a href=&#34;#fnref10&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
 &lt;/ol&gt;
 &lt;/div&gt;
 </description>

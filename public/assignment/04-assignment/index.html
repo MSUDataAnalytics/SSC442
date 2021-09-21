@@ -1,0 +1,861 @@
+<!DOCTYPE html>
+<html lang="en-us" 
+      xmlns:og="http://ogp.me/ns#" 
+      xmlns:fb="https://www.facebook.com/2008/fbml">
+
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="generator" content="Source Themes Academic 4.8.0">
+
+  
+
+  
+  
+  
+  
+  
+    
+    
+    
+  
+  
+
+  <meta name="author" content="Ben Bushong">
+
+  
+  
+  
+    
+  
+  <meta name="description" content="Getting started  Bonus Exercise Turning everything in Postscript: how we got this unemployment data    NOTE
+You must turn in a PDF document of your R Markdown code. Submit this to D2L by 11:59 PM Eastern Time on Sunday, Feb 26th
+ Getting started For this exercise you’ll use state-level unemployment data from 2006 to 2016 that comes from the US Bureau of Labor Statistics (if you’re curious, we describe how we built this dataset down below).">
+
+  
+  <link rel="alternate" hreflang="en-us" href="https://ssc442.netlify.app/assignment/04-assignment/">
+
+  
+
+
+  
+  
+  
+  <meta name="theme-color" content="#18453B">
+  
+
+  
+  
+  
+  <script src="/js/mathjax-config.js"></script>
+  
+
+  
+  
+  
+  
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/academicons/1.8.6/css/academicons.min.css" integrity="sha256-uFVgMKfistnJAfoCUQigIl+JfUaP47GrRKjf6CTPVmw=" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.0-1/css/all.min.css" integrity="sha256-4w9DunooKSr3MFXHXWyFER38WmPdm361bQS/2KUWZbU=" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+
+    
+    
+    
+      
+    
+    
+      
+      
+        
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/styles/github.min.css" crossorigin="anonymous" title="hl-light">
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/styles/dracula.min.css" crossorigin="anonymous" title="hl-dark" disabled>
+        
+      
+    
+
+    
+
+    
+
+    
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/lazysizes/5.1.2/lazysizes.min.js" integrity="sha256-Md1qLToewPeKjfAHU1zyPwOutccPAm5tahnaw7Osw0A=" crossorigin="anonymous" async></script>
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" integrity="" crossorigin="anonymous" async></script>
+      
+    
+      
+
+      
+      
+
+      
+    
+
+  
+
+  
+  
+  
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Fira+Sans+Condensed:400,400i,700,700i%7COverpass:400,400i,700,700i&display=swap">
+  
+
+  
+  
+  
+  
+  <link rel="stylesheet" href="/css/academic.css">
+
+  
+
+
+
+
+  
+
+
+  
+  
+
+  
+
+  <link rel="manifest" href="/index.webmanifest">
+  <link rel="icon" type="image/png" href="/images/icon_hu5cb5fae69b6b75ece00896ca20e5499a_29457_32x32_fill_lanczos_center_2.png">
+  <link rel="apple-touch-icon" type="image/png" href="/images/icon_hu5cb5fae69b6b75ece00896ca20e5499a_29457_192x192_fill_lanczos_center_2.png">
+
+  <link rel="canonical" href="https://ssc442.netlify.app/assignment/04-assignment/">
+
+  
+  
+  
+  
+  
+  
+  
+    
+  
+  
+  <meta property="twitter:card" content="summary_large_image">
+  
+  <meta property="og:site_name" content="Data Analytics">
+  <meta property="og:url" content="https://ssc442.netlify.app/assignment/04-assignment/">
+  <meta property="og:title" content="Visualizing Large(ish) Data | Data Analytics">
+  <meta property="og:description" content="Getting started  Bonus Exercise Turning everything in Postscript: how we got this unemployment data    NOTE
+You must turn in a PDF document of your R Markdown code. Submit this to D2L by 11:59 PM Eastern Time on Sunday, Feb 26th
+ Getting started For this exercise you’ll use state-level unemployment data from 2006 to 2016 that comes from the US Bureau of Labor Statistics (if you’re curious, we describe how we built this dataset down below)."><meta property="og:image" content="https://ssc442.netlify.app/img/social-image.png">
+  <meta property="twitter:image" content="https://ssc442.netlify.app/img/social-image.png"><meta property="og:locale" content="en-us">
+  
+    
+      <meta property="article:published_time" content="2021-09-21T00:00:00&#43;00:00">
+    
+    <meta property="article:modified_time" content="2021-08-16T11:31:26-04:00">
+  
+
+  
+
+
+
+  
+
+
+  
+
+
+  <link rel="shortcut icon" href="https://ssc442.netlify.app/favicon.ico" />
+  <link rel="apple-touch-icon-precomposed" sizes="57x57" href="https://ssc442.netlify.app/img/apple-touch-icon-57x57.png" />
+  <link rel="apple-touch-icon-precomposed" sizes="114x114" href="https://ssc442.netlify.app/img/apple-touch-icon-114x114.png" />
+  <link rel="apple-touch-icon-precomposed" sizes="72x72" href="https://ssc442.netlify.app/img/apple-touch-icon-72x72.png" />
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://ssc442.netlify.app/img/apple-touch-icon-144x144.png" />
+  <link rel="apple-touch-icon-precomposed" sizes="120x120" href="https://ssc442.netlify.app/img/apple-touch-icon-120x120.png" />
+  <link rel="apple-touch-icon-precomposed" sizes="152x152" href="https://ssc442.netlify.app/img/apple-touch-icon-152x152.png" />
+  <link rel="icon" type="image/png" href="https://ssc442.netlify.app/img/favicon-32x32.png" sizes="32x32" />
+  <link rel="icon" type="image/png" href="https://ssc442.netlify.app/img/favicon-16x16.png" sizes="16x16" />
+  <meta name="application-name" content="SSC 442: Data Analytics" />
+  <meta name="msapplication-TileColor" content="#FFFFFF" />
+  <meta name="msapplication-TileImage" content="https://ssc442.netlify.app/img/mstile-144x144.png" />
+
+
+  <title>Visualizing Large(ish) Data | Data Analytics</title>
+
+</head>
+
+
+<body id="top" data-spy="scroll" data-offset="70"
+    data-target="#TableOfContents"
+    >
+
+    <aside class="search-results" id="search">
+  <div class="container">
+    <section class="search-header">
+
+      <div class="row no-gutters justify-content-between mb-3">
+        <div class="col-6">
+          <h1>Search</h1>
+        </div>
+        <div class="col-6 col-search-close">
+          <a class="js-search" href="#"><i class="fas fa-times-circle text-muted" aria-hidden="true"></i></a>
+        </div>
+      </div>
+
+      <div id="search-box">
+        
+        
+        
+      </div>
+
+    </section>
+    <section class="section-search-results">
+
+      <div id="search-hits">
+        
+      </div>
+
+    </section>
+  </div>
+</aside>
+
+
+    
+
+
+
+
+
+
+
+<nav class="navbar navbar-expand-lg navbar-light compensate-for-scrollbar" id="navbar-main">
+  <div class="container">
+
+    
+    <div class="d-none d-lg-inline-flex">
+      <a class="navbar-brand" href="/">Data Analytics</a>
+    </div>
+    
+
+    
+    <button type="button" class="navbar-toggler" data-toggle="collapse"
+            data-target="#navbar-content" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
+    <span><i class="fas fa-bars"></i></span>
+    </button>
+    
+
+    
+    <div class="navbar-brand-mobile-wrapper d-inline-flex d-lg-none">
+      <a class="navbar-brand" href="/">Data Analytics</a>
+    </div>
+    
+
+    
+    
+    <div class="navbar-collapse main-menu-item collapse justify-content-end" id="navbar-content">
+
+      
+      <ul class="navbar-nav d-md-inline-flex">
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/syllabus/"><span>Syllabus</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/schedule/"><span>Schedule</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/content/"><span>Content</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/example/"><span>Examples</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link  active" href="/assignment/"><span>Assignments</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+            
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="https://join.slack.com/t/ssc442/shared_invite/zt-v3n7r8hh-TjwMzpDLBSywvVYwzftqXA" target="_blank" rel="noopener"><span><i class="fab fa-slack"></i></span></a>
+        </li>
+
+        
+        
+
+      
+
+        
+      </ul>
+    </div>
+
+    <ul class="nav-icons navbar-nav flex-row ml-auto d-flex pl-md-2">
+      
+
+      
+
+      
+
+    </ul>
+
+  </div>
+</nav>
+
+
+    
+
+<div class="container-fluid docs">
+    <div class="row flex-xl-nowrap">
+        <div class="col-12 col-md-3 col-xl-2 docs-sidebar">
+            
+
+
+
+
+
+  
+    
+  
+
+
+
+
+<form class="docs-search d-flex align-items-center">
+  <button class="btn docs-toggle d-md-none p-0 mr-3" type="button" data-toggle="collapse" data-target="#docs-nav" aria-controls="docs-nav" aria-expanded="false" aria-label="Toggle section navigation">
+    <span><i class="fas fa-bars"></i></span>
+  </button>
+
+  
+</form>
+
+<nav class="collapse docs-links" id="docs-nav">
+  
+
+  
+  
+  
+  
+  <div class="docs-toc-item">
+    <a class="docs-toc-link" href="/assignment/">Assignments and Evaluations</a>
+
+  </div>
+  
+  <div class="docs-toc-item">
+    <a class="docs-toc-link" href="/assignment/01-assignment/">Labs</a>
+    <ul class="nav docs-sidenav">
+      
+      <li >
+        <a href="/assignment/01-assignment/">1: Introduction to R</a>
+      </li>
+      
+      <li >
+        <a href="/assignment/02-assignment/">2: Visualization I</a>
+      </li>
+      
+      <li >
+        <a href="/assignment/03-assignment/">3: Visualization II</a>
+      </li>
+      
+      <li class="active">
+        <a href="/assignment/04-assignment/">4: Visualization III</a>
+      </li>
+      
+    </ul>
+    
+
+  </div>
+  
+  <div class="docs-toc-item">
+    <a class="docs-toc-link" href="/assignment/final-project/">Projects</a>
+    <ul class="nav docs-sidenav">
+      
+      <li >
+        <a href="/assignment/final-project/">Final project</a>
+      </li>
+      
+    </ul>
+    
+
+  </div>
+  
+  
+</nav>
+
+        </div>
+
+        
+
+        <main class="col-12 col-md-9 col-xl-8 py-md-3 pl-md-5 docs-content" role="main">
+
+            <article class="article">
+
+                <div class="docs-article-container">
+                    <h1>Visualizing Large(ish) Data</h1>
+
+                    
+
+                    
+
+                    
+
+                    <div class="article-style">
+                        
+<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+
+<div id="TOC">
+<ul>
+<li><a href="#getting-started">Getting started</a>
+<ul>
+<li><a href="#bonus-exercise">Bonus Exercise</a></li>
+<li><a href="#turning-everything-in">Turning everything in</a></li>
+<li><a href="#postscript-how-we-got-this-unemployment-data">Postscript: how we got this unemployment data</a></li>
+</ul></li>
+</ul>
+</div>
+
+<div class="fyi">
+<p><strong>NOTE</strong></p>
+<p>You must turn in a PDF document of your <code>R Markdown</code> code. Submit this to D2L by 11:59 PM Eastern Time on Sunday, Feb 26th</p>
+</div>
+<div id="getting-started" class="section level1">
+<h1>Getting started</h1>
+<p>For this exercise you’ll use state-level unemployment data from 2006 to 2016 that comes from the US Bureau of Labor Statistics (if you’re curious, <a href="#postscript-how-we-got-this-unemployment-data">we describe how we built this dataset down below</a>).</p>
+<ul>
+<li><a href="/projects/03-lab/data/unemployment.csv"><i class="fas fa-file-csv"></i> <code>unemployment.csv</code></a></li>
+</ul>
+<p><strong>To help you</strong>, I’ve created a skeleton R Markdown file with a template for this exercise, along with some code to help you clean and summarize the data. Download that here and include it in your project:</p>
+<ul>
+<li><a href="/projects/03-lab/03-lab.Rmd"><i class="fab fa-r-project"></i> <code>03-lab.Rmd</code></a></li>
+</ul>
+<p>In the end, to help you master file organization, we suggest that the structure of your project directory should look something like this:</p>
+<pre class="text"><code>your-project-name\
+  03-lab.Rmd
+  your-project-name.Rproj
+  data\
+    unemployment.csv</code></pre>
+<p><a href="/example/03-example/">The example for this week</a> will be <strong><em>incredibly</em></strong> helpful for this exercise. Reference it.</p>
+<p>For this week, you need to start making your plots look nice. For full credit, you will have to label axes, label the plot, and experiment with themes. Experiment with adding a <code>labs()</code> layer or changing colors. Or, if you’re super brave, try modifying a theme and its elements. Default plots will not receive full credit.</p>
+<p>You’ll need to insert your own code chunks where needed. Rather than typing them by hand (that’s tedious and you might miscount the number of backticks!), use the “Insert” button at the top of the editing window, or type <kbd>ctrl</kbd> + <kbd>alt</kbd> + <kbd>i</kbd> on Windows, or <kbd>⌘</kbd> + <kbd>⌥</kbd> + <kbd>i</kbd> on macOS.</p>
+<div class="fyi">
+<p><strong>EXERCISE 1</strong></p>
+<p>Use data from the US Bureau of Labor Statistics (BLS) to show the trends in employment rate for all 50 states between 2006 and 2016. What stories does this plot tell? Which states struggled to recover from the 2008–09 recession?</p>
+<p>Some hints/tips:</p>
+<ul>
+<li><p>You won’t need to filter out any missing rows because the data here is complete—there are no state-year combinations with missing unemployment data.</p></li>
+<li><p>You’ll be plotting 51 facets. You can filter out DC if you want to have a better grid (like 5 × 10), or you can try using <code>facet_geo()</code> from the <strong>geofacet</strong> package to lay out the plots like a map of the US (try this!).</p></li>
+<li><p>Plot the <code>date</code> column along the x-axis, <em>not</em> the <code>year</code> column. If you plot by year, you’ll get weird looking lines (try it for fun?), since these observations are monthly. If you really want to plot by year only, you’ll need to create a different data frame where you group by year and state and calculate the average unemployment rate for each year/state combination (i.e. <code>group_by(year, state) %&gt;% summarize(avg_unemployment = mean(unemployment))</code>)</p></li>
+<li><p>Try mapping other aesthetics onto the graph too. You’ll notice there are columns for region and division—play with those as colors, for instance.</p></li>
+<li><p>This plot might be big, so make sure you adjust <code>fig.width</code> and <code>fig.height</code> in the chunk options so that it’s visible when you knit it. You might also want to used <code>ggsave()</code> to save it with extra large dimensions.</p></li>
+</ul>
+<p><strong>EXERCISE 2</strong></p>
+<p>Use data from the BLS to create a slopegraph that compares the unemployment rate in January 2006 with the unemployment rate in January 2009, either for all 50 states at once (good luck with that!) or for a specific region or division. Make sure the plot doesn’t look too busy or crowded in the end.</p>
+<p>What story does this plot tell? Which states in the US (or in the specific region you selected) were the most/least affected the Great Recession?</p>
+<p>Some hints/tips:</p>
+<ul>
+<li><p>You should use <code>filter()</code> to only select rows where the year is 2006 or 2009 (i.e. <code>filter(year %in% c(2006, 2009)</code>) and to select rows where the month is January (<code>filter(month == 1)</code> or <code>filter(month_name == "January")</code>)</p></li>
+<li><p>In order for the year to be plotted as separate categories on the x-axis, it needs to be a factor, so use <code>mutate(year = factor(year))</code> to convert it.</p></li>
+<li><p>To make ggplot draw lines between the 2006 and 2009 categories, you need to include <code>group = state</code> in the aesthetics.</p></li>
+</ul>
+</div>
+<div id="bonus-exercise" class="section level2">
+<h2>Bonus Exercise</h2>
+<p><strong>This is entirely optional but might be fun.</strong> Then again, it might not be fun. I don’t know.</p>
+<p>For extra fun times, if you feel like it, create a bump chart showing something from the unemployment data (perhaps the top 10 states or bottom 10 states in unemployment?) Adapt the code in the <a href="/example/03-example/">example for today’s session</a>.</p>
+<p>If you do this, plotting 51 lines is going to be a huge mess. But filtering the data is also a bad idea, because states could drop in and out of the top/bottom 10 over time, and we don’t want to get rid of them. Instead, you can zoom in on a specific range of data in your plot with <code>coord_cartesian(ylim = c(1, 10))</code>, for instance.</p>
+</div>
+<div id="turning-everything-in" class="section level2">
+<h2>Turning everything in</h2>
+<p>When you’re all done, click on the “Knit” button at the top of the editing window and create a PDF. Upload the PDF file to D2L.</p>
+</div>
+<div id="postscript-how-we-got-this-unemployment-data" class="section level2">
+<h2>Postscript: how we got this unemployment data</h2>
+<p>For the curious, <a href="/projects/get_bls_data.R">here’s the code we used</a> to download the unemployment data from the BLS.</p>
+<p>And to pull the curtain back and show how much googling is involved in data visualization (and data analysis and programming in general), here was my process for getting this data:</p>
+<ol style="list-style-type: decimal">
+<li><p>We thought “We want to have students show variation in something domestic over time” and then we googled “us data by state”. Nothing really came up (since it was an exceedingly vague search in the first place), but some results mentioned unemployment rates, so we figured that could be cool.</p></li>
+<li><p>We googled “unemployment statistics by state over time” and found that the BLS keeps statistics on this. We clicked on the <a href="https://www.bls.gov/data/">“Data Tools” link in their main navigation bar</a>, clicked on “Unemployment”, and then clicked on the “Multi-screen data search” button for the Local Area Unemployment Statistics (LAUS).</p></li>
+<li><p>We walked through the multiple screens and got excited that we’d be able to download all unemployment stats for all states for a ton of years, <em>but then</em> the final page had links to 51 individual Excel files, which was dumb.</p></li>
+<li><p>So we went back to Google and searched for “download bls data r” and found a few different packages people have written to do this. The first one we clicked on was <a href="https://github.com/keberwein/blscrapeR"><code>blscrapeR</code> at GitHub</a>, and it looked like it had been updated recently, so we went with it.</p></li>
+<li><p>We followed the examples in the <code>blscrapeR</code> package and downloaded data for every state.</p></li>
+</ol>
+<p>Another day in the life of doing modern data science. This is an example of something you will be able to do by the end of this class. we had no idea people had written <code>R</code> packages to access BLS data, but there are (at least) 3 packages out there. After a few minutes of tinkering, we got it working and it is relatively straightforward.</p>
+</div>
+</div>
+
+                    </div>
+
+                    
+
+
+
+                    
+                </div>
+
+                <div class="body-footer">
+                    <p>Last updated on August 16, 2021</p>
+
+                    
+
+
+                    
+
+                </div>
+
+            </article>
+
+            <footer>
+    <hr>
+
+    <div class="row course-info">
+        <div class="col-md-7">
+            <p>
+                <strong>SSC 442: Data Analytics (Fall Semester 2021)</strong><br>
+
+                <a href="https://www.msu.edu" target="_blank" rel="noopener">Michigan State University</a> &emsp;&emsp;
+                <a href="https://socialscience.msu.edu/" target="_blank" rel="noopener">College of Social Science</a>
+            </p>
+
+            <p>
+                <a href="https://www.benbushong.com" target="_blank" rel="noopener"><i class="fas fa-user"></i>
+                    Prof. Ben Bushong</a> &emsp;&emsp;
+                <a href="mailto:bbushong@msu.edu"><i class="fas fa-envelope"></i>
+                    bbushong@msu.edu</a>
+            </p>
+
+            <p>
+                <i class="far fa-calendar-alt"></i> Tuesday and Thursday &emsp;&emsp;
+                <i class="far fa-clock"></i> 12:40pm - 2:00pm 
+                
+            </p>
+        </div>
+
+        <div class="col-md-5 credits">
+            <p>All content licensed under a <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" rel="noopener">Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International License</a>.</p>
+            
+            <p>Content <i class="fab fa-creative-commons"></i> 2021 <a href="https://www.benbushong.com" target="_blank" rel="noopener"></a></p>
+        
+            <p>This site created with the <a href="https://sourcethemes.com/academic/" target="_blank" rel="noopener">Academic theme</a> in <a href="https://bookdown.org/yihui/blogdown/" target="_blank" rel="noopener">blogdown</a> and <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a>. </p>
+            
+            <p><a href="https://github.com/" target="_blank" rel="noopener"><i class="fab fa-github"></i> View the source at GitHub.</a></p>
+        </div>
+    </div>
+</footer>
+
+
+        </main>
+    </div>
+</div>
+
+        
+
+    
+    
+    
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/4.1.4/imagesloaded.pkgd.min.js" integrity="sha256-lqvxZrPLtfffUl2G/e7szqSvPBILGbwmsGE1MKlOi0Q=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.6/isotope.pkgd.min.js" integrity="sha256-CBrpuqrMhXwcLLUd5tvQ4euBHCdh7wGlDfNz8vbu/iI=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+
+      
+
+      
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/highlight.min.js" integrity="sha256-eOgo0OtLL4cdq7RdwRUiGKLX9XsIJ7nGhWEKbohmVAQ=" crossorigin="anonymous"></script>
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/languages/r.min.js"></script>
+        
+      
+
+    
+
+    
+    
+
+    
+    
+    <script>const code_highlighting = true;</script>
+    
+
+    
+    
+    <script>const isSiteThemeDark = false;</script>
+    
+
+    
+
+    
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/anchor-js/4.1.1/anchor.min.js" integrity="sha256-pB/deHc9CGfFpJRjC43imB29Rse8tak+5eXqntO94ck=" crossorigin="anonymous"></script>
+    <script>
+      anchors.add();
+    </script>
+    
+
+    
+
+    
+    
+
+    
+    
+
+    
+    
+
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <script src="/js/academic.min.6f7ce8be710290b8c431bbc97f405d15.js"></script>
+
+    
+
+
+
+    
+    
+
+    
+<div id="modal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Cite</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <pre><code class="tex hljs"></code></pre>
+      </div>
+      <div class="modal-footer">
+        <a class="btn btn-outline-primary my-1 js-copy-cite" href="#" target="_blank">
+          <i class="fas fa-copy"></i> Copy
+        </a>
+        <a class="btn btn-outline-primary my-1 js-download-cite" href="#" target="_blank">
+          <i class="fas fa-download"></i> Download
+        </a>
+        <div id="modal-error"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+
+</html>
