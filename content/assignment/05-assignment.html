@@ -1,0 +1,337 @@
+---
+title: "Statistical Models"
+linktitle: "5: Statistical Models"
+publishDate: "2021-09-28"
+output:
+  blogdown::html_page:
+    toc: true
+menu:
+  assignment:
+    parent: Labs
+    weight: 2
+type: docs
+weight: 1
+editor_options:
+  chunk_output_type: console
+---
+
+<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+<script src="/rmarkdown-libs/kePrint/kePrint.js"></script>
+<link href="/rmarkdown-libs/lightable/lightable.css" rel="stylesheet" />
+
+<div id="TOC">
+<ul>
+<li><a href="#models">Statistical models</a>
+<ul>
+<li><a href="#poll-aggregators">Poll aggregators</a>
+<ul>
+<li><a href="#poll-data">Poll data</a></li>
+<li><a href="#pollster-bias">Pollster bias</a></li>
+</ul></li>
+<li><a href="#data-driven-model">Data-driven models</a></li>
+</ul></li>
+</ul>
+</div>
+
+<div class="fyi">
+<p><strong>NOTE</strong></p>
+<p>You must turn in a PDF document of your <code>R Markdown</code> code. Submit this to D2L by 11:59 PM Eastern Time on Sunday, October 3rd.</p>
+</div>
+<p>For this exercise you will need to ensure that you’ve carefully read this week’s content and example. We will build on both. The exercises (which you will turn in as this week’s lab) are at the bottom. Note that this week’s lab is much more theoretical than any other week in this class. This is to ensure that you have the foundations necessary to build rich statistical models and apply them to real-world data.</p>
+<div id="models" class="section level1">
+<h1>Statistical models</h1>
+<blockquote>
+<p>“All models are wrong, but some are useful.” –George E. P. Box</p>
+</blockquote>
+<p>The day before the 2008 presidential election, Nate Silver’s FiveThirtyEight stated that “Barack Obama appears poised for a decisive electoral victory”. They went further and predicted that Obama would win the election with 349 electoral votes to 189, and the popular vote by a margin of 6.1%. FiveThirtyEight also attached a probabilistic statement to their prediction claiming that Obama had a 91% chance of winning the election. The predictions were quite accurate since, in the final results, Obama won the electoral college 365 to 173 and the popular vote by a 7.2% difference. Their performance in the 2008 election brought FiveThirtyEight to the attention of political pundits and TV personalities. Four years later, the week before the 2012 presidential election, FiveThirtyEight’s Nate Silver was giving Obama a 90% chance of winning despite many of the experts thinking the final results would be closer. Political commentator Joe Scarborough said during his show<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a>:</p>
+<blockquote>
+<p>Anybody that thinks that this race is anything but a toss-up right now is such an ideologue … they’re jokes.</p>
+</blockquote>
+<p>To which Nate Silver responded via Twitter:</p>
+<blockquote>
+<p>If you think it’s a toss-up, let’s bet. If Obama wins, you donate $1,000 to the American Red Cross. If Romney wins, I do. Deal?</p>
+</blockquote>
+<p>In 2016, Silver was not as certain and gave Hillary Clinton only a 71% of winning. In contrast, most other forecasters were almost certain she would win. She lost. But 71% is still more than 50%, so was Mr. Silver wrong? And what does probability mean in this context anyway? Are dice being tossed somewhere?</p>
+<p>In this lab we will demonstrate how <em>poll aggregators</em>, such as FiveThirtyEight, collected and combined data reported by different experts to produce improved predictions. We will introduce ideas behind the <em>statistical models</em>, also known as <em>probability models</em>, that were used by poll aggregators to improve election forecasts beyond the power of individual polls. First, we’ll motivate the models, building on the statistical inference concepts we learned in this week’s content and example. We start with relatively simple models, realizing that the actual data science exercise of forecasting elections involves rather complex ones. We will introduce such modeks towards the end of this section of the course.</p>
+<div id="poll-aggregators" class="section level2">
+<h2>Poll aggregators</h2>
+<p>A few weeks before the 2012 election Nate Silver was giving Obama a 90% chance of winning. How was Mr. Silver so confident? We will use a Monte Carlo simulation to illustrate the insight Mr. Silver had and others missed. To do this, we generate results for 12 polls taken the week before the election. We mimic sample sizes from actual polls and construct and report 95% confidence intervals for each of the 12 polls. We save the results from this simulation in a data frame and add a poll ID column.</p>
+<pre class="r"><code>library(tidyverse)
+library(dslabs)
+d &lt;- 0.039
+Ns &lt;- c(1298, 533, 1342, 897, 774, 254, 812, 324, 1291, 1056, 2172, 516)
+p &lt;- (d + 1) / 2
+
+polls &lt;- map_df(Ns, function(N) {
+  x &lt;- sample(c(0,1), size=N, replace=TRUE, prob=c(1-p, p))
+  x_hat &lt;- mean(x)
+  se_hat &lt;- sqrt(x_hat * (1 - x_hat) / N)
+  list(estimate = 2 * x_hat - 1,
+    low = 2*(x_hat - 1.96*se_hat) - 1,
+    high = 2*(x_hat + 1.96*se_hat) - 1,
+    sample_size = N)
+}) %&gt;% mutate(poll = seq_along(Ns))</code></pre>
+<p>Here is a visualization showing the intervals the pollsters would have reported for the difference between Obama and Romney:</p>
+<p><img src="/assignment/05-assignment_files/figure-html/simulated-polls-1.png" width="672" /></p>
+<p>Not surprisingly, all 12 polls report confidence intervals that include the election night result (dashed line). However, all 12 polls also include 0 (solid black line) as well. Therefore, if asked individually for a prediction, the pollsters would have to say: it’s a toss-up. Below we describe a key insight they are missing.</p>
+<p>Poll aggregators, such as Nate Silver, realized that by combining the results of different polls you could greatly improve precision. By doing this, we are effectively conducting a poll with a huge sample size. We can therefore report a smaller 95% confidence interval and a more precise prediction.</p>
+<p>Although as aggregators we do not have access to the raw poll data, we can use mathematics to reconstruct what we would have obtained had we made one large poll with:</p>
+<pre class="r"><code>sum(polls$sample_size)</code></pre>
+<pre><code>## [1] 11269</code></pre>
+<p>participants. Basically, we construct an estimate of the spread, let’s call it <span class="math inline">\(d\)</span>, with a weighted average in the following way:</p>
+<pre class="r"><code>d_hat &lt;- polls %&gt;%
+  summarize(avg = sum(estimate*sample_size) / sum(sample_size)) %&gt;%
+  pull(avg)</code></pre>
+<p>Once we have an estimate of <span class="math inline">\(d\)</span>, we can construct an estimate for the proportion voting for Obama, which we can then use to estimate the standard error. Once we do this, we see that our margin of error is 0.0184545.</p>
+<p>Thus, we can predict that the spread will be 3.1 plus or minus 1.8, which not only includes the actual result we eventually observed on election night, but is quite far from including 0. Once we combine the 12 polls, we become quite certain that Obama will win the popular vote.</p>
+<p><img src="/assignment/05-assignment_files/figure-html/confidence-coverage-2008-election-1.png" width="672" /></p>
+<p>Of course, this was just a simulation to illustrate the idea. The actual data science exercise of forecasting elections is much more complicated and it involves modeling. Below we explain how pollsters fit multilevel models to the data and use this to forecast election results. In the 2008 and 2012 US presidential elections, Nate Silver used this approach to make an almost perfect prediction and silence the pundits.</p>
+<p>Since the 2008 elections, other organizations have started their own election forecasting group that, like Nate Silver’s, aggregates polling data and uses statistical models to make predictions. In 2016, forecasters underestimated Trump’s chances of winning greatly. The day before the election the <em>New York Times</em> reported<a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a> the following probabilities for Hillary Clinton winning the presidency:</p>
+<table class="table table-striped" style="width: auto !important; margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:left;">
+</th>
+<th style="text-align:left;">
+NYT
+</th>
+<th style="text-align:left;">
+538
+</th>
+<th style="text-align:left;">
+HuffPost
+</th>
+<th style="text-align:left;">
+PW
+</th>
+<th style="text-align:left;">
+PEC
+</th>
+<th style="text-align:left;">
+DK
+</th>
+<th style="text-align:left;">
+Cook
+</th>
+<th style="text-align:left;">
+Roth
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Win Prob
+</td>
+<td style="text-align:left;">
+85%
+</td>
+<td style="text-align:left;">
+71%
+</td>
+<td style="text-align:left;">
+98%
+</td>
+<td style="text-align:left;">
+89%
+</td>
+<td style="text-align:left;">
+&gt;99%
+</td>
+<td style="text-align:left;">
+92%
+</td>
+<td style="text-align:left;">
+Lean Dem
+</td>
+<td style="text-align:left;">
+Lean Dem
+</td>
+</tr>
+</tbody>
+</table>
+<!--(Source: [New York Times](https://www.nytimes.com/interactive/2016/upshot/presidential-polls-forecast.html))-->
+<p>For example, the Princeton Election Consortium (PEC) gave Trump less than 1% chance of winning, while the Huffington Post gave him a 2% chance. In contrast, FiveThirtyEight had Trump’s probability of winning at 29%, higher than tossing two coins and getting two heads. In fact, four days before the election FiveThirtyEight published an article titled <em>Trump Is Just A Normal Polling Error Behind Clinton</em><a href="#fn3" class="footnote-ref" id="fnref3"><sup>3</sup></a>.
+By understanding statistical models and how these forecasters use them, we will start to understand how this happened.</p>
+<p>Although not nearly as interesting as predicting the electoral college, for illustrative purposes we will start by looking at predictions for the popular vote. FiveThirtyEight predicted a 3.6% advantage for Clinton<a href="#fn4" class="footnote-ref" id="fnref4"><sup>4</sup></a>, included the actual result of 2.1% (48.2% to 46.1%) in their interval, and was much more confident about Clinton winning the election, giving her an 81.4% chance. Their prediction was summarized with a chart like this:</p>
+<p><img src="/assignment/05-assignment_files/figure-html/fivethirtyeight-densities-1.png" width="80%" /></p>
+<p>The colored areas represent values with an 80% chance of including the actual result, according to the FiveThirtyEight model.
+<!--(Source: [FiveThirtyEight](https://projects.fivethirtyeight.com/2016-election-forecast/))--></p>
+<p>We introduce actual data from the 2016 US presidential election to show how models are motivated and built to produce these predictions. To understand the “81.4% chance” statement we need to describe Bayesian statistics, which we do in Sections <a href="#bayesian-statistics"><strong>??</strong></a> and <a href="#bayesian-approach"><strong>??</strong></a>.</p>
+<div id="poll-data" class="section level3">
+<h3>Poll data</h3>
+<p>We use public polling data organized by FiveThirtyEight for the 2016 presidential election. The data is included as part of the <strong>dslabs</strong> package:</p>
+<pre class="r"><code>data(polls_us_election_2016)</code></pre>
+<p>The table includes results for national polls, as well as state polls, taken during the year prior to the election. For this first example, we will filter the data to include national polls conducted during the week before the election. We also remove polls that FiveThirtyEight has determined not to be reliable and graded with a “B” or less. Some polls have not been graded and we include those:</p>
+<pre class="r"><code>polls &lt;- polls_us_election_2016 %&gt;%
+  filter(state == &quot;U.S.&quot; &amp; enddate &gt;= &quot;2016-10-31&quot; &amp;
+           (grade %in% c(&quot;A+&quot;,&quot;A&quot;,&quot;A-&quot;,&quot;B+&quot;) | is.na(grade)))</code></pre>
+<p>We add a spread estimate:</p>
+<pre class="r"><code>polls &lt;- polls %&gt;%
+  mutate(spread = rawpoll_clinton/100 - rawpoll_trump/100)</code></pre>
+<p>For this example, we will assume that there are only two parties and call <span class="math inline">\(p\)</span> the proportion voting for Clinton and <span class="math inline">\(1-p\)</span> the proportion voting for Trump. We are interested in the spread <span class="math inline">\(2p-1\)</span>. Let’s call the spread <span class="math inline">\(d\)</span> (for difference).</p>
+<p>We have 49 estimates of the spread. The theory we learned tells us that these estimates are a random variable with a probability distribution that is approximately normal. The expected value is the election night spread <span class="math inline">\(d\)</span> and the standard error is <span class="math inline">\(2\sqrt{p (1 - p) / N}\)</span>. Assuming the urn model we described earlier is a good one, we can use this information to construct a confidence interval based on the aggregated data. The estimated spread is:</p>
+<pre class="r"><code>d_hat &lt;- polls %&gt;%
+  summarize(d_hat = sum(spread * samplesize) / sum(samplesize)) %&gt;%
+  pull(d_hat)</code></pre>
+<p>and the standard error is:</p>
+<pre class="r"><code>p_hat &lt;- (d_hat+1)/2
+moe &lt;- 1.96 * 2 * sqrt(p_hat * (1 - p_hat) / sum(polls$samplesize))
+moe</code></pre>
+<pre><code>## [1] 0.006623178</code></pre>
+<p>So we report a spread of 1.43% with a margin of error of 0.66%. On election night, we discover that the actual percentage was 2.1%, which is outside a 95% confidence interval. What happened?</p>
+<p>A histogram of the reported spreads shows a problem:</p>
+<pre class="r"><code>polls %&gt;%
+  ggplot(aes(spread)) +
+  geom_histogram(color=&quot;black&quot;, binwidth = .01)</code></pre>
+<p><img src="/assignment/05-assignment_files/figure-html/polls-2016-spread-histogram-1.png" width="672" /></p>
+<p>The data does not appear to be normally distributed and the standard error appears to be larger than 0.0066232. The theory is not quite working here.</p>
+</div>
+<div id="pollster-bias" class="section level3">
+<h3>Pollster bias</h3>
+<p>Notice that various pollsters are involved and some are taking several polls a week:</p>
+<pre class="r"><code>polls %&gt;% group_by(pollster) %&gt;% summarize(n())</code></pre>
+<pre><code>## # A tibble: 15 × 2
+##    pollster                                                   `n()`
+##    &lt;fct&gt;                                                      &lt;int&gt;
+##  1 ABC News/Washington Post                                       7
+##  2 Angus Reid Global                                              1
+##  3 CBS News/New York Times                                        2
+##  4 Fox News/Anderson Robbins Research/Shaw &amp; Company Research     2
+##  5 IBD/TIPP                                                       8
+##  6 Insights West                                                  1
+##  7 Ipsos                                                          6
+##  8 Marist College                                                 1
+##  9 Monmouth University                                            1
+## 10 Morning Consult                                                1
+## 11 NBC News/Wall Street Journal                                   1
+## 12 RKM Research and Communications, Inc.                          1
+## 13 Selzer &amp; Company                                               1
+## 14 The Times-Picayune/Lucid                                       8
+## 15 USC Dornsife/LA Times                                          8</code></pre>
+<p>Let’s visualize the data for the pollsters that are regularly polling:</p>
+<p><img src="/assignment/05-assignment_files/figure-html/pollster-bias-1.png" width="672" /></p>
+<p>This plot reveals an unexpected result. First, consider that the standard error predicted by theory for each poll:</p>
+<pre class="r"><code>polls %&gt;% group_by(pollster) %&gt;%
+  filter(n() &gt;= 6) %&gt;%
+  summarize(se = 2 * sqrt(p_hat * (1-p_hat) / median(samplesize)))</code></pre>
+<pre><code>## # A tibble: 5 × 2
+##   pollster                     se
+##   &lt;fct&gt;                     &lt;dbl&gt;
+## 1 ABC News/Washington Post 0.0265
+## 2 IBD/TIPP                 0.0333
+## 3 Ipsos                    0.0225
+## 4 The Times-Picayune/Lucid 0.0196
+## 5 USC Dornsife/LA Times    0.0183</code></pre>
+<p>is between 0.018 and 0.033, which agrees with the within poll variation we see. However, there appears to be differences <em>across the polls</em>. Note, for example, how the USC Dornsife/LA Times pollster is predicting a 4% win for Trump, while Ipsos is predicting a win larger than 5% for Clinton. The theory we learned says nothing about different pollsters producing polls with different expected values. All the polls should have the same expected value. FiveThirtyEight refers to these differences as “house effects”. We also call them <em>pollster bias</em>.</p>
+<p>In the following section, rather than use the urn model theory, we are instead going to develop a data-driven model.</p>
+</div>
+</div>
+<div id="data-driven-model" class="section level2">
+<h2>Data-driven models</h2>
+<p>For each pollster, let’s collect their last reported result before the election:</p>
+<pre class="r"><code>one_poll_per_pollster &lt;- polls %&gt;% group_by(pollster) %&gt;%
+  filter(enddate == max(enddate)) %&gt;%
+  ungroup()</code></pre>
+<p>Here is a histogram of the data for these 15 pollsters:</p>
+<pre class="r"><code>qplot(spread, data = one_poll_per_pollster, binwidth = 0.01)</code></pre>
+<p><img src="/assignment/05-assignment_files/figure-html/pollster-bias-histogram-1.png" width="672" /></p>
+<p>In the previous section, we saw that using the urn model theory to combine these results might not be appropriate due to the pollster effect. Instead, we will model this spread data directly.</p>
+<p>The new model can also be thought of as an urn model, although the connection is not as direct. Rather than 0s (Republicans) and 1s (Democrats), our urn now contains poll results from all possible pollsters. We <em>assume</em> that the expected value of our urn is the actual spread <span class="math inline">\(d=2p-1\)</span>.</p>
+<p>Because instead of 0s and 1s, our urn contains continuous numbers between -1 and 1, the standard deviation of the urn is no longer <span class="math inline">\(\sqrt{p(1-p)}\)</span>. Rather than voter sampling variability, the standard error now includes the pollster-to-pollster variability. Our new urn also includes the sampling variability from the polling. Regardless, this standard deviation is now an unknown parameter. In statistics textbooks, the Greek symbol <span class="math inline">\(\sigma\)</span> is used to represent this parameter.</p>
+<p>In summary, we have two unknown parameters: the expected value <span class="math inline">\(d\)</span> and the standard deviation <span class="math inline">\(\sigma\)</span>.</p>
+<p>Our task is to estimate <span class="math inline">\(d\)</span>. Because we model the observed values <span class="math inline">\(X_1,\dots X_N\)</span> as a random sample from the urn, the CLT might still work in this situation because it is an average of independent random variables. For a large enough sample size <span class="math inline">\(N\)</span>, the probability distribution of the sample average <span class="math inline">\(\bar{X}\)</span> is approximately normal with expected value <span class="math inline">\(\mu\)</span> and standard error <span class="math inline">\(\sigma/\sqrt{N}\)</span>. If we are willing to consider <span class="math inline">\(N=15\)</span> large enough, we can use this to construct confidence intervals.</p>
+<p>A problem is that we don’t know <span class="math inline">\(\sigma\)</span>. But theory tells us that we can estimate the urn model <span class="math inline">\(\sigma\)</span> with the <em>sample standard deviation</em> defined as
+<span class="math inline">\(s = \sqrt{ \sum_{i=1}^N (X_i - \bar{X})^2 / (N-1)}\)</span>.</p>
+<p>Unlike for the population standard deviation definition, we now divide by <span class="math inline">\(N-1\)</span>. This makes <span class="math inline">\(s\)</span> a better estimate of <span class="math inline">\(\sigma\)</span>. There is a mathematical explanation for this, which is explained in most statistics textbooks, but we don’t cover it here.</p>
+<p>The <code>sd</code> function in R computes the sample standard deviation:</p>
+<pre class="r"><code>sd(one_poll_per_pollster$spread)</code></pre>
+<pre><code>## [1] 0.02419369</code></pre>
+<p>We are now ready to form a new confidence interval based on our new data-driven model:</p>
+<pre class="r"><code>results &lt;- one_poll_per_pollster %&gt;%
+  summarize(avg = mean(spread),
+            se = sd(spread) / sqrt(length(spread))) %&gt;%
+  mutate(start = avg - 1.96 * se,
+         end = avg + 1.96 * se)
+round(results * 100, 1)</code></pre>
+<pre><code>##   avg  se start end
+## 1 2.9 0.6   1.7 4.1</code></pre>
+<p>Our confidence interval is wider now since it incorporates the pollster variability. It does include the election night result of 2.1%. Also, note that it was small enough not to include 0, which means we were confident Clinton would win the popular vote.</p>
+<div class="fyi">
+<p><strong>EXERCISES</strong></p>
+<p>Note that using dollar signs <code>$ $</code> to enclose some text is how you make the fancy math you see below. If you installed <code>tinytex</code> or some other Latex distribution in order to render your PDFs, you should be equipped to insert mathematics directly into your .Rmd file. It only works in the text – inside the code chunks, the dollar sign is still the accessor.</p>
+<ol style="list-style-type: decimal">
+<li>In this section, we talked about pollster bias. We used visualization to motivate the presence of such bias. Here we will give it a more rigorous treatment. We will consider two pollsters that conducted daily polls. We will look at national polls for the month before the election.</li>
+</ol>
+<pre class="r"><code>data(polls_us_election_2016)
+polls &lt;- polls_us_election_2016 %&gt;%
+  filter(pollster %in% c(&quot;Rasmussen Reports/Pulse Opinion Research&quot;,
+                         &quot;The Times-Picayune/Lucid&quot;) &amp;
+           enddate &gt;= &quot;2016-10-15&quot; &amp;
+           state == &quot;U.S.&quot;) %&gt;%
+  mutate(spread = rawpoll_clinton/100 - rawpoll_trump/100)</code></pre>
+<p>We want to answer the question: is there a poll bias? First, make a plot showing the spreads for each poll.</p>
+<ol start="2" style="list-style-type: decimal">
+<li>The data does seem to suggest there is a difference. However, these data are subject to variability. Perhaps the differences we observe are due to chance.</li>
+</ol>
+<p>The urn model theory says nothing about pollster effect. Under the urn model, both pollsters have the same expected value: the election day difference, that we call <span class="math inline">\(d\)</span>.</p>
+<p>We will model the observed data <span class="math inline">\(Y_{i,j}\)</span> in the following way:</p>
+<p><span class="math display">\[
+Y_{i,j} = d + b_i + \varepsilon_{i,j}
+\]</span></p>
+<p>with <span class="math inline">\(i=1,2\)</span> indexing the two pollsters, <span class="math inline">\(b_i\)</span> the bias for pollster <span class="math inline">\(i\)</span> and <span class="math inline">\(\varepsilon_ij\)</span> poll to poll chance variability. We assume the <span class="math inline">\(\varepsilon\)</span> are independent from each other, have expected value <span class="math inline">\(0\)</span> and standard deviation <span class="math inline">\(\sigma_i\)</span> regardless of <span class="math inline">\(j\)</span>.</p>
+<p>Which of the following best represents our question?</p>
+<ol style="list-style-type: lower-alpha">
+<li>Is <span class="math inline">\(\varepsilon_{i,j}\)</span> = 0?</li>
+<li>How close are the <span class="math inline">\(Y_{i,j}\)</span> to <span class="math inline">\(d\)</span>?</li>
+<li>Is <span class="math inline">\(b_1 \neq b_2\)</span>?</li>
+<li>Are <span class="math inline">\(b_1 = 0\)</span> and <span class="math inline">\(b_2 = 0\)</span> ?</li>
+</ol>
+<ol start="3" style="list-style-type: decimal">
+<li>Suppose we define <span class="math inline">\(\bar{Y}_1\)</span> as the average of poll results from the first poll, <span class="math inline">\(Y_{1,1},\dots,Y_{1,N_1}\)</span> with <span class="math inline">\(N_1\)</span> the number of polls conducted by the first pollster:</li>
+</ol>
+<pre class="r"><code>polls %&gt;%
+  filter(pollster==&quot;Rasmussen Reports/Pulse Opinion Research&quot;) %&gt;%
+  summarize(N_1 = n())</code></pre>
+<p>What is the expected value of <span class="math inline">\(\bar{Y}_1\)</span>?</p>
+<ol start="4" style="list-style-type: decimal">
+<li><p>What is the standard error of <span class="math inline">\(\bar{Y}_1\)</span>? (It may be helpful to compute the expected value and standard error of <span class="math inline">\(\bar{Y}_2\)</span> as well.)</p></li>
+<li><p>Suppose we define <span class="math inline">\(\bar{Y}_2\)</span> as the average of poll results from the first poll, <span class="math inline">\(Y_{2,1},\dots,Y_{2,N_2}\)</span> with <span class="math inline">\(N_2\)</span> the number of polls conducted by the first pollster. What is the expected value <span class="math inline">\(\bar{Y}_2\)</span>?</p></li>
+<li><p>What does the CLT tell us about the distribution of <span class="math inline">\(\bar{Y}_2 - \bar{Y}_1\)</span>?</p></li>
+</ol>
+<ol style="list-style-type: lower-alpha">
+<li>Nothing because this is not the average of a sample.</li>
+<li>Because the <span class="math inline">\(Y_{ij}\)</span> are approximately normal, so are the averages.</li>
+<li>Note that <span class="math inline">\(\bar{Y}_2\)</span> and <span class="math inline">\(\bar{Y}_1\)</span> are sample averages, so if we assume <span class="math inline">\(N_2\)</span> and <span class="math inline">\(N_1\)</span> are large enough, each is approximately normal. The difference of normals is also normal.</li>
+<li>The data are not 0 or 1, so CLT does not apply.</li>
+</ol>
+<ol start="7" style="list-style-type: decimal">
+<li>Construct a random variable that has expected value <span class="math inline">\(b_2 - b_1\)</span>, the pollster bias difference. If our model holds, then this random variable has an approximately normal distribution and we know its standard error. The standard error depends on <span class="math inline">\(\sigma_1\)</span> and <span class="math inline">\(\sigma_2\)</span> (the variances of the <span class="math inline">\(Y\)</span> above), but we can plug the sample standard deviations. <strong>Compute those now</strong>.</li>
+</ol>
+<p>The statistic formed by dividing our estimate of <span class="math inline">\(b_2-b_1\)</span> by its estimated standard error:</p>
+<p><span class="math display">\[
+\frac{\bar{Y}_2 - \bar{Y}_1}{\sqrt{s_2^2/N_2 + s_1^2/N_1}}
+\]</span></p>
+<p>is called the t-statistic. Now you should be able to answer the question: is <span class="math inline">\(b_2 - b_1\)</span> different from 0?</p>
+<p>Notice that we have more than two pollsters. We can also test for pollster effect using all pollsters, not just two. The idea is to compare the variability across polls to variability within polls. We can actually construct statistics to test for effects and approximate their distribution. The area of statistics that does this is called Analysis of Variance or ANOVA. We do not cover it here, but ANOVA provides a very useful set of tools to answer questions such as: is there a pollster effect?</p>
+<p>For this exercise, create a new table:</p>
+<pre class="r"><code>polls &lt;- polls_us_election_2016 %&gt;%
+  filter(enddate &gt;= &quot;2016-10-15&quot; &amp;
+           state == &quot;U.S.&quot;) %&gt;%
+  group_by(pollster) %&gt;%
+  filter(n() &gt;= 5) %&gt;%
+  mutate(spread = rawpoll_clinton/100 - rawpoll_trump/100) %&gt;%
+  ungroup()</code></pre>
+<p>Compute the average and standard deviation for each pollster and examine the variability across the averages and how it compares to the variability within the pollsters, summarized by the standard deviation.</p>
+</div>
+</div>
+</div>
+<div class="footnotes">
+<hr />
+<ol>
+<li id="fn1"><p><a href="https://www.youtube.com/watch?v=TbKkjm-gheY" class="uri">https://www.youtube.com/watch?v=TbKkjm-gheY</a><a href="#fnref1" class="footnote-back">↩︎</a></p></li>
+<li id="fn2"><p><a href="https://www.nytimes.com/interactive/2016/upshot/presidential-polls-forecast.html" class="uri">https://www.nytimes.com/interactive/2016/upshot/presidential-polls-forecast.html</a><a href="#fnref2" class="footnote-back">↩︎</a></p></li>
+<li id="fn3"><p><a href="https://fivethirtyeight.com/features/trump-is-just-a-normal-polling-error-behind-clinton/" class="uri">https://fivethirtyeight.com/features/trump-is-just-a-normal-polling-error-behind-clinton/</a><a href="#fnref3" class="footnote-back">↩︎</a></p></li>
+<li id="fn4"><p><a href="https://projects.fivethirtyeight.com/2016-election-forecast/" class="uri">https://projects.fivethirtyeight.com/2016-election-forecast/</a><a href="#fnref4" class="footnote-back">↩︎</a></p></li>
+</ol>
+</div>
