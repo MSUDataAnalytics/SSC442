@@ -13,6 +13,148 @@
     </image>
     
     <item>
+      <title>Correlations and Simple Models</title>
+      <link>https://ssc442.netlify.app/assignment/06-assignment/</link>
+      <pubDate>Tue, 05 Oct 2021 00:00:00 +0000</pubDate>
+      <guid>https://ssc442.netlify.app/assignment/06-assignment/</guid>
+      <description>
+&lt;script src=&#34;https://ssc442.netlify.app/rmarkdown-libs/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
+
+&lt;div id=&#34;TOC&#34;&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#backstory-and-set-up&#34;&gt;Backstory and Set Up&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#data-exploration-and-processing&#34;&gt;Data Exploration and Processing&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+
+&lt;div class=&#34;fyi&#34;&gt;
+&lt;p&gt;&lt;strong&gt;NOTE&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;You must turn in a PDF document of your &lt;code&gt;R Markdown&lt;/code&gt; code. Submit this to D2L by 11:59 PM Eastern Time on Sunday, October 10th.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;backstory-and-set-up&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Backstory and Set Up&lt;/h2&gt;
+&lt;p&gt;You have been recently hired to Zillow’s Zestimate product team as a junior analyst. As a part of their regular hazing, they have given you access to a small subset of their historic sales data. Your job is to present some basic predictions for housing values in a small geographic area (Ames, IA) using this historical pricing.&lt;/p&gt;
+&lt;p&gt;First, let’s load the data. The code below ought to work, but if it doesn’t you can access the data at the link below.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://ssc442.netlify.app/projects/data/ames.csv&#34;&gt;&lt;i class=&#34;fas fa-file-csv&#34;&gt;&lt;/i&gt; &lt;code&gt;ames.csv&lt;/code&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ameslist &amp;lt;- read.table(&amp;quot;https://msudataanalytics.github.io/SSC442/Labs/data/ames.csv&amp;quot;,
+                 header = TRUE,
+                 sep = &amp;quot;,&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Before we proceed, let’s note a few things about the (simple) code above. First, we have specified &lt;code&gt;header = TRUE&lt;/code&gt; because—you guessed it—the original dataset has headers. Although simple, this is an incredibly important step because it allows &lt;code&gt;R&lt;/code&gt; to do some smart &lt;code&gt;R&lt;/code&gt; things. Specifically, once the headers are in, the variables are formatted as &lt;code&gt;int&lt;/code&gt; and &lt;code&gt;factor&lt;/code&gt; where appropriate. It is absolutely vital that we format the data correctly; otherwise, many &lt;code&gt;R&lt;/code&gt; commands will whine at us.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Try it:&lt;/strong&gt; Run the above, but instead specifying &lt;code&gt;header = FALSE&lt;/code&gt;. What data type are the various columns? Now try ommitting the line altogether. What is the default behavior of the &lt;code&gt;read.table&lt;/code&gt; function?&lt;a href=&#34;#fn1&#34; class=&#34;footnote-ref&#34; id=&#34;fnref1&#34;&gt;&lt;sup&gt;1&lt;/sup&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;div id=&#34;data-exploration-and-processing&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Data Exploration and Processing&lt;/h3&gt;
+&lt;p&gt;We are not going to tell you anything about this data. This is intended to replicate a real-world experience that you will all encounter in the (possibly near) future: someone hands you data and you’re expected to make sense of it. Fortunately for us, this data is (somewhat) self-contained. We’ll first check the variable names to try to divine some information. Recall, we have a handy little function for that:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;names(ameslist)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Note that, when doing data exploration, we will sometimes choose to not save our output. This is a judgement call; here we’ve chosen to merely inspect the variables rather than diving in.&lt;/p&gt;
+&lt;p&gt;Inspection yields some obvious truths. For example:&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr class=&#34;header&#34;&gt;
+&lt;th&gt;Variable&lt;/th&gt;
+&lt;th align=&#34;center&#34;&gt;Explanation&lt;/th&gt;
+&lt;th align=&#34;right&#34;&gt;Type&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td&gt;&lt;code&gt;ID&lt;/code&gt;&lt;/td&gt;
+&lt;td align=&#34;center&#34;&gt;Unique identifier for each row&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;&lt;code&gt;int&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td&gt;&lt;code&gt;LotArea&lt;/code&gt;&lt;/td&gt;
+&lt;td align=&#34;center&#34;&gt;Size of lot (&lt;strong&gt;units unknown&lt;/strong&gt;)&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;&lt;code&gt;int&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td&gt;&lt;code&gt;SalePrice&lt;/code&gt;&lt;/td&gt;
+&lt;td align=&#34;center&#34;&gt;Sale price of house ($)&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;&lt;code&gt;int&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;…but we face some not-so-obvious things as well. For example:&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr class=&#34;header&#34;&gt;
+&lt;th&gt;Variable&lt;/th&gt;
+&lt;th align=&#34;center&#34;&gt;Explanation&lt;/th&gt;
+&lt;th align=&#34;right&#34;&gt;Type&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td&gt;&lt;code&gt;LotShape&lt;/code&gt;&lt;/td&gt;
+&lt;td align=&#34;center&#34;&gt;? Something about the lot&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;&lt;code&gt;factor&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td&gt;&lt;code&gt;MSSubClass&lt;/code&gt;&lt;/td&gt;
+&lt;td align=&#34;center&#34;&gt;? No clue at all&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;&lt;code&gt;int&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td&gt;&lt;code&gt;Condition1&lt;/code&gt;&lt;/td&gt;
+&lt;td align=&#34;center&#34;&gt;? Seems like street info&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;&lt;code&gt;factor&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;It will be difficult to learn anything about the data that is of type &lt;code&gt;int&lt;/code&gt; without outside documentation. However, we can learn something more about the &lt;code&gt;factor&lt;/code&gt;-type variables. In order to understand these a little better, we need to review some of the values that each take on.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Try it:&lt;/strong&gt; Go through the variables in the dataset and make a note about your interpretation for each. Many will be obvious, but some require additional thought.&lt;/p&gt;
+&lt;p&gt;We now turn to another central issue—and one that explains our nomenclature choice thus far: the data object is of type &lt;code&gt;list&lt;/code&gt;. To verify this for yourself, check:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;typeof(ameslist)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;This isn’t ideal—for some visualization packages, for instance, we need data frames and not lists. We’ll make a mental note of this as something to potentially clean up if we desire.&lt;/p&gt;
+&lt;p&gt;Although there are some variables that would be difficult to clean, there are a few that we can address with relative ease. Consider, for instance, the variable &lt;code&gt;GarageType&lt;/code&gt;. This might not be that important, but, remember, the weather in Ames, IA is pretty crummy—a detached garage might be a dealbreaker for some would-be homebuyers. Let’s inspect the values:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;&amp;gt; unique(ameslist$GarageType)
+[1] Attchd  Detchd  BuiltIn CarPort &amp;lt;NA&amp;gt; Basment 2Types&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;With this, we could make an informed decision and create a new variable. Let’s create &lt;code&gt;OutdoorGarage&lt;/code&gt; to indicate, say, homes that have any type of garage that requires the homeowner to walk outdoors after parking their car. (For those who aren’t familiar with different garage types, a car port is not insulated and is therefore considered outdoors. A detached garage presumably requires that the person walks outside after parking. The three other types are inside the main structure, and &lt;code&gt;2Types&lt;/code&gt; we can assume includes at least one attached garage of some sort). This is going to require a bit more coding and we will have to think through each step carefully.&lt;/p&gt;
+&lt;p&gt;First, let’s create a new object that has indicator variables (that is, a variable whose values are either zero or one) for each of the &lt;code&gt;GarageType&lt;/code&gt; values. As with everything in &lt;code&gt;R&lt;/code&gt;, there’s a handy function to do this for us:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;GarageTemp = model.matrix( ~ GarageType - 1, data=ameslist )&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;We now have two separate objects living in our computer’s memory: &lt;code&gt;ameslist&lt;/code&gt; and &lt;code&gt;GarageTemp&lt;/code&gt;—so named to indicate that it is a temporary object.&lt;a href=&#34;#fn2&#34; class=&#34;footnote-ref&#34; id=&#34;fnref2&#34;&gt;&lt;sup&gt;2&lt;/sup&gt;&lt;/a&gt; We now need to stitch it back onto our original data; we’ll use a simple concatenation and write over our old list with the new one:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ameslist &amp;lt;- cbind(ameslist, GarageTemp)
+&amp;gt; Error in data.frame(..., check.names = FALSE) :
+  arguments imply differing number of rows: 1460, 1379&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Huh. What’s going on?&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Try it:&lt;/strong&gt; Figure out what’s going on above. Fix this code so that you have a working version.&lt;/p&gt;
+&lt;p&gt;Now that we’ve got that working (ha!) we can generate a new variable for our outdoor garage. We’ll use a somewhat gross version below because it is &lt;em&gt;verbose&lt;/em&gt;; that said, this can be easily accomplished using logical indexing for those who like that approach.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ameslist$GarageOutside &amp;lt;- ifelse(ameslist$GarageTypeDetchd == 1 | ameslist$GarageTypeCarPort == 1, 1, 0)
+unique(ameslist$GarageOutside)
+[1]  0  1 NA&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;This seems to have worked. The command above &lt;code&gt;ifelse()&lt;/code&gt; does what it says: &lt;code&gt;if&lt;/code&gt; some condition is met (here, either of two variables equals one) then it returns a one; &lt;code&gt;else&lt;/code&gt; it returns a zero. Such functions are very handy, though as mentioned above, there are other ways of doing this. Also note, that while fixed the issue with &lt;code&gt;NA&lt;/code&gt; above, we’ve got new issues: we definitely don’t want &lt;code&gt;NA&lt;/code&gt; outputted from this operation. Accordingly, we’re going to need to deal with it somehow.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Try it:&lt;/strong&gt; Utilizing a similar approach to what you did above, fix this so that the only outputs are zero and one.&lt;/p&gt;
+&lt;p&gt;Generally speaking, this is a persistent issue, and you will spend an extraordinary amount of time dealing with missing data or data that does not encode a variable exactly as you want it. This is expecially true if you deal with real-world data: you will need to learn how to handle &lt;code&gt;NA&lt;/code&gt;s. There are a number of fixes (as always, Google is your friend) and anything that works is good. But you should spend some time thinking about this and learning at least one approach.&lt;/p&gt;
+&lt;div class=&#34;fyi&#34;&gt;
+&lt;p&gt;&lt;strong&gt;EXERCISES&lt;/strong&gt;&lt;/p&gt;
+&lt;ol style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;&lt;p&gt;Prune the data to all of the variables that are &lt;code&gt;type = int&lt;/code&gt; about which you have some reasonable intuition for what they mean. This &lt;strong&gt;must&lt;/strong&gt; include the variable &lt;code&gt;SalePrice&lt;/code&gt;. Save this new dataset as &lt;code&gt;Ames&lt;/code&gt;. Produce documentation for this object in the form of a .txt file. This must describe each of the preserved variables, the values it can take (e.g., can it be negative?) and your interpretation of the variable.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Produce a &lt;em&gt;scatterplot matrix&lt;/em&gt; which includes 12 of the variables that are &lt;code&gt;type = int&lt;/code&gt; in the data set. Choose those that you believe are likely to be correlated with &lt;code&gt;SalePrice&lt;/code&gt;.&lt;a href=&#34;#fn3&#34; class=&#34;footnote-ref&#34; id=&#34;fnref3&#34;&gt;&lt;sup&gt;3&lt;/sup&gt;&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Compute a matrix of correlations between these variables using the function &lt;code&gt;cor()&lt;/code&gt;. Does this match your prior beliefs? Briefly discuss the correlation between the miscellaneous variables and &lt;code&gt;SalePrice&lt;/code&gt;.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Produce a scatterplot between &lt;code&gt;SalePrice&lt;/code&gt; and &lt;code&gt;GrLivArea&lt;/code&gt;. Run a linear model using &lt;code&gt;lm()&lt;/code&gt; to explore the relationship. Finally, use the &lt;code&gt;abline()&lt;/code&gt; function to plot the relationship that you’ve found in the simple linear regression.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;What is the largest outlier that is above the regression line? Produce the other information about this house.&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;&lt;strong&gt;(Bonus)&lt;/strong&gt; Create a visualization that shows the rise of air conditioning over time in homes in Ames.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&#34;footnotes&#34;&gt;
+&lt;hr /&gt;
+&lt;ol&gt;
+&lt;li id=&#34;fn1&#34;&gt;&lt;p&gt;Of course, you could find out the defaults of the function by simply using the handy &lt;code&gt;?&lt;/code&gt; command. Don’t forget about this tool!&lt;a href=&#34;#fnref1&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li id=&#34;fn2&#34;&gt;&lt;p&gt;It’s not exactly true that these objects are in memory. They are… sort of. But how &lt;code&gt;R&lt;/code&gt; handles memory is complicated and silly and blah blah who cares. It’s basically in memory.&lt;a href=&#34;#fnref2&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li id=&#34;fn3&#34;&gt;&lt;p&gt;If you are not familiar with this type of visualization, consult the book (&lt;em&gt;Introduction to Statistical Learning&lt;/em&gt;), Chapters 2 and 3. Google it; it’s free.&lt;a href=&#34;#fnref3&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    
+    <item>
       <title>Statistical Models</title>
       <link>https://ssc442.netlify.app/assignment/05-assignment/</link>
       <pubDate>Tue, 28 Sep 2021 00:00:00 +0000</pubDate>

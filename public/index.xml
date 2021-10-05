@@ -13,6 +13,148 @@
     </image>
     
     <item>
+      <title>Correlations and Simple Models</title>
+      <link>https://ssc442.netlify.app/assignment/06-assignment/</link>
+      <pubDate>Tue, 05 Oct 2021 00:00:00 +0000</pubDate>
+      <guid>https://ssc442.netlify.app/assignment/06-assignment/</guid>
+      <description>
+&lt;script src=&#34;https://ssc442.netlify.app/rmarkdown-libs/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
+
+&lt;div id=&#34;TOC&#34;&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#backstory-and-set-up&#34;&gt;Backstory and Set Up&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#data-exploration-and-processing&#34;&gt;Data Exploration and Processing&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+
+&lt;div class=&#34;fyi&#34;&gt;
+&lt;p&gt;&lt;strong&gt;NOTE&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;You must turn in a PDF document of your &lt;code&gt;R Markdown&lt;/code&gt; code. Submit this to D2L by 11:59 PM Eastern Time on Sunday, October 10th.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;backstory-and-set-up&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Backstory and Set Up&lt;/h2&gt;
+&lt;p&gt;You have been recently hired to Zillow’s Zestimate product team as a junior analyst. As a part of their regular hazing, they have given you access to a small subset of their historic sales data. Your job is to present some basic predictions for housing values in a small geographic area (Ames, IA) using this historical pricing.&lt;/p&gt;
+&lt;p&gt;First, let’s load the data. The code below ought to work, but if it doesn’t you can access the data at the link below.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://ssc442.netlify.app/projects/data/ames.csv&#34;&gt;&lt;i class=&#34;fas fa-file-csv&#34;&gt;&lt;/i&gt; &lt;code&gt;ames.csv&lt;/code&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ameslist &amp;lt;- read.table(&amp;quot;https://msudataanalytics.github.io/SSC442/Labs/data/ames.csv&amp;quot;,
+                 header = TRUE,
+                 sep = &amp;quot;,&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Before we proceed, let’s note a few things about the (simple) code above. First, we have specified &lt;code&gt;header = TRUE&lt;/code&gt; because—you guessed it—the original dataset has headers. Although simple, this is an incredibly important step because it allows &lt;code&gt;R&lt;/code&gt; to do some smart &lt;code&gt;R&lt;/code&gt; things. Specifically, once the headers are in, the variables are formatted as &lt;code&gt;int&lt;/code&gt; and &lt;code&gt;factor&lt;/code&gt; where appropriate. It is absolutely vital that we format the data correctly; otherwise, many &lt;code&gt;R&lt;/code&gt; commands will whine at us.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Try it:&lt;/strong&gt; Run the above, but instead specifying &lt;code&gt;header = FALSE&lt;/code&gt;. What data type are the various columns? Now try ommitting the line altogether. What is the default behavior of the &lt;code&gt;read.table&lt;/code&gt; function?&lt;a href=&#34;#fn1&#34; class=&#34;footnote-ref&#34; id=&#34;fnref1&#34;&gt;&lt;sup&gt;1&lt;/sup&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;div id=&#34;data-exploration-and-processing&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Data Exploration and Processing&lt;/h3&gt;
+&lt;p&gt;We are not going to tell you anything about this data. This is intended to replicate a real-world experience that you will all encounter in the (possibly near) future: someone hands you data and you’re expected to make sense of it. Fortunately for us, this data is (somewhat) self-contained. We’ll first check the variable names to try to divine some information. Recall, we have a handy little function for that:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;names(ameslist)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Note that, when doing data exploration, we will sometimes choose to not save our output. This is a judgement call; here we’ve chosen to merely inspect the variables rather than diving in.&lt;/p&gt;
+&lt;p&gt;Inspection yields some obvious truths. For example:&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr class=&#34;header&#34;&gt;
+&lt;th&gt;Variable&lt;/th&gt;
+&lt;th align=&#34;center&#34;&gt;Explanation&lt;/th&gt;
+&lt;th align=&#34;right&#34;&gt;Type&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td&gt;&lt;code&gt;ID&lt;/code&gt;&lt;/td&gt;
+&lt;td align=&#34;center&#34;&gt;Unique identifier for each row&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;&lt;code&gt;int&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td&gt;&lt;code&gt;LotArea&lt;/code&gt;&lt;/td&gt;
+&lt;td align=&#34;center&#34;&gt;Size of lot (&lt;strong&gt;units unknown&lt;/strong&gt;)&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;&lt;code&gt;int&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td&gt;&lt;code&gt;SalePrice&lt;/code&gt;&lt;/td&gt;
+&lt;td align=&#34;center&#34;&gt;Sale price of house ($)&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;&lt;code&gt;int&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;…but we face some not-so-obvious things as well. For example:&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr class=&#34;header&#34;&gt;
+&lt;th&gt;Variable&lt;/th&gt;
+&lt;th align=&#34;center&#34;&gt;Explanation&lt;/th&gt;
+&lt;th align=&#34;right&#34;&gt;Type&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td&gt;&lt;code&gt;LotShape&lt;/code&gt;&lt;/td&gt;
+&lt;td align=&#34;center&#34;&gt;? Something about the lot&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;&lt;code&gt;factor&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td&gt;&lt;code&gt;MSSubClass&lt;/code&gt;&lt;/td&gt;
+&lt;td align=&#34;center&#34;&gt;? No clue at all&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;&lt;code&gt;int&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td&gt;&lt;code&gt;Condition1&lt;/code&gt;&lt;/td&gt;
+&lt;td align=&#34;center&#34;&gt;? Seems like street info&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;&lt;code&gt;factor&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;It will be difficult to learn anything about the data that is of type &lt;code&gt;int&lt;/code&gt; without outside documentation. However, we can learn something more about the &lt;code&gt;factor&lt;/code&gt;-type variables. In order to understand these a little better, we need to review some of the values that each take on.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Try it:&lt;/strong&gt; Go through the variables in the dataset and make a note about your interpretation for each. Many will be obvious, but some require additional thought.&lt;/p&gt;
+&lt;p&gt;We now turn to another central issue—and one that explains our nomenclature choice thus far: the data object is of type &lt;code&gt;list&lt;/code&gt;. To verify this for yourself, check:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;typeof(ameslist)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;This isn’t ideal—for some visualization packages, for instance, we need data frames and not lists. We’ll make a mental note of this as something to potentially clean up if we desire.&lt;/p&gt;
+&lt;p&gt;Although there are some variables that would be difficult to clean, there are a few that we can address with relative ease. Consider, for instance, the variable &lt;code&gt;GarageType&lt;/code&gt;. This might not be that important, but, remember, the weather in Ames, IA is pretty crummy—a detached garage might be a dealbreaker for some would-be homebuyers. Let’s inspect the values:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;&amp;gt; unique(ameslist$GarageType)
+[1] Attchd  Detchd  BuiltIn CarPort &amp;lt;NA&amp;gt; Basment 2Types&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;With this, we could make an informed decision and create a new variable. Let’s create &lt;code&gt;OutdoorGarage&lt;/code&gt; to indicate, say, homes that have any type of garage that requires the homeowner to walk outdoors after parking their car. (For those who aren’t familiar with different garage types, a car port is not insulated and is therefore considered outdoors. A detached garage presumably requires that the person walks outside after parking. The three other types are inside the main structure, and &lt;code&gt;2Types&lt;/code&gt; we can assume includes at least one attached garage of some sort). This is going to require a bit more coding and we will have to think through each step carefully.&lt;/p&gt;
+&lt;p&gt;First, let’s create a new object that has indicator variables (that is, a variable whose values are either zero or one) for each of the &lt;code&gt;GarageType&lt;/code&gt; values. As with everything in &lt;code&gt;R&lt;/code&gt;, there’s a handy function to do this for us:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;GarageTemp = model.matrix( ~ GarageType - 1, data=ameslist )&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;We now have two separate objects living in our computer’s memory: &lt;code&gt;ameslist&lt;/code&gt; and &lt;code&gt;GarageTemp&lt;/code&gt;—so named to indicate that it is a temporary object.&lt;a href=&#34;#fn2&#34; class=&#34;footnote-ref&#34; id=&#34;fnref2&#34;&gt;&lt;sup&gt;2&lt;/sup&gt;&lt;/a&gt; We now need to stitch it back onto our original data; we’ll use a simple concatenation and write over our old list with the new one:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ameslist &amp;lt;- cbind(ameslist, GarageTemp)
+&amp;gt; Error in data.frame(..., check.names = FALSE) :
+  arguments imply differing number of rows: 1460, 1379&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Huh. What’s going on?&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Try it:&lt;/strong&gt; Figure out what’s going on above. Fix this code so that you have a working version.&lt;/p&gt;
+&lt;p&gt;Now that we’ve got that working (ha!) we can generate a new variable for our outdoor garage. We’ll use a somewhat gross version below because it is &lt;em&gt;verbose&lt;/em&gt;; that said, this can be easily accomplished using logical indexing for those who like that approach.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ameslist$GarageOutside &amp;lt;- ifelse(ameslist$GarageTypeDetchd == 1 | ameslist$GarageTypeCarPort == 1, 1, 0)
+unique(ameslist$GarageOutside)
+[1]  0  1 NA&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;This seems to have worked. The command above &lt;code&gt;ifelse()&lt;/code&gt; does what it says: &lt;code&gt;if&lt;/code&gt; some condition is met (here, either of two variables equals one) then it returns a one; &lt;code&gt;else&lt;/code&gt; it returns a zero. Such functions are very handy, though as mentioned above, there are other ways of doing this. Also note, that while fixed the issue with &lt;code&gt;NA&lt;/code&gt; above, we’ve got new issues: we definitely don’t want &lt;code&gt;NA&lt;/code&gt; outputted from this operation. Accordingly, we’re going to need to deal with it somehow.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Try it:&lt;/strong&gt; Utilizing a similar approach to what you did above, fix this so that the only outputs are zero and one.&lt;/p&gt;
+&lt;p&gt;Generally speaking, this is a persistent issue, and you will spend an extraordinary amount of time dealing with missing data or data that does not encode a variable exactly as you want it. This is expecially true if you deal with real-world data: you will need to learn how to handle &lt;code&gt;NA&lt;/code&gt;s. There are a number of fixes (as always, Google is your friend) and anything that works is good. But you should spend some time thinking about this and learning at least one approach.&lt;/p&gt;
+&lt;div class=&#34;fyi&#34;&gt;
+&lt;p&gt;&lt;strong&gt;EXERCISES&lt;/strong&gt;&lt;/p&gt;
+&lt;ol style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;&lt;p&gt;Prune the data to all of the variables that are &lt;code&gt;type = int&lt;/code&gt; about which you have some reasonable intuition for what they mean. This &lt;strong&gt;must&lt;/strong&gt; include the variable &lt;code&gt;SalePrice&lt;/code&gt;. Save this new dataset as &lt;code&gt;Ames&lt;/code&gt;. Produce documentation for this object in the form of a .txt file. This must describe each of the preserved variables, the values it can take (e.g., can it be negative?) and your interpretation of the variable.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Produce a &lt;em&gt;scatterplot matrix&lt;/em&gt; which includes 12 of the variables that are &lt;code&gt;type = int&lt;/code&gt; in the data set. Choose those that you believe are likely to be correlated with &lt;code&gt;SalePrice&lt;/code&gt;.&lt;a href=&#34;#fn3&#34; class=&#34;footnote-ref&#34; id=&#34;fnref3&#34;&gt;&lt;sup&gt;3&lt;/sup&gt;&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Compute a matrix of correlations between these variables using the function &lt;code&gt;cor()&lt;/code&gt;. Does this match your prior beliefs? Briefly discuss the correlation between the miscellaneous variables and &lt;code&gt;SalePrice&lt;/code&gt;.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Produce a scatterplot between &lt;code&gt;SalePrice&lt;/code&gt; and &lt;code&gt;GrLivArea&lt;/code&gt;. Run a linear model using &lt;code&gt;lm()&lt;/code&gt; to explore the relationship. Finally, use the &lt;code&gt;abline()&lt;/code&gt; function to plot the relationship that you’ve found in the simple linear regression.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;What is the largest outlier that is above the regression line? Produce the other information about this house.&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;&lt;strong&gt;(Bonus)&lt;/strong&gt; Create a visualization that shows the rise of air conditioning over time in homes in Ames.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&#34;footnotes&#34;&gt;
+&lt;hr /&gt;
+&lt;ol&gt;
+&lt;li id=&#34;fn1&#34;&gt;&lt;p&gt;Of course, you could find out the defaults of the function by simply using the handy &lt;code&gt;?&lt;/code&gt; command. Don’t forget about this tool!&lt;a href=&#34;#fnref1&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li id=&#34;fn2&#34;&gt;&lt;p&gt;It’s not exactly true that these objects are in memory. They are… sort of. But how &lt;code&gt;R&lt;/code&gt; handles memory is complicated and silly and blah blah who cares. It’s basically in memory.&lt;a href=&#34;#fnref2&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li id=&#34;fn3&#34;&gt;&lt;p&gt;If you are not familiar with this type of visualization, consult the book (&lt;em&gt;Introduction to Statistical Learning&lt;/em&gt;), Chapters 2 and 3. Google it; it’s free.&lt;a href=&#34;#fnref3&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    
+    <item>
       <title>Visualizing Uncertainty</title>
       <link>https://ssc442.netlify.app/example/05-example/</link>
       <pubDate>Thu, 30 Sep 2021 00:00:00 +0000</pubDate>
@@ -3058,6 +3200,438 @@ install it first.&lt;/p&gt;
     </item>
     
     <item>
+      <title>Introduction to Regression</title>
+      <link>https://ssc442.netlify.app/example/06-example/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>https://ssc442.netlify.app/example/06-example/</guid>
+      <description>
+&lt;script src=&#34;https://ssc442.netlify.app/rmarkdown-libs/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
+
+&lt;div id=&#34;TOC&#34;&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#preliminaries&#34;&gt;Preliminaries&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#code&#34;&gt;Code&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#load-and-clean-data&#34;&gt;Load and clean data&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#legal-dual-y-axes&#34;&gt;Legal dual y-axes&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#combining-plots&#34;&gt;Combining plots&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#scatterplot-matrices&#34;&gt;Scatterplot matrices&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#correlograms&#34;&gt;Correlograms&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#simple-regression&#34;&gt;Simple regression&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#coefficient-plots&#34;&gt;Coefficient plots&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#marginal-effects-plots&#34;&gt;Marginal effects plots&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+
+&lt;div class=&#34;fyi&#34;&gt;
+&lt;p&gt;Today’s example will alternate between the content from this week (since we did not finish a complete discussion) and the example below.&lt;/p&gt;
+&lt;p&gt;We will also use the Ames data again (in addition to the Atlanta weather data). The Ames data is linked below:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://ssc442.netlify.app/projects/data/ames.csv&#34;&gt;&lt;i class=&#34;fas fa-file-csv&#34;&gt;&lt;/i&gt; &lt;code&gt;Ames.csv&lt;/code&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;div id=&#34;preliminaries&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Preliminaries&lt;/h2&gt;
+&lt;p&gt;For this example, we’re again going to use historical weather data from &lt;a href=&#34;https://darksky.net/forecast/33.7546,-84.39/us12/en&#34;&gt;Dark Sky&lt;/a&gt; about wind speed and temperature trends for downtown Atlanta (&lt;a href=&#34;https://www.google.com/maps/place/33°45&amp;#39;16.4%22N+84°23&amp;#39;24.0%22W/@33.754557,-84.3921977,17z/&#34;&gt;specifically &lt;code&gt;33.754557, -84.390009&lt;/code&gt;&lt;/a&gt;) in 2019. We downloaded this data using Dark Sky’s (about-to-be-retired-because-they-were-bought-by-Apple) API using the &lt;a href=&#34;https://github.com/hrbrmstr/darksky&#34;&gt;&lt;strong&gt;darksky&lt;/strong&gt; package&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;If you want to follow along with this example, you can download the data below (you’ll likely need to right click and choose “Save Link As…”):&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://ssc442.netlify.app/data/atl-weather-2019.csv&#34;&gt;&lt;i class=&#34;fas fa-file-csv&#34;&gt;&lt;/i&gt; &lt;code&gt;atl-weather-2019.csv&lt;/code&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;div id=&#34;code&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Code&lt;/h2&gt;
+&lt;div id=&#34;load-and-clean-data&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Load and clean data&lt;/h3&gt;
+&lt;p&gt;First, we load the libraries we’ll be using:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(tidyverse)  # For ggplot, dplyr, and friends
+library(patchwork)  # For combining ggplot plots
+library(GGally)     # For scatterplot matrices
+library(broom)      # For converting model objects to data frames&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Then we load the data with &lt;code&gt;read_csv()&lt;/code&gt;. Here we assume that the CSV file lives in a subfolder named &lt;code&gt;data&lt;/code&gt;:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;weather_atl &amp;lt;- read_csv(&amp;quot;data/atl-weather-2019.csv&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;legal-dual-y-axes&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Legal dual y-axes&lt;/h3&gt;
+&lt;p&gt;It is fine (and often helpful) to use two y-axes if the two different scales measure the same thing, like counts and percentages, Fahrenheit and Celsius, pounds and kilograms, inches and centimeters, etc.&lt;/p&gt;
+&lt;p&gt;To do this, you need to add an argument (&lt;code&gt;sec.axis&lt;/code&gt;) to &lt;code&gt;scale_y_continuous()&lt;/code&gt; to tell it to use a second axis. This &lt;code&gt;sec.axis&lt;/code&gt; argument takes a &lt;code&gt;sec_axis()&lt;/code&gt; function that tells ggplot how to transform the scale. You need to specify a formula or function that defines how the original axis gets transformed. This formula uses a special syntax. It needs to start with a &lt;code&gt;~&lt;/code&gt;, which indicates that it’s a function, and it needs to use &lt;code&gt;.&lt;/code&gt; to stand in for the original value in the original axis.&lt;/p&gt;
+&lt;p&gt;Since the equation for converting Fahrenheit to Celsius is this…&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
+\text{C} = (32 - \text{F}) \times -\frac{5}{9}
+\]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;…we can specify this with code like so (where &lt;code&gt;.&lt;/code&gt; stands for the Fahrenheit value):&lt;/p&gt;
+&lt;pre class=&#34;text&#34;&gt;&lt;code&gt;~ (32 - .) * -5 / 9&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Here’s a plot of daily high temperatures in Atlanta throughout 2019, with a second axis:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(weather_atl, aes(x = time, y = temperatureHigh)) +
+  geom_line() +
+  scale_y_continuous(sec.axis = sec_axis(trans = ~ (32 - .) * -5/9,
+                                         name = &amp;quot;Celsius&amp;quot;)) +
+  labs(x = NULL, y = &amp;quot;Fahrenheit&amp;quot;) +
+  theme_minimal()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/example/06-example_files/figure-html/atl-weather-dual-axes-1.png&#34; width=&#34;576&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;For fun, we could also convert it to Kelvin, which uses this formula:&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
+\text{K} = (\text{F} - 32) \times \frac{5}{9} + 273.15
+\]&lt;/span&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(weather_atl, aes(x = time, y = temperatureHigh)) +
+  geom_line() +
+  scale_y_continuous(sec.axis = sec_axis(trans = ~ (. - 32) * 5/9 + 273.15,
+                                         name = &amp;quot;Kelvin&amp;quot;)) +
+  labs(x = NULL, y = &amp;quot;Fahrenheit&amp;quot;) +
+  theme_minimal()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/example/06-example_files/figure-html/atl-weather-dual-axes-kelvin-1.png&#34; width=&#34;576&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;combining-plots&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Combining plots&lt;/h3&gt;
+&lt;p&gt;A good alternative to using two y-axes is to use two plots instead. The &lt;a href=&#34;https://github.com/thomasp85/patchwork&#34;&gt;&lt;strong&gt;patchwork&lt;/strong&gt; package&lt;/a&gt; makes this &lt;em&gt;really&lt;/em&gt; easy to do with R. There are other similar packages that do this, like &lt;strong&gt;cowplot&lt;/strong&gt; and &lt;strong&gt;gridExtra&lt;/strong&gt;, but I’ve found that &lt;strong&gt;patchwork&lt;/strong&gt; is the easiest to use &lt;em&gt;and&lt;/em&gt; it actually aligns the different plot elements like axis lines and legends (yay alignment in CRAP!). The &lt;a href=&#34;https://patchwork.data-imaginist.com/articles/guides/assembly.html&#34;&gt;documentation for &lt;strong&gt;patchwork&lt;/strong&gt;&lt;/a&gt; is really great and full of examples—you should check it out to see all the things you can do with it!&lt;/p&gt;
+&lt;p&gt;To use &lt;strong&gt;patchwork&lt;/strong&gt;, we need to (1) save our plots as objects and (2) add them together with &lt;code&gt;+&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;For instance, is there a relationship between temperature and humidity in Atlanta? We can plot both:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# Temperature in Atlanta
+temp_plot &amp;lt;- ggplot(weather_atl, aes(x = time, y = temperatureHigh)) +
+  geom_line() +
+  geom_smooth() +
+  scale_y_continuous(sec.axis = sec_axis(trans = ~ (32 - .) * -5/9,
+                                         name = &amp;quot;Celsius&amp;quot;)) +
+  labs(x = NULL, y = &amp;quot;Fahrenheit&amp;quot;) +
+  theme_minimal()
+temp_plot&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/example/06-example_files/figure-html/create-temp-humid-plots-1.png&#34; width=&#34;576&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# Humidity in Atlanta
+humidity_plot &amp;lt;- ggplot(weather_atl, aes(x = time, y = humidity)) +
+  geom_line() +
+  geom_smooth() +
+  labs(x = NULL, y = &amp;quot;Humidity&amp;quot;) +
+  theme_minimal()
+humidity_plot&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/example/06-example_files/figure-html/create-temp-humid-plots-2.png&#34; width=&#34;576&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Right now, these are two separate plots, but we can combine them with &lt;code&gt;+&lt;/code&gt; if we load &lt;strong&gt;patchwork&lt;/strong&gt;:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(patchwork)
+
+temp_plot + humidity_plot&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/example/06-example_files/figure-html/patchwork-first-1.png&#34; width=&#34;576&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;By default, &lt;strong&gt;patchwork&lt;/strong&gt; will put these side-by-side, but we can change that with the &lt;code&gt;plot_layout()&lt;/code&gt; function:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;temp_plot + humidity_plot +
+  plot_layout(ncol = 1)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/example/06-example_files/figure-html/patchwork-vertical-1.png&#34; width=&#34;576&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;We can also play with other arguments in &lt;code&gt;plot_layout()&lt;/code&gt;. If we want to make the temperature plot taller and shrink the humidity section, we can specify the proportions for the plot heights. Here, the temperature plot is 70% of the height and the humidity plot is 30%:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;temp_plot + humidity_plot +
+  plot_layout(ncol = 1, heights = c(0.7, 0.3))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/example/06-example_files/figure-html/patchwork-vertical-resized-1.png&#34; width=&#34;576&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;scatterplot-matrices&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Scatterplot matrices&lt;/h3&gt;
+&lt;p&gt;We can visualize the correlations between pairs of variables with the &lt;code&gt;ggpairs()&lt;/code&gt; function in the &lt;strong&gt;GGally&lt;/strong&gt; package. For instance, how correlated are high and low temperatures, humidity, wind speed, and the chance of precipitation? We first make a smaller dataset with just those columns, and then we feed that dataset into &lt;code&gt;ggpairs()&lt;/code&gt; to see all the correlation information:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(GGally)
+
+weather_correlations &amp;lt;- weather_atl %&amp;gt;%
+  select(temperatureHigh, temperatureLow, humidity, windSpeed, precipProbability)
+
+ggpairs(weather_correlations)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/example/06-example_files/figure-html/ggpairs-1.png&#34; width=&#34;864&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;It looks like high and low temperatures are extremely highly positively correlated (r = 0.92). Wind spped and temperature are moderately negatively correlated, with low temperatures having a stronger negative correlation (r = -0.45). There’s no correlation whatsoever between low temperatures and the precipitation probability (r = -0.03) or humidity and high temperatures (r = -0.03).&lt;/p&gt;
+&lt;p&gt;Even though &lt;code&gt;ggpairs()&lt;/code&gt; doesn’t use the standard &lt;code&gt;ggplot(...) + geom_whatever()&lt;/code&gt; syntax we’re familiar with, it does behind the scenes, so you can add regular ggplot layers to it:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggpairs(weather_correlations) +
+  labs(title = &amp;quot;Correlations!&amp;quot;) +
+  theme_dark()&lt;/code&gt;&lt;/pre&gt;
+&lt;div class=&#34;fyi&#34;&gt;
+&lt;p&gt;&lt;strong&gt;TRY IT&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Make a ggpairs plot for some of the Ames data.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;correlograms&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Correlograms&lt;/h3&gt;
+&lt;p&gt;Scatterplot matrices typically include way too much information to be used in actual publications. I use them when doing my own analysis just to see how different variables are related, but I rarely polish them up for public consumption. In the readings for today, Claus Wilke showed a type of plot called a &lt;a href=&#34;https://serialmentor.com/dataviz/visualizing-associations.html#associations-correlograms&#34;&gt;&lt;em&gt;correlogram&lt;/em&gt;&lt;/a&gt; which &lt;em&gt;is&lt;/em&gt; more appropriate for publication.&lt;/p&gt;
+&lt;p&gt;These are essentially heatmaps of the different correlation coefficients. To make these with ggplot, we need to do a little bit of extra data processing, mostly to reshape data into a long, tidy format that we can plot. Here’s how.&lt;/p&gt;
+&lt;p&gt;First we need to build a correlation matrix of the main variables we care about. Ordinarily the &lt;code&gt;cor()&lt;/code&gt; function in R takes two arguments—x and y—and it will return a single correlation value. If you feed a data frame into &lt;code&gt;cor()&lt;/code&gt; though, it’ll calculate the correlation between each pair of columns&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# Create a correlation matrix
+things_to_correlate &amp;lt;- weather_atl %&amp;gt;%
+  select(temperatureHigh, temperatureLow, humidity, windSpeed, precipProbability) %&amp;gt;%
+  cor()
+
+things_to_correlate&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;##                   temperatureHigh temperatureLow humidity windSpeed precipProbability
+## temperatureHigh              1.00          0.920   -0.030    -0.377            -0.124
+## temperatureLow               0.92          1.000    0.112    -0.450            -0.026
+## humidity                    -0.03          0.112    1.000     0.011             0.722
+## windSpeed                   -0.38         -0.450    0.011     1.000             0.196
+## precipProbability           -0.12         -0.026    0.722     0.196             1.000&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The two halves of this matrix (split along the diagonal line) are identical, so we can remove the lower triangle with this code (which will set all the cells in the lower triangle to &lt;code&gt;NA&lt;/code&gt;):&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# Get rid of the lower triangle
+things_to_correlate[lower.tri(things_to_correlate)] &amp;lt;- NA
+things_to_correlate&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;##                   temperatureHigh temperatureLow humidity windSpeed precipProbability
+## temperatureHigh                 1           0.92    -0.03    -0.377            -0.124
+## temperatureLow                 NA           1.00     0.11    -0.450            -0.026
+## humidity                       NA             NA     1.00     0.011             0.722
+## windSpeed                      NA             NA       NA     1.000             0.196
+## precipProbability              NA             NA       NA        NA             1.000&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Finally, in order to plot this, the data needs to be in tidy (or long) format. Here we convert the &lt;code&gt;things_to_correlate&lt;/code&gt; matrix into a data frame, add a column for the row names, take all the columns and put them into a single column named &lt;code&gt;measure1&lt;/code&gt;, and take all the correlation numbers and put them in a column named &lt;code&gt;cor&lt;/code&gt; In the end, we make sure the measure variables are ordered by their order of appearance (otherwise they plot alphabetically and don’t make a triangle)&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;things_to_correlate_long &amp;lt;- things_to_correlate %&amp;gt;%
+  # Convert from a matrix to a data frame
+  as.data.frame() %&amp;gt;%
+  # Matrixes have column names that don&amp;#39;t get converted to columns when using
+  # as.data.frame(), so this adds those names as a column
+  rownames_to_column(&amp;quot;measure2&amp;quot;) %&amp;gt;%
+  # Make this long. Take all the columns except measure2 and put their names in
+  # a column named measure1 and their values in a column named cor
+  pivot_longer(cols = -measure2,
+               names_to = &amp;quot;measure1&amp;quot;,
+               values_to = &amp;quot;cor&amp;quot;) %&amp;gt;%
+  # Make a new column with the rounded version of the correlation value
+  mutate(nice_cor = round(cor, 2)) %&amp;gt;%
+  # Remove rows where the two measures are the same (like the correlation
+  # between humidity and humidity)
+  filter(measure2 != measure1) %&amp;gt;%
+  # Get rid of the empty triangle
+  filter(!is.na(cor)) %&amp;gt;%
+  # Put these categories in order
+  mutate(measure1 = fct_inorder(measure1),
+         measure2 = fct_inorder(measure2))
+
+things_to_correlate_long&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 10 × 4
+##    measure2        measure1              cor nice_cor
+##    &amp;lt;fct&amp;gt;           &amp;lt;fct&amp;gt;               &amp;lt;dbl&amp;gt;    &amp;lt;dbl&amp;gt;
+##  1 temperatureHigh temperatureLow     0.920      0.92
+##  2 temperatureHigh humidity          -0.0301    -0.03
+##  3 temperatureHigh windSpeed         -0.377     -0.38
+##  4 temperatureHigh precipProbability -0.124     -0.12
+##  5 temperatureLow  humidity           0.112      0.11
+##  6 temperatureLow  windSpeed         -0.450     -0.45
+##  7 temperatureLow  precipProbability -0.0255    -0.03
+##  8 humidity        windSpeed          0.0108     0.01
+##  9 humidity        precipProbability  0.722      0.72
+## 10 windSpeed       precipProbability  0.196      0.2&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Phew. With the data all tidied like that, we can make a correlogram with a heatmap. We have manipulated the fill scale a little so that it’s diverging with three colors: a high value, a midpoint value, and a low value.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(things_to_correlate_long,
+       aes(x = measure2, y = measure1, fill = cor)) +
+  geom_tile() +
+  geom_text(aes(label = nice_cor)) +
+  scale_fill_gradient2(low = &amp;quot;#E16462&amp;quot;, mid = &amp;quot;white&amp;quot;, high = &amp;quot;#0D0887&amp;quot;,
+                       limits = c(-1, 1)) +
+  labs(x = NULL, y = NULL) +
+  coord_equal() +
+  theme_minimal() +
+  theme(panel.grid = element_blank())&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/example/06-example_files/figure-html/cor-heatmap-1.png&#34; width=&#34;480&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Instead of using a heatmap, we can also use points, which encode the correlation information both as color &lt;em&gt;and&lt;/em&gt; as size. To do that, we just need to switch &lt;code&gt;geom_tile()&lt;/code&gt; to &lt;code&gt;geom_point()&lt;/code&gt; and set the &lt;code&gt;size = cor&lt;/code&gt; mapping:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(things_to_correlate_long,
+       aes(x = measure2, y = measure1, color = cor)) +
+  # Size by the absolute value so that -0.7 and 0.7 are the same size
+  geom_point(aes(size = abs(cor))) +
+  scale_color_gradient2(low = &amp;quot;#E16462&amp;quot;, mid = &amp;quot;white&amp;quot;, high = &amp;quot;#0D0887&amp;quot;,
+                        limits = c(-1, 1)) +
+  scale_size_area(max_size = 15, limits = c(-1, 1), guide = FALSE) +
+  labs(x = NULL, y = NULL) +
+  coord_equal() +
+  theme_minimal() +
+  theme(panel.grid = element_blank())&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Warning: It is deprecated to specify `guide = FALSE` to remove a guide. Please use `guide = &amp;quot;none&amp;quot;` instead.&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/example/06-example_files/figure-html/cor-points-1.png&#34; width=&#34;480&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;simple-regression&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Simple regression&lt;/h3&gt;
+&lt;p&gt;We finally get to this week’s content. Although correlation is nice, we eventually may want to visualize regression. The lecture has shown us some very intuitive, straightforward ways to think about regression (aka, a line). Simple regression is easy to visualize, since you’re only working with an &lt;span class=&#34;math inline&#34;&gt;\(X\)&lt;/span&gt; and a &lt;span class=&#34;math inline&#34;&gt;\(Y\)&lt;/span&gt;. For instance, what’s the relationship between humidity and high temperatures during the summer?&lt;/p&gt;
+&lt;p&gt;First, let’s filter the data to only look at the summer. We also add a column to scale up the humidity value—right now it’s on a scale of 0-1 (for percentages), but when interpreting regression we talk about increases in whole units, so we’d talk about moving from 0% humidity to 100% humidity, which isn’t helpful, so instead we multiply everything by 100 so we can talk about moving from 50% humidity to 51% humidity. We also scale up a couple other variables that we’ll use in the larger model later.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;weather_atl_summer &amp;lt;- weather_atl %&amp;gt;%
+  filter(time &amp;gt;= &amp;quot;2019-05-01&amp;quot;, time &amp;lt;= &amp;quot;2019-09-30&amp;quot;) %&amp;gt;%
+  mutate(humidity_scaled = humidity * 100,
+         moonPhase_scaled = moonPhase * 100,
+         precipProbability_scaled = precipProbability * 100,
+         cloudCover_scaled = cloudCover * 100)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Then we can build a simple regression model:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;model_simple &amp;lt;- lm(temperatureHigh ~ humidity_scaled,
+                   data = weather_atl_summer)
+
+tidy(model_simple, conf.int = TRUE)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 2 × 7
+##   term            estimate std.error statistic  p.value conf.low conf.high
+##   &amp;lt;chr&amp;gt;              &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt;    &amp;lt;dbl&amp;gt;    &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt;
+## 1 (Intercept)      104.       2.35       44.3  1.88e-88   99.5     109.   
+## 2 humidity_scaled   -0.241    0.0358     -6.74 3.21e-10   -0.312    -0.170&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;We can interpret these coefficients like so:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;The intercept shows that the average temperature when there’s 0% humidity is 104°. There are no days with 0% humidity though, so we can ignore the intercept—it’s really just here so that we can draw the line.&lt;/li&gt;
+&lt;li&gt;The coefficient for &lt;code&gt;humidity_scaled&lt;/code&gt; shows that a one percent increase in humidity is associated with a 0.241° decrease in temperature, on average.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Visualizing this model is simple, since there are only two variables:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(weather_atl_summer,
+       aes(x = humidity_scaled, y = temperatureHigh)) +
+  geom_point() +
+  geom_smooth(method = &amp;quot;lm&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## `geom_smooth()` using formula &amp;#39;y ~ x&amp;#39;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/example/06-example_files/figure-html/plot-simple-model-1.png&#34; width=&#34;576&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;And indeed, as humidity increases, temperatures decrease.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;coefficient-plots&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Coefficient plots&lt;/h3&gt;
+&lt;p&gt;But if we use multiple variables in the model (and we will do this a lot going forward), it gets really hard to visualize the results since we’re working with multiple dimensions. Instead, we can use coefficient plots to see the individual coefficients in the model.&lt;/p&gt;
+&lt;p&gt;First, let’s build a more complex model:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;model_complex &amp;lt;- lm(temperatureHigh ~ humidity_scaled + moonPhase_scaled +
+                      precipProbability_scaled + windSpeed + pressure + cloudCover_scaled,
+                    data = weather_atl_summer)
+tidy(model_complex, conf.int = TRUE)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 7 × 7
+##   term                     estimate std.error statistic   p.value conf.low conf.high
+##   &amp;lt;chr&amp;gt;                       &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt;    &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt;
+## 1 (Intercept)              262.      125.         2.09  0.0380    14.8      510.    
+## 2 humidity_scaled           -0.111     0.0757    -1.47  0.143     -0.261      0.0381
+## 3 moonPhase_scaled           0.0116    0.0126     0.917 0.360     -0.0134     0.0366
+## 4 precipProbability_scaled   0.0356    0.0203     1.75  0.0820    -0.00458    0.0758
+## 5 windSpeed                 -1.78      0.414     -4.29  0.0000326 -2.59      -0.958 
+## 6 pressure                  -0.157     0.122     -1.28  0.203     -0.398      0.0854
+## 7 cloudCover_scaled         -0.0952    0.0304    -3.14  0.00207   -0.155     -0.0352&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;We can interpret these coefficients like so:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Holding everything else constant, a 1% increase in humidity is associated with a 0.11° decrease in the high temperature, on average, but the effect is not statistically significant&lt;/li&gt;
+&lt;li&gt;Holding everything else constant, a 1% increase in moon visibility is associated with a 0.01° increase in the high temperature, on average, and the effect is not statistically significant&lt;/li&gt;
+&lt;li&gt;Holding everything else constant, a 1% increase in the probability of precipitation is associated with a 0.04° increase in the high temperature, on average, and the effect is not statistically significant&lt;/li&gt;
+&lt;li&gt;Holding everything else constant, a 1 mph increase in the wind speed is associated with a 1.8° decrease in the high temperature, on average, and the effect &lt;em&gt;is&lt;/em&gt; statistically significant&lt;/li&gt;
+&lt;li&gt;Holding everything else constant, a 1 unit increase in barometric pressure is associated with a 0.15° decrease in the high temperature, on average, and the effect is not statistically significant&lt;/li&gt;
+&lt;li&gt;Holding everything else constant, a 1% increase in cloud cover is associated with a 0.01° decrease in the high temperature, on average, and the effect &lt;em&gt;is&lt;/em&gt; statistically significant&lt;/li&gt;
+&lt;li&gt;The intercept is pretty useless. It shows that the predicted temperature will be 262° when humidity is 0%, the moon is invisible, there’s no chance of precipitation, no wind, no barometric pressure, and no cloud cover. Yikes.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;To plot all these things at once, we’ll store the results of &lt;code&gt;tidy(model_complex)&lt;/code&gt; as a data frame, remove the useless intercept, and plot it using &lt;code&gt;geom_pointrange()&lt;/code&gt;:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;model_tidied &amp;lt;- tidy(model_complex, conf.int = TRUE) %&amp;gt;%
+  filter(term != &amp;quot;(Intercept)&amp;quot;)
+
+ggplot(model_tidied,
+       aes(x = estimate, y = term)) +
+  geom_vline(xintercept = 0, color = &amp;quot;red&amp;quot;, linetype = &amp;quot;dotted&amp;quot;) +
+  geom_pointrange(aes(xmin = conf.low, xmax = conf.high)) +
+  labs(x = &amp;quot;Coefficient estimate&amp;quot;, y = NULL) +
+  theme_minimal()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/example/06-example_files/figure-html/coef-plot-1.png&#34; width=&#34;576&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Neat! Now we can see how big these different coefficients are and how close they are to zero. Wind speed has a big significant effect on temperature. The others are all very close to zero.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;marginal-effects-plots&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Marginal effects plots&lt;/h3&gt;
+&lt;p&gt;Instead of just looking at the coefficients, we can also see the effect of moving different variables up and down like sliders and switches. Remember that regression coefficients allow us to build actual mathematical formulas that predict the value of Y. The coefficients from &lt;code&gt;model_compex&lt;/code&gt; yield the following big hairy ugly equation:&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
+\begin{aligned}
+\hat{\text{High temperature}} =&amp;amp; 262 - 0.11 \times \text{humidity_scaled } \\
+&amp;amp; + 0.01 \times \text{moonPhase_scaled } + 0.04 \times \text{precipProbability_scaled } \\
+&amp;amp; - 1.78 \times \text{windSpeed} - 0.16 \times \text{pressure} - 0.095 \times \text{cloudCover_scaled}
+\end{aligned}
+\]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;If we plug in values for each of the explanatory variables, we can get the predicted value of high temperature, or &lt;span class=&#34;math inline&#34;&gt;\(\hat{y}\)&lt;/span&gt;.&lt;/p&gt;
+&lt;p&gt;The &lt;code&gt;augment()&lt;/code&gt; function in the &lt;strong&gt;broom&lt;/strong&gt; library allows us to take a data frame of explanatory variable values, plug them into the model equation, and get predictions out. For example, let’s set each of the variables to some arbitrary values (50% for humidity, moon phase, chance of rain, and cloud cover; 1000 for pressure, and 1 MPH for wind speed).&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;newdata_example &amp;lt;- tibble(humidity_scaled = 50, moonPhase_scaled = 50,
+                          precipProbability_scaled = 50, windSpeed = 1,
+                          pressure = 1000, cloudCover_scaled = 50)
+newdata_example&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 1 × 6
+##   humidity_scaled moonPhase_scaled precipProbability_scaled windSpeed pressure cloudCover_scaled
+##             &amp;lt;dbl&amp;gt;            &amp;lt;dbl&amp;gt;                    &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt;    &amp;lt;dbl&amp;gt;             &amp;lt;dbl&amp;gt;
+## 1              50               50                       50         1     1000                50&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;We can plug these values into the model with &lt;code&gt;augment()&lt;/code&gt;:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# I use select() here because augment() returns columns for all the explanatory
+# variables, and the .fitted column with the predicted value is on the far right
+# and gets cut off
+augment(model_complex, newdata = newdata_example, se_fit=TRUE) %&amp;gt;%
+  select(.fitted, .se.fit)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Given these weather conditions, the predicted high temperature is 96.2°. Now you’re an armchair meteorologist!&lt;/p&gt;
+&lt;p&gt;We can follow the same pattern to show how the predicted temperature changes as specific variables change across a whole range. Here, we create a data frame of possible wind speeds and keep all the other explanatory variables at their means:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;newdata &amp;lt;- tibble(windSpeed = seq(0, 8, 0.5),
+                  pressure = mean(weather_atl_summer$pressure),
+                  precipProbability_scaled = mean(weather_atl_summer$precipProbability_scaled),
+                  moonPhase_scaled = mean(weather_atl_summer$moonPhase_scaled),
+                  humidity_scaled = mean(weather_atl_summer$humidity_scaled),
+                  cloudCover_scaled = mean(weather_atl_summer$cloudCover_scaled))
+newdata&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 17 × 6
+##    windSpeed pressure precipProbability_scaled moonPhase_scaled humidity_scaled cloudCover_scaled
+##        &amp;lt;dbl&amp;gt;    &amp;lt;dbl&amp;gt;                    &amp;lt;dbl&amp;gt;            &amp;lt;dbl&amp;gt;           &amp;lt;dbl&amp;gt;             &amp;lt;dbl&amp;gt;
+##  1       0      1016.                     40.2             50.7            64.8              29.5
+##  2       0.5    1016.                     40.2             50.7            64.8              29.5
+##  3       1      1016.                     40.2             50.7            64.8              29.5
+##  4       1.5    1016.                     40.2             50.7            64.8              29.5
+##  5       2      1016.                     40.2             50.7            64.8              29.5
+##  6       2.5    1016.                     40.2             50.7            64.8              29.5
+##  7       3      1016.                     40.2             50.7            64.8              29.5
+##  8       3.5    1016.                     40.2             50.7            64.8              29.5
+##  9       4      1016.                     40.2             50.7            64.8              29.5
+## 10       4.5    1016.                     40.2             50.7            64.8              29.5
+## 11       5      1016.                     40.2             50.7            64.8              29.5
+## 12       5.5    1016.                     40.2             50.7            64.8              29.5
+## 13       6      1016.                     40.2             50.7            64.8              29.5
+## 14       6.5    1016.                     40.2             50.7            64.8              29.5
+## 15       7      1016.                     40.2             50.7            64.8              29.5
+## 16       7.5    1016.                     40.2             50.7            64.8              29.5
+## 17       8      1016.                     40.2             50.7            64.8              29.5&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;If we feed this big data frame into &lt;code&gt;augment()&lt;/code&gt;, we can get the predicted high temperature for each row. We can also use the &lt;code&gt;.se.fit&lt;/code&gt; column to calculate the 95% confidence interval for each predicted value. We take the standard error, multiply it by -1.96 and 1.96 (or the quantile of the normal distribution at 2.5% and 97.5%), and add that value to the estimate.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;predicted_values &amp;lt;- augment(model_complex, newdata = newdata, se_fit=TRUE) %&amp;gt;%
+  mutate(conf.low = .fitted + (-1.96 * .se.fit),
+         conf.high = .fitted + (1.96 * .se.fit))
+
+predicted_values %&amp;gt;%
+  select(windSpeed, .fitted, .se.fit, conf.low, conf.high) %&amp;gt;%
+  head()&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 6 × 5
+##   windSpeed .fitted .se.fit conf.low conf.high
+##       &amp;lt;dbl&amp;gt;   &amp;lt;dbl&amp;gt;   &amp;lt;dbl&amp;gt;    &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt;
+## 1       0      95.3   1.63      92.2      98.5
+## 2       0.5    94.5   1.42      91.7      97.2
+## 3       1      93.6   1.22      91.2      96.0
+## 4       1.5    92.7   1.03      90.7      94.7
+## 5       2      91.8   0.836     90.1      93.4
+## 6       2.5    90.9   0.653     89.6      92.2&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Cool! Just looking at the data in the table, we can see that predicted temperature drops as windspeed increases. We can plot this to visualize the effect:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(predicted_values, aes(x = windSpeed, y = .fitted)) +
+  geom_ribbon(aes(ymin = conf.low, ymax = conf.high),
+              fill = &amp;quot;#BF3984&amp;quot;, alpha = 0.5) +
+  geom_line(size = 1, color = &amp;quot;#BF3984&amp;quot;) +
+  labs(x = &amp;quot;Wind speed (MPH)&amp;quot;, y = &amp;quot;Predicted high temperature (F)&amp;quot;) +
+  theme_minimal()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/example/06-example_files/figure-html/mfx-plot-simple-1.png&#34; width=&#34;576&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;We just manipulated one of the model coefficients and held everything else at its mean. We can manipulate multiple variables too and encode them all on the graph. For instance, what is the effect of windspeed &lt;em&gt;and&lt;/em&gt; cloud cover on the temperature?&lt;/p&gt;
+&lt;p&gt;We’ll follow the same process, but vary both &lt;code&gt;windSpeed&lt;/code&gt; and &lt;code&gt;cloudCover_scaled&lt;/code&gt;. Instead of using &lt;code&gt;tibble()&lt;/code&gt;, we use &lt;code&gt;exapnd_grid()&lt;/code&gt;, which creates every combination of the variables we specify. Instead of varying cloud cover by every possible value (like from 0 to 100), we’ll choose four possible cloud cover types: 0%, 33%, 66%, and 100%. Everything else will be at its mean.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;newdata_fancy &amp;lt;- expand_grid(windSpeed = seq(0, 8, 0.5),
+                             pressure = mean(weather_atl_summer$pressure),
+                             precipProbability_scaled = mean(weather_atl_summer$precipProbability_scaled),
+                             moonPhase_scaled = mean(weather_atl_summer$moonPhase_scaled),
+                             humidity_scaled = mean(weather_atl_summer$humidity_scaled),
+                             cloudCover_scaled = c(0, 33, 66, 100))
+newdata_fancy&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 68 × 6
+##    windSpeed pressure precipProbability_scaled moonPhase_scaled humidity_scaled cloudCover_scaled
+##        &amp;lt;dbl&amp;gt;    &amp;lt;dbl&amp;gt;                    &amp;lt;dbl&amp;gt;            &amp;lt;dbl&amp;gt;           &amp;lt;dbl&amp;gt;             &amp;lt;dbl&amp;gt;
+##  1       0      1016.                     40.2             50.7            64.8                 0
+##  2       0      1016.                     40.2             50.7            64.8                33
+##  3       0      1016.                     40.2             50.7            64.8                66
+##  4       0      1016.                     40.2             50.7            64.8               100
+##  5       0.5    1016.                     40.2             50.7            64.8                 0
+##  6       0.5    1016.                     40.2             50.7            64.8                33
+##  7       0.5    1016.                     40.2             50.7            64.8                66
+##  8       0.5    1016.                     40.2             50.7            64.8               100
+##  9       1      1016.                     40.2             50.7            64.8                 0
+## 10       1      1016.                     40.2             50.7            64.8                33
+## # … with 58 more rows&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Notice now that &lt;code&gt;windSpeed&lt;/code&gt; repeats four times (0, 0, 0, 0, 0.5, 0.5, etc.), since there are four possible &lt;code&gt;cloudCover_scaled&lt;/code&gt; values (0, 33, 66, 100).&lt;/p&gt;
+&lt;p&gt;We can plot this now, just like before, with wind speed on the x-axis, the predicted temperature on the y-axis, and colored and faceted by cloud cover:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;predicted_values_fancy &amp;lt;- augment(model_complex, newdata = newdata_fancy, se_fit=TRUE) %&amp;gt;%
+  mutate(conf.low = .fitted + (-1.96 * .se.fit),
+         conf.high = .fitted + (1.96 * .se.fit)) %&amp;gt;%
+  # Make cloud cover a categorical variable
+  mutate(cloudCover_scaled = factor(cloudCover_scaled))
+
+ggplot(predicted_values_fancy, aes(x = windSpeed, y = .fitted)) +
+  geom_ribbon(aes(ymin = conf.low, ymax = conf.high, fill = cloudCover_scaled),
+              alpha = 0.5) +
+  geom_line(aes(color = cloudCover_scaled), size = 1) +
+  labs(x = &amp;quot;Wind speed (MPH)&amp;quot;, y = &amp;quot;Predicted high temperature (F)&amp;quot;) +
+  theme_minimal() +
+  guides(fill = FALSE, color = FALSE) +
+  facet_wrap(vars(cloudCover_scaled), nrow = 1)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Warning: `guides(&amp;lt;scale&amp;gt; = FALSE)` is deprecated. Please use `guides(&amp;lt;scale&amp;gt; = &amp;quot;none&amp;quot;)` instead.&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/example/06-example_files/figure-html/mfx-complex-1.png&#34; width=&#34;864&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Nice. Temperatures go down slightly as cloud cover increases. If we wanted to improve the model, we’d add an interaction term between cloud cover and windspeed so that each line would have a different slope in addition to a different intercept, but that’s beyond the scope of this class.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    
+    <item>
       <title>Design</title>
       <link>https://ssc442.netlify.app/resource/design/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
@@ -4141,6 +4715,354 @@ rats_clean %&amp;gt;%
 &lt;ol&gt;
 &lt;li id=&#34;fn1&#34;&gt;&lt;p&gt;You can approach this in a couple different ways—you can write the memo and then include the full figure and code at the end, &lt;a href=&#34;https://rud.is/b/2017/09/18/mapping-fall-foliage-with-sf/&#34;&gt;similar to this blog post&lt;/a&gt;, or you can write the memo in an incremental way, describing the different steps of creating the figure, ultimately arriving at a clean final figure, &lt;a href=&#34;https://rudeboybert.github.io/fivethirtyeight/articles/bechdel.html&#34;&gt;like this blog post&lt;/a&gt;.&lt;a href=&#34;#fnref1&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
 &lt;li id=&#34;fn2&#34;&gt;&lt;p&gt;The three different sources need not be different websites or from different organizations. For example, three different tables from the US Census would be sufficient&lt;a href=&#34;#fnref2&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Introduction to Regression</title>
+      <link>https://ssc442.netlify.app/content/06-content/</link>
+      <pubDate>Tue, 05 Oct 2021 00:00:00 +0000</pubDate>
+      <guid>https://ssc442.netlify.app/content/06-content/</guid>
+      <description>
+&lt;script src=&#34;https://ssc442.netlify.app/rmarkdown-libs/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
+
+&lt;div id=&#34;TOC&#34;&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#required-reading&#34;&gt;Required Reading&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#guiding-questions&#34;&gt;Guiding Questions&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#regression&#34;&gt;Introduction to Linear Regression&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#case-study-is-height-hereditary&#34;&gt;Case study: is height hereditary?&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#corr-coef&#34;&gt;The correlation coefficient&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#sample-correlation-is-a-random-variable&#34;&gt;Sample correlation is a random variable&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#correlation-is-not-always-a-useful-summary&#34;&gt;Correlation is not always a useful summary&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#conditional-expectation&#34;&gt;Conditional expectations&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#the-regression-line&#34;&gt;The regression line&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#regression-improves-precision&#34;&gt;Regression improves precision&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#bivariate-normal-distribution-advanced&#34;&gt;Bivariate normal distribution (advanced)&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#variance-explained&#34;&gt;Variance explained&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#warning-there-are-two-regression-lines&#34;&gt;Warning: there are two regression lines&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+
+&lt;div id=&#34;required-reading&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Required Reading&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;This page.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;!-- ### Supplemental Readings --&gt;
+&lt;!-- - Coming soon. --&gt;
+&lt;div id=&#34;guiding-questions&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Guiding Questions&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;How can we express a simple relationship between variables?&lt;/li&gt;
+&lt;li&gt;What is a geometric intuition behind “linear regression”?&lt;/li&gt;
+&lt;li&gt;How might we visualize a linear regression?&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;fyi&#34;&gt;
+&lt;p&gt;Today’s lecture will ask you to touch real data during the lecture. Please download the following dataset and load it into &lt;code&gt;R&lt;/code&gt;.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://ssc442.netlify.app/projects/data/ames.csv&#34;&gt;&lt;i class=&#34;fas fa-file-csv&#34;&gt;&lt;/i&gt; &lt;code&gt;Ames.csv&lt;/code&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;This dataset is from houses in Ames, Iowa. (Thrilling!) We will use this dataset during the lecture to illustrate some of the points discussed below.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;regression&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Introduction to Linear Regression&lt;/h1&gt;
+&lt;p&gt;Up to this point, this class has focused mainly on single variables. However, in data analytics applications, it is very common to be interested in the &lt;strong&gt;relationship&lt;/strong&gt; between two or more variables. For instance, in the coming days we will use a data-driven approach that examines the relationship between player statistics and success to guide the building of a baseball team with a limited budget. Before delving into this more complex example, we introduce necessary concepts needed to understand regression using a simpler illustration. We actually use the dataset from which regression was born.&lt;/p&gt;
+&lt;p&gt;The example is from genetics. Francis Galton&lt;a href=&#34;#fn1&#34; class=&#34;footnote-ref&#34; id=&#34;fnref1&#34;&gt;&lt;sup&gt;1&lt;/sup&gt;&lt;/a&gt; studied the variation and heredity of human traits. Among many other traits, Galton collected and studied height data from families to try to understand heredity. While doing this, he developed the concepts of correlation and regression, as well as a connection to pairs of data that follow a normal distribution. Of course, at the time this data was collected our knowledge of genetics was quite limited compared to what we know today. A very specific question Galton tried to answer was: how well can we predict a child’s height based on the parents’ height? The technique he developed to answer this question, regression, can also be applied to our baseball question. Regression can be applied in many other circumstances as well.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Historical note&lt;/strong&gt;: Galton made important contributions to statistics and genetics, but he was also one of the first proponents of eugenics, a scientifically flawed philosophical movement favored by many biologists of Galton’s time but with horrific historical consequences. These consequences still reverberate to this day, and form the basis for much of the Western world’s racist policies. You can read more about it here: &lt;a href=&#34;https://pged.org/history-eugenics-and-genetics/&#34;&gt;https://pged.org/history-eugenics-and-genetics/&lt;/a&gt;.&lt;/p&gt;
+&lt;div id=&#34;case-study-is-height-hereditary&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Case study: is height hereditary?&lt;/h2&gt;
+&lt;p&gt;We have access to Galton’s family height data through the &lt;strong&gt;HistData&lt;/strong&gt; package. This data contains heights on several dozen families: mothers, fathers, daughters, and sons. To imitate Galton’s analysis, we will create a dataset with the heights of fathers and a randomly selected son of each family:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(tidyverse)
+library(HistData)
+data(&amp;quot;GaltonFamilies&amp;quot;)
+
+set.seed(1983)
+galton_heights &amp;lt;- GaltonFamilies %&amp;gt;%
+  filter(gender == &amp;quot;male&amp;quot;) %&amp;gt;%
+  group_by(family) %&amp;gt;%
+  sample_n(1) %&amp;gt;%
+  ungroup() %&amp;gt;%
+  select(father, childHeight) %&amp;gt;%
+  rename(son = childHeight)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;In the exercises, we will look at other relationships including mothers and daughters.&lt;/p&gt;
+&lt;p&gt;Suppose we were asked to summarize the father and son data. Since both distributions are well approximated by the normal distribution, we could use the two averages and two standard deviations as summaries:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;galton_heights %&amp;gt;%
+  summarize(mean(father), sd(father), mean(son), sd(son))&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 1 × 4
+##   `mean(father)` `sd(father)` `mean(son)` `sd(son)`
+##            &amp;lt;dbl&amp;gt;        &amp;lt;dbl&amp;gt;       &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt;
+## 1           69.1         2.55        69.2      2.71&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;However, this summary fails to describe an important characteristic of the data: the trend that the taller the father, the taller the son.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;galton_heights %&amp;gt;% ggplot(aes(father, son)) +
+  geom_point(alpha = 0.5)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/content/06-content_files/figure-html/scatterplot-1.png&#34; width=&#34;40%&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;We will learn that the correlation coefficient is an informative summary of how two variables move together and then see how this can be used to predict one variable using the other.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;corr-coef&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;The correlation coefficient&lt;/h2&gt;
+&lt;p&gt;The correlation coefficient is defined for a list of pairs &lt;span class=&#34;math inline&#34;&gt;\((x_1, y_1), \dots, (x_n,y_n)\)&lt;/span&gt; as the average of the product of the standardized values:&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
+\rho = \frac{1}{n} \sum_{i=1}^n \left( \frac{x_i-\mu_x}{\sigma_x} \right)\left( \frac{y_i-\mu_y}{\sigma_y} \right)
+\]&lt;/span&gt;
+with &lt;span class=&#34;math inline&#34;&gt;\(\mu_x, \mu_y\)&lt;/span&gt; the averages of &lt;span class=&#34;math inline&#34;&gt;\(x_1,\dots, x_n\)&lt;/span&gt; and &lt;span class=&#34;math inline&#34;&gt;\(y_1, \dots, y_n\)&lt;/span&gt;, respectively, and &lt;span class=&#34;math inline&#34;&gt;\(\sigma_x, \sigma_y\)&lt;/span&gt; the standard deviations. The Greek letter &lt;span class=&#34;math inline&#34;&gt;\(\rho\)&lt;/span&gt; is commonly used in statistics books to denote the correlation. The Greek letter for &lt;span class=&#34;math inline&#34;&gt;\(r\)&lt;/span&gt;, &lt;span class=&#34;math inline&#34;&gt;\(\rho\)&lt;/span&gt;, because it is the first letter of regression. Soon we learn about the connection between correlation and regression. We can represent the formula above with R code using:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;rho &amp;lt;- mean(scale(x) * scale(y))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;To understand why this equation does in fact summarize how two variables move together, consider the &lt;span class=&#34;math inline&#34;&gt;\(i\)&lt;/span&gt;-th entry of &lt;span class=&#34;math inline&#34;&gt;\(x\)&lt;/span&gt; is &lt;span class=&#34;math inline&#34;&gt;\(\left( \frac{x_i-\mu_x}{\sigma_x} \right)\)&lt;/span&gt; SDs away from the average. Similarly, the &lt;span class=&#34;math inline&#34;&gt;\(y_i\)&lt;/span&gt; that is paired with &lt;span class=&#34;math inline&#34;&gt;\(x_i\)&lt;/span&gt;, is &lt;span class=&#34;math inline&#34;&gt;\(\left( \frac{y_1-\mu_y}{\sigma_y} \right)\)&lt;/span&gt; SDs away from the average &lt;span class=&#34;math inline&#34;&gt;\(y\)&lt;/span&gt;. If &lt;span class=&#34;math inline&#34;&gt;\(x\)&lt;/span&gt; and &lt;span class=&#34;math inline&#34;&gt;\(y\)&lt;/span&gt; are unrelated, the product &lt;span class=&#34;math inline&#34;&gt;\(\left( \frac{x_i-\mu_x}{\sigma_x} \right)\left( \frac{y_i-\mu_y}{\sigma_y} \right)\)&lt;/span&gt; will be positive ( &lt;span class=&#34;math inline&#34;&gt;\(+ \times +\)&lt;/span&gt; and &lt;span class=&#34;math inline&#34;&gt;\(- \times -\)&lt;/span&gt; ) as often as negative (&lt;span class=&#34;math inline&#34;&gt;\(+ \times -\)&lt;/span&gt; and &lt;span class=&#34;math inline&#34;&gt;\(- \times +\)&lt;/span&gt;) and will average out to about 0. This correlation is the average and therefore unrelated variables will have 0 correlation. If instead the quantities vary together, then we are averaging mostly positive products ( &lt;span class=&#34;math inline&#34;&gt;\(+ \times +\)&lt;/span&gt; and &lt;span class=&#34;math inline&#34;&gt;\(- \times -\)&lt;/span&gt;) and we get a positive correlation. If they vary in opposite directions, we get a negative correlation.&lt;/p&gt;
+&lt;p&gt;The correlation coefficient is always between -1 and 1. We can show this mathematically: consider that we can’t have higher correlation than when we compare a list to itself (perfect correlation) and in this case the correlation is:&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
+\rho = \frac{1}{n} \sum_{i=1}^n \left( \frac{x_i-\mu_x}{\sigma_x} \right)^2 =
+\frac{1}{\sigma_x^2} \frac{1}{n} \sum_{i=1}^n \left( x_i-\mu_x \right)^2 =
+\frac{1}{\sigma_x^2} \sigma^2_x =
+1
+\]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;A similar derivation, but with &lt;span class=&#34;math inline&#34;&gt;\(x\)&lt;/span&gt; and its exact opposite, proves the correlation has to be bigger or equal to -1.&lt;/p&gt;
+&lt;p&gt;For other pairs, the correlation is in between -1 and 1. The correlation between father and son’s heights is about 0.5:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;galton_heights %&amp;gt;% summarize(r = cor(father, son)) %&amp;gt;% pull(r)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 0.4334102&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;To see what data looks like for different values of &lt;span class=&#34;math inline&#34;&gt;\(\rho\)&lt;/span&gt;, here are six examples of pairs with correlations ranging from -0.9 to 0.99:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/content/06-content_files/figure-html/what-correlation-looks-like-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;div id=&#34;sample-correlation-is-a-random-variable&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Sample correlation is a random variable&lt;/h3&gt;
+&lt;p&gt;Before we continue connecting correlation to regression, let’s remind ourselves about random variability.&lt;/p&gt;
+&lt;p&gt;In most data science applications, we observe data that includes random variation. For example, in many cases, we do not observe data for the entire population of interest but rather for a random sample. As with the average and standard deviation, the &lt;em&gt;sample correlation&lt;/em&gt; is the most commonly used estimate of the population correlation. This implies that the correlation we compute and use as a summary is a random variable.&lt;/p&gt;
+&lt;p&gt;By way of illustration, let’s assume that the 179 pairs of fathers and sons is our entire population. A less fortunate geneticist can only afford measurements from a random sample of 25 pairs. The sample correlation can be computed with:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;R &amp;lt;- sample_n(galton_heights, 25, replace = TRUE) %&amp;gt;%
+  summarize(r = cor(father, son)) %&amp;gt;% pull(r)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;code&gt;R&lt;/code&gt; is a random variable. We can run a Monte Carlo simulation to see its distribution:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;B &amp;lt;- 1000
+N &amp;lt;- 25
+R &amp;lt;- replicate(B, {
+  sample_n(galton_heights, N, replace = TRUE) %&amp;gt;%
+    summarize(r=cor(father, son)) %&amp;gt;%
+    pull(r)
+})
+qplot(R, geom = &amp;quot;histogram&amp;quot;, binwidth = 0.05, color = I(&amp;quot;black&amp;quot;))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/content/06-content_files/figure-html/sample-correlation-distribution-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;We see that the expected value of &lt;code&gt;R&lt;/code&gt; is the population correlation:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;mean(R)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 0.4307393&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;and that it has a relatively high standard error relative to the range of values &lt;code&gt;R&lt;/code&gt; can take:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;sd(R)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 0.1609393&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;So, when interpreting correlations, remember that correlations derived from samples are estimates containing uncertainty.&lt;/p&gt;
+&lt;p&gt;Also, note that because the sample correlation is an average of independent draws, the central limit actually applies. Therefore, for large enough &lt;span class=&#34;math inline&#34;&gt;\(N\)&lt;/span&gt;, the distribution of &lt;code&gt;R&lt;/code&gt; is approximately normal with expected value &lt;span class=&#34;math inline&#34;&gt;\(\rho\)&lt;/span&gt;. The standard deviation, which is somewhat complex to derive, is &lt;span class=&#34;math inline&#34;&gt;\(\sqrt{\frac{1-r^2}{N-2}}\)&lt;/span&gt;.&lt;/p&gt;
+&lt;p&gt;In our example, &lt;span class=&#34;math inline&#34;&gt;\(N=25\)&lt;/span&gt; does not seem to be large enough to make the approximation a good one:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(aes(sample=R), data = data.frame(R)) +
+  stat_qq() +
+  geom_abline(intercept = mean(R), slope = sqrt((1-mean(R)^2)/(N-2)))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/content/06-content_files/figure-html/small-sample-correlation-not-normal-1.png&#34; width=&#34;40%&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;If you increase &lt;span class=&#34;math inline&#34;&gt;\(N\)&lt;/span&gt;, you will see the distribution converging to normal.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;correlation-is-not-always-a-useful-summary&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Correlation is not always a useful summary&lt;/h3&gt;
+&lt;p&gt;Correlation is not always a good summary of the relationship between two variables. The following four artificial datasets, referred to as Anscombe’s quartet, famously illustrate this point. All these pairs have a correlation of 0.82:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;## `geom_smooth()` using formula &amp;#39;y ~ x&amp;#39;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/content/06-content_files/figure-html/ascombe-quartet-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Correlation is only meaningful in a particular context. To help us understand when it is that correlation is meaningful as a summary statistic, we will return to the example of predicting a son’s height using his father’s height. This will help motivate and define linear regression. We start by demonstrating how correlation can be useful for prediction.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;conditional-expectation&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Conditional expectations&lt;/h2&gt;
+&lt;p&gt;Suppose we are asked to guess the height of a randomly selected son and we don’t know his father’s height. Because the distribution of sons’ heights is approximately normal, we know the average height, 69.2, is the value with the highest proportion and would be the prediction with the highest chance of minimizing the error. But what if we are told that the father is taller than average, say 72 inches tall, do we still guess 69.2 for the son?&lt;/p&gt;
+&lt;p&gt;It turns out that if we were able to collect data from a very large number of fathers that are 72 inches, the distribution of their sons’ heights would be normally distributed. This implies that the average of the distribution computed on this subset would be our best prediction.&lt;/p&gt;
+&lt;p&gt;In general, we call this approach &lt;em&gt;conditioning&lt;/em&gt;. The general idea is that we stratify a population into groups and compute summaries in each group. To provide a mathematical description of conditioning, consider we have a population of pairs of values &lt;span class=&#34;math inline&#34;&gt;\((x_1,y_1),\dots,(x_n,y_n)\)&lt;/span&gt;, for example all father and son heights in England. In the previous week’s content, we learned that if you take a random pair &lt;span class=&#34;math inline&#34;&gt;\((X,Y)\)&lt;/span&gt;, the expected value and best predictor of &lt;span class=&#34;math inline&#34;&gt;\(Y\)&lt;/span&gt; is &lt;span class=&#34;math inline&#34;&gt;\(\mbox{E}(Y) = \mu_y\)&lt;/span&gt;, the population average &lt;span class=&#34;math inline&#34;&gt;\(1/n\sum_{i=1}^n y_i\)&lt;/span&gt;. However, we are no longer interested in the general population, instead we are interested in only the subset of a population with a specific &lt;span class=&#34;math inline&#34;&gt;\(x_i\)&lt;/span&gt; value, 72 inches in our example. This subset of the population, is also a population and thus the same principles and properties we have learned apply. The &lt;span class=&#34;math inline&#34;&gt;\(y_i\)&lt;/span&gt; in the subpopulation have a distribution, referred to as the &lt;em&gt;conditional distribution&lt;/em&gt;, and this distribution has an expected value referred to as the &lt;em&gt;conditional expectation&lt;/em&gt;. In our example, the conditional expectation is the average height of all sons in England with fathers that are 72 inches. The statistical notation for the conditional expectation is&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
+\mbox{E}(Y \mid X = x)
+\]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;with &lt;span class=&#34;math inline&#34;&gt;\(x\)&lt;/span&gt; representing the fixed value that defines that subset, for example 72 inches. Similarly, we denote the standard deviation of the strata with&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
+\mbox{SD}(Y \mid X = x) = \sqrt{\mbox{Var}(Y \mid X = x)}
+\]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;Because the conditional expectation &lt;span class=&#34;math inline&#34;&gt;\(E(Y\mid X=x)\)&lt;/span&gt; is the best predictor for the random variable &lt;span class=&#34;math inline&#34;&gt;\(Y\)&lt;/span&gt; for an individual in the strata defined by &lt;span class=&#34;math inline&#34;&gt;\(X=x\)&lt;/span&gt;, many data science challenges reduce to estimating this quantity. The conditional standard deviation quantifies the precision of the prediction.&lt;/p&gt;
+&lt;p&gt;In the example we have been considering, we are interested in computing the average son height &lt;em&gt;conditioned&lt;/em&gt; on the father being 72 inches tall. We want to estimate &lt;span class=&#34;math inline&#34;&gt;\(E(Y|X=72)\)&lt;/span&gt; using the sample collected by Galton. We previously learned that the sample average is the preferred approach to estimating the population average. However, a challenge when using this approach to estimating conditional expectations is that for continuous data we don’t have many data points matching exactly one value in our sample. For example, we have only:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;sum(galton_heights$father == 72)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 8&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;fathers that are exactly 72-inches. If we change the number to 72.5, we get even fewer data points:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;sum(galton_heights$father == 72.5)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 1&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;A practical way to improve these estimates of the conditional expectations, is to define strata of with similar values of &lt;span class=&#34;math inline&#34;&gt;\(x\)&lt;/span&gt;. In our example, we can round father heights to the nearest inch and assume that they are all 72 inches. If we do this, we end up with the following prediction for the son of a father that is 72 inches tall:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;conditional_avg &amp;lt;- galton_heights %&amp;gt;%
+  filter(round(father) == 72) %&amp;gt;%
+  summarize(avg = mean(son)) %&amp;gt;%
+  pull(avg)
+conditional_avg&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 70.5&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Note that a 72-inch father is taller than average – specifically, 72 - 69.1/2.5 =
+1.1 standard deviations taller than the average father. Our prediction 70.5 is also taller than average, but only 0.49 standard deviations larger than the average son. The sons of 72-inch fathers have &lt;em&gt;regressed&lt;/em&gt; some to the average height. We notice that the reduction in how many SDs taller is about 0.5, which happens to be the correlation. As we will see in a later lecture, this is not a coincidence.&lt;/p&gt;
+&lt;p&gt;If we want to make a prediction of any height, not just 72, we could apply the same approach to each strata. Stratification followed by boxplots lets us see the distribution of each group:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;galton_heights %&amp;gt;% mutate(father_strata = factor(round(father))) %&amp;gt;%
+  ggplot(aes(father_strata, son)) +
+  geom_boxplot() +
+  geom_point()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/content/06-content_files/figure-html/boxplot-1-1.png&#34; width=&#34;40%&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Not surprisingly, the centers of the groups are increasing with height.
+Furthermore, these centers appear to follow a linear relationship. Below we plot the averages of each group. If we take into account that these averages are random variables with standard errors, the data is consistent with these points following a straight line:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/content/06-content_files/figure-html/conditional-averages-follow-line-1.png&#34; width=&#34;40%&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;The fact that these conditional averages follow a line is not a coincidence. In the next section, we explain that the line these averages follow is what we call the &lt;em&gt;regression line&lt;/em&gt;, which improves the precision of our estimates. However, it is not always appropriate to estimate conditional expectations with the regression line so we also describe Galton’s theoretical justification for using the regression line.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;the-regression-line&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;The regression line&lt;/h2&gt;
+&lt;p&gt;If we are predicting a random variable &lt;span class=&#34;math inline&#34;&gt;\(Y\)&lt;/span&gt; knowing the value of another &lt;span class=&#34;math inline&#34;&gt;\(X=x\)&lt;/span&gt; using a regression line, then we predict that for every standard deviation, &lt;span class=&#34;math inline&#34;&gt;\(\sigma_X\)&lt;/span&gt;, that &lt;span class=&#34;math inline&#34;&gt;\(x\)&lt;/span&gt; increases above the average &lt;span class=&#34;math inline&#34;&gt;\(\mu_X\)&lt;/span&gt;, &lt;span class=&#34;math inline&#34;&gt;\(Y\)&lt;/span&gt; increase &lt;span class=&#34;math inline&#34;&gt;\(\rho\)&lt;/span&gt; standard deviations &lt;span class=&#34;math inline&#34;&gt;\(\sigma_Y\)&lt;/span&gt; above the average &lt;span class=&#34;math inline&#34;&gt;\(\mu_Y\)&lt;/span&gt; with &lt;span class=&#34;math inline&#34;&gt;\(\rho\)&lt;/span&gt; the correlation between &lt;span class=&#34;math inline&#34;&gt;\(X\)&lt;/span&gt; and &lt;span class=&#34;math inline&#34;&gt;\(Y\)&lt;/span&gt;. The formula for the regression is therefore:&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
+\left( \frac{Y-\mu_Y}{\sigma_Y} \right) = \rho \left( \frac{x-\mu_X}{\sigma_X} \right)
+\]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;We can rewrite it like this:&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
+Y = \mu_Y + \rho \left( \frac{x-\mu_X}{\sigma_X} \right) \sigma_Y
+\]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;If there is perfect correlation, the regression line predicts an increase that is the same number of SDs. If there is 0 correlation, then we don’t use &lt;span class=&#34;math inline&#34;&gt;\(x\)&lt;/span&gt; at all for the prediction and simply predict the average &lt;span class=&#34;math inline&#34;&gt;\(\mu_Y\)&lt;/span&gt;. For values between 0 and 1, the prediction is somewhere in between. If the correlation is negative, we predict a reduction instead of an increase.&lt;/p&gt;
+&lt;p&gt;Note that if the correlation is positive and lower than 1, our prediction is closer, in standard units, to the average height than the value used to predict, &lt;span class=&#34;math inline&#34;&gt;\(x\)&lt;/span&gt;, is to the average of the &lt;span class=&#34;math inline&#34;&gt;\(x\)&lt;/span&gt;s. This is why we call it &lt;em&gt;regression&lt;/em&gt;: the son regresses to the average height. In fact, the title of Galton’s paper was: &lt;em&gt;Regression toward mediocrity in hereditary stature&lt;/em&gt;. To add regression lines to plots, we will need the above formula in the form:&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
+y= b + mx \mbox{ with slope } m = \rho \frac{\sigma_y}{\sigma_x} \mbox{ and intercept } b=\mu_y - m \mu_x
+\]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;Here we add the regression line to the original data:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;mu_x &amp;lt;- mean(galton_heights$father)
+mu_y &amp;lt;- mean(galton_heights$son)
+s_x &amp;lt;- sd(galton_heights$father)
+s_y &amp;lt;- sd(galton_heights$son)
+r &amp;lt;- cor(galton_heights$father, galton_heights$son)
+
+galton_heights %&amp;gt;%
+  ggplot(aes(father, son)) +
+  geom_point(alpha = 0.5) +
+  geom_abline(slope = r * s_y/s_x, intercept = mu_y - r * s_y/s_x * mu_x)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/content/06-content_files/figure-html/regression-line-1.png&#34; width=&#34;40%&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;The regression formula implies that if we first standardize the variables, that is subtract the average and divide by the standard deviation, then the regression line has intercept 0 and slope equal to the correlation &lt;span class=&#34;math inline&#34;&gt;\(\rho\)&lt;/span&gt;. You can make same plot, but using standard units like this:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;galton_heights %&amp;gt;%
+  ggplot(aes(scale(father), scale(son))) +
+  geom_point(alpha = 0.5) +
+  geom_abline(intercept = 0, slope = r)&lt;/code&gt;&lt;/pre&gt;
+&lt;div id=&#34;regression-improves-precision&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Regression improves precision&lt;/h3&gt;
+&lt;p&gt;Let’s compare the two approaches to prediction that we have presented:&lt;/p&gt;
+&lt;ol style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;Round fathers’ heights to closest inch, stratify, and then take the average.&lt;/li&gt;
+&lt;li&gt;Compute the regression line and use it to predict.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;We use a Monte Carlo simulation sampling &lt;span class=&#34;math inline&#34;&gt;\(N=50\)&lt;/span&gt; families:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;B &amp;lt;- 1000
+N &amp;lt;- 50
+
+set.seed(1983)
+conditional_avg &amp;lt;- replicate(B, {
+  dat &amp;lt;- sample_n(galton_heights, N)
+  dat %&amp;gt;% filter(round(father) == 72) %&amp;gt;%
+    summarize(avg = mean(son)) %&amp;gt;%
+    pull(avg)
+  })
+
+regression_prediction &amp;lt;- replicate(B, {
+  dat &amp;lt;- sample_n(galton_heights, N)
+  mu_x &amp;lt;- mean(dat$father)
+  mu_y &amp;lt;- mean(dat$son)
+  s_x &amp;lt;- sd(dat$father)
+  s_y &amp;lt;- sd(dat$son)
+  r &amp;lt;- cor(dat$father, dat$son)
+  mu_y + r*(72 - mu_x)/s_x*s_y
+})&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Although the expected value of these two random variables is about the same:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;mean(conditional_avg, na.rm = TRUE)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 70.49368&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;mean(regression_prediction)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 70.50941&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The standard error for the regression prediction is substantially smaller:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;sd(conditional_avg, na.rm = TRUE)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 0.9635814&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;sd(regression_prediction)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 0.4520833&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The regression line is therefore much more stable than the conditional mean. There is an intuitive reason for this. The conditional average is computed on a relatively small subset: the fathers that are about 72 inches tall. In fact, in some of the permutations we have no data, which is why we use &lt;code&gt;na.rm=TRUE&lt;/code&gt;. The regression always uses all the data.&lt;/p&gt;
+&lt;p&gt;So why not always use the regression for prediction? Because it is not always appropriate. For example, Anscombe provided cases for which the data does not have a linear relationship. So are we justified in using the regression line to predict? Galton answered this in the positive for height data. The justification, which we include in the next section, is somewhat more advanced than the rest of this reading.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;bivariate-normal-distribution-advanced&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Bivariate normal distribution (advanced)&lt;/h3&gt;
+&lt;p&gt;Correlation and the regression slope are a widely used summary statistic, but they are often misused or misinterpreted. Anscombe’s examples provide over-simplified cases of dataset in which summarizing with correlation would be a mistake. But there are many more real-life examples.&lt;/p&gt;
+&lt;p&gt;The main way we motivate the use of correlation involves what is called the &lt;em&gt;bivariate normal distribution&lt;/em&gt;.&lt;/p&gt;
+&lt;p&gt;When a pair of random variables is approximated by the bivariate normal distribution, scatterplots look like ovals. These ovals can be thin (high correlation) or circle-shaped (no correlation).&lt;/p&gt;
+&lt;!--
+&lt;img src=&#34;https://ssc442.netlify.app/content/06-content_files/figure-html/bivariate-ovals-1.png&#34; width=&#34;672&#34; /&gt;
+--&gt;
+&lt;p&gt;A more technical way to define the bivariate normal distribution is the following: if &lt;span class=&#34;math inline&#34;&gt;\(X\)&lt;/span&gt; is a normally distributed random variable, &lt;span class=&#34;math inline&#34;&gt;\(Y\)&lt;/span&gt; is also a normally distributed random variable, and the conditional distribution of &lt;span class=&#34;math inline&#34;&gt;\(Y\)&lt;/span&gt; for any &lt;span class=&#34;math inline&#34;&gt;\(X=x\)&lt;/span&gt; is approximately normal, then the pair is approximately bivariate normal.&lt;/p&gt;
+&lt;p&gt;If we think the height data is well approximated by the bivariate normal distribution, then we should see the normal approximation hold for each strata. Here we stratify the son heights by the standardized father heights and see that the assumption appears to hold:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;galton_heights %&amp;gt;%
+  mutate(z_father = round((father - mean(father)) / sd(father))) %&amp;gt;%
+  filter(z_father %in% -2:2) %&amp;gt;%
+  ggplot() +
+  stat_qq(aes(sample = son)) +
+  facet_wrap( ~ z_father)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/content/06-content_files/figure-html/qqnorm-of-strata-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Now we come back to defining correlation. Galton used mathematical statistics to demonstrate that, when two variables follow a bivariate normal distribution, computing the regression line is equivalent to computing conditional expectations. We don’t show the derivation here, but we can show that under this assumption, for any given value of &lt;span class=&#34;math inline&#34;&gt;\(x\)&lt;/span&gt;, the expected value of the &lt;span class=&#34;math inline&#34;&gt;\(Y\)&lt;/span&gt; in pairs for which &lt;span class=&#34;math inline&#34;&gt;\(X=x\)&lt;/span&gt; is:&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
+\mbox{E}(Y | X=x) = \mu_Y +  \rho \frac{X-\mu_X}{\sigma_X}\sigma_Y
+\]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;This is the regression line, with slope &lt;span class=&#34;math display&#34;&gt;\[\rho \frac{\sigma_Y}{\sigma_X}\]&lt;/span&gt; and intercept &lt;span class=&#34;math inline&#34;&gt;\(\mu_y - m\mu_X\)&lt;/span&gt;. It is equivalent to the regression equation we showed earlier which can be written like this:&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
+\frac{\mbox{E}(Y \mid X=x)  - \mu_Y}{\sigma_Y} = \rho \frac{x-\mu_X}{\sigma_X}
+\]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;This implies that, if our data is approximately bivariate, the regression line gives the conditional probability. Therefore, we can obtain a much more stable estimate of the conditional expectation by finding the regression line and using it to predict.&lt;/p&gt;
+&lt;p&gt;In summary, if our data is approximately bivariate, then the conditional expectation, the best prediction of &lt;span class=&#34;math inline&#34;&gt;\(Y\)&lt;/span&gt; given we know the value of &lt;span class=&#34;math inline&#34;&gt;\(X\)&lt;/span&gt;, is given by the regression line.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;variance-explained&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Variance explained&lt;/h3&gt;
+&lt;p&gt;The bivariate normal theory also tells us that the standard deviation of the &lt;em&gt;conditional&lt;/em&gt; distribution described above is:&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
+\mbox{SD}(Y \mid X=x ) = \sigma_Y \sqrt{1-\rho^2}
+\]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;To see why this is intuitive, notice that without conditioning, &lt;span class=&#34;math inline&#34;&gt;\(\mbox{SD}(Y) = \sigma_Y\)&lt;/span&gt;, we are looking at the variability of all the sons. But once we condition, we are only looking at the variability of the sons with a tall, 72-inch, father. This group will all tend to be somewhat tall so the standard deviation is reduced.&lt;/p&gt;
+&lt;p&gt;Specifically, it is reduced to &lt;span class=&#34;math inline&#34;&gt;\(\sqrt{1-\rho^2} = \sqrt{1 - 0.25}\)&lt;/span&gt; = 0.87 of what it was originally. We could say that father heights “explain” 13% of the variability observed in son heights.&lt;/p&gt;
+&lt;p&gt;The statement “&lt;span class=&#34;math inline&#34;&gt;\(X\)&lt;/span&gt; explains such and such percent of the variability” is commonly used in academic papers. In this case, this percent actually refers to the variance (the SD squared). So if the data is bivariate normal, the variance is reduced by &lt;span class=&#34;math inline&#34;&gt;\(1-\rho^2\)&lt;/span&gt;, so we say that &lt;span class=&#34;math inline&#34;&gt;\(X\)&lt;/span&gt; explains &lt;span class=&#34;math inline&#34;&gt;\(1- (1-\rho^2)=\rho^2\)&lt;/span&gt; (the correlation squared) of the variance.&lt;/p&gt;
+&lt;p&gt;But it is important to remember that the “variance explained” statement only makes sense when the data is approximated by a bivariate normal distribution.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;warning-there-are-two-regression-lines&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Warning: there are two regression lines&lt;/h3&gt;
+&lt;p&gt;We computed a regression line to predict the son’s height from father’s height. We used these calculations:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;mu_x &amp;lt;- mean(galton_heights$father)
+mu_y &amp;lt;- mean(galton_heights$son)
+s_x &amp;lt;- sd(galton_heights$father)
+s_y &amp;lt;- sd(galton_heights$son)
+r &amp;lt;- cor(galton_heights$father, galton_heights$son)
+m_1 &amp;lt;-  r * s_y / s_x
+b_1 &amp;lt;- mu_y - m_1*mu_x&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;which gives us the function &lt;span class=&#34;math inline&#34;&gt;\(\mbox{E}(Y\mid X=x) =\)&lt;/span&gt; 37.3 + 0.46 &lt;span class=&#34;math inline&#34;&gt;\(x\)&lt;/span&gt;.&lt;/p&gt;
+&lt;p&gt;What if we want to predict the father’s height based on the son’s? It is important to know that this is not determined by computing the inverse function:
+&lt;span class=&#34;math inline&#34;&gt;\(x = \{ \mbox{E}(Y\mid X=x) -\)&lt;/span&gt; 37.3 &lt;span class=&#34;math inline&#34;&gt;\(\} /\)&lt;/span&gt; 0.5.&lt;/p&gt;
+&lt;p&gt;We need to compute &lt;span class=&#34;math inline&#34;&gt;\(\mbox{E}(X \mid Y=y)\)&lt;/span&gt;. Since the data is approximately bivariate normal, the theory described above tells us that this conditional expectation will follow a line with slope and intercept:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;m_2 &amp;lt;-  r * s_x / s_y
+b_2 &amp;lt;- mu_x - m_2 * mu_y&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;So we get &lt;span class=&#34;math inline&#34;&gt;\(\mbox{E}(X \mid Y=y) =\)&lt;/span&gt; 40.9 + 0.41y. Again we see regression to the average: the prediction for the father is closer to the father average than the son heights &lt;span class=&#34;math inline&#34;&gt;\(y\)&lt;/span&gt; is to the son average.&lt;/p&gt;
+&lt;p&gt;Here is a plot showing the two regression lines, with blue for the predicting son heights with father heights and red for predicting father heights with son heights:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;galton_heights %&amp;gt;%
+  ggplot(aes(father, son)) +
+  geom_point(alpha = 0.5) +
+  geom_abline(intercept = b_1, slope = m_1, col = &amp;quot;blue&amp;quot;) +
+  geom_abline(intercept = -b_2/m_2, slope = 1/m_2, col = &amp;quot;red&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/content/06-content_files/figure-html/two-regression-lines-1.png&#34; width=&#34;40%&#34; /&gt;&lt;/p&gt;
+&lt;div class=&#34;fyi&#34;&gt;
+&lt;p&gt;&lt;strong&gt;TRY IT&lt;/strong&gt;&lt;/p&gt;
+&lt;ol style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;&lt;p&gt;Load the &lt;code&gt;GaltonFamilies&lt;/code&gt; data from the &lt;strong&gt;HistData&lt;/strong&gt;. The children in each family are listed by gender and then by height. Create a dataset called &lt;code&gt;galton_heights&lt;/code&gt; by picking a male and female at random.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Make a scatterplot for heights between mothers and daughters, mothers and sons, fathers and daughters, and fathers and sons.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Compute the correlation in heights between mothers and daughters, mothers and sons, fathers and daughters, and fathers and sons.&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&#34;footnotes&#34;&gt;
+&lt;hr /&gt;
+&lt;ol&gt;
+&lt;li id=&#34;fn1&#34;&gt;&lt;p&gt;&lt;a href=&#34;https://en.wikipedia.org/wiki/Francis_Galton&#34; class=&#34;uri&#34;&gt;https://en.wikipedia.org/wiki/Francis_Galton&lt;/a&gt;&lt;a href=&#34;#fnref1&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
 &lt;/ol&gt;
 &lt;/div&gt;
 </description>
@@ -7145,7 +8067,7 @@ beads&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## [1] &amp;quot;red&amp;quot;  &amp;quot;red&amp;quot;  &amp;quot;blue&amp;quot; &amp;quot;blue&amp;quot; &amp;quot;blue&amp;quot;&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;and then use &lt;code&gt;sample&lt;/code&gt; to pick a bead at random:&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;sample(beads, 1)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;blue&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;red&amp;quot;&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;This line of code produces one random outcome. We want to repeat this experiment an infinite number of times, but it is impossible to repeat forever. Instead, we repeat the experiment a large enough number of times to make the results practically equivalent to repeating forever. &lt;strong&gt;This is an example of a &lt;em&gt;Monte Carlo&lt;/em&gt; simulation&lt;/strong&gt;.&lt;/p&gt;
 &lt;p&gt;Much of what mathematical and theoretical statisticians study, which we do not cover in this class, relates to providing rigorous definitions of “practically equivalent” as well as studying how close a large number of experiments gets us to what happens in the limit. Later in this lecture, we provide a practical approach to deciding what is “large enough”.&lt;/p&gt;
 &lt;p&gt;To perform our first Monte Carlo simulation, we use the &lt;code&gt;replicate&lt;/code&gt; function, which permits us to repeat the same task any number of times. Here, we repeat the random event &lt;span class=&#34;math inline&#34;&gt;\(B =\)&lt;/span&gt; 10,000 times:&lt;/p&gt;
@@ -7156,12 +8078,12 @@ events &amp;lt;- replicate(B, sample(beads, 1))&lt;/code&gt;&lt;/pre&gt;
 tab&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## events
 ## blue  red 
-## 5983 4017&lt;/code&gt;&lt;/pre&gt;
+## 6025 3975&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;and &lt;code&gt;prop.table&lt;/code&gt; gives us the proportions:&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;prop.table(tab)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## events
 ##   blue    red 
-## 0.5983 0.4017&lt;/code&gt;&lt;/pre&gt;
+## 0.6025 0.3975&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;The numbers above are the estimated probabilities provided by this Monte Carlo simulation. Statistical theory, not covered here, tells us that as &lt;span class=&#34;math inline&#34;&gt;\(B\)&lt;/span&gt; gets larger, the estimates get closer to 3/5=.6 and 2/5=.4.&lt;/p&gt;
 &lt;p&gt;Although this is a simple and not very useful example, we will use Monte Carlo simulations to estimate probabilities in cases in which it is harder to compute the exact ones. Before delving into more complex examples, we use simple ones to demonstrate the computing tools available in R.&lt;/p&gt;
 &lt;div id=&#34;setting-the-random-seed&#34; class=&#34;section level3&#34;&gt;
@@ -9303,18 +10225,13 @@ data(murders)&lt;/code&gt;&lt;/pre&gt;
         &lt;tr&gt;
             &lt;td align=&#34;right&#34; style=&#34;width:18%;text-align:right&#34;&gt;Week 5 (4 October)&lt;/td&gt;
             &lt;td style=&#34;width:50%;text-align:left&#34;&gt;Linear Regression I&lt;/td&gt;
-            &lt;td align=&#34;center&#34; style=&#34;width:10%;text-align:center&#34;&gt;
-                &lt;font color=&#34;f1f1f1&#34;&gt;
-                    &lt;i class=&#34;fas fa-book-reader fa-lg&#34;&gt;&lt;/i&gt;&lt;/font&gt;
-            &lt;/td&gt;
-            &lt;td align=&#34;center&#34; style=&#34;width:10%;text-align:center&#34;&gt;
-                &lt;font color=&#34;f1f1f1&#34;&gt;
-                    &lt;i class=&#34;fas fa-laptop-code fa-lg&#34;&gt;&lt;/i&gt;&lt;/font&gt;
-            &lt;/td&gt;
-            &lt;td align=&#34;center&#34; style=&#34;width:10%;text-align:center&#34;&gt;
-                &lt;font color=&#34;f1f1f1&#34;&gt;
-                    &lt;i class=&#34;fas fa-pencil-ruler fa-lg&#34;&gt;&lt;/i&gt;&lt;/font&gt;
-            &lt;/td&gt;
+            &lt;td align=&#34;center&#34; style=&#34;width:10%;text-align:center&#34;&gt;&lt;a
+                    href=&#34;https://ssc442.netlify.app/content/06-content/&#34;&gt;
+                    &lt;i class=&#34;fas fa-book-reader fa-lg&#34;&gt;&lt;/i&gt;&lt;/a&gt;&lt;/td&gt;
+            &lt;td align=&#34;center&#34; style=&#34;width:10%;text-align:center&#34;&gt;&lt;a href=&#34;https://ssc442.netlify.app/example/06-example/&#34;&gt;
+                    &lt;i class=&#34;fas fa-laptop-code fa-lg&#34;&gt;&lt;/i&gt;&lt;/a&gt;&lt;/td&gt;
+            &lt;td align=&#34;center&#34; style=&#34;width:10%;text-align:center&#34;&gt;&lt;a href=&#34;https://ssc442.netlify.app/assignment/06-assignment/&#34;&gt;
+                    &lt;i class=&#34;fas fa-pencil-ruler fa-lg&#34;&gt;&lt;/i&gt;&lt;/a&gt;&lt;/td&gt;
         &lt;/tr&gt;
         &lt;tr&gt;
             &lt;td align=&#34;right&#34; style=&#34;width:18%;text-align:right&#34;&gt;Week 6 (11 October)&lt;/td&gt;
