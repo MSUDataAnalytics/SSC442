@@ -13,6 +13,82 @@
     </image>
     
     <item>
+      <title>Model Building</title>
+      <link>https://ssc442.netlify.app/assignment/07-assignment/</link>
+      <pubDate>Tue, 12 Oct 2021 00:00:00 +0000</pubDate>
+      <guid>https://ssc442.netlify.app/assignment/07-assignment/</guid>
+      <description>
+&lt;script src=&#34;https://ssc442.netlify.app/rmarkdown-libs/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
+
+&lt;div id=&#34;TOC&#34;&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#backstory-and-set-up&#34;&gt;Backstory and Set Up&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#building-a-model&#34;&gt;Building a Model&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+
+&lt;div class=&#34;fyi&#34;&gt;
+&lt;p&gt;&lt;strong&gt;NOTE&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;You must turn in a PDF document of your &lt;code&gt;R Markdown&lt;/code&gt; code. Submit this to D2L by 11:59 PM Eastern Time on Sunday, October 17th.&lt;/p&gt;
+&lt;/div&gt;
+&lt;p&gt;This week’s lab will extend last week’s lab. The introduction is a verbatim repeat of that lab.&lt;/p&gt;
+&lt;div id=&#34;backstory-and-set-up&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Backstory and Set Up&lt;/h2&gt;
+&lt;p&gt;You have been recently hired to Zillow’s Zestimate product team as a junior analyst. As a part of their regular hazing, they have given you access to a small subset of their historic sales data. Your job is to present some basic predictions for housing values in a small geographic area (Ames, IA) using this historical pricing.&lt;/p&gt;
+&lt;p&gt;First, let’s load the data.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ameslist &amp;lt;- read.table(&amp;quot;https://msudataanalytics.github.io/SSC442/Labs/data/ames.csv&amp;quot;,
+                 header = TRUE,
+                 sep = &amp;quot;,&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;building-a-model&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Building a Model&lt;/h2&gt;
+&lt;p&gt;We’re now ready to start playing with a model. We will start by using the &lt;code&gt;lm()&lt;/code&gt; function to fit a simple linear regression
+model, with &lt;code&gt;SalePrice&lt;/code&gt; as the response and lstat as the predictor.&lt;/p&gt;
+&lt;p&gt;Recall that the basic &lt;code&gt;lm()&lt;/code&gt; syntax is &lt;code&gt;lm(y∼x,data)&lt;/code&gt;, where &lt;code&gt;y&lt;/code&gt; is the &lt;strong&gt;response&lt;/strong&gt;, &lt;code&gt;x&lt;/code&gt; is the &lt;strong&gt;predictor&lt;/strong&gt;, and &lt;code&gt;data&lt;/code&gt; is the data set in which these two variables are kept. Let’s quickly run this with two variables:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;lm.fit = lm(SalePrice ~ GrLivArea)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;This yields:
+&lt;code&gt;Error in eval(expr, envir, enclos) : Object &#34;SalePrice&#34; not found&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;This command causes an error because &lt;code&gt;R&lt;/code&gt; does not know where to find the variables. We can fix this by attaching the data:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;attach(Ames)
+lm.fit = lm(SalePrice ~ GrLivArea)
+# Alternatively...
+lm.fit = lm(SalePrice ~ GrLivArea, data=Ames)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The next line tells &lt;code&gt;R&lt;/code&gt; that the variables are in the object known as &lt;code&gt;Ames&lt;/code&gt;. If you haven’t created this object yet (as in the previous lab) you’ll get an error at this stage. But once we attach &lt;code&gt;Ames&lt;/code&gt;, the first line works fine because &lt;code&gt;R&lt;/code&gt; now recognizes the variables. Alternatively, we could specify this within the &lt;code&gt;lm()&lt;/code&gt; call using &lt;code&gt;data = Ames&lt;/code&gt;. We’ve presented this way because it may be new to you; choose whichever you find most reasonable.&lt;/p&gt;
+&lt;p&gt;If we type &lt;code&gt;lm.fit&lt;/code&gt;, some basic information about the model is output. For more detailed information, we use &lt;code&gt;summary(lm.fit)&lt;/code&gt;. This gives us p-values and standard errors for the coefficients, as well as the &lt;span class=&#34;math inline&#34;&gt;\(R^2\)&lt;/span&gt; statistic and &lt;span class=&#34;math inline&#34;&gt;\(F\)&lt;/span&gt;-statistic for the entire model.&lt;a href=&#34;#fn1&#34; class=&#34;footnote-ref&#34; id=&#34;fnref1&#34;&gt;&lt;sup&gt;1&lt;/sup&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Utilizing these functions hels us see some interesting results. Note that we built (nearly) the simplest possible model:&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[\text{SalePrice} = \beta_0 + \beta_1*(\text{GrLivArea}) + \epsilon.\]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;But even on its own, this model is instructive. It suggest that an increase in overall living area of 1 ft &lt;span class=&#34;math inline&#34;&gt;\(^2\)&lt;/span&gt; is correlated with an expected increase in sales price of $107. (Note that we &lt;strong&gt;cannot&lt;/strong&gt; make causal claims!)&lt;/p&gt;
+&lt;p&gt;Saving the model as we did above is useful because we can explore other pieces of information it stores. Specifically, we can use the &lt;code&gt;names()&lt;/code&gt; function in order to find out what else is stored in &lt;code&gt;lm.fit&lt;/code&gt;. Although we can extract these quan- tities by name—e.g. &lt;code&gt;lm.fit$coefficients&lt;/code&gt;—it is safer to use the extractor functions like &lt;code&gt;coef()&lt;/code&gt; to access them. We can also use a handy tool like &lt;code&gt;plot()&lt;/code&gt; applied directly to &lt;code&gt;lm.fit&lt;/code&gt; to see some interesting data that is automatically stored by the model.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Try it:&lt;/strong&gt; Use &lt;code&gt;plot()&lt;/code&gt; to explore the model above. Do you suspect that some outliers have a large influence on the data? We will explore this point specifically in the future.&lt;/p&gt;
+&lt;p&gt;We can now go crazy adding variables to our model. It’s as simple as appending them to the previous code—though you should be careful executing this, as it will overwrite your previous output:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;lm.fit = lm(SalePrice ~ GrLivArea + LotArea)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;Try it:&lt;/strong&gt; Does controlling for &lt;code&gt;LotArea&lt;/code&gt; change the &lt;em&gt;qualitative&lt;/em&gt; conclusions from the previous regression? What about the &lt;em&gt;quantitative&lt;/em&gt; results? Does the direction of the change in the quantitative results make sense to you?&lt;/p&gt;
+&lt;div class=&#34;fyi&#34;&gt;
+&lt;p&gt;&lt;strong&gt;EXERCISES&lt;/strong&gt;&lt;/p&gt;
+&lt;ol style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;&lt;p&gt;Use the &lt;code&gt;lm()&lt;/code&gt; function in a &lt;strong&gt;simple&lt;/strong&gt; linear regression (e.g., with only one predictor) with &lt;code&gt;SalePrice&lt;/code&gt; as the response to determine the value of a garage.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Use the &lt;code&gt;lm()&lt;/code&gt; function to perform a multiple linear regression with &lt;code&gt;SalePrice&lt;/code&gt; as the response and all other variables from your &lt;code&gt;Ames&lt;/code&gt; data as the predictors. Use the &lt;code&gt;summary()&lt;/code&gt; function to print the results. Comment on the output. For instance:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Is there a relationship between the predictors and the response?&lt;/li&gt;
+&lt;li&gt;Which predictors appear to have a statistically significant relationship to the response? (Hint: look for stars)&lt;/li&gt;
+&lt;li&gt;What does the coefficient for the year variable suggest?&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Use the &lt;code&gt;:&lt;/code&gt; symbols to fit a linear regression model with &lt;em&gt;one&lt;/em&gt; well-chosen interaction effects. Why did you do this?&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Try a few (e.g., two) different transformations of the variables, such as &lt;span class=&#34;math inline&#34;&gt;\(ln(x)\)&lt;/span&gt;, &lt;span class=&#34;math inline&#34;&gt;\(x^2\)&lt;/span&gt;, &lt;span class=&#34;math inline&#34;&gt;\(\sqrt x\)&lt;/span&gt;. Do any of these make sense to include in a model of &lt;code&gt;SalePrice&lt;/code&gt;? Comment on your findings.&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;&lt;strong&gt;(Bonus; very very challenging)&lt;/strong&gt; How might we build a model to estimate the elasticity of demand from this dataset?&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&#34;footnotes&#34;&gt;
+&lt;hr /&gt;
+&lt;ol&gt;
+&lt;li id=&#34;fn1&#34;&gt;&lt;p&gt;When we use the simple regression model with a single input, the &lt;span class=&#34;math inline&#34;&gt;\(F\)&lt;/span&gt;-stat includes the intercept term. Otherwise, it does not. See Lecture 5 for more detail.&lt;a href=&#34;#fnref1&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    
+    <item>
       <title>Correlations and Simple Models</title>
       <link>https://ssc442.netlify.app/assignment/06-assignment/</link>
       <pubDate>Tue, 05 Oct 2021 00:00:00 +0000</pubDate>
@@ -1256,6 +1332,31 @@ p + geom_point(mapping = aes(color = continent)) +
     </item>
     
     <item>
+      <title>Weekly Writing</title>
+      <link>https://ssc442.netlify.app/assignment/weekly3/</link>
+      <pubDate>Tue, 12 Oct 2021 00:00:00 +0000</pubDate>
+      <guid>https://ssc442.netlify.app/assignment/weekly3/</guid>
+      <description>
+&lt;script src=&#34;https://ssc442.netlify.app/rmarkdown-libs/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
+
+&lt;div id=&#34;TOC&#34;&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#weekly-writing-prompt&#34;&gt;Weekly Writing Prompt&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+
+&lt;div id=&#34;weekly-writing-prompt&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Weekly Writing Prompt&lt;/h3&gt;
+&lt;p&gt;This weekly writing is for those who did not attend class.&lt;/p&gt;
+&lt;p&gt;This week’s writing has two parts. First, consider examining political results in various legislative districts in Michigan. Suppose you ran a regression with a politician’s vote share (as a percentage) as the target variable and the percent of various races or ethnicities in the voting district (e.g., white, black, indigenous people, Asian, etc.) as the right hand side variables. Brefily describe, in words, the interpretation of the coefficients. Second, write a short paragraph about any concerns you might have with this empirical approach.&lt;/p&gt;
+&lt;div class=&#34;fyi&#34;&gt;
+&lt;p&gt;As always, you &lt;strong&gt;must&lt;/strong&gt; knit your output to a PDF and submit that to D2L. No word docs, no .Rmd documents. PDFs, please.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    
+    <item>
       <title>Project 1</title>
       <link>https://ssc442.netlify.app/assignment/project1/</link>
       <pubDate>Fri, 08 Oct 2021 00:00:00 +0000</pubDate>
@@ -1391,31 +1492,6 @@ rats_clean %&amp;gt;%
 &lt;li id=&#34;fn1&#34;&gt;&lt;p&gt;You can approach this in a couple different ways—you can write the memo and then include the full figure and code at the end, &lt;a href=&#34;https://rud.is/b/2017/09/18/mapping-fall-foliage-with-sf/&#34;&gt;similar to this blog post&lt;/a&gt;, or you can write the memo in an incremental way, describing the different steps of creating the figure, ultimately arriving at a clean final figure, &lt;a href=&#34;https://rudeboybert.github.io/fivethirtyeight/articles/bechdel.html&#34;&gt;like this blog post&lt;/a&gt;.&lt;a href=&#34;#fnref1&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
 &lt;li id=&#34;fn2&#34;&gt;&lt;p&gt;The three different sources need not be different websites or from different organizations. For example, three different tables from the US Census would be sufficient&lt;a href=&#34;#fnref2&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
 &lt;/ol&gt;
-&lt;/div&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>Weekly Writing</title>
-      <link>https://ssc442.netlify.app/assignment/weekly3/</link>
-      <pubDate>Sun, 26 Sep 2021 00:00:00 +0000</pubDate>
-      <guid>https://ssc442.netlify.app/assignment/weekly3/</guid>
-      <description>
-&lt;script src=&#34;https://ssc442.netlify.app/rmarkdown-libs/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
-
-&lt;div id=&#34;TOC&#34;&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;a href=&#34;#weekly-writing-prompt&#34;&gt;Weekly Writing Prompt&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/div&gt;
-
-&lt;div id=&#34;weekly-writing-prompt&#34; class=&#34;section level3&#34;&gt;
-&lt;h3&gt;Weekly Writing Prompt&lt;/h3&gt;
-&lt;p&gt;This weekly writing is for those who did not attend class.&lt;/p&gt;
-&lt;p&gt;Complete the exercises in the first “Try It” box in this week’s Content. (If you’re having trouble locating that box, the first question begins “One ball will be drawn at random from a box containing: 3 cyan balls, 5 magenta balls, and 7 yellow balls.”)&lt;/p&gt;
-&lt;div class=&#34;fyi&#34;&gt;
-&lt;p&gt;As always, you &lt;strong&gt;must&lt;/strong&gt; knit your output to a PDF and submit that to D2L. No word docs, no .Rmd documents. PDFs, please.&lt;/p&gt;
-&lt;/div&gt;
 &lt;/div&gt;
 </description>
     </item>
