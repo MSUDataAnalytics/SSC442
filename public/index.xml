@@ -36,7 +36,7 @@
 
 &lt;div class=&#34;fyi&#34;&gt;
 &lt;p&gt;&lt;strong&gt;READ THIS CAREFULLY&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;The content below describes both Lab 7 and Lab 8. Lab 7 is Exercise 1; Lab 8 is Exercise 2. Also, you may find some other tasks in the text…&lt;/p&gt;
+&lt;p&gt;The content below describes both Lab 8 and Lab 9. Lab 8 is Exercise 1; Lab 9 is Exercise 2. Also, you may find some other tasks in the text…&lt;/p&gt;
 &lt;p&gt;You must turn in a PDF document of your &lt;code&gt;R Markdown&lt;/code&gt; code. Submit this to D2L by 11:59 PM Eastern Time on Sunday, October 24th for Lab 8; turn in Lab 9 by 11:59 PM Eastern Time on Sunday, October 31st (a very spooky due date!)&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;backstory-and-set-up&#34; class=&#34;section level2&#34;&gt;
@@ -214,7 +214,7 @@ lines(model_complexity, test_rmse, type = &amp;quot;b&amp;quot;, col = &amp;quot
 &lt;p&gt;Specifically, we say that a model is overfitting if there exists a less complex model with lower Test RMSE.&lt;a href=&#34;#fn3&#34; class=&#34;footnote-ref&#34; id=&#34;fnref3&#34;&gt;&lt;sup&gt;3&lt;/sup&gt;&lt;/a&gt; Then a model is underfitting if there exists a more complex model with lower Test RMSE.&lt;/p&gt;
 &lt;div class=&#34;fyi&#34;&gt;
 &lt;p&gt;&lt;strong&gt;EXERCISE 2&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;(AKA Lab 8)&lt;/p&gt;
+&lt;p&gt;(AKA Lab 9)&lt;/p&gt;
 &lt;ol style=&#34;list-style-type: decimal&#34;&gt;
 &lt;li&gt;&lt;p&gt;Make a table exactly like the table above for the 15 models you fit in Exercise 1.&lt;/p&gt;&lt;/li&gt;
 &lt;li&gt;&lt;p&gt;&lt;strong&gt;This question should be the most time-consuming question.&lt;/strong&gt; Using any method you choose and any number of regressors, predict &lt;code&gt;SalePrice&lt;/code&gt;. Calculate the Train and Test RMSE. Your goal is to have a lower Test RMSE than others in the class.&lt;/p&gt;&lt;/li&gt;
@@ -229,7 +229,7 @@ lines(model_complexity, test_rmse, type = &amp;quot;b&amp;quot;, col = &amp;quot
 &lt;hr /&gt;
 &lt;ol&gt;
 &lt;li id=&#34;fn1&#34;&gt;&lt;p&gt;Note that sometimes the terms &lt;em&gt;evaluation set&lt;/em&gt; and &lt;em&gt;test set&lt;/em&gt; are used interchangeably. We will give somewhat specific definitions to these later. For now we will simply use a single test set for a training set.&lt;a href=&#34;#fnref1&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
-&lt;li id=&#34;fn2&#34;&gt;&lt;p&gt;The train RMSE is guaranteed to follow this non-increasing pattern. The same is not true of test RMSE. We often see a nice U-shaped curve. There are theoretical reasons why we should expect this, but that is on average. Because of the randomness of one test-train split, we may not always see this result. Re-perform this analysis with a different seed value and the pattern may not hold. We will discuss why we expect this next chapter. We will discuss how we can help create this U-shape much later. Also, we might intuitively expect train RMSE to be lower than test RMSE. Again, due to the randomness of the split, you may get (un)lucky and this will not be true.&lt;a href=&#34;#fnref2&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li id=&#34;fn2&#34;&gt;&lt;p&gt;The train RMSE is guaranteed to follow this non-increasing pattern. The same is not true of test RMSE. We often see a nice U-shaped curve. There are theoretical reasons why we should expect this, but that is on average. Because of the randomness of one test-train split, we may not always see this result. Re-perform this analysis with a different seed value and the pattern may not hold. We will discuss why we expect this next section. We will discuss how we can help create this U-shape much later. Also, we might intuitively expect train RMSE to be lower than test RMSE. Again, due to the randomness of the split, you may get (un)lucky and this will not be true.&lt;a href=&#34;#fnref2&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
 &lt;li id=&#34;fn3&#34;&gt;&lt;p&gt;The labels of under and overfitting are &lt;em&gt;relative&lt;/em&gt; to the best model we see. Any model more complex with higher Test RMSE is overfitting. Any model less complex with higher Test RMSE is underfitting.&lt;a href=&#34;#fnref3&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
 &lt;/ol&gt;
 &lt;/div&gt;
@@ -11738,12 +11738,12 @@ events &amp;lt;- replicate(B, sample(beads, 1))&lt;/code&gt;&lt;/pre&gt;
 tab&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## events
 ## blue  red 
-## 5946 4054&lt;/code&gt;&lt;/pre&gt;
+## 6040 3960&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;and &lt;code&gt;prop.table&lt;/code&gt; gives us the proportions:&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;prop.table(tab)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## events
-##   blue    red 
-## 0.5946 0.4054&lt;/code&gt;&lt;/pre&gt;
+##  blue   red 
+## 0.604 0.396&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;The numbers above are the estimated probabilities provided by this Monte Carlo simulation. Statistical theory, not covered here, tells us that as &lt;span class=&#34;math inline&#34;&gt;\(B\)&lt;/span&gt; gets larger, the estimates get closer to 3/5=.6 and 2/5=.4.&lt;/p&gt;
 &lt;p&gt;Although this is a simple and not very useful example, we will use Monte Carlo simulations to estimate probabilities in cases in which it is harder to compute the exact ones. Before delving into more complex examples, we use simple ones to demonstrate the computing tools available in R.&lt;/p&gt;
 &lt;div id=&#34;setting-the-random-seed&#34; class=&#34;section level3&#34;&gt;
