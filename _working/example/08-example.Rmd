@@ -1,8 +1,8 @@
 ---
 title: "Nonparametric Regression"
-linktitle: "8: Nonparametric Regression"
-date: "2021-03-18"
-read_date: "2021-03-18"
+linktitle: "10: Nonparametric Regression"
+date: "2021-11-04"
+read_date: "2021-11-04"
 output:
   blogdown::html_page:
     toc: true
@@ -16,10 +16,8 @@ editor_options:
   chunk_output_type: console
 ---
 
-
-
 ## Our data and goal
-We want to use the `wooldridge::wage2` data on wages to generate and tune a non-parametric model of wages using a regression tree. 
+We want to use the `wooldridge::wage2` data on wages to generate and tune a non-parametric model of wages using a regression tree.
 
 ```{r, echo=T, include=F}
 library(wooldridge)
@@ -58,23 +56,23 @@ get_rmse = function(model, data, response) {
 
 
 
-## Breakout #1
-I'm going to assign you to breakout rooms to work in groups of 3-4 on live-coding. One person in the group will need to have Rstudio up, be able to share screen, and have the correct packages loaded (`caret`, `rpart`, and `rpart.plot`, plus `skimr`). Copy the `rmse` and `get_rmse` code into a blank R script (you don't have to use RMarkdown, just use a blank R script and run from there).
+## In-Class Tasks #1
+Today in class, you'll work in groups of 3-4 on live-coding. Your output will be the weekly writing. One person in the group will need to have Rstudio up, be able to share screen, and have the correct packages loaded (`caret`, `rpart`, and `rpart.plot`, plus `skimr`). Copy the `rmse` and `get_rmse` code into a blank R script (you don't have to use RMarkdown, just use a blank R script and run from there).
 
-For the first breakout, all I want you to do is the following:
+For the first task, all I want you to do is the following:
 
-- Estimate a default regression tree on `wage_clean` using the default parameters. 
-- Use `rpart.plot` to vizualize your regression tree, and *talk through the interpretation* with each other. 
+- Estimate a default regression tree on `wage_clean` using the default parameters.
+- Use `rpart.plot` to vizualize your regression tree, and *talk through the interpretation* with each other.
 - Calculate the RMSE for your regression tree.
 
-I'll bring you back in about 5 minutes. Remember, you can use `?wage2` to see the variable names. Make sure you know what variables are showing up in the plot and explaining `wage` in your model. You may find something odd at first and may need to drop more variables...
+I'll cue you back in about 5 minutes. Remember, you can use `?wage2` to see the variable names. Make sure you know what variables are showing up in the plot and explaining `wage` in your model. You may find something odd at first and may need to drop more variables...
 
 ```{r, echo=F, include=F, eval=T}
 wage_clean$lwage = NULL
 ```
 **5 minutes**
 
-### Breakout #1 discussion
+### In-Class Task #1 Discussion
 Let's choose a group to share their plot and discuss the results.
 
 
@@ -114,7 +112,7 @@ lapply(myList, length) # the length() function with the first entry being the li
 We get back a list of equal length but each (still-named) container is now the length of the original list's contents.
 
 ### Loops
-R has a very useful looping function that takes the form:
+`R` has a very useful looping function that takes the form:
 
 ```{r}
 for(i in c('first','second','third')){
@@ -122,7 +120,7 @@ print(i)
 }
 ```
 
-Here, R is repeating the thing in the loop (`print(i)`) with a different value for `i` each time. R repeats only what is *inside the curly-brackets*, then when it reaches the close-curly-bracket, it goes back to the top, changes `i` to the next element, and repeats.
+Here, `R` is repeating the thing in the loop (`print(i)`) with a different value for `i` each time. `R` repeats only what is *inside the curly-brackets*, then when it reaches the close-curly-bracket, it goes back to the top, changes `i` to the next element, and repeats.
 
 We can use this to train our models. First, we clear our list object `myList` by setting it equal to an empty list. Then, we loop over some regression tree tuning parameters. First, we have to figure out how to use the loop to set a *unique* name for each list container. To do this, we'll use `paste0('Tuning',i)` which will result in a character string of `Tuning0` when `i=0`, `Tuning0.01` when `i=0.01`, etc.
 
@@ -141,12 +139,12 @@ rpart.plot(myList[['Tuning0.01']])
 ```
 
 
-## Breakout #2
-Let's send you back to your breakout rooms. Using the loop method, generate 5 regression trees to explain `wage` in `wage_clean`. You can iterate through values of `cp`, the complexity parameter, or `minsplit`, the minimum # of points that have to be in each split.
+## In-Class Task #2
+Let's send you back to your groups. Using the loop method, generate 5 regression trees to explain `wage` in `wage_clean`. You can iterate through values of `cp`, the complexity parameter, or `minsplit`, the minimum # of points that have to be in each split.
 
 **10 minutes**
 
-### Breakout #2 discussion
+### In-Class Task #2 Discussion
 
 ## Getting RMSE from the list
 Finally, we want to move towards getting the RMSE for each of these trees. We've done this before using `lapply`. Let's introduce a neat coding shortcut, the `anonymous function`:
@@ -166,8 +164,8 @@ This is an "anonymous function", or a function created on the fly. Here's how it
 - The first argument is the list you want to do something to
 - The second argument would usually be the function you want to apply, like `get_rmse`
 - Here, we're going to ask R to *temporarily* create a function that takes one argument, `x`.
-- `x` is going to be each list element in `myList`. 
-- Think of it as a loop: 
+- `x` is going to be each list element in `myList`.
+- Think of it as a loop:
   - Take the first element of `myList` and refer to it as `x`. Run the function.
   - Then it'll take the second element of `myList` and refer to it as `x` and run the function.
   - Repeat until all elements of `x` have been used.
@@ -186,7 +184,7 @@ x = myList[[3]]
 myList[[3]] = get_rmse(x, wage_clean, 'wage')
 ````
 
-You can refer to `myList` by name: 
+You can refer to `myList` by name:
 - `myList[['Tuning0.01']]`
 
 Or you can refer to `myList` by the index:
@@ -194,8 +192,8 @@ Or you can refer to `myList` by the index:
 
 Just like you can refer to `data.frame` columns by name or by index.
 
-## Breakout #3 (if time)
-Let's send you to the breakout rooms one more time, and use `lapply` to get a list of your RMSE's (one for each of your models). Note that we are not yet splitting into `test` and `train` (which you **will** need to do on your lab assignment). 
+## In-Class Task #3
+Let's send you to work one more time, and use `lapply` to get a list of your RMSE's (one for each of your models). Note that we are not yet splitting into `test` and `train` (which you **will** need to do on your lab assignment).
 
 Once you have your list, **create the plot of RMSEs** similar to the one we looked at in Content this week. Note: you can use `unlist(myRMSE)` to get a numeric vector of the RMSE's (as long as all of the elements in `myRMSE` are numeric). Then, it's a matter of plotting either with base `plot` or with `ggplot` (if you use `ggplot` you'll have to `tidy` the RMSE by adding the index column or naming the x-axis).
 

@@ -13,6 +13,43 @@
     </image>
     
     <item>
+      <title>Model Evaluation</title>
+      <link>https://ssc442.netlify.app/assignment/10-assignment/</link>
+      <pubDate>Tue, 02 Nov 2021 00:00:00 +0000</pubDate>
+      <guid>https://ssc442.netlify.app/assignment/10-assignment/</guid>
+      <description>
+&lt;script src=&#34;https://ssc442.netlify.app/rmarkdown-libs/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
+
+&lt;div id=&#34;TOC&#34;&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#backstory-and-set-up&#34;&gt;Backstory and Set Up&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+
+&lt;div class=&#34;fyi&#34;&gt;
+&lt;p&gt;You must turn in a PDF document of your &lt;code&gt;R Markdown&lt;/code&gt; knitted document. Submit this to D2L by 11:59 PM Eastern Time on Monday, March 29th.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;backstory-and-set-up&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Backstory and Set Up&lt;/h2&gt;
+&lt;p&gt;You work for a bank. This bank is trying to predict defaults on loans (a relatively uncommon occurence, but one that costs the bank a great deal of money when it does happen.) They’ve given you a dataset on defaults (encoded as the variable &lt;code&gt;y&lt;/code&gt;). You’re going to try to predict this.&lt;/p&gt;
+&lt;p&gt;This is some new data. The snippet below loads it.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;bank &amp;lt;- read.table(&amp;quot;https://raw.githubusercontent.com/ajkirkpatrick/FS20/Spring2021/classdata/bank.csv&amp;quot;,
+                 header = TRUE,
+                 sep = &amp;quot;,&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;There’s not going to be a whole lot of wind-up here. You should be well-versed in doing these sorts of things by now (if not, look back at the previous lab for sample code).&lt;/p&gt;
+&lt;div class=&#34;fyi&#34;&gt;
+&lt;p&gt;&lt;strong&gt;EXERCISE 1&lt;/strong&gt;&lt;/p&gt;
+&lt;ol style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;&lt;p&gt;Split the data into an 80/20 train vs. test split. Make sure you explicitly set the seed for replicability, but do not share your seed with others in the class. (We may compare some results across people.)&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Run a series of KNN models with &lt;span class=&#34;math inline&#34;&gt;\(k\)&lt;/span&gt; ranging from 2 to 100. (You need not do every &lt;span class=&#34;math inline&#34;&gt;\(k\)&lt;/span&gt; between 2 and 100, but you can easily write a short function to do this; see the Content tab).&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Create a chart plotting the model complexity as the &lt;span class=&#34;math inline&#34;&gt;\(x\)&lt;/span&gt;-axis variable and RMSE as the &lt;span class=&#34;math inline&#34;&gt;\(y\)&lt;/span&gt;-axis variable for &lt;strong&gt;both&lt;/strong&gt; the training and test data. What do you think is the optimal &lt;span class=&#34;math inline&#34;&gt;\(k\)&lt;/span&gt;?&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    
+    <item>
       <title>Advanced Model Building</title>
       <link>https://ssc442.netlify.app/assignment/08-assignment/</link>
       <pubDate>Tue, 19 Oct 2021 00:00:00 +0000</pubDate>
@@ -225,7 +262,7 @@ lines(model_complexity, test_rmse, type = &amp;quot;b&amp;quot;, col = &amp;quot
 &lt;p&gt;A final note on the analysis performed here; we paid no attention whatsoever to the “assumptions” of a linear model. We only sought a model that &lt;strong&gt;predicted&lt;/strong&gt; well, and paid no attention to a model for &lt;strong&gt;explaination&lt;/strong&gt;. Hypothesis testing did not play a role in deciding the model, only prediction accuracy. Collinearity? We don’t care. Assumptions? Still don’t care. Diagnostics? Never heard of them. (These statements are a little over the top, and not completely true, but just to drive home the point that we only care about prediction. Often we latch onto methods that we have seen before, even when they are not needed.)&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;div class=&#34;footnotes&#34;&gt;
+&lt;div class=&#34;footnotes footnotes-end-of-document&#34;&gt;
 &lt;hr /&gt;
 &lt;ol&gt;
 &lt;li id=&#34;fn1&#34;&gt;&lt;p&gt;Note that sometimes the terms &lt;em&gt;evaluation set&lt;/em&gt; and &lt;em&gt;test set&lt;/em&gt; are used interchangeably. We will give somewhat specific definitions to these later. For now we will simply use a single test set for a training set.&lt;a href=&#34;#fnref1&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
@@ -303,7 +340,7 @@ lm.fit = lm(SalePrice ~ GrLivArea, data=Ames)&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;strong&gt;(Bonus; very very challenging)&lt;/strong&gt; How might we build a model to estimate the elasticity of demand from this dataset?&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;div class=&#34;footnotes&#34;&gt;
+&lt;div class=&#34;footnotes footnotes-end-of-document&#34;&gt;
 &lt;hr /&gt;
 &lt;ol&gt;
 &lt;li id=&#34;fn1&#34;&gt;&lt;p&gt;When we use the simple regression model with a single input, the &lt;span class=&#34;math inline&#34;&gt;\(F\)&lt;/span&gt;-stat includes the intercept term. Otherwise, it does not. See Lecture 5 for more detail.&lt;a href=&#34;#fnref1&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
@@ -443,7 +480,7 @@ unique(ameslist$GarageOutside)
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;div class=&#34;footnotes&#34;&gt;
+&lt;div class=&#34;footnotes footnotes-end-of-document&#34;&gt;
 &lt;hr /&gt;
 &lt;ol&gt;
 &lt;li id=&#34;fn1&#34;&gt;&lt;p&gt;Of course, you could find out the defaults of the function by simply using the handy &lt;code&gt;?&lt;/code&gt; command. Don’t forget about this tool!&lt;a href=&#34;#fnref1&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
@@ -771,7 +808,7 @@ Y_{i,j} = d + b_i + \varepsilon_{i,j}
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;div class=&#34;footnotes&#34;&gt;
+&lt;div class=&#34;footnotes footnotes-end-of-document&#34;&gt;
 &lt;hr /&gt;
 &lt;ol&gt;
 &lt;li id=&#34;fn1&#34;&gt;&lt;p&gt;&lt;a href=&#34;https://www.youtube.com/watch?v=TbKkjm-gheY&#34; class=&#34;uri&#34;&gt;https://www.youtube.com/watch?v=TbKkjm-gheY&lt;/a&gt;&lt;a href=&#34;#fnref1&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
@@ -1341,7 +1378,7 @@ my_func &amp;lt;- function(y){
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;div class=&#34;footnotes&#34;&gt;
+&lt;div class=&#34;footnotes footnotes-end-of-document&#34;&gt;
 &lt;hr /&gt;
 &lt;ol&gt;
 &lt;li id=&#34;fn1&#34;&gt;&lt;p&gt;&lt;a href=&#34;http://r-pkgs.had.co.nz/namespace.html&#34; class=&#34;uri&#34;&gt;http://r-pkgs.had.co.nz/namespace.html&lt;/a&gt;&lt;a href=&#34;#fnref1&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
@@ -1777,7 +1814,7 @@ myData = WDI(country = refugees_clean$iso2, indicator = &amp;#39;SP.POP.TOTL&amp
 ## 6 Bhutan              3 BT     2006      657404&lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;div class=&#34;footnotes&#34;&gt;
+&lt;div class=&#34;footnotes footnotes-end-of-document&#34;&gt;
 &lt;hr /&gt;
 &lt;ol&gt;
 &lt;li id=&#34;fn1&#34;&gt;&lt;p&gt;For instance, “North Korea”, “Korea, North”, “DPRK”, “Korea, Democratic People’s Republic of”, and “Democratic People’s Republic of Korea”, and “Korea (DPRK)” are all perfectly normal versions of the country’s name and you’ll find them all in the wild.&lt;a href=&#34;#fnref1&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
@@ -1942,7 +1979,7 @@ rats_clean %&amp;gt;%
 &lt;p&gt;&lt;strong&gt;Part 2&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;Each piece of data (and description) is worth 7 points. (21 points total)&lt;/p&gt;
 &lt;/div&gt;
-&lt;div class=&#34;footnotes&#34;&gt;
+&lt;div class=&#34;footnotes footnotes-end-of-document&#34;&gt;
 &lt;hr /&gt;
 &lt;ol&gt;
 &lt;li id=&#34;fn1&#34;&gt;&lt;p&gt;You can approach this in a couple different ways—you can write the memo and then include the full figure and code at the end, &lt;a href=&#34;https://rud.is/b/2017/09/18/mapping-fall-foliage-with-sf/&#34;&gt;similar to this blog post&lt;/a&gt;, or you can write the memo in an incremental way, describing the different steps of creating the figure, ultimately arriving at a clean final figure, &lt;a href=&#34;https://rudeboybert.github.io/fivethirtyeight/articles/bechdel.html&#34;&gt;like this blog post&lt;/a&gt;.&lt;a href=&#34;#fnref1&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
@@ -2066,7 +2103,7 @@ rats_clean %&amp;gt;%
 &lt;p&gt;What caveats should we consider? Do you believe this is a truly causal relationship? Why does any of this matter to the decision-maker? (&lt;strong&gt;≈75 words&lt;/strong&gt;)&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;div class=&#34;footnotes&#34;&gt;
+&lt;div class=&#34;footnotes footnotes-end-of-document&#34;&gt;
 &lt;hr /&gt;
 &lt;ol&gt;
 &lt;li id=&#34;fn1&#34;&gt;&lt;p&gt;Note that &lt;strong&gt;existing&lt;/strong&gt; is taken to mean that you are not permitted to collect data by interacting with other people. That is not to say that you cannot gather data that previously has not been gathered into a single place—this sort of exercise is encouraged. But you cannot stand with a clipboard outside a store and count visitors (for instance).&lt;a href=&#34;#fnref1&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;

@@ -1,24 +1,200 @@
 ---
-title: "Illustrating Classification"
-linktitle: "11: Data Wrangling"
+title: "Nonparametric Regression"
+linktitle: "10: Nonparametric Regression"
+date: "2021-11-04"
+read_date: "2021-11-04"
 output:
   blogdown::html_page:
     toc: true
 menu:
   example:
     parent: Examples
-    weight: 2
+    weight: 1
 type: docs
 weight: 1
 editor_options:
   chunk_output_type: console
 ---
 
-:::fyi
+## Our data and goal
+We want to use the `wooldridge::wage2` data on wages to generate and tune a non-parametric model of wages using a regression tree.
 
-Today's example will come from the "Content" tab.
+```{r, echo=T, include=F}
+library(wooldridge)
+library(rpart)
+library(rpart.plot)
+library(skimr)
 
-We'll use the `WDI` function from Project 2 and some World Bank data indicators.
+wage2 = wooldridge::wage2
+
+```
+
+We've learned that our RMSE calculations have a hard time with `NA`s in the data. So let's use the `skim` output to drop variables with `NA` (see `n_missing`). Of course, there are other things we can do (impute the `NA`s, or make dummies for them), but for now, it's easiest to drop.
+
+```{r, echo=T, include=T}
+wage_clean = wage2 %>%
+  dplyr::select(-brthord, -meduc, -feduc)
+```
+
+Once cleaned, we should be able to use `rpart(wage ~ ., data = wage_clean)` and not have any `NA`s in our prediction.
+
+### Some functions
+These functions are taken from our previous Content and Examples:
+
+```{r}
+rmse = function(actual, predicted) {
+  sqrt(mean((actual - predicted) ^ 2))
+}
+```
+
+```{r}
+get_rmse = function(model, data, response) {
+  rmse(actual = subset(data, select = response, drop = TRUE),
+       predicted = predict(model, data))
+}
+```
 
 
-:::
+
+## In-Class Tasks #1
+Today in class, you'll work in groups of 3-4 on live-coding. Your output will be the weekly writing. One person in the group will need to have Rstudio up, be able to share screen, and have the correct packages loaded (`caret`, `rpart`, and `rpart.plot`, plus `skimr`). Copy the `rmse` and `get_rmse` code into a blank R script (you don't have to use RMarkdown, just use a blank R script and run from there).
+
+For the first task, all I want you to do is the following:
+
+- Estimate a default regression tree on `wage_clean` using the default parameters.
+- Use `rpart.plot` to vizualize your regression tree, and *talk through the interpretation* with each other.
+- Calculate the RMSE for your regression tree.
+
+I'll cue you back in about 5 minutes. Remember, you can use `?wage2` to see the variable names. Make sure you know what variables are showing up in the plot and explaining `wage` in your model. You may find something odd at first and may need to drop more variables...
+
+```{r, echo=F, include=F, eval=T}
+wage_clean$lwage = NULL
+```
+**5 minutes**
+
+### In-Class Task #1 Discussion
+Let's choose a group to share their plot and discuss the results.
+
+
+## Automating models
+Let's talk about a little code shortcut that helps iterate through your model selection.
+
+First, before, we used `list()` to store all of our models. This is because `list()` can "hold" anything at all, unlike a `matrix`, which is only numeric, or a `data.frame` which needs all rows in a column to be the same data type. `list()` is also recursive, so each element in a list can be a list. Of lists. Of lists!
+
+Lists are also really easy to add to iteratively. We can initiate an empty list using `myList <- list()`, then we can add things to it. Note that we use the double `[` to index:
+
+```{r, echo = T}
+myList <- list()
+myList[['first']] = 'This is the first thing on my list'
+print(myList)
+```
+
+Lists let you name the "containers" (much like you can name colums in a `data.frame`). Our first one is called "first". We can add more later:
+
+```{r, echo = T}
+myList[['second']] = c(1,2,3)
+print(myList)
+```
+
+And still more:
+
+```{r, echo = T}
+myList[['third']] = data.frame(a = c(1,2,3), b = c('Albert','Alex','Alice'))
+print(myList)
+```
+
+Now we have a `data.frame` in there! We can use `lapply` to do something to every element in the list:
+
+```{r, echo=T}
+lapply(myList, length) # the length() function with the first entry being the list element
+```
+
+We get back a list of equal length but each (still-named) container is now the length of the original list's contents.
+
+### Loops
+`R` has a very useful looping function that takes the form:
+
+```{r}
+for(i in c('first','second','third')){
+print(i)
+}
+```
+
+Here, `R` is repeating the thing in the loop (`print(i)`) with a different value for `i` each time. `R` repeats only what is *inside the curly-brackets*, then when it reaches the close-curly-bracket, it goes back to the top, changes `i` to the next element, and repeats.
+
+We can use this to train our models. First, we clear our list object `myList` by setting it equal to an empty list. Then, we loop over some regression tree tuning parameters. First, we have to figure out how to use the loop to set a *unique* name for each list container. To do this, we'll use `paste0('Tuning',i)` which will result in a character string of `Tuning0` when `i=0`, `Tuning0.01` when `i=0.01`, etc.
+
+```{r}
+myList <- list()   # resets the list. Otherwise, you'll just be adding to your old list!
+
+for(i in c(0, 0.01, 0.02)){
+  myList[[paste0('Tuning',i)]] = rpart(wage ~ ., data = wage_clean, cp = i)
+}
+```
+
+If you use `names(myList)` you'll see the result of our `paste0` naming. If you want to see the plotted results, you can use:
+
+```{r}
+rpart.plot(myList[['Tuning0.01']])
+```
+
+
+## In-Class Task #2
+Let's send you back to your groups. Using the loop method, generate 5 regression trees to explain `wage` in `wage_clean`. You can iterate through values of `cp`, the complexity parameter, or `minsplit`, the minimum # of points that have to be in each split.
+
+**10 minutes**
+
+### In-Class Task #2 Discussion
+
+## Getting RMSE from the list
+Finally, we want to move towards getting the RMSE for each of these trees. We've done this before using `lapply`. Let's introduce a neat coding shortcut, the `anonymous function`:
+
+```{r}
+myRMSE <- lapply(myList, function(x){
+                  get_rmse(x, wage_clean, 'wage')
+                  } )
+
+print(myRMSE)
+```
+
+Well, it gets us the right answer, but whaaaaaat is going on? Curly brackets? `x`?
+
+This is an "anonymous function", or a function created on the fly. Here's how it works in `lapply`:
+
+- The first argument is the list you want to do something to
+- The second argument would usually be the function you want to apply, like `get_rmse`
+- Here, we're going to ask R to *temporarily* create a function that takes one argument, `x`.
+- `x` is going to be each list element in `myList`.
+- Think of it as a loop:
+  - Take the first element of `myList` and refer to it as `x`. Run the function.
+  - Then it'll take the second element of `myList` and refer to it as `x` and run the function.
+  - Repeat until all elements of `x` have been used.
+- Once the anonymous function has been applied to `x`, the result is passed back and saved as the new element of the list output, always in the same position from where the `x` was taken.
+
+So you can think of it like this:
+
+````
+x = myList[[1]]
+myList[[1]] = get_rmse(x, wage_clean, 'wage')
+
+x = myList[[2]]
+myList[[2]] = get_rmse(x, wage_clean, 'wage')
+
+x = myList[[3]]
+myList[[3]] = get_rmse(x, wage_clean, 'wage')
+````
+
+You can refer to `myList` by name:
+- `myList[['Tuning0.01']]`
+
+Or you can refer to `myList` by the index:
+- `myList[[2]]`
+
+Just like you can refer to `data.frame` columns by name or by index.
+
+## In-Class Task #3
+Let's send you to work one more time, and use `lapply` to get a list of your RMSE's (one for each of your models). Note that we are not yet splitting into `test` and `train` (which you **will** need to do on your lab assignment).
+
+Once you have your list, **create the plot of RMSEs** similar to the one we looked at in Content this week. Note: you can use `unlist(myRMSE)` to get a numeric vector of the RMSE's (as long as all of the elements in `myRMSE` are numeric). Then, it's a matter of plotting either with base `plot` or with `ggplot` (if you use `ggplot` you'll have to `tidy` the RMSE by adding the index column or naming the x-axis).
+
+**Remaining time**
