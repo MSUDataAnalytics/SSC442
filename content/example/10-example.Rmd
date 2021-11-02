@@ -1,8 +1,8 @@
 ---
 title: "Nonparametric Regression"
-linktitle: "8: Nonparametric Regression"
-date: "2021-03-18"
-read_date: "2021-03-18"
+linktitle: "10: Nonparametric Regression"
+date: "2021-11-04"
+read_date: "2021-11-04"
 output:
   blogdown::html_page:
     toc: true
@@ -19,7 +19,7 @@ editor_options:
 
 
 ## Our data and goal
-We want to use the `wooldridge::wage2` data on wages to generate and tune a non-parametric model of wages using a regression tree. 
+We want to use the `wooldridge::wage2` data on wages to generate and tune a non-parametric model of wages using a regression tree.
 
 ```{r, echo=T, include=F}
 library(wooldridge)
@@ -63,8 +63,8 @@ I'm going to assign you to breakout rooms to work in groups of 3-4 on live-codin
 
 For the first breakout, all I want you to do is the following:
 
-- Estimate a default regression tree on `wage_clean` using the default parameters. 
-- Use `rpart.plot` to vizualize your regression tree, and *talk through the interpretation* with each other. 
+- Estimate a default regression tree on `wage_clean` using the default parameters.
+- Use `rpart.plot` to vizualize your regression tree, and *talk through the interpretation* with each other.
 - Calculate the RMSE for your regression tree.
 
 I'll bring you back in about 5 minutes. Remember, you can use `?wage2` to see the variable names. Make sure you know what variables are showing up in the plot and explaining `wage` in your model. You may find something odd at first and may need to drop more variables...
@@ -166,8 +166,8 @@ This is an "anonymous function", or a function created on the fly. Here's how it
 - The first argument is the list you want to do something to
 - The second argument would usually be the function you want to apply, like `get_rmse`
 - Here, we're going to ask R to *temporarily* create a function that takes one argument, `x`.
-- `x` is going to be each list element in `myList`. 
-- Think of it as a loop: 
+- `x` is going to be each list element in `myList`.
+- Think of it as a loop:
   - Take the first element of `myList` and refer to it as `x`. Run the function.
   - Then it'll take the second element of `myList` and refer to it as `x` and run the function.
   - Repeat until all elements of `x` have been used.
@@ -186,7 +186,7 @@ x = myList[[3]]
 myList[[3]] = get_rmse(x, wage_clean, 'wage')
 ````
 
-You can refer to `myList` by name: 
+You can refer to `myList` by name:
 - `myList[['Tuning0.01']]`
 
 Or you can refer to `myList` by the index:
@@ -195,7 +195,7 @@ Or you can refer to `myList` by the index:
 Just like you can refer to `data.frame` columns by name or by index.
 
 ## Breakout #3 (if time)
-Let's send you to the breakout rooms one more time, and use `lapply` to get a list of your RMSE's (one for each of your models). Note that we are not yet splitting into `test` and `train` (which you **will** need to do on your lab assignment). 
+Let's send you to the breakout rooms one more time, and use `lapply` to get a list of your RMSE's (one for each of your models). Note that we are not yet splitting into `test` and `train` (which you **will** need to do on your lab assignment).
 
 Once you have your list, **create the plot of RMSEs** similar to the one we looked at in Content this week. Note: you can use `unlist(myRMSE)` to get a numeric vector of the RMSE's (as long as all of the elements in `myRMSE` are numeric). Then, it's a matter of plotting either with base `plot` or with `ggplot` (if you use `ggplot` you'll have to `tidy` the RMSE by adding the index column or naming the x-axis).
 
