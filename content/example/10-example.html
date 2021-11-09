@@ -24,20 +24,20 @@ editor_options:
 <ul>
 <li><a href="#some-functions">Some functions</a></li>
 </ul></li>
-<li><a href="#breakout-1">Breakout #1</a>
+<li><a href="#in-class-tasks-1">In-Class Tasks #1</a>
 <ul>
-<li><a href="#breakout-1-discussion">Breakout #1 discussion</a></li>
+<li><a href="#in-class-task-1-discussion">In-Class Task #1 Discussion</a></li>
 </ul></li>
 <li><a href="#automating-models">Automating models</a>
 <ul>
 <li><a href="#loops">Loops</a></li>
 </ul></li>
-<li><a href="#breakout-2">Breakout #2</a>
+<li><a href="#in-class-task-2">In-Class Task #2</a>
 <ul>
-<li><a href="#breakout-2-discussion">Breakout #2 discussion</a></li>
+<li><a href="#in-class-task-2-discussion">In-Class Task #2 Discussion</a></li>
 </ul></li>
 <li><a href="#getting-rmse-from-the-list">Getting RMSE from the list</a></li>
-<li><a href="#breakout-3-if-time">Breakout #3 (if time)</a></li>
+<li><a href="#in-class-task-3">In-Class Task #3</a></li>
 </ul>
 </div>
 
@@ -60,19 +60,19 @@ editor_options:
 }</code></pre>
 </div>
 </div>
-<div id="breakout-1" class="section level2">
-<h2>Breakout #1</h2>
-<p>I’m going to assign you to breakout rooms to work in groups of 3-4 on live-coding. One person in the group will need to have Rstudio up, be able to share screen, and have the correct packages loaded (<code>caret</code>, <code>rpart</code>, and <code>rpart.plot</code>, plus <code>skimr</code>). Copy the <code>rmse</code> and <code>get_rmse</code> code into a blank R script (you don’t have to use RMarkdown, just use a blank R script and run from there).</p>
-<p>For the first breakout, all I want you to do is the following:</p>
+<div id="in-class-tasks-1" class="section level2">
+<h2>In-Class Tasks #1</h2>
+<p>Today in class, you’ll work in groups of 3-4 on live-coding. Your output will be the weekly writing. One person in the group will need to have Rstudio up, be able to share screen, and have the correct packages loaded (<code>caret</code>, <code>rpart</code>, and <code>rpart.plot</code>, plus <code>skimr</code>). Copy the <code>rmse</code> and <code>get_rmse</code> code into a blank R script (you don’t have to use RMarkdown, just use a blank R script and run from there).</p>
+<p>For the first task, all I want you to do is the following:</p>
 <ul>
 <li>Estimate a default regression tree on <code>wage_clean</code> using the default parameters.</li>
 <li>Use <code>rpart.plot</code> to vizualize your regression tree, and <em>talk through the interpretation</em> with each other.</li>
 <li>Calculate the RMSE for your regression tree.</li>
 </ul>
-<p>I’ll bring you back in about 5 minutes. Remember, you can use <code>?wage2</code> to see the variable names. Make sure you know what variables are showing up in the plot and explaining <code>wage</code> in your model. You may find something odd at first and may need to drop more variables…</p>
+<p>I’ll cue you back in about 5 minutes. Remember, you can use <code>?wage2</code> to see the variable names. Make sure you know what variables are showing up in the plot and explaining <code>wage</code> in your model. You may find something odd at first and may need to drop more variables…</p>
 <p><strong>5 minutes</strong></p>
-<div id="breakout-1-discussion" class="section level3">
-<h3>Breakout #1 discussion</h3>
+<div id="in-class-task-1-discussion" class="section level3">
+<h3>In-Class Task #1 Discussion</h3>
 <p>Let’s choose a group to share their plot and discuss the results.</p>
 </div>
 </div>
@@ -121,14 +121,14 @@ print(myList)</code></pre>
 <p>We get back a list of equal length but each (still-named) container is now the length of the original list’s contents.</p>
 <div id="loops" class="section level3">
 <h3>Loops</h3>
-<p>R has a very useful looping function that takes the form:</p>
+<p><code>R</code> has a very useful looping function that takes the form:</p>
 <pre class="r"><code>for(i in c(&#39;first&#39;,&#39;second&#39;,&#39;third&#39;)){
 print(i)
 }</code></pre>
 <pre><code>## [1] &quot;first&quot;
 ## [1] &quot;second&quot;
 ## [1] &quot;third&quot;</code></pre>
-<p>Here, R is repeating the thing in the loop (<code>print(i)</code>) with a different value for <code>i</code> each time. R repeats only what is <em>inside the curly-brackets</em>, then when it reaches the close-curly-bracket, it goes back to the top, changes <code>i</code> to the next element, and repeats.</p>
+<p>Here, <code>R</code> is repeating the thing in the loop (<code>print(i)</code>) with a different value for <code>i</code> each time. <code>R</code> repeats only what is <em>inside the curly-brackets</em>, then when it reaches the close-curly-bracket, it goes back to the top, changes <code>i</code> to the next element, and repeats.</p>
 <p>We can use this to train our models. First, we clear our list object <code>myList</code> by setting it equal to an empty list. Then, we loop over some regression tree tuning parameters. First, we have to figure out how to use the loop to set a <em>unique</em> name for each list container. To do this, we’ll use <code>paste0('Tuning',i)</code> which will result in a character string of <code>Tuning0</code> when <code>i=0</code>, <code>Tuning0.01</code> when <code>i=0.01</code>, etc.</p>
 <pre class="r"><code>myList &lt;- list()   # resets the list. Otherwise, you&#39;ll just be adding to your old list!
 
@@ -140,12 +140,12 @@ for(i in c(0, 0.01, 0.02)){
 <p><img src="/example/10-example_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
 </div>
 </div>
-<div id="breakout-2" class="section level2">
-<h2>Breakout #2</h2>
-<p>Let’s send you back to your breakout rooms. Using the loop method, generate 5 regression trees to explain <code>wage</code> in <code>wage_clean</code>. You can iterate through values of <code>cp</code>, the complexity parameter, or <code>minsplit</code>, the minimum # of points that have to be in each split.</p>
+<div id="in-class-task-2" class="section level2">
+<h2>In-Class Task #2</h2>
+<p>Let’s send you back to your groups. Using the loop method, generate 5 regression trees to explain <code>wage</code> in <code>wage_clean</code>. You can iterate through values of <code>cp</code>, the complexity parameter, or <code>minsplit</code>, the minimum # of points that have to be in each split.</p>
 <p><strong>10 minutes</strong></p>
-<div id="breakout-2-discussion" class="section level3">
-<h3>Breakout #2 discussion</h3>
+<div id="in-class-task-2-discussion" class="section level3">
+<h3>In-Class Task #2 Discussion</h3>
 </div>
 </div>
 <div id="getting-rmse-from-the-list" class="section level2">
@@ -194,9 +194,9 @@ myList[[3]] = get_rmse(x, wage_clean, &#39;wage&#39;)</code></pre>
 - <code>myList[[2]]</code></p>
 <p>Just like you can refer to <code>data.frame</code> columns by name or by index.</p>
 </div>
-<div id="breakout-3-if-time" class="section level2">
-<h2>Breakout #3 (if time)</h2>
-<p>Let’s send you to the breakout rooms one more time, and use <code>lapply</code> to get a list of your RMSE’s (one for each of your models). Note that we are not yet splitting into <code>test</code> and <code>train</code> (which you <strong>will</strong> need to do on your lab assignment).</p>
+<div id="in-class-task-3" class="section level2">
+<h2>In-Class Task #3</h2>
+<p>Let’s send you to work one more time, and use <code>lapply</code> to get a list of your RMSE’s (one for each of your models). Note that we are not yet splitting into <code>test</code> and <code>train</code> (which you <strong>will</strong> need to do on your lab assignment).</p>
 <p>Once you have your list, <strong>create the plot of RMSEs</strong> similar to the one we looked at in Content this week. Note: you can use <code>unlist(myRMSE)</code> to get a numeric vector of the RMSE’s (as long as all of the elements in <code>myRMSE</code> are numeric). Then, it’s a matter of plotting either with base <code>plot</code> or with <code>ggplot</code> (if you use <code>ggplot</code> you’ll have to <code>tidy</code> the RMSE by adding the index column or naming the x-axis).</p>
 <p><strong>Remaining time</strong></p>
 </div>

@@ -1,0 +1,702 @@
+---
+title: "Classification"
+linktitle: "11: Classification"
+date: "2021-11-09"
+read_date: "2021-11-09"
+lastmod: "2021-11-09"
+draft: false
+publishdate: "2021-01-15"
+menu:
+  content:
+    parent: Course content
+    weight: 2
+type: docs
+output:
+  blogdown::html_page:
+    toc: true
+---
+
+<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+
+<div id="TOC">
+<ul>
+<li><a href="#required-reading">Required Reading</a>
+<ul>
+<li><a href="#guiding-questions">Guiding Questions</a></li>
+</ul></li>
+<li><a href="#classification-overview">Overview</a>
+<ul>
+<li><a href="#visualization-for-classification">Visualization for Classification</a></li>
+<li><a href="#a-simple-classifier">A Simple Classifier</a></li>
+<li><a href="#metrics-for-classification">Metrics for Classification</a></li>
+</ul></li>
+<li><a href="#logistic-regression">Logistic Regression</a>
+<ul>
+<li><a href="#linear-regression-and-binary-responses">Linear Regression and Binary Responses</a></li>
+<li><a href="#bayes-classifier">Bayes Classifier</a></li>
+<li><a href="#logistic-regression-with-glm">Logistic Regression with <code>glm()</code></a></li>
+<li><a href="#roc-curves">ROC Curves</a></li>
+<li><a href="#multinomial-logistic-regression">Multinomial Logistic Regression</a></li>
+</ul></li>
+</ul>
+</div>
+
+<div id="required-reading" class="section level2">
+<h2>Required Reading</h2>
+<ul>
+<li>This page.</li>
+<li><i class="fas fa-book"></i> <a href="https://trevorhastie.github.io/ISLR/ISLR%20Seventh%20Printing.pdf">Chapter 4</a> in <em>Introduction to Statistical Learning with Applications in R</em>.</li>
+</ul>
+<div id="guiding-questions" class="section level3">
+<h3>Guiding Questions</h3>
+<ul>
+<li>How do we make predictions about binary responses?</li>
+<li>Why should we be concerned about using simple linear regression?</li>
+<li>What is the right way to assess the accuracy of such a model?</li>
+</ul>
+</div>
+</div>
+<div id="classification-overview" class="section level1">
+<h1>Overview</h1>
+<p><strong>Classification</strong> is a form of <strong>supervised learning</strong> where the response variable is categorical, as opposed to numeric for regression. <em>Our goal is to find a rule, algorithm, or function which takes as input a feature vector, and outputs a category which is the true category as often as possible.</em></p>
+<p><img src="/./10-content_files/classification.png" /></p>
+<p>That is, the classifier <span class="math inline">\(\hat{C}(x)\)</span> returns the predicted category <span class="math inline">\(\hat{y}(X)\)</span>.</p>
+<p><span class="math display">\[
+\hat{y}(x) = \hat{C}(x)
+\]</span></p>
+<p>To build our first classifier, we will use the <code>Default</code> dataset from the <code>ISLR</code> package.</p>
+<pre class="r"><code>library(ISLR)
+library(tibble)
+as_tibble(Default)</code></pre>
+<pre><code>## # A tibble: 10,000 × 4
+##    default student balance income
+##    &lt;fct&gt;   &lt;fct&gt;     &lt;dbl&gt;  &lt;dbl&gt;
+##  1 No      No         730. 44362.
+##  2 No      Yes        817. 12106.
+##  3 No      No        1074. 31767.
+##  4 No      No         529. 35704.
+##  5 No      No         786. 38463.
+##  6 No      Yes        920.  7492.
+##  7 No      No         826. 24905.
+##  8 No      Yes        809. 17600.
+##  9 No      No        1161. 37469.
+## 10 No      No           0  29275.
+## # … with 9,990 more rows</code></pre>
+<p>Our goal is to properly classify individuals as defaulters based on student status, credit card balance, and income. Be aware that the response <code>default</code> is a factor, as is the predictor <code>student</code>.</p>
+<pre class="r"><code>is.factor(Default$default)</code></pre>
+<pre><code>## [1] TRUE</code></pre>
+<pre class="r"><code>is.factor(Default$student)</code></pre>
+<pre><code>## [1] TRUE</code></pre>
+<p>As we did with regression, we test-train split our data. In this case, using 50% for each.</p>
+<pre class="r"><code>set.seed(42069)
+default_idx   = sample(nrow(Default), 5000)
+default_trn = Default[default_idx, ]
+default_tst = Default[-default_idx, ]</code></pre>
+<div id="visualization-for-classification" class="section level2">
+<h2>Visualization for Classification</h2>
+<p>Often, some simple visualizations can suggest simple classification rules. To quickly create some useful visualizations, we use the <code>featurePlot()</code> function from the <code>caret()</code> package.</p>
+<pre class="r"><code>library(caret)</code></pre>
+<p>A density plot can often suggest a simple split based on a numeric predictor. Essentially this plot graphs a density estimate</p>
+<p><span class="math display">\[
+\hat{f}_{X_i}(x_i \mid Y = k)
+\]</span></p>
+<p>for each numeric predictor <span class="math inline">\(x_i\)</span> and each category <span class="math inline">\(k\)</span> of the response <span class="math inline">\(y\)</span>.</p>
+<pre class="r"><code>featurePlot(x = default_trn[, c(&quot;balance&quot;, &quot;income&quot;)],
+            y = default_trn$default,
+            plot = &quot;density&quot;,
+            scales = list(x = list(relation = &quot;free&quot;),
+                          y = list(relation = &quot;free&quot;)),
+            adjust = 1.5,
+            pch = &quot;|&quot;,
+            layout = c(2, 1),
+            auto.key = list(columns = 2))</code></pre>
+<p><img src="/content/11-content_files/figure-html/unnamed-chunk-5-1.png" width="960" /></p>
+<p>Some notes about the arguments to this function:</p>
+<ul>
+<li><code>x</code> is a data frame containing only <strong>numeric predictors</strong>. It would be nonsensical to estimate a density for a categorical predictor.</li>
+<li><code>y</code> is the response variable. It needs to be a factor variable. If coded as <code>0</code> and <code>1</code>, you will need to coerce to factor for plotting.</li>
+<li><code>plot</code> specifies the type of plot, here <code>density</code>.</li>
+<li><code>scales</code> defines the scale of the axes for each plot. By default, the axis of each plot would be the same, which often is not useful, so the arguments here, a different axis for each plot, will almost always be used.</li>
+<li><code>adjust</code> specifies the amount of smoothing used for the density estimate.</li>
+<li><code>pch</code> specifies the <strong>p</strong>lot <strong>ch</strong>aracter used for the bottom of the plot.</li>
+<li><code>layout</code> places the individual plots into rows and columns. For some odd reason, it is given as (col, row).</li>
+<li><code>auto.key</code> defines the key at the top of the plot. The number of columns should be the number of categories.</li>
+</ul>
+<p>It seems that the income variable by itself is not particularly useful. However, there seems to be a big difference in default status at a <code>balance</code> of about 1400. We will use this information shortly.</p>
+<pre class="r"><code>featurePlot(x = default_trn[, c(&quot;balance&quot;, &quot;income&quot;)],
+            y = default_trn$student,
+            plot = &quot;density&quot;,
+            scales = list(x = list(relation = &quot;free&quot;),
+                          y = list(relation = &quot;free&quot;)),
+            adjust = 1.5,
+            pch = &quot;|&quot;,
+            layout = c(2, 1),
+            auto.key = list(columns = 2))</code></pre>
+<p><img src="/content/11-content_files/figure-html/unnamed-chunk-6-1.png" width="960" /></p>
+<p>Above, we create a similar plot, except with <code>student</code> as the response. We see that students often carry a slightly larger balance, and have far lower income. This will be useful to know when making more complicated classifiers.</p>
+<pre class="r"><code>featurePlot(x = default_trn[, c(&quot;student&quot;, &quot;balance&quot;, &quot;income&quot;)],
+            y = default_trn$default,
+            plot = &quot;pairs&quot;,
+            auto.key = list(columns = 2))</code></pre>
+<p><img src="/content/11-content_files/figure-html/unnamed-chunk-7-1.png" width="576" /></p>
+<p>We can use <code>plot = "pairs"</code> to consider multiple variables at the same time. This plot reinforces using <code>balance</code> to create a classifier, and again shows that <code>income</code> seems not that useful.</p>
+<pre class="r"><code>library(ellipse)
+featurePlot(x = default_trn[, c(&quot;balance&quot;, &quot;income&quot;)],
+            y = default_trn$default,
+            plot = &quot;ellipse&quot;,
+            auto.key = list(columns = 2))</code></pre>
+<p><img src="/content/11-content_files/figure-html/unnamed-chunk-8-1.png" width="576" /></p>
+<p>Similar to <code>pairs</code> is a plot of type <code>ellipse</code>, which requires the <code>ellipse</code> package. Here we only use numeric predictors, as essentially we are assuming multivariate normality. The ellipses mark points of equal density. This will be useful later when discussing LDA and QDA.</p>
+</div>
+<div id="a-simple-classifier" class="section level2">
+<h2>A Simple Classifier</h2>
+<p>A very simple classifier is a rule based on a boundary <span class="math inline">\(b\)</span> for a particular input variable <span class="math inline">\(x\)</span>.</p>
+<p><span class="math display">\[
+\hat{C}(x) =
+\begin{cases}
+      1 &amp; x &gt; b \\
+      0 &amp; x \leq b
+\end{cases}
+\]</span></p>
+<p>Based on the first plot, we believe we can use <code>balance</code> to create a reasonable classifier. In particular,</p>
+<p><span class="math display">\[
+\hat{C}(\texttt{balance}) =
+\begin{cases}
+      \text{Yes} &amp; \texttt{balance} &gt; 1400 \\
+      \text{No} &amp; \texttt{balance} \leq 1400
+   \end{cases}
+\]</span></p>
+<p>So we predict an individual is a defaulter if their <code>balance</code> is above 1400, and not a defaulter if the balance is 1400 or less.</p>
+<pre class="r"><code>simple_class = function(x, boundary, above = 1, below = 0) {
+  ifelse(x &gt; boundary, above, below)
+}</code></pre>
+<p>We write a simple <code>R</code> function that compares a variable to a boundary, then use it to make predictions on the train and test sets with our chosen variable and boundary.</p>
+<pre class="r"><code>default_trn_pred = simple_class(x = default_trn$balance,
+                                boundary = 1400, above = &quot;Yes&quot;, below = &quot;No&quot;)
+default_tst_pred = simple_class(x = default_tst$balance,
+                                boundary = 1400, above = &quot;Yes&quot;, below = &quot;No&quot;)
+head(default_tst_pred, n = 10)</code></pre>
+<pre><code>##  [1] &quot;No&quot; &quot;No&quot; &quot;No&quot; &quot;No&quot; &quot;No&quot; &quot;No&quot; &quot;No&quot; &quot;No&quot; &quot;No&quot; &quot;No&quot;</code></pre>
+</div>
+<div id="metrics-for-classification" class="section level2">
+<h2>Metrics for Classification</h2>
+<p>In the classification setting, there are a large number of metrics to assess how well a classifier is performing.</p>
+<p>One of the most obvious things to do is arrange predictions and true values in a cross table.</p>
+<pre class="r"><code>(trn_tab = table(predicted = default_trn_pred, actual = default_trn$default))</code></pre>
+<pre><code>##          actual
+## predicted   No  Yes
+##       No  4361   24
+##       Yes  464  151</code></pre>
+<pre class="r"><code>(tst_tab = table(predicted = default_tst_pred, actual = default_tst$default))</code></pre>
+<pre><code>##          actual
+## predicted   No  Yes
+##       No  4319   28
+##       Yes  523  130</code></pre>
+<p>Often we give specific names to individual cells of these tables, and in the predictive setting, we would call this table a <a href="https://en.wikipedia.org/wiki/Confusion_matrix"><strong>confusion matrix</strong></a>. Be aware, that the placement of Actual and Predicted values affects the names of the cells, and often the matrix may be presented transposed.</p>
+<p>In statistics, we label the errors Type I and Type II, but these are hard to remember. False Positive and False Negative are more descriptive, so we choose to use these.</p>
+<!-- ![](images/confusion.png) -->
+<p>The <code>confusionMatrix()</code> function from the <code>caret</code> package can be used to obtain a wealth of additional information, which we see output below for the test data. Note that we specify which category is considered “positive.”</p>
+<pre class="r"><code>trn_con_mat  = confusionMatrix(trn_tab, positive = &quot;Yes&quot;)
+tst_con_mat = confusionMatrix(tst_tab, positive = &quot;Yes&quot;)
+tst_con_mat</code></pre>
+<pre><code>## Confusion Matrix and Statistics
+## 
+##          actual
+## predicted   No  Yes
+##       No  4319   28
+##       Yes  523  130
+##                                           
+##                Accuracy : 0.8898          
+##                  95% CI : (0.8808, 0.8984)
+##     No Information Rate : 0.9684          
+##     P-Value [Acc &gt; NIR] : 1               
+##                                           
+##                   Kappa : 0.2842          
+##                                           
+##  Mcnemar&#39;s Test P-Value : &lt;2e-16          
+##                                           
+##             Sensitivity : 0.8228          
+##             Specificity : 0.8920          
+##          Pos Pred Value : 0.1991          
+##          Neg Pred Value : 0.9936          
+##              Prevalence : 0.0316          
+##          Detection Rate : 0.0260          
+##    Detection Prevalence : 0.1306          
+##       Balanced Accuracy : 0.8574          
+##                                           
+##        &#39;Positive&#39; Class : Yes             
+## </code></pre>
+<p>The most common, and most important metric is the <strong>classification error rate</strong>.</p>
+<p><span class="math display">\[
+\text{err}(\hat{C}, \text{Data}) = \frac{1}{n}\sum_{i = 1}^{n}I(y_i \neq \hat{C}(x_i))
+\]</span></p>
+<p>Here, <span class="math inline">\(I\)</span> is an indicator function, so we are essentially calculating the proportion of predicted classes that match the true class.</p>
+<p><span class="math display">\[
+I(y_i \neq \hat{C}(x)) =
+\begin{cases}
+  1 &amp; y_i \neq \hat{C}(x) \\
+  0 &amp; y_i = \hat{C}(x) \\
+\end{cases}
+\]</span></p>
+<p>It is also common to discuss the <strong>accuracy</strong>, which is simply one minus the error.</p>
+<p>Like regression, we often split the data, and then consider Train (Classification) Error and Test (Classification) Error will be used as a measure of how well a classifier will work on unseen future data.</p>
+<p><span class="math display">\[
+\text{err}_{\texttt{trn}}(\hat{C}, \text{Train Data}) = \frac{1}{n_{\texttt{trn}}}\sum_{i \in \texttt{trn}}^{}I(y_i \neq \hat{C}(x_i))
+\]</span></p>
+<p><span class="math display">\[
+\text{err}_{\texttt{tst}}(\hat{C}, \text{Test Data}) = \frac{1}{n_{\texttt{tst}}}\sum_{i \in \texttt{tst}}^{}I(y_i \neq \hat{C}(x_i))
+\]</span></p>
+<p>Accuracy values can be found by calling <code>confusionMatrix()</code>, or, if stored, can be accessed directly. Here, we use them to obtain <strong>error rates</strong> (1-Accuracy).</p>
+<pre class="r"><code> 1 - trn_con_mat$overall[&quot;Accuracy&quot;]</code></pre>
+<pre><code>## Accuracy 
+##   0.0976</code></pre>
+<pre class="r"><code># Note, R doesn&#39;t know to rename the result &quot;err&quot;, so it keeps the name &quot;Accuracy&quot;</code></pre>
+<pre class="r"><code>1 - tst_con_mat$overall[&quot;Accuracy&quot;]</code></pre>
+<pre><code>## Accuracy 
+##   0.1102</code></pre>
+<pre class="r"><code># Note, R doesn&#39;t know to rename the result &quot;err&quot;, so it keeps the name &quot;Accuracy&quot;</code></pre>
+<p>We can go back to the <code>tst_con_mat</code> table before and hand-calculate accuracy</p>
+<pre class="r"><code>1 - ((4319 + 130) / 5000)</code></pre>
+<pre><code>## [1] 0.1102</code></pre>
+<p>First some notation:</p>
+<ul>
+<li><span class="math inline">\(P\)</span> is the total number of actual positives</li>
+<li><span class="math inline">\(TP\)</span> is the total number of actual positives predicted to be positive</li>
+<li><span class="math inline">\(N\)</span> is the total number of actual negatives</li>
+<li><span class="math inline">\(TN\)</span> is the total number of actual negatives predicted to be negative</li>
+<li><span class="math inline">\(FP\)</span> and <span class="math inline">\(FN\)</span> are the total number of false positives and false negatives</li>
+</ul>
+<p>Which means…</p>
+<ul>
+<li><span class="math inline">\(P = TP + FN\)</span></li>
+<li><span class="math inline">\(N = TN + FP\)</span></li>
+</ul>
+<p>Sometimes guarding against making certain errors, FP or FN, are more important than simply finding the best accuracy. Thus, sometimes we will consider <strong>sensitivity</strong> and <strong>specificity</strong>.</p>
+<p><span class="math display">\[
+\text{Sensitivity} = \text{True Positive Rate} = \frac{\text{TP}}{\text{P}} = \frac{\text{TP}}{\text{TP + FN}}
+\]</span></p>
+<pre class="r"><code>tst_con_mat$byClass[&quot;Sensitivity&quot;]</code></pre>
+<pre><code>## Sensitivity 
+##   0.8227848</code></pre>
+<pre class="r"><code># 130/(130+28)</code></pre>
+<p>This is the <em>share of actually-“yes” observations that were predicted by the model to be “yes”</em></p>
+<p><span class="math display">\[
+\text{Specificity} = \text{True Negative Rate} = \frac{\text{TN}}{\text{N}} = \frac{\text{TN}}{\text{TN + FP}}
+\]</span></p>
+<pre class="r"><code>tst_con_mat$byClass[&quot;Specificity&quot;]</code></pre>
+<pre><code>## Specificity 
+##   0.8919868</code></pre>
+<pre class="r"><code># 4319/(4319/523)</code></pre>
+<p>Specificity is the <em>share of actually-“no” observations that were predicted by the model to be “no”</em></p>
+<p>Like accuracy, these can easily be found using <code>confusionMatrix()</code>.</p>
+<p>When considering how well a classifier is performing, often, it is understandable to assume that any accuracy in a binary classification problem above 0.50 is a reasonable classifier. This however is not the case. We need to consider the <strong>balance</strong> of the classes. To do so, we look at the <strong>prevalence</strong> of positive cases.</p>
+<p><span class="math display">\[
+\text{Prev} = \frac{\text{P}}{\text{Total Obs}}= \frac{\text{TP + FN}}{\text{Total Obs}}
+\]</span></p>
+<pre class="r"><code>trn_con_mat$byClass[&quot;Prevalence&quot;]</code></pre>
+<pre><code>## Prevalence 
+##      0.035</code></pre>
+<pre class="r"><code>tst_con_mat$byClass[&quot;Prevalence&quot;]</code></pre>
+<pre><code>## Prevalence 
+##     0.0316</code></pre>
+<pre class="r"><code># (28+130)/5000</code></pre>
+<p>Here, we see an extremely low prevalence, which suggests an even simpler classifier than our current based on <code>balance</code>.</p>
+<p><span class="math display">\[
+\hat{C}(\texttt{balance}) =
+\begin{cases}
+      \text{No} &amp; \texttt{balance} &gt; 1400 \\
+      \text{No} &amp; \texttt{balance} \leq 1400
+   \end{cases}
+\]</span></p>
+<p>This classifier simply classifies all observations as negative cases.</p>
+<pre class="r"><code>pred_all_no = simple_class(default_tst$balance,
+                           boundary = 1400, above = &quot;No&quot;, below = &quot;No&quot;)
+table(predicted = pred_all_no, actual = default_tst$default)</code></pre>
+<pre><code>##          actual
+## predicted   No  Yes
+##        No 4842  158</code></pre>
+<p>The <code>confusionMatrix()</code> function won’t even accept this table as input, because it isn’t a full matrix, only one row, so we calculate error rates directly. To do so, we write a function.</p>
+<pre class="r"><code>calc_class_err = function(actual, predicted) {
+  mean(actual != predicted)
+}</code></pre>
+<pre class="r"><code>calc_class_err(actual = default_tst$default,
+               predicted = pred_all_no)</code></pre>
+<pre><code>## [1] 0.0316</code></pre>
+<p>Here we see that the error rate is exactly the prevelance of the minority class.</p>
+<pre class="r"><code>table(default_tst$default) / length(default_tst$default)</code></pre>
+<pre><code>## 
+##     No    Yes 
+## 0.9684 0.0316</code></pre>
+<p>This classifier does better than the previous. But the point is, in reality, to create a good classifier, we should obtain a test error better than 0.033, which is obtained by simply manipulating the prevalences. Next section, we’ll introduce much better classifiers which should have no problem accomplishing this task. Point is, think carefully about what you’re putting your classifier up against. Last March when we were very worried about COVID test accuracy, and when <em>prevalance</em> was, say, 1%, it was pointed out that we could make a 99% accurate COVID test by simply returning “No COVID” for every test! We’d be the new Theranos!</p>
+</div>
+</div>
+<div id="logistic-regression" class="section level1">
+<h1>Logistic Regression</h1>
+<p>In this section, we continue our discussion of classification. We introduce our first model for classification, logistic regression. To begin, we return to the <code>Default</code> dataset from above.</p>
+<pre class="r"><code>library(ISLR)
+library(tibble)
+as_tibble(Default)</code></pre>
+<pre><code>## # A tibble: 10,000 × 4
+##    default student balance income
+##    &lt;fct&gt;   &lt;fct&gt;     &lt;dbl&gt;  &lt;dbl&gt;
+##  1 No      No         730. 44362.
+##  2 No      Yes        817. 12106.
+##  3 No      No        1074. 31767.
+##  4 No      No         529. 35704.
+##  5 No      No         786. 38463.
+##  6 No      Yes        920.  7492.
+##  7 No      No         826. 24905.
+##  8 No      Yes        809. 17600.
+##  9 No      No        1161. 37469.
+## 10 No      No           0  29275.
+## # … with 9,990 more rows</code></pre>
+<p>We also repeat the test-train split from above (you need not repeat this step if you have this saved).</p>
+<pre class="r"><code>set.seed(42)
+default_idx = sample(nrow(Default), 5000)
+default_trn = Default[default_idx, ]
+default_tst = Default[-default_idx, ]</code></pre>
+<div id="linear-regression-and-binary-responses" class="section level2">
+<h2>Linear Regression and Binary Responses</h2>
+<p>Before moving on to logistic regression, why not plain, old, linear regression?</p>
+<pre class="r"><code>default_trn_lm = default_trn
+default_tst_lm = default_tst</code></pre>
+<p>Since linear regression expects a numeric response variable, we coerce the response to be numeric. (Notice that we also shift the results, as we require <code>0</code> and <code>1</code>, not <code>1</code> and <code>2</code>.) Notice we have also copied the dataset so that we can return the original data with factors later.</p>
+<pre class="r"><code>default_trn_lm$default = as.numeric(default_trn_lm$default) - 1
+default_tst_lm$default = as.numeric(default_tst_lm$default) - 1</code></pre>
+<p>Why would we think this should work? Recall that,</p>
+<p><span class="math display">\[
+\hat{\mathbb{E}}[Y \mid X = x] = X\hat{\beta}.
+\]</span></p>
+<p>Since <span class="math inline">\(Y\)</span> is limited to values of <span class="math inline">\(0\)</span> and <span class="math inline">\(1\)</span>, we have</p>
+<p><span class="math display">\[
+\mathbb{E}[Y \mid X = x] = P(Y = 1 \mid X = x).
+\]</span></p>
+<p>It would then seem reasonable that <span class="math inline">\(\mathbf{X}\hat{\beta}\)</span> is a reasonable estimate of <span class="math inline">\(P(Y = 1 \mid X = x)\)</span>. We test this on the <code>Default</code> data.</p>
+<pre class="r"><code>model_lm = lm(default ~ balance, data = default_trn_lm)</code></pre>
+<p>Everything seems to be working, until we plot the results.</p>
+<pre class="r"><code>plot(default ~ balance, data = default_trn_lm,
+     col = &quot;darkorange&quot;, pch = &quot;|&quot;, ylim = c(-0.2, 1),
+     main = &quot;Using Linear Regression for Classification&quot;)
+abline(h = 0, lty = 3)
+abline(h = 1, lty = 3)
+abline(h = 0.5, lty = 2)
+abline(model_lm, lwd = 3, col = &quot;dodgerblue&quot;)</code></pre>
+<p><img src="/content/11-content_files/figure-html/unnamed-chunk-29-1.png" width="672" /></p>
+<p>Two issues arise. First, all of the predicted probabilities are below 0.5. That means, we would classify every observation as a <code>"No"</code>. This is certainly possible, but not what we would expect.</p>
+<pre class="r"><code>all(predict(model_lm) &lt; 0.5)</code></pre>
+<pre><code>## [1] TRUE</code></pre>
+<p>The next, and bigger issue, is predicted probabilities less than 0.</p>
+<pre class="r"><code>any(predict(model_lm) &lt; 0)</code></pre>
+<pre><code>## [1] TRUE</code></pre>
+</div>
+<div id="bayes-classifier" class="section level2">
+<h2>Bayes Classifier</h2>
+<p>Why are we using a predicted probability of 0.5 as the cutoff for classification? Recall, the Bayes Classifier, which minimizes the classification error:</p>
+<p><span class="math display">\[
+C^B(x) = \underset{g}{\mathrm{argmax}} \ P(Y = g \mid  X = x)
+\]</span></p>
+<p>So, in the binary classification problem, we will use predicted probabilities</p>
+<p><span class="math display">\[
+\hat{p}(x) = \hat{P}(Y = 1 \mid { X = x})
+\]</span></p>
+<p>and</p>
+<p><span class="math display">\[
+\hat{P}(Y = 0 \mid { X = x})
+\]</span></p>
+<p>and then classify to the larger of the two. We actually only need to consider a single probability, usually <span class="math inline">\(\hat{P}(Y = 1 \mid { X = x})\)</span>. Since we use it so often, we give it the shorthand notation, <span class="math inline">\(\hat{p}(x)\)</span>. Then the classifier is written,</p>
+<p><span class="math display">\[
+\hat{C}(x) =
+\begin{cases}
+      1 &amp; \hat{p}(x) &gt; 0.5 \\
+      0 &amp; \hat{p}(x) \leq 0.5
+\end{cases}
+\]</span></p>
+<p>This classifier is essentially estimating the Bayes Classifier - it takes the value of <span class="math inline">\(x\)</span>, figures out which is larger, the <span class="math inline">\(\hat{P}(Y=1|X=x)\)</span> or <span class="math inline">\(\hat{P}(Y=0 | X=x)\)</span>, and returns the classification <span class="math inline">\(\hat{C}(x)\)</span> as whichever probability is larger. Since there are only two values for <span class="math inline">\(Y\in\{0,1\}\)</span>, the larger is always the one greater than <span class="math inline">\(.50\)</span>. Thus, since this is a Bayes Classificer, it minimizes classification errors.</p>
+</div>
+<div id="logistic-regression-with-glm" class="section level2">
+<h2>Logistic Regression with <code>glm()</code></h2>
+<p>To better estimate the probability</p>
+<p><span class="math display">\[
+p(x) = P(Y = 1 \mid {X = x})
+\]</span>
+we turn to logistic regression. The model is written</p>
+<p><span class="math display">\[
+\log\left(\frac{p(x)}{1 - p(x)}\right) = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + \cdots  + \beta_p x_p.
+\]</span></p>
+<p>Rearranging, we see the probabilities can be written as</p>
+<p><span class="math display">\[
+p(x) = \frac{1}{1 + e^{-(\beta_0 + \beta_1 x_1 + \beta_2 x_2 + \cdots  + \beta_p x_p)}} = \sigma(\beta_0 + \beta_1 x_1 + \beta_2 x_2 + \cdots  + \beta_p x_p)
+\]</span></p>
+<p>Notice, we use the sigmoid function as shorthand notation, which appears often in deep learning literature. It takes any real input, and outputs a number between 0 and 1. How useful! (This is actualy a particular sigmoid function called the logistic function, but since it is by far the most popular sigmoid function, often sigmoid function is used to refer to the logistic function)</p>
+<p><span class="math display">\[
+\sigma(x) = \frac{e^x}{1 + e^x} = \frac{1}{1 + e^{-x}}
+\]</span></p>
+<p>The model is fit by numerically maximizing the likelihood, which we will let <code>R</code> take care of. Essentially, <code>R</code> is going to try a whole bunch of guesses for <span class="math inline">\(\mathbf{\beta}\)</span> and choose the one that best explains the data we have.</p>
+<p>We start with a single predictor example, again using <code>balance</code> as our single predictor. Note that <code>default_trn</code> has a factor variable for <code>default</code> (No/Yes). Since <code>R</code> represents factor variables as numbers (here, 1 and 2), <code>glm</code> figures out that you mean <code>No</code> and <code>Yes</code> for <code>0</code> and <code>1</code>.</p>
+<pre class="r"><code>model_glm = glm(default ~ balance, data = default_trn, family = &quot;binomial&quot;)</code></pre>
+<p>Fitting this model looks very similar to fitting a simple linear regression. Instead of <code>lm()</code> we use <code>glm()</code>. The only other difference is the use of <code>family = "binomial"</code> which indicates that we have a two-class categorical response. Using <code>glm()</code> with <code>family = "gaussian"</code> would perform the usual linear regression.</p>
+<p>First, we can obtain the fitted coefficients the same way we did with linear regression.</p>
+<pre class="r"><code>coef(model_glm)</code></pre>
+<pre><code>##   (Intercept)       balance 
+## -10.493158288   0.005424994</code></pre>
+<p>The next thing we should understand is how the <code>predict()</code> function works with <code>glm()</code>. So, let’s look at some predictions.</p>
+<pre class="r"><code>head(predict(model_glm))</code></pre>
+<pre><code>##      2369      5273      9290      1252      8826       356 
+## -5.376670 -4.875653 -5.018746 -4.007664 -6.538414 -6.601582</code></pre>
+<p>By default, <code>predict.glm()</code> uses <code>type = "link"</code>.</p>
+<pre class="r"><code>head(predict(model_glm, type = &quot;link&quot;))</code></pre>
+<pre><code>##      2369      5273      9290      1252      8826       356 
+## -5.376670 -4.875653 -5.018746 -4.007664 -6.538414 -6.601582</code></pre>
+<p>That is, <code>R</code> is returning</p>
+<p><span class="math display">\[
+\hat{\beta}_0 + \hat{\beta}_1 x_1 + \hat{\beta}_2 x_2 + \cdots  + \hat{\beta}_p x_p
+\]</span>
+for each observation.</p>
+<p>Importantly, these are <strong>not</strong> predicted probabilities. To obtain the predicted probabilities</p>
+<p><span class="math display">\[
+\hat{p}(x) = \hat{P}(Y = 1 \mid X = x)
+\]</span></p>
+<p>we need to use <code>type = "response"</code></p>
+<pre class="r"><code>head(predict(model_glm, type = &quot;response&quot;))</code></pre>
+<pre><code>##        2369        5273        9290        1252        8826         356 
+## 0.004601914 0.007572331 0.006569370 0.017851333 0.001444691 0.001356375</code></pre>
+<p>Note that these are probabilities, <strong>not</strong> classifications. To obtain classifications, we will need to compare to the correct cutoff value with an <code>ifelse()</code> statement.</p>
+<pre class="r"><code>model_glm_pred = ifelse(predict(model_glm, type = &quot;link&quot;) &gt; 0, &quot;Yes&quot;, &quot;No&quot;)
+# model_glm_pred = ifelse(predict(model_glm, type = &quot;response&quot;) &gt; 0.5, &quot;Yes&quot;, &quot;No&quot;)</code></pre>
+<p>The line that is run is performing</p>
+<p><span class="math display">\[
+\hat{C}(x) =
+\begin{cases}
+      1 &amp; \hat{f}(x) &gt; 0 \\
+      0 &amp; \hat{f}(x) \leq 0
+\end{cases}
+\]</span></p>
+<p>where</p>
+<p><span class="math display">\[
+\hat{f}(x) =\hat{\beta}_0 + \hat{\beta}_1 x_1 + \hat{\beta}_2 x_2 + \cdots  + \hat{\beta}_p x_p.
+\]</span></p>
+<p>The commented line, which would give the same results, is performing</p>
+<p><span class="math display">\[
+\hat{C}(x) =
+\begin{cases}
+      1 &amp; \hat{p}(x) &gt; 0.5 \\
+      0 &amp; \hat{p}(x) \leq 0.5
+\end{cases}
+\]</span></p>
+<p>where</p>
+<p><span class="math display">\[
+\hat{p}(x) = \hat{P}(Y = 1 \mid X = x).
+\]</span></p>
+<p>Once we have classifications, we can calculate metrics such as the training classification error rate.</p>
+<pre class="r"><code>calc_class_err = function(actual, predicted) {
+  mean(actual != predicted)
+}</code></pre>
+<pre class="r"><code>calc_class_err(actual = default_trn$default, predicted = model_glm_pred)</code></pre>
+<pre><code>## [1] 0.0284</code></pre>
+<p>As we saw previously, the <code>table()</code> and <code>confusionMatrix()</code> functions can be used to quickly obtain many more metrics.</p>
+<pre class="r"><code>train_tab = table(predicted = model_glm_pred, actual = default_trn$default)
+library(caret)
+train_con_mat = confusionMatrix(train_tab, positive = &quot;Yes&quot;)
+c(train_con_mat$overall[&quot;Accuracy&quot;],
+  train_con_mat$byClass[&quot;Sensitivity&quot;],
+  train_con_mat$byClass[&quot;Specificity&quot;])</code></pre>
+<pre><code>##    Accuracy Sensitivity Specificity 
+##   0.9716000   0.2941176   0.9954451</code></pre>
+<p>We could also write a custom function for the error for use with trained logistic regression models.</p>
+<pre class="r"><code>get_logistic_error = function(mod, data, res = &quot;y&quot;, pos = 1, neg = 0, cut = 0.5) {
+  probs = predict(mod, newdata = data, type = &quot;response&quot;)
+  preds = ifelse(probs &gt; cut, pos, neg)
+  calc_class_err(actual = data[, res], predicted = preds)
+}</code></pre>
+<p>This function will be useful later when calculating train and test errors for several models at the same time.</p>
+<pre class="r"><code>get_logistic_error(model_glm, data = default_trn,
+                   res = &quot;default&quot;, pos = &quot;Yes&quot;, neg = &quot;No&quot;, cut = 0.5)</code></pre>
+<pre><code>## [1] 0.0284</code></pre>
+<p>To see how much better logistic regression is for this task, we create the same plot we used for linear regression.</p>
+<pre class="r"><code>plot(default ~ balance, data = default_trn_lm,
+     col = &quot;darkorange&quot;, pch = &quot;|&quot;, ylim = c(-0.2, 1),
+     main = &quot;Using Logistic Regression for Classification&quot;)
+abline(h = 0, lty = 3)
+abline(h = 1, lty = 3)
+abline(h = 0.5, lty = 2)
+curve(predict(model_glm, data.frame(balance = x), type = &quot;response&quot;),
+      add = TRUE, lwd = 3, col = &quot;dodgerblue&quot;)
+abline(v = -coef(model_glm)[1] / coef(model_glm)[2], lwd = 2)</code></pre>
+<p><img src="/content/11-content_files/figure-html/unnamed-chunk-43-1.png" width="672" /></p>
+<p>This plot contains a wealth of information.</p>
+<ul>
+<li>The orange <code>|</code> characters are the data, <span class="math inline">\((x_i, y_i)\)</span>.</li>
+<li>The blue “curve” is the predicted probabilities given by the fitted logistic regression. That is,
+<span class="math display">\[
+\hat{p}(x) = \hat{P}(Y = 1 \mid { X = x})
+\]</span></li>
+<li>The solid vertical black line represents the <strong><a href="https://en.wikipedia.org/wiki/Decision_boundary">decision boundary</a></strong>, the <code>balance</code> that obtains a predicted probability of 0.5. In this case <code>balance</code> = 1934.2247145.</li>
+</ul>
+<p>The decision boundary is found by solving for points that satisfy</p>
+<p><span class="math display">\[
+\hat{p}(x) = \hat{P}(Y = 1 \mid { X = x}) = 0.5
+\]</span></p>
+<p>This is equivalent to point that satisfy</p>
+<p><span class="math display">\[
+\hat{\beta}_0 + \hat{\beta}_1 x_1 = 0.
+\]</span>
+Thus, for logistic regression with a single predictor, the decision boundary is given by the <em>point</em></p>
+<p><span class="math display">\[
+x_1 = \frac{-\hat{\beta}_0}{\hat{\beta}_1}.
+\]</span></p>
+<p>The following is not run, but an alternative way to add the logistic curve to the plot.</p>
+<pre class="r"><code>grid = seq(0, max(default_trn$balance), by = 0.01)
+
+sigmoid = function(x) {
+  1 / (1 + exp(-x))
+}
+
+lines(grid, sigmoid(coef(model_glm)[1] + coef(model_glm)[2] * grid), lwd = 3)</code></pre>
+<p>Using the usual formula syntax, it is easy to add or remove complexity from logistic regressions.</p>
+<pre class="r"><code>model_1 = glm(default ~ 1, data = default_trn, family = &quot;binomial&quot;)
+model_2 = glm(default ~ ., data = default_trn, family = &quot;binomial&quot;)
+model_3 = glm(default ~ . ^ 2 + I(balance ^ 2),
+              data = default_trn, family = &quot;binomial&quot;)</code></pre>
+<p>Note that, using polynomial transformations of predictors will allow a linear model to have non-linear decision boundaries.</p>
+<pre class="r"><code>model_list = list(model_1, model_2, model_3)
+train_errors = sapply(model_list, get_logistic_error, data = default_trn,
+                      res = &quot;default&quot;, pos = &quot;Yes&quot;, neg = &quot;No&quot;, cut = 0.5)
+test_errors  = sapply(model_list, get_logistic_error, data = default_tst,
+                      res = &quot;default&quot;, pos = &quot;Yes&quot;, neg = &quot;No&quot;, cut = 0.5)
+
+knitr::kable(cbind(train_errors, test_errors))</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="right">train_errors</th>
+<th align="right">test_errors</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="right">0.0340</td>
+<td align="right">0.0326</td>
+</tr>
+<tr class="even">
+<td align="right">0.0274</td>
+<td align="right">0.0258</td>
+</tr>
+<tr class="odd">
+<td align="right">0.0274</td>
+<td align="right">0.0264</td>
+</tr>
+</tbody>
+</table>
+<p>Here we see the misclassification error rates for each model. The train (weakly) decreases, and the test decreases, until it starts to increases. Everything we learned about the bias-variance tradeoff for regression also applies here.</p>
+<pre class="r"><code>diff(train_errors)</code></pre>
+<pre><code>## [1] -0.0066  0.0000</code></pre>
+<pre class="r"><code>diff(test_errors)</code></pre>
+<pre><code>## [1] -0.0068  0.0006</code></pre>
+<p>We call <code>model_2</code> the <strong>additive</strong> logistic model, which we will use quite often.</p>
+</div>
+<div id="roc-curves" class="section level2">
+<h2>ROC Curves</h2>
+<p>Let’s return to our simple model with only balance as a predictor.</p>
+<pre class="r"><code>model_glm = glm(default ~ balance, data = default_trn, family = &quot;binomial&quot;)</code></pre>
+<p>We write a function which allows use to make predictions based on different probability cutoffs.</p>
+<pre class="r"><code>get_logistic_pred = function(mod, data, res = &quot;y&quot;, pos = 1, neg = 0, cut = 0.5) {
+  probs = predict(mod, newdata = data, type = &quot;response&quot;)
+  ifelse(probs &gt; cut, pos, neg)
+}</code></pre>
+<p><span class="math display">\[
+\hat{C}(x) =
+\begin{cases}
+      1 &amp; \hat{p}(x) &gt; c \\
+      0 &amp; \hat{p}(x) \leq c
+\end{cases}
+\]</span></p>
+<p>Let’s use this to obtain predictions using a low, medium, and high cutoff. (0.1, 0.5, and 0.9)</p>
+<pre class="r"><code>test_pred_10 = get_logistic_pred(model_glm, data = default_tst, res = &quot;default&quot;,
+                                 pos = &quot;Yes&quot;, neg = &quot;No&quot;, cut = 0.1)
+test_pred_50 = get_logistic_pred(model_glm, data = default_tst, res = &quot;default&quot;,
+                                 pos = &quot;Yes&quot;, neg = &quot;No&quot;, cut = 0.5)
+test_pred_90 = get_logistic_pred(model_glm, data = default_tst, res = &quot;default&quot;,
+                                 pos = &quot;Yes&quot;, neg = &quot;No&quot;, cut = 0.9)</code></pre>
+<p>Now we evaluate accuracy, sensitivity, and specificity for these classifiers.</p>
+<pre class="r"><code>test_tab_10 = table(predicted = test_pred_10, actual = default_tst$default)
+test_tab_50 = table(predicted = test_pred_50, actual = default_tst$default)
+test_tab_90 = table(predicted = test_pred_90, actual = default_tst$default)
+
+test_con_mat_10 = confusionMatrix(test_tab_10, positive = &quot;Yes&quot;)
+test_con_mat_50 = confusionMatrix(test_tab_50, positive = &quot;Yes&quot;)
+test_con_mat_90 = confusionMatrix(test_tab_90, positive = &quot;Yes&quot;)</code></pre>
+<pre class="r"><code>metrics = rbind(
+
+  c(test_con_mat_10$overall[&quot;Accuracy&quot;],
+    test_con_mat_10$byClass[&quot;Sensitivity&quot;],
+    test_con_mat_10$byClass[&quot;Specificity&quot;]),
+
+  c(test_con_mat_50$overall[&quot;Accuracy&quot;],
+    test_con_mat_50$byClass[&quot;Sensitivity&quot;],
+    test_con_mat_50$byClass[&quot;Specificity&quot;]),
+
+  c(test_con_mat_90$overall[&quot;Accuracy&quot;],
+    test_con_mat_90$byClass[&quot;Sensitivity&quot;],
+    test_con_mat_90$byClass[&quot;Specificity&quot;])
+
+)
+
+rownames(metrics) = c(&quot;c = 0.10&quot;, &quot;c = 0.50&quot;, &quot;c = 0.90&quot;)
+metrics</code></pre>
+<pre><code>##          Accuracy Sensitivity Specificity
+## c = 0.10   0.9328  0.71779141   0.9400455
+## c = 0.50   0.9730  0.31288344   0.9952450
+## c = 0.90   0.9688  0.04294479   1.0000000</code></pre>
+<p>We see then sensitivity decreases as the cutoff is increased. Conversely, specificity increases as the cutoff increases. This is useful if we are more interested in a particular error, instead of giving them equal weight.</p>
+<p>Note that usually the best accuracy will be seen near <span class="math inline">\(c = 0.50\)</span>.</p>
+<p>Instead of manually checking cutoffs, we can create an ROC curve (receiver operating characteristic curve) which will sweep through all possible cutoffs, and plot the sensitivity and specificity.</p>
+<ul>
+<li><p><strong>Where on this curve would you think is the “best” place to be? Why?</strong></p></li>
+<li><p><strong>Where on this curve would you think is the “worst” place to be? Why?</strong></p></li>
+</ul>
+<pre class="r"><code>library(pROC)
+test_prob = predict(model_glm, newdata = default_tst, type = &quot;response&quot;)
+test_roc = roc(default_tst$default ~ test_prob, plot = TRUE, print.auc = TRUE)</code></pre>
+<p><img src="/content/11-content_files/figure-html/unnamed-chunk-53-1.png" width="672" /></p>
+<pre class="r"><code>as.numeric(test_roc$auc)</code></pre>
+<pre><code>## [1] 0.9492866</code></pre>
+<p>The AUC is the “area under the curve”. One interpretation of the AUC is that it is “the probability that the model ranks a randomly selected positive more highly than a randomly selected negative.” A good model will have a high AUC. A high AUC has a high sensitivity and a high specificity over all of the cutoff values.</p>
+</div>
+<div id="multinomial-logistic-regression" class="section level2">
+<h2>Multinomial Logistic Regression</h2>
+<p>What if the response contains more than two categories? For that we need multinomial logistic regression.</p>
+<p><span class="math display">\[
+P(Y = k \mid { X = x}) = \frac{e^{\beta_{0k} + \beta_{1k} x_1 + \cdots +  + \beta_{pk} x_p}}{\sum_{g = 1}^{G} e^{\beta_{0g} + \beta_{1g} x_1 + \cdots + \beta_{pg} x_p}}
+\]</span></p>
+<p>We will omit the details, as ISL has as well. If you are interested, the <a href="https://en.wikipedia.org/wiki/Multinomial_logistic_regression">Wikipedia page</a> provides a rather thorough coverage. Also note that the above is an example of the <a href="https://en.wikipedia.org/wiki/Softmax_function">softmax function</a>.</p>
+<p>As an example of a dataset with a three category response, we use the <code>iris</code> dataset, which is so famous, it has its own <a href="https://en.wikipedia.org/wiki/Iris_flower_data_set">Wikipedia entry</a>. It is also a default dataset in <code>R</code>, so no need to load it.</p>
+<p>Before proceeding, we test-train split this data.</p>
+<pre class="r"><code>set.seed(430)
+iris_obs = nrow(iris)
+iris_idx = sample(iris_obs, size = trunc(0.50 * iris_obs))
+iris_trn = iris[iris_idx, ]
+iris_test = iris[-iris_idx, ]</code></pre>
+<p>To perform multinomial logistic regression, we use the <code>multinom</code> function from the <code>nnet</code> package. Training using <code>multinom()</code> is done using similar syntax to <code>lm()</code> and <code>glm()</code>. We add the <code>trace = FALSE</code> argument to suppress information about updates to the optimization routine as the model is trained.</p>
+<pre class="r"><code>library(nnet)
+model_multi = multinom(Species ~ ., data = iris_trn, trace = FALSE)
+summary(model_multi)$coefficients</code></pre>
+<pre><code>##            (Intercept) Sepal.Length Sepal.Width Petal.Length Petal.Width
+## versicolor    16.77474    -7.855576   -13.98668     25.13860    4.270375
+## virginica    -33.94895   -37.519645   -94.22846     97.82691   73.487162</code></pre>
+<p>Notice we are only given coefficients for two of the three class, much like only needing coefficients for one class in logistic regression.</p>
+<p>A difference between <code>glm()</code> and <code>multinom()</code> is how the <code>predict()</code> function operates.</p>
+<pre class="r"><code>head(predict(model_multi, newdata = iris_trn))</code></pre>
+<pre><code>## [1] setosa     versicolor versicolor setosa     virginica  versicolor
+## Levels: setosa versicolor virginica</code></pre>
+<pre class="r"><code>head(predict(model_multi, newdata = iris_trn, type = &quot;prob&quot;))</code></pre>
+<pre><code>##           setosa   versicolor     virginica
+## 1   1.000000e+00 1.910554e-16 6.118616e-176
+## 92  8.542846e-22 1.000000e+00  1.372168e-18
+## 77  8.343856e-23 1.000000e+00  2.527471e-14
+## 38  1.000000e+00 1.481126e-16 5.777917e-180
+## 108 1.835279e-73 1.403654e-36  1.000000e+00
+## 83  1.256090e-16 1.000000e+00  2.223689e-32</code></pre>
+<p>Notice that by default, classifications are returned. When obtaining probabilities, we are given the predicted probability for <strong>each</strong> class.</p>
+<p>Interestingly, you’ve just fit a neural network, and you didn’t even know it! (Hence the <code>nnet</code> package.) Later we will discuss the connections between logistic regression, multinomial logistic regression, and simple neural networks.</p>
+</div>
+</div>
