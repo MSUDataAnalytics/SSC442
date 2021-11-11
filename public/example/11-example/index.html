@@ -1,0 +1,1024 @@
+<!DOCTYPE html>
+<html lang="en-us" 
+      xmlns:og="http://ogp.me/ns#" 
+      xmlns:fb="https://www.facebook.com/2008/fbml">
+
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="generator" content="Source Themes Academic 4.8.0">
+
+  
+
+  
+  
+  
+  
+  
+    
+    
+    
+  
+  
+
+  <meta name="author" content="Ben Bushong">
+
+  
+  
+  
+    
+  
+  <meta name="description" content="spam Example  Evaluating Classifiers    This week’s weekly writing is to generate an ROC curve with data from the SAHeart dataset. It is available as a part of the bestglm package. We will build toward this exercise in class using a different example.
+ spam Example To illustrate the use of logistic regression as a classifier, we will use the spam dataset from the kernlab package.">
+
+  
+  <link rel="alternate" hreflang="en-us" href="https://ssc442.netlify.app/example/11-example/">
+
+  
+
+
+  
+  
+  
+  <meta name="theme-color" content="#18453B">
+  
+
+  
+  
+  
+  <script src="/js/mathjax-config.js"></script>
+  
+
+  
+  
+  
+  
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/academicons/1.8.6/css/academicons.min.css" integrity="sha256-uFVgMKfistnJAfoCUQigIl+JfUaP47GrRKjf6CTPVmw=" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.0-1/css/all.min.css" integrity="sha256-4w9DunooKSr3MFXHXWyFER38WmPdm361bQS/2KUWZbU=" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+
+    
+    
+    
+      
+    
+    
+      
+      
+        
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/styles/github.min.css" crossorigin="anonymous" title="hl-light">
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/styles/dracula.min.css" crossorigin="anonymous" title="hl-dark" disabled>
+        
+      
+    
+
+    
+
+    
+
+    
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/lazysizes/5.1.2/lazysizes.min.js" integrity="sha256-Md1qLToewPeKjfAHU1zyPwOutccPAm5tahnaw7Osw0A=" crossorigin="anonymous" async></script>
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" integrity="" crossorigin="anonymous" async></script>
+      
+    
+      
+
+      
+      
+
+      
+    
+
+  
+
+  
+  
+  
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Fira+Sans+Condensed:400,400i,700,700i%7COverpass:400,400i,700,700i&display=swap">
+  
+
+  
+  
+  
+  
+  <link rel="stylesheet" href="/css/academic.css">
+
+  
+
+
+
+
+  
+
+
+  
+  
+
+  
+
+  <link rel="manifest" href="/index.webmanifest">
+  <link rel="icon" type="image/png" href="/images/icon_hu5cb5fae69b6b75ece00896ca20e5499a_29457_32x32_fill_lanczos_center_2.png">
+  <link rel="apple-touch-icon" type="image/png" href="/images/icon_hu5cb5fae69b6b75ece00896ca20e5499a_29457_192x192_fill_lanczos_center_2.png">
+
+  <link rel="canonical" href="https://ssc442.netlify.app/example/11-example/">
+
+  
+  
+  
+  
+  
+  
+  
+    
+  
+  
+  <meta property="twitter:card" content="summary_large_image">
+  
+  <meta property="og:site_name" content="Data Analytics">
+  <meta property="og:url" content="https://ssc442.netlify.app/example/11-example/">
+  <meta property="og:title" content="Classification | Data Analytics">
+  <meta property="og:description" content="spam Example  Evaluating Classifiers    This week’s weekly writing is to generate an ROC curve with data from the SAHeart dataset. It is available as a part of the bestglm package. We will build toward this exercise in class using a different example.
+ spam Example To illustrate the use of logistic regression as a classifier, we will use the spam dataset from the kernlab package."><meta property="og:image" content="https://ssc442.netlify.app/img/social-image.png">
+  <meta property="twitter:image" content="https://ssc442.netlify.app/img/social-image.png"><meta property="og:locale" content="en-us">
+  
+    
+      <meta property="article:published_time" content="2021-11-11T00:00:00&#43;00:00">
+    
+    <meta property="article:modified_time" content="2021-08-16T11:31:26-04:00">
+  
+
+  
+
+
+
+  
+
+
+  
+
+
+  <link rel="shortcut icon" href="https://ssc442.netlify.app/favicon.ico" />
+  <link rel="apple-touch-icon-precomposed" sizes="57x57" href="https://ssc442.netlify.app/img/apple-touch-icon-57x57.png" />
+  <link rel="apple-touch-icon-precomposed" sizes="114x114" href="https://ssc442.netlify.app/img/apple-touch-icon-114x114.png" />
+  <link rel="apple-touch-icon-precomposed" sizes="72x72" href="https://ssc442.netlify.app/img/apple-touch-icon-72x72.png" />
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://ssc442.netlify.app/img/apple-touch-icon-144x144.png" />
+  <link rel="apple-touch-icon-precomposed" sizes="120x120" href="https://ssc442.netlify.app/img/apple-touch-icon-120x120.png" />
+  <link rel="apple-touch-icon-precomposed" sizes="152x152" href="https://ssc442.netlify.app/img/apple-touch-icon-152x152.png" />
+  <link rel="icon" type="image/png" href="https://ssc442.netlify.app/img/favicon-32x32.png" sizes="32x32" />
+  <link rel="icon" type="image/png" href="https://ssc442.netlify.app/img/favicon-16x16.png" sizes="16x16" />
+  <meta name="application-name" content="SSC 442: Data Analytics" />
+  <meta name="msapplication-TileColor" content="#FFFFFF" />
+  <meta name="msapplication-TileImage" content="https://ssc442.netlify.app/img/mstile-144x144.png" />
+
+
+  <title>Classification | Data Analytics</title>
+
+</head>
+
+
+<body id="top" data-spy="scroll" data-offset="70"
+    data-target="#TableOfContents"
+    >
+
+    <aside class="search-results" id="search">
+  <div class="container">
+    <section class="search-header">
+
+      <div class="row no-gutters justify-content-between mb-3">
+        <div class="col-6">
+          <h1>Search</h1>
+        </div>
+        <div class="col-6 col-search-close">
+          <a class="js-search" href="#"><i class="fas fa-times-circle text-muted" aria-hidden="true"></i></a>
+        </div>
+      </div>
+
+      <div id="search-box">
+        
+        
+        
+      </div>
+
+    </section>
+    <section class="section-search-results">
+
+      <div id="search-hits">
+        
+      </div>
+
+    </section>
+  </div>
+</aside>
+
+
+    
+
+
+
+
+
+
+
+<nav class="navbar navbar-expand-lg navbar-light compensate-for-scrollbar" id="navbar-main">
+  <div class="container">
+
+    
+    <div class="d-none d-lg-inline-flex">
+      <a class="navbar-brand" href="/">Data Analytics</a>
+    </div>
+    
+
+    
+    <button type="button" class="navbar-toggler" data-toggle="collapse"
+            data-target="#navbar-content" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
+    <span><i class="fas fa-bars"></i></span>
+    </button>
+    
+
+    
+    <div class="navbar-brand-mobile-wrapper d-inline-flex d-lg-none">
+      <a class="navbar-brand" href="/">Data Analytics</a>
+    </div>
+    
+
+    
+    
+    <div class="navbar-collapse main-menu-item collapse justify-content-end" id="navbar-content">
+
+      
+      <ul class="navbar-nav d-md-inline-flex">
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/syllabus/"><span>Syllabus</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/schedule/"><span>Schedule</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/content/"><span>Content</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link  active" href="/example/"><span>Examples</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/assignment/"><span>Assignments</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+            
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="https://join.slack.com/t/ssc442/shared_invite/zt-v3n7r8hh-TjwMzpDLBSywvVYwzftqXA" target="_blank" rel="noopener"><span><i class="fab fa-slack"></i></span></a>
+        </li>
+
+        
+        
+
+      
+
+        
+      </ul>
+    </div>
+
+    <ul class="nav-icons navbar-nav flex-row ml-auto d-flex pl-md-2">
+      
+
+      
+
+      
+
+    </ul>
+
+  </div>
+</nav>
+
+
+    
+
+<div class="container-fluid docs">
+    <div class="row flex-xl-nowrap">
+        <div class="col-12 col-md-3 col-xl-2 docs-sidebar">
+            
+
+
+
+
+
+  
+    
+  
+
+
+
+
+<form class="docs-search d-flex align-items-center">
+  <button class="btn docs-toggle d-md-none p-0 mr-3" type="button" data-toggle="collapse" data-target="#docs-nav" aria-controls="docs-nav" aria-expanded="false" aria-label="Toggle section navigation">
+    <span><i class="fas fa-bars"></i></span>
+  </button>
+
+  
+</form>
+
+<nav class="collapse docs-links" id="docs-nav">
+  
+
+  
+  
+  
+  
+  <div class="docs-toc-item">
+    <a class="docs-toc-link" href="/example/">Practical Content in This Class</a>
+
+  </div>
+  
+  <div class="docs-toc-item">
+    <a class="docs-toc-link" href="/example/10-example/">Examples</a>
+    <ul class="nav docs-sidenav">
+      
+      <li >
+        <a href="/example/10-example/">10: Nonparametric Regression</a>
+      </li>
+      
+      <li class="active">
+        <a href="/example/11-example/">11: Classification</a>
+      </li>
+      
+      <li >
+        <a href="/example/01-example/">1: Introduction to R</a>
+      </li>
+      
+      <li >
+        <a href="/example/02-example/">2: Visualization I</a>
+      </li>
+      
+      <li >
+        <a href="/example/03-example/">3: Visualization II</a>
+      </li>
+      
+      <li >
+        <a href="/example/04-example/">4: Visualization III</a>
+      </li>
+      
+      <li >
+        <a href="/example/05-example/">5: Uncertainty</a>
+      </li>
+      
+      <li >
+        <a href="/example/06-example/">6: Linear Regression I</a>
+      </li>
+      
+      <li >
+        <a href="/example/07-example/">7: Linear Regression II</a>
+      </li>
+      
+      <li >
+        <a href="/example/08-example/">8: Linear Regression III</a>
+      </li>
+      
+      <li >
+        <a href="/example/09-example/">9: Bias vs. Variance</a>
+      </li>
+      
+    </ul>
+    
+
+  </div>
+  
+  
+</nav>
+
+        </div>
+
+        
+
+        <main class="col-12 col-md-9 col-xl-8 py-md-3 pl-md-5 docs-content" role="main">
+
+            <article class="article">
+
+                <div class="docs-article-container">
+                    <h1>Classification</h1>
+
+                    
+
+                    
+                    <div class="due-date p-2 mb-3 bg-content text-white">
+                        Content for Thursday, November 11, 2021
+                    </div>
+                    
+
+                    
+
+                    <div class="article-style">
+                        
+<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+
+<div id="TOC">
+<ul>
+<li><a href="#spam-example"><code>spam</code> Example</a>
+<ul>
+<li><a href="#evaluating-classifiers">Evaluating Classifiers</a></li>
+</ul></li>
+</ul>
+</div>
+
+<div class="fyi">
+<p>This week’s weekly writing is to generate an ROC curve with data from the <code>SAHeart</code> dataset. It is available as a part of the <code>bestglm</code> package. We will build toward this exercise in class using a different example.</p>
+</div>
+<div id="spam-example" class="section level1">
+<h1><code>spam</code> Example</h1>
+<p>To illustrate the use of logistic regression as a classifier, we will use the <code>spam</code> dataset from the <code>kernlab</code> package.</p>
+<pre class="r"><code># install.packages(&quot;kernlab&quot;)
+library(kernlab)
+data(&quot;spam&quot;)
+tibble::as.tibble(spam)</code></pre>
+<pre><code>## Warning: `as.tibble()` was deprecated in tibble 2.0.0.
+## Please use `as_tibble()` instead.
+## The signature and semantics have changed, see `?as_tibble`.</code></pre>
+<pre><code>## # A tibble: 4,601 × 58
+##     make address   all num3d   our  over remove internet order  mail receive
+##    &lt;dbl&gt;   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt;    &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt;
+##  1  0       0.64  0.64     0  0.32  0      0        0     0     0       0   
+##  2  0.21    0.28  0.5      0  0.14  0.28   0.21     0.07  0     0.94    0.21
+##  3  0.06    0     0.71     0  1.23  0.19   0.19     0.12  0.64  0.25    0.38
+##  4  0       0     0        0  0.63  0      0.31     0.63  0.31  0.63    0.31
+##  5  0       0     0        0  0.63  0      0.31     0.63  0.31  0.63    0.31
+##  6  0       0     0        0  1.85  0      0        1.85  0     0       0   
+##  7  0       0     0        0  1.92  0      0        0     0     0.64    0.96
+##  8  0       0     0        0  1.88  0      0        1.88  0     0       0   
+##  9  0.15    0     0.46     0  0.61  0      0.3      0     0.92  0.76    0.76
+## 10  0.06    0.12  0.77     0  0.19  0.32   0.38     0     0.06  0       0   
+## # … with 4,591 more rows, and 47 more variables: will &lt;dbl&gt;, people &lt;dbl&gt;,
+## #   report &lt;dbl&gt;, addresses &lt;dbl&gt;, free &lt;dbl&gt;, business &lt;dbl&gt;, email &lt;dbl&gt;,
+## #   you &lt;dbl&gt;, credit &lt;dbl&gt;, your &lt;dbl&gt;, font &lt;dbl&gt;, num000 &lt;dbl&gt;, money &lt;dbl&gt;,
+## #   hp &lt;dbl&gt;, hpl &lt;dbl&gt;, george &lt;dbl&gt;, num650 &lt;dbl&gt;, lab &lt;dbl&gt;, labs &lt;dbl&gt;,
+## #   telnet &lt;dbl&gt;, num857 &lt;dbl&gt;, data &lt;dbl&gt;, num415 &lt;dbl&gt;, num85 &lt;dbl&gt;,
+## #   technology &lt;dbl&gt;, num1999 &lt;dbl&gt;, parts &lt;dbl&gt;, pm &lt;dbl&gt;, direct &lt;dbl&gt;,
+## #   cs &lt;dbl&gt;, meeting &lt;dbl&gt;, original &lt;dbl&gt;, project &lt;dbl&gt;, re &lt;dbl&gt;, …</code></pre>
+<p>This dataset, created in the late 1990s at Hewlett-Packard Labs, contains 4601 emails, of which 1813 are considered spam. The remaining are not spam. (Which for simplicity, we might call, ham.) Additional details can be obtained by using <code>?spam</code> of by visiting the <a href="https://archive.ics.uci.edu/ml/datasets/spambase" target="_blank">UCI Machine Learning Repository</a>.</p>
+<p>The response variable, <code>type</code>, is a <strong>factor</strong> with levels that label each email as <code>spam</code> or <code>nonspam</code>. When fitting models, <code>nonspam</code> will be the reference level, <span class="math inline">\(Y = 0\)</span>, as it comes first alphabetically.</p>
+<pre class="r"><code>is.factor(spam$type)</code></pre>
+<pre><code>## [1] TRUE</code></pre>
+<pre class="r"><code>levels(spam$type)</code></pre>
+<pre><code>## [1] &quot;nonspam&quot; &quot;spam&quot;</code></pre>
+<p>Many of the predictors (often called features in machine learning) are engineered based on the emails. For example, <code>charDollar</code> is the number of times an email contains the <code>$</code> character. Some variables are highly specific to this dataset, for example <code>george</code> and <code>num650</code>. (The name and area code for one of the researchers whose emails were used.) We should keep in mind that this dataset was created based on emails send to academic type researcher in the 1990s. Any results we derive probably won’t generalize to modern emails for the general public.</p>
+<p>To get started, we’ll first test-train split the data.</p>
+<pre class="r"><code>set.seed(42)
+# spam_idx = sample(nrow(spam), round(nrow(spam) / 2))
+spam_idx = sample(nrow(spam), 1000)
+spam_trn = spam[spam_idx, ]
+spam_tst = spam[-spam_idx, ]</code></pre>
+<p>We’ve used a somewhat small train set relative to the total size of the dataset. In practice it should likely be larger, but this is simply to keep training time low for illustration and rendering of this document.</p>
+<pre class="r"><code>fit_caps = glm(type ~ capitalTotal,
+               data = spam_trn, family = binomial)
+fit_selected = glm(type ~ edu + money + capitalTotal + charDollar,
+                   data = spam_trn, family = binomial)
+fit_additive = glm(type ~ .,
+                   data = spam_trn, family = binomial)
+fit_over = glm(type ~ capitalTotal * (.),
+               data = spam_trn, family = binomial, maxit = 50)</code></pre>
+<p>We’ll fit four logistic regressions, each more complex than the previous. Note that we’re suppressing two warnings. The first we briefly mentioned previously.</p>
+<pre><code>## Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred</code></pre>
+<p>Note that, when we receive this warning, we should be highly suspicious of the parameter estimates.</p>
+<pre class="r"><code>coef(fit_selected)</code></pre>
+<pre><code>##   (Intercept)           edu         money  capitalTotal    charDollar 
+## -1.1199744712 -1.9837988840  0.9784675298  0.0007757011 11.5772904667</code></pre>
+<p>However, the model can still be used to create a classifier, and we will evaluate that classifier on its own merits.</p>
+<p>We also, “suppressed” the warning:</p>
+<pre><code>## Warning: glm.fit: algorithm did not converge</code></pre>
+<p>In reality, we didn’t actually suppress it, but instead changed <code>maxit</code> to <code>50</code>, when fitting the model <code>fit_over</code>. This was enough additional iterations to allow the iteratively reweighted least squares algorithm to converge when fitting the model.</p>
+<div id="evaluating-classifiers" class="section level3">
+<h3>Evaluating Classifiers</h3>
+<p>The metric we’ll be most interested in for evaluating the overall performance of a classifier is the <strong>misclassification rate</strong>. (Sometimes, instead accuracy is reported, which is instead the proportion of correction classifications, so both metrics serve the same purpose.)</p>
+<p><span class="math display">\[
+\text{Misclass}(\hat{C}, \text{Data}) = \frac{1}{n}\sum_{i = 1}^{n}I(y_i \neq \hat{C}({\bf x_i}))
+\]</span></p>
+<p><span class="math display">\[
+I(y_i \neq \hat{C}({\bf x_i})) =
+\begin{cases}
+  0 &amp; y_i = \hat{C}({\bf x_i}) \\
+  1 &amp; y_i \neq \hat{C}({\bf x_i}) \\
+\end{cases}
+\]</span></p>
+<p>When using this metric on the training data, it will have the same issues as RSS did for ordinary linear regression, that is, it will only go down.</p>
+<pre class="r"><code># training misclassification rate
+mean(ifelse(predict(fit_caps) &gt; 0, &quot;spam&quot;, &quot;nonspam&quot;) != spam_trn$type)</code></pre>
+<pre><code>## [1] 0.339</code></pre>
+<pre class="r"><code>mean(ifelse(predict(fit_selected) &gt; 0, &quot;spam&quot;, &quot;nonspam&quot;) != spam_trn$type)</code></pre>
+<pre><code>## [1] 0.224</code></pre>
+<pre class="r"><code>mean(ifelse(predict(fit_additive) &gt; 0, &quot;spam&quot;, &quot;nonspam&quot;) != spam_trn$type)</code></pre>
+<pre><code>## [1] 0.066</code></pre>
+<pre class="r"><code>mean(ifelse(predict(fit_over) &gt; 0, &quot;spam&quot;, &quot;nonspam&quot;) != spam_trn$type)</code></pre>
+<pre><code>## [1] 0.136</code></pre>
+<p>Because of this, training data isn’t useful for evaluating, as it would suggest that we should always use the largest possible model, when in reality, that model is likely overfitting. Recall, a model that is too complex will overfit. A model that is too simple will underfit. (We’re looking for something in the middle.)</p>
+<p>To overcome this, we’ll use cross-validation as we did with ordinary linear regression, but this time we’ll cross-validate the misclassification rate. To do so, we’ll use the <code>cv.glm()</code> function from the <code>boot</code> library. It takes arguments for the data (in this case training), a model fit via <code>glm()</code>, and <code>K</code>, the number of folds. See <code>?cv.glm</code> for details.</p>
+<p>Previously, for cross-validating RMSE in ordinary linear regression, we used LOOCV. We certainly could do that here. However, with logistic regression, we no longer have the clever trick that would allow use to obtain a LOOCV metric without needing to fit the model <span class="math inline">\(n\)</span> times. So instead, we’ll use 5-fold cross-validation. (5 and 10 fold are the most common in practice.) Instead of leaving a single observation out repeatedly, we’ll leave out a fifth of the data.</p>
+<p>Essentially we’ll repeat the following process 5 times:</p>
+<ul>
+<li>Randomly set aside a fifth of the data (each observation will only be held-out once)</li>
+<li>Train model on remaining data</li>
+<li>Evaluate misclassification rate on held-out data</li>
+</ul>
+<p>The 5-fold cross-validated misclassification rate will be the average of these misclassification rates. By only needing to refit the model 5 times, instead of <span class="math inline">\(n\)</span> times, we will save a lot of computation time.</p>
+<pre class="r"><code>library(boot)
+set.seed(1)
+cv.glm(spam_trn, fit_caps, K = 5)$delta[1]</code></pre>
+<pre><code>## [1] 0.2166961</code></pre>
+<pre class="r"><code>cv.glm(spam_trn, fit_selected, K = 5)$delta[1]</code></pre>
+<pre><code>## [1] 0.1587043</code></pre>
+<pre class="r"><code>cv.glm(spam_trn, fit_additive, K = 5)$delta[1]</code></pre>
+<pre><code>## [1] 0.08684467</code></pre>
+<pre class="r"><code>cv.glm(spam_trn, fit_over, K = 5)$delta[1]</code></pre>
+<pre><code>## [1] 0.137</code></pre>
+<p>Note that we’re suppressing warnings again here. (Now there would be a lot more, since were fitting a total of 20 models.)</p>
+<p>Based on these results, <code>fit_caps</code> and <code>fit_selected</code> are underfitting relative to <code>fit_additive</code>. Similarly, <code>fit_over</code> is overfitting relative to <code>fit_additive</code>. Thus, based on these results, we prefer the classifier created based on the logistic regression fit and stored in <code>fit_additive</code>.</p>
+<p>Going forward, to evaluate and report on the efficacy of this classifier, we’ll use the test dataset. We’re going to take the position that the test data set should <strong>never</strong> be used in training, which is why we used cross-validation within the training dataset to select a model. Even though cross-validation uses hold-out sets to generate metrics, at some point all of the data is used for training.</p>
+<p>To quickly summarize how well this classifier works, we’ll create a confusion matrix.</p>
+<div class="figure">
+<img src="images/confusion.png" alt="" />
+<p class="caption">Confusion Matrix</p>
+</div>
+<p>It further breaks down the classification errors into false positives and false negatives.</p>
+<pre class="r"><code>make_conf_mat = function(predicted, actual) {
+  table(predicted = predicted, actual = actual)
+}</code></pre>
+<p>Let’s explicitly store the predicted values of our classifier on the test dataset.</p>
+<pre class="r"><code>spam_tst_pred = ifelse(predict(fit_additive, spam_tst) &gt; 0,
+                       &quot;spam&quot;,
+                       &quot;nonspam&quot;)
+spam_tst_pred = ifelse(predict(fit_additive, spam_tst, type = &quot;response&quot;) &gt; 0.5,
+                       &quot;spam&quot;,
+                       &quot;nonspam&quot;)</code></pre>
+<p>The previous two lines of code produce the same output, that is the same predictions, since</p>
+<p><span class="math display">\[
+\eta({\bf x}) = 0 \iff p({\bf x}) = 0.5
+\]</span>
+Now we’ll use these predictions to create a confusion matrix.</p>
+<pre class="r"><code>(conf_mat_50 = make_conf_mat(predicted = spam_tst_pred, actual = spam_tst$type))</code></pre>
+<pre><code>##          actual
+## predicted nonspam spam
+##   nonspam    2057  157
+##   spam        127 1260</code></pre>
+<p><span class="math display">\[
+\text{Prev} = \frac{\text{P}}{\text{Total Obs}}= \frac{\text{TP + FN}}{\text{Total Obs}}
+\]</span></p>
+<pre class="r"><code>table(spam_tst$type) / nrow(spam_tst)</code></pre>
+<pre><code>## 
+##   nonspam      spam 
+## 0.6064982 0.3935018</code></pre>
+<p>First, note that to be a reasonable classifier, it needs to outperform the obvious classifier of simply classifying all observations to the majority class. In this case, classifying everything as non-spam for a test misclassification rate of 0.3935018</p>
+<p>Next, we can see that using the classifier create from <code>fit_additive</code>, only a total of <span class="math inline">\(137 + 161 = 298\)</span> from the total of 3601 email in the test set are misclassified. Overall, the accuracy in the test set it</p>
+<pre class="r"><code>mean(spam_tst_pred == spam_tst$type)</code></pre>
+<pre><code>## [1] 0.921133</code></pre>
+<p>In other words, the test misclassification is</p>
+<pre class="r"><code>mean(spam_tst_pred != spam_tst$type)</code></pre>
+<pre><code>## [1] 0.07886698</code></pre>
+<p>This seems like a decent classifier…</p>
+<p>However, are all errors created equal? In this case, absolutely not. The 137 non-spam emails that were marked as spam (false positives) are a problem. We can’t allow important information, say, a job offer, miss our inbox and get sent to the spam folder. On the other hand, the 161 spam email that would make it to an inbox (false negatives) are easily dealt with, just delete them.</p>
+<p>Instead of simply evaluating a classifier based on its misclassification rate (or accuracy), we’ll define two additional metrics, sensitivity and specificity. Note that these are simply two of many more metrics that can be considered. The <a href="https://en.wikipedia.org/wiki/Sensitivity_and_specificity" target="_blank">Wikipedia page for sensitivity and specificity</a> details a large number of metrics that can be derived form a confusion matrix.</p>
+<p><strong>Sensitivity</strong> is essentially the true positive rate. So when sensitivity is high, the number of false negatives is low.</p>
+<p><span class="math display">\[
+\text{Sens} = \text{True Positive Rate} = \frac{\text{TP}}{\text{P}} = \frac{\text{TP}}{\text{TP + FN}}
+\]</span></p>
+<p>Here we have an <code>R</code> function to calculate the sensitivity based on the confusion matrix. Note that this function is good for illustrative purposes, but is easily broken. (Think about what happens if there are no “positives” predicted.)</p>
+<pre class="r"><code>get_sens = function(conf_mat) {
+  conf_mat[2, 2] / sum(conf_mat[, 2])
+}</code></pre>
+<p><strong>Specificity</strong> is essentially the true negative rate. So when specificity is high, the number of false positives is low.</p>
+<p><span class="math display">\[
+\text{Spec} = \text{True Negative Rate} = \frac{\text{TN}}{\text{N}} = \frac{\text{TN}}{\text{TN + FP}}
+\]</span></p>
+<pre class="r"><code>get_spec =  function(conf_mat) {
+  conf_mat[1, 1] / sum(conf_mat[, 1])
+}</code></pre>
+<p>We calculate both based on the confusion matrix we had created for our classifier.</p>
+<pre class="r"><code>get_sens(conf_mat_50)</code></pre>
+<pre><code>## [1] 0.8892025</code></pre>
+<pre class="r"><code>get_spec(conf_mat_50)</code></pre>
+<pre><code>## [1] 0.9418498</code></pre>
+<p>Recall that we had created this classifier using a probability of <span class="math inline">\(0.5\)</span> as a “cutoff” for how observations should be classified. Now we’ll modify this cutoff. We’ll see that by modifying the cutoff, <span class="math inline">\(c\)</span>, we can improve sensitivity or specificity at the expense of the overall accuracy (misclassification rate).</p>
+<p><span class="math display">\[
+\hat{C}(\bf x) =
+\begin{cases}
+      1 &amp; \hat{p}({\bf x}) &gt; c \\
+      0 &amp; \hat{p}({\bf x}) \leq c
+\end{cases}
+\]</span></p>
+<p>Additionally, if we change the cutoff to improve sensitivity, we’ll decrease specificity, and vice versa.</p>
+<p>First let’s see what happens when we lower the cutoff from <span class="math inline">\(0.5\)</span> to <span class="math inline">\(0.1\)</span> to create a new classifier, and thus new predictions.</p>
+<pre class="r"><code>spam_tst_pred_10 = ifelse(predict(fit_additive, spam_tst, type = &quot;response&quot;) &gt; 0.1,
+                          &quot;spam&quot;,
+                          &quot;nonspam&quot;)</code></pre>
+<p>This is essentially <em>decreasing</em> the threshold for an email to be labeled as spam, so far <em>more</em> emails will be labeled as spam. We see that in the following confusion matrix.</p>
+<pre class="r"><code>(conf_mat_10 = make_conf_mat(predicted = spam_tst_pred_10, actual = spam_tst$type))</code></pre>
+<pre><code>##          actual
+## predicted nonspam spam
+##   nonspam    1583   29
+##   spam        601 1388</code></pre>
+<p>Unfortunately, while this does greatly reduce false negatives, false positives have almost quadrupled. We see this reflected in the sensitivity and specificity.</p>
+<pre class="r"><code>get_sens(conf_mat_10)</code></pre>
+<pre><code>## [1] 0.9795342</code></pre>
+<pre class="r"><code>get_spec(conf_mat_10)</code></pre>
+<pre><code>## [1] 0.7248168</code></pre>
+<p>This classifier, using <span class="math inline">\(0.1\)</span> instead of <span class="math inline">\(0.5\)</span> has a higher sensitivity, but a much lower specificity. Clearly, we should have moved the cutoff in the other direction. Let’s try <span class="math inline">\(0.9\)</span>.</p>
+<pre class="r"><code>spam_tst_pred_90 = ifelse(predict(fit_additive, spam_tst, type = &quot;response&quot;) &gt; 0.9,
+                          &quot;spam&quot;,
+                          &quot;nonspam&quot;)</code></pre>
+<p>This is essentially <em>increasing</em> the threshold for an email to be labeled as spam, so far <em>fewer</em> emails will be labeled as spam. Again, we see that in the following confusion matrix.</p>
+<pre class="r"><code>(conf_mat_90 = make_conf_mat(predicted = spam_tst_pred_90, actual = spam_tst$type))</code></pre>
+<pre><code>##          actual
+## predicted nonspam spam
+##   nonspam    2136  537
+##   spam         48  880</code></pre>
+<p>This is the result we’re looking for. We have far fewer false positives. While sensitivity is greatly reduced, specificity has gone up.</p>
+<pre class="r"><code>get_sens(conf_mat_90)</code></pre>
+<pre><code>## [1] 0.6210303</code></pre>
+<pre class="r"><code>get_spec(conf_mat_90)</code></pre>
+<pre><code>## [1] 0.978022</code></pre>
+<p>While this is far fewer false positives, is it acceptable though? Still probably not. Also, don’t forget, this would actually be a terrible spam detector today since this is based on data from a very different era of the internet, for a very specific set of people. Spam has changed a lot since 90s! (Ironically, machine learning is probably partially to blame.)</p>
+</div>
+</div>
+
+                    </div>
+
+                    
+
+
+
+                    
+                </div>
+
+                <div class="body-footer">
+                    <p>Last updated on August 16, 2021</p>
+
+                    
+
+
+                    
+
+                </div>
+
+            </article>
+
+            <footer>
+    <hr>
+
+    <div class="row course-info">
+        <div class="col-md-7">
+            <p>
+                <strong>SSC 442: Data Analytics (Fall Semester 2021)</strong><br>
+
+                <a href="https://www.msu.edu" target="_blank" rel="noopener">Michigan State University</a> &emsp;&emsp;
+                <a href="https://socialscience.msu.edu/" target="_blank" rel="noopener">College of Social Science</a>
+            </p>
+
+            <p>
+                <a href="https://www.benbushong.com" target="_blank" rel="noopener"><i class="fas fa-user"></i>
+                    Prof. Ben Bushong</a> &emsp;&emsp;
+                <a href="mailto:bbushong@msu.edu"><i class="fas fa-envelope"></i>
+                    bbushong@msu.edu</a>
+            </p>
+
+            <p>
+                <i class="far fa-calendar-alt"></i> Tuesday and Thursday &emsp;&emsp;
+                <i class="far fa-clock"></i> 12:40pm - 2:00pm 
+                
+            </p>
+        </div>
+
+        <div class="col-md-5 credits">
+            <p>All content licensed under a <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" rel="noopener">Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International License</a>.</p>
+            
+            <p>Content <i class="fab fa-creative-commons"></i> 2021 <a href="https://www.benbushong.com" target="_blank" rel="noopener"></a></p>
+        
+            <p>This site created with the <a href="https://sourcethemes.com/academic/" target="_blank" rel="noopener">Academic theme</a> in <a href="https://bookdown.org/yihui/blogdown/" target="_blank" rel="noopener">blogdown</a> and <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a>. </p>
+            
+            <p><a href="https://github.com/" target="_blank" rel="noopener"><i class="fab fa-github"></i> View the source at GitHub.</a></p>
+        </div>
+    </div>
+</footer>
+
+
+        </main>
+    </div>
+</div>
+
+        
+
+    
+    
+    
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/4.1.4/imagesloaded.pkgd.min.js" integrity="sha256-lqvxZrPLtfffUl2G/e7szqSvPBILGbwmsGE1MKlOi0Q=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.6/isotope.pkgd.min.js" integrity="sha256-CBrpuqrMhXwcLLUd5tvQ4euBHCdh7wGlDfNz8vbu/iI=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+
+      
+
+      
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/highlight.min.js" integrity="sha256-eOgo0OtLL4cdq7RdwRUiGKLX9XsIJ7nGhWEKbohmVAQ=" crossorigin="anonymous"></script>
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/languages/r.min.js"></script>
+        
+      
+
+    
+
+    
+    
+
+    
+    
+    <script>const code_highlighting = true;</script>
+    
+
+    
+    
+    <script>const isSiteThemeDark = false;</script>
+    
+
+    
+
+    
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/anchor-js/4.1.1/anchor.min.js" integrity="sha256-pB/deHc9CGfFpJRjC43imB29Rse8tak+5eXqntO94ck=" crossorigin="anonymous"></script>
+    <script>
+      anchors.add();
+    </script>
+    
+
+    
+
+    
+    
+
+    
+    
+
+    
+    
+
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <script src="/js/academic.min.6f7ce8be710290b8c431bbc97f405d15.js"></script>
+
+    
+
+
+
+    
+    
+
+    
+<div id="modal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Cite</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <pre><code class="tex hljs"></code></pre>
+      </div>
+      <div class="modal-footer">
+        <a class="btn btn-outline-primary my-1 js-copy-cite" href="#" target="_blank">
+          <i class="fas fa-copy"></i> Copy
+        </a>
+        <a class="btn btn-outline-primary my-1 js-download-cite" href="#" target="_blank">
+          <i class="fas fa-download"></i> Download
+        </a>
+        <div id="modal-error"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+
+</html>

@@ -13,6 +13,242 @@
     </image>
     
     <item>
+      <title>Classification</title>
+      <link>https://ssc442.netlify.app/example/11-example/</link>
+      <pubDate>Thu, 11 Nov 2021 00:00:00 +0000</pubDate>
+      <guid>https://ssc442.netlify.app/example/11-example/</guid>
+      <description>
+&lt;script src=&#34;https://ssc442.netlify.app/rmarkdown-libs/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
+
+&lt;div id=&#34;TOC&#34;&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#spam-example&#34;&gt;&lt;code&gt;spam&lt;/code&gt; Example&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#evaluating-classifiers&#34;&gt;Evaluating Classifiers&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+
+&lt;div class=&#34;fyi&#34;&gt;
+&lt;p&gt;This week’s weekly writing is to generate an ROC curve with data from the &lt;code&gt;SAHeart&lt;/code&gt; dataset. It is available as a part of the &lt;code&gt;bestglm&lt;/code&gt; package. We will build toward this exercise in class using a different example.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;spam-example&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;&lt;code&gt;spam&lt;/code&gt; Example&lt;/h1&gt;
+&lt;p&gt;To illustrate the use of logistic regression as a classifier, we will use the &lt;code&gt;spam&lt;/code&gt; dataset from the &lt;code&gt;kernlab&lt;/code&gt; package.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# install.packages(&amp;quot;kernlab&amp;quot;)
+library(kernlab)
+data(&amp;quot;spam&amp;quot;)
+tibble::as.tibble(spam)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Warning: `as.tibble()` was deprecated in tibble 2.0.0.
+## Please use `as_tibble()` instead.
+## The signature and semantics have changed, see `?as_tibble`.&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 4,601 × 58
+##     make address   all num3d   our  over remove internet order  mail receive
+##    &amp;lt;dbl&amp;gt;   &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt;  &amp;lt;dbl&amp;gt;    &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt;   &amp;lt;dbl&amp;gt;
+##  1  0       0.64  0.64     0  0.32  0      0        0     0     0       0   
+##  2  0.21    0.28  0.5      0  0.14  0.28   0.21     0.07  0     0.94    0.21
+##  3  0.06    0     0.71     0  1.23  0.19   0.19     0.12  0.64  0.25    0.38
+##  4  0       0     0        0  0.63  0      0.31     0.63  0.31  0.63    0.31
+##  5  0       0     0        0  0.63  0      0.31     0.63  0.31  0.63    0.31
+##  6  0       0     0        0  1.85  0      0        1.85  0     0       0   
+##  7  0       0     0        0  1.92  0      0        0     0     0.64    0.96
+##  8  0       0     0        0  1.88  0      0        1.88  0     0       0   
+##  9  0.15    0     0.46     0  0.61  0      0.3      0     0.92  0.76    0.76
+## 10  0.06    0.12  0.77     0  0.19  0.32   0.38     0     0.06  0       0   
+## # … with 4,591 more rows, and 47 more variables: will &amp;lt;dbl&amp;gt;, people &amp;lt;dbl&amp;gt;,
+## #   report &amp;lt;dbl&amp;gt;, addresses &amp;lt;dbl&amp;gt;, free &amp;lt;dbl&amp;gt;, business &amp;lt;dbl&amp;gt;, email &amp;lt;dbl&amp;gt;,
+## #   you &amp;lt;dbl&amp;gt;, credit &amp;lt;dbl&amp;gt;, your &amp;lt;dbl&amp;gt;, font &amp;lt;dbl&amp;gt;, num000 &amp;lt;dbl&amp;gt;, money &amp;lt;dbl&amp;gt;,
+## #   hp &amp;lt;dbl&amp;gt;, hpl &amp;lt;dbl&amp;gt;, george &amp;lt;dbl&amp;gt;, num650 &amp;lt;dbl&amp;gt;, lab &amp;lt;dbl&amp;gt;, labs &amp;lt;dbl&amp;gt;,
+## #   telnet &amp;lt;dbl&amp;gt;, num857 &amp;lt;dbl&amp;gt;, data &amp;lt;dbl&amp;gt;, num415 &amp;lt;dbl&amp;gt;, num85 &amp;lt;dbl&amp;gt;,
+## #   technology &amp;lt;dbl&amp;gt;, num1999 &amp;lt;dbl&amp;gt;, parts &amp;lt;dbl&amp;gt;, pm &amp;lt;dbl&amp;gt;, direct &amp;lt;dbl&amp;gt;,
+## #   cs &amp;lt;dbl&amp;gt;, meeting &amp;lt;dbl&amp;gt;, original &amp;lt;dbl&amp;gt;, project &amp;lt;dbl&amp;gt;, re &amp;lt;dbl&amp;gt;, …&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;This dataset, created in the late 1990s at Hewlett-Packard Labs, contains 4601 emails, of which 1813 are considered spam. The remaining are not spam. (Which for simplicity, we might call, ham.) Additional details can be obtained by using &lt;code&gt;?spam&lt;/code&gt; of by visiting the &lt;a href=&#34;https://archive.ics.uci.edu/ml/datasets/spambase&#34; target=&#34;_blank&#34;&gt;UCI Machine Learning Repository&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;The response variable, &lt;code&gt;type&lt;/code&gt;, is a &lt;strong&gt;factor&lt;/strong&gt; with levels that label each email as &lt;code&gt;spam&lt;/code&gt; or &lt;code&gt;nonspam&lt;/code&gt;. When fitting models, &lt;code&gt;nonspam&lt;/code&gt; will be the reference level, &lt;span class=&#34;math inline&#34;&gt;\(Y = 0\)&lt;/span&gt;, as it comes first alphabetically.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;is.factor(spam$type)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] TRUE&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;levels(spam$type)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;nonspam&amp;quot; &amp;quot;spam&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Many of the predictors (often called features in machine learning) are engineered based on the emails. For example, &lt;code&gt;charDollar&lt;/code&gt; is the number of times an email contains the &lt;code&gt;$&lt;/code&gt; character. Some variables are highly specific to this dataset, for example &lt;code&gt;george&lt;/code&gt; and &lt;code&gt;num650&lt;/code&gt;. (The name and area code for one of the researchers whose emails were used.) We should keep in mind that this dataset was created based on emails send to academic type researcher in the 1990s. Any results we derive probably won’t generalize to modern emails for the general public.&lt;/p&gt;
+&lt;p&gt;To get started, we’ll first test-train split the data.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;set.seed(42)
+# spam_idx = sample(nrow(spam), round(nrow(spam) / 2))
+spam_idx = sample(nrow(spam), 1000)
+spam_trn = spam[spam_idx, ]
+spam_tst = spam[-spam_idx, ]&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;We’ve used a somewhat small train set relative to the total size of the dataset. In practice it should likely be larger, but this is simply to keep training time low for illustration and rendering of this document.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;fit_caps = glm(type ~ capitalTotal,
+               data = spam_trn, family = binomial)
+fit_selected = glm(type ~ edu + money + capitalTotal + charDollar,
+                   data = spam_trn, family = binomial)
+fit_additive = glm(type ~ .,
+                   data = spam_trn, family = binomial)
+fit_over = glm(type ~ capitalTotal * (.),
+               data = spam_trn, family = binomial, maxit = 50)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;We’ll fit four logistic regressions, each more complex than the previous. Note that we’re suppressing two warnings. The first we briefly mentioned previously.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;## Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Note that, when we receive this warning, we should be highly suspicious of the parameter estimates.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;coef(fit_selected)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;##   (Intercept)           edu         money  capitalTotal    charDollar 
+## -1.1199744712 -1.9837988840  0.9784675298  0.0007757011 11.5772904667&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;However, the model can still be used to create a classifier, and we will evaluate that classifier on its own merits.&lt;/p&gt;
+&lt;p&gt;We also, “suppressed” the warning:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;## Warning: glm.fit: algorithm did not converge&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;In reality, we didn’t actually suppress it, but instead changed &lt;code&gt;maxit&lt;/code&gt; to &lt;code&gt;50&lt;/code&gt;, when fitting the model &lt;code&gt;fit_over&lt;/code&gt;. This was enough additional iterations to allow the iteratively reweighted least squares algorithm to converge when fitting the model.&lt;/p&gt;
+&lt;div id=&#34;evaluating-classifiers&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Evaluating Classifiers&lt;/h3&gt;
+&lt;p&gt;The metric we’ll be most interested in for evaluating the overall performance of a classifier is the &lt;strong&gt;misclassification rate&lt;/strong&gt;. (Sometimes, instead accuracy is reported, which is instead the proportion of correction classifications, so both metrics serve the same purpose.)&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
+\text{Misclass}(\hat{C}, \text{Data}) = \frac{1}{n}\sum_{i = 1}^{n}I(y_i \neq \hat{C}({\bf x_i}))
+\]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
+I(y_i \neq \hat{C}({\bf x_i})) =
+\begin{cases}
+  0 &amp;amp; y_i = \hat{C}({\bf x_i}) \\
+  1 &amp;amp; y_i \neq \hat{C}({\bf x_i}) \\
+\end{cases}
+\]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;When using this metric on the training data, it will have the same issues as RSS did for ordinary linear regression, that is, it will only go down.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# training misclassification rate
+mean(ifelse(predict(fit_caps) &amp;gt; 0, &amp;quot;spam&amp;quot;, &amp;quot;nonspam&amp;quot;) != spam_trn$type)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 0.339&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;mean(ifelse(predict(fit_selected) &amp;gt; 0, &amp;quot;spam&amp;quot;, &amp;quot;nonspam&amp;quot;) != spam_trn$type)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 0.224&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;mean(ifelse(predict(fit_additive) &amp;gt; 0, &amp;quot;spam&amp;quot;, &amp;quot;nonspam&amp;quot;) != spam_trn$type)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 0.066&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;mean(ifelse(predict(fit_over) &amp;gt; 0, &amp;quot;spam&amp;quot;, &amp;quot;nonspam&amp;quot;) != spam_trn$type)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 0.136&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Because of this, training data isn’t useful for evaluating, as it would suggest that we should always use the largest possible model, when in reality, that model is likely overfitting. Recall, a model that is too complex will overfit. A model that is too simple will underfit. (We’re looking for something in the middle.)&lt;/p&gt;
+&lt;p&gt;To overcome this, we’ll use cross-validation as we did with ordinary linear regression, but this time we’ll cross-validate the misclassification rate. To do so, we’ll use the &lt;code&gt;cv.glm()&lt;/code&gt; function from the &lt;code&gt;boot&lt;/code&gt; library. It takes arguments for the data (in this case training), a model fit via &lt;code&gt;glm()&lt;/code&gt;, and &lt;code&gt;K&lt;/code&gt;, the number of folds. See &lt;code&gt;?cv.glm&lt;/code&gt; for details.&lt;/p&gt;
+&lt;p&gt;Previously, for cross-validating RMSE in ordinary linear regression, we used LOOCV. We certainly could do that here. However, with logistic regression, we no longer have the clever trick that would allow use to obtain a LOOCV metric without needing to fit the model &lt;span class=&#34;math inline&#34;&gt;\(n\)&lt;/span&gt; times. So instead, we’ll use 5-fold cross-validation. (5 and 10 fold are the most common in practice.) Instead of leaving a single observation out repeatedly, we’ll leave out a fifth of the data.&lt;/p&gt;
+&lt;p&gt;Essentially we’ll repeat the following process 5 times:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Randomly set aside a fifth of the data (each observation will only be held-out once)&lt;/li&gt;
+&lt;li&gt;Train model on remaining data&lt;/li&gt;
+&lt;li&gt;Evaluate misclassification rate on held-out data&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;The 5-fold cross-validated misclassification rate will be the average of these misclassification rates. By only needing to refit the model 5 times, instead of &lt;span class=&#34;math inline&#34;&gt;\(n\)&lt;/span&gt; times, we will save a lot of computation time.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(boot)
+set.seed(1)
+cv.glm(spam_trn, fit_caps, K = 5)$delta[1]&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 0.2166961&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;cv.glm(spam_trn, fit_selected, K = 5)$delta[1]&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 0.1587043&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;cv.glm(spam_trn, fit_additive, K = 5)$delta[1]&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 0.08684467&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;cv.glm(spam_trn, fit_over, K = 5)$delta[1]&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 0.137&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Note that we’re suppressing warnings again here. (Now there would be a lot more, since were fitting a total of 20 models.)&lt;/p&gt;
+&lt;p&gt;Based on these results, &lt;code&gt;fit_caps&lt;/code&gt; and &lt;code&gt;fit_selected&lt;/code&gt; are underfitting relative to &lt;code&gt;fit_additive&lt;/code&gt;. Similarly, &lt;code&gt;fit_over&lt;/code&gt; is overfitting relative to &lt;code&gt;fit_additive&lt;/code&gt;. Thus, based on these results, we prefer the classifier created based on the logistic regression fit and stored in &lt;code&gt;fit_additive&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;Going forward, to evaluate and report on the efficacy of this classifier, we’ll use the test dataset. We’re going to take the position that the test data set should &lt;strong&gt;never&lt;/strong&gt; be used in training, which is why we used cross-validation within the training dataset to select a model. Even though cross-validation uses hold-out sets to generate metrics, at some point all of the data is used for training.&lt;/p&gt;
+&lt;p&gt;To quickly summarize how well this classifier works, we’ll create a confusion matrix.&lt;/p&gt;
+&lt;div class=&#34;figure&#34;&gt;
+&lt;img src=&#34;images/confusion.png&#34; alt=&#34;&#34; /&gt;
+&lt;p class=&#34;caption&#34;&gt;Confusion Matrix&lt;/p&gt;
+&lt;/div&gt;
+&lt;p&gt;It further breaks down the classification errors into false positives and false negatives.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;make_conf_mat = function(predicted, actual) {
+  table(predicted = predicted, actual = actual)
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Let’s explicitly store the predicted values of our classifier on the test dataset.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;spam_tst_pred = ifelse(predict(fit_additive, spam_tst) &amp;gt; 0,
+                       &amp;quot;spam&amp;quot;,
+                       &amp;quot;nonspam&amp;quot;)
+spam_tst_pred = ifelse(predict(fit_additive, spam_tst, type = &amp;quot;response&amp;quot;) &amp;gt; 0.5,
+                       &amp;quot;spam&amp;quot;,
+                       &amp;quot;nonspam&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The previous two lines of code produce the same output, that is the same predictions, since&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
+\eta({\bf x}) = 0 \iff p({\bf x}) = 0.5
+\]&lt;/span&gt;
+Now we’ll use these predictions to create a confusion matrix.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;(conf_mat_50 = make_conf_mat(predicted = spam_tst_pred, actual = spam_tst$type))&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;##          actual
+## predicted nonspam spam
+##   nonspam    2057  157
+##   spam        127 1260&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
+\text{Prev} = \frac{\text{P}}{\text{Total Obs}}= \frac{\text{TP + FN}}{\text{Total Obs}}
+\]&lt;/span&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;table(spam_tst$type) / nrow(spam_tst)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## 
+##   nonspam      spam 
+## 0.6064982 0.3935018&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;First, note that to be a reasonable classifier, it needs to outperform the obvious classifier of simply classifying all observations to the majority class. In this case, classifying everything as non-spam for a test misclassification rate of 0.3935018&lt;/p&gt;
+&lt;p&gt;Next, we can see that using the classifier create from &lt;code&gt;fit_additive&lt;/code&gt;, only a total of &lt;span class=&#34;math inline&#34;&gt;\(137 + 161 = 298\)&lt;/span&gt; from the total of 3601 email in the test set are misclassified. Overall, the accuracy in the test set it&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;mean(spam_tst_pred == spam_tst$type)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 0.921133&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;In other words, the test misclassification is&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;mean(spam_tst_pred != spam_tst$type)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 0.07886698&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;This seems like a decent classifier…&lt;/p&gt;
+&lt;p&gt;However, are all errors created equal? In this case, absolutely not. The 137 non-spam emails that were marked as spam (false positives) are a problem. We can’t allow important information, say, a job offer, miss our inbox and get sent to the spam folder. On the other hand, the 161 spam email that would make it to an inbox (false negatives) are easily dealt with, just delete them.&lt;/p&gt;
+&lt;p&gt;Instead of simply evaluating a classifier based on its misclassification rate (or accuracy), we’ll define two additional metrics, sensitivity and specificity. Note that these are simply two of many more metrics that can be considered. The &lt;a href=&#34;https://en.wikipedia.org/wiki/Sensitivity_and_specificity&#34; target=&#34;_blank&#34;&gt;Wikipedia page for sensitivity and specificity&lt;/a&gt; details a large number of metrics that can be derived form a confusion matrix.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Sensitivity&lt;/strong&gt; is essentially the true positive rate. So when sensitivity is high, the number of false negatives is low.&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
+\text{Sens} = \text{True Positive Rate} = \frac{\text{TP}}{\text{P}} = \frac{\text{TP}}{\text{TP + FN}}
+\]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;Here we have an &lt;code&gt;R&lt;/code&gt; function to calculate the sensitivity based on the confusion matrix. Note that this function is good for illustrative purposes, but is easily broken. (Think about what happens if there are no “positives” predicted.)&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;get_sens = function(conf_mat) {
+  conf_mat[2, 2] / sum(conf_mat[, 2])
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;Specificity&lt;/strong&gt; is essentially the true negative rate. So when specificity is high, the number of false positives is low.&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
+\text{Spec} = \text{True Negative Rate} = \frac{\text{TN}}{\text{N}} = \frac{\text{TN}}{\text{TN + FP}}
+\]&lt;/span&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;get_spec =  function(conf_mat) {
+  conf_mat[1, 1] / sum(conf_mat[, 1])
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;We calculate both based on the confusion matrix we had created for our classifier.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;get_sens(conf_mat_50)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 0.8892025&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;get_spec(conf_mat_50)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 0.9418498&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Recall that we had created this classifier using a probability of &lt;span class=&#34;math inline&#34;&gt;\(0.5\)&lt;/span&gt; as a “cutoff” for how observations should be classified. Now we’ll modify this cutoff. We’ll see that by modifying the cutoff, &lt;span class=&#34;math inline&#34;&gt;\(c\)&lt;/span&gt;, we can improve sensitivity or specificity at the expense of the overall accuracy (misclassification rate).&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
+\hat{C}(\bf x) =
+\begin{cases}
+      1 &amp;amp; \hat{p}({\bf x}) &amp;gt; c \\
+      0 &amp;amp; \hat{p}({\bf x}) \leq c
+\end{cases}
+\]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;Additionally, if we change the cutoff to improve sensitivity, we’ll decrease specificity, and vice versa.&lt;/p&gt;
+&lt;p&gt;First let’s see what happens when we lower the cutoff from &lt;span class=&#34;math inline&#34;&gt;\(0.5\)&lt;/span&gt; to &lt;span class=&#34;math inline&#34;&gt;\(0.1\)&lt;/span&gt; to create a new classifier, and thus new predictions.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;spam_tst_pred_10 = ifelse(predict(fit_additive, spam_tst, type = &amp;quot;response&amp;quot;) &amp;gt; 0.1,
+                          &amp;quot;spam&amp;quot;,
+                          &amp;quot;nonspam&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;This is essentially &lt;em&gt;decreasing&lt;/em&gt; the threshold for an email to be labeled as spam, so far &lt;em&gt;more&lt;/em&gt; emails will be labeled as spam. We see that in the following confusion matrix.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;(conf_mat_10 = make_conf_mat(predicted = spam_tst_pred_10, actual = spam_tst$type))&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;##          actual
+## predicted nonspam spam
+##   nonspam    1583   29
+##   spam        601 1388&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Unfortunately, while this does greatly reduce false negatives, false positives have almost quadrupled. We see this reflected in the sensitivity and specificity.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;get_sens(conf_mat_10)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 0.9795342&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;get_spec(conf_mat_10)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 0.7248168&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;This classifier, using &lt;span class=&#34;math inline&#34;&gt;\(0.1\)&lt;/span&gt; instead of &lt;span class=&#34;math inline&#34;&gt;\(0.5\)&lt;/span&gt; has a higher sensitivity, but a much lower specificity. Clearly, we should have moved the cutoff in the other direction. Let’s try &lt;span class=&#34;math inline&#34;&gt;\(0.9\)&lt;/span&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;spam_tst_pred_90 = ifelse(predict(fit_additive, spam_tst, type = &amp;quot;response&amp;quot;) &amp;gt; 0.9,
+                          &amp;quot;spam&amp;quot;,
+                          &amp;quot;nonspam&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;This is essentially &lt;em&gt;increasing&lt;/em&gt; the threshold for an email to be labeled as spam, so far &lt;em&gt;fewer&lt;/em&gt; emails will be labeled as spam. Again, we see that in the following confusion matrix.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;(conf_mat_90 = make_conf_mat(predicted = spam_tst_pred_90, actual = spam_tst$type))&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;##          actual
+## predicted nonspam spam
+##   nonspam    2136  537
+##   spam         48  880&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;This is the result we’re looking for. We have far fewer false positives. While sensitivity is greatly reduced, specificity has gone up.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;get_sens(conf_mat_90)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 0.6210303&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;get_spec(conf_mat_90)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 0.978022&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;While this is far fewer false positives, is it acceptable though? Still probably not. Also, don’t forget, this would actually be a terrible spam detector today since this is based on data from a very different era of the internet, for a very specific set of people. Spam has changed a lot since 90s! (Ironically, machine learning is probably partially to blame.)&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    
+    <item>
       <title>Nonparametric Regression</title>
       <link>https://ssc442.netlify.app/example/10-example/</link>
       <pubDate>Thu, 04 Nov 2021 00:00:00 +0000</pubDate>
