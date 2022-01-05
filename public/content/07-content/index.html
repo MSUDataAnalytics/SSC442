@@ -30,7 +30,7 @@
   
     
   
-  <meta name="description" content="Required ReadingGuiding QuestionSlidesAssociation is not causationSpurious correlationOutliersReversing cause and effectConfoundersExample: UC Berkeley admissionsConfounding explained graphicallyAverage after stratifyingSimpson’s paradox## Loading required package: knitrRequired ReadingThis page.Guiding QuestionWhen can we make causal claims about the relationship between variables?SlidesNote that the slides below are from last lecture; we will reference these and they contain a lot of useful information.">
+  <meta name="description" content="Required ReadingGuiding QuestionSlidesAssociation is not causationSpurious correlationOutliersReversing cause and effectConfoundersExample: UC Berkeley admissionsConfounding explained graphicallyAverage after stratifyingSimpson’s paradox## Loading required package: knitr## Warning: package &#39;knitr&#39; was built under R version 4.0.5Required ReadingThis page.Guiding QuestionWhen can we make causal claims about the relationship between variables?">
 
   
   <link rel="alternate" hreflang="en-us" href="https://datavizm20.classes.andrewheiss.com/content/07-content/">
@@ -238,11 +238,11 @@
   <meta property="og:site_name" content="Data Analytics">
   <meta property="og:url" content="https://datavizm20.classes.andrewheiss.com/content/07-content/">
   <meta property="og:title" content="Linear Regression III | Data Analytics">
-  <meta property="og:description" content="Required ReadingGuiding QuestionSlidesAssociation is not causationSpurious correlationOutliersReversing cause and effectConfoundersExample: UC Berkeley admissionsConfounding explained graphicallyAverage after stratifyingSimpson’s paradox## Loading required package: knitrRequired ReadingThis page.Guiding QuestionWhen can we make causal claims about the relationship between variables?SlidesNote that the slides below are from last lecture; we will reference these and they contain a lot of useful information."><meta property="og:image" content="https://datavizm20.classes.andrewheiss.com/img/social-image.png">
+  <meta property="og:description" content="Required ReadingGuiding QuestionSlidesAssociation is not causationSpurious correlationOutliersReversing cause and effectConfoundersExample: UC Berkeley admissionsConfounding explained graphicallyAverage after stratifyingSimpson’s paradox## Loading required package: knitr## Warning: package &#39;knitr&#39; was built under R version 4.0.5Required ReadingThis page.Guiding QuestionWhen can we make causal claims about the relationship between variables?"><meta property="og:image" content="https://datavizm20.classes.andrewheiss.com/img/social-image.png">
   <meta property="twitter:image" content="https://datavizm20.classes.andrewheiss.com/img/social-image.png"><meta property="og:locale" content="en-us">
   
     
-      <meta property="article:published_time" content="2021-03-09T00:00:00&#43;00:00">
+      <meta property="article:published_time" content="2022-03-01T00:00:00&#43;00:00">
     
     <meta property="article:modified_time" content="2021-03-09T07:14:09-05:00">
   
@@ -623,7 +623,7 @@
 
                     
                     <div class="due-date p-2 mb-3 bg-content text-white">
-                        Content for Tuesday, March 9, 2021
+                        Content for Tuesday, March 1, 2022
                     </div>
                     
 
@@ -653,6 +653,7 @@
 </div>
 
 <pre><code>## Loading required package: knitr</code></pre>
+<pre><code>## Warning: package &#39;knitr&#39; was built under R version 4.0.5</code></pre>
 <div id="required-reading" class="section level2">
 <h2>Required Reading</h2>
 <ul>
@@ -713,18 +714,18 @@ res</code></pre>
 <pre><code>## # A tibble: 1,000,000 x 2
 ##     group     r
 ##     &lt;int&gt; &lt;dbl&gt;
-##  1 677492 0.798
-##  2 410425 0.795
-##  3 688540 0.772
-##  4  38208 0.766
-##  5 956220 0.757
-##  6 432519 0.756
-##  7 449430 0.755
-##  8 288426 0.750
-##  9 958989 0.747
-## 10 123174 0.746
+##  1 522498 0.793
+##  2 363458 0.774
+##  3 396704 0.771
+##  4 205517 0.761
+##  5 388537 0.760
+##  6 696034 0.750
+##  7 483981 0.746
+##  8 169570 0.744
+##  9 412096 0.741
+## 10 428558 0.734
 ## # ... with 999,990 more rows</code></pre>
-<p>We see a maximum correlation of 0.798 and if you just plot the data from the group achieving this correlation, it shows a convincing plot that <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> are in fact correlated:</p>
+<p>We see a maximum correlation of 0.793 and if you just plot the data from the group achieving this correlation, it shows a convincing plot that <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> are in fact correlated:</p>
 <pre class="r"><code>sim_data %&gt;% filter(group == res$group[which.max(res$r)]) %&gt;%
   ggplot(aes(x, y)) +
   geom_point() +
@@ -733,7 +734,7 @@ res</code></pre>
 <p>Remember that the correlation summary is a random variable. Here is the distribution generated by the Monte Carlo simulation:</p>
 <pre class="r"><code>res %&gt;% ggplot(aes(x=r)) + geom_histogram(binwidth = 0.1, color = &quot;black&quot;)</code></pre>
 <p><img src="/content/07-content_files/figure-html/null-corr-hist-1.png" width="672" /></p>
-<p>It’s just a mathematical fact that if we observe random correlations that are expected to be 0, but have a standard error of 0.2040139, the largest one will be close to 1.</p>
+<p>It’s just a mathematical fact that if we observe random correlations that are expected to be 0, but have a standard error of 0.2041955, the largest one will be close to 1.</p>
 <p>If we performed regression on this group and interpreted the p-value, we would incorrectly claim this was a statistically significant relation:</p>
 <pre class="r"><code>library(broom)
 sim_data %&gt;%
@@ -743,7 +744,7 @@ sim_data %&gt;%
 <pre><code>## # A tibble: 1 x 5
 ##   term  estimate std.error statistic    p.value
 ##   &lt;chr&gt;    &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;      &lt;dbl&gt;
-## 1 x        0.759     0.119      6.36 0.00000174</code></pre>
+## 1 x        0.731     0.117      6.24 0.00000227</code></pre>
 <p>Now, imagine that instead of a whole lot of simulated data, you had a whole lot of actual data and waded through enough of it to find two unrelated variables that happened to show up as correlated (like divorce rates and pounds of margarine consumed). This particular form of data dredging is referred to as <em>p-hacking</em>. P-hacking is a topic of much discussion because it is a problem in scientific publications. Because publishers tend to reward statistically significant results over negative results, there is an incentive to report significant results. In epidemiology and the social sciences, for example, researchers may look for associations between an adverse outcome and a lot of different variables that represent exposures and report only the one exposure that resulted in a small p-value. Furthermore, they might try fitting several different models to account for confounding and pick the one that yields the smallest p-value. In experimental disciplines, an experiment might be repeated more than once, yet only the results of the one experiment with a small p-value reported. This does not necessarily happen due to unethical behavior, but rather as a result of statistical ignorance or wishful thinking. In advanced statistics courses, you can learn methods to adjust for these multiple comparisons.</p>
 </div>
 <div id="outliers" class="section level2">

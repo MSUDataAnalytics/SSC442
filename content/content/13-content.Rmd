@@ -1,10 +1,10 @@
 ---
 title: "Geospatial with R"
 linktitle: "13: Geospatial with R"
-date: "2021-04-20"
-read_date: "2021-04-20"
+date: "2022-04-19"
+read_date: "2022-04-19"
 draft: false
-publishdate: "2021-04-01"
+publishdate: "2022-04-12"
 menu:
   content:
     parent: Course content
@@ -536,11 +536,11 @@ st_nearest_feature(x = ourCities.spatial, y = MI.gasplants.small)
 ```
 This is exactly our `max.index` and can be used *on the `y` object, `MI.gasplants.small`, to pull the names, subset, get distances etc.
 
-`st_nearest_feature` also works for points and polygons, or polygons and polygons, where it returns the index of the polygon that contains the nearest point to the features in `x`. Let's find the nearest Great Lake for each of our cities using a [KML shapefile of the Great Lakes from WI DNR](https://hub.arcgis.com/datasets/wi-dnr::great-lakes?geometry=-127.301%2C37.038%2C-43.585%2C48.298). Note that the GeoJSON link is under "API" here: 
+`st_nearest_feature` also works for points and polygons, or polygons and polygons, where it returns the index of the polygon that contains the nearest point to the features in `x`. Let's find the nearest Great Lake for each of our cities using a [KML shapefile of the Great Lakes from WI DNR](https://hub.arcgis.com/datasets/wi-dnr::great-lakes?geometry=-127.301%2C37.038%2C-43.585%2C48.298) Note that the GeoJSON link is under "API" on this site. We run into a complex geometry problem, and add `st_make_valid()` to fix it: 
 
 ```{r}
 GL = st_read('https://opendata.arcgis.com/datasets/a8bb79fc10e64eee8c3a9db97cc5dc80_4.geojson') %>%
-  st_transform(st_crs(ourCities.spatial))
+  st_transform(st_crs(ourCities.spatial)) %>% st_make_valid()
 
 closest.GL.index = st_nearest_feature(x = ourCities.spatial, y = GL)
 ourCities %>% dplyr::mutate(Closest.GreatLake = GL$FEAT_NAME[closest.GL.index])

@@ -242,7 +242,7 @@
   <meta property="twitter:image" content="https://datavizm20.classes.andrewheiss.com/img/social-image.png"><meta property="og:locale" content="en-us">
   
     
-      <meta property="article:published_time" content="2021-03-04T00:00:00&#43;00:00">
+      <meta property="article:published_time" content="2022-02-22T00:00:00&#43;00:00">
     
     <meta property="article:modified_time" content="2021-02-16T18:40:07-05:00">
   
@@ -623,7 +623,7 @@
 
                     
                     <div class="due-date p-2 mb-3 bg-content text-white">
-                        Content for Thursday, March 4, 2021
+                        Content for Tuesday, February 22, 2022
                     </div>
                     
 
@@ -894,7 +894,6 @@ singles_slope</code></pre>
 <pre class="r"><code>dat %&gt;%
   group_by(HR_strata) %&gt;%
   summarize(slope = get_slope(BB_per_game, R_per_game))</code></pre>
-<pre><code>## `summarise()` ungrouping output (override with `.groups` argument)</code></pre>
 <pre><code>## # A tibble: 9 x 2
 ##   HR_strata slope
 ##       &lt;dbl&gt; &lt;dbl&gt;
@@ -915,7 +914,6 @@ In fact, the values above are closer to the slope we obtained from singles, 0.45
 <p>In this case, the slopes do not change much from the original:</p>
 <pre class="r"><code>dat %&gt;% group_by(BB_strata) %&gt;%
    summarize(slope = get_slope(HR_per_game, R_per_game))</code></pre>
-<pre><code>## `summarise()` ungrouping output (override with `.groups` argument)</code></pre>
 <pre><code>## # A tibble: 12 x 2
 ##    BB_strata slope
 ##        &lt;dbl&gt; &lt;dbl&gt;
@@ -985,8 +983,9 @@ Y_i = \beta_0 + \beta_1 (x_i - \bar{x}) + \varepsilon_i, \, i=1,\dots,N
 RSS = \sum_{i=1}^n \left\{  y_i - \left(\beta_0 + \beta_1 x_i \right)\right\}^2
 \]</span></p>
 <p>This quantity is called the residual sum of squares (RSS). Once we find the values that minimize the RSS, we will call the values the least squares estimates (LSE) and denote them with <span class="math inline">\(\hat{\beta}_0\)</span> and <span class="math inline">\(\hat{\beta}_1\)</span>. Let’s demonstrate this with the previously defined dataset:</p>
-<pre class="r"><code>library(HistData)
-data(&quot;GaltonFamilies&quot;)
+<pre class="r"><code>library(HistData)</code></pre>
+<pre><code>## Warning: package &#39;HistData&#39; was built under R version 4.0.4</code></pre>
+<pre class="r"><code>data(&quot;GaltonFamilies&quot;)
 set.seed(1983)
 galton_heights &lt;- GaltonFamilies %&gt;%
   filter(gender == &quot;male&quot;) %&gt;%
@@ -1190,17 +1189,17 @@ But most R functions do not recognize grouped tibbles nor do they return data fr
   do(slope = get_slope(.))</code></pre>
 <pre><code>## # A tibble: 9 x 2
 ## # Rowwise: 
-##      HR slope           
-##   &lt;dbl&gt; &lt;list&gt;          
-## 1   0.4 &lt;df[,2] [1 x 2]&gt;
-## 2   0.5 &lt;df[,2] [1 x 2]&gt;
-## 3   0.6 &lt;df[,2] [1 x 2]&gt;
-## 4   0.7 &lt;df[,2] [1 x 2]&gt;
-## 5   0.8 &lt;df[,2] [1 x 2]&gt;
-## 6   0.9 &lt;df[,2] [1 x 2]&gt;
-## 7   1   &lt;df[,2] [1 x 2]&gt;
-## 8   1.1 &lt;df[,2] [1 x 2]&gt;
-## 9   1.2 &lt;df[,2] [1 x 2]&gt;</code></pre>
+##      HR slope       
+##   &lt;dbl&gt; &lt;list&gt;      
+## 1   0.4 &lt;df [1 x 2]&gt;
+## 2   0.5 &lt;df [1 x 2]&gt;
+## 3   0.6 &lt;df [1 x 2]&gt;
+## 4   0.7 &lt;df [1 x 2]&gt;
+## 5   0.8 &lt;df [1 x 2]&gt;
+## 6   0.9 &lt;df [1 x 2]&gt;
+## 7   1   &lt;df [1 x 2]&gt;
+## 8   1.1 &lt;df [1 x 2]&gt;
+## 9   1.2 &lt;df [1 x 2]&gt;</code></pre>
 <p>This is not very useful, so let’s cover one last feature of <code>do</code>. If the data frame being returned has more than one row, these will be concatenated appropriately. Here is an example in which we return both estimated parameters:</p>
 <pre class="r"><code>get_lse &lt;- function(data){
   fit &lt;- lm(R ~ BB, data = data)
@@ -1239,8 +1238,9 @@ dat %&gt;%
 <h3>The broom package</h3>
 <p>Our original task was to provide an estimate and confidence interval for the slope estimates of each strata. The <strong>broom</strong> package will make this quite easy.</p>
 <p>The <strong>broom</strong> package has three main functions, all of which extract information from the object returned by <code>lm</code> and return it in a <strong>tidyverse</strong> friendly data frame. These functions are <code>tidy</code>, <code>glance</code>, and <code>augment</code>. The <code>tidy</code> function returns estimates and related information as a data frame:</p>
-<pre class="r"><code>library(broom)
-fit &lt;- lm(R ~ BB, data = dat)
+<pre class="r"><code>library(broom)</code></pre>
+<pre><code>## Warning: package &#39;broom&#39; was built under R version 4.0.5</code></pre>
+<pre class="r"><code>fit &lt;- lm(R ~ BB, data = dat)
 tidy(fit)</code></pre>
 <pre><code>## # A tibble: 2 x 5
 ##   term        estimate std.error statistic  p.value
@@ -1328,7 +1328,7 @@ coefs</code></pre>
 ## 3 singles        0.519    0.0127      40.8 8.67e-217    0.494     0.544
 ## 4 doubles        0.771    0.0226      34.1 8.44e-171    0.727     0.816
 ## 5 triples        1.24     0.0768      16.1 2.12e- 52    1.09      1.39 
-## 6 HR             1.44     0.0243      59.3 0.           1.40      1.49</code></pre>
+## 6 HR             1.44     0.0243      59.3 0            1.40      1.49</code></pre>
 <p>To see how well our metric actually predicts runs, we can predict the number of runs for each team in 2002 using the function <code>predict</code>, then make a plot:</p>
 <pre class="r"><code>Teams %&gt;%
   filter(yearID %in% 2002) %&gt;%
@@ -1359,7 +1359,6 @@ coefs</code></pre>
   summarize(pa_per_game = sum(AB+BB)/max(G)) %&gt;%
   pull(pa_per_game) %&gt;%
   mean</code></pre>
-<pre><code>## `summarise()` ungrouping output (override with `.groups` argument)</code></pre>
 <p>We compute the per-plate-appearance rates for players available in 2002 on data from 1997-2001. To avoid small sample artifacts, we filter players with less than 200 plate appearances per year. Here is the entire calculation in one line:</p>
 <pre class="r"><code>players &lt;- Batting %&gt;% filter(yearID %in% 1997:2001) %&gt;%
   group_by(playerID) %&gt;%
@@ -1375,7 +1374,6 @@ coefs</code></pre>
   filter(PA &gt;= 1000) %&gt;%
   select(-G) %&gt;%
   mutate(R_hat = predict(fit, newdata = .))</code></pre>
-<pre><code>## `summarise()` ungrouping output (override with `.groups` argument)</code></pre>
 <p>The player-specific predicted runs computed here can be interpreted as the number of runs we predict a team will score if all batters are exactly like that player. The distribution shows that there is wide variability across players:</p>
 <pre class="r"><code>qplot(R_hat, data = players, binwidth = 0.5, color = I(&quot;black&quot;))</code></pre>
 <p><img src="/content/06-content_files/figure-html/r-hat-hist-1.png" width="672" /></p>
@@ -2027,7 +2025,7 @@ Pujols
 <p>In fact, the proportion of players that have a lower batting average their sophomore year is 0.6862745.</p>
 <p>So is it “jitters” or “jinx”? To answer this question, let’s turn our attention to all players that played the 2013 and 2014 seasons and batted more than 130 times (minimum to win Rookie of the Year).</p>
 <!--We perform similar operations to what we did above: -->
-<pre><code>## `summarise()` regrouping output by &#39;playerID&#39; (override with `.groups` argument)</code></pre>
+<pre><code>## `summarise()` has grouped output by &#39;playerID&#39;. You can override using the `.groups` argument.</code></pre>
 <p>The same pattern arises when we look at the top performers: batting averages go down for most of the top performers.</p>
 <table class="table table-striped" style="width: auto !important; margin-left: auto; margin-right: auto;">
 <thead>
@@ -2221,8 +2219,9 @@ the data look very much like a bivariate normal distribution, which means we pre
 <h2>Measurement error models</h2>
 <p>Up to now, all our linear regression examples have been applied to two or more random variables. We assume the pairs are bivariate normal and use this to motivate a linear model. This approach covers most real-life examples of linear regression. The other major application comes from measurement errors models. In these applications, it is common to have a non-random covariate, such as time, and randomness is introduced from measurement error rather than sampling or natural variability.</p>
 <p>To understand these models, imagine you are Galileo in the 16th century trying to describe the velocity of a falling object. An assistant climbs the Tower of Pisa and drops a ball, while several other assistants record the position at different times. Let’s simulate some data using the equations we know today and adding some measurement error. The <strong>dslabs</strong> function <code>rfalling_object</code> generates these simulations:</p>
-<pre class="r"><code>library(dslabs)
-falling_object &lt;- rfalling_object()</code></pre>
+<pre class="r"><code>library(dslabs)</code></pre>
+<pre><code>## Warning: package &#39;dslabs&#39; was built under R version 4.0.5</code></pre>
+<pre class="r"><code>falling_object &lt;- rfalling_object()</code></pre>
 <p>The assistants hand the data to Galileo and this is what he sees:</p>
 <pre class="r"><code>falling_object %&gt;%
   ggplot(aes(time, observed_distance)) +
