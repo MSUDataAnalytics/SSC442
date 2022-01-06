@@ -1,0 +1,133 @@
+---
+title: "Illustrating Bias vs. Variance"
+output:
+  blogdown::html_page:
+    toc: false
+type: docs
+weight: 1
+editor_options:
+  chunk_output_type: console
+---
+
+
+
+<pre class="r"><code>NN = 100   #----&gt; In class, we will change this to 
+#                 see how our results change in response
+SD.of.Bayes.Error = 0.75   #-----&gt; This, too, will change. 
+
+# Note that both of these are used in the next chunk(s) to generate data.
+
+
+
+library(ggplot2)</code></pre>
+<pre><code>## Warning: package &#39;ggplot2&#39; was built under R version 4.0.5</code></pre>
+<pre class="r"><code>library(patchwork)
+
+
+
+f = function(x) {
+  x ^ 2
+}
+
+
+
+get_sim_data = function(f, sample_size = NN) {
+  x = runif(n = sample_size, min = 0, max = 1)
+  eps = rnorm(n = sample_size, mean = 0, sd = SD.of.Bayes.Error)
+  y = f(x) + eps
+  data.frame(x, y)
+}
+
+
+
+set.seed(1)
+sim_data = get_sim_data(f)
+
+
+
+fit_0 = lm(y ~ 1,                   data = sim_data)
+fit_1 = lm(y ~ poly(x, degree = 1), data = sim_data)
+fit_2 = lm(y ~ poly(x, degree = 2), data = sim_data)
+fit_9 = lm(y ~ poly(x, degree = 9), data = sim_data)
+
+
+
+
+
+set.seed(42)
+plot(y ~ x, data = sim_data, col = &quot;grey&quot;, pch = 20,
+     main = &quot;Four Polynomial Models fit to a Simulated Dataset&quot;)
+
+grid = seq(from = 0, to = 2, by = 0.01)
+lines(grid, f(grid), col = &quot;black&quot;, lwd = 3)
+lines(grid, predict(fit_0, newdata = data.frame(x = grid)), col = &quot;dodgerblue&quot;,  lwd = 2, lty = 2)
+lines(grid, predict(fit_1, newdata = data.frame(x = grid)), col = &quot;firebrick&quot;,   lwd = 2, lty = 3)
+lines(grid, predict(fit_2, newdata = data.frame(x = grid)), col = &quot;springgreen&quot;, lwd = 2, lty = 4)
+lines(grid, predict(fit_9, newdata = data.frame(x = grid)), col = &quot;darkorange&quot;,  lwd = 2, lty = 5)
+
+legend(&quot;topleft&quot;, 
+       c(&quot;y ~ 1&quot;, &quot;y ~ poly(x, 1)&quot;, &quot;y ~ poly(x, 2)&quot;,  &quot;y ~ poly(x, 9)&quot;, &quot;truth&quot;), 
+       col = c(&quot;dodgerblue&quot;, &quot;firebrick&quot;, &quot;springgreen&quot;, &quot;darkorange&quot;, &quot;black&quot;), lty = c(2, 3, 4, 5, 1), lwd = 2)</code></pre>
+<p><img src="/example/Code_Aggregated_files/figure-html/unnamed-chunk-1-1.png" width="672" /></p>
+<pre class="r"><code>set.seed(1)
+n_sims = 250
+n_models = 4
+x = data.frame(x = 0.90) # fixed point at which we make predictions
+predictions = matrix(0, nrow = n_sims, ncol = n_models)
+
+
+
+for (sim in 1:n_sims) {
+
+  # simulate new, random, training data
+  # this is the only random portion of the bias, var, and mse calculations
+  # this allows us to calculate the expectation over D
+  sim_data = get_sim_data(f, sample_size = NN)
+
+  # fit models
+  fit_0 = lm(y ~ 1,                   data = sim_data)
+  fit_1 = lm(y ~ poly(x, degree = 1), data = sim_data)
+  fit_2 = lm(y ~ poly(x, degree = 2), data = sim_data)
+  fit_9 = lm(y ~ poly(x, degree = 9), data = sim_data)
+
+  # get predictions
+  predictions[sim, 1] = predict(fit_0, x)
+  predictions[sim, 2] = predict(fit_1, x)
+  predictions[sim, 3] = predict(fit_2, x)
+  predictions[sim, 4] = predict(fit_9, x)
+}
+
+
+
+predictions.proc = (predictions)
+colnames(predictions.proc) = c(&quot;0&quot;, &quot;1&quot;, &quot;2&quot;, &quot;9&quot;)
+predictions.proc = as.data.frame(predictions.proc)
+
+tall_predictions = tidyr::gather(predictions.proc, factor_key = TRUE)
+
+## Here, you can save your ggplot output 
+FinalPlot &lt;- ggplot(tall_predictions, aes(x = key, y = value, col = as.factor(key))) + 
+                      geom_boxplot() +
+                      geom_jitter(alpha = .5) +
+                      geom_hline(yintercept = f(x = .90)) +
+                      labs(col = &#39;Model&#39;, x = &#39;Model&#39;, y = &#39;Prediction&#39;, title = paste0(&#39;Bias v Var - Sample Size: &#39;,NN), subtitle = paste0(&#39;SD of Bayes Err: &#39;,SD.of.Bayes.Error)) +
+                      theme_bw()
+
+
+
+FinalPlot</code></pre>
+<p><img src="/example/Code_Aggregated_files/figure-html/unnamed-chunk-1-2.png" width="672" /></p>
+<pre class="r"><code>## This is going to aggregate your results for you:
+if(!exists(&#39;FinalResults&#39;)) FinalResults = list()
+
+FinalResults[[paste0(&#39;finalPlot.NN.&#39;,NN,&#39;.SDBayes.&#39;,SD.of.Bayes.Error)]] = FinalPlot
+
+# 
+# boxplot(value ~ key, data = tall_predictions, border = &quot;darkgrey&quot;, xlab = &quot;Polynomial Degree&quot;, ylab = &quot;Predictions&quot;,
+#         main = &quot;Simulated Predictions for Polynomial Models&quot;)
+# grid()
+# stripchart(value ~ key, data = tall_predictions, add = TRUE, vertical = TRUE, method = &quot;jitter&quot;, jitter = 0.15, pch = 1, col = c(&quot;dodgerblue&quot;, &quot;firebrick&quot;, &quot;springgreen&quot;, &quot;darkorange&quot;))
+# abline(h = f(x = 0.90), lwd = 2)</code></pre>
+<pre class="r"><code>## This not run automatically.
+## To plot the whole list of ggplot objects in FinalResults:
+wrap_plots(FinalResults, nrow = 2, guides = &#39;collect&#39;)</code></pre>
