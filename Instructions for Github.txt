@@ -70,3 +70,9 @@ kn.dir = list.files(dirname(rstudioapi::getSourceEditorContext()$path), pattern 
 kn.dir = kn.dir[-15]
 lapply(kn.dir, function(xx) rmarkdown::render_site(xx,  encoding = 'UTF-8'))
 
+
+++ config.yaml has an OVERRIDE for --buildFuture. Basically, we were always building future (publishDate) pages.
+So, set the publish dates. Periodically, build the directory and re-push to Git:
+  blogdown::build_dir('content/assignment')
+  The pages WILL appear locally, regardless of config.toml (when serving locally, note -D -F flags. They stand for "draft" and "future"),
+  but when building on netlify, they will NOT be built. Netlify does a final build.
