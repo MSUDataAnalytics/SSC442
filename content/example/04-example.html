@@ -1,22 +1,3 @@
----
-title: "Visualizing Uncertainty"
-linktitle: "4: Uncertainty"
-read_date: "2022-02-10"
-draft: false
-lastmod: "2022-01-06"
-output:
-  blogdown::html_page:
-    toc: true
-menu:
-  example:
-    parent: Examples
-    weight: 1
-type: docs
-weight: 1
-editor_options:
-  chunk_output_type: console
----
-
 
 <div id="TOC">
 <ul>
@@ -83,7 +64,7 @@ editor_options:
 <pre class="r"><code>library(tidyverse)
 library(dslabs)
 take_poll(25)</code></pre>
-<p><img src="/example/04-example_files/figure-html/first-simulated-poll-1.png" width="672" /></p>
+<p><img src="04-example_files/figure-html/first-simulated-poll-1.png" width="672" /></p>
 <p>Think about how you would construct your interval based on the data shown above.</p>
 <p>We have just described a simple sampling model for opinion polls. The beads inside the urn represent the individuals that will vote on election day. Those that will vote for the Republican candidate are represented with red beads and the Democrats with the blue beads. For simplicity, assume there are no other colors. That is, that there are just two parties: Republican and Democratic.</p>
 </div>
@@ -94,7 +75,7 @@ take_poll(25)</code></pre>
 <p>In statistical textbooks, the beads in the urn are called the <em>population</em>. The proportion of blue beads in the population <span class="math inline">\(p\)</span> is called a <em>parameter</em>. The 25 beads we see in the previous plot are called a <em>sample</em>. The task of statistical inference is to predict the parameter <span class="math inline">\(p\)</span> using the observed data in the sample.</p>
 <p>Can we do this with the 25 observations above? It is certainly informative. For example, given that we see 13 red and 12 blue beads, it is unlikely that <span class="math inline">\(p\)</span> &gt; .9 or <span class="math inline">\(p\)</span> &lt; .1. But are we ready to predict with certainty that there are more red beads than blue in the jar?</p>
 <p>We want to construct an estimate of <span class="math inline">\(p\)</span> using only the information we observe. An estimate should be thought of as a summary of the observed data that we think is informative about the parameter of interest. It seems intuitive to think that the proportion of blue beads in the sample <span class="math inline">\(0.48\)</span> must be at least related to the actual proportion <span class="math inline">\(p\)</span>. But do we simply predict <span class="math inline">\(p\)</span> to be 0.48? First, remember that the sample proportion is a random variable. If we run the command <code>take_poll(25)</code> four times, we get a different answer each time, since the sample proportion is a random variable.</p>
-<p><img src="/example/04-example_files/figure-html/four-simulated-polls-1.png" width="672" /></p>
+<p><img src="04-example_files/figure-html/four-simulated-polls-1.png" width="672" /></p>
 <p>Note that in the four random samples shown above, the sample proportions range from 0.44 to 0.60. By describing the distribution of this random variable, we will be able to gain insights into how good this estimate is and how we can make it better.</p>
 <div id="the-sample-average" class="section level3">
 <h3>The sample average</h3>
@@ -127,7 +108,7 @@ take_poll(25)</code></pre>
 <p>This result reveals the power of polls. The expected value of the sample proportion <span class="math inline">\(\bar{X}\)</span> is the parameter of interest <span class="math inline">\(p\)</span> and we can make the standard error as small as we want by increasing <span class="math inline">\(N\)</span>. The law of large numbers tells us that with a large enough poll, our estimate converges to <span class="math inline">\(p\)</span>.</p>
 <p>If we take a large enough poll to make our standard error about 1%, we will be quite certain about who will win. But how large does the poll have to be for the standard error to be this small?</p>
 <p>One problem is that we do not know <span class="math inline">\(p\)</span>, so we can’t compute the standard error. However, for illustrative purposes, let’s assume that <span class="math inline">\(p=0.51\)</span> and make a plot of the standard error versus the sample size <span class="math inline">\(N\)</span>:</p>
-<p><img src="/example/04-example_files/figure-html/standard-error-versus-sample-size-1.png" width="672" /></p>
+<p><img src="04-example_files/figure-html/standard-error-versus-sample-size-1.png" width="672" /></p>
 <p>From the plot we see that we would need a poll of over 10,000 people to get the standard error that low. We rarely see polls of this size due in part to costs. From the Real Clear Politics table, we learn that the sample sizes in opinion polls range from 500-3,500 people. For a sample size of 1,000 and <span class="math inline">\(p=0.51\)</span>, the standard error is:</p>
 <pre class="r"><code>sqrt(p*(1-p))/sqrt(1000)</code></pre>
 <pre><code>## [1] 0.01580823</code></pre>
@@ -212,7 +193,7 @@ x_hat &lt;- replicate(B, {
 <pre class="r"><code>sd(x_hat)</code></pre>
 <pre><code>## [1] 0.01579523</code></pre>
 <p>A histogram and qq-plot confirm that the normal approximation is accurate as well:</p>
-<p><img src="/example/04-example_files/figure-html/normal-approximation-for-polls-1.png" width="100%" /></p>
+<p><img src="04-example_files/figure-html/normal-approximation-for-polls-1.png" width="100%" /></p>
 <p>Of course, in real life we would never be able to run such an experiment because we don’t know <span class="math inline">\(p\)</span>. But we could run it for various values of <span class="math inline">\(p\)</span> and <span class="math inline">\(N\)</span> and see that the theory does indeed work well for most values. You can easily do this by re-running the code above after changing <code>p</code> and <code>N</code>.</p>
 </div>
 <div id="the-spread" class="section level3">
@@ -223,7 +204,7 @@ x_hat &lt;- replicate(B, {
 <div id="bias-why-not-run-a-very-large-poll" class="section level3">
 <h3>Bias: why not run a very large poll?</h3>
 <p>For realistic values of <span class="math inline">\(p\)</span>, say from 0.35 to 0.65, if we run a very large poll with 100,000 people, theory tells us that we would predict the election perfectly since the largest possible margin of error is around 0.3%:</p>
-<p><img src="/example/04-example_files/figure-html/standard-error-versus-p-1.png" width="672" /></p>
+<p><img src="04-example_files/figure-html/standard-error-versus-p-1.png" width="672" /></p>
 <p>One reason is that running such a poll is very expensive. Another possibly more important reason is that theory has its limitations. Polling is much more complicated than picking beads from an urn. Some people might lie to pollsters and others might not have phones. But perhaps the most important way an actual poll differs from an urn model is that we actually don’t know for sure who is in our population and who is not. How do we know who is going to vote? Are we reaching all possible voters? Hence, even if our margin of error is very small, it might not be exactly right that our expected value is <span class="math inline">\(p\)</span>. We call this bias. Historically, we observe that polls are indeed biased, although not by that much. The typical bias appears to be about 1-2%. This makes election forecasting a bit more interesting and we will talk about how to model this shortly.</p>
 </div>
 </div>
@@ -257,17 +238,17 @@ library(gghalves)</code></pre>
 <p>We can first make a histogram of wind speed. We’ll use a bin width of 1 and color the edges of the bars white:</p>
 <pre class="r"><code>ggplot(weather_atl, aes(x = windSpeed)) +
   geom_histogram(binwidth = 1, color = &quot;white&quot;)</code></pre>
-<p><img src="/example/04-example_files/figure-html/basic-histogram-1.png" width="576" style="display: block; margin: auto;" /></p>
+<p><img src="04-example_files/figure-html/basic-histogram-1.png" width="576" style="display: block; margin: auto;" /></p>
 <p>This is fine enough, but we can improve it by forcing the buckets/bins to start at whole numbers instead of containing ranges like 2.5–3.5. We’ll use the <code>boundary</code> argument for that. We also add <code>scale_x_continuous()</code> to add our own x-axis breaks instead of having things like 2.5, 5, and 7.5:</p>
 <pre class="r"><code>ggplot(weather_atl, aes(x = windSpeed)) +
   geom_histogram(binwidth = 1, color = &quot;white&quot;, boundary = 1) +
   scale_x_continuous(breaks = seq(0, 12, by = 1))</code></pre>
-<p><img src="/example/04-example_files/figure-html/basic-histogram-better-1.png" width="576" style="display: block; margin: auto;" /></p>
+<p><img src="04-example_files/figure-html/basic-histogram-better-1.png" width="576" style="display: block; margin: auto;" /></p>
 <p>We can show the distribution of wind speed by month if we map the <code>Month</code> column we made onto the fill aesthetic:</p>
 <pre class="r"><code>ggplot(weather_atl, aes(x = windSpeed, fill = Month)) +
   geom_histogram(binwidth = 1, color = &quot;white&quot;, boundary = 1) +
   scale_x_continuous(breaks = seq(0, 12, by = 1))</code></pre>
-<p><img src="/example/04-example_files/figure-html/histogram-by-month-1.png" width="576" style="display: block; margin: auto;" /></p>
+<p><img src="04-example_files/figure-html/histogram-by-month-1.png" width="576" style="display: block; margin: auto;" /></p>
 <p>This is colorful, but it’s impossible to actually interpret. Instead of only filling, we’ll also facet by month to see separate graphs for each month. We can turn off the fill legend because it’s now redundant.</p>
 <pre class="r"><code>ggplot(weather_atl, aes(x = windSpeed, fill = Month)) +
   geom_histogram(binwidth = 1, color = &quot;white&quot;, boundary = 1) +
@@ -276,7 +257,7 @@ library(gghalves)</code></pre>
   facet_wrap(vars(Month))</code></pre>
 <pre><code>## Warning: `guides(&lt;scale&gt; = FALSE)` is deprecated. Please use `guides(&lt;scale&gt; =
 ## &quot;none&quot;)` instead.</code></pre>
-<p><img src="/example/04-example_files/figure-html/histogram-by-month-facet-1.png" width="768" style="display: block; margin: auto;" /></p>
+<p><img src="04-example_files/figure-html/histogram-by-month-facet-1.png" width="768" style="display: block; margin: auto;" /></p>
 <p>Neat! January, March, and April appear to have the most variation in windy days, with a few wind-less days and a few very-windy days, while August was very wind-less.</p>
 </div>
 <div id="density-plots" class="section level3">
@@ -284,16 +265,16 @@ library(gghalves)</code></pre>
 <p>The code to create a density plot is nearly identical to what we used for the histogram—the only thing we change is the <code>geom</code> layer:</p>
 <pre class="r"><code>ggplot(weather_atl, aes(x = windSpeed)) +
   geom_density(color = &quot;grey20&quot;, fill = &quot;grey50&quot;)</code></pre>
-<p><img src="/example/04-example_files/figure-html/basic-density-1.png" width="576" style="display: block; margin: auto;" /></p>
+<p><img src="04-example_files/figure-html/basic-density-1.png" width="576" style="display: block; margin: auto;" /></p>
 <p>If we want, we can mess with some of the calculus options like the kernel and bandwidth:</p>
 <pre class="r"><code>ggplot(weather_atl, aes(x = windSpeed)) +
   geom_density(color = &quot;grey20&quot;, fill = &quot;grey50&quot;,
                bw = 0.1, kernel = &quot;epanechnikov&quot;)</code></pre>
-<p><img src="/example/04-example_files/figure-html/density-kernel-bw-1.png" width="576" style="display: block; margin: auto;" /></p>
+<p><img src="04-example_files/figure-html/density-kernel-bw-1.png" width="576" style="display: block; margin: auto;" /></p>
 <p>We can also fill by month. We’ll make the different layers 50% transparent so we can kind of see through the whole stack:</p>
 <pre class="r"><code>ggplot(weather_atl, aes(x = windSpeed, fill = Month)) +
   geom_density(alpha = 0.5)</code></pre>
-<p><img src="/example/04-example_files/figure-html/density-fill-by-month-1.png" width="576" style="display: block; margin: auto;" /></p>
+<p><img src="04-example_files/figure-html/density-fill-by-month-1.png" width="576" style="display: block; margin: auto;" /></p>
 <p>Even with the transparency, this is really hard to interpret. We can fix this by faceting, like we did with the histograms:</p>
 <pre class="r"><code>ggplot(weather_atl, aes(x = windSpeed, fill = Month)) +
   geom_density(alpha = 0.5) +
@@ -301,34 +282,34 @@ library(gghalves)</code></pre>
   facet_wrap(vars(Month))</code></pre>
 <pre><code>## Warning: `guides(&lt;scale&gt; = FALSE)` is deprecated. Please use `guides(&lt;scale&gt; =
 ## &quot;none&quot;)` instead.</code></pre>
-<p><img src="/example/04-example_files/figure-html/density-facet-by-month-1.png" width="768" style="display: block; margin: auto;" /></p>
+<p><img src="04-example_files/figure-html/density-facet-by-month-1.png" width="768" style="display: block; margin: auto;" /></p>
 <p>Or we can stack the density plots behind each other with <a href="https://cran.r-project.org/web/packages/ggridges/vignettes/introduction.html"><strong>ggridges</strong></a>. For that to work, we also need to map <code>Month</code> to the y-axis. We can reverse the y-axis so that January is at the top if we use the <code>fct_rev()</code> function:</p>
 <pre class="r"><code>ggplot(weather_atl, aes(x = windSpeed, y = fct_rev(Month), fill = Month)) +
   geom_density_ridges() +
   guides(fill = FALSE)</code></pre>
 <pre><code>## Warning: `guides(&lt;scale&gt; = FALSE)` is deprecated. Please use `guides(&lt;scale&gt; =
 ## &quot;none&quot;)` instead.</code></pre>
-<p><img src="/example/04-example_files/figure-html/ggridges-basic-1.png" width="576" style="display: block; margin: auto;" /></p>
+<p><img src="04-example_files/figure-html/ggridges-basic-1.png" width="576" style="display: block; margin: auto;" /></p>
 <p>We can add some extra information to <code>geom_density_ridges()</code> with some other arguments like <code>quantile_lines</code>. We can use the <code>quantiles</code> argument to tell the plow how many parts to be cut into. Since we just want to show the median, we’ll set that to 2 so each density plot is divided in half:</p>
 <pre class="r"><code>ggplot(weather_atl, aes(x = windSpeed, y = fct_rev(Month), fill = Month)) +
   geom_density_ridges(quantile_lines = TRUE, quantiles = 2) +
   guides(fill = FALSE)</code></pre>
 <pre><code>## Warning: `guides(&lt;scale&gt; = FALSE)` is deprecated. Please use `guides(&lt;scale&gt; =
 ## &quot;none&quot;)` instead.</code></pre>
-<p><img src="/example/04-example_files/figure-html/ggridges-quantile-1.png" width="576" style="display: block; margin: auto;" /></p>
+<p><img src="04-example_files/figure-html/ggridges-quantile-1.png" width="576" style="display: block; margin: auto;" /></p>
 <p>Now that we have good working code, we can easily substitute in other variables by changing the x mapping:</p>
 <pre class="r"><code>ggplot(weather_atl, aes(x = temperatureHigh, y = fct_rev(Month), fill = Month)) +
   geom_density_ridges(quantile_lines = TRUE, quantiles = 2) +
   guides(fill = FALSE)</code></pre>
 <pre><code>## Warning: `guides(&lt;scale&gt; = FALSE)` is deprecated. Please use `guides(&lt;scale&gt; =
 ## &quot;none&quot;)` instead.</code></pre>
-<p><img src="/example/04-example_files/figure-html/ggridges-quantile-temp-1.png" width="576" style="display: block; margin: auto;" /></p>
+<p><img src="04-example_files/figure-html/ggridges-quantile-temp-1.png" width="576" style="display: block; margin: auto;" /></p>
 <p>We can get extra fancy if we fill by temperature instead of filling by month. To get this to work, we need to use <code>geom_density_ridges_gradient()</code>, and we need to change the <code>fill</code> mapping to the strange looking <code>..x..</code>, which is a weird ggplot trick that tells it to use the variable we mapped to the x-axis. For whatever reason, <code>fill = temperatureHigh</code> doesn’t work 🤷:</p>
 <pre class="r"><code>ggplot(weather_atl, aes(x = temperatureHigh, y = fct_rev(Month), fill = ..x..)) +
   geom_density_ridges_gradient(quantile_lines = TRUE, quantiles = 2) +
   scale_fill_viridis_c(option = &quot;plasma&quot;) +
   labs(x = &quot;High temperature&quot;, y = NULL, color = &quot;Temp&quot;)</code></pre>
-<p><img src="/example/04-example_files/figure-html/ggridges-gradient-temp-1.png" width="576" style="display: block; margin: auto;" /></p>
+<p><img src="04-example_files/figure-html/ggridges-gradient-temp-1.png" width="576" style="display: block; margin: auto;" /></p>
 <p>And finally, we can get <em>extra</em> fancy and show the distributions for both the high and low temperatures each month. To make this work, we need to manipulate the data a little. Right now there are two columns for high and low temperature: <code>temperatureLow</code> and <code>temperatureHigh</code>. To be able to map temperature to the x-axis and high vs. low to another aesthetic (like <code>linetype</code>), we need a column with the temperature and a column with an indicator variable for whether it is high or low. This data needs to be tidied (since right now we have a variable (high/low) encoded in the column name). We can tidy this data using <code>pivot_longer()</code> from <strong>tidyr</strong>, which was already loaded with <code>library(tidyverse)</code>. In the RStudio primers, you did this same thing with <code>gather()</code>—<code>pivot_longer()</code> is the newer version of <code>gather()</code>:</p>
 <pre class="r"><code>weather_atl_long &lt;- weather_atl %&gt;%
   pivot_longer(cols = c(temperatureLow, temperatureHigh),
@@ -358,7 +339,7 @@ head(weather_atl_long)</code></pre>
   geom_density_ridges_gradient(quantile_lines = TRUE, quantiles = 2) +
   scale_fill_viridis_c(option = &quot;plasma&quot;) +
   labs(x = &quot;High temperature&quot;, y = NULL, color = &quot;Temp&quot;)</code></pre>
-<p><img src="/example/04-example_files/figure-html/ggridges-gradient-temp-high-low-1.png" width="576" style="display: block; margin: auto;" /></p>
+<p><img src="04-example_files/figure-html/ggridges-gradient-temp-high-low-1.png" width="576" style="display: block; margin: auto;" /></p>
 <p>We can see much wider temperature disparities during the summer, with large gaps between high and low, and relatively equal high/low temperatures during the winter.</p>
 </div>
 <div id="box-violin-and-rain-cloud-plots" class="section level3">
@@ -367,12 +348,12 @@ head(weather_atl_long)</code></pre>
 <pre class="r"><code>ggplot(weather_atl,
        aes(y = windSpeed, fill = Day)) +
   geom_boxplot()</code></pre>
-<p><img src="/example/04-example_files/figure-html/basic-boxplot-1.png" width="576" style="display: block; margin: auto;" /></p>
+<p><img src="04-example_files/figure-html/basic-boxplot-1.png" width="576" style="display: block; margin: auto;" /></p>
 <p>We can switch this to a violin plot by just changing the <code>geom</code> layer and mapping <code>Day</code> to the x-axis:</p>
 <pre class="r"><code>ggplot(weather_atl,
        aes(y = windSpeed, x = Day, fill = Day)) +
   geom_violin()</code></pre>
-<p><img src="/example/04-example_files/figure-html/basic-violin-1.png" width="576" style="display: block; margin: auto;" /></p>
+<p><img src="04-example_files/figure-html/basic-violin-1.png" width="576" style="display: block; margin: auto;" /></p>
 <p>With violin plots it’s typically good to overlay other geoms. We can add some jittered points for a strip plot:</p>
 <pre class="r"><code>ggplot(weather_atl,
        aes(y = windSpeed, x = Day, fill = Day)) +
@@ -381,7 +362,7 @@ head(weather_atl_long)</code></pre>
   guides(fill = FALSE)</code></pre>
 <pre><code>## Warning: `guides(&lt;scale&gt; = FALSE)` is deprecated. Please use `guides(&lt;scale&gt; =
 ## &quot;none&quot;)` instead.</code></pre>
-<p><img src="/example/04-example_files/figure-html/violin-strip-1.png" width="576" style="display: block; margin: auto;" /></p>
+<p><img src="04-example_files/figure-html/violin-strip-1.png" width="576" style="display: block; margin: auto;" /></p>
 <p>We can also add larger points for the daily averages. We’ll use a special layer for this: <code>stat_summary()</code>. It has a slightly different syntax, since we’re not actually mapping a column from the dataset. Instead, we’re feeding a column from a dataset into a function (here <code>"mean"</code>) and then plotting that result:</p>
 <pre class="r"><code>ggplot(weather_atl,
        aes(y = windSpeed, x = Day, fill = Day)) +
@@ -391,7 +372,7 @@ head(weather_atl_long)</code></pre>
   guides(fill = FALSE)</code></pre>
 <pre><code>## Warning: `guides(&lt;scale&gt; = FALSE)` is deprecated. Please use `guides(&lt;scale&gt; =
 ## &quot;none&quot;)` instead.</code></pre>
-<p><img src="/example/04-example_files/figure-html/violin-strip-mean-1.png" width="576" style="display: block; margin: auto;" /></p>
+<p><img src="04-example_files/figure-html/violin-strip-mean-1.png" width="576" style="display: block; margin: auto;" /></p>
 <p>We can also show the mean and confidence interval at the same time by changing the summary function:</p>
 <pre class="r"><code>ggplot(weather_atl,
        aes(y = windSpeed, x = Day, fill = Day)) +
@@ -401,7 +382,7 @@ head(weather_atl_long)</code></pre>
   guides(fill = FALSE)</code></pre>
 <pre><code>## Warning: `guides(&lt;scale&gt; = FALSE)` is deprecated. Please use `guides(&lt;scale&gt; =
 ## &quot;none&quot;)` instead.</code></pre>
-<p><img src="/example/04-example_files/figure-html/violin-strip-mean-ci-1.png" width="576" style="display: block; margin: auto;" /></p>
+<p><img src="04-example_files/figure-html/violin-strip-mean-ci-1.png" width="576" style="display: block; margin: auto;" /></p>
 <p>Overlaying the points directly on top of the violins shows extra information, but it’s also really crowded and hard to read. If we use <a href="https://github.com/erocoar/gghalves">the <strong>gghalves</strong> package</a>, we can use special halved versions of some of these geoms like so:</p>
 <pre class="r"><code>ggplot(weather_atl,
        aes(x = fct_rev(Day), y = temperatureHigh)) +
@@ -410,7 +391,7 @@ head(weather_atl_long)</code></pre>
   guides(color = FALSE, fill = FALSE)</code></pre>
 <pre><code>## Warning: `guides(&lt;scale&gt; = FALSE)` is deprecated. Please use `guides(&lt;scale&gt; =
 ## &quot;none&quot;)` instead.</code></pre>
-<p><img src="/example/04-example_files/figure-html/gghalves-point-boxplot-1.png" width="576" style="display: block; margin: auto;" /></p>
+<p><img src="04-example_files/figure-html/gghalves-point-boxplot-1.png" width="576" style="display: block; margin: auto;" /></p>
 <p>Note the <code>side</code> argument for specifying which half of the column the geom goes. We can also use <code>geom_half_violin()</code>:</p>
 <pre class="r"><code>ggplot(weather_atl,
        aes(x = fct_rev(Day), y = temperatureHigh)) +
@@ -419,7 +400,7 @@ head(weather_atl_long)</code></pre>
   guides(color = FALSE, fill = FALSE)</code></pre>
 <pre><code>## Warning: `guides(&lt;scale&gt; = FALSE)` is deprecated. Please use `guides(&lt;scale&gt; =
 ## &quot;none&quot;)` instead.</code></pre>
-<p><img src="/example/04-example_files/figure-html/gghalves-point-violon-1.png" width="576" style="display: block; margin: auto;" /></p>
+<p><img src="04-example_files/figure-html/gghalves-point-violon-1.png" width="576" style="display: block; margin: auto;" /></p>
 <p>If we flip the plot, we can make a <a href="https://micahallen.org/2018/03/15/introducing-raincloud-plots/">rain cloud plot</a>:</p>
 <pre class="r"><code>ggplot(weather_atl,
        aes(x = fct_rev(Day), y = temperatureHigh)) +
@@ -430,7 +411,7 @@ head(weather_atl_long)</code></pre>
   coord_flip()</code></pre>
 <pre><code>## Warning: `guides(&lt;scale&gt; = FALSE)` is deprecated. Please use `guides(&lt;scale&gt; =
 ## &quot;none&quot;)` instead.</code></pre>
-<p><img src="/example/04-example_files/figure-html/gghalves-rain-cloud-1.png" width="768" style="display: block; margin: auto;" /></p>
+<p><img src="04-example_files/figure-html/gghalves-rain-cloud-1.png" width="768" style="display: block; margin: auto;" /></p>
 </div>
 </div>
 </div>
