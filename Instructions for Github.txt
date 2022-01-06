@@ -75,4 +75,6 @@ lapply(kn.dir, function(xx) rmarkdown::render_site(xx,  encoding = 'UTF-8'))
 So, set the publish dates. Periodically, build the directory and re-push to Git:
   blogdown::build_dir('content/assignment')
   The pages WILL appear locally, regardless of config.toml (when serving locally, note -D -F flags. They stand for "draft" and "future"),
+  THEN, build_site()
+  THEN, build_hugo()
   but when building on netlify, they will NOT be built. Netlify does a final build.
