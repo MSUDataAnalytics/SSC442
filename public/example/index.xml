@@ -13,6 +13,994 @@
     </image>
     
     <item>
+      <title>Visualizations</title>
+      <link>https://ssc442kirkpatrick.netlify.app/example/03-example/</link>
+      <pubDate>Thu, 03 Feb 2022 00:00:00 +0000</pubDate>
+      <guid>https://ssc442kirkpatrick.netlify.app/example/03-example/</guid>
+      <description>
+&lt;script src=&#34;https://ssc442kirkpatrick.netlify.app/rmarkdown-libs/kePrint/kePrint.js&#34;&gt;&lt;/script&gt;
+&lt;link href=&#34;https://ssc442kirkpatrick.netlify.app/rmarkdown-libs/lightable/lightable.css&#34; rel=&#34;stylesheet&#34; /&gt;
+
+&lt;div id=&#34;TOC&#34;&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#gapminder&#34;&gt;Data visualization in practice&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#case-study-new-insights-on-poverty&#34;&gt;Case study: new insights on poverty&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#exploring-the-data&#34;&gt;Exploring the Data&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#slope-charts&#34;&gt;Slope charts&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#bland-altman-plot&#34;&gt;Bland-Altman plot&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#bump-charts&#34;&gt;Bump charts&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#themes&#34;&gt;Themes&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#small-multiples&#34;&gt;Small multiples&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#sparklines&#34;&gt;Sparklines&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#the-ecological-fallacy-and-importance-of-showing-the-data&#34;&gt;The ecological fallacy and importance of showing the data&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#logit&#34;&gt;Logistic transformation&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#show-the-data&#34;&gt;Show the data&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#vaccines&#34;&gt;Case study: vaccines and infectious diseases&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#try-it&#34;&gt;&lt;strong&gt;TRY IT&lt;/strong&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+
+&lt;div id=&#34;gapminder&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Data visualization in practice&lt;/h1&gt;
+&lt;p&gt;In this chapter, we will demonstrate how relatively simple &lt;strong&gt;ggplot2&lt;/strong&gt; code can create insightful and aesthetically pleasing plots. As motivation we will create plots that help us better understand trends in world health and economics. We will implement what we learned in previous sections of the class and learn how to augment the code to perfect the plots. As we go through our case study, we will describe relevant general data visualization principles and learn concepts such as &lt;em&gt;faceting&lt;/em&gt;, &lt;em&gt;time series plots&lt;/em&gt;, &lt;em&gt;transformations&lt;/em&gt;, and &lt;em&gt;ridge plots&lt;/em&gt;.&lt;/p&gt;
+&lt;div id=&#34;case-study-new-insights-on-poverty&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Case study: new insights on poverty&lt;/h2&gt;
+&lt;p&gt;Hans Rosling&lt;a href=&#34;#fn1&#34; class=&#34;footnote-ref&#34; id=&#34;fnref1&#34;&gt;&lt;sup&gt;1&lt;/sup&gt;&lt;/a&gt; was the co-founder of the Gapminder Foundation&lt;a href=&#34;#fn2&#34; class=&#34;footnote-ref&#34; id=&#34;fnref2&#34;&gt;&lt;sup&gt;2&lt;/sup&gt;&lt;/a&gt;, an organization dedicated to educating the public by using data to dispel common myths about the so-called developing world. The organization uses data to show how actual trends in health and economics contradict the narratives that emanate from sensationalist media coverage of catastrophes, tragedies, and other unfortunate events. As stated in the Gapminder Foundation’s website:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Journalists and lobbyists tell dramatic stories. That’s their job. They tell stories about extraordinary events and unusual people. The piles of dramatic stories pile up in peoples’ minds into an over-dramatic worldview and strong negative stress feelings: “The world is getting worse!”, “It’s we vs. them!”, “Other people are strange!”, “The population just keeps growing!” and “Nobody cares!”&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Hans Rosling conveyed actual data-based trends in a dramatic way of his own, using effective data visualization. This section is based on two talks that exemplify this approach to education: [New Insights on Poverty]&lt;a href=&#34;#fn3&#34; class=&#34;footnote-ref&#34; id=&#34;fnref3&#34;&gt;&lt;sup&gt;3&lt;/sup&gt;&lt;/a&gt; and The Best Stats You’ve Ever Seen&lt;a href=&#34;#fn4&#34; class=&#34;footnote-ref&#34; id=&#34;fnref4&#34;&gt;&lt;sup&gt;4&lt;/sup&gt;&lt;/a&gt;. Specifically, in this section, we use data to attempt to answer the following two questions:&lt;/p&gt;
+&lt;ol style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;Is it a fair characterization of today’s world to say it is divided into western rich nations and the developing world in Africa, Asia, and Latin America?&lt;/li&gt;
+&lt;li&gt;Has income inequality across countries worsened during the last 40 years?&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;To answer these questions, we will be using the &lt;code&gt;gapminder&lt;/code&gt; dataset provided in &lt;strong&gt;dslabs&lt;/strong&gt;. This dataset was created using a number of spreadsheets available from the Gapminder Foundation. You can access the table like this:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(tidyverse)
+library(dslabs)
+library(ggrepel)
+library(ggthemes)
+gapminder = dslabs::gapminder %&amp;gt;% as_tibble()&lt;/code&gt;&lt;/pre&gt;
+&lt;div id=&#34;exploring-the-data&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Exploring the Data&lt;/h3&gt;
+&lt;p&gt;Taking an exercise from the &lt;em&gt;New Insights on Poverty&lt;/em&gt; video, we start by testing our knowledge regarding differences in child mortality across different countries. For each of the six pairs of countries below, which country do you think had the highest child mortality rates in 2015? Which pairs do you think are most similar?&lt;/p&gt;
+&lt;ol style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;Sri Lanka or Turkey&lt;/li&gt;
+&lt;li&gt;Poland or South Korea&lt;/li&gt;
+&lt;li&gt;Malaysia or Russia&lt;/li&gt;
+&lt;li&gt;Pakistan or Vietnam&lt;/li&gt;
+&lt;li&gt;Thailand or South Africa&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;When answering these questions without data, the non-European countries are typically picked as having higher child mortality rates: Sri Lanka over Turkey, South Korea over Poland, and Malaysia over Russia. It is also common to assume that countries considered to be part of the developing world: Pakistan, Vietnam, Thailand, and South Africa, have similarly high mortality rates.&lt;/p&gt;
+&lt;p&gt;To answer these questions &lt;strong&gt;with data&lt;/strong&gt;, we can use &lt;strong&gt;dplyr&lt;/strong&gt;. For example, for the first comparison we see that:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;dslabs::gapminder %&amp;gt;%
+  filter(year == 2015 &amp;amp; country %in% c(&amp;quot;Sri Lanka&amp;quot;,&amp;quot;Turkey&amp;quot;)) %&amp;gt;%
+  select(country, infant_mortality)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;##     country infant_mortality
+## 1 Sri Lanka              8.4
+## 2    Turkey             11.6&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Turkey has the higher infant mortality rate.&lt;/p&gt;
+&lt;p&gt;We can use this code on all comparisons and find the following:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;## New names:
+## * country -&amp;gt; country...1
+## * infant_mortality -&amp;gt; infant_mortality...2
+## * country -&amp;gt; country...3
+## * infant_mortality -&amp;gt; infant_mortality...4&lt;/code&gt;&lt;/pre&gt;
+&lt;table class=&#34;table table-striped&#34; style=&#34;width: auto !important; margin-left: auto; margin-right: auto;&#34;&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th style=&#34;text-align:left;&#34;&gt;
+country
+&lt;/th&gt;
+&lt;th style=&#34;text-align:right;&#34;&gt;
+infant mortality
+&lt;/th&gt;
+&lt;th style=&#34;text-align:left;&#34;&gt;
+country
+&lt;/th&gt;
+&lt;th style=&#34;text-align:right;&#34;&gt;
+infant mortality
+&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+Sri Lanka
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+8.4
+&lt;/td&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+Turkey
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+11.6
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+Poland
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+4.5
+&lt;/td&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+South Korea
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+2.9
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+Malaysia
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+6.0
+&lt;/td&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+Russia
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+8.2
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+Pakistan
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+65.8
+&lt;/td&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+Vietnam
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+17.3
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+Thailand
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+10.5
+&lt;/td&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+South Africa
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+33.6
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;We see that the European countries on this list have higher child mortality rates: Poland has a higher rate than South Korea, and Russia has a higher rate than Malaysia. We also see that Pakistan has a much higher rate than Vietnam, and South Africa has a much higher rate than Thailand. It turns out that when Hans Rosling gave this quiz to educated groups of people, the average score was less than 2.5 out of 5, worse than what they would have obtained had they guessed randomly. This implies that more than ignorant, we are misinformed. In this chapter we see how data visualization helps inform us.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;slope-charts&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Slope charts&lt;/h3&gt;
+&lt;p&gt;One exception where another type of plot may be more informative is when you are comparing variables of the same type, but at different time points and for a relatively small number of comparisons. For example, comparing life expectancy between 2010 and 2015. In this case, we might recommend a &lt;em&gt;slope chart&lt;/em&gt;.&lt;/p&gt;
+&lt;p&gt;There is no geometry for slope charts in &lt;strong&gt;ggplot2&lt;/strong&gt;, but we can construct one using &lt;code&gt;geom_line&lt;/code&gt;. We need to do some tinkering to add labels. We’ll paste together a character stright with the country name and the starting life expectancy, then do the same with just the later life expectancy for the right side. Below is an example comparing 2010 to 2015 for large western countries:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;west &amp;lt;- c(&amp;quot;Western Europe&amp;quot;,&amp;quot;Northern Europe&amp;quot;,&amp;quot;Southern Europe&amp;quot;,
+          &amp;quot;Northern America&amp;quot;,&amp;quot;Australia and New Zealand&amp;quot;)
+
+dat &amp;lt;- gapminder %&amp;gt;%
+  filter(year%in% c(2010, 2015) &amp;amp; region %in% west &amp;amp;
+           !is.na(life_expectancy) &amp;amp; population &amp;gt; 10^7) %&amp;gt;%
+    mutate(label_first = ifelse(year == 2010, paste0(country, &amp;quot;: &amp;quot;, round(life_expectancy, 1), &amp;#39; years&amp;#39;), NA),
+           label_last = ifelse(year == 2015,  paste0(round(life_expectancy, 1),&amp;#39; years&amp;#39;), NA))
+
+dat %&amp;gt;%
+  mutate(location = ifelse(year == 2010, 1, 2),
+         location = ifelse(year == 2015 &amp;amp;
+                             country %in% c(&amp;quot;United Kingdom&amp;quot;, &amp;quot;Portugal&amp;quot;),
+                           location+0.22, location),
+         hjust = ifelse(year == 2010, 1, 0)) %&amp;gt;%
+  mutate(year = as.factor(year)) %&amp;gt;%
+  ggplot(aes(year, life_expectancy, group = country)) +
+  geom_line(aes(color = country), show.legend = FALSE) +
+  geom_text_repel(aes(label = label_first, color = country), direction = &amp;#39;y&amp;#39;, nudge_x = -1, seed = 1234, show.legend = FALSE) +
+  geom_text_repel(aes(label = label_last, color = country), direction = &amp;#39;y&amp;#39;, nudge_x =  1, seed = 1234, show.legend = FALSE) +
+  xlab(&amp;quot;&amp;quot;) + ylab(&amp;quot;Life Expectancy&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Warning: Removed 12 rows containing missing values (geom_text_repel).
+
+## Warning: Removed 12 rows containing missing values (geom_text_repel).&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/example/03-example_files/figure-html/slope-plot-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;An advantage of the slope chart is that it permits us to quickly get an idea of changes based on the slope of the lines. Although we are using angle as the visual cue, we also have position to determine the exact values. Comparing the improvements is a bit harder with a scatterplot:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/example/03-example_files/figure-html/scatter-plot-instead-of-slope-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;In the scatterplot, we have followed the principle &lt;em&gt;use common axes&lt;/em&gt; since we are comparing these before and after. However, if we have many points, slope charts stop being useful as it becomes hard to see all the lines.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;bland-altman-plot&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Bland-Altman plot&lt;/h3&gt;
+&lt;p&gt;Since we are primarily interested in the difference, it makes sense to dedicate one of our axes to it. The Bland-Altman plot, also known as the Tukey mean-difference plot and the MA-plot, shows the difference versus the average:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;dat %&amp;gt;%
+  mutate(year = paste0(&amp;quot;life_expectancy_&amp;quot;, year)) %&amp;gt;%
+  select(country, year, life_expectancy) %&amp;gt;%
+  spread(year, life_expectancy) %&amp;gt;%
+  mutate(average = (life_expectancy_2015 + life_expectancy_2010)/2,
+         difference = life_expectancy_2015 - life_expectancy_2010) %&amp;gt;%
+  ggplot(aes(average, difference, label = country)) +
+  geom_point() +
+  geom_text_repel() +
+  geom_abline(lty = 2) +
+  xlab(&amp;quot;Average of 2010 and 2015&amp;quot;) +
+  ylab(&amp;quot;Difference between 2015 and 2010&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/example/03-example_files/figure-html/bland-altman-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Here, by simply looking at the y-axis, we quickly see which countries have shown the most improvement. We also get an idea of the overall value from the x-axis.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;bump-charts&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Bump charts&lt;/h3&gt;
+&lt;p&gt;Finally, we can make a bump chart that shows changes in rankings over time. We’ll look at fertility in South Asia. First we need to calculate a new variable that shows the rank of each country within each year. We can do this if we group by year and then use the &lt;code&gt;rank()&lt;/code&gt; function to rank countries by the &lt;code&gt;fertility&lt;/code&gt; column.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;sa_fe &amp;lt;- gapminder %&amp;gt;%
+  filter(region == &amp;quot;Southern Asia&amp;quot;) %&amp;gt;%
+  filter(year &amp;gt;= 2004, year &amp;lt; 2015) %&amp;gt;%
+  group_by(year) %&amp;gt;%
+  mutate(rank = rank(fertility))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;We then plot this with points and lines, reversing the y-axis so 1 is at the top:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(sa_fe, aes(x = year, y = rank, color = country)) +
+  geom_line() +
+  geom_point() +
+  scale_y_reverse(breaks = 1:8)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/example/03-example_files/figure-html/make-bump-plot-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Iran holds the number 1 spot, while Sri Lanka dropped from 2 to 6, and Bangladesh increased from 4 to 2.&lt;/p&gt;
+&lt;p&gt;As with the slopegraph, there are 8 different colors in the legend and it’s hard to line them all up with the different lines, so we can plot the text directly instead. We’ll use &lt;code&gt;geom_text()&lt;/code&gt; again. We don’t need to repel anything, since the text should fit in each row just fine. We need to change the &lt;code&gt;data&lt;/code&gt; argument in &lt;code&gt;geom_text()&lt;/code&gt; though and filter the data to only include one year, otherwise we’ll get labels on every point, which is excessive. We can also adjust the theme and colors to make it cleaner.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;bumpplot &amp;lt;- ggplot(sa_fe, aes(x = year, y = rank, color = country)) +
+  geom_line(size = 2) +
+  geom_point(size = 4) +
+  geom_text(data = sa_fe %&amp;gt;% dplyr::filter(year==2004) %&amp;gt;% arrange(rank),
+            aes(label = country, x = 2003), fontface = &amp;quot;bold&amp;quot;, angle = 45) +
+ geom_text(data = sa_fe %&amp;gt;% dplyr::filter(year==2014) %&amp;gt;% arrange(rank),
+            aes(label = country, x = 2015), fontface = &amp;quot;bold&amp;quot;, angle = 45) + 
+  guides(color = FALSE) +
+  scale_y_reverse(breaks = 1:8) +
+  scale_x_continuous(breaks = 2004:2014) +
+  scale_color_viridis_d(option = &amp;quot;C&amp;quot;, begin = 0.2, end = 0.9) +
+  labs(x = NULL, y = &amp;quot;Rank&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Warning: `guides(&amp;lt;scale&amp;gt; = FALSE)` is deprecated. Please use `guides(&amp;lt;scale&amp;gt; =
+## &amp;quot;none&amp;quot;)` instead.&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;bumpplot&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/example/03-example_files/figure-html/bump-plot-fancier-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;If you want to be &lt;em&gt;super&lt;/em&gt; fancy, you can use flags instead of country codes, but that’s a little more complicated (you need to install the &lt;a href=&#34;https://github.com/rensa/ggflags&#34;&gt;&lt;strong&gt;ggflags&lt;/strong&gt; package&lt;/a&gt;. &lt;a href=&#34;https://dominikkoch.github.io/Bump-Chart/&#34;&gt;See here for an example&lt;/a&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;themes&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Themes&lt;/h3&gt;
+&lt;p&gt;We can go a little further towards a clean, easy-to-read data visualization by using &lt;strong&gt;themes&lt;/strong&gt; in our plots. Themes allow us to set a particular range of plot settings in one command, and let us further tweak things like fonts, background colors, and much more. We’ve used them in passing a few times without highlighting them, but we’ll discuss them here.&lt;/p&gt;
+&lt;p&gt;A pre-constructed set of instructions for making a visual theme can be had by using a theme’s &lt;code&gt;ggplot&lt;/code&gt; function. Let’s look at two of my favorites.&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;theme_bw()&lt;/code&gt; uses the black-and-white theme, which is helpful in making a nice, clean plot:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;bumpplot + theme_bw()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/example/03-example_files/figure-html/unnamed-chunk-3-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;The background shading is gone, which gives the plot a nice, crisp feel. It adds the black outline around the plot, but doesn’t mess with the colors in the plot.&lt;/p&gt;
+&lt;p&gt;Here’s &lt;code&gt;theme_minimal()&lt;/code&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;bumpplot + theme_minimal()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/example/03-example_files/figure-html/unnamed-chunk-4-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Themes can alter things in the plot as well. If we really want to strip it down and remove the Y-axis (which is rarely a good idea, but in a bump chart, it makes sense):&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;bumpplot + theme_void()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/example/03-example_files/figure-html/unnamed-chunk-5-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Now &lt;strong&gt;that’s&lt;/strong&gt; clean!&lt;/p&gt;
+&lt;p&gt;In our opening unit, we had a plot that was styled after the plots in the magazine, &lt;em&gt;The Economist&lt;/em&gt;. That’s a theme (in the &lt;code&gt;ggthemes&lt;/code&gt; package that we loaded at the top)!&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;bumpplot + theme_economist()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/example/03-example_files/figure-html/unnamed-chunk-6-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Themes affect some of the plot elements that we haven’t gotten much into (like length of axis ticks and the color of the panel grid behind the plot). We can use a theme, then make further changes to the theme. We won’t go into a lot of detail, but here’s an example. Use the &lt;code&gt;?theme&lt;/code&gt; to learn more about what you can change. Half the challenge is finding the right term for the thing you want to tweak! Theme changes occur in code order, so you can update a pre-set theme with your own details:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;bumpplot +   theme_bw() + theme(strip.text = element_text(face = &amp;quot;bold&amp;quot;),
+                   plot.title = element_text(face = &amp;quot;bold&amp;quot;),
+                   axis.text.x = element_text(angle = 45, hjust = 1),
+                   panel.grid.major.y = element_blank(), # turn off all of the Y grid
+                   panel.grid.minor.y = element_blank(),
+                   panel.grid.minor.x = element_blank()) # turn off small x grid&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/example/03-example_files/figure-html/bump-plot-fancierest-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;small-multiples&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Small multiples&lt;/h3&gt;
+&lt;p&gt;First we can make some small multiples plots and show life expectancy over time for a handful of countries. We’ll make a list of some countries chosen at random while I scrolled through the data, and then filter our data to include only those rows. We then plot life expectancy, faceting by country.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;life_expectancy_small &amp;lt;- gapminder %&amp;gt;%
+  filter(country %in% c(&amp;quot;Argentina&amp;quot;, &amp;quot;Bolivia&amp;quot;, &amp;quot;Brazil&amp;quot;,
+                        &amp;quot;Belize&amp;quot;, &amp;quot;Canada&amp;quot;, &amp;quot;Chile&amp;quot;))
+ggplot(data = life_expectancy_small,
+       mapping = aes(x = year, y = life_expectancy)) +
+  geom_line(size = 1) +
+  facet_wrap(vars(country))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/example/03-example_files/figure-html/unnamed-chunk-7-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Small multiples! That’s all we need to do.&lt;/p&gt;
+&lt;p&gt;We can do some fancier things, though. We can make this plot hyper minimalist with a &lt;strong&gt;theme&lt;/strong&gt;:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(data = life_expectancy_small,
+       mapping = aes(x = year, y = life_expectancy)) +
+  geom_line(size = 1) +
+  facet_wrap(vars(country), scales = &amp;quot;free_y&amp;quot;) +
+  theme_void() +
+  theme(strip.text = element_text(face = &amp;quot;bold&amp;quot;))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/example/03-example_files/figure-html/life-expectancy-small-minimalist-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;We can do a whole part of a continent (poor Syria 😞)&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;life_expectancy_mena &amp;lt;- gapminder %&amp;gt;%
+  filter(region == &amp;quot;Northern Africa&amp;quot; | region == &amp;quot;Western Asia&amp;quot;)
+
+ggplot(data = life_expectancy_mena,
+       mapping = aes(x = year, y = life_expectancy)) +
+  geom_line(size = 1) +
+  facet_wrap(vars(country), scales = &amp;quot;free_y&amp;quot;, nrow = 3) +
+  theme_void() +
+  theme(strip.text = element_text(face = &amp;quot;bold&amp;quot;))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/example/03-example_files/figure-html/life-expectancy-mena-1.png&#34; width=&#34;960&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;We can use the &lt;a href=&#34;https://hafen.github.io/geofacet/&#34;&gt;&lt;strong&gt;geofacet&lt;/strong&gt; package&lt;/a&gt; to arrange these facets by geography:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(geofacet)
+
+life_expectancy_eu &amp;lt;- gapminder %&amp;gt;%
+  filter(region== &amp;#39;Western Europe&amp;#39; | region==&amp;#39;Northern Europe&amp;#39; | region==&amp;#39;Southern Europe&amp;#39;)
+
+ggplot(life_expectancy_eu, aes(x = year, y = life_expectancy)) +
+  geom_line(size = 1) +
+  facet_geo(vars(country), grid = &amp;quot;europe_countries_grid1&amp;quot;, scales = &amp;quot;free_y&amp;quot;) +
+  labs(x = NULL, y = NULL, title = &amp;quot;Life expectancy from 1960–2015&amp;quot;,
+       caption = &amp;quot;Source: Gapminder&amp;quot;) +
+  theme_minimal() +
+  theme(strip.text = element_text(face = &amp;quot;bold&amp;quot;),
+        plot.title = element_text(face = &amp;quot;bold&amp;quot;),
+        axis.text.x = element_text(angle = 45, hjust = 1))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/example/03-example_files/figure-html/life-expectancy-eu-1.png&#34; width=&#34;960&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Neat!&lt;/p&gt;
+&lt;p&gt;Anybody see any problems here?&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;sparklines&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Sparklines&lt;/h3&gt;
+&lt;p&gt;Sparklines are just line charts (or bar charts) that are really really small.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;india_fert &amp;lt;- gapminder %&amp;gt;%
+  filter(country == &amp;quot;India&amp;quot;)
+plot_india &amp;lt;- ggplot(india_fert, aes(x = year, y = fertility)) +
+  geom_line() +
+  theme_void()
+plot_india&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/example/03-example_files/figure-html/india-spark-1.png&#34; width=&#34;96&#34; /&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggsave(&amp;quot;india_co2.pdf&amp;quot;, plot_india, width = 1, height = 0.15, units = &amp;quot;in&amp;quot;)
+ggsave(&amp;quot;india_co2.png&amp;quot;, plot_india, width = 1, height = 0.15, units = &amp;quot;in&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;china_fert &amp;lt;- gapminder %&amp;gt;%
+  filter(country == &amp;quot;China&amp;quot;)
+plot_china &amp;lt;- ggplot(china_fert, aes(x = year, y = fertility)) +
+  geom_line() +
+  theme_void()
+plot_china&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/example/03-example_files/figure-html/china-spark-1.png&#34; width=&#34;96&#34; /&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggsave(&amp;quot;china_co2.pdf&amp;quot;, plot_china, width = 1, heighlt = 0.15, units = &amp;quot;in&amp;quot;)
+ggsave(&amp;quot;china_co2.png&amp;quot;, plot_china, width = 1, height = 0.15, units = &amp;quot;in&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;You can then use those saved tiny plots in your text (with a little html extra in there).&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;Both India &amp;lt;img class=&amp;quot;img-inline&amp;quot; src=&amp;quot;/your/path/to/india_co2.png&amp;quot; width = &amp;quot;100&amp;quot;/&amp;gt; and 
+China &amp;lt;img class=&amp;quot;img-inline&amp;quot; src=&amp;quot;/your/path/to/china-spark-1.png&amp;quot; width = &amp;quot;100&amp;quot;/&amp;gt; have 
+seen increased CO~2~ emissions over the past 20 years.&lt;/code&gt;&lt;/pre&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Both India &lt;img class=&#34;img-inline&#34; src=&#34;https://ssc442kirkpatrick.netlify.app/example/08-example_files/figure-html/india-spark-1.png&#34; width = &#34;100&#34;/&gt; and China &lt;img class=&#34;img-inline&#34; src=&#34;https://ssc442kirkpatrick.netlify.app/example/08-example_files/figure-html/china-spark-1.png&#34; width = &#34;100&#34;/&gt; have seen increased CO&lt;sub&gt;2&lt;/sub&gt; emissions over the past 20 years.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;the-ecological-fallacy-and-importance-of-showing-the-data&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;The ecological fallacy and importance of showing the data&lt;/h2&gt;
+&lt;p&gt;Throughout this section, we have been comparing regions of the world. We have seen that, on average, some regions do better than others. In this section, we focus on describing the importance of variability within the groups when examining the relationship between a country’s infant mortality rates and average income.&lt;/p&gt;
+&lt;p&gt;We define a few more regions and compare the averages across regions:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/example/03-example_files/figure-html/ecological-fallacy-averages-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;The relationship between these two variables is almost perfectly linear and the graph shows a dramatic difference. While in the West less than 0.5% of infants die, in Sub-Saharan Africa the rate is higher than 6%!&lt;/p&gt;
+&lt;p&gt;Note that the plot uses a new transformation, the logistic transformation.&lt;/p&gt;
+&lt;div id=&#34;logit&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Logistic transformation&lt;/h3&gt;
+&lt;p&gt;The logistic or logit transformation for a proportion or rate &lt;span class=&#34;math inline&#34;&gt;\(p\)&lt;/span&gt; is defined as:&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[f(p) = \log \left( \frac{p}{1-p} \right)\]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;When &lt;span class=&#34;math inline&#34;&gt;\(p\)&lt;/span&gt; is a proportion or probability, the quantity that is being logged, &lt;span class=&#34;math inline&#34;&gt;\(p/(1-p)\)&lt;/span&gt;, is called the &lt;em&gt;odds&lt;/em&gt;. In this case &lt;span class=&#34;math inline&#34;&gt;\(p\)&lt;/span&gt; is the proportion of infants that survived. The odds tell us how many more infants are expected to survive than to die. The log transformation makes this symmetric. If the rates are the same, then the log odds is 0. Fold increases or decreases turn into positive and negative increments, respectively.&lt;/p&gt;
+&lt;p&gt;This scale is useful when we want to highlight differences near 0 or 1. For survival rates this is important because a survival rate of 90% is unacceptable, while a survival of 99% is relatively good. We would much prefer a survival rate closer to 99.9%. We want our scale to highlight these difference and the logit does this. Note that 99.9/0.1 is about 10 times bigger than 99/1 which is about 10 times larger than 90/10. By using the log, these fold changes turn into constant increases.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;show-the-data&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Show the data&lt;/h3&gt;
+&lt;p&gt;Now, back to our plot. Based on the plot above, do we conclude that a country with a low income is destined to have low survival rate? Do we conclude that survival rates in Sub-Saharan Africa are all lower than in Southern Asia, which in turn are lower than in the Pacific Islands, and so on?&lt;/p&gt;
+&lt;p&gt;Jumping to this conclusion based on a plot showing averages is referred to as the &lt;em&gt;ecological fallacy&lt;/em&gt;. The almost perfect relationship between survival rates and income is only observed for the averages at the region level. Once we show all the data, we see a somewhat more complicated story:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;## Warning: ggrepel: 1 unlabeled data points (too many overlaps). Consider
+## increasing max.overlaps&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/example/03-example_files/figure-html/ecological-fallacy-all-data-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Specifically, we see that there is a large amount of variability. We see that countries from the same regions can be quite different and that countries with the same income can have different survival rates. For example, while on average Sub-Saharan Africa had the worse health and economic outcomes, there is wide variability within that group. Mauritius and Botswana are doing better than Angola and Sierra Leone, with Mauritius comparable to Western countries.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;vaccines&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Case study: vaccines and infectious diseases&lt;/h2&gt;
+&lt;p&gt;Vaccines have helped save millions of lives. In the 19th century, before herd immunization was achieved through vaccination programs, deaths from infectious diseases, such as smallpox and polio, were common. However, today vaccination programs have become somewhat controversial despite all the scientific evidence for their importance.&lt;/p&gt;
+&lt;p&gt;The controversy started with a paper&lt;a href=&#34;#fn5&#34; class=&#34;footnote-ref&#34; id=&#34;fnref5&#34;&gt;&lt;sup&gt;5&lt;/sup&gt;&lt;/a&gt; published in 1988 and led by Andrew Wakefield claiming
+there was a link between the administration of the measles, mumps, and rubella (MMR) vaccine and the appearance of autism and bowel disease.
+Despite much scientific evidence contradicting this finding, sensationalist media reports and fear-mongering from conspiracy theorists led parts of the public into believing that vaccines were harmful. As a result, many parents ceased to vaccinate their children. This dangerous practice can be potentially disastrous given that the Centers for Disease Control (CDC) estimates that vaccinations will prevent more than 21 million hospitalizations and 732,000 deaths among children born in the last 20 years (see Benefits from Immunization during the Vaccines for Children Program Era — United States, 1994-2013, MMWR&lt;a href=&#34;#fn6&#34; class=&#34;footnote-ref&#34; id=&#34;fnref6&#34;&gt;&lt;sup&gt;6&lt;/sup&gt;&lt;/a&gt;).
+The 1988 paper has since been retracted and Andrew Wakefield was eventually “struck off the UK medical register, with a statement identifying deliberate falsification in the research published in The Lancet, and was thereby barred from practicing medicine in the UK.” (source: Wikipedia&lt;a href=&#34;#fn7&#34; class=&#34;footnote-ref&#34; id=&#34;fnref7&#34;&gt;&lt;sup&gt;7&lt;/sup&gt;&lt;/a&gt;). Yet misconceptions persist, in part due to self-proclaimed activists who continue to disseminate misinformation about vaccines.&lt;/p&gt;
+&lt;p&gt;Effective communication of data is a strong antidote to misinformation and fear-mongering. Earlier we used an example provided by a Wall Street Journal article&lt;a href=&#34;#fn8&#34; class=&#34;footnote-ref&#34; id=&#34;fnref8&#34;&gt;&lt;sup&gt;8&lt;/sup&gt;&lt;/a&gt; showing data related to the impact of vaccines on battling infectious diseases. Here we reconstruct that example.&lt;/p&gt;
+&lt;p&gt;The data used for these plots were collected, organized, and distributed by the Tycho Project&lt;a href=&#34;#fn9&#34; class=&#34;footnote-ref&#34; id=&#34;fnref9&#34;&gt;&lt;sup&gt;9&lt;/sup&gt;&lt;/a&gt;. They include weekly reported counts for seven diseases from 1928 to 2011, from all fifty states. The yearly totals are helpfully included in the &lt;strong&gt;dslabs&lt;/strong&gt; package:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(RColorBrewer)
+data(us_contagious_diseases)
+names(us_contagious_diseases)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;disease&amp;quot;         &amp;quot;state&amp;quot;           &amp;quot;year&amp;quot;            &amp;quot;weeks_reporting&amp;quot;
+## [5] &amp;quot;count&amp;quot;           &amp;quot;population&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;We create a temporary object &lt;code&gt;dat&lt;/code&gt; that stores only the measles data, includes a per 100,000 rate, orders states by average value of disease and removes Alaska and Hawaii since they only became states in the late 1950s. Note that there is a &lt;code&gt;weeks_reporting&lt;/code&gt; column that tells us for how many weeks of the year data was reported. We have to adjust for that value when computing the rate.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;the_disease &amp;lt;- &amp;quot;Measles&amp;quot;
+dat &amp;lt;- us_contagious_diseases %&amp;gt;%
+  filter(!state%in%c(&amp;quot;Hawaii&amp;quot;,&amp;quot;Alaska&amp;quot;) &amp;amp; disease == the_disease) %&amp;gt;%
+  mutate(rate = count / population * 10000 * 52 / weeks_reporting) %&amp;gt;%
+  mutate(state = reorder(state, rate))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;We can now easily plot disease rates per year. Here are the measles data from California:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;dat %&amp;gt;% filter(state == &amp;quot;California&amp;quot; &amp;amp; !is.na(rate)) %&amp;gt;%
+  ggplot(aes(year, rate)) +
+  geom_line() +
+  ylab(&amp;quot;Cases per 10,000&amp;quot;)  +
+  geom_vline(xintercept=1963, col = &amp;quot;blue&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/example/03-example_files/figure-html/california-measles-time-series-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;We add a vertical line at 1963 since this is when the vaccine was introduced [Control, Centers for Disease; Prevention (2014). CDC health information for international travel 2014 (the yellow book). p. 250. ISBN 9780199948505].&lt;/p&gt;
+&lt;p&gt;Now can we show data for all states in one plot? We have three variables to show: year, state, and rate. In the WSJ figure, they use the x-axis for year, the y-axis for state, and color hue to represent rates. However, the color scale they use, which goes from yellow to blue to green to orange to red, can be improved.&lt;/p&gt;
+&lt;p&gt;In our example, we want to use a sequential palette since there is no meaningful center, just low and high rates.&lt;/p&gt;
+&lt;p&gt;We use the geometry &lt;code&gt;geom_tile&lt;/code&gt; to tile the region with colors representing disease rates. We use a square root transformation to avoid having the really high counts dominate the plot. Notice that missing values are shown in grey. Note that once a disease was pretty much eradicated, some states stopped reporting cases all together. This is why we see so much grey after 1980.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;dat %&amp;gt;% ggplot(aes(year, state, fill = rate)) +
+  geom_tile(color = &amp;quot;grey50&amp;quot;) +
+  scale_x_continuous(expand=c(0,0)) +
+  scale_fill_gradientn(colors = brewer.pal(9, &amp;quot;Reds&amp;quot;), trans = &amp;quot;sqrt&amp;quot;) +
+  geom_vline(xintercept=1963, col = &amp;quot;blue&amp;quot;) +
+  theme_minimal() +
+  theme(panel.grid = element_blank(),
+        legend.position=&amp;quot;bottom&amp;quot;,
+        text = element_text(size = 8)) +
+  ggtitle(the_disease) +
+  ylab(&amp;quot;&amp;quot;) + xlab(&amp;quot;&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/example/03-example_files/figure-html/vaccines-plot-1.png&#34; width=&#34;100%&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;This plot makes a very striking argument for the contribution of vaccines. However, one limitation of this plot is that it uses color to represent quantity, which we earlier explained makes it harder to know exactly how high values are going. Position and lengths are better cues. If we are willing to lose state information, we can make a version of the plot that shows the values with position. We can also show the average for the US, which we compute like this:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;avg &amp;lt;- us_contagious_diseases %&amp;gt;%
+  filter(disease==the_disease) %&amp;gt;% group_by(year) %&amp;gt;%
+  summarize(us_rate = sum(count, na.rm = TRUE) /
+              sum(population, na.rm = TRUE) * 10000)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Now to make the plot we simply use the &lt;code&gt;geom_line&lt;/code&gt; geometry:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;dat %&amp;gt;%
+  filter(!is.na(rate)) %&amp;gt;%
+    ggplot() +
+  geom_line(aes(year, rate, group = state),  color = &amp;quot;grey50&amp;quot;,
+            show.legend = FALSE, alpha = 0.2, size = 1) +
+  geom_line(mapping = aes(year, us_rate),  data = avg, size = 1) +
+  scale_y_continuous(trans = &amp;quot;sqrt&amp;quot;, breaks = c(5, 25, 125, 300)) +
+  ggtitle(&amp;quot;Cases per 10,000 by state&amp;quot;) +
+  xlab(&amp;quot;&amp;quot;) + ylab(&amp;quot;&amp;quot;) +
+  geom_text(data = data.frame(x = 1955, y = 50),
+            mapping = aes(x, y, label=&amp;quot;US average&amp;quot;),
+            color=&amp;quot;black&amp;quot;) +
+  geom_vline(xintercept=1963, col = &amp;quot;blue&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/example/03-example_files/figure-html/time-series-vaccines-plot-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;In theory, we could use color to represent the categorical value state, but it is hard to pick 50 distinct colors.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;try-it&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;&lt;strong&gt;TRY IT&lt;/strong&gt;&lt;/h2&gt;
+&lt;div class=&#34;fyi&#34;&gt;
+&lt;p&gt;&lt;strong&gt;TRY IT&lt;/strong&gt;&lt;/p&gt;
+&lt;ol style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;&lt;p&gt;Reproduce the image plot we previously made but for smallpox. For this plot, do not include years in which cases were not reported in 10 or more weeks.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Now reproduce the time series plot we previously made, but this time following the instructions of the previous question for smallpox.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;For the state of California, make a time series plot showing rates for all diseases. Include only years with 10 or more weeks reporting. Use a different color for each disease.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Now do the same for the rates for the US. Hint: compute the US rate by using summarize: the total divided by total population.&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&#34;footnotes&#34;&gt;
+&lt;hr /&gt;
+&lt;ol&gt;
+&lt;li id=&#34;fn1&#34;&gt;&lt;p&gt;&lt;a href=&#34;https://en.wikipedia.org/wiki/Hans_Rosling&#34; class=&#34;uri&#34;&gt;https://en.wikipedia.org/wiki/Hans_Rosling&lt;/a&gt;&lt;a href=&#34;#fnref1&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li id=&#34;fn2&#34;&gt;&lt;p&gt;&lt;a href=&#34;http://www.gapminder.org/&#34; class=&#34;uri&#34;&gt;http://www.gapminder.org/&lt;/a&gt;&lt;a href=&#34;#fnref2&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li id=&#34;fn3&#34;&gt;&lt;p&gt;&lt;a href=&#34;https://www.ted.com/talks/hans_rosling_reveals_new_insights_on_poverty?language=en&#34; class=&#34;uri&#34;&gt;https://www.ted.com/talks/hans_rosling_reveals_new_insights_on_poverty?language=en&lt;/a&gt;&lt;a href=&#34;#fnref3&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li id=&#34;fn4&#34;&gt;&lt;p&gt;&lt;a href=&#34;https://www.ted.com/talks/hans_rosling_shows_the_best_stats_you_ve_ever_seen&#34; class=&#34;uri&#34;&gt;https://www.ted.com/talks/hans_rosling_shows_the_best_stats_you_ve_ever_seen&lt;/a&gt;&lt;a href=&#34;#fnref4&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li id=&#34;fn5&#34;&gt;&lt;p&gt;&lt;a href=&#34;http://www.thelancet.com/journals/lancet/article/PIIS0140-6736(97)11096-0/abstract&#34; class=&#34;uri&#34;&gt;http://www.thelancet.com/journals/lancet/article/PIIS0140-6736(97)11096-0/abstract&lt;/a&gt;&lt;a href=&#34;#fnref5&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li id=&#34;fn6&#34;&gt;&lt;p&gt;&lt;a href=&#34;https://www.cdc.gov/mmwr/preview/mmwrhtml/mm6316a4.htm&#34; class=&#34;uri&#34;&gt;https://www.cdc.gov/mmwr/preview/mmwrhtml/mm6316a4.htm&lt;/a&gt;&lt;a href=&#34;#fnref6&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li id=&#34;fn7&#34;&gt;&lt;p&gt;&lt;a href=&#34;https://en.wikipedia.org/wiki/Andrew_Wakefield&#34; class=&#34;uri&#34;&gt;https://en.wikipedia.org/wiki/Andrew_Wakefield&lt;/a&gt;&lt;a href=&#34;#fnref7&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li id=&#34;fn8&#34;&gt;&lt;p&gt;&lt;a href=&#34;http://graphics.wsj.com/infectious-diseases-and-vaccines/&#34; class=&#34;uri&#34;&gt;http://graphics.wsj.com/infectious-diseases-and-vaccines/&lt;/a&gt;&lt;a href=&#34;#fnref8&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li id=&#34;fn9&#34;&gt;&lt;p&gt;&lt;a href=&#34;http://www.tycho.pitt.edu/&#34; class=&#34;uri&#34;&gt;http://www.tycho.pitt.edu/&lt;/a&gt;&lt;a href=&#34;#fnref9&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Introduction to Visualization</title>
+      <link>https://ssc442kirkpatrick.netlify.app/example/01-example/</link>
+      <pubDate>Thu, 20 Jan 2022 00:00:00 +0000</pubDate>
+      <guid>https://ssc442kirkpatrick.netlify.app/example/01-example/</guid>
+      <description>
+
+&lt;div id=&#34;TOC&#34;&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#introduction-to-data-visualization&#34;&gt;Introduction to data visualization&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#ggplot2&#34;&gt;ggplot2&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#the-components-of-a-graph&#34;&gt;The components of a graph&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#ggplot-objects&#34;&gt;&lt;code&gt;ggplot&lt;/code&gt; objects&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#geometries-briefly&#34;&gt;Geometries (briefly)&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#aesthetic-mappings&#34;&gt;Aesthetic mappings&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#aesthetics-in-general&#34;&gt;Aesthetics in general&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#now-back-to-aesthetic-mappings&#34;&gt;Now, back to aesthetic mappings&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#legends-for-aesthetics&#34;&gt;Legends for aesthetics&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#annotation-layers&#34;&gt;Annotation Layers&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#global-versus-local-aesthetic-mappings&#34;&gt;Global versus local aesthetic mappings&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#try-it&#34;&gt;Try it!&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#video&#34;&gt;Video&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+
+&lt;div id=&#34;introduction-to-data-visualization&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Introduction to data visualization&lt;/h1&gt;
+&lt;p&gt;Looking at the numbers and character strings that define a dataset is rarely useful. To convince yourself, print and stare at the US murders data table:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(dslabs)
+data(murders)
+head(murders)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;##        state abb region population total
+## 1    Alabama  AL  South    4779736   135
+## 2     Alaska  AK   West     710231    19
+## 3    Arizona  AZ   West    6392017   232
+## 4   Arkansas  AR  South    2915918    93
+## 5 California  CA   West   37253956  1257
+## 6   Colorado  CO   West    5029196    65&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;What do you learn from staring at this table? Even though it is a relatively straightforward table, we can’t &lt;strong&gt;learn&lt;/strong&gt; anything. For starters, it is grossly abbreviated, though you could scroll through. In doing so, how quickly might you be able to determine which states have the largest populations? Which states have the smallest? How populous is a typical state? Is there a relationship between population size and total murders? How do murder rates vary across regions of the country? For most folks, it is quite difficult to extract this information just by looking at the numbers. In contrast, the answer to the questions above are readily available from examining this plot:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(tidyverse)
+library(ggthemes)
+library(ggrepel)
+
+r &amp;lt;- murders %&amp;gt;%
+  summarize(pop=sum(population), tot=sum(total)) %&amp;gt;%
+  mutate(rate = tot/pop*10^6) %&amp;gt;% pull(rate)
+
+murders %&amp;gt;% ggplot(aes(x = population/10^6, y = total, label = abb)) +
+  geom_abline(intercept = log10(r), lty=2, col=&amp;quot;darkgrey&amp;quot;) +
+  geom_point(aes(color=region), size = 3) +
+  geom_text_repel() +
+  scale_x_log10() +
+  scale_y_log10() +
+  xlab(&amp;quot;Populations in millions (log scale)&amp;quot;) +
+  ylab(&amp;quot;Total number of murders (log scale)&amp;quot;) +
+  ggtitle(&amp;quot;US Gun Murders in 2010&amp;quot;) +
+  scale_color_discrete(name=&amp;quot;Region&amp;quot;) +
+  theme_economist_white()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/example/01-example_files/figure-html/ggplot-example-plot-0-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;We are reminded of the saying: “A picture is worth a thousand words”. Data visualization provides a powerful way to communicate a data-driven finding. In some cases, the visualization is so convincing that no follow-up analysis is required. You should consider visualization the most potent tool in your data analytics arsenal.&lt;/p&gt;
+&lt;p&gt;The growing availability of informative datasets and software tools has led to increased reliance on data visualizations across many industries, academia, and government. A salient example is news organizations, which are increasingly embracing &lt;em&gt;data journalism&lt;/em&gt; and including effective &lt;em&gt;infographics&lt;/em&gt; as part of their reporting.&lt;/p&gt;
+&lt;p&gt;A particularly salient example—given the current state of the world—is a Wall Street Journal article&lt;a href=&#34;#fn1&#34; class=&#34;footnote-ref&#34; id=&#34;fnref1&#34;&gt;&lt;sup&gt;1&lt;/sup&gt;&lt;/a&gt; showing data related to the impact of vaccines on battling infectious diseases. One of the graphs shows measles cases by US state through the years with a vertical line demonstrating when the vaccine was introduced.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/example/01-example_files/figure-html/wsj-vaccines-example-1.png&#34; width=&#34;100%&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;(Source: &lt;a href=&#34;http://graphics.wsj.com/infectious-diseases-and-vaccines/&#34;&gt;Wall Street Journal&lt;/a&gt;)&lt;/p&gt;
+&lt;p&gt;Another striking example comes from a New York Times chart&lt;a href=&#34;#fn2&#34; class=&#34;footnote-ref&#34; id=&#34;fnref2&#34;&gt;&lt;sup&gt;2&lt;/sup&gt;&lt;/a&gt;, which summarizes scores from the NYC Regents Exams. As described in
+the article&lt;a href=&#34;#fn3&#34; class=&#34;footnote-ref&#34; id=&#34;fnref3&#34;&gt;&lt;sup&gt;3&lt;/sup&gt;&lt;/a&gt;, these scores are collected for several reasons, including to determine if a student graduates from high school. In New York City you need a 65 to pass. The distribution of the test scores forces us to notice something somewhat problematic:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/example/01-example_files/figure-html/regents-exams-example-1.png&#34; width=&#34;80%&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;(Source: &lt;a href=&#34;http://graphics8.nytimes.com/images/2011/02/19/nyregion/19schoolsch/19schoolsch-popup.gif&#34;&gt;New York Times&lt;/a&gt; via Amanda Cox)&lt;/p&gt;
+&lt;p&gt;The most common test score is the minimum passing grade, with very few scores just below the threshold. This unexpected result is consistent with students close to passing having their scores bumped up.&lt;/p&gt;
+&lt;p&gt;This is an example of how data visualization can lead to discoveries which would otherwise be missed if we simply subjected the data to a battery of data analysis tools or procedures. Data visualization is the strongest tool of what we call &lt;em&gt;exploratory data analysis&lt;/em&gt; (EDA). John W. Tukey&lt;a href=&#34;#fn4&#34; class=&#34;footnote-ref&#34; id=&#34;fnref4&#34;&gt;&lt;sup&gt;4&lt;/sup&gt;&lt;/a&gt;, considered the father of EDA, once said,&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;blockquote&gt;
+&lt;p&gt;“The greatest value of a picture is when it forces us to notice what we never expected to see.”&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Many widely used data analysis tools were initiated by discoveries made via EDA. EDA is perhaps the most important part of data analysis, yet it is one that is often overlooked.&lt;/p&gt;
+&lt;p&gt;Data visualization is also now pervasive in philanthropic and educational organizations. In the talks New Insights on Poverty&lt;a href=&#34;#fn5&#34; class=&#34;footnote-ref&#34; id=&#34;fnref5&#34;&gt;&lt;sup&gt;5&lt;/sup&gt;&lt;/a&gt; and The Best Stats You’ve Ever Seen&lt;a href=&#34;#fn6&#34; class=&#34;footnote-ref&#34; id=&#34;fnref6&#34;&gt;&lt;sup&gt;6&lt;/sup&gt;&lt;/a&gt;, Hans Rosling forces us to notice the unexpected with a series of plots related to world health and economics. In his videos, he uses animated graphs to show us how the world is changing and how old narratives are no longer true.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/example/01-example_files/figure-html/gampnider-example-plot-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;It is also important to note that mistakes, biases, systematic errors and other unexpected problems often lead to data that should be handled with care. Failure to discover these problems can give rise to flawed analyses and false discoveries. As an example, consider that measurement devices sometimes fail and that most data analysis procedures are not designed to detect these. Yet these data analysis procedures will still give you an answer. The fact that it can be difficult or impossible to notice an error just from the reported results makes data visualization particularly important.&lt;/p&gt;
+&lt;p&gt;Today, we will discuss the basics of data visualization and exploratory data analysis. We will use the &lt;strong&gt;ggplot2&lt;/strong&gt; package to code. To learn the very basics, we will start with a somewhat artificial example: heights reported by students. Then we will cover the two examples mentioned above: 1) world health and economics and 2) infectious disease trends in the United States.&lt;/p&gt;
+&lt;p&gt;Of course, there is much more to data visualization than what we cover here. The following are references for those who wish to learn more:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;ER Tufte (1983) The visual display of quantitative information.
+Graphics Press.&lt;/li&gt;
+&lt;li&gt;ER Tufte (1990) Envisioning information. Graphics Press.&lt;/li&gt;
+&lt;li&gt;ER Tufte (1997) Visual explanations. Graphics Press.&lt;/li&gt;
+&lt;li&gt;WS Cleveland (1993) Visualizing data. Hobart Press.&lt;/li&gt;
+&lt;li&gt;WS Cleveland (1994) The elements of graphing data. CRC Press.&lt;/li&gt;
+&lt;li&gt;A Gelman, C Pasarica, R Dodhia (2002) Let’s practice what we preach:
+Turning tables into graphs. The American Statistician 56:121-130.&lt;/li&gt;
+&lt;li&gt;NB Robbins (2004) Creating more effective graphs. Wiley.&lt;/li&gt;
+&lt;li&gt;A Cairo (2013) The functional art: An introduction to information graphics and visualization. New Riders.&lt;/li&gt;
+&lt;li&gt;N Yau (2013) Data points: Visualization that means something. Wiley.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;We also do not cover interactive graphics, a topic that is both too advanced for this course and too unweildy. Some useful resources for those interested in learning more can be found below, and you are encouraged to draw inspiration from those websites in your projects:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://shiny.rstudio.com/&#34;&gt;https://shiny.rstudio.com/&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://d3js.org/&#34;&gt;https://d3js.org/&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;div id=&#34;ggplot2&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;ggplot2&lt;/h1&gt;
+&lt;p&gt;Exploratory data visualization is perhaps the greatest strength of &lt;code&gt;R&lt;/code&gt;. One can quickly go from idea to data to plot with a unique balance of flexibility and ease. For example, Excel may be easier than &lt;code&gt;R&lt;/code&gt; for some plots, but it is nowhere near as flexible. &lt;code&gt;D3.js&lt;/code&gt; may be more flexible and powerful than &lt;code&gt;R&lt;/code&gt;, but it takes much longer to generate a plot. One of the reasons we use &lt;code&gt;R&lt;/code&gt; is its incredible flexibility &lt;strong&gt;and&lt;/strong&gt; ease.&lt;/p&gt;
+&lt;p&gt;Throughout this course, we will be creating plots using the &lt;strong&gt;ggplot2&lt;/strong&gt;&lt;a href=&#34;#fn7&#34; class=&#34;footnote-ref&#34; id=&#34;fnref7&#34;&gt;&lt;sup&gt;7&lt;/sup&gt;&lt;/a&gt; package.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(dplyr)
+library(ggplot2)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Many other approaches are available for creating plots in &lt;code&gt;R&lt;/code&gt;. In fact, the plotting capabilities that come with a basic installation of &lt;code&gt;R&lt;/code&gt; are already quite powerful. There are also other packages for creating graphics such as &lt;strong&gt;grid&lt;/strong&gt; and &lt;strong&gt;lattice&lt;/strong&gt;. We chose to use &lt;strong&gt;ggplot2&lt;/strong&gt; in this course because it breaks plots into components in a way that permits beginners to create relatively complex and aesthetically pleasing plots using syntax that is intuitive and comparatively easy to remember.&lt;/p&gt;
+&lt;p&gt;One reason &lt;strong&gt;ggplot2&lt;/strong&gt; is generally more intuitive for beginners is that it uses a so-called “grammar of graphics”&lt;a href=&#34;#fn8&#34; class=&#34;footnote-ref&#34; id=&#34;fnref8&#34;&gt;&lt;sup&gt;8&lt;/sup&gt;&lt;/a&gt;, the letters &lt;em&gt;gg&lt;/em&gt; in &lt;strong&gt;ggplot2&lt;/strong&gt;. This is analogous to the way learning grammar can help a beginner construct hundreds of different sentences by learning just a handful of verbs, nouns and adjectives without having to memorize each specific sentence. Similarly, by learning a handful of &lt;strong&gt;ggplot2&lt;/strong&gt; building blocks and its grammar, you will be able to create hundreds of different plots.&lt;/p&gt;
+&lt;p&gt;Another reason &lt;strong&gt;ggplot2&lt;/strong&gt; is easy for beginners is that its default behavior is carefully chosen to satisfy the great majority of cases and is visually pleasing. As a result, it is possible to create informative and elegant graphs with relatively simple and readable code.&lt;/p&gt;
+&lt;p&gt;One limitation is that &lt;strong&gt;ggplot2&lt;/strong&gt; is designed to work exclusively with data tables in tidy format (where rows are observations and columns are variables). However, a substantial percentage of datasets that beginners work with are in, or can be converted into, this format. An advantage of this approach is that, assuming that our data is tidy, &lt;strong&gt;ggplot2&lt;/strong&gt; simplifies plotting code and the learning of grammar for a variety of plots. You should review the previous content about tidy data if you are feeling lost.&lt;/p&gt;
+&lt;p&gt;To use &lt;strong&gt;ggplot2&lt;/strong&gt; you will have to learn several functions and arguments. These are hard to memorize, so we highly recommend you have the ggplot2 cheat sheet handy. You can get a copy here: &lt;a href=&#34;https://www.rstudio.com/wp-content/uploads/2015/03/ggplot2-cheatsheet.pdf&#34;&gt;https://www.rstudio.com/wp-content/uploads/2015/03/ggplot2-cheatsheet.pdf&lt;/a&gt; or simply perform an internet search for “ggplot2 cheat sheet”.&lt;/p&gt;
+&lt;div id=&#34;the-components-of-a-graph&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;The components of a graph&lt;/h2&gt;
+&lt;p&gt;We will eventually construct a graph that summarizes the US murders dataset that looks like this:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/example/01-example_files/figure-html/ggplot-example-plot-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;We can clearly see how much states vary across population size and the total number of murders. Not surprisingly, we also see a clear relationship between murder totals and population size. A state falling on the dashed grey line has the same murder rate as the US average. The four geographic regions are denoted with color, which depicts how most southern states have murder rates above the average.&lt;/p&gt;
+&lt;p&gt;This data visualization shows us pretty much all the information in the data table. The code needed to make this plot is relatively simple. We will learn to create the plot part by part.&lt;/p&gt;
+&lt;p&gt;The first step in learning &lt;strong&gt;ggplot2&lt;/strong&gt; is to be able to break a graph apart into components. Let’s break down the plot above and introduce some of the &lt;strong&gt;ggplot2&lt;/strong&gt; terminology. The main five components to note are:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;Data&lt;/strong&gt;: The US murders data table is being summarized. We refer to this as the &lt;strong&gt;data&lt;/strong&gt; component.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;Geometry&lt;/strong&gt;: The plot above is a scatterplot. This is referred to as the
+&lt;strong&gt;geometry&lt;/strong&gt; component. Other possible geometries are barplot, histogram, smooth densities, qqplot, boxplot, pie (ew!), and many, many more. We will learn about these later.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;Aesthetic mapping&lt;/strong&gt;: The plot uses several visual cues to represent the information provided by the dataset. The two most important cues in this plot are the point positions on the x-axis and y-axis, which represent population size and the total number of murders, respectively. Each point represents a different observation, and we &lt;em&gt;map&lt;/em&gt; data about these observations to visual cues like x- and y-scale. Color is another visual cue that we map to region. We refer to this as the &lt;strong&gt;aesthetic mapping&lt;/strong&gt; component. How we define the mapping depends on what &lt;strong&gt;geometry&lt;/strong&gt; we are using.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;Annotations&lt;/strong&gt;: These are things like axis labels, axis ticks (the lines along the axis at regular intervals or specific points of interest), axis scales (e.g. log-scale), titles, legends, etc.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;Style&lt;/strong&gt;: An overall appearance of the graph determined by fonts, color palattes, layout, blank spaces, and more.&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;We also note that:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;The points are labeled with the state abbreviations.&lt;/li&gt;
+&lt;li&gt;The range of the x-axis and y-axis appears to be defined by the range of the data. They are both on log-scales.&lt;/li&gt;
+&lt;li&gt;There are labels, a title, a legend, and we use the style of The Economist magazine.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;All of the flexibility and visualization power of &lt;code&gt;ggplot&lt;/code&gt; is contained in these four elements (plus your data)&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;ggplot-objects&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;&lt;code&gt;ggplot&lt;/code&gt; objects&lt;/h2&gt;
+&lt;p&gt;We will now construct the plot piece by piece.&lt;/p&gt;
+&lt;p&gt;We start by loading the dataset:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(dslabs)
+data(murders)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The first step in creating a &lt;strong&gt;ggplot2&lt;/strong&gt; graph is to define a &lt;code&gt;ggplot&lt;/code&gt; object. We do this with the function &lt;code&gt;ggplot&lt;/code&gt;, which initializes the graph. If we read the help file for this function, we see that the first argument is used to specify what data is associated with this object:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(data = murders)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;We can also pipe the data in as the first argument. So this line of code is equivalent to the one above:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;murders %&amp;gt;% ggplot()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/example/01-example_files/figure-html/ggplot-example-2-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;It renders a plot, in this case a blank slate since no &lt;strong&gt;geometry&lt;/strong&gt; has been defined. The only style choice we see is a grey background.&lt;/p&gt;
+&lt;p&gt;What has happened above is that the object was created and, because it was not assigned, it was automatically evaluated. But we can assign our plot to an object, for example like this:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p &amp;lt;- ggplot(data = murders)
+class(p)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;gg&amp;quot;     &amp;quot;ggplot&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;To render the plot associated with this object, we simply print the object &lt;code&gt;p&lt;/code&gt;. The following two lines of code each produce the same plot we see above:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;print(p)
+p&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;geometries-briefly&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Geometries (briefly)&lt;/h2&gt;
+&lt;p&gt;In &lt;code&gt;ggplot2&lt;/code&gt; we create graphs by adding geometry &lt;em&gt;layers&lt;/em&gt;. Layers can define geometries, compute summary statistics, define what scales to use, create annotations, or even change styles. To add layers, we use the symbol &lt;code&gt;+&lt;/code&gt;. In general, a line of code will look like this:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;code&gt;DATA %&amp;gt;% ggplot() + LAYER 1 + LAYER 2 + ... + LAYER N&lt;/code&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Usually, the first &lt;strong&gt;added&lt;/strong&gt; layer after &lt;code&gt;ggplot() +&lt;/code&gt; defines the geometry. After that, we may add additional geometries, we may rescale an axis, we may add annotations and labels, or we may change the style. For now, we want to make a scatterplot. What geometry do we use?&lt;/p&gt;
+&lt;p&gt;Taking a quick look at the cheat sheet, we see that the function used to create plots with this geometry is &lt;code&gt;geom_point&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/example/02-example_files/ggplot2-cheatsheeta.png&#34; /&gt;
+&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/example/02-example_files/ggplot2-cheatsheetb.png&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;(Image courtesy of RStudio&lt;a href=&#34;#fn9&#34; class=&#34;footnote-ref&#34; id=&#34;fnref9&#34;&gt;&lt;sup&gt;9&lt;/sup&gt;&lt;/a&gt;. CC-BY-4.0 license&lt;a href=&#34;#fn10&#34; class=&#34;footnote-ref&#34; id=&#34;fnref10&#34;&gt;&lt;sup&gt;10&lt;/sup&gt;&lt;/a&gt;.)&lt;/p&gt;
+&lt;!--(Source: [RStudio](https://github.com/rstudio/cheatsheets/raw/master/data-visualization-2.1.pdf))--&gt;
+&lt;p&gt;Geometry function names follow the pattern: &lt;code&gt;geom_X&lt;/code&gt; where X is the name of some specific geometry. Some examples include &lt;code&gt;geom_point&lt;/code&gt;, &lt;code&gt;geom_bar&lt;/code&gt;, and &lt;code&gt;geom_histogram&lt;/code&gt;. You’ve already seen a few of these. We will start with a scatterplot created using &lt;code&gt;geom_point()&lt;/code&gt; for now, then circle back to more geometries after we cover aesthetic mappings, layers, and annotations.&lt;/p&gt;
+&lt;p&gt;For &lt;code&gt;geom_point&lt;/code&gt; to run properly we need to provide data and an &lt;strong&gt;aesthetic mapping&lt;/strong&gt;. The simplest mapping for a scatter plot is to say we want one variable on the X-axis, and a different one on the Y-axis, so each point is an {X,Y} pair. That is an &lt;strong&gt;aesthetic mapping&lt;/strong&gt; because X and Y are &lt;strong&gt;aesthetics&lt;/strong&gt; in a &lt;code&gt;geom_point&lt;/code&gt; scatterplot.&lt;/p&gt;
+&lt;p&gt;We have already connected the object &lt;code&gt;p&lt;/code&gt; with the &lt;code&gt;murders&lt;/code&gt; data table, and if we add the layer &lt;code&gt;geom_point&lt;/code&gt; it defaults to using this data. To find out what mappings are expected, we read the &lt;strong&gt;Aesthetics&lt;/strong&gt; section of the help file &lt;code&gt;?geom_point&lt;/code&gt; help file:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;gt; Aesthetics
+&amp;gt;
+&amp;gt; geom_point understands the following aesthetics (required aesthetics are in bold):
+&amp;gt;
+&amp;gt; **x**
+&amp;gt;
+&amp;gt; **y**
+&amp;gt;
+&amp;gt; alpha
+&amp;gt;
+&amp;gt; colour
+&amp;gt;
+&amp;gt; fill
+&amp;gt;
+&amp;gt; group
+&amp;gt;
+&amp;gt; shape
+&amp;gt;
+&amp;gt; size
+&amp;gt;
+&amp;gt; stroke&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;and—although it does not show in bold above—we see that at least two arguments are required: &lt;code&gt;x&lt;/code&gt; and &lt;code&gt;y&lt;/code&gt;. You can’t have a &lt;code&gt;geom_point&lt;/code&gt; scatterplot unless you state what you want on the X and Y axes.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;aesthetic-mappings&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Aesthetic mappings&lt;/h2&gt;
+&lt;p&gt;&lt;strong&gt;Aesthetic mappings&lt;/strong&gt; describe how properties of the data connect with features of the graph, such as distance along an axis, size, or color. The &lt;code&gt;aes&lt;/code&gt; function connects data with what we see on the graph by defining aesthetic mappings and will be one of the functions you use most often when plotting. The outcome of the &lt;code&gt;aes&lt;/code&gt; function is often used as the argument of a geometry function. This example produces a scatterplot of population in millions (x-axis) versus total murders (y-axis):&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;murders %&amp;gt;% ggplot() +
+  geom_point(aes(x = population/10^6, y = total))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Instead of defining our plot from scratch, we can also add a layer to the &lt;code&gt;p&lt;/code&gt; object that was defined above as &lt;code&gt;p &amp;lt;- ggplot(data = murders)&lt;/code&gt;:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p + geom_point(aes(x = population/10^6, y = total))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/example/01-example_files/figure-html/ggplot-example-3-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;The scales and annotations like axis labels are defined by default when adding this layer (note the x-axis label is exactly what we wrote in the function call). Like &lt;strong&gt;dplyr&lt;/strong&gt; functions, &lt;code&gt;aes&lt;/code&gt; also uses the variable names from the object component: we can use &lt;code&gt;population&lt;/code&gt; and &lt;code&gt;total&lt;/code&gt; without having to call them as &lt;code&gt;murders$population&lt;/code&gt; and &lt;code&gt;murders$total&lt;/code&gt;. The behavior of recognizing the variables from the data component is quite specific to &lt;code&gt;aes&lt;/code&gt;. With most functions, if you try to access the values of &lt;code&gt;population&lt;/code&gt; or &lt;code&gt;total&lt;/code&gt; outside of &lt;code&gt;aes&lt;/code&gt; you receive an error.&lt;/p&gt;
+&lt;p&gt;Note that we did some rescaling within the &lt;code&gt;aes()&lt;/code&gt; call - we can do simple things like multiplication or division on the variable names in the &lt;code&gt;ggplot&lt;/code&gt; call. The axis labels reflect this. We will change the axis labels later.&lt;/p&gt;
+&lt;p&gt;The &lt;strong&gt;aesthetic mappings&lt;/strong&gt; are very powerful - changing the variable in &lt;code&gt;x=&lt;/code&gt; or &lt;code&gt;y=&lt;/code&gt; changes the meaning of the plot entirely. We’ll come back to additional &lt;strong&gt;aesthetic mappings&lt;/strong&gt; once we talk about aesthetics in general.&lt;/p&gt;
+&lt;div id=&#34;aesthetics-in-general&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Aesthetics in general&lt;/h3&gt;
+&lt;p&gt;Even without mappings, a plots aesthetics can be useful. Things like color, fill, alpha, and size are aesthetics that can be changed.&lt;/p&gt;
+&lt;p&gt;Let’s say we want larger points in our scatterplot. The &lt;code&gt;size&lt;/code&gt; aesthetic can be used to set the size. The scale of &lt;code&gt;size&lt;/code&gt; is “multiples of the defaults” (so &lt;code&gt;size = 1&lt;/code&gt; is the default)&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p + geom_point(aes(x = population/10^6, y = total), size = 3)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/example/01-example_files/figure-html/ggplot-example-5-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;size&lt;/code&gt; is &lt;strong&gt;not&lt;/strong&gt; a mapping so it is &lt;strong&gt;not&lt;/strong&gt; in the &lt;code&gt;aes()&lt;/code&gt; part: whereas mappings use data from specific observations and need to be inside &lt;code&gt;aes()&lt;/code&gt;, operations we want to affect all the points the same way do not need to be included inside &lt;code&gt;aes&lt;/code&gt;. We’ll see what happens if &lt;code&gt;size&lt;/code&gt; is inside &lt;code&gt;aes(size = xxx)&lt;/code&gt; in a second.&lt;/p&gt;
+&lt;p&gt;We can change the &lt;code&gt;shape&lt;/code&gt; to one of the many different base-R options found &lt;a href=&#34;http://www.sthda.com/english/wiki/r-plot-pch-symbols-the-different-point-shapes-available-in-r&#34;&gt;here&lt;/a&gt;:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p + geom_point(aes(x = population/10^6, y = total), size = 3, shape = 17)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/example/01-example_files/figure-html/ggplot-example-5shape-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;We can also change the &lt;code&gt;fill&lt;/code&gt; and the &lt;code&gt;color&lt;/code&gt;:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p + geom_point(aes(x = population/10^6, y = total), size = 4, shape = 23, fill = &amp;#39;#18453B&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/example/01-example_files/figure-html/ggplot-example-5b-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;fill&lt;/code&gt; can take a common name like &lt;code&gt;&#39;green&#39;&lt;/code&gt;, or can take a hex color like &lt;code&gt;&#39;#18453B&#39;&lt;/code&gt;, which is &lt;a href=&#34;https://brand.msu.edu/design-visual/index.html#color&#34;&gt;MSU Green according to MSU’s branding site&lt;/a&gt;. You can also find &lt;a href=&#34;https://youtu.be/0BxNHwJi1y4&#34;&gt;UM Maize&lt;/a&gt; and &lt;a href=&#34;https://youtu.be/dQw4w9WgXcQ&#34;&gt;OSU Scarlet&lt;/a&gt; on respective branding pages, or google “XXX color hex.” We’ll learn how to build a color palatte later on.&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;color&lt;/code&gt; (or &lt;code&gt;colour&lt;/code&gt;, same thing because &lt;code&gt;ggplot&lt;/code&gt; creators allow both spellings) is a little tricky with points - it changes the outline of the geometry rather than the fill color, but in &lt;code&gt;geom_point()&lt;/code&gt; most shapes are only the outline, including the default. This is more useful with, say, a barplot where the outline and the fill might be different colors. Still, shapes 21-25 have both &lt;code&gt;fill&lt;/code&gt; and &lt;code&gt;color&lt;/code&gt;:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p + geom_point(aes(x = population/10^6, y = total), size = 5, shape = 23, fill = &amp;#39;#18453B&amp;#39;, color = &amp;#39;white&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/example/01-example_files/figure-html/ggplot-example-5c-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;The &lt;code&gt;color = &#39;white&#39;&lt;/code&gt; makes the outline of the shape white, which you can see if you look closely in the areas where the shapes overlap. This only works with shapes 21-25, or any other geometry that has both an outline and a fill.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;now-back-to-aesthetic-mappings&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Now, back to aesthetic mappings&lt;/h3&gt;
+&lt;p&gt;Now that we’ve seen a few aesthetics (and know we can find more by looking at which aesthetics work with our geometry in the help file), let’s return to the power of aesthetic mappings.&lt;/p&gt;
+&lt;p&gt;An &lt;strong&gt;aesthetic mapping&lt;/strong&gt; means we can vary an aesthetic (like fill or shape or size) according to some &lt;strong&gt;variable in our data&lt;/strong&gt;. This opens up a world of possibilities! Let’s try adding to our &lt;code&gt;x&lt;/code&gt; and &lt;code&gt;y&lt;/code&gt; aesthetics with a &lt;code&gt;color&lt;/code&gt; aesthetic (since points respond to &lt;code&gt;color&lt;/code&gt; better than &lt;code&gt;fill&lt;/code&gt;) that varies by &lt;code&gt;region&lt;/code&gt;, which is a column in our data:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p + geom_point(aes(x = population/10^6, y = total, color = region), size = 3)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/example/01-example_files/figure-html/ggplot-example-color-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;We include &lt;code&gt;color=region&lt;/code&gt; &lt;strong&gt;inside&lt;/strong&gt; the &lt;code&gt;aes&lt;/code&gt; call, which tells R to find a variable called &lt;code&gt;region&lt;/code&gt; and change color based on that. R will choose a somewhat ghastly color palatte, and &lt;strong&gt;every&lt;/strong&gt; unique value in the data for &lt;code&gt;region&lt;/code&gt; will get a different color if the variable is discrete. If the variable is a continuous value, then &lt;code&gt;ggplot&lt;/code&gt; will automatically make a color ramp. Thus, &lt;strong&gt;discrete&lt;/strong&gt; and &lt;strong&gt;continuous&lt;/strong&gt; values for aesthetic mappings work differently.&lt;/p&gt;
+&lt;p&gt;Let’s see a useful example of a continuous aesthetic mapping to &lt;code&gt;color&lt;/code&gt;. In our data, we are making a scatterplot of population and total murders, which really just shows that states with higher populations have higher murders. What we really want is murders per capita (I think COVID taught us a lot about rates vs. levels like “cases” and “cases per 100,000 people”). We can create a variable of “murders per capita” on the fly. Since “murders per capita” is a very small number and hard to read, we’ll multiply by 100 so that we get “percent of population murdered per year”:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p + geom_point(aes(x = population/10^5, y = total, color = 100*total/population), size = 3)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/example/01-example_files/figure-html/ggplot-example-colfill-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;While the clear pattern of “more population means more murders” is still there, look at the outlier in light blue in the bottom left. With the color ramp, see how easy it is to see here that there is one location where murders per capita is quite high?&lt;/p&gt;
+&lt;p&gt;Note that &lt;code&gt;size&lt;/code&gt; is outside of &lt;code&gt;aes&lt;/code&gt; and is set to an explicit value, not to a variable. What if we set size to a variable in the data?&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p + geom_point(aes(x = population/10^6, y = total, color = region, size = population/10^6))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/example/01-example_files/figure-html/ggplot-example-color2-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;legends-for-aesthetics&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Legends for aesthetics&lt;/h3&gt;
+&lt;p&gt;Here we see yet another useful default behavior: &lt;strong&gt;ggplot2&lt;/strong&gt; automatically adds a legend that maps color to region, and size to population (which we scaled by 1,000,000). To avoid adding this legend we set the &lt;code&gt;geom_point&lt;/code&gt; argument &lt;code&gt;show.legend = FALSE&lt;/code&gt;. This removes both the &lt;code&gt;size&lt;/code&gt; and the &lt;code&gt;color&lt;/code&gt; legend.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p + geom_point(aes(x = population/10^6, y = total, color = region, size = population/10^6), show.legend = FALSE)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/example/01-example_files/figure-html/ggplot-example-color3-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Later on, when we get to &lt;strong&gt;annotation layers&lt;/strong&gt;, we’ll talk about controlling the legend text and layout. For now, we just need to know how to turn them off.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;annotation-layers&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Annotation Layers&lt;/h2&gt;
+&lt;p&gt;A second layer in the plot we wish to make involves adding a label to each point to identify the state. The &lt;code&gt;geom_label&lt;/code&gt; and &lt;code&gt;geom_text&lt;/code&gt; functions permit us to add text to the plot with and without a rectangle behind the text, respectively.&lt;/p&gt;
+&lt;p&gt;Because each point (each state in this case) has a label, we need an &lt;strong&gt;aesthetic mapping&lt;/strong&gt; to make the connection between points and labels. By reading the help file &lt;code&gt;?geom_text&lt;/code&gt;, we learn that we supply the mapping between point and label through the &lt;code&gt;label&lt;/code&gt; argument of &lt;code&gt;aes&lt;/code&gt;. That is, &lt;code&gt;label&lt;/code&gt; is an &lt;strong&gt;aesthetic&lt;/strong&gt; that we can map. So the code looks like this:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p + geom_point(aes(x = population/10^6, y = total)) +
+  geom_text(aes(x = population/10^6, y = total, label = abb))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/example/01-example_files/figure-html/ggplot-example-4-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;We have successfully added a second layer to the plot.&lt;/p&gt;
+&lt;p&gt;As an example of the unique behavior of &lt;code&gt;aes&lt;/code&gt; mentioned above, note that this call:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p + geom_point(aes(x = population/10^6, y = total)) + 
+  geom_text(aes(population/10^6, total, label = abb))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;is fine, whereas this call:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p + geom_point(aes(x = population/10^6, y = total)) + 
+  geom_text(aes(population/10^6, total), label = abb)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;will give you an error since &lt;code&gt;abb&lt;/code&gt; is not found because it is outside of the &lt;code&gt;aes&lt;/code&gt; function. The layer &lt;code&gt;geom_text&lt;/code&gt; does not know where to find &lt;code&gt;abb&lt;/code&gt; since it is a column name and not a global variable, and &lt;code&gt;ggplot&lt;/code&gt; does not look for column names for non-mapped aesthetics. For a trivial example:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p + geom_point(aes(x = population/10^6, y = total)) +
+  geom_text(aes(population/10^6, total), label = &amp;#39;abb&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/example/01-example_files/figure-html/unnamed-chunk-11-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;div id=&#34;global-versus-local-aesthetic-mappings&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Global versus local aesthetic mappings&lt;/h3&gt;
+&lt;p&gt;In the previous line of code, we define the mapping &lt;code&gt;aes(population/10^6, total)&lt;/code&gt; twice, once in each geometry. We can avoid this by using a &lt;em&gt;global&lt;/em&gt; aesthetic mapping. We can do this when we define the blank slate &lt;code&gt;ggplot&lt;/code&gt; object. Remember that the function &lt;code&gt;ggplot&lt;/code&gt; contains an argument that permits us to define aesthetic mappings:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;args(ggplot)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## function (data = NULL, mapping = aes(), ..., environment = parent.frame()) 
+## NULL&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;If we define a mapping in &lt;code&gt;ggplot&lt;/code&gt;, all the geometries that are added as layers will default to this mapping. We redefine &lt;code&gt;p&lt;/code&gt;:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p &amp;lt;- murders %&amp;gt;% ggplot(aes(x = population/10^6, y = total, label = abb))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;and then we can simply write the following code to produce the previous plot:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p + geom_point(size = 3) +
+  geom_text(nudge_x = 1.5) # offsets the label&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;We keep the &lt;code&gt;size&lt;/code&gt; and &lt;code&gt;nudge_x&lt;/code&gt; arguments in &lt;code&gt;geom_point&lt;/code&gt; and &lt;code&gt;geom_text&lt;/code&gt;, respectively, because we want to only increase the size of points and only nudge the labels. If we put those arguments in &lt;code&gt;aes&lt;/code&gt; then they would apply to both plots. Also note that the &lt;code&gt;geom_point&lt;/code&gt; function does not need a &lt;code&gt;label&lt;/code&gt; argument and therefore ignores that aesthetic.&lt;/p&gt;
+&lt;p&gt;If necessary, we can override the global mapping by defining a new mapping within each layer. These &lt;em&gt;local&lt;/em&gt; definitions override the &lt;em&gt;global&lt;/em&gt;. Here is an example:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p + geom_point(size = 3) +
+  geom_text(aes(x = 10, y = 800, label = &amp;quot;Hello there!&amp;quot;))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/example/01-example_files/figure-html/ggplot-example-8-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Clearly, the second call to &lt;code&gt;geom_text&lt;/code&gt; does not use &lt;code&gt;x = population&lt;/code&gt; and &lt;code&gt;y = total&lt;/code&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;try-it&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Try it!&lt;/h2&gt;
+&lt;div class=&#34;fyi&#34;&gt;
+&lt;p&gt;Let’s break in to smaller groups and try playing with some of the aesthetics and aesthetic mappings. If we’re online, we’ll use Zoom Breakout Rooms. Each of the rooms have a room number which will correspond with one of the tasks below. If we’re in person (woohoo!), we’ll form the same number of groups in class.&lt;/p&gt;
+&lt;p&gt;In each group, one person should be the main coder - someone who has the packages like &lt;code&gt;dslabs&lt;/code&gt; installed and has successfully run the plots above. Each set of tasks ask you to learn about an aesthetic and put it into action with the &lt;code&gt;murder&lt;/code&gt; data. We’ll leave about 5 minutes to do the task, then have you come back and share your results with the class.&lt;/p&gt;
+&lt;p&gt;For each group, we’ll start with the following code:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;p + geom_point(aes(x = population/10^6, y = total)) +
+  geom_text(aes(x = population/10^6, y = total, label = abb))&lt;/code&gt;&lt;/pre&gt;
+&lt;ol style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;The &lt;code&gt;alpha&lt;/code&gt; aesthetic mapping.
+&lt;ol style=&#34;list-style-type: lower-alpha&#34;&gt;
+&lt;li&gt;The &lt;code&gt;alpha&lt;/code&gt; aesthetic can only take a number between 0 and 1. So first, in &lt;code&gt;murders&lt;/code&gt;, create a &lt;code&gt;murders_per_capita&lt;/code&gt; column by dividing &lt;code&gt;total&lt;/code&gt; by &lt;code&gt;population&lt;/code&gt;. Second, find the &lt;code&gt;max(murders$murders_per_capita)&lt;/code&gt; and then create another new column called &lt;code&gt;murders_per_capita_rescaled&lt;/code&gt; which divides &lt;code&gt;murders_per_capita&lt;/code&gt; by the max value. &lt;code&gt;murders_per_capita_rescaled&lt;/code&gt; will be between 0 and 1, with the value of 1 for the state with the max murder rate. This is a little hard to do on the fly in &lt;code&gt;ggplot&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;Set the &lt;code&gt;alpha&lt;/code&gt; aesthetic mapping to &lt;code&gt;murders_per_capita_rescaled&lt;/code&gt; for &lt;code&gt;geom_point&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;Turn off the legend using &lt;code&gt;show.legend=FALSE&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;Include the &lt;code&gt;geom_text&lt;/code&gt; labels, but make sure the aesthetic mapping does &lt;strong&gt;not&lt;/strong&gt; apply to the labels.&lt;/li&gt;
+&lt;li&gt;Use &lt;code&gt;nudge_x = 1.5&lt;/code&gt; as before to offset the labels.&lt;/li&gt;
+&lt;li&gt;Be able to explain the plot.
+&lt;ul&gt;
+&lt;li&gt;Does the &lt;code&gt;alpha&lt;/code&gt; aesthetic help present the data here? It’s OK if it doesn’t!&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ol&gt;&lt;/li&gt;
+&lt;li&gt;The &lt;code&gt;stroke&lt;/code&gt; aesthetic mapping.
+&lt;ol style=&#34;list-style-type: lower-alpha&#34;&gt;
+&lt;li&gt;The &lt;code&gt;stroke&lt;/code&gt; aesthetic works a bit like the &lt;code&gt;size&lt;/code&gt; aesthetic. It must be used with a plot that has both a border and a fill, like shapes 21-25, so use one of those.&lt;/li&gt;
+&lt;li&gt;Use the &lt;code&gt;stroke&lt;/code&gt; aesthetic mapping (meaning the stroke will change according to a value in the data) to set a different stroke size based on murders &lt;em&gt;per capita&lt;/em&gt;. You can create a murders per capita variable on the fly, or add it to your &lt;code&gt;murders&lt;/code&gt; data.
+&lt;ul&gt;
+&lt;li&gt;Include the text labels as before and use &lt;code&gt;nudge_x = 1.5&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;Make sure you’re only setting the aesthetic for the points on the scatterplot!&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ol&gt;&lt;/li&gt;
+&lt;li&gt;The &lt;code&gt;angle&lt;/code&gt; aesthetic
+&lt;ol style=&#34;list-style-type: lower-alpha&#34;&gt;
+&lt;li&gt;Using the &lt;code&gt;?geom_text&lt;/code&gt; help, note that &lt;code&gt;geom_text&lt;/code&gt; takes an aesthetic of &lt;code&gt;angle&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;Use the &lt;code&gt;angle&lt;/code&gt; aesthetic (not aesthetic mapping) in the appropriate place (e.g. on &lt;code&gt;geom_text&lt;/code&gt; and not on other geometries) to adjust the labels on our plot.&lt;/li&gt;
+&lt;li&gt;Now, try using the &lt;code&gt;angle&lt;/code&gt; aesthetic mapping by using the &lt;code&gt;total&lt;/code&gt; field as both the &lt;code&gt;y&lt;/code&gt; value &lt;strong&gt;and&lt;/strong&gt; the &lt;code&gt;angle&lt;/code&gt; value in the &lt;code&gt;geom_text&lt;/code&gt; layer.&lt;/li&gt;
+&lt;li&gt;Does using &lt;code&gt;angle&lt;/code&gt; as an aesthetic help? What about as an aesthetic mapping?&lt;/li&gt;
+&lt;/ol&gt;&lt;/li&gt;
+&lt;li&gt;The &lt;code&gt;color&lt;/code&gt; aesthetic mapping
+&lt;ol style=&#34;list-style-type: lower-alpha&#34;&gt;
+&lt;li&gt;Set the &lt;code&gt;color&lt;/code&gt; aesthetic mapping in &lt;code&gt;geom_text&lt;/code&gt; to &lt;code&gt;total/population&lt;/code&gt;.
+&lt;ul&gt;
+&lt;li&gt;Use the &lt;code&gt;nudge_x = 1.5&lt;/code&gt; aesthetic in &lt;code&gt;geom_text&lt;/code&gt; still&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;Try it with and without the legend using &lt;code&gt;show.legend&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;Be able to explain the plot.
+&lt;ul&gt;
+&lt;li&gt;Does the &lt;code&gt;color&lt;/code&gt; aesthetic mapping help present the data here?&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ol&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;geom_label&lt;/code&gt; and the &lt;code&gt;fill&lt;/code&gt; aesthetic
+&lt;ol style=&#34;list-style-type: lower-alpha&#34;&gt;
+&lt;li&gt;Looking at &lt;code&gt;?geom_label&lt;/code&gt; (which is the same help as &lt;code&gt;geom_text&lt;/code&gt;), we note that “The &lt;code&gt;fill&lt;/code&gt; aesthetic controls the backgreound colour of the label”.&lt;/li&gt;
+&lt;li&gt;Set the &lt;code&gt;fill&lt;/code&gt; aesthetic mapping to &lt;code&gt;total/population&lt;/code&gt; in &lt;code&gt;geom_label&lt;/code&gt; (replacing &lt;code&gt;geom_text&lt;/code&gt; but still using &lt;code&gt;nudge_x=1.5&lt;/code&gt;)&lt;/li&gt;
+&lt;li&gt;Set the &lt;code&gt;fill&lt;/code&gt; aesthetic (not mapping) to the color of your choice.&lt;/li&gt;
+&lt;li&gt;Be able to explain the plots.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;ul&gt;
+&lt;li&gt;Does the &lt;code&gt;fill&lt;/code&gt; aesthetic mapping help present the data here?&lt;/li&gt;
+&lt;li&gt;What color did you choose for the non-mapped fill aesthetic?&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;video&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Video&lt;/h2&gt;
+&lt;p&gt;Video from today’s class will be available below after the class.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&#34;footnotes&#34;&gt;
+&lt;hr /&gt;
+&lt;ol&gt;
+&lt;li id=&#34;fn1&#34;&gt;&lt;p&gt;&lt;a href=&#34;http://graphics.wsj.com/infectious-diseases-and-vaccines/?mc_cid=711ddeb86e&#34; class=&#34;uri&#34;&gt;http://graphics.wsj.com/infectious-diseases-and-vaccines/?mc_cid=711ddeb86e&lt;/a&gt;&lt;a href=&#34;#fnref1&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li id=&#34;fn2&#34;&gt;&lt;p&gt;&lt;a href=&#34;http://graphics8.nytimes.com/images/2011/02/19/nyregion/19schoolsch/19schoolsch-popup.gif&#34; class=&#34;uri&#34;&gt;http://graphics8.nytimes.com/images/2011/02/19/nyregion/19schoolsch/19schoolsch-popup.gif&lt;/a&gt;&lt;a href=&#34;#fnref2&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li id=&#34;fn3&#34;&gt;&lt;p&gt;&lt;a href=&#34;https://www.nytimes.com/2011/02/19/nyregion/19schools.html&#34; class=&#34;uri&#34;&gt;https://www.nytimes.com/2011/02/19/nyregion/19schools.html&lt;/a&gt;&lt;a href=&#34;#fnref3&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li id=&#34;fn4&#34;&gt;&lt;p&gt;&lt;a href=&#34;https://en.wikipedia.org/wiki/John_Tukey&#34; class=&#34;uri&#34;&gt;https://en.wikipedia.org/wiki/John_Tukey&lt;/a&gt;&lt;a href=&#34;#fnref4&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li id=&#34;fn5&#34;&gt;&lt;p&gt;&lt;a href=&#34;https://www.ted.com/talks/hans_rosling_reveals_new_insights_on_poverty?language=en&#34; class=&#34;uri&#34;&gt;https://www.ted.com/talks/hans_rosling_reveals_new_insights_on_poverty?language=en&lt;/a&gt;&lt;a href=&#34;#fnref5&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li id=&#34;fn6&#34;&gt;&lt;p&gt;&lt;a href=&#34;https://www.ted.com/talks/hans_rosling_shows_the_best_stats_you_ve_ever_seen&#34; class=&#34;uri&#34;&gt;https://www.ted.com/talks/hans_rosling_shows_the_best_stats_you_ve_ever_seen&lt;/a&gt;&lt;a href=&#34;#fnref6&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li id=&#34;fn7&#34;&gt;&lt;p&gt;&lt;a href=&#34;https://ggplot2.tidyverse.org/&#34; class=&#34;uri&#34;&gt;https://ggplot2.tidyverse.org/&lt;/a&gt;&lt;a href=&#34;#fnref7&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li id=&#34;fn8&#34;&gt;&lt;p&gt;&lt;a href=&#34;http://www.springer.com/us/book/9780387245447&#34; class=&#34;uri&#34;&gt;http://www.springer.com/us/book/9780387245447&lt;/a&gt;&lt;a href=&#34;#fnref8&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li id=&#34;fn9&#34;&gt;&lt;p&gt;&lt;a href=&#34;https://github.com/rstudio/cheatsheets&#34; class=&#34;uri&#34;&gt;https://github.com/rstudio/cheatsheets&lt;/a&gt;&lt;a href=&#34;#fnref9&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li id=&#34;fn10&#34;&gt;&lt;p&gt;&lt;a href=&#34;https://github.com/rstudio/cheatsheets/blob/master/LICENSE&#34; class=&#34;uri&#34;&gt;https://github.com/rstudio/cheatsheets/blob/master/LICENSE&lt;/a&gt;&lt;a href=&#34;#fnref10&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Working with R and RStudio</title>
+      <link>https://ssc442kirkpatrick.netlify.app/example/00-example/</link>
+      <pubDate>Thu, 13 Jan 2022 00:00:00 +0000</pubDate>
+      <guid>https://ssc442kirkpatrick.netlify.app/example/00-example/</guid>
+      <description>
+
+&lt;div id=&#34;TOC&#34;&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#introduction-to-examples&#34;&gt;Introduction to Examples&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#getting-started&#34;&gt;Getting started with &lt;code&gt;R&lt;/code&gt; and RStudio&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#the-r-console&#34;&gt;The &lt;code&gt;R&lt;/code&gt; console&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#scripts&#34;&gt;Scripts&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#rstudio&#34;&gt;RStudio&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#the-panes&#34;&gt;The panes&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#key-bindings&#34;&gt;Key bindings&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#running-commands-while-editing-scripts&#34;&gt;Running commands while editing scripts&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#installing-r-packages&#34;&gt;Installing &lt;code&gt;R&lt;/code&gt; packages&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#rmarkdown&#34;&gt;Rmarkdown&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#lecture-video&#34;&gt;Lecture Video&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+
+&lt;div id=&#34;introduction-to-examples&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Introduction to Examples&lt;/h1&gt;
+&lt;p&gt;Examples in this class are designed to be presented in-class. Accordingly, the notes here are &lt;em&gt;not&lt;/em&gt; comprehensive. Instead, they are intended to guide students through&lt;/p&gt;
+&lt;p&gt;I’m also aware that my writing is dry and lifeless. If you’re reading this online without the advantage of seeing it in person, don’t worry—I’ll be “funnier” in class.&lt;a href=&#34;#fn1&#34; class=&#34;footnote-ref&#34; id=&#34;fnref1&#34;&gt;&lt;sup&gt;1&lt;/sup&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;div id=&#34;getting-started&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Getting started with &lt;code&gt;R&lt;/code&gt; and RStudio&lt;/h2&gt;
+&lt;p&gt;&lt;code&gt;R&lt;/code&gt; is not a programming language like &lt;code&gt;C&lt;/code&gt; or &lt;code&gt;Java&lt;/code&gt;. It was not created by software engineers for software development. Instead, it was developed by statisticians as an interactive environment for data analysis. You can read the full history in the paper A Brief History of S&lt;a href=&#34;#fn2&#34; class=&#34;footnote-ref&#34; id=&#34;fnref2&#34;&gt;&lt;sup&gt;2&lt;/sup&gt;&lt;/a&gt;. The interactivity is an indispensable feature in data science because, as you will soon learn, the ability to quickly explore data is a necessity for success in this field. However, like in other programming languages, you can save your work as scripts that can be easily executed at any moment. These scripts serve as a record of the analysis you performed, a key feature that facilitates reproducible work. If you are an expert programmer, you should not expect &lt;code&gt;R&lt;/code&gt; to follow the conventions you are used—assuming this will leave you disappointed. If you are patient, you will come to appreciate the unequal power of &lt;code&gt;R&lt;/code&gt; when it comes to data analysis and data visualization.&lt;/p&gt;
+&lt;p&gt;Other attractive features of &lt;code&gt;R&lt;/code&gt; are:&lt;/p&gt;
+&lt;ol style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;&lt;code&gt;R&lt;/code&gt; is free and open source&lt;a href=&#34;#fn3&#34; class=&#34;footnote-ref&#34; id=&#34;fnref3&#34;&gt;&lt;sup&gt;3&lt;/sup&gt;&lt;/a&gt;.&lt;/li&gt;
+&lt;li&gt;It runs on all major platforms: Windows, Mac OS, UNIX/Linux.&lt;/li&gt;
+&lt;li&gt;Scripts and data objects can be shared seamlessly across platforms.&lt;/li&gt;
+&lt;li&gt;There is a large, growing, and active community of &lt;code&gt;R&lt;/code&gt; users and, as a result, there are numerous resources for learning and asking questions&lt;a href=&#34;#fn4&#34; class=&#34;footnote-ref&#34; id=&#34;fnref4&#34;&gt;&lt;sup&gt;4&lt;/sup&gt;&lt;/a&gt; &lt;a href=&#34;#fn5&#34; class=&#34;footnote-ref&#34; id=&#34;fnref5&#34;&gt;&lt;sup&gt;5&lt;/sup&gt;&lt;/a&gt; &lt;a href=&#34;#fn6&#34; class=&#34;footnote-ref&#34; id=&#34;fnref6&#34;&gt;&lt;sup&gt;6&lt;/sup&gt;&lt;/a&gt;.&lt;/li&gt;
+&lt;li&gt;It is easy for others to contribute add-ons which enables developers to share software implementations of new data science methodologies. The latest methods and tools are developed in &lt;code&gt;R&lt;/code&gt; for a wide variety of disciplines and since social science is so broad, &lt;code&gt;R&lt;/code&gt; is one of the few tools that spans the varied social sciences.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;
+&lt;div id=&#34;the-r-console&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;The &lt;code&gt;R&lt;/code&gt; console&lt;/h2&gt;
+&lt;p&gt;Interactive data analysis usually occurs on the &lt;em&gt;R console&lt;/em&gt; that executes commands as you type them. There are several ways to gain access to an &lt;code&gt;R&lt;/code&gt; console. One way is to simply start &lt;code&gt;R&lt;/code&gt; on your computer. The console looks something like this:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/img/R_console2.png&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;As a quick example, try using the console to calculate a 15% tip on a meal that cost $19.71:&lt;a href=&#34;#fn7&#34; class=&#34;footnote-ref&#34; id=&#34;fnref7&#34;&gt;&lt;sup&gt;7&lt;/sup&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;0.15 * 19.71  &lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 2.9565&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;Note that in this course (at least, on most browsers), grey boxes are used to show &lt;code&gt;R&lt;/code&gt; code typed into the &lt;code&gt;R&lt;/code&gt; console. The symbol &lt;code&gt;##&lt;/code&gt; is used to denote what the &lt;code&gt;R&lt;/code&gt; console outputs.&lt;/strong&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;scripts&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Scripts&lt;/h2&gt;
+&lt;p&gt;One of the great advantages of &lt;code&gt;R&lt;/code&gt; over point-and-click analysis software is that you can save your work as scripts. You can edit and save these scripts using a text editor. The material in this course was developed using the interactive &lt;em&gt;integrated development environment&lt;/em&gt; (IDE) RStudio&lt;a href=&#34;#fn8&#34; class=&#34;footnote-ref&#34; id=&#34;fnref8&#34;&gt;&lt;sup&gt;8&lt;/sup&gt;&lt;/a&gt;. RStudio includes an editor with many &lt;code&gt;R&lt;/code&gt; specific features, a console to execute your code, and other useful panes, including one to show figures.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/img/RStudio.png&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Most web-based &lt;code&gt;R&lt;/code&gt; consoles also provide a pane to edit scripts, but not all permit you to save the scripts for later use. On the upper-right part of this webpage you’ll see a little button with the &lt;code&gt;R&lt;/code&gt; logo. You can access a web-based console there.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;rstudio&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;RStudio&lt;/h2&gt;
+&lt;p&gt;RStudio will be our launching pad for data science projects. It not only provides an editor for us to create and edit our scripts but also provides many other useful tools. In this section, we go over some of the basics.&lt;/p&gt;
+&lt;div id=&#34;the-panes&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;The panes&lt;/h3&gt;
+&lt;p&gt;When you start RStudio for the first time, you will see three panes. The left pane shows the &lt;code&gt;R&lt;/code&gt; console. On the right, the top pane includes tabs such as &lt;em&gt;Environment&lt;/em&gt; and &lt;em&gt;History&lt;/em&gt;, while the bottom pane shows five tabs: &lt;em&gt;File&lt;/em&gt;, &lt;em&gt;Plots&lt;/em&gt;, &lt;em&gt;Packages&lt;/em&gt;, &lt;em&gt;Help&lt;/em&gt;, and &lt;em&gt;Viewer&lt;/em&gt; (these tabs may change in new versions). You can click on each tab to move across the different features.&lt;/p&gt;
+&lt;p&gt;To start a new script, you can click on File, then New File, then &lt;code&gt;R&lt;/code&gt; Script.&lt;/p&gt;
+&lt;p&gt;This starts a new pane on the left and it is here where you can start writing your script.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;key-bindings&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Key bindings&lt;/h3&gt;
+&lt;p&gt;Many tasks we perform with the mouse can be achieved with a combination of key strokes instead. These keyboard versions for performing tasks are referred to as &lt;em&gt;key bindings&lt;/em&gt;. For example, we just showed how to use the mouse to start a new script, but you can also use a key binding: Ctrl+Shift+N on Windows and command+shift+N on the Mac.&lt;/p&gt;
+&lt;p&gt;Although in this tutorial we often show how to use the mouse, &lt;strong&gt;we highly recommend that you memorize key bindings for the operations you use most&lt;/strong&gt;. RStudio provides a useful cheat sheet with the most widely used commands. You might want to keep this handy so you can look up key-bindings when you find yourself performing repetitive point-and-clicking.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;running-commands-while-editing-scripts&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Running commands while editing scripts&lt;/h3&gt;
+&lt;p&gt;There are many editors specifically made for coding. These are useful because color and indentation are automatically added to make code more readable. RStudio is one of these editors, and it was specifically developed for R. One of the main advantages provided by RStudio over other editors is that we can test our code easily as we edit our scripts. Below we show an example.&lt;/p&gt;
+&lt;p&gt;Let’s start by opening a new script as we did before. A next step is to give the script a name. We can do this through the editor by saving the current new unnamed script. To do this, click on the save icon or use the key binding Ctrl+S on Windows and command+S on the Mac.&lt;/p&gt;
+&lt;p&gt;When you ask for the document to be saved for the first time, RStudio will prompt you for a name. A good convention is to use a descriptive name, with lower case letters, no spaces, only hyphens to separate words, and then followed by the suffix &lt;em&gt;.R&lt;/em&gt;. We will call this script &lt;em&gt;my-first-script.R&lt;/em&gt;.&lt;/p&gt;
+&lt;p&gt;Now we are ready to start editing our first script. The first lines of code in an &lt;code&gt;R&lt;/code&gt; script are dedicated to loading the libraries we will use. Another useful RStudio feature is that once we type &lt;code&gt;library()&lt;/code&gt; it starts auto-completing with libraries that we have installed. Note what happens when we type &lt;code&gt;library(ti)&lt;/code&gt;:&lt;/p&gt;
+&lt;p&gt;Another feature you may have noticed is that when you type &lt;code&gt;library(&lt;/code&gt; the second parenthesis is automatically added. This will help you avoid one of the most common errors in coding: forgetting to close a parenthesis.&lt;/p&gt;
+&lt;p&gt;Now we can continue to write code. As an example, we will make a graph showing murder totals versus population totals by state. Once you are done writing the code needed to make this plot, you can try it out by &lt;em&gt;executing&lt;/em&gt; the code. To do this, click on the &lt;em&gt;Run&lt;/em&gt; button on the upper right side of the editing pane. You can also use the key binding: Ctrl+Shift+Enter on Windows or command+shift+return on the Mac.&lt;/p&gt;
+&lt;p&gt;Once you run the code, you will see it appear in the &lt;code&gt;R&lt;/code&gt; console and, in this case, the generated plot appears in the plots console. Note that the plot console has a useful interface that permits you to click back and forward across different plots, zoom in to the plot, or save the plots as files.&lt;/p&gt;
+&lt;p&gt;To run one line at a time instead of the entire script, you can use Control-Enter on Windows and command-return on the Mac.&lt;/p&gt;
+&lt;div class=&#34;fyi&#34;&gt;
+&lt;p&gt;&lt;strong&gt;SETUP TIP&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Change the option &lt;em&gt;Save workspace to .RData on exit&lt;/em&gt; to &lt;em&gt;Never&lt;/em&gt; and uncheck the &lt;em&gt;Restore .RData into workspace at start&lt;/em&gt;. By default, when you exit &lt;code&gt;R&lt;/code&gt; saves all the objects you have created into a file called .RData. This is done so that when you restart the session in the same folder, it will load these objects. I find that this causes confusion especially when sharing code with colleagues or peers.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;installing-r-packages&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Installing &lt;code&gt;R&lt;/code&gt; packages&lt;/h2&gt;
+&lt;p&gt;The functionality provided by a fresh install of &lt;code&gt;R&lt;/code&gt; is only a small fraction of what is possible. In fact, we refer to what you get after your first install as &lt;em&gt;base R&lt;/em&gt;. The extra functionality comes from add-ons available from developers. There are currently hundreds of these available from CRAN and many others shared via other repositories such as GitHub. However, because not everybody needs all available functionality, &lt;code&gt;R&lt;/code&gt; instead makes different components available via &lt;em&gt;packages&lt;/em&gt;. &lt;code&gt;R&lt;/code&gt; makes it very easy to install packages from within R. For example, to install the &lt;strong&gt;dslabs&lt;/strong&gt; package, which we use to share datasets and code related to this book, you would type:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;install.packages(&amp;quot;dslabs&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;In RStudio, you can navigate to the &lt;em&gt;Tools&lt;/em&gt; tab and select install packages. We can then load the package into our &lt;code&gt;R&lt;/code&gt; sessions using the &lt;code&gt;library&lt;/code&gt; function:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(dslabs)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Warning: package &amp;#39;dslabs&amp;#39; was built under R version 4.0.5&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## 
+## Attaching package: &amp;#39;dslabs&amp;#39;&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## The following object is masked from &amp;#39;package:gapminder&amp;#39;:
+## 
+##     gapminder&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;As you go through this book, you will see that we load packages without installing them. This is because once you install a package, it remains installed and only needs to be loaded with &lt;code&gt;library&lt;/code&gt;. The package remains loaded until we quit the &lt;code&gt;R&lt;/code&gt; session. If you try to load a package and get an error, it probably means you need to
+install it first.&lt;/p&gt;
+&lt;p&gt;We can install more than one package at once by feeding a character vector to this function:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;install.packages(c(&amp;quot;tidyverse&amp;quot;, &amp;quot;dslabs&amp;quot;))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;One advantage of using RStudio is that it auto-completes package names once you start typing, which is helpful when you do not remember the exact spelling of the package. Once you select your package, we recommend selecting all the defaults. Note that installing &lt;strong&gt;tidyverse&lt;/strong&gt; actually installs several packages. This commonly occurs when a package has &lt;em&gt;dependencies&lt;/em&gt;, or uses functions from other packages. When you load a package using &lt;code&gt;library&lt;/code&gt;, you also load its dependencies.&lt;/p&gt;
+&lt;p&gt;Once packages are installed, you can load them into &lt;code&gt;R&lt;/code&gt; and you do not need to install them again, unless you install a fresh version of R. Remember packages are installed in &lt;code&gt;R&lt;/code&gt; not RStudio.&lt;/p&gt;
+&lt;p&gt;It is helpful to keep a list of all the packages you need for your work in a script because if you need to perform a fresh install of R, you can re-install all your packages by simply running a script.&lt;/p&gt;
+&lt;p&gt;You can see all the packages you have installed using the following function:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;installed.packages()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;As we move through this course, we will constantly be adding to our toolbox of packages. Accordingly, you will need to keep track to ensure you have the requisite package for any given lecture.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;rmarkdown&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Rmarkdown&lt;/h2&gt;
+&lt;p&gt;Markdown is a general-purpose syntax for laying out documents. Rmarkdown is a combination of R and markdown, as the name implies. When using markdown, one can define headers and tables using specific notation, and depending on the rendering engine, the headers and tables (and a whole lot more) are customized. In fact, this whole website is built in R using Rmarkdown (and a lot of add-ons like Hugo and blogdown). In other contexts, the rendering engine may recognize that your headers are likely to be entries in a table of contents, and does so for you. The table of contents at the top of this document is built from the markdown headers.&lt;/p&gt;
+&lt;p&gt;The power of Rmarkdown is that it lets us mix formatted text with R code. That is, you can have a section of the document that understands R code, and a separate section right after that discusses the results from the R code.&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://raw.githubusercontent.com/ajkirkpatrick/FS20/Spring2021/Rmarkdown_templates/SSC442_Weekly_Writing_Template.Rmd&#34;&gt;Try it out using the Weekly Writing Template&lt;/a&gt;. If it opens in your web browser, just right-click the link and select Save As…. &lt;strong&gt;Make sure you save the file to its own folder on your hard drive&lt;/strong&gt;. In converting your Rmarkdown .Rmd file to a .pdf, your system will make multiple interim files&lt;a href=&#34;#fn9&#34; class=&#34;footnote-ref&#34; id=&#34;fnref9&#34;&gt;&lt;sup&gt;9&lt;/sup&gt;&lt;/a&gt;. It also creates folders to store the output of any plots or graphics you create with your R code.&lt;/p&gt;
+&lt;p&gt;If we have time today, let’s open the template linked above and see what happens when we select “knit to pdf”.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;lecture-video&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Lecture Video&lt;/h2&gt;
+&lt;p&gt;Video from lecture &lt;a href=&#34;https://mediaspace.msu.edu/media/Jan19_Example0/1_e4uuw4e0&#34;&gt;hosted on Mediaspace &lt;i class=&#34;fas fa-film&#34;&gt;&lt;/i&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&#34;footnotes&#34;&gt;
+&lt;hr /&gt;
+&lt;ol&gt;
+&lt;li id=&#34;fn1&#34;&gt;&lt;p&gt;Comments from previous classes indicate that I am not, in fact, funny.&lt;a href=&#34;#fnref1&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li id=&#34;fn2&#34;&gt;&lt;p&gt;&lt;a href=&#34;https://pdfs.semanticscholar.org/9b48/46f192aa37ca122cfabb1ed1b59866d8bfda.pdf&#34; class=&#34;uri&#34;&gt;https://pdfs.semanticscholar.org/9b48/46f192aa37ca122cfabb1ed1b59866d8bfda.pdf&lt;/a&gt;&lt;a href=&#34;#fnref2&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li id=&#34;fn3&#34;&gt;&lt;p&gt;&lt;a href=&#34;https://opensource.org/history&#34; class=&#34;uri&#34;&gt;https://opensource.org/history&lt;/a&gt;&lt;a href=&#34;#fnref3&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li id=&#34;fn4&#34;&gt;&lt;p&gt;&lt;a href=&#34;https://stats.stackexchange.com/questions/138/free-resources-for-learning-r&#34; class=&#34;uri&#34;&gt;https://stats.stackexchange.com/questions/138/free-resources-for-learning-r&lt;/a&gt;&lt;a href=&#34;#fnref4&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li id=&#34;fn5&#34;&gt;&lt;p&gt;&lt;a href=&#34;https://www.r-project.org/help.html&#34; class=&#34;uri&#34;&gt;https://www.r-project.org/help.html&lt;/a&gt;&lt;a href=&#34;#fnref5&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li id=&#34;fn6&#34;&gt;&lt;p&gt;&lt;a href=&#34;https://stackoverflow.com/documentation/r/topics&#34; class=&#34;uri&#34;&gt;https://stackoverflow.com/documentation/r/topics&lt;/a&gt;&lt;a href=&#34;#fnref6&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li id=&#34;fn7&#34;&gt;&lt;p&gt;But probably tip more than 15%. Times are tough, man.&lt;a href=&#34;#fnref7&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li id=&#34;fn8&#34;&gt;&lt;p&gt;&lt;a href=&#34;https://www.rstudio.com/&#34; class=&#34;uri&#34;&gt;https://www.rstudio.com/&lt;/a&gt;&lt;a href=&#34;#fnref8&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li id=&#34;fn9&#34;&gt;&lt;p&gt;Specifically, knitr will create an intermediate .md file which is then processed with Pandoc using Latex to create a pdf. Whew!&lt;a href=&#34;#fnref9&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    
+    <item>
       <title>ggplot2: Everything you ever wanted to know</title>
       <link>https://ssc442kirkpatrick.netlify.app/example/02-example/</link>
       <pubDate>Thu, 06 Jan 2022 00:00:00 +0000</pubDate>
