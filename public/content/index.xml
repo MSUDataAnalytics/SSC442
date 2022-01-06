@@ -2,21 +2,21 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Readings, lectures, and videos | Data Analytics</title>
-    <link>https://datavizm20.classes.andrewheiss.com/content/</link>
-      <atom:link href="https://datavizm20.classes.andrewheiss.com/content/index.xml" rel="self" type="application/rss+xml" />
+    <link>https://ssc442kirkpatrick.netlify.app/content/</link>
+      <atom:link href="https://ssc442kirkpatrick.netlify.app/content/index.xml" rel="self" type="application/rss+xml" />
     <description>Readings, lectures, and videos</description>
     <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><lastBuildDate>Sat, 01 Jan 2022 00:00:00 +0000</lastBuildDate>
     <image>
-      <url>https://datavizm20.classes.andrewheiss.com/img/social-image.png</url>
+      <url>https://ssc442kirkpatrick.netlify.app/img/social-image.png</url>
       <title>Readings, lectures, and videos</title>
-      <link>https://datavizm20.classes.andrewheiss.com/content/</link>
+      <link>https://ssc442kirkpatrick.netlify.app/content/</link>
     </image>
     
     <item>
       <title>Geospatial with R</title>
-      <link>https://datavizm20.classes.andrewheiss.com/content/13-content/</link>
+      <link>https://ssc442kirkpatrick.netlify.app/content/13-content/</link>
       <pubDate>Tue, 19 Apr 2022 00:00:00 +0000</pubDate>
-      <guid>https://datavizm20.classes.andrewheiss.com/content/13-content/</guid>
+      <guid>https://ssc442kirkpatrick.netlify.app/content/13-content/</guid>
       <description>
 
 &lt;div id=&#34;TOC&#34;&gt;
@@ -104,12 +104,12 @@ library(tmaptools)&lt;/code&gt;&lt;/pre&gt;
 
 myPoints = st_multipoint(as.matrix(myPoints))
 plot(myPoints)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/content/13-content_files/figure-html/unnamed-chunk-3-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/13-content_files/figure-html/unnamed-chunk-3-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;div id=&#34;making-polygons&#34; class=&#34;section level3&#34;&gt;
 &lt;h3&gt;Making polygons&lt;/h3&gt;
 &lt;p&gt;We’ve begun making our first spatial object! Now, we can turn it into a polygon under one condition: the polygon has to “close” in order for R to know which side is the inside. In &lt;code&gt;myPoints&lt;/code&gt;, the &lt;em&gt;last&lt;/em&gt; point is identical to the &lt;em&gt;first&lt;/em&gt; point, so R will “close” it:&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;plot(st_polygon(list(myPoints)), col = &amp;#39;darkgreen&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/content/13-content_files/figure-html/unnamed-chunk-4-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/13-content_files/figure-html/unnamed-chunk-4-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;That’s just one polylgon. Let’s add another one. When we created the polygon, we put the points object, &lt;code&gt;myPoints&lt;/code&gt;, into a list. If we have a list of, say, two points objects, then we’ll get two polygons:&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;myPoints2 = tribble(~X, ~Y,
                     1,1,
@@ -122,7 +122,7 @@ myPoints2 = st_multipoint(as.matrix(myPoints2))
 
 myPolygons = st_polygon(list(myPoints, myPoints2))
 plot(myPolygons, col = &amp;#39;lightblue&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/content/13-content_files/figure-html/unnamed-chunk-5-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/13-content_files/figure-html/unnamed-chunk-5-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Now we can see two polygons. Looking at the &lt;code&gt;str&lt;/code&gt;ucture of the polygons:&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;str(myPolygons)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## List of 2
@@ -145,14 +145,14 @@ myClicks = rbind(myClicks, myClicks[1,])  # copy the first point to the last poi
 myNewPolygon = st_polygon(list(st_multipoint(myClicks)))
 plot(myPolygons, col = &amp;#39;lightblue&amp;#39;)
 plot(myNewPolygon, col = &amp;#39;green&amp;#39;, add=T)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/content/13-content_files/figure-html/unnamed-chunk-8-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/13-content_files/figure-html/unnamed-chunk-8-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;making-lines&#34; class=&#34;section level3&#34;&gt;
 &lt;h3&gt;Making lines&lt;/h3&gt;
 &lt;p&gt;We could also create a line with our points. I’ll leave off the one point we added to “close” the polygon. Note that the line is colored blue, not the (uncompleted) polygon.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;myLine = st_linestring(myPoints[1:4,])
 plot(myLine, col = &amp;#39;blue&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/content/13-content_files/figure-html/unnamed-chunk-9-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/13-content_files/figure-html/unnamed-chunk-9-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;div id=&#34;reading-spatial-data&#34; class=&#34;section level1&#34;&gt;
@@ -214,19 +214,19 @@ plot(myLine, col = &amp;#39;blue&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;The &lt;code&gt;sf&lt;/code&gt; data type holds both the data (which here is just the name of the plant) &lt;em&gt;and&lt;/em&gt; the “geometry”, which are the points. It’s tidy data - one row is one observation of one plant, and each row has a set of coordinates telling us where to find the plant.&lt;/p&gt;
 &lt;p&gt;We can use ggplot with &lt;code&gt;geom_sf()&lt;/code&gt; to plot these points. They’re just scattered across the country and we don’t automatically get a background map, but here are the points&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(gasplants) + geom_sf() + theme_minimal()&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/content/13-content_files/figure-html/unnamed-chunk-11-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/13-content_files/figure-html/unnamed-chunk-11-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Well, we’re missing some context here – we can kind of make out the point of Texas down there, but it’s hard to tell anything about where these plants are located. Let’s use &lt;code&gt;tidycensus&lt;/code&gt; to get a map of the US, then plot it plus the points. Note we use different &lt;code&gt;data =&lt;/code&gt; in each of the &lt;code&gt;geom_sf()&lt;/code&gt; calls:&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;US &amp;lt;- states(cb = TRUE, progress_bar = FALSE)  # tidycensus maps
 
 ggplot() + geom_sf(data = US, col = &amp;#39;gray50&amp;#39;) +
   geom_sf(data = gasplants) + theme_minimal()&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/content/13-content_files/figure-html/unnamed-chunk-12-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/13-content_files/figure-html/unnamed-chunk-12-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Getting there. The problem now is that the &lt;code&gt;tigris&lt;/code&gt; data covers all US territories, which are really spread out! Let’s drop down to just Michigan. We can use good old &lt;code&gt;filter&lt;/code&gt; just like with regular data:&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;MI = states(cb = TRUE) %&amp;gt;% dplyr::filter(STUSPS==&amp;#39;MI&amp;#39;)
 
 ggplot() + geom_sf(data = MI, col = &amp;#39;gray50&amp;#39;) +
   geom_sf(data = gasplants) + theme_minimal()&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/content/13-content_files/figure-html/unnamed-chunk-13-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/13-content_files/figure-html/unnamed-chunk-13-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Well, now we have a different problem. We want to have only the &lt;code&gt;gasplants&lt;/code&gt; that are &lt;code&gt;over&lt;/code&gt; the state of Michigan. That requires a &lt;strong&gt;spatial join&lt;/strong&gt;. Luckily, our &lt;code&gt;tidyverse&lt;/code&gt; syntax &lt;strong&gt;works pretty seamlessly on &lt;code&gt;sf&lt;/code&gt; objects&lt;/strong&gt;. First, we have to take care of a little issue with spatial data. The &lt;strong&gt;projection&lt;/strong&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;projections-briefly&#34; class=&#34;section level3&#34;&gt;
@@ -286,7 +286,7 @@ ggplot() + geom_sf(data = MI, col = &amp;#39;gray50&amp;#39;) +
   st_transform(st_crs(MI))
 
 ggplot(gasplants) + geom_sf() + theme_minimal()&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/content/13-content_files/figure-html/unnamed-chunk-15-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/13-content_files/figure-html/unnamed-chunk-15-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;importing-unprojected-data&#34; class=&#34;section level4&#34;&gt;
 &lt;h4&gt;Importing unprojected data&lt;/h4&gt;
@@ -328,7 +328,7 @@ head(ourCities.spatial)&lt;/code&gt;&lt;/pre&gt;
   geom_sf(data = MI, fill = &amp;#39;gray90&amp;#39;) +
   geom_sf(data = ourCities.spatial, col = &amp;#39;blue&amp;#39;) +
   theme_minimal()&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/content/13-content_files/figure-html/unnamed-chunk-18-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/13-content_files/figure-html/unnamed-chunk-18-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;div id=&#34;spatial-merges&#34; class=&#34;section level2&#34;&gt;
@@ -376,7 +376,7 @@ head(MI.gasplants)&lt;/code&gt;&lt;/pre&gt;
   geom_sf(data = MI.counties, aes(fill = NAME), show.legend = F) +  
   geom_sf(data = MI.gasplants) + 
   theme_minimal()  &lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/content/13-content_files/figure-html/unnamed-chunk-20-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/13-content_files/figure-html/unnamed-chunk-20-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Huh. Most gas plants in Michigan are to the north of here. Interesting.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;mapview&#34; class=&#34;section level3&#34;&gt;
@@ -408,7 +408,7 @@ HUC4 = st_read(&amp;#39;https://opendata.arcgis.com/datasets/7f8632f3e3114623b4f
   geom_sf(data = US, col = &amp;#39;gray50&amp;#39;) +
   geom_sf(data = HUC4, aes(fill = Name), show.legend = FALSE) + 
   theme_minimal()&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/content/13-content_files/figure-html/unnamed-chunk-22-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/13-content_files/figure-html/unnamed-chunk-22-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;These watersheds clearly overlap state boundaries. So what happens if we merge them? &lt;code&gt;sf&lt;/code&gt; will create a new obsveration (row) for every HUC-4 / State combination&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;poly.merge = HUC4 %&amp;gt;%
   st_join(US, left = TRUE)
@@ -443,7 +443,7 @@ head(poly.merge)&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Now, every HUC-4 like “Lower Colorado” has multiple observations, one for each STUSPS that it touches. When we plot it, though, each of those observations are still attached to the same HUC-4 polygon.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(poly.merge) + geom_sf() + 
   theme_minimal()&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/content/13-content_files/figure-html/unnamed-chunk-24-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/13-content_files/figure-html/unnamed-chunk-24-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;We have another option in our join - we can ask &lt;code&gt;st_join&lt;/code&gt; to keep just the &lt;code&gt;largest&lt;/code&gt;:&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;poly.merge.largest = HUC4 %&amp;gt;%
   st_join(US, left = TRUE, largest = TRUE)
@@ -536,7 +536,7 @@ head(poly.int)&lt;/code&gt;&lt;/pre&gt;
   geom_sf(data = US, fill = &amp;#39;gray50&amp;#39;) +
   geom_sf(data = poly.int, aes(fill = STUSPS), show.legend = FALSE) +
   theme_minimal()&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/content/13-content_files/figure-html/unnamed-chunk-28-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/13-content_files/figure-html/unnamed-chunk-28-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Here, I’ve set the fill to the state, but you can see that the HUC-4’s have boundaries at the state line.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;summarizing&#34; class=&#34;section level3&#34;&gt;
@@ -605,7 +605,7 @@ head(poly.int.summary)&lt;/code&gt;&lt;/pre&gt;
 ggplot(HUC4.nv) + geom_sf(aes(fill = Name), show.legend = F) +
   geom_sf(data = US %&amp;gt;% dplyr::filter(STUSPS==&amp;#39;NV&amp;#39;),  fill = NA, col = &amp;#39;gray20&amp;#39;, lwd = 3 ) +
   theme_minimal()&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/content/13-content_files/figure-html/unnamed-chunk-31-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/13-content_files/figure-html/unnamed-chunk-31-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;div id=&#34;bounding-boxes&#34; class=&#34;section level3&#34;&gt;
 &lt;h3&gt;Bounding boxes&lt;/h3&gt;
 &lt;p&gt;Notice that this forms a box around Nevada and uses that to crop. To get the shape of Nevada, we would have to use &lt;code&gt;st_intersection&lt;/code&gt;.&lt;/p&gt;
@@ -642,7 +642,7 @@ ggplot(mi.redlining) +
   scale_fill_manual(values = c(&amp;#39;A&amp;#39; = &amp;#39;green&amp;#39;, &amp;#39;B&amp;#39; = &amp;#39;blue&amp;#39;, &amp;#39;C&amp;#39; = &amp;#39;yellow&amp;#39;, &amp;#39;D&amp;#39; = &amp;#39;red&amp;#39;),
                     aesthetics = c(&amp;#39;color&amp;#39;,&amp;#39;fill&amp;#39;)) +
   theme_minimal()&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/content/13-content_files/figure-html/unnamed-chunk-33-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/13-content_files/figure-html/unnamed-chunk-33-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;We can tell that our polygons have plotted, but since we have the whole state of Michigan, they’re almost unreadable. We need to set our window over the lower part of the lower peninsula. We’ll use &lt;code&gt;coord_sf&lt;/code&gt; to do this, but first we need to define a window. Since windows are almost always rectangular, we can use the &lt;code&gt;st_bbox(mi.redlining)&lt;/code&gt;, but we have to pull out the xlim (xmin, xmax) and ylim (ymin, ymax):&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(mi.redlining) +
   geom_sf(aes(fill = holc_grade, col = holc_grade)) + 
@@ -652,7 +652,7 @@ ggplot(mi.redlining) +
   theme_minimal() +
   coord_sf(xlim = st_bbox(mi.redlining)[c(1, 3)],
            ylim = st_bbox(mi.redlining)[c(2, 4)])&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/content/13-content_files/figure-html/unnamed-chunk-34-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/13-content_files/figure-html/unnamed-chunk-34-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;div id=&#34;distance-matrices&#34; class=&#34;section level2&#34;&gt;
@@ -749,9 +749,9 @@ ourCities %&amp;gt;% dplyr::mutate(Closest.GreatLake = GL$FEAT_NAME[closest.GL.i
     
     <item>
       <title>Text as Data</title>
-      <link>https://datavizm20.classes.andrewheiss.com/content/12-content/</link>
+      <link>https://ssc442kirkpatrick.netlify.app/content/12-content/</link>
       <pubDate>Tue, 12 Apr 2022 00:00:00 +0000</pubDate>
-      <guid>https://datavizm20.classes.andrewheiss.com/content/12-content/</guid>
+      <guid>https://ssc442kirkpatrick.netlify.app/content/12-content/</guid>
       <description>
 
 &lt;div id=&#34;TOC&#34;&gt;
@@ -1230,17 +1230,17 @@ str_detect(s, pattern)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## [1]  TRUE  TRUE  TRUE  TRUE  TRUE FALSE FALSE FALSE FALSE&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;We take this opportunity to introduce the &lt;code&gt;str_view&lt;/code&gt; function, which is helpful for troubleshooting as it shows us the first match for each string:&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;str_view(s, pattern)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/./12-content_files/str_view-1.png&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/./12-content_files/str_view-1.png&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;and &lt;code&gt;str_view_all&lt;/code&gt; shows us all the matches, so &lt;code&gt;3&#39;2&lt;/code&gt; has two matches and &lt;code&gt;5&#39;10&lt;/code&gt; has three.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;str_view_all(s, pattern)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/./12-content_files/str_view-2.png&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/./12-content_files/str_view-2.png&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;There are many other special characters. We will learn some others below, but you can see most or all of them in the cheat sheet&lt;a href=&#34;#fn4&#34; class=&#34;footnote-ref&#34; id=&#34;fnref4&#34;&gt;&lt;sup&gt;4&lt;/sup&gt;&lt;/a&gt; mentioned earlier.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;character-classes&#34; class=&#34;section level3&#34;&gt;
 &lt;h3&gt;Character classes&lt;/h3&gt;
 &lt;p&gt;Character classes are used to define a series of characters that can be matched. We define character classes with square brackets &lt;code&gt;[]&lt;/code&gt;. So, for example, if we want the pattern to match only if we have a &lt;code&gt;5&lt;/code&gt; or a &lt;code&gt;6&lt;/code&gt;, we use the regex &lt;code&gt;[56]&lt;/code&gt;:&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;str_view(s, &amp;quot;[56]&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/./12-content_files/str_view-3.png&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/./12-content_files/str_view-3.png&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Suppose we want to match values between 4 and 7. A common way to define character classes is with ranges. So, for example, &lt;code&gt;[0-9]&lt;/code&gt; is equivalent to &lt;code&gt;\\d&lt;/code&gt;. The pattern we want is therefore &lt;code&gt;[4-7]&lt;/code&gt;.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;yes &amp;lt;- as.character(4:7)
 no &amp;lt;- as.character(1:3)
@@ -1260,7 +1260,7 @@ yes &amp;lt;- c(&amp;quot;1&amp;quot;, &amp;quot;5&amp;quot;, &amp;quot;9&amp;qu
 no &amp;lt;- c(&amp;quot;12&amp;quot;, &amp;quot;123&amp;quot;, &amp;quot; 1&amp;quot;, &amp;quot;a4&amp;quot;, &amp;quot;b&amp;quot;)
 s &amp;lt;- c(yes, no)
 str_view_all(s, pattern)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/./12-content_files/str_view-4.png&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/./12-content_files/str_view-4.png&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;The &lt;code&gt;1&lt;/code&gt; does not match because it does not start with the digit but rather with a space, which is actually not easy to see.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;quantifiers&#34; class=&#34;section level3&#34;&gt;
@@ -1270,7 +1270,7 @@ str_view_all(s, pattern)&lt;/code&gt;&lt;/pre&gt;
 yes &amp;lt;- c(&amp;quot;1&amp;quot;, &amp;quot;5&amp;quot;, &amp;quot;9&amp;quot;, &amp;quot;12&amp;quot;)
 no &amp;lt;- c(&amp;quot;123&amp;quot;, &amp;quot;a4&amp;quot;, &amp;quot;b&amp;quot;)
 str_view(c(yes, no), pattern)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/./12-content_files/str_view-5.png&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/./12-content_files/str_view-5.png&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;In this case, &lt;code&gt;123&lt;/code&gt; does &lt;strong&gt;not&lt;/strong&gt; match, but &lt;code&gt;12&lt;/code&gt; does. So to look for our feet and inches pattern, we can add the symbols for feet &lt;code&gt;&#39;&lt;/code&gt; and inches &lt;code&gt;&#34;&lt;/code&gt; after the digits.&lt;/p&gt;
 &lt;p&gt;With what we have learned, we can now construct an example for the pattern &lt;code&gt;x&#39;y\&#34;&lt;/code&gt; with &lt;code&gt;x&lt;/code&gt; feet and &lt;code&gt;y&lt;/code&gt; inches.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;pattern &amp;lt;- &amp;quot;^[4-7]&amp;#39;\\d{1,2}\&amp;quot;$&amp;quot;&lt;/code&gt;&lt;/pre&gt;
@@ -1380,7 +1380,7 @@ sum(str_detect(problems, pattern))&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## [1] 14&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;To see why this is, we show some examples that expose why we don’t have more matches:&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;problems[c(2, 10, 11, 12, 15)] %&amp;gt;% str_view(pattern)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/./12-content_files/str_view-6.png&#34; /&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/./12-content_files/str_view-6.png&#34; /&gt;
 An initial problem we see immediately is that some students wrote out the words “feet” and “inches”. We can see the entries that did this with the &lt;code&gt;str_subset&lt;/code&gt; function:&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;str_subset(problems, &amp;quot;inches&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## [1] &amp;quot;5 feet and 8.11 inches&amp;quot; &amp;quot;Five foot eight inches&amp;quot; &amp;quot;5 feet 7inches&amp;quot;        
@@ -1753,7 +1753,7 @@ research_funding_rates %&amp;gt;%
 ## 8     Social sciences              15.3                11.5
 ## 9    Medical sciences              18.8                11.2&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;The data comes from a paper published in the Proceedings of the National Academy of Science (PNAS)&lt;a href=&#34;#fn5&#34; class=&#34;footnote-ref&#34; id=&#34;fnref5&#34;&gt;&lt;sup&gt;5&lt;/sup&gt;&lt;/a&gt;, a widely read scientific journal. However, the data is not provided in a spreadsheet; it is in a table in a PDF document. Here is a screenshot of the table:&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/./12-content_files/pnas-table-s1.png&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/./12-content_files/pnas-table-s1.png&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;(Source: Romy van der Lee and Naomi Ellemers, PNAS 2015 112 (40) 12349-12353&lt;a href=&#34;#fn6&#34; class=&#34;footnote-ref&#34; id=&#34;fnref6&#34;&gt;&lt;sup&gt;6&lt;/sup&gt;&lt;/a&gt;.)&lt;/p&gt;
 &lt;p&gt;We could extract the numbers by hand, but this could lead to human error. Instead, we can try to wrangle the data using R. We start by downloading the pdf document, then importing into R:&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(&amp;quot;pdftools&amp;quot;)
@@ -1846,7 +1846,7 @@ data(&amp;quot;gapminder&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
   dplyr::filter(region == &amp;quot;Caribbean&amp;quot;) %&amp;gt;%
   ggplot(aes(year, life_expectancy, color = country)) +
   geom_line()&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/content/12-content_files/figure-html/caribbean-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/12-content_files/figure-html/caribbean-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;The plot is what we want, but much of the space is wasted to accommodate some of the long country names.
 &lt;!--
 
@@ -1874,7 +1874,7 @@ We have four countries with names longer than 12 characters. These names appear 
                           `Trinidad and Tobago` = &amp;quot;Trinidad&amp;quot;)) %&amp;gt;%
   ggplot(aes(year, life_expectancy, color = country)) +
   geom_line()&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/content/12-content_files/figure-html/caribbean-with-nicknames-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/12-content_files/figure-html/caribbean-with-nicknames-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;There are other similar functions in other R packages, such as &lt;code&gt;recode_factor&lt;/code&gt; and &lt;code&gt;fct_recoder&lt;/code&gt; in the &lt;strong&gt;forcats&lt;/strong&gt; package.&lt;/p&gt;
 &lt;div class=&#34;fyi&#34;&gt;
 &lt;p&gt;&lt;strong&gt;TRY IT&lt;/strong&gt;&lt;/p&gt;
@@ -1945,11 +1945,11 @@ Use the &lt;code&gt;str_which&lt;/code&gt; function to find the rows with a head
               &amp;quot;Gun_violence_in_the_United_States_by_state&amp;quot;,
               &amp;quot;&amp;amp;direction=prev&amp;amp;oldid=810166167&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;You can see the data table when you visit the webpage:&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/./12-content_files/murders-data-wiki-page.png&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/./12-content_files/murders-data-wiki-page.png&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;(Web page courtesy of Wikipedia&lt;a href=&#34;#fn7&#34; class=&#34;footnote-ref&#34; id=&#34;fnref7&#34;&gt;&lt;sup&gt;7&lt;/sup&gt;&lt;/a&gt;. CC-BY-SA-3.0 license&lt;a href=&#34;#fn8&#34; class=&#34;footnote-ref&#34; id=&#34;fnref8&#34;&gt;&lt;sup&gt;8&lt;/sup&gt;&lt;/a&gt;. Screenshot of part of the page.)&lt;/p&gt;
 &lt;p&gt;Unfortunately, there is no link to a data file. To make the data frame that is loaded when we type &lt;code&gt;data(murders)&lt;/code&gt;, we had to do some &lt;em&gt;web scraping&lt;/em&gt;.&lt;/p&gt;
 &lt;p&gt;&lt;em&gt;Web scraping&lt;/em&gt;, or &lt;em&gt;web harvesting&lt;/em&gt;, is the term we use to describe the process of extracting data from a website. The reason we can do this is because the information used by a browser to render webpages is received as a text file from a server. The text is code written in hyper text markup language (HTML). Every browser has a way to show the html source code for a page, each one different. On Chrome, you can use Control-U on a PC and command+alt+U on a Mac. You will see something like this:&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/./12-content_files/html-code.png&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/./12-content_files/html-code.png&#34; /&gt;&lt;/p&gt;
 &lt;div id=&#34;html&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;HTML&lt;/h2&gt;
 &lt;p&gt;Because this code is accessible, we can download the HTML file, import it into R, and then write programs to extract the information we need from the page. However, once we look at HTML code, this might seem like a daunting task. But we will show you some convenient tools to facilitate the process. To get an idea of how it works, here are a few lines of code from the Wikipedia page that provides the US murders data:&lt;/p&gt;
@@ -2115,9 +2115,9 @@ citi_bike &amp;lt;- fromJSON(&amp;quot;http://citibikenyc.com/stations/json&amp;
     
     <item>
       <title>Data Wrangling</title>
-      <link>https://datavizm20.classes.andrewheiss.com/content/11-content/</link>
+      <link>https://ssc442kirkpatrick.netlify.app/content/11-content/</link>
       <pubDate>Tue, 05 Apr 2022 00:00:00 +0000</pubDate>
-      <guid>https://datavizm20.classes.andrewheiss.com/content/11-content/</guid>
+      <guid>https://ssc442kirkpatrick.netlify.app/content/11-content/</guid>
       <description>
 
 &lt;div id=&#34;TOC&#34;&gt;
@@ -2243,7 +2243,7 @@ dplyr::select(new_wide_data, country, `1960`:`1967`)&lt;/code&gt;&lt;/pre&gt;
 ## 1 Germany       2.41   2.44   2.47   2.49   2.49   2.48   2.44   2.37
 ## 2 South Korea   6.16   5.99   5.79   5.57   5.36   5.16   4.99   4.85&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;The following diagram can help remind you how these two functions work:&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/./11-content_files/gather-spread.png&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/./11-content_files/gather-spread.png&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;img/gather-spread.png&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;(Image courtesy of RStudio&lt;a href=&#34;#fn1&#34; class=&#34;footnote-ref&#34; id=&#34;fnref1&#34;&gt;&lt;sup&gt;1&lt;/sup&gt;&lt;/a&gt;. CC-BY-4.0 license&lt;a href=&#34;#fn2&#34; class=&#34;footnote-ref&#34; id=&#34;fnref2&#34;&gt;&lt;sup&gt;2&lt;/sup&gt;&lt;/a&gt;. Cropped from original.)
 &lt;!-- (Source: RStudio. The image is a section of this [cheat sheet](https://github.com/rstudio/cheatsheets/raw/master/data-transformation.pdf).)--&gt;&lt;/p&gt;
@@ -2467,7 +2467,7 @@ tab %&amp;gt;% ggplot(aes(population/10^6, ev, label = abb)) +
   scale_x_continuous(trans = &amp;quot;log2&amp;quot;) +
   scale_y_continuous(trans = &amp;quot;log2&amp;quot;) +
   geom_smooth(method = &amp;quot;lm&amp;quot;, se = FALSE)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/content/11-content_files/figure-html/ev-vs-population-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/11-content_files/figure-html/ev-vs-population-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;We see the relationship is close to linear with about 2 electoral votes for every million persons, but with very small states getting higher ratios.&lt;/p&gt;
 &lt;p&gt;In practice, it is not always the case that each row in one table has a matching row in the other. For this reason, we have several versions of join. To illustrate this challenge, we will take subsets of the tables above. We create the tables &lt;code&gt;tab1&lt;/code&gt; and &lt;code&gt;tab2&lt;/code&gt; so that they have some states in common but not all:&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;tab_1 &amp;lt;- slice(murders, 1:6) %&amp;gt;% dplyr::select(state, population)
@@ -2569,7 +2569,7 @@ tab_2&lt;/code&gt;&lt;/pre&gt;
 ## 1 Arkansas    2915918
 ## 2 Colorado    5029196&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;The following diagram summarizes the above joins:&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/./11-content_files/joins.png&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/./11-content_files/joins.png&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;img/joins.png&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;(Image courtesy of RStudio&lt;a href=&#34;#fn3&#34; class=&#34;footnote-ref&#34; id=&#34;fnref3&#34;&gt;&lt;sup&gt;3&lt;/sup&gt;&lt;/a&gt;. CC-BY-4.0 license&lt;a href=&#34;#fn4&#34; class=&#34;footnote-ref&#34; id=&#34;fnref4&#34;&gt;&lt;sup&gt;4&lt;/sup&gt;&lt;/a&gt;. Cropped from original.)&lt;/p&gt;
 &lt;/div&gt;
@@ -2807,7 +2807,7 @@ polls_us_election_2016$startdate %&amp;gt;% head&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;polls_us_election_2016 %&amp;gt;% dplyr::filter(pollster == &amp;quot;Ipsos&amp;quot; &amp;amp; state ==&amp;quot;U.S.&amp;quot;) %&amp;gt;%
   ggplot(aes(startdate, rawpoll_trump)) +
   geom_line()&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/content/11-content_files/figure-html/rawpolls-vs-time-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/11-content_files/figure-html/rawpolls-vs-time-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Note in particular that the month names are displayed, a very convenient feature.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;lubridate&#34; class=&#34;section level2&#34;&gt;
@@ -2902,7 +2902,7 @@ mdy_hms(x)&lt;/code&gt;&lt;/pre&gt;
   group_by(week) %&amp;gt;%
   summarize(margin = mean(rawpoll_clinton - rawpoll_trump)) %&amp;gt;%
   qplot(week, margin, data = .)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/content/11-content_files/figure-html/poll-margin-versus-week-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/11-content_files/figure-html/poll-margin-versus-week-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Date objects can be added to and subtracted from with &lt;code&gt;hours&lt;/code&gt;, &lt;code&gt;minutes&lt;/code&gt;, etc.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;startDate &amp;lt;- ymd_hms(&amp;#39;2021-06-14 12:20:57&amp;#39;)
 
@@ -2943,9 +2943,9 @@ endDate - startDate&lt;/code&gt;&lt;/pre&gt;
     
     <item>
       <title>Classification</title>
-      <link>https://datavizm20.classes.andrewheiss.com/content/10-content/</link>
+      <link>https://ssc442kirkpatrick.netlify.app/content/10-content/</link>
       <pubDate>Tue, 29 Mar 2022 00:00:00 +0000</pubDate>
-      <guid>https://datavizm20.classes.andrewheiss.com/content/10-content/</guid>
+      <guid>https://ssc442kirkpatrick.netlify.app/content/10-content/</guid>
       <description>
 
 &lt;div id=&#34;TOC&#34;&gt;
@@ -2986,7 +2986,7 @@ endDate - startDate&lt;/code&gt;&lt;/pre&gt;
 &lt;div id=&#34;classification-overview&#34; class=&#34;section level1&#34;&gt;
 &lt;h1&gt;Overview&lt;/h1&gt;
 &lt;p&gt;&lt;strong&gt;Classification&lt;/strong&gt; is a form of &lt;strong&gt;supervised learning&lt;/strong&gt; where the response variable is categorical, as opposed to numeric for regression. &lt;em&gt;Our goal is to find a rule, algorithm, or function which takes as input a feature vector, and outputs a category which is the true category as often as possible.&lt;/em&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/./10-content_files/classification.png&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/./10-content_files/classification.png&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;That is, the classifier &lt;span class=&#34;math inline&#34;&gt;\(\hat{C}(x)\)&lt;/span&gt; returns the predicted category &lt;span class=&#34;math inline&#34;&gt;\(\hat{y}(X)\)&lt;/span&gt;.&lt;/p&gt;
 &lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
 \hat{y}(x) = \hat{C}(x)
@@ -3038,7 +3038,7 @@ default_tst = Default[-default_idx, ]&lt;/code&gt;&lt;/pre&gt;
             pch = &amp;quot;|&amp;quot;,
             layout = c(2, 1),
             auto.key = list(columns = 2))&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/content/10-content_files/figure-html/unnamed-chunk-5-1.png&#34; width=&#34;960&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/10-content_files/figure-html/unnamed-chunk-5-1.png&#34; width=&#34;960&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Some notes about the arguments to this function:&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;code&gt;x&lt;/code&gt; is a data frame containing only &lt;strong&gt;numeric predictors&lt;/strong&gt;. It would be nonsensical to estimate a density for a categorical predictor.&lt;/li&gt;
@@ -3060,20 +3060,20 @@ default_tst = Default[-default_idx, ]&lt;/code&gt;&lt;/pre&gt;
             pch = &amp;quot;|&amp;quot;,
             layout = c(2, 1),
             auto.key = list(columns = 2))&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/content/10-content_files/figure-html/unnamed-chunk-6-1.png&#34; width=&#34;960&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/10-content_files/figure-html/unnamed-chunk-6-1.png&#34; width=&#34;960&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Above, we create a similar plot, except with &lt;code&gt;student&lt;/code&gt; as the response. We see that students often carry a slightly larger balance, and have far lower income. This will be useful to know when making more complicated classifiers.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;featurePlot(x = default_trn[, c(&amp;quot;student&amp;quot;, &amp;quot;balance&amp;quot;, &amp;quot;income&amp;quot;)],
             y = default_trn$default,
             plot = &amp;quot;pairs&amp;quot;,
             auto.key = list(columns = 2))&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/content/10-content_files/figure-html/unnamed-chunk-7-1.png&#34; width=&#34;576&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/10-content_files/figure-html/unnamed-chunk-7-1.png&#34; width=&#34;576&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;We can use &lt;code&gt;plot = &#34;pairs&#34;&lt;/code&gt; to consider multiple variables at the same time. This plot reinforces using &lt;code&gt;balance&lt;/code&gt; to create a classifier, and again shows that &lt;code&gt;income&lt;/code&gt; seems not that useful.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(ellipse)
 featurePlot(x = default_trn[, c(&amp;quot;balance&amp;quot;, &amp;quot;income&amp;quot;)],
             y = default_trn$default,
             plot = &amp;quot;ellipse&amp;quot;,
             auto.key = list(columns = 2))&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/content/10-content_files/figure-html/unnamed-chunk-8-1.png&#34; width=&#34;576&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/10-content_files/figure-html/unnamed-chunk-8-1.png&#34; width=&#34;576&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Similar to &lt;code&gt;pairs&lt;/code&gt; is a plot of type &lt;code&gt;ellipse&lt;/code&gt;, which requires the &lt;code&gt;ellipse&lt;/code&gt; package. Here we only use numeric predictors, as essentially we are assuming multivariate normality. The ellipses mark points of equal density. This will be useful later when discussing LDA and QDA.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;a-simple-classifier&#34; class=&#34;section level2&#34;&gt;
@@ -3309,7 +3309,7 @@ abline(h = 0, lty = 3)
 abline(h = 1, lty = 3)
 abline(h = 0.5, lty = 2)
 abline(model_lm, lwd = 3, col = &amp;quot;dodgerblue&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/content/10-content_files/figure-html/unnamed-chunk-29-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/10-content_files/figure-html/unnamed-chunk-29-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Two issues arise. First, all of the predicted probabilities are below 0.5. That means, we would classify every observation as a &lt;code&gt;&#34;No&#34;&lt;/code&gt;. This is certainly possible, but not what we would expect.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;all(predict(model_lm) &amp;lt; 0.5)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## [1] TRUE&lt;/code&gt;&lt;/pre&gt;
@@ -3450,7 +3450,7 @@ abline(h = 0.5, lty = 2)
 curve(predict(model_glm, data.frame(balance = x), type = &amp;quot;response&amp;quot;),
       add = TRUE, lwd = 3, col = &amp;quot;dodgerblue&amp;quot;)
 abline(v = -coef(model_glm)[1] / coef(model_glm)[2], lwd = 2)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/content/10-content_files/figure-html/unnamed-chunk-43-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/10-content_files/figure-html/unnamed-chunk-43-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;This plot contains a wealth of information.&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;The orange &lt;code&gt;|&lt;/code&gt; characters are the data, &lt;span class=&#34;math inline&#34;&gt;\((x_i, y_i)\)&lt;/span&gt;.&lt;/li&gt;
@@ -3585,7 +3585,7 @@ metrics&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(pROC)
 test_prob = predict(model_glm, newdata = default_tst, type = &amp;quot;response&amp;quot;)
 test_roc = roc(default_tst$default ~ test_prob, plot = TRUE, print.auc = TRUE)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/content/10-content_files/figure-html/unnamed-chunk-53-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/10-content_files/figure-html/unnamed-chunk-53-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;as.numeric(test_roc$auc)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## [1] 0.9492866&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;The AUC is the “area under the curve”. One interpretation of the AUC is that it is “the probability that the model ranks a randomly selected positive more highly than a randomly selected negative.” A good model will have a high AUC. A high AUC has a high sensitivity and a high specificity over all of the cutoff values.&lt;/p&gt;
@@ -3633,9 +3633,9 @@ summary(model_multi)$coefficients&lt;/code&gt;&lt;/pre&gt;
     
     <item>
       <title>The Bias-Variance Tradeoff</title>
-      <link>https://datavizm20.classes.andrewheiss.com/content/09-content/</link>
+      <link>https://ssc442kirkpatrick.netlify.app/content/09-content/</link>
       <pubDate>Tue, 22 Mar 2022 00:00:00 +0000</pubDate>
-      <guid>https://datavizm20.classes.andrewheiss.com/content/09-content/</guid>
+      <guid>https://ssc442kirkpatrick.netlify.app/content/09-content/</guid>
       <description>
 
 &lt;div id=&#34;TOC&#34;&gt;
@@ -3783,7 +3783,7 @@ f(x) = \text{median}(Y \mid X = x)
 &lt;p&gt;So for us, to select a model that appropriately balances the tradeoff between bias and variance, and thus minimizes the reducible error, we need to select a model of the appropriate flexibility for the data.&lt;/p&gt;
 &lt;p&gt;Recall that when fitting models, we’ve seen that train RMSE decreases as model flexibility is increasing. (Technically it is non-increasing.) For validation RMSE, we expect to see a U-shaped curve. Importantly, validation RMSE decreases, until a certain flexibility, then begins to increase.&lt;/p&gt;
 &lt;p&gt;Now we can understand why this is happening. The expected test RMSE is essentially the expected prediction error, which we now known decomposes into (squared) bias, variance, and the irreducible Bayes error. The following plots show three examples of this.&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/content/09-content_files/figure-html/unnamed-chunk-3-1.png&#34; width=&#34;1152&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/09-content_files/figure-html/unnamed-chunk-3-1.png&#34; width=&#34;1152&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;The three plots show three examples of the bias-variance tradeoff. In the left panel, the variance influences the expected prediction error more than the bias. In the right panel, the opposite is true. The middle panel is somewhat neutral. In all cases, the difference between the Bayes error (the horizontal dashed grey line) and the expected prediction error (the solid black curve) is exactly the mean squared error, which is the sum of the squared bias (blue curve) and variance (orange curve). The vertical line indicates the flexibility that minimizes the prediction error.&lt;/p&gt;
 &lt;p&gt;To summarize, if we assume that irreducible error can be written as&lt;/p&gt;
 &lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
@@ -3795,7 +3795,7 @@ f(x) = \text{median}(Y \mid X = x)
 \underbrace{\text{bias}^2\left(\hat{f}(x)\right) + \text{var}\left(\hat{f}(x)\right)}_\textrm{reducible error} + \sigma^2.
 \]&lt;/span&gt;&lt;/p&gt;
 &lt;p&gt;As model flexibility increases, bias decreases, while variance increases. By understanding the tradeoff between bias and variance, we can manipulate model flexibility to find a model that will predict well on unseen observations.&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/content/09-content_files/figure-html/error-vs-flex-1.png&#34; width=&#34;960&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/09-content_files/figure-html/error-vs-flex-1.png&#34; width=&#34;960&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Tying this all together, the above image shows how we “expect” training and validation error to behavior in relation to model flexibility.&lt;a href=&#34;#fn2&#34; class=&#34;footnote-ref&#34; id=&#34;fnref2&#34;&gt;&lt;sup&gt;2&lt;/sup&gt;&lt;/a&gt; In practice, we won’t always see such a nice “curve” in the validation error, but we expect to see the general trends.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;using-simulation-to-estimate-bias-and-variance&#34; class=&#34;section level2&#34;&gt;
@@ -3857,13 +3857,13 @@ fit_2 = lm(y ~ poly(x, degree = 2), data = sim_data)
 fit_9 = lm(y ~ poly(x, degree = 9), data = sim_data)&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Note that technically we’re being lazy and using orthogonal polynomials, but the fitted values are the same, so this makes no difference for our purposes.&lt;/p&gt;
 &lt;p&gt;Plotting these four trained models, we see that the zero predictor model does very poorly. The first degree model is reasonable, but we can see that the second degree model fits much better. The ninth degree model seem rather wild.&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/content/09-content_files/figure-html/unnamed-chunk-9-1.png&#34; width=&#34;864&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/09-content_files/figure-html/unnamed-chunk-9-1.png&#34; width=&#34;864&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;The following three plots were created using three additional simulated datasets. The zero predictor and ninth degree polynomial were fit to each.&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/content/09-content_files/figure-html/unnamed-chunk-10-1.png&#34; width=&#34;1152&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/09-content_files/figure-html/unnamed-chunk-10-1.png&#34; width=&#34;1152&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;This plot should make clear the difference between the bias and variance of these two models. The zero predictor model is clearly wrong, that is, biased, but nearly the same for each of the datasets, since it has very low variance.&lt;/p&gt;
 &lt;p&gt;While the ninth degree model doesn’t appear to be correct for any of these three simulations, we’ll see that on average it is, and thus is performing unbiased estimation. These plots do however clearly illustrate that the ninth degree polynomial is extremely variable. Each dataset results in a very different fitted model. Correct on average isn’t the only goal we’re after, since in practice, we’ll only have a single dataset. This is why we’d also like our models to exhibit low variance.&lt;/p&gt;
 &lt;p&gt;We could have also fit &lt;span class=&#34;math inline&#34;&gt;\(k\)&lt;/span&gt;-nearest neighbors models to these three datasets.&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/content/09-content_files/figure-html/unnamed-chunk-11-1.png&#34; width=&#34;1152&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/09-content_files/figure-html/unnamed-chunk-11-1.png&#34; width=&#34;1152&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Here we see that when &lt;span class=&#34;math inline&#34;&gt;\(k = 100\)&lt;/span&gt; we have a biased model with very low variance.&lt;a href=&#34;#fn3&#34; class=&#34;footnote-ref&#34; id=&#34;fnref3&#34;&gt;&lt;sup&gt;3&lt;/sup&gt;&lt;/a&gt; When &lt;span class=&#34;math inline&#34;&gt;\(k = 5\)&lt;/span&gt;, we again have a highly variable model.&lt;/p&gt;
 &lt;p&gt;These two sets of plots reinforce our intuition about the bias-variance tradeoff. Flexible models (ninth degree polynomial and &lt;span class=&#34;math inline&#34;&gt;\(k\)&lt;/span&gt; = 5) are highly variable, and often unbiased. Simple models (zero predictor linear model and &lt;span class=&#34;math inline&#34;&gt;\(k = 100\)&lt;/span&gt;) are very biased, but have extremely low variance.&lt;/p&gt;
 &lt;p&gt;We will now complete a simulation study to understand the relationship between the bias, variance, and mean squared error for the estimates of &lt;span class=&#34;math inline&#34;&gt;\(f(x)\)&lt;/span&gt; given by these four models at the point &lt;span class=&#34;math inline&#34;&gt;\(x = 0.90\)&lt;/span&gt;. We use simulation to complete this task, as performing the analytical calculations would prove to be rather tedious and difficult.&lt;/p&gt;
@@ -3894,7 +3894,7 @@ predictions = matrix(0, nrow = n_sims, ncol = n_models)&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Note that this is one of many ways we could have accomplished this task using &lt;code&gt;R&lt;/code&gt;. For example we could have used a combination of &lt;code&gt;replicate()&lt;/code&gt; and &lt;code&gt;*apply()&lt;/code&gt; functions. Alternatively, we could have used a &lt;a href=&#34;https://www.tidyverse.org/&#34;&gt;&lt;code&gt;tidyverse&lt;/code&gt;&lt;/a&gt; approach, which likely would have used some combination of &lt;a href=&#34;http://dplyr.tidyverse.org/&#34;&gt;&lt;code&gt;dplyr&lt;/code&gt;&lt;/a&gt;, &lt;a href=&#34;http://tidyr.tidyverse.org/&#34;&gt;&lt;code&gt;tidyr&lt;/code&gt;&lt;/a&gt;, and &lt;a href=&#34;http://purrr.tidyverse.org/&#34;&gt;&lt;code&gt;purrr&lt;/code&gt;&lt;/a&gt;.&lt;/p&gt;
 &lt;p&gt;Our approach, which would be considered a &lt;code&gt;base&lt;/code&gt; &lt;code&gt;R&lt;/code&gt; approach, was chosen to make it as clear as possible what is being done. The &lt;code&gt;tidyverse&lt;/code&gt; approach is rapidly gaining popularity in the &lt;code&gt;R&lt;/code&gt; community, but might make it more difficult to see what is happening here, unless you are already familiar with that approach.&lt;/p&gt;
 &lt;p&gt;Also of note, while it may seem like the output stored in &lt;code&gt;predictions&lt;/code&gt; would meet the definition of &lt;a href=&#34;http://vita.had.co.nz/papers/tidy-data.html&#34;&gt;tidy data&lt;/a&gt; given by &lt;a href=&#34;http://hadley.nz/&#34;&gt;Hadley Wickham&lt;/a&gt; since each row represents a simulation, it actually falls slightly short. For our data to be tidy, a row should store the simulation number, the model, and the resulting prediction. We’ve actually already aggregated one level above this. Our observational unit is a simulation (with four predictions), but for tidy data, it should be a single prediction.&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/content/09-content_files/figure-html/unnamed-chunk-15-1.png&#34; width=&#34;864&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/09-content_files/figure-html/unnamed-chunk-15-1.png&#34; width=&#34;864&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;The above plot shows the predictions for each of the 250 simulations of each of the four models of different polynomial degrees. The truth, &lt;span class=&#34;math inline&#34;&gt;\(f(x = 0.90) = (0.9)^2 = 0.81\)&lt;/span&gt;, is given by the solid black horizontal line.&lt;/p&gt;
 &lt;p&gt;Two things are immediately clear:&lt;/p&gt;
 &lt;ul&gt;
@@ -4135,7 +4135,7 @@ calc_rmse = function(actual, predicted) {
   sqrt(mean((actual - predicted) ^ 2))
 }&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Let’s check how linear, k-nearest neighbors, and decision tree models fit to this data make errors, while paying attention to their flexibility.&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/content/09-content_files/figure-html/error-vs-flex-1.png&#34; width=&#34;960&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/09-content_files/figure-html/error-vs-flex-1.png&#34; width=&#34;960&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;This picture is an idealized version of what we expect to see, but we’ll illustrate the sorts of validate “curves” that we might see in practice.&lt;/p&gt;
 &lt;p&gt;Note that in the following three sub-sections, a significant portion of the code is suppressed for visual clarity. See the source document for full details.&lt;/p&gt;
 &lt;div id=&#34;linear-models&#34; class=&#34;section level3&#34;&gt;
@@ -4154,7 +4154,7 @@ poly_mod_est_list = list(
   poly_mod_9_est = lm(y ~ poly(x, degree = 9), data = slr_est)
 )&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;The plot below visualizes the results.&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/content/09-content_files/figure-html/unnamed-chunk-35-1.png&#34; width=&#34;672&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/09-content_files/figure-html/unnamed-chunk-35-1.png&#34; width=&#34;672&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;What do we see here? As the polynomial degree &lt;em&gt;increases&lt;/em&gt;:&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;The training error &lt;em&gt;decreases&lt;/em&gt;.&lt;/li&gt;
@@ -4176,7 +4176,7 @@ k_to_try = seq(from = 1, to = 45, by = 2)
 # fit knn models
 knn_mod_est_list = lapply(k_to_try, fit_knn_mod)&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;The plot below visualizes the results.&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/content/09-content_files/figure-html/unnamed-chunk-39-1.png&#34; width=&#34;672&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/09-content_files/figure-html/unnamed-chunk-39-1.png&#34; width=&#34;672&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Here we see the “opposite” of the usual plot. Why? Because with k-nearest neighbors, a small value of &lt;span class=&#34;math inline&#34;&gt;\(k\)&lt;/span&gt; generates a flexible model compared to larger values of &lt;span class=&#34;math inline&#34;&gt;\(k\)&lt;/span&gt;. So visually, this plot is flipped. That is we see that as &lt;span class=&#34;math inline&#34;&gt;\(k\)&lt;/span&gt; &lt;em&gt;increases&lt;/em&gt;:&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;The training error &lt;em&gt;increases&lt;/em&gt;.&lt;/li&gt;
@@ -4197,7 +4197,7 @@ cp_to_try = c(0.5, 0.3, 0.1, 0.05, 0.01, 0.001, 0.0001)
 # fit decision tree models
 tree_mod_est_list = lapply(cp_to_try, tree_knn_mod)&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;The plot below visualizes the results.&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/content/09-content_files/figure-html/unnamed-chunk-43-1.png&#34; width=&#34;672&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/09-content_files/figure-html/unnamed-chunk-43-1.png&#34; width=&#34;672&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Based on this plot, how is &lt;code&gt;cp&lt;/code&gt; related to model flexibility?&lt;a href=&#34;#fn6&#34; class=&#34;footnote-ref&#34; id=&#34;fnref6&#34;&gt;&lt;sup&gt;6&lt;/sup&gt;&lt;/a&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
@@ -4218,12 +4218,12 @@ tree_mod_est_list = lapply(cp_to_try, tree_knn_mod)&lt;/code&gt;&lt;/pre&gt;
     
     <item>
       <title>Nonparametric Regression</title>
-      <link>https://datavizm20.classes.andrewheiss.com/content/08-content/</link>
+      <link>https://ssc442kirkpatrick.netlify.app/content/08-content/</link>
       <pubDate>Tue, 15 Mar 2022 00:00:00 +0000</pubDate>
-      <guid>https://datavizm20.classes.andrewheiss.com/content/08-content/</guid>
+      <guid>https://ssc442kirkpatrick.netlify.app/content/08-content/</guid>
       <description>
-&lt;script src=&#34;https://datavizm20.classes.andrewheiss.com/rmarkdown-libs/kePrint/kePrint.js&#34;&gt;&lt;/script&gt;
-&lt;link href=&#34;https://datavizm20.classes.andrewheiss.com/rmarkdown-libs/lightable/lightable.css&#34; rel=&#34;stylesheet&#34; /&gt;
+&lt;script src=&#34;https://ssc442kirkpatrick.netlify.app/rmarkdown-libs/kePrint/kePrint.js&#34;&gt;&lt;/script&gt;
+&lt;link href=&#34;https://ssc442kirkpatrick.netlify.app/rmarkdown-libs/lightable/lightable.css&#34; rel=&#34;stylesheet&#34; /&gt;
 
 &lt;div id=&#34;TOC&#34;&gt;
 &lt;ul&gt;
@@ -4301,7 +4301,7 @@ Y = 1 - 2x - 3x ^ 2 + 5x ^ 3 + \epsilon
 \]&lt;/span&gt;&lt;/p&gt;
 &lt;p&gt;Let’s also pretend that we do not actually know this information, but instead have some data, &lt;span class=&#34;math inline&#34;&gt;\((x_i, y_i)\)&lt;/span&gt; for &lt;span class=&#34;math inline&#34;&gt;\(i = 1, 2, \ldots, n\)&lt;/span&gt;.&lt;/p&gt;
 &lt;p&gt;We simulate enough data to make the “pattern” clear-ish to recognize.&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/content/08-content_files/figure-html/unnamed-chunk-4-1.png&#34; width=&#34;576&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/08-content_files/figure-html/unnamed-chunk-4-1.png&#34; width=&#34;576&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;When we use a linear model, we first need to make an &lt;strong&gt;assumption&lt;/strong&gt; about the form of the regression function.&lt;/p&gt;
 &lt;p&gt;For example, we could assume that&lt;/p&gt;
 &lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
@@ -4346,7 +4346,7 @@ Y = 1 - 2x - 3x ^ 2 + 5x ^ 3 + \epsilon
 &lt;p&gt;as our estimate of the regression function at &lt;span class=&#34;math inline&#34;&gt;\(x\)&lt;/span&gt;. While this looks complicated, it is actually very simple. Here, we are using an average of the &lt;span class=&#34;math inline&#34;&gt;\(y_i\)&lt;/span&gt; values of for the &lt;span class=&#34;math inline&#34;&gt;\(k\)&lt;/span&gt; nearest neighbors to &lt;span class=&#34;math inline&#34;&gt;\(x\)&lt;/span&gt;.&lt;/p&gt;
 &lt;p&gt;The &lt;span class=&#34;math inline&#34;&gt;\(k\)&lt;/span&gt; “nearest” neighbors are the &lt;span class=&#34;math inline&#34;&gt;\(k\)&lt;/span&gt; data points &lt;span class=&#34;math inline&#34;&gt;\((x_i, y_i)\)&lt;/span&gt; that have &lt;span class=&#34;math inline&#34;&gt;\(x_i\)&lt;/span&gt; values that are nearest to &lt;span class=&#34;math inline&#34;&gt;\(x\)&lt;/span&gt;. We can define “nearest” using any distance we like, but unless otherwise noted, we are referring to euclidean distance.&lt;a href=&#34;#fn2&#34; class=&#34;footnote-ref&#34; id=&#34;fnref2&#34;&gt;&lt;sup&gt;2&lt;/sup&gt;&lt;/a&gt; We are using the notation &lt;span class=&#34;math inline&#34;&gt;\(\{i \ : \ x_i \in \mathcal{N}_k(x, \mathcal{D}) \}\)&lt;/span&gt; to define the &lt;span class=&#34;math inline&#34;&gt;\(k\)&lt;/span&gt; observations that have &lt;span class=&#34;math inline&#34;&gt;\(x_i\)&lt;/span&gt; values that are nearest to the value &lt;span class=&#34;math inline&#34;&gt;\(x\)&lt;/span&gt; in a dataset &lt;span class=&#34;math inline&#34;&gt;\(\mathcal{D}\)&lt;/span&gt;, in other words, the &lt;span class=&#34;math inline&#34;&gt;\(k\)&lt;/span&gt; nearest neighbors.&lt;/p&gt;
 &lt;p&gt;The plots below begin to illustrate this idea.&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/content/08-content_files/figure-html/unnamed-chunk-7-1.png&#34; width=&#34;864&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/08-content_files/figure-html/unnamed-chunk-7-1.png&#34; width=&#34;864&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;In the left plot, to estimate the mean of &lt;span class=&#34;math inline&#34;&gt;\(Y\)&lt;/span&gt; at &lt;span class=&#34;math inline&#34;&gt;\(x = -0.5\)&lt;/span&gt; we use the three nearest neighbors, which are highlighted with green. Our estimate is the average of the &lt;span class=&#34;math inline&#34;&gt;\(y_i\)&lt;/span&gt; values of these three points indicated by the black x.&lt;/li&gt;
 &lt;li&gt;In the middle plot, to estimate the mean of &lt;span class=&#34;math inline&#34;&gt;\(Y\)&lt;/span&gt; at &lt;span class=&#34;math inline&#34;&gt;\(x = 0\)&lt;/span&gt; we use the five nearest neighbors, which are highlighted with green. Our estimate is the average of the &lt;span class=&#34;math inline&#34;&gt;\(y_i\)&lt;/span&gt; values of these five points indicated by the black x.&lt;/li&gt;
@@ -4355,7 +4355,7 @@ Y = 1 - 2x - 3x ^ 2 + 5x ^ 3 + \epsilon
 &lt;p&gt;You might begin to notice a bit of an issue here. We have to do a new calculation each time we want to estimate the regression function at a different value of &lt;span class=&#34;math inline&#34;&gt;\(x\)&lt;/span&gt;! For this reason, k-nearest neighbors is often said to be “fast to train” and “slow to predict.” Training, is instant. You just memorize the data! Prediction involves finding the distance between the &lt;span class=&#34;math inline&#34;&gt;\(x\)&lt;/span&gt; considered and all &lt;span class=&#34;math inline&#34;&gt;\(x_i\)&lt;/span&gt; in the data!&lt;a href=&#34;#fn3&#34; class=&#34;footnote-ref&#34; id=&#34;fnref3&#34;&gt;&lt;sup&gt;3&lt;/sup&gt;&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;So, how then, do we choose the value of the &lt;strong&gt;tuning&lt;/strong&gt; parameter &lt;span class=&#34;math inline&#34;&gt;\(k\)&lt;/span&gt;? We &lt;em&gt;&lt;strong&gt;validate&lt;/strong&gt;&lt;/em&gt;!&lt;/p&gt;
 &lt;p&gt;First, let’s take a look at what happens with this data if we consider three different values of &lt;span class=&#34;math inline&#34;&gt;\(k\)&lt;/span&gt;.&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/content/08-content_files/figure-html/unnamed-chunk-9-1.png&#34; width=&#34;1152&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/08-content_files/figure-html/unnamed-chunk-9-1.png&#34; width=&#34;1152&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;For each plot, the black dashed curve is the true mean function.&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;In the left plot we use &lt;span class=&#34;math inline&#34;&gt;\(k = 25\)&lt;/span&gt;. The red “curve” is the estimate of the mean function for each &lt;span class=&#34;math inline&#34;&gt;\(x\)&lt;/span&gt; shown in the plot.&lt;/li&gt;
@@ -4382,7 +4382,7 @@ Y = 1 - 2x - 3x ^ 2 + 5x ^ 3 + \epsilon
 &lt;p&gt;&lt;strong&gt;Decision trees&lt;/strong&gt; are similar to k-nearest neighbors but instead of looking for neighbors, decision trees create neighborhoods. We won’t explore the full details of trees, but just start to understand the basic concepts, as well as learn to fit them in R.&lt;/p&gt;
 &lt;p&gt;Neighborhoods are created via recursive binary partitions. In simpler terms, pick a feature and a possible cutoff value. Data that have a value less than the cutoff for the selected feature are in one neighborhood (the left) and data that have a value greater than the cutoff are in another (the right). Within these two neighborhoods, repeat this procedure until a stopping rule is satisfied. To make a prediction, check which neighborhood a new piece of data would belong to and predict the average of the &lt;span class=&#34;math inline&#34;&gt;\(y_i\)&lt;/span&gt; values of data in that neighborhood.&lt;/p&gt;
 &lt;p&gt;With the data above, which has a single feature &lt;span class=&#34;math inline&#34;&gt;\(x\)&lt;/span&gt;, consider three possible cutoffs: -0.5, 0.0, and 0.75.&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/content/08-content_files/figure-html/unnamed-chunk-11-1.png&#34; width=&#34;864&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/08-content_files/figure-html/unnamed-chunk-11-1.png&#34; width=&#34;864&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;For each plot, the black vertical line defines the neighborhoods. The green horizontal lines are the average of the &lt;span class=&#34;math inline&#34;&gt;\(y_i\)&lt;/span&gt; values for the points in the left neighborhood. The red horizontal lines are the average of the &lt;span class=&#34;math inline&#34;&gt;\(y_i\)&lt;/span&gt; values for the points in the right neighborhood.&lt;/p&gt;
 &lt;p&gt;What makes a cutoff good? Large differences in the average &lt;span class=&#34;math inline&#34;&gt;\(y_i\)&lt;/span&gt; between the two neighborhoods. More formally we want to find a cutoff value that minimizes&lt;/p&gt;
 &lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
@@ -4460,16 +4460,16 @@ Right SSE
 &lt;/table&gt;
 &lt;p&gt;The table above summarizes the results of the three potential splits. We see that (of the splits considered, which are not exhaustive&lt;a href=&#34;#fn5&#34; class=&#34;footnote-ref&#34; id=&#34;fnref5&#34;&gt;&lt;sup&gt;5&lt;/sup&gt;&lt;/a&gt;) the split based on a cutoff of &lt;span class=&#34;math inline&#34;&gt;\(x = -0.50\)&lt;/span&gt; creates the best partitioning of the space.&lt;/p&gt;
 &lt;p&gt;Now let’s consider building a full tree.&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/content/08-content_files/figure-html/unnamed-chunk-15-1.png&#34; width=&#34;672&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/08-content_files/figure-html/unnamed-chunk-15-1.png&#34; width=&#34;672&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;In the plot above, the true regression function is the dashed black curve, and the solid orange curve is the estimated regression function using a decision tree. We see that there are two splits, which we can visualize as a tree.&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/content/08-content_files/figure-html/unnamed-chunk-16-1.png&#34; width=&#34;672&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/08-content_files/figure-html/unnamed-chunk-16-1.png&#34; width=&#34;672&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;The above “tree”&lt;a href=&#34;#fn6&#34; class=&#34;footnote-ref&#34; id=&#34;fnref6&#34;&gt;&lt;sup&gt;6&lt;/sup&gt;&lt;/a&gt; shows the splits that were made. It informs us of the variable used, the cutoff value, and some summary of the resulting neighborhood. In “tree” terminology the resulting neighborhoods are “terminal nodes” of the tree. In contrast, “internal nodes” are neighborhoods that are created, but then further split.&lt;/p&gt;
 &lt;p&gt;The “root node” is the neighborhood contains all observations, before any splitting, and can be seen at the top of the image above. We see that this node represents 100% of the data. The other number, 0.21, is the mean of the response variable, in this case, &lt;span class=&#34;math inline&#34;&gt;\(y_i\)&lt;/span&gt;.&lt;/p&gt;
 &lt;p&gt;Looking at a terminal node, for example the bottom left node, we see that 23% of the data is in this node. The average value of the &lt;span class=&#34;math inline&#34;&gt;\(y_i\)&lt;/span&gt; in this node is -1, which can be seen in the plot above.&lt;/p&gt;
 &lt;p&gt;We also see that the first split is based on the &lt;span class=&#34;math inline&#34;&gt;\(x\)&lt;/span&gt; variable, and a cutoff of &lt;span class=&#34;math inline&#34;&gt;\(x = -0.52\)&lt;/span&gt;. Note that because there is only one variable here, all splits are based on &lt;span class=&#34;math inline&#34;&gt;\(x\)&lt;/span&gt;, but in the future, we will have multiple features that can be split and neighborhoods will no longer be one-dimensional. However, this is hard to plot.&lt;/p&gt;
 &lt;p&gt;Let’s build a bigger, more flexible tree.&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/content/08-content_files/figure-html/unnamed-chunk-18-1.png&#34; width=&#34;672&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/content/08-content_files/figure-html/unnamed-chunk-19-1.png&#34; width=&#34;672&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/08-content_files/figure-html/unnamed-chunk-18-1.png&#34; width=&#34;672&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/08-content_files/figure-html/unnamed-chunk-19-1.png&#34; width=&#34;672&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;There are two tuning parameters at play here which we will call by their names in R which we will see soon:&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;code&gt;cp&lt;/code&gt; or the “complexity parameter” as it is called.&lt;a href=&#34;#fn7&#34; class=&#34;footnote-ref&#34; id=&#34;fnref7&#34;&gt;&lt;sup&gt;7&lt;/sup&gt;&lt;/a&gt; This parameter determines which splits are accepted. A split must improve the performance of the tree by more than &lt;code&gt;cp&lt;/code&gt; in order to be used. When we get to R, we will see that the default value is 0.1.&lt;/li&gt;
@@ -4477,10 +4477,10 @@ Right SSE
 &lt;/ul&gt;
 &lt;p&gt;There are actually many more possible tuning parameters for trees, possibly differing depending on who wrote the code you’re using. We will limit discussion to these two.&lt;a href=&#34;#fn8&#34; class=&#34;footnote-ref&#34; id=&#34;fnref8&#34;&gt;&lt;sup&gt;8&lt;/sup&gt;&lt;/a&gt; Note that they effect each other, and they effect other parameters which we are not discussing. The main takeaway should be how they effect model flexibility.&lt;/p&gt;
 &lt;p&gt;First let’s look at what happens for a fixed &lt;code&gt;minsplit&lt;/code&gt; by variable &lt;code&gt;cp&lt;/code&gt;.&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/content/08-content_files/figure-html/unnamed-chunk-21-1.png&#34; width=&#34;1152&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/08-content_files/figure-html/unnamed-chunk-21-1.png&#34; width=&#34;1152&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;We see that as &lt;code&gt;cp&lt;/code&gt; &lt;em&gt;decreases&lt;/em&gt;, model flexibility &lt;strong&gt;increases&lt;/strong&gt;. We see more splits, because the increase in performance needed to accept a split is smaller as &lt;code&gt;cp&lt;/code&gt; is reduced.&lt;/p&gt;
 &lt;p&gt;Now the reverse, fix &lt;code&gt;cp&lt;/code&gt; and vary &lt;code&gt;minsplit&lt;/code&gt;.&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/content/08-content_files/figure-html/unnamed-chunk-23-1.png&#34; width=&#34;1152&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/08-content_files/figure-html/unnamed-chunk-23-1.png&#34; width=&#34;1152&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;We see that as &lt;code&gt;minsplit&lt;/code&gt; &lt;em&gt;decreases&lt;/em&gt;, model flexibility &lt;strong&gt;increases&lt;/strong&gt;. By allowing splits of neighborhoods with fewer observations, we obtain more splits, which results in a more flexible model.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;example-credit-card-data&#34; class=&#34;section level2&#34;&gt;
@@ -4591,7 +4591,7 @@ crdt_knn_25 = knnreg(Rating ~ Age + Gender + Student, data = crdt_est, k = 25)&l
 ##    3) Age&amp;gt;=82.5 14  539190.9 490.2857 *&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Above we see the resulting tree printed, however, this is difficult to read. Instead, we use the &lt;code&gt;rpart.plot()&lt;/code&gt; function from the &lt;code&gt;rpart.plot&lt;/code&gt; package to better visualize the tree.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;rpart.plot(crdt_tree)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/content/08-content_files/figure-html/unnamed-chunk-40-1.png&#34; width=&#34;672&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/08-content_files/figure-html/unnamed-chunk-40-1.png&#34; width=&#34;672&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;At each split, the variable used to split is listed together with a condition. If the condition is true for a data point, send it to the left neighborhood. Although the &lt;code&gt;Gender&lt;/code&gt; available for creating splits, we only see splits based on &lt;code&gt;Age&lt;/code&gt; and &lt;code&gt;Student&lt;/code&gt;. This hints at the relative importance of these variables for prediction. More on this much later.&lt;/p&gt;
 &lt;p&gt;Categorical variables are split based on potential categories! This is &lt;em&gt;excellent&lt;/em&gt;. This means that trees naturally handle categorical features without needing to convert to numeric under the hood. We see a split that puts students into one neighborhood, and non-students into another.&lt;/p&gt;
 &lt;p&gt;Notice that the splits happen in order. So for example, the third terminal node (with an average rating of 298) is based on splits of:&lt;/p&gt;
@@ -4612,7 +4612,7 @@ crdt_knn_25 = knnreg(Rating ~ Age + Gender + Student, data = crdt_est, k = 25)&l
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;crdt_tree_big = rpart(Rating ~ Age + Gender + Student, data = crdt_est,
                       cp = 0.0, minsplit = 20)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;rpart.plot(crdt_tree_big)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/content/08-content_files/figure-html/unnamed-chunk-42-1.png&#34; width=&#34;672&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/08-content_files/figure-html/unnamed-chunk-42-1.png&#34; width=&#34;672&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;To make the tree even bigger, we could reduce &lt;code&gt;minsplit&lt;/code&gt;, but in practice we mostly consider the &lt;code&gt;cp&lt;/code&gt; parameter. Since &lt;code&gt;minsplit&lt;/code&gt; has been kept the same, but &lt;code&gt;cp&lt;/code&gt; was reduced, we see the same splits as the smaller tree, but many additional splits.&lt;/p&gt;
 &lt;p&gt;Now let’s fit a bunch of trees, with different values of &lt;code&gt;cp&lt;/code&gt;, for tuning.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;tree_mod_list = list(
@@ -4629,7 +4629,7 @@ crdt_knn_25 = knnreg(Rating ~ Age + Gender + Student, data = crdt_est, k = 25)&l
 &lt;p&gt;Note that by only using these three features, we are severely limiting our models performance. Let’s quickly assess using all available predictors.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;crdt_tree_all = rpart(Rating ~ ., data = crdt_est)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;rpart.plot(crdt_tree_all)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/content/08-content_files/figure-html/unnamed-chunk-47-1.png&#34; width=&#34;672&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/08-content_files/figure-html/unnamed-chunk-47-1.png&#34; width=&#34;672&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Notice that this model &lt;strong&gt;only&lt;/strong&gt; splits based on &lt;code&gt;Limit&lt;/code&gt; despite using all features. This should be a big hint about which variables are useful for prediction.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;calc_rmse(
   actual = crdt_val$Rating,
@@ -4665,9 +4665,9 @@ crdt_knn_25 = knnreg(Rating ~ Age + Gender + Student, data = crdt_est, k = 25)&l
     
     <item>
       <title>Linear Regression III</title>
-      <link>https://datavizm20.classes.andrewheiss.com/content/07-content/</link>
+      <link>https://ssc442kirkpatrick.netlify.app/content/07-content/</link>
       <pubDate>Tue, 01 Mar 2022 00:00:00 +0000</pubDate>
-      <guid>https://datavizm20.classes.andrewheiss.com/content/07-content/</guid>
+      <guid>https://ssc442kirkpatrick.netlify.app/content/07-content/</guid>
       <description>
 
 &lt;div id=&#34;TOC&#34;&gt;
@@ -4714,14 +4714,14 @@ crdt_knn_25 = knnreg(Rating ~ Age + Gender + Student, data = crdt_est, k = 25)&l
 &lt;div id=&#34;slide-tabs&#34; class=&#34;tab-content&#34;&gt;
 &lt;div id=&#34;introduction&#34; class=&#34;tab-pane fade show active&#34; role=&#34;tabpanel&#34; aria-labelledby=&#34;introduction-tab&#34;&gt;
 &lt;div class=&#34;embed-responsive embed-responsive-16by9&#34;&gt;
-&lt;iframe class=&#34;embed-responsive-item&#34; src=&#34;https://datavizm20.classes.andrewheiss.com/slides/06-slides.html#Introduction&#34;&gt;
+&lt;iframe class=&#34;embed-responsive-item&#34; src=&#34;https://ssc442kirkpatrick.netlify.app/slides/06-slides.html#Introduction&#34;&gt;
 &lt;/iframe&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;p&gt;As with recent weeks, we will work with real data during the lecture. Please download the following dataset and load it into &lt;code&gt;R&lt;/code&gt;.&lt;/p&gt;
 &lt;ul&gt;
-&lt;li&gt;&lt;a href=&#34;https://datavizm20.classes.andrewheiss.com/projects/data/ames.csv&#34;&gt;&lt;i class=&#34;fas fa-file-csv&#34;&gt;&lt;/i&gt; &lt;code&gt;Ames.csv&lt;/code&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://ssc442kirkpatrick.netlify.app/projects/data/ames.csv&#34;&gt;&lt;i class=&#34;fas fa-file-csv&#34;&gt;&lt;/i&gt; &lt;code&gt;Ames.csv&lt;/code&gt;&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/div&gt;
 &lt;/div&gt;
@@ -4732,7 +4732,7 @@ crdt_knn_25 = knnreg(Rating ~ Age + Gender + Student, data = crdt_est, k = 25)&l
 &lt;div id=&#34;spurious-correlation&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Spurious correlation&lt;/h2&gt;
 &lt;p&gt;The following comical example underscores that correlation is not causation. It shows a very strong correlation between divorce rates and margarine consumption.&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/content/07-content_files/figure-html/divorce-versus-margarine-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/07-content_files/figure-html/divorce-versus-margarine-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Does this mean that margarine causes divorces? Or do divorces cause people to eat more margarine? Of course the answer to both these questions is no. This is just an example of what we call a &lt;em&gt;spurious correlation&lt;/em&gt;.&lt;/p&gt;
 &lt;p&gt;You can see many more absurd examples on the Spurious Correlations website&lt;a href=&#34;#fn1&#34; class=&#34;footnote-ref&#34; id=&#34;fnref1&#34;&gt;&lt;sup&gt;1&lt;/sup&gt;&lt;/a&gt;.&lt;/p&gt;
 &lt;p&gt;The cases presented in the spurious correlation site are all instances of what is generally called &lt;em&gt;data dredging&lt;/em&gt;, &lt;em&gt;data fishing&lt;/em&gt;, or &lt;em&gt;data snooping&lt;/em&gt;. It’s basically a form of what in the US they call &lt;em&gt;cherry picking&lt;/em&gt;. An example of data dredging would be if you look through many results produced by a random process and pick the one that shows a relationship that supports a theory you want to defend.&lt;/p&gt;
@@ -4768,10 +4768,10 @@ res&lt;/code&gt;&lt;/pre&gt;
   ggplot(aes(x, y)) +
   geom_point() +
   geom_smooth(method = &amp;quot;lm&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/content/07-content_files/figure-html/dredging-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/07-content_files/figure-html/dredging-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Remember that the correlation summary is a random variable. Here is the distribution generated by the Monte Carlo simulation:&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;res %&amp;gt;% ggplot(aes(x=r)) + geom_histogram(binwidth = 0.1, color = &amp;quot;black&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/content/07-content_files/figure-html/null-corr-hist-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/07-content_files/figure-html/null-corr-hist-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;It’s just a mathematical fact that if we observe random correlations that are expected to be 0, but have a standard error of 0.2041955, the largest one will be close to 1.&lt;/p&gt;
 &lt;p&gt;If we performed regression on this group and interpreted the p-value, we would incorrectly claim this was a statistically significant relation:&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(broom)
@@ -4795,7 +4795,7 @@ x[-23] &amp;lt;- scale(x[-23])
 y[-23] &amp;lt;- scale(y[-23])&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;The data look like this:&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;qplot(x, y)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/content/07-content_files/figure-html/outlier-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/07-content_files/figure-html/outlier-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Not surprisingly, the correlation is very high:&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;cor(x,y)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## [1] 0.9878382&lt;/code&gt;&lt;/pre&gt;
@@ -4804,7 +4804,7 @@ y[-23] &amp;lt;- scale(y[-23])&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## [1] -0.04419032&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Previously, we (briefly) described alternatives to the average and standard deviation that are robust to outliers. There is also an alternative to the sample correlation for estimating the population correlation that is robust to outliers. It is called &lt;em&gt;Spearman correlation&lt;/em&gt;. The idea is simple: compute the correlation on the ranks of the values. Here is a plot of the ranks plotted against each other:&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;qplot(rank(x), rank(y))&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/content/07-content_files/figure-html/scatter-plot-of-ranks-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/07-content_files/figure-html/scatter-plot-of-ranks-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;The outlier is no longer associated with a very large value and the correlation comes way down:&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;cor(rank(x), rank(y))&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## [1] 0.002508251&lt;/code&gt;&lt;/pre&gt;
@@ -4884,13 +4884,13 @@ admissions %&amp;gt;% group_by(gender) %&amp;gt;%
                                              sum(applicants) * 100) %&amp;gt;%
   ggplot(aes(major_selectivity, percent_women_applicants, label = major)) +
   geom_text()&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/content/07-content_files/figure-html/uc-berkeley-majors-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/07-content_files/figure-html/uc-berkeley-majors-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;There seems to be association. The plot suggests that women were much more likely to apply to the two “hard” majors: gender and major’s selectivity are confounded. Compare, for example, major B and major E. Major E is much harder to enter than major B and over 60% of applicants to major E were women, while less than 30% of the applicants of major B were women.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;confounding-explained-graphically&#34; class=&#34;section level3&#34;&gt;
 &lt;h3&gt;Confounding explained graphically&lt;/h3&gt;
 &lt;p&gt;The following plot shows the number of applicants that were admitted and those that were not by:&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/content/07-content_files/figure-html/confounding-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/07-content_files/figure-html/confounding-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;!--
 
 ```r
@@ -4900,7 +4900,7 @@ admissions %&gt;%
   geom_bar(stat = &#34;identity&#34;, position = &#34;stack&#34;)
 ```
 
-&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/content/07-content_files/figure-html/confounding-2-1.png&#34; width=&#34;672&#34; /&gt;
+&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/07-content_files/figure-html/confounding-2-1.png&#34; width=&#34;672&#34; /&gt;
 --&gt;
 &lt;p&gt;It also breaks down the acceptances by major. This breakdown allows us to see that the majority of accepted men came from two majors: A and B. It also lets us see that few women applied to these majors.&lt;/p&gt;
 &lt;/div&gt;
@@ -4910,7 +4910,7 @@ admissions %&gt;%
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;admissions %&amp;gt;%
   ggplot(aes(major, admitted, col = gender, size = applicants)) +
   geom_point()&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/content/07-content_files/figure-html/admission-by-major-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/07-content_files/figure-html/admission-by-major-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Now we see that major by major, there is not much difference. The size of the dot represents the number of applicants, and explains the paradox: we see large red dots and small blue dots for the easiest majors, A and B.&lt;/p&gt;
 &lt;p&gt;If we average the difference by major, we find that the percent is actually 3.5% higher for women.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;admissions %&amp;gt;%  group_by(gender) %&amp;gt;% summarize(average = mean(admitted))&lt;/code&gt;&lt;/pre&gt;
@@ -4924,9 +4924,9 @@ admissions %&gt;%
 &lt;div id=&#34;simpsons-paradox&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Simpson’s paradox&lt;/h2&gt;
 &lt;p&gt;The case we have just covered is an example of Simpson’s paradox. It is called a paradox because we see the sign of the correlation flip when comparing the entire publication and specific strata. As an illustrative example, suppose you have three random variables &lt;span class=&#34;math inline&#34;&gt;\(X\)&lt;/span&gt;, &lt;span class=&#34;math inline&#34;&gt;\(Y\)&lt;/span&gt;, and &lt;span class=&#34;math inline&#34;&gt;\(Z\)&lt;/span&gt; and that we observe realizations of these. Here is a plot of simulated observations for &lt;span class=&#34;math inline&#34;&gt;\(X\)&lt;/span&gt; and &lt;span class=&#34;math inline&#34;&gt;\(Y\)&lt;/span&gt; along with the sample correlation:&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/content/07-content_files/figure-html/simpsons-paradox-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/07-content_files/figure-html/simpsons-paradox-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;You can see that &lt;span class=&#34;math inline&#34;&gt;\(X\)&lt;/span&gt; and &lt;span class=&#34;math inline&#34;&gt;\(Y\)&lt;/span&gt; are negatively correlated. However, once we stratify by &lt;span class=&#34;math inline&#34;&gt;\(Z\)&lt;/span&gt; (shown in different colors below) another pattern emerges:&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/content/07-content_files/figure-html/simpsons-paradox-explained-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/07-content_files/figure-html/simpsons-paradox-explained-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;It is really &lt;span class=&#34;math inline&#34;&gt;\(Z\)&lt;/span&gt; that is negatively correlated with &lt;span class=&#34;math inline&#34;&gt;\(X\)&lt;/span&gt;. If we stratify by &lt;span class=&#34;math inline&#34;&gt;\(Z\)&lt;/span&gt;, the &lt;span class=&#34;math inline&#34;&gt;\(X\)&lt;/span&gt; and &lt;span class=&#34;math inline&#34;&gt;\(Y\)&lt;/span&gt; are actually positively correlated as seen in the plot above.&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
@@ -4942,12 +4942,12 @@ admissions %&gt;%
     
     <item>
       <title>Linear Regression II</title>
-      <link>https://datavizm20.classes.andrewheiss.com/content/06-content/</link>
+      <link>https://ssc442kirkpatrick.netlify.app/content/06-content/</link>
       <pubDate>Tue, 22 Feb 2022 00:00:00 +0000</pubDate>
-      <guid>https://datavizm20.classes.andrewheiss.com/content/06-content/</guid>
+      <guid>https://ssc442kirkpatrick.netlify.app/content/06-content/</guid>
       <description>
-&lt;script src=&#34;https://datavizm20.classes.andrewheiss.com/rmarkdown-libs/kePrint/kePrint.js&#34;&gt;&lt;/script&gt;
-&lt;link href=&#34;https://datavizm20.classes.andrewheiss.com/rmarkdown-libs/lightable/lightable.css&#34; rel=&#34;stylesheet&#34; /&gt;
+&lt;script src=&#34;https://ssc442kirkpatrick.netlify.app/rmarkdown-libs/kePrint/kePrint.js&#34;&gt;&lt;/script&gt;
+&lt;link href=&#34;https://ssc442kirkpatrick.netlify.app/rmarkdown-libs/lightable/lightable.css&#34; rel=&#34;stylesheet&#34; /&gt;
 
 &lt;div id=&#34;TOC&#34;&gt;
 &lt;ul&gt;
@@ -5019,14 +5019,14 @@ admissions %&gt;%
 &lt;div id=&#34;slide-tabs&#34; class=&#34;tab-content&#34;&gt;
 &lt;div id=&#34;introduction&#34; class=&#34;tab-pane fade show active&#34; role=&#34;tabpanel&#34; aria-labelledby=&#34;introduction-tab&#34;&gt;
 &lt;div class=&#34;embed-responsive embed-responsive-16by9&#34;&gt;
-&lt;iframe class=&#34;embed-responsive-item&#34; src=&#34;https://datavizm20.classes.andrewheiss.com/slides/06-slides.html#Introduction&#34;&gt;
+&lt;iframe class=&#34;embed-responsive-item&#34; src=&#34;https://ssc442kirkpatrick.netlify.app/slides/06-slides.html#Introduction&#34;&gt;
 &lt;/iframe&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;p&gt;As with recent weeks, we will work with real data during the lecture. Please download the following dataset and load it into &lt;code&gt;R&lt;/code&gt;.&lt;/p&gt;
 &lt;ul&gt;
-&lt;li&gt;&lt;a href=&#34;https://datavizm20.classes.andrewheiss.com/projects/data/ames.csv&#34;&gt;&lt;i class=&#34;fas fa-file-csv&#34;&gt;&lt;/i&gt; &lt;code&gt;Ames.csv&lt;/code&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://ssc442kirkpatrick.netlify.app/projects/data/ames.csv&#34;&gt;&lt;i class=&#34;fas fa-file-csv&#34;&gt;&lt;/i&gt; &lt;code&gt;Ames.csv&lt;/code&gt;&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/div&gt;
 &lt;/div&gt;
@@ -5040,7 +5040,7 @@ admissions %&gt;%
 &lt;p&gt;Traditionally, baseball teams use &lt;em&gt;scouts&lt;/em&gt; to help them decide what players to hire. These scouts evaluate players by observing them perform. Scouts tend to favor athletic players with observable physical abilities. For this reason, scouts tend to agree on who the best players are and, as a result, these players tend to be in high demand. This in turn drives up their salaries.&lt;/p&gt;
 &lt;p&gt;From 1989 to 1991, the A’s had one of the highest payrolls in baseball. They were able to buy the best players and, during that time, they were one of the best teams. However, in 1995 the A’s team owner changed and the new management cut the budget drastically, leaving then general manager, Sandy Alderson, with one of the lowest payrolls in baseball. He could no longer afford the most sought-after players. Alderson began using a statistical approach to find inefficiencies in the market. Alderson was a mentor to Billy Beane, who succeeded him in 1998 and fully embraced data science, as opposed to scouts, as a method for finding low-cost players that data predicted would help the team win. Today, this strategy has been adapted by most baseball teams. As we will see, regression plays a large role in this approach.&lt;/p&gt;
 &lt;p&gt;As motivation for this lecture, we will pretend it is 2002 (holy shit I’m old) and try to build a baseball team with a limited budget, just like the A’s had to do. To appreciate what you are up against, note that in 2002 the Yankees’ payroll of $125,928,583 more than tripled the Oakland A’s $39,679,746:&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/content/06-content_files/figure-html/mlb-2002-payroll-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/06-content_files/figure-html/mlb-2002-payroll-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;div id=&#34;sabermetics&#34; class=&#34;section level3&#34;&gt;
 &lt;h3&gt;Sabermetics&lt;/h3&gt;
 &lt;p&gt;Statistics have been used in baseball since its beginnings. The dataset we will be using, included in the &lt;strong&gt;Lahman&lt;/strong&gt; library, goes back to the 19th century. For example, a summary statistics we will describe soon, the &lt;em&gt;batting average&lt;/em&gt;, has been used for decades to summarize a batter’s success. Other statistics&lt;a href=&#34;#fn1&#34; class=&#34;footnote-ref&#34; id=&#34;fnref1&#34;&gt;&lt;sup&gt;1&lt;/sup&gt;&lt;/a&gt; such as home runs (HR), runs batted in (RBI), and stolen bases (SB) are reported for each player in the game summaries included in the sports section of newspapers, with players rewarded for high numbers. Although summary statistics such as these were widely used in baseball, data analysis per se was not. These statistics were arbitrarily decided on without much thought as to whether they actually predicted anything or were related to helping a team win.&lt;/p&gt;
@@ -5053,7 +5053,7 @@ admissions %&gt;%
 &lt;p&gt;The goal of a baseball game is to score more runs (points) than the other team. Each team has 9 batters that have an opportunity to hit a ball with a bat in a predetermined order. After the 9th batter has had their turn, the first batter bats again, then the second, and so on. Each time a batter has an opportunity to bat, we call it a plate appearance (PA). At each PA, the other team’s &lt;em&gt;pitcher&lt;/em&gt; throws the ball and the batter tries to hit it. The PA ends with an binary outcome: the batter either makes an &lt;em&gt;out&lt;/em&gt; (failure) and returns to the bench or the batter doesn’t (success) and can run around the bases, and potentially score a run (reach all 4 bases). Each team gets nine tries, referred to as &lt;em&gt;innings&lt;/em&gt;, to score runs and each inning ends after three outs (three failures).&lt;/p&gt;
 &lt;p&gt;Here is a video showing a success: &lt;a href=&#34;https://www.youtube.com/watch?v=HL-XjMCPfio&#34;&gt;https://www.youtube.com/watch?v=HL-XjMCPfio&lt;/a&gt;. And here is one showing a failure: &lt;a href=&#34;https://www.youtube.com/watch?v=NeloljCx-1g&#34;&gt;https://www.youtube.com/watch?v=NeloljCx-1g&lt;/a&gt;. In these videos, we see how luck is involved in the process. When at bat, the batter wants to hit the ball hard. If the batter hits it hard enough, it is a HR, the best possible outcome as the batter gets at least one automatic run. But sometimes, due to chance, the batter hits the ball very hard and a defender catches it, resulting in an out. In contrast, sometimes the batter hits the ball softly, but it lands just in the right place. The fact that there is chance involved hints at why probability models will be involved.&lt;/p&gt;
 &lt;p&gt;Now there are several ways to succeed. Understanding this distinction will be important for our analysis. When the batter hits the ball, the batter wants to pass as many &lt;em&gt;bases&lt;/em&gt; as possible. There are four bases with the fourth one called &lt;em&gt;home plate&lt;/em&gt;. Home plate is where batters start by trying to hit, so the bases form a cycle.&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/./06-content_files/Baseball_Diamond1.png&#34; /&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/./06-content_files/Baseball_Diamond1.png&#34; /&gt;
 (Courtesy of Cburnett&lt;a href=&#34;#fn4&#34; class=&#34;footnote-ref&#34; id=&#34;fnref4&#34;&gt;&lt;sup&gt;4&lt;/sup&gt;&lt;/a&gt;. CC BY-SA 3.0 license&lt;a href=&#34;#fn5&#34; class=&#34;footnote-ref&#34; id=&#34;fnref5&#34;&gt;&lt;sup&gt;5&lt;/sup&gt;&lt;/a&gt;.)
 &lt;!--Source: [Wikipedia Commons](https://commons.wikimedia.org/wiki/File:Baseball_diamond_simplified.svg))--&gt;&lt;/p&gt;
 &lt;p&gt;A batter who &lt;em&gt;goes around the bases&lt;/em&gt; and arrives home, scores a run.&lt;/p&gt;
@@ -5073,7 +5073,7 @@ If a batter gets to a base, the batter still has a chance of getting home and sc
 &lt;div id=&#34;no-awards-for-bb&#34; class=&#34;section level3&#34;&gt;
 &lt;h3&gt;No awards for BB&lt;/h3&gt;
 &lt;p&gt;Historically, the &lt;em&gt;batting average&lt;/em&gt; has been considered the most important offensive statistic. To define this average, we define a &lt;em&gt;hit&lt;/em&gt; (H) and an &lt;em&gt;at bat&lt;/em&gt; (AB). Singles, doubles, triples, and home runs are hits. The fifth way to be successful, BB, is not a hit. An AB is the number of times you either get a hit or make an out; BBs are excluded. The batting average is simply H/AB and is considered the main measure of a success rate. Today this success rate ranges from 20% to 38%. We refer to the batting average in thousands so, for example, if your success rate is 28%, we call it &lt;em&gt;batting 280&lt;/em&gt;.&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/./06-content_files/JumboTron.png&#34; /&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/./06-content_files/JumboTron.png&#34; /&gt;
 (Picture courtesy of Keith Allison&lt;a href=&#34;#fn6&#34; class=&#34;footnote-ref&#34; id=&#34;fnref6&#34;&gt;&lt;sup&gt;6&lt;/sup&gt;&lt;/a&gt;. CC BY-SA 2.0 license&lt;a href=&#34;#fn7&#34; class=&#34;footnote-ref&#34; id=&#34;fnref7&#34;&gt;&lt;sup&gt;7&lt;/sup&gt;&lt;/a&gt;.)&lt;/p&gt;
 &lt;p&gt;One of Bill James’ first important insights is that the batting average ignores BB, but a BB is a success. He proposed we use the &lt;em&gt;on base percentage&lt;/em&gt; (OBP) instead of batting average. He defined OBP as (H+BB)/(AB+BB) which is simply the proportion of plate appearances that don’t result in an out, a very intuitive measure. He noted that a player that gets many more BB than the average player might not be recognized if the batter does not excel in batting average. But is this player not helping produce runs? No award is given to the player with the most BB. However, bad habits are hard to break and baseball did not immediately adopt OBP as an important statistic. In contrast, total stolen bases were considered important and an award&lt;a href=&#34;#fn8&#34; class=&#34;footnote-ref&#34; id=&#34;fnref8&#34;&gt;&lt;sup&gt;8&lt;/sup&gt;&lt;/a&gt; given to the player with the most. But players with high totals of SB also made more outs as they did not always succeed. Does a player with high SB total help produce runs? Can we use data science to determine if it’s better to pay for players with high BB or SB?&lt;/p&gt;
 &lt;/div&gt;
@@ -5087,26 +5087,26 @@ Teams %&amp;gt;% filter(yearID %in% 1961:2001) %&amp;gt;%
   mutate(HR_per_game = HR / G, R_per_game = R / G) %&amp;gt;%
   ggplot(aes(HR_per_game, R_per_game)) +
   geom_point(alpha = 0.5)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/content/06-content_files/figure-html/runs-vs-hrs-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/06-content_files/figure-html/runs-vs-hrs-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;The plot shows a strong association: teams with more HRs tend to score more runs. Now let’s examine the relationship between stolen bases and runs:&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;Teams %&amp;gt;% filter(yearID %in% 1961:2001) %&amp;gt;%
   mutate(SB_per_game = SB / G, R_per_game = R / G) %&amp;gt;%
   ggplot(aes(SB_per_game, R_per_game)) +
   geom_point(alpha = 0.5)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/content/06-content_files/figure-html/runs-vs-sb-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/06-content_files/figure-html/runs-vs-sb-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Here the relationship is not as clear. Finally, let’s examine the relationship between BB and runs:&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;Teams %&amp;gt;% filter(yearID %in% 1961:2001) %&amp;gt;%
   mutate(BB_per_game = BB/G, R_per_game = R/G) %&amp;gt;%
   ggplot(aes(BB_per_game, R_per_game)) +
   geom_point(alpha = 0.5)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/content/06-content_files/figure-html/runs-vs-bb-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/06-content_files/figure-html/runs-vs-bb-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Here again we see a clear association. But does this mean that increasing a team’s BBs &lt;strong&gt;causes&lt;/strong&gt; an increase in runs? One of the most important lessons you learn in this book is that &lt;strong&gt;association is not causation.&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;In fact, it looks like BBs and HRs are also associated:&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;Teams %&amp;gt;% filter(yearID %in% 1961:2001 ) %&amp;gt;%
   mutate(HR_per_game = HR/G, BB_per_game = BB/G) %&amp;gt;%
   ggplot(aes(HR_per_game, BB_per_game)) +
   geom_point(alpha = 0.5)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/content/06-content_files/figure-html/bb-vs-hrs-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/06-content_files/figure-html/bb-vs-hrs-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;We know that HRs cause runs because, as the name “home run” implies, when a player hits a HR they are guaranteed at least one run. Could it be that HRs also cause BB and this makes it appear as if BB cause runs? When this happens we say there is &lt;em&gt;confounding&lt;/em&gt;, an important concept we will learn more about throughout this lecture.&lt;/p&gt;
 &lt;p&gt;Linear regression will help us parse all this out and quantify the associations. This will then help us determine what players to recruit. Specifically, we will try to predict things like how many more runs will a team score if we increase the number of BBs, but keep the HRs fixed? Regression will help us answer questions like this one.&lt;/p&gt;
 &lt;/div&gt;
@@ -5119,7 +5119,7 @@ p &amp;lt;- Teams %&amp;gt;% filter(yearID %in% 1961:2001 ) %&amp;gt;%
   ggplot(aes(HR_per_game, R_per_game)) +
   geom_point(alpha = 0.5)
 p&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/content/06-content_files/figure-html/hr-runs-bivariate-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/06-content_files/figure-html/hr-runs-bivariate-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;The qq-plots confirm that the normal approximation is useful here:&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;Teams %&amp;gt;% filter(yearID %in% 1961:2001 ) %&amp;gt;%
   mutate(z_HR = round((HR - mean(HR))/sd(HR)),
@@ -5128,7 +5128,7 @@ p&lt;/code&gt;&lt;/pre&gt;
   ggplot() +
   stat_qq(aes(sample=R_per_game)) +
   facet_wrap(~z_HR)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/content/06-content_files/figure-html/hr-by-runs-qq-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/06-content_files/figure-html/hr-by-runs-qq-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Now we are ready to use linear regression to predict the number of runs a team will score if we know how many home runs the team hits. All we need to do is compute the five summary statistics:&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;summary_stats &amp;lt;- Teams %&amp;gt;%
   filter(yearID %in% 1961:2001 ) %&amp;gt;%
@@ -5146,11 +5146,11 @@ summary_stats&lt;/code&gt;&lt;/pre&gt;
                             intercept = avg_R - slope*avg_HR)
 
 p + geom_abline(intercept = reg_line$intercept, slope = reg_line$slope)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/content/06-content_files/figure-html/hr-versus-runs-regression-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/06-content_files/figure-html/hr-versus-runs-regression-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Soon we will learn R functions, such as &lt;code&gt;lm&lt;/code&gt;, that make fitting regression lines much easier. Another example is the &lt;strong&gt;ggplot2&lt;/strong&gt; function &lt;code&gt;geom_smooth&lt;/code&gt; which computes and adds a regression line to plot along with confidence intervals, which we also learn about later. We use the argument &lt;code&gt;method = &#34;lm&#34;&lt;/code&gt; which stands for &lt;em&gt;linear model&lt;/em&gt;, the title of an upcoming section. So we can simplify the code above like this:&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p + geom_smooth(method = &amp;quot;lm&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## `geom_smooth()` using formula &amp;#39;y ~ x&amp;#39;&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/content/06-content_files/figure-html/hr-versus-runs-regression-easy-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/06-content_files/figure-html/hr-versus-runs-regression-easy-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;In the example above, the slope is 1.8448241. So this tells us that teams that hit 1 more HR per game than the average team, score 1.8448241 more runs per game than the average team. Given that the most common final score is a difference of a run, this can certainly lead to a large increase in wins. Not surprisingly, HR hitters are very expensive. Because we are working on a budget, we will need to find some other way to increase wins. So in the next section we move our attention to BB.&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
@@ -5204,7 +5204,7 @@ singles_slope&lt;/code&gt;&lt;/pre&gt;
   geom_smooth(method = &amp;quot;lm&amp;quot;) +
   facet_wrap( ~ HR_strata)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## `geom_smooth()` using formula &amp;#39;y ~ x&amp;#39;&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/content/06-content_files/figure-html/runs-vs-bb-by-hr-strata-1.png&#34; width=&#34;80%&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/06-content_files/figure-html/runs-vs-bb-by-hr-strata-1.png&#34; width=&#34;80%&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Remember that the regression slope for predicting runs with BB was 0.7. Once we stratify by HR, these slopes are substantially reduced:&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;dat %&amp;gt;%
   group_by(HR_strata) %&amp;gt;%
@@ -5225,7 +5225,7 @@ singles_slope&lt;/code&gt;&lt;/pre&gt;
 In fact, the values above are closer to the slope we obtained from singles, 0.45, which is more consistent with our intuition. Since both singles and BB get us to first base, they should have about the same predictive power.&lt;/p&gt;
 &lt;p&gt;Although our understanding of the application tells us that HR cause BB but not the other way around, we can still check if stratifying by BB makes the effect of BB go down. To do this, we use the same code except that we swap HR and BBs to get this plot:&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;## `geom_smooth()` using formula &amp;#39;y ~ x&amp;#39;&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/content/06-content_files/figure-html/runs-vs-hr-by-bb-strata-1.png&#34; width=&#34;100%&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/06-content_files/figure-html/runs-vs-hr-by-bb-strata-1.png&#34; width=&#34;100%&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;In this case, the slopes do not change much from the original:&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;dat %&amp;gt;% group_by(BB_strata) %&amp;gt;%
    summarize(slope = get_slope(HR_per_game, R_per_game))&lt;/code&gt;&lt;/pre&gt;
@@ -5320,7 +5320,7 @@ results &amp;lt;- data.frame(beta1 = beta1,
                       rss = sapply(beta1, rss, beta0 = 25))
 results %&amp;gt;% ggplot(aes(beta1, rss)) + geom_line() +
   geom_line(aes(beta1, rss))&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/content/06-content_files/figure-html/rss-versus-estimate-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/06-content_files/figure-html/rss-versus-estimate-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;We can see a clear minimum for &lt;span class=&#34;math inline&#34;&gt;\(\beta_1\)&lt;/span&gt; at around 0.65. However, this minimum for &lt;span class=&#34;math inline&#34;&gt;\(\beta_1\)&lt;/span&gt; is for when &lt;span class=&#34;math inline&#34;&gt;\(\beta_0 = 25\)&lt;/span&gt;, a value we arbitrarily picked. We don’t know if (25, 0.65) is the pair that minimizes the equation across all possible pairs.&lt;/p&gt;
 &lt;p&gt;Trial and error is not going to work in this case. We could search for a minimum within a fine grid of &lt;span class=&#34;math inline&#34;&gt;\(\beta_0\)&lt;/span&gt; and &lt;span class=&#34;math inline&#34;&gt;\(\beta_1\)&lt;/span&gt; values, but this is unnecessarily time-consuming since we can use calculus: take the partial derivatives, set them to 0 and solve for &lt;span class=&#34;math inline&#34;&gt;\(\beta_1\)&lt;/span&gt; and &lt;span class=&#34;math inline&#34;&gt;\(\beta_2\)&lt;/span&gt;. Of course, if we have many parameters, these equations can get rather complex. But there are functions in R that do these calculations for us. We will learn these next. To learn the mathematics behind this, you can consult a book on linear models.&lt;/p&gt;
 &lt;/div&gt;
@@ -5375,7 +5375,7 @@ lse &amp;lt;- data.frame(beta_0 = lse[1,], beta_1 = lse[2,])&lt;/code&gt;&lt;/pr
 &lt;pre&gt;&lt;code&gt;## The following object is masked from &amp;#39;package:dplyr&amp;#39;:
 ## 
 ##     combine&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/content/06-content_files/figure-html/lse-distributions-1.png&#34; width=&#34;100%&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/06-content_files/figure-html/lse-distributions-1.png&#34; width=&#34;100%&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;The reason these look normal is because the central limit theorem applies here as well: for large enough &lt;span class=&#34;math inline&#34;&gt;\(N\)&lt;/span&gt;, the least squares estimates will be approximately normal with expected value &lt;span class=&#34;math inline&#34;&gt;\(\beta_0\)&lt;/span&gt; and &lt;span class=&#34;math inline&#34;&gt;\(\beta_1\)&lt;/span&gt;, respectively. The standard errors are a bit complicated to compute, but mathematical theory does allow us to compute them and they are included in the summary provided by the &lt;code&gt;lm&lt;/code&gt; function. Here it is for one of our simulated data sets:&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt; sample_n(galton_heights, N, replace = TRUE) %&amp;gt;%
   lm(son ~ father, data = .) %&amp;gt;%
@@ -5401,7 +5401,7 @@ lse &amp;lt;- data.frame(beta_0 = lse[1,], beta_1 = lse[2,])&lt;/code&gt;&lt;/pr
   geom_point() +
   geom_smooth(method = &amp;quot;lm&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## `geom_smooth()` using formula &amp;#39;y ~ x&amp;#39;&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/content/06-content_files/figure-html/father-son-regression-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/06-content_files/figure-html/father-son-regression-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;The R function &lt;code&gt;predict&lt;/code&gt; takes an &lt;code&gt;lm&lt;/code&gt; object as input and returns the prediction. If requested, the standard errors and other information from which we can construct confidence intervals is provided:&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;fit &amp;lt;- galton_heights %&amp;gt;% lm(son ~ father, data = .)
 
@@ -5578,7 +5578,7 @@ tidy(fit)&lt;/code&gt;&lt;/pre&gt;
   ggplot(aes(HR, y = estimate, ymin = conf.low, ymax = conf.high)) +
   geom_errorbar() +
   geom_point()&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/content/06-content_files/figure-html/do-tidy-example-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/06-content_files/figure-html/do-tidy-example-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Now we return to discussing our original task of determining if slopes changed. The plot we just made, using &lt;code&gt;do&lt;/code&gt; and &lt;code&gt;tidy&lt;/code&gt;, shows that the confidence intervals overlap, which provides a nice visual confirmation that our assumption that the slope does not change is safe.&lt;/p&gt;
 &lt;p&gt;The other functions provided by &lt;strong&gt;broom&lt;/strong&gt;, &lt;code&gt;glance&lt;/code&gt;, and &lt;code&gt;augment&lt;/code&gt;, relate to model-specific and observation-specific outcomes, respectively. Here, we can see the model fit summaries &lt;code&gt;glance&lt;/code&gt; returns:&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;glance(fit)&lt;/code&gt;&lt;/pre&gt;
@@ -5658,7 +5658,7 @@ coefs&lt;/code&gt;&lt;/pre&gt;
   geom_point() +
   geom_text(nudge_x=0.1, cex = 2) +
   geom_abline()&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/content/06-content_files/figure-html/model-predicts-runs-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/06-content_files/figure-html/model-predicts-runs-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Our model does quite a good job as demonstrated by the fact that points from the observed versus predicted plot fall close to the identity line.&lt;/p&gt;
 &lt;p&gt;So instead of using batting average, or just number of HR, as a measure of picking players, we can use our fitted model to form a metric that relates more directly to run production. Specifically, to define a metric for player A, we imagine a team made up of players just like player A and use our fitted regression model to predict how many runs this team would produce. The formula would look like this:
 -2.7691857 +
@@ -5691,7 +5691,7 @@ coefs&lt;/code&gt;&lt;/pre&gt;
   mutate(R_hat = predict(fit, newdata = .))&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;The player-specific predicted runs computed here can be interpreted as the number of runs we predict a team will score if all batters are exactly like that player. The distribution shows that there is wide variability across players:&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;qplot(R_hat, data = players, binwidth = 0.5, color = I(&amp;quot;black&amp;quot;))&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/content/06-content_files/figure-html/r-hat-hist-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/06-content_files/figure-html/r-hat-hist-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;div id=&#34;adding-salary-and-position-information&#34; class=&#34;section level3&#34;&gt;
 &lt;h3&gt;Adding salary and position information&lt;/h3&gt;
 &lt;p&gt;To actually build the team, we will need to know their salaries as well as their defensive position. For this, we join the &lt;code&gt;players&lt;/code&gt; data frame we just created with the player information data frame included in some of the other Lahman data tables. We will learn more about the join function (and we will discuss this further in a later lecture).&lt;/p&gt;
@@ -5750,7 +5750,7 @@ pos &amp;lt;- tmp %&amp;gt;%
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;players %&amp;gt;% ggplot(aes(salary, R_hat, color = POS)) +
   geom_point() +
   scale_x_log10()&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/content/06-content_files/figure-html/predicted-runs-vs-salary-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/06-content_files/figure-html/predicted-runs-vs-salary-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;!--Notice the very high salaries for most players. We do see some low-cost players with very high metrics. These will be great for our team. Some of these are likely young players that have not yet been able to negotiate a salary and are unavailable.
 
 Here we remake plot without players that debuted before 1998. We use the __lubridate__ function `year`, introduced in Section \@ref(lubridate).
@@ -5763,7 +5763,7 @@ players %&gt;% filter(year(debut) &lt; 1998) %&gt;%
   scale_x_log10()
 ```
 
-&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/content/06-content_files/figure-html/predicted-runs-vs-salary-no-rookies-1.png&#34; width=&#34;672&#34; /&gt;
+&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/06-content_files/figure-html/predicted-runs-vs-salary-no-rookies-1.png&#34; width=&#34;672&#34; /&gt;
 --&gt;
 &lt;p&gt;We can search for good deals by looking at players who produce many more runs than others with similar salaries. We can use this table to decide what players to pick and keep our total salary below the 40 million dollars Billy Beane had to work with. This can be done using what computer scientists call linear programming. This is not something we teach, but here are the position players selected with this approach:&lt;/p&gt;
 &lt;table class=&#34;table table-striped&#34; style=&#34;width: auto !important; margin-left: auto; margin-right: auto;&#34;&gt;
@@ -6524,7 +6524,7 @@ Rosales
 &lt;/tbody&gt;
 &lt;/table&gt;
 &lt;p&gt;Their batting averages mostly go up! Is this some sort of reverse sophomore slump? It is not. There is no such thing as the sophomore slump. This is all explained with a simple statistical fact: the correlation for performance in two separate years is high, but not perfect:&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/content/06-content_files/figure-html/regression-fallacy-1.png&#34; width=&#34;40%&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/06-content_files/figure-html/regression-fallacy-1.png&#34; width=&#34;40%&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;The correlation is 0.460254 and
 the data look very much like a bivariate normal distribution, which means we predict a 2014 batting average &lt;span class=&#34;math inline&#34;&gt;\(Y\)&lt;/span&gt; for any given player that had a 2013 batting average &lt;span class=&#34;math inline&#34;&gt;\(X\)&lt;/span&gt; with:&lt;/p&gt;
 &lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[ \frac{Y - .255}{.032} = 0.46 \left( \frac{X - .261}{.023}\right) \]&lt;/span&gt;&lt;/p&gt;
@@ -6543,7 +6543,7 @@ the data look very much like a bivariate normal distribution, which means we pre
   geom_point() +
   ylab(&amp;quot;Distance in meters&amp;quot;) +
   xlab(&amp;quot;Time in seconds&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/content/06-content_files/figure-html/gravity-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/06-content_files/figure-html/gravity-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Galileo does not know the exact equation, but by looking at the plot above, he deduces that the position should follow a parabola, which we can write like this:&lt;/p&gt;
 &lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[ f(x) = \beta_0 + \beta_1 x + \beta_2 x^2\]&lt;/span&gt;&lt;/p&gt;
 &lt;p&gt;The data does not fall exactly on a parabola. Galileo knows this is due to measurement error. His helpers make mistakes when measuring the distance. To account for this, he models the data with:&lt;/p&gt;
@@ -6567,7 +6567,7 @@ tidy(fit)&lt;/code&gt;&lt;/pre&gt;
   ggplot() +
   geom_point(aes(time, observed_distance)) +
   geom_line(aes(time, .fitted), col = &amp;quot;blue&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/content/06-content_files/figure-html/falling-object-fit-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/06-content_files/figure-html/falling-object-fit-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Thanks to my high school physics teacher, I know that the equation for the trajectory of a falling object is:&lt;/p&gt;
 &lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[d = h_0 + v_0 t -  0.5 \times 9.8 t^2\]&lt;/span&gt;&lt;/p&gt;
 &lt;p&gt;with &lt;span class=&#34;math inline&#34;&gt;\(h_0\)&lt;/span&gt; and &lt;span class=&#34;math inline&#34;&gt;\(v_0\)&lt;/span&gt; the starting height and velocity, respectively. The data we simulated above followed this equation and added measurement error to simulate &lt;code&gt;n&lt;/code&gt; observations for dropping the ball &lt;span class=&#34;math inline&#34;&gt;\((v_0=0)\)&lt;/span&gt; from the tower of Pisa &lt;span class=&#34;math inline&#34;&gt;\((h_0=55.86)\)&lt;/span&gt;.&lt;/p&gt;
@@ -6617,9 +6617,9 @@ tidy(fit)&lt;/code&gt;&lt;/pre&gt;
     
     <item>
       <title>Probability and Statistics</title>
-      <link>https://datavizm20.classes.andrewheiss.com/content/04-content/</link>
+      <link>https://ssc442kirkpatrick.netlify.app/content/04-content/</link>
       <pubDate>Tue, 08 Feb 2022 00:00:00 +0000</pubDate>
-      <guid>https://datavizm20.classes.andrewheiss.com/content/04-content/</guid>
+      <guid>https://ssc442kirkpatrick.netlify.app/content/04-content/</guid>
       <description>
 
 &lt;div id=&#34;TOC&#34;&gt;
@@ -6869,7 +6869,7 @@ Let’s use Blackjack as an example. In Blackjack, you are assigned two random c
 \mbox{Pr}(A \mbox{ or } B) = \mbox{Pr}(A) + \mbox{Pr}(B) - \mbox{Pr}(A \mbox{ and } B)
 \]&lt;/span&gt;&lt;/p&gt;
 &lt;p&gt;This rule is intuitive: think of a Venn diagram. If we simply add the probabilities, we count the intersection twice so we need to substract one instance.&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/content/04-content_files/figure-html/venn-diagram-addition-rule-1.png&#34; width=&#34;35%&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/04-content_files/figure-html/venn-diagram-addition-rule-1.png&#34; width=&#34;35%&#34; /&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;div id=&#34;combinations-and-permutations&#34; class=&#34;section level2&#34;&gt;
@@ -7061,7 +7061,7 @@ prob &amp;lt;- sapply(n, compute_prob)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(tidyverse)
 prob &amp;lt;- sapply(n, compute_prob)
 qplot(n, prob)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/content/04-content_files/figure-html/birthday-problem-mc-probabilities-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/04-content_files/figure-html/birthday-problem-mc-probabilities-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Now let’s compute the exact probabilities rather than use Monte Carlo approximations. Not only do we get the exact answer using math, but the computations are much faster since we don’t have to generate experiments.&lt;/p&gt;
 &lt;p&gt;To make the math simpler, instead of computing the probability of it happening, we will compute the probability of it not happening. For this, we use the multiplication rule.&lt;/p&gt;
 &lt;p&gt;Let’s start with the first person. The probability that person 1 has a unique birthday is 1. The probability that person 2 has a unique birthday, given that person 1 already took one, is 364/365. Then, given that the first two people have unique birthdays, person 3 is left with 363 days to choose from. We continue this way and find the chances of all 50 people having a unique birthday is:&lt;/p&gt;
@@ -7075,7 +7075,7 @@ qplot(n, prob)&lt;/code&gt;&lt;/pre&gt;
 }
 eprob &amp;lt;- sapply(n, exact_prob)
 qplot(n, prob) + geom_line(aes(n, eprob), col = &amp;quot;red&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/content/04-content_files/figure-html/birthday-problem-exact-probabilities-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/04-content_files/figure-html/birthday-problem-exact-probabilities-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;This plot shows that the Monte Carlo simulation provided a very good estimate of the exact probability. Had it not been possible to compute the exact probabilities, we would have still been able to accurately estimate the probabilities.&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
@@ -7091,7 +7091,7 @@ compute_prob &amp;lt;- function(B, n=25){
 }
 prob &amp;lt;- sapply(B, compute_prob)
 qplot(log10(B), prob, geom = &amp;quot;line&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/content/04-content_files/figure-html/monte-carlo-convergence-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/04-content_files/figure-html/monte-carlo-convergence-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;In this plot, we can see that the values start to stabilize (that is, they vary less than .01) around 1000. Note that the exact probability, which we know in this case, is 0.5686997.&lt;/p&gt;
 &lt;div class=&#34;fyi&#34;&gt;
 &lt;p&gt;&lt;strong&gt;TRY IT&lt;/strong&gt;&lt;/p&gt;
@@ -7171,7 +7171,7 @@ s &amp;lt;- sd(x)
 &lt;div id=&#34;theoretical-distributions-as-approximations&#34; class=&#34;section level3&#34;&gt;
 &lt;h3&gt;Theoretical distributions as approximations&lt;/h3&gt;
 &lt;p&gt;The normal distribution is derived mathematically: we do not need data to define it. For practicing data scientists, almost everything we do involves data. Data is always, technically speaking, discrete. For example, we could consider our height data categorical with each specific height a unique category. The probability distribution is defined by the proportion of students reporting each height. Here is a plot of that probability distribution:&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/content/04-content_files/figure-html/plot-of-height-frequencies-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/04-content_files/figure-html/plot-of-height-frequencies-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;While most students rounded up their heights to the nearest inch, others reported values with more precision. One student reported his height to be 69.6850393700787, which is 177 centimeters. The probability assigned to this height is 0.0012315 or 1 in 812. The probability for 70 inches is much higher at 0.1059113, but does it really make sense to think of the probability of being exactly 70 inches as being different than 69.6850393700787? Clearly it is much more useful for data analytic purposes to treat this outcome as a continuous numeric variable, keeping in mind that very few people, or perhaps none, are exactly 70 inches, and that the reason we get more values at 70 is because people round to the nearest inch.&lt;/p&gt;
 &lt;p&gt;With continuous distributions, the probability of a singular value is not even defined. For example, it does not make sense to ask what is the probability that a normally distributed value is 70. Instead, we define probabilities for intervals. We thus could ask what is the probability that someone is between 69.5 and 70.5.&lt;/p&gt;
 &lt;p&gt;In cases like height, in which the data is rounded, the normal approximation is particularly useful if we deal with intervals that include exactly one round number. For example, the normal distribution is useful for approximating the proportion of students reporting values in intervals like the following three:&lt;/p&gt;
@@ -7215,7 +7215,7 @@ F(a) = \mbox{Pr}(X\leq a) = \int_{-\infty}^a f(x)\, dx
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;1 - pnorm(76, m, s)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## [1] 0.03206008&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;which mathematically is the grey area below:&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/content/04-content_files/figure-html/intergrals-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/04-content_files/figure-html/intergrals-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;The curve you see is the probability density for the normal distribution. In R, we get this using the function &lt;code&gt;dnorm&lt;/code&gt;.&lt;/p&gt;
 &lt;p&gt;Although it may not be immediately obvious why knowing about probability densities is useful, understanding this concept will be essential to those wanting to fit models to data for which predefined functions are not available.&lt;/p&gt;
 &lt;/div&gt;
@@ -7228,7 +7228,7 @@ m &amp;lt;- mean(x)
 s &amp;lt;- sd(x)
 simulated_heights &amp;lt;- rnorm(n, m, s)&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Not surprisingly, the distribution looks normal:&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/content/04-content_files/figure-html/simulated-heights-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/04-content_files/figure-html/simulated-heights-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;This is one of the most useful functions in R as it will permit us to generate data that mimics natural events and answers questions related to what could happen by chance by running Monte Carlo simulations.&lt;/p&gt;
 &lt;p&gt;If, for example, we pick 800 males at random, what is the distribution of the tallest person? How rare is a seven footer in a group of 800 males? The following Monte Carlo simulation helps us answer that question:&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;B &amp;lt;- 10000
@@ -7240,7 +7240,7 @@ tallest &amp;lt;- replicate(B, {
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;mean(tallest &amp;gt;= 7*12)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## [1] 0.0172&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Here is the resulting distribution:&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/content/04-content_files/figure-html/simulated-tallest-height-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/04-content_files/figure-html/simulated-tallest-height-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Note that it does not look normal.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;continuous-distributions&#34; class=&#34;section level2&#34;&gt;
@@ -7339,7 +7339,7 @@ S &amp;lt;- replicate(B, roulette_winnings(n))&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;mean(S&amp;lt;0)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## [1] 0.0456&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;We can visualize the distribution of &lt;span class=&#34;math inline&#34;&gt;\(S\)&lt;/span&gt; by creating a histogram showing the probability &lt;span class=&#34;math inline&#34;&gt;\(F(b)-F(a)\)&lt;/span&gt; for several intervals &lt;span class=&#34;math inline&#34;&gt;\((a,b]\)&lt;/span&gt;:&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/content/04-content_files/figure-html/normal-approximates-distribution-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/04-content_files/figure-html/normal-approximates-distribution-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;We see that the distribution appears to be approximately normal. A qq-plot will confirm that the normal approximation is close to a perfect approximation for this distribution. If, in fact, the distribution is normal, then all we need to define the distribution is the average and the standard deviation. Because we have the original values from which the distribution is created, we can easily compute these with &lt;code&gt;mean(S)&lt;/code&gt; and &lt;code&gt;sd(S)&lt;/code&gt;. The blue curve you see added to the histogram above is a normal density with this average and standard deviation.&lt;/p&gt;
 &lt;p&gt;This average and this standard deviation have special names. They are referred to as the &lt;em&gt;expected value&lt;/em&gt; and &lt;em&gt;standard error&lt;/em&gt; of the random variable &lt;span class=&#34;math inline&#34;&gt;\(S\)&lt;/span&gt;. We will say more about these in the next section.&lt;/p&gt;
 &lt;p&gt;Statistical theory provides a way to derive the distribution of random variables defined as independent random draws from an urn. Specifically, in our example above, we can show that &lt;span class=&#34;math inline&#34;&gt;\((S+n)/2\)&lt;/span&gt; follows a binomial distribution. We therefore do not need to run for Monte Carlo simulations to know the probability distribution of &lt;span class=&#34;math inline&#34;&gt;\(S\)&lt;/span&gt;. We did this for illustrative purposes.&lt;/p&gt;
@@ -7550,9 +7550,9 @@ pnorm(0, mu, se)&lt;/code&gt;&lt;/pre&gt;
     
     <item>
       <title>Effective Visualizations</title>
-      <link>https://datavizm20.classes.andrewheiss.com/content/02-content/</link>
+      <link>https://ssc442kirkpatrick.netlify.app/content/02-content/</link>
       <pubDate>Tue, 25 Jan 2022 00:00:00 +0000</pubDate>
-      <guid>https://datavizm20.classes.andrewheiss.com/content/02-content/</guid>
+      <guid>https://ssc442kirkpatrick.netlify.app/content/02-content/</guid>
       <description>
 
 &lt;div id=&#34;TOC&#34;&gt;
@@ -7611,14 +7611,14 @@ p &amp;lt;- ggplot(data = murders, aes(x = population, y = total, label = abb))&
   geom_text(nudge_x = 0.05) +
   scale_x_continuous(trans = &amp;quot;log10&amp;quot;) +
   scale_y_continuous(trans = &amp;quot;log10&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/content/02-content_files/figure-html/ggplot-example-9-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/02-content_files/figure-html/ggplot-example-9-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;A couple of things here: adding things like &lt;code&gt;scale_x_continuous(...)&lt;/code&gt; operates on the whole plot. In some cases, order matters, but it doesn’t here, so we can throw &lt;code&gt;scale_x_continuous&lt;/code&gt; anywhere. Because we have altered the whole plot’s scale to be in the log-scale now, the &lt;em&gt;nudge&lt;/em&gt; must be made smaller. It is in log-base-10 units. Using &lt;code&gt;?scale_x_continuous&lt;/code&gt; brings us to the help for both &lt;code&gt;scale_x_continuous&lt;/code&gt; and &lt;code&gt;scale_y_continuous&lt;/code&gt;, which shows us the options for transformations &lt;code&gt;trans = ...&lt;/code&gt;&lt;/p&gt;
 &lt;p&gt;This particular transformation is so common that &lt;strong&gt;ggplot2&lt;/strong&gt; provides the specialized functions &lt;code&gt;scale_x_log10&lt;/code&gt; and &lt;code&gt;scale_y_log10&lt;/code&gt; which “inherit” (take the place of) the &lt;code&gt;scale_x_continuous&lt;/code&gt; functions but have log base 10 as default. We can use these to rewrite the code like this:&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p + geom_point(size = 3) +
   geom_text(nudge_x = 0.05) +
   scale_x_log10() +
   scale_y_log10()&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/content/02-content_files/figure-html/unnamed-chunk-2-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/02-content_files/figure-html/unnamed-chunk-2-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;This can make a plot much easier to read, though one has to be sure to pay attention to the values on the axes. Plotting anything with very large outliers will almost always be better if done in log-scale. Adding the scale layer is an easy way to fix this.&lt;/p&gt;
 &lt;p&gt;We can also use one of many built-in transformations. Of note: &lt;strong&gt;reverse&lt;/strong&gt; just inverts the scale, which can be helpful, &lt;strong&gt;log&lt;/strong&gt; uses the natural log, &lt;strong&gt;sqrt&lt;/strong&gt; takes the square root (dropping anything with a negative value), &lt;strong&gt;reciprocal&lt;/strong&gt; takes 1/x. If your x-axis is in a date format, you can also scale to &lt;strong&gt;hms&lt;/strong&gt; (hour-minute-second) or &lt;strong&gt;date&lt;/strong&gt;.&lt;/p&gt;
 &lt;/div&gt;
@@ -7627,7 +7627,7 @@ p &amp;lt;- ggplot(data = murders, aes(x = population, y = total, label = abb))&
 &lt;p&gt;We could simply take the log of population and log of total in the call and we’d get something very similar. Note that we had to override the aesthetic mapping set in &lt;code&gt;p&lt;/code&gt; in each of the geometries:&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p + geom_point(aes(x = log(population, base=10), y = log(total, base=10)), size = 3) +
   geom_text(aes(x = log(population, base=10), y = log(total, base=10)), nudge_x = 0.05) &lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/content/02-content_files/figure-html/unnamed-chunk-3-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/02-content_files/figure-html/unnamed-chunk-3-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;This avoids using &lt;code&gt;scale_x_continuous&lt;/code&gt; or it’s child function &lt;code&gt;scale_x_log10&lt;/code&gt;. One advantage to using &lt;code&gt;scale_x...&lt;/code&gt; is that the axes are correctly labeled. When we transform the data directly, the axis labels only show the transformed values, so 7,000,000 becomes 7.0. This could be confusing! We could update the axis labels to say “total murders (log base 10)” and “total population (log base 10)”, but that’s cumbersome. Using &lt;code&gt;scale_x...&lt;/code&gt; is a lot more refined and easy.&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
@@ -7643,21 +7643,21 @@ p &amp;lt;- ggplot(data = murders, aes(x = population, y = total, label = abb))&
   scale_x_log10() +
   scale_y_log10() + 
   labs(x = &amp;#39;Population&amp;#39;, y = &amp;#39;Total murders&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/content/02-content_files/figure-html/unnamed-chunk-4-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/02-content_files/figure-html/unnamed-chunk-4-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Now, let’s use an aesthetic mapping that generates a legend, like &lt;code&gt;color&lt;/code&gt;, and see what &lt;code&gt;labs&lt;/code&gt; renames:&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p + geom_point(aes(color = region), size = 3) +
   geom_text(nudge_x = 0.05) +
   scale_x_log10() +
   scale_y_log10() + 
   labs(x = &amp;#39;Population&amp;#39;, y = &amp;#39;Total murders&amp;#39;, color = &amp;#39;US Region&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/content/02-content_files/figure-html/unnamed-chunk-5-1.png&#34; width=&#34;672&#34; /&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/02-content_files/figure-html/unnamed-chunk-5-1.png&#34; width=&#34;672&#34; /&gt;
 We can rename the aesthetic mapping-relevant label using &lt;code&gt;labs&lt;/code&gt;. Even if there are multiple mapped aesthetics:&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p + geom_point(aes(color = region, size = total/population)) +
   geom_text(nudge_x = 0.05) +
   scale_x_log10() +
   scale_y_log10() + 
   labs(x = &amp;#39;Population&amp;#39;, y = &amp;#39;Total murders&amp;#39;, color = &amp;#39;US Region&amp;#39;, size = &amp;#39;Murder rate&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/content/02-content_files/figure-html/unnamed-chunk-6-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/02-content_files/figure-html/unnamed-chunk-6-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;titles&#34; class=&#34;section level3&#34;&gt;
 &lt;h3&gt;Titles&lt;/h3&gt;
@@ -7668,7 +7668,7 @@ We can rename the aesthetic mapping-relevant label using &lt;code&gt;labs&lt;/co
   scale_y_log10() + 
   labs(x = &amp;#39;Population&amp;#39;, y = &amp;#39;Total murders&amp;#39;, color = &amp;#39;US Region&amp;#39;, size = &amp;#39;Murder rate&amp;#39;,
        title = &amp;#39;This is a title&amp;#39;, subtitle = &amp;#39;This is a subtitle&amp;#39;, caption = &amp;#39;This is a caption&amp;#39;, tag = &amp;#39;This is a tag&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/content/02-content_files/figure-html/unnamed-chunk-7-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/02-content_files/figure-html/unnamed-chunk-7-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Now that you know how, &lt;strong&gt;always label your plots with at least a title and have meaningful axis and legend labels&lt;/strong&gt;.&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
@@ -7682,7 +7682,7 @@ We can rename the aesthetic mapping-relevant label using &lt;code&gt;labs&lt;/co
   scale_y_log10(breaks = c(0,50, 100, 500,1000,1500), 
                      labels = c(&amp;#39;Zero&amp;#39;,&amp;#39;Fifty&amp;#39;,&amp;#39;One hundred&amp;#39;,&amp;#39;Five hundred&amp;#39;,&amp;#39;One thousand&amp;#39;,&amp;#39;Fifteen hundred&amp;#39;)) +
   labs(x = &amp;#39;Population&amp;#39;, y = &amp;#39;Total murders&amp;#39;, color = &amp;#39;US Region&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/content/02-content_files/figure-html/unnamed-chunk-8-1.png&#34; width=&#34;672&#34; /&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/02-content_files/figure-html/unnamed-chunk-8-1.png&#34; width=&#34;672&#34; /&gt;
 We have manually set both the location and the label for the y-axis. Note that R filled in the in-between “minor” tick lines, but we can take those out. Since we are setting the location of the lines, we can do anything we want:&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p + geom_point(aes(color = region), size = 3) +
   geom_text(nudge_x = .05) +
@@ -7691,7 +7691,7 @@ We have manually set both the location and the label for the y-axis. Note that R
                      labels = c(&amp;#39;Zero&amp;#39;,&amp;#39;Fifty&amp;#39;,&amp;#39;One hundred&amp;#39;,&amp;#39;Seven hundred twenty one&amp;#39;,&amp;#39;One thousand&amp;#39;,&amp;#39;Fifteen hundred&amp;#39;),
                      minor_breaks = NULL) +
   labs(x = &amp;#39;Population&amp;#39;, y = &amp;#39;Total murders&amp;#39;, color = &amp;#39;US Region&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/content/02-content_files/figure-html/unnamed-chunk-9-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/02-content_files/figure-html/unnamed-chunk-9-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;So we can now define where axis tick lines should lie and how they should be labeled.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;additional-geometries&#34; class=&#34;section level2&#34;&gt;
@@ -7706,7 +7706,7 @@ We have manually set both the location and the label for the y-axis. Note that R
                      labels = c(&amp;#39;Zero&amp;#39;,&amp;#39;Fifty&amp;#39;,&amp;#39;One hundred&amp;#39;,&amp;#39;Seven hundred twenty one&amp;#39;,&amp;#39;One thousand&amp;#39;,&amp;#39;Fifteen hundred&amp;#39;),
                      minor_breaks = NULL) +
   labs(x = &amp;#39;Population&amp;#39;, y = &amp;#39;Total murders&amp;#39;, color = &amp;#39;US Region&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/content/02-content_files/figure-html/unnamed-chunk-10-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/02-content_files/figure-html/unnamed-chunk-10-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Combining geometries is as easy as adding the layers with &lt;code&gt;+&lt;/code&gt;.&lt;/p&gt;
 &lt;div id=&#34;geom_line&#34; class=&#34;section level3&#34;&gt;
 &lt;h3&gt;&lt;code&gt;geom_line&lt;/code&gt;&lt;/h3&gt;
@@ -7727,7 +7727,7 @@ head(AAPL)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(AAPL, aes(x = date, y = close)) +
   geom_line() +
   labs(x = &amp;#39;Date&amp;#39;, y = &amp;#39;Closing price&amp;#39;, title = &amp;#39;Apple stock price&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/content/02-content_files/figure-html/geomPath-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/02-content_files/figure-html/geomPath-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;In &lt;code&gt;geom_line&lt;/code&gt;, R will automatically sort on the x-variable. If you don’t want this, then &lt;code&gt;geom_path&lt;/code&gt; will use whatever order the data is in. Either way, if you have multiple observations for the same value on the x-axis, then you’ll get something pretty messy because R will try to connect, in some order, all the points. Let’s see an example with two stocks:&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;AAPLNFLX = tq_get(c(&amp;quot;AAPL&amp;quot;,&amp;quot;NFLX&amp;quot;), from = &amp;#39;2021-01-01&amp;#39;, to = &amp;#39;2021-08-01&amp;#39;, get = &amp;#39;stock.prices&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## Warning: `type_convert()` only converts columns of type &amp;#39;character&amp;#39;.
@@ -7738,7 +7738,7 @@ head(AAPL)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(AAPLNFLX, aes(x = date, y = close)) +
   geom_line() +
   labs(x = &amp;#39;Date&amp;#39;, y = &amp;#39;Closing price&amp;#39;, title = &amp;#39;Apple and Netflix stock price&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/content/02-content_files/figure-html/unnamed-chunk-11-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/02-content_files/figure-html/unnamed-chunk-11-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;That looks kinda strange. That’s because, for every date, we have two values - the NFLX and the AAPL value, so each day has a vertical line drawn between the two prices. This is nonsense, especially since what we want to see is the history of NFLX and AAPL over time.&lt;/p&gt;
 &lt;p&gt;Aesthetics to the rescue! Remember, when we use an aesthetic mapping, we are able to separate out data by things like color or linetype. Let’s use color as the aesthetic here, and map it to the stock ticker:&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;AAPLNFLX = tq_get(c(&amp;quot;AAPL&amp;quot;,&amp;quot;NFLX&amp;quot;), from = &amp;#39;2021-01-01&amp;#39;, to = &amp;#39;2021-08-01&amp;#39;, get = &amp;#39;stock.prices&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
@@ -7750,7 +7750,7 @@ head(AAPL)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(AAPLNFLX, aes(x = date, y = close, color = symbol)) +
   geom_line() +
   labs(x = &amp;#39;Date&amp;#39;, y = &amp;#39;Closing price&amp;#39;, title = &amp;#39;Apple and Netflix stock price&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/content/02-content_files/figure-html/unnamed-chunk-12-1.png&#34; width=&#34;672&#34; /&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/02-content_files/figure-html/unnamed-chunk-12-1.png&#34; width=&#34;672&#34; /&gt;
 Well there we go! We can now see each stock price over time, with a convenient legend. Later on, we’ll learn how to change the color palatte. If we don’t necessarily want a different color but we do want to separate the lines, we can use the &lt;code&gt;group&lt;/code&gt; aesthetic.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;AAPLNFLX = tq_get(c(&amp;quot;AAPL&amp;quot;,&amp;quot;NFLX&amp;quot;), from = &amp;#39;2021-01-01&amp;#39;, to = &amp;#39;2021-08-01&amp;#39;, get = &amp;#39;stock.prices&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## Warning: `type_convert()` only converts columns of type &amp;#39;character&amp;#39;.
@@ -7761,7 +7761,7 @@ Well there we go! We can now see each stock price over time, with a convenient l
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(AAPLNFLX, aes(x = date, y = close, group = symbol)) +
   geom_line() + 
   labs(x = &amp;#39;Date&amp;#39;, y = &amp;#39;Closing price&amp;#39;, title = &amp;#39;Apple and Netflix stock price&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/content/02-content_files/figure-html/unnamed-chunk-13-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/02-content_files/figure-html/unnamed-chunk-13-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Similar result as &lt;code&gt;geom_line&lt;/code&gt;, but without the color difference (which makes it rather hard to tell what you’re looking at). But if we add labels using &lt;code&gt;geom_label&lt;/code&gt;, we’ll get one label for every point, which will be overwhelming. The solution? Use some filtered data so that there is only one point for each label. But that means replacing the &lt;code&gt;data&lt;/code&gt; in &lt;code&gt;ggplot&lt;/code&gt;. Here’s how.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;using-different-data-with-different-geometries&#34; class=&#34;section level3&#34;&gt;
@@ -7774,7 +7774,7 @@ Well there we go! We can now see each stock price over time, with a convenient l
              aes(label = symbol),
              nudge_y = 20) + 
   labs(x = &amp;#39;Date&amp;#39;, y = &amp;#39;Closing price&amp;#39;, title = &amp;#39;Apple and Netflix stock price&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/content/02-content_files/figure-html/unnamed-chunk-14-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/02-content_files/figure-html/unnamed-chunk-14-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;In &lt;code&gt;geom_label&lt;/code&gt;, we specified we wanted the 100th observation from each symbol to be the label location. Then, we nudged it up along y by 20 so that it’s clear of the line.&lt;/p&gt;
 &lt;p&gt;R also has a very useful &lt;code&gt;ggrepel&lt;/code&gt; package that gives us &lt;code&gt;geom_label_repel&lt;/code&gt; which takes care of the nudging for us, even in complicated situations (lots of points, lines, etc.). It does a decent job here of moving the label to a point where it doesn’t cover a lot of data.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(ggrepel)
@@ -7783,7 +7783,7 @@ ggplot(AAPLNFLX, aes(x = date, y = close, group = symbol)) +
   geom_label_repel(data = AAPLNFLX %&amp;gt;% group_by(symbol) %&amp;gt;% slice(100),
              aes(label = symbol)) + 
   labs(x = &amp;#39;Date&amp;#39;, y = &amp;#39;Closing price&amp;#39;, title = &amp;#39;Apple and Netflix stock price&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/content/02-content_files/figure-html/unnamed-chunk-15-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/02-content_files/figure-html/unnamed-chunk-15-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Now, we don’t lose a lot of space to a legend, and we haven’t had to use color to separate the stock symbols.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;multiple-geometries&#34; class=&#34;section level3&#34;&gt;
@@ -7796,7 +7796,7 @@ ggplot(AAPLNFLX, aes(x = date, y = close, group = symbol)) +
   geom_label_repel(data = AAPLNFLX %&amp;gt;% group_by(symbol) %&amp;gt;% slice(100),
              aes(label = symbol)) + 
   labs(x = &amp;#39;Date&amp;#39;, y = &amp;#39;Closing price&amp;#39;, title = &amp;#39;Apple and Netflix stock price&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/content/02-content_files/figure-html/unnamed-chunk-16-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/02-content_files/figure-html/unnamed-chunk-16-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;div id=&#34;try-it&#34; class=&#34;section level2&#34;&gt;
@@ -7902,12 +7902,12 @@ Print the object &lt;code&gt;p&lt;/code&gt; defined in exercise one and describe
     
     <item>
       <title>Welcome Back to R</title>
-      <link>https://datavizm20.classes.andrewheiss.com/content/00-content/</link>
+      <link>https://ssc442kirkpatrick.netlify.app/content/00-content/</link>
       <pubDate>Tue, 11 Jan 2022 00:00:00 +0000</pubDate>
-      <guid>https://datavizm20.classes.andrewheiss.com/content/00-content/</guid>
+      <guid>https://ssc442kirkpatrick.netlify.app/content/00-content/</guid>
       <description>
-&lt;script src=&#34;https://datavizm20.classes.andrewheiss.com/rmarkdown-libs/kePrint/kePrint.js&#34;&gt;&lt;/script&gt;
-&lt;link href=&#34;https://datavizm20.classes.andrewheiss.com/rmarkdown-libs/lightable/lightable.css&#34; rel=&#34;stylesheet&#34; /&gt;
+&lt;script src=&#34;https://ssc442kirkpatrick.netlify.app/rmarkdown-libs/kePrint/kePrint.js&#34;&gt;&lt;/script&gt;
+&lt;link href=&#34;https://ssc442kirkpatrick.netlify.app/rmarkdown-libs/lightable/lightable.css&#34; rel=&#34;stylesheet&#34; /&gt;
 
 &lt;div id=&#34;TOC&#34;&gt;
 &lt;ul&gt;
@@ -7990,7 +7990,7 @@ Print the object &lt;code&gt;p&lt;/code&gt; defined in exercise one and describe
 &lt;h2&gt;Readings&lt;/h2&gt;
 &lt;p&gt;As noted in the syllabus, your readings will be assigned each week in this area. For this initial week, please read the course content. &lt;strong&gt;Read closely&lt;/strong&gt; the following:&lt;/p&gt;
 &lt;ul&gt;
-&lt;li&gt;The &lt;a href=&#34;https://datavizm20.classes.andrewheiss.com/syllabus/&#34;&gt;syllabus&lt;/a&gt;, &lt;a href=&#34;https://datavizm20.classes.andrewheiss.com/content/&#34;&gt;content&lt;/a&gt;, &lt;a href=&#34;https://datavizm20.classes.andrewheiss.com/example/&#34;&gt;examples&lt;/a&gt;, and &lt;a href=&#34;https://datavizm20.classes.andrewheiss.com/lab/&#34;&gt;labs&lt;/a&gt; pages for this class.&lt;/li&gt;
+&lt;li&gt;The &lt;a href=&#34;https://ssc442kirkpatrick.netlify.app/syllabus/&#34;&gt;syllabus&lt;/a&gt;, &lt;a href=&#34;https://ssc442kirkpatrick.netlify.app/content/&#34;&gt;content&lt;/a&gt;, &lt;a href=&#34;https://ssc442kirkpatrick.netlify.app/example/&#34;&gt;examples&lt;/a&gt;, and &lt;a href=&#34;https://ssc442kirkpatrick.netlify.app/lab/&#34;&gt;labs&lt;/a&gt; pages for this class.&lt;/li&gt;
 &lt;li&gt;This page. Yes, the whole thing.&lt;/li&gt;
 &lt;/ul&gt;
 &lt;div id=&#34;guiding-question&#34; class=&#34;section level3&#34;&gt;
@@ -8259,17 +8259,17 @@ Note that it is common for a course or workshop to offer access to an &lt;code&g
 &lt;div id=&#34;case-study-us-homicides-by-firearm&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Case study: US homicides by firearm&lt;/h2&gt;
 &lt;p&gt;Imagine you live in Europe (if only!) and are offered a job in a US company with many locations in every state. It is a great job, but headlines such as &lt;strong&gt;US Gun Homicide Rate Higher Than Other Developed Countries&lt;/strong&gt;&lt;a href=&#34;#fn3&#34; class=&#34;footnote-ref&#34; id=&#34;fnref3&#34;&gt;&lt;sup&gt;3&lt;/sup&gt;&lt;/a&gt; have you worried. Fox News runs a scary looking graphic, and charts like the one below only add to that concern:&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/content/00-content_files/figure-html/murder-rate-example-1-1.png&#34; width=&#34;70%&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/00-content_files/figure-html/murder-rate-example-1-1.png&#34; width=&#34;70%&#34; /&gt;&lt;/p&gt;
 &lt;!--(Source:
 [Ma’ayan Rosenzweigh/ABC News](https://abcnews.go.com/blogs/headlines/2012/12/us-gun-ownership-homicide-rate-higher-than-other-developed-countries/), Data from UNODC Homicide Statistics) --&gt;
 &lt;p&gt;Or even worse, this version from &lt;a href=&#34;https://everytownresearch.org&#34;&gt;everytown.org&lt;/a&gt;:
-&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/content/00-content_files/figure-html/murder-rate-example-2-1.png&#34; width=&#34;70%&#34; /&gt;
+&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/00-content_files/figure-html/murder-rate-example-2-1.png&#34; width=&#34;70%&#34; /&gt;
 &lt;!--(Source  [everytown.org](https://everytownresearch.org))--&gt;&lt;/p&gt;
 &lt;p&gt;But then you remember that (1) this is a hypothetical exercise; (2) you’ll take literally any job at this point; and (3) Geographic diversity matters – the United States is a large and diverse country with 50 very different states (plus the District of Columbia and some lovely territories).&lt;a href=&#34;#fn4&#34; class=&#34;footnote-ref&#34; id=&#34;fnref4&#34;&gt;&lt;sup&gt;4&lt;/sup&gt;&lt;/a&gt;&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;## Warning: package &amp;#39;dslabs&amp;#39; was built under R version 4.0.5&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## Warning: It is deprecated to specify `guide = FALSE` to remove a guide. Please
 ## use `guide = &amp;quot;none&amp;quot;` instead.&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/content/00-content_files/figure-html/us-murders-by-state-map-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/00-content_files/figure-html/us-murders-by-state-map-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;California, for example, has a larger population than Canada, and 20 US states have populations larger than that of Norway. In some respects, the variability across states in the US is akin to the variability across countries in Europe. Furthermore, although not included in the charts above, the murder rates in Lithuania, Ukraine, and Russia are higher than 4 per 100,000. So perhaps the news reports that worried you are too superficial.&lt;/p&gt;
 &lt;p&gt;This is a relatively simple and straightforward problem in social science: you have options of where to live, and want to determine the safety of the various states. Your “research” is clearly policy-relevant: you will eventually have to live somewhere. We will begin to tackle the problem by examining data related to gun homicides in the US during 2010 using &lt;code&gt;R&lt;/code&gt;.&lt;/p&gt;
 &lt;p&gt;Before we get started with our example, we need to cover logistics as well as some of the very basic building blocks that are required to gain more advanced &lt;code&gt;R&lt;/code&gt; skills. Ideally, this is a refresher. However, we are aware that your preparation in previously courses varies greatly from student to student. Moreover, we want you to be aware that the usefulness of some of these early building blocks may not be immediately obvious. Later in the class you will appreciate having these skills. Mastery will be rewarded both in this class and (of course) in life.&lt;/p&gt;
@@ -8308,7 +8308,7 @@ c &amp;lt;- -1&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ls()&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## [1] &amp;quot;a&amp;quot;       &amp;quot;b&amp;quot;       &amp;quot;c&amp;quot;       &amp;quot;dat&amp;quot;     &amp;quot;filter&amp;quot;  &amp;quot;murders&amp;quot; &amp;quot;select&amp;quot;&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;(Note that one of &lt;em&gt;my&lt;/em&gt; variables listed above comes from generating the graphs above). In RStudio, the &lt;em&gt;Environment&lt;/em&gt; tab shows the values:&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/img/rstudio-environment.png&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/img/rstudio-environment.png&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;We should see &lt;code&gt;a&lt;/code&gt;, &lt;code&gt;b&lt;/code&gt;, and &lt;code&gt;c&lt;/code&gt;. If you try to recover the value of a variable that is not in your workspace, you receive an error. For example, if you type &lt;code&gt;x&lt;/code&gt; you will receive the following message: &lt;code&gt;Error: object &#39;x&#39; not found&lt;/code&gt;.&lt;/p&gt;
 &lt;p&gt;Now since these values are saved in variables, to obtain a solution to our equation, we use the quadratic formula:&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;(-b + sqrt(b^2 - 4*a*c) ) / ( 2*a )&lt;/code&gt;&lt;/pre&gt;
@@ -9153,9 +9153,9 @@ data(murders)&lt;/code&gt;&lt;/pre&gt;
     
     <item>
       <title>Introduction to the tidyverse</title>
-      <link>https://datavizm20.classes.andrewheiss.com/content/01-content/</link>
+      <link>https://ssc442kirkpatrick.netlify.app/content/01-content/</link>
       <pubDate>Mon, 10 Jan 2022 00:00:00 +0000</pubDate>
-      <guid>https://datavizm20.classes.andrewheiss.com/content/01-content/</guid>
+      <guid>https://ssc442kirkpatrick.netlify.app/content/01-content/</guid>
       <description>
 
 &lt;div id=&#34;TOC&#34;&gt;
@@ -9239,7 +9239,7 @@ The slides below are a much broader overview about goals for the class and think
 &lt;div class=&#34;tab-content&#34; id=&#34;slide-tabs&#34;&gt;
 &lt;div class=&#34;tab-pane fade show active&#34; id=&#34;overview&#34; role=&#34;tabpanel&#34; aria-labelledby=&#34;overview-tab&#34;&gt;
 &lt;div class=&#34;embed-responsive embed-responsive-16by9&#34;&gt;
-&lt;iframe class=&#34;embed-responsive-item&#34; src=&#34;https://datavizm20.classes.andrewheiss.com/slides/01-slides.html#Overview&#34;&gt;&lt;/iframe&gt;
+&lt;iframe class=&#34;embed-responsive-item&#34; src=&#34;https://ssc442kirkpatrick.netlify.app/slides/01-slides.html#Overview&#34;&gt;&lt;/iframe&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
