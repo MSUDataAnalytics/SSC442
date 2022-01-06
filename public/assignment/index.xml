@@ -13,123 +13,9 @@
     </image>
     
     <item>
-      <title>Applied Logistic Regression</title>
-      <link>https://ssc442kirkpatrick.netlify.app/assignment/10-assignment/</link>
-      <pubDate>Fri, 19 Mar 2021 00:00:00 +0000</pubDate>
-      <guid>https://ssc442kirkpatrick.netlify.app/assignment/10-assignment/</guid>
-      <description>
-
-&lt;div id=&#34;TOC&#34;&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;a href=&#34;#backstory-and-set-up&#34;&gt;Backstory and Set Up&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/div&gt;
-
-&lt;div class=&#34;fyi&#34;&gt;
-&lt;p&gt;You must turn in a PDF document of your &lt;code&gt;R Markdown&lt;/code&gt; code. Submit this to D2L by 11:59 PM Eastern Time on &lt;strong&gt;Monday, Monday April 5th.&lt;/strong&gt;&lt;/p&gt;
-&lt;/div&gt;
-&lt;div id=&#34;backstory-and-set-up&#34; class=&#34;section level2&#34;&gt;
-&lt;h2&gt;Backstory and Set Up&lt;/h2&gt;
-&lt;p&gt;You work for a bank. This bank is trying to predict defaults on loans (a relatively uncommon occurence, but one that costs the bank a great deal of money when it does happen.) They’ve given you a dataset on defaults (encoded as the variable &lt;code&gt;y&lt;/code&gt;). You’re going to try to predict this.&lt;/p&gt;
-&lt;p&gt;This is some new data. The snippet below loads it.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;bank &amp;lt;- read.table(&amp;quot;https://msudataanalytics.github.io/SSC442/Labs/data/bank.csv&amp;quot;,
-                 header = TRUE,
-                 sep = &amp;quot;,&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;There’s not going to be a whole lot of wind-up here. You should be well-versed in doing these sorts of things by now (if not, look back at the previous lab for sample code).&lt;/p&gt;
-&lt;div class=&#34;fyi&#34;&gt;
-&lt;p&gt;&lt;strong&gt;EXERCISE 1&lt;/strong&gt;&lt;/p&gt;
-&lt;ol style=&#34;list-style-type: decimal&#34;&gt;
-&lt;li&gt;&lt;p&gt;Split the data into an 80/20 train vs. test split. Make sure you explicitly set the seed for replicability, but do not share your seed with others in the class. (We may compare some results across people.)&lt;/p&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;Run a series of logistic regressions with between 1 and 4 predictors of your choice (you can use interactions).&lt;/p&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;Create eight total confusion matrices: four by applying your models to the training data, and four by applying your models to the test data. &lt;strong&gt;Briefly discuss your findings.&lt;/strong&gt; How does the error rate, sensitivity, and specificity change as the number of predictors increases?&lt;/p&gt;&lt;/li&gt;
-&lt;/ol&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>Applied Data Wrangling</title>
-      <link>https://ssc442kirkpatrick.netlify.app/assignment/11-assignment/</link>
-      <pubDate>Fri, 19 Mar 2021 00:00:00 +0000</pubDate>
-      <guid>https://ssc442kirkpatrick.netlify.app/assignment/11-assignment/</guid>
-      <description>
-
-&lt;div id=&#34;TOC&#34;&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;a href=&#34;#this-is-a-bonus-lab&#34;&gt;This is a bonus lab&lt;/a&gt;&lt;ul&gt;
-&lt;li&gt;&lt;a href=&#34;#data-wrangling-continued&#34;&gt;Data Wrangling Continued…&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/div&gt;
-
-&lt;div id=&#34;this-is-a-bonus-lab&#34; class=&#34;section level1&#34;&gt;
-&lt;h1&gt;This is a bonus lab&lt;/h1&gt;
-&lt;p&gt;You have already had 11 labs. This is a bonus lab and any points earned will be bonus points. You do not have to do it, but I encourage anyone worried about their grade to do this lab.&lt;/p&gt;
-&lt;div id=&#34;data-wrangling-continued&#34; class=&#34;section level2&#34;&gt;
-&lt;h2&gt;Data Wrangling Continued…&lt;/h2&gt;
-&lt;p&gt;You still work for a travel booking website as a data analyst. The hotel has once again asked your company for data on corporate bookings at the hotel via your site. Specifically, they have five corporations that are frequent customers of the hotel, and they want to know who spends the most with them. They’ve asked you to help out. Most of the corporate spending is in the form of room reservations, but there are also parking fees that the hotel wants included in the analysis. Your goal: total up spending by corporation and report the biggest and smallest spenders inclusive of rooms and parking.&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;You did this already in class, but your boss now has some different data. It’s similar, and your code from before will help, but it has some new wrinkles in it to tackle&lt;/strong&gt;. Here’s your data:&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;p&gt;&lt;a href=&#34;https://ssc442kirkpatrick.netlify.app/data/Lab11_booking.csv&#34;&gt;&lt;i class=&#34;fas fa-file-csv&#34;&gt;&lt;/i&gt; &lt;code&gt;booking.csv&lt;/code&gt;&lt;/a&gt; - Contains the corporation name, the room type, and the dates someone from the corporation stayed at the hotel. It was pulled by an intern who doesn’t understand date-time stamps.&lt;/p&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;&lt;a href=&#34;https://ssc442kirkpatrick.netlify.app/data/Lab11_roomrates.csv&#34;&gt;&lt;i class=&#34;fas fa-file-csv&#34;&gt;&lt;/i&gt; &lt;code&gt;roomrates.csv&lt;/code&gt;&lt;/a&gt; - Contains the price of each room on each day. The Lab 11 version of this data is from our German affiliate, so pay attention to the date format!&lt;/p&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;&lt;a href=&#34;https://ssc442kirkpatrick.netlify.app/data/Lab11_parking.csv&#34;&gt;&lt;i class=&#34;fas fa-file-csv&#34;&gt;&lt;/i&gt; &lt;code&gt;parking.csv&lt;/code&gt;&lt;/a&gt; - Contains the corporations who negotiated free parking for employees. It has been updated.&lt;/p&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;Parking at the hotel is $60 if you don’t have free parking. This hotel is in California, so everyone drives and parks when they stay.&lt;/p&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;div class=&#34;fyi&#34;&gt;
-&lt;p&gt;&lt;strong&gt;EXERCISE 1&lt;/strong&gt;&lt;/p&gt;
-&lt;ol style=&#34;list-style-type: decimal&#34;&gt;
-&lt;li&gt;&lt;p&gt;As you did in class, but with your new set of data, total up spending by corporation and report the biggest and smallest spenders inclusive of rooms and parking&lt;/p&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;Visualize (using &lt;code&gt;ggplot&lt;/code&gt;) each corporation’s spending at the hotel over time and by roomtype. Make one plot with &lt;code&gt;ggplot&lt;/code&gt; that shows this.&lt;/p&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;Visualize (using &lt;code&gt;ggplot&lt;/code&gt;) the room rates over time by room type. Can you tell what factors determine room price? Note that we know each corporation gets the same room rate as the others on the same day, so this is about room rates, not corporate spending. Make &lt;strong&gt;two&lt;/strong&gt; total plots, the first showing the room rates over time by room type, and the second explaining some feature of one of the room rates (e.g. when is the double room price high? When is it low?). Using the &lt;code&gt;month(...)&lt;/code&gt; and &lt;code&gt;day(...)&lt;/code&gt; functions from &lt;code&gt;lubridate&lt;/code&gt; will help with figuring out the patterns.&lt;/p&gt;&lt;/li&gt;
-&lt;/ol&gt;
-&lt;/div&gt;
-&lt;p&gt;Congrats on finishing your last lab!&lt;/p&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>Model Evaluation</title>
-      <link>https://ssc442kirkpatrick.netlify.app/assignment/09-assignment/</link>
-      <pubDate>Tue, 09 Mar 2021 00:00:00 +0000</pubDate>
-      <guid>https://ssc442kirkpatrick.netlify.app/assignment/09-assignment/</guid>
-      <description>
-
-&lt;div id=&#34;TOC&#34;&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;a href=&#34;#backstory-and-set-up&#34;&gt;Backstory and Set Up&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/div&gt;
-
-&lt;div class=&#34;fyi&#34;&gt;
-&lt;p&gt;You must turn in a PDF document of your &lt;code&gt;R Markdown&lt;/code&gt; knitted document. Submit this to D2L by 11:59 PM Eastern Time on Monday, March 29th.&lt;/p&gt;
-&lt;/div&gt;
-&lt;div id=&#34;backstory-and-set-up&#34; class=&#34;section level2&#34;&gt;
-&lt;h2&gt;Backstory and Set Up&lt;/h2&gt;
-&lt;p&gt;You work for a bank. This bank is trying to predict defaults on loans (a relatively uncommon occurence, but one that costs the bank a great deal of money when it does happen.) They’ve given you a dataset on defaults (encoded as the variable &lt;code&gt;y&lt;/code&gt;). You’re going to try to predict this.&lt;/p&gt;
-&lt;p&gt;This is some new data. The snippet below loads it.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;bank &amp;lt;- read.table(&amp;quot;https://raw.githubusercontent.com/ajkirkpatrick/FS20/Spring2021/classdata/bank.csv&amp;quot;,
-                 header = TRUE,
-                 sep = &amp;quot;,&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;There’s not going to be a whole lot of wind-up here. You should be well-versed in doing these sorts of things by now (if not, look back at the previous lab for sample code).&lt;/p&gt;
-&lt;div class=&#34;fyi&#34;&gt;
-&lt;p&gt;&lt;strong&gt;EXERCISE 1&lt;/strong&gt;&lt;/p&gt;
-&lt;ol style=&#34;list-style-type: decimal&#34;&gt;
-&lt;li&gt;&lt;p&gt;Split the data into an 80/20 train vs. test split. Make sure you explicitly set the seed for replicability, but do not share your seed with others in the class. (We may compare some results across people.)&lt;/p&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;Run a series of KNN models with &lt;span class=&#34;math inline&#34;&gt;\(k\)&lt;/span&gt; ranging from 2 to 100. (You need not do every &lt;span class=&#34;math inline&#34;&gt;\(k\)&lt;/span&gt; between 2 and 100, but you can easily write a short function to do this; see the Content tab).&lt;/p&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;Create a chart plotting the model complexity as the &lt;span class=&#34;math inline&#34;&gt;\(x\)&lt;/span&gt;-axis variable and RMSE as the &lt;span class=&#34;math inline&#34;&gt;\(y\)&lt;/span&gt;-axis variable for &lt;strong&gt;both&lt;/strong&gt; the training and test data. What do you think is the optimal &lt;span class=&#34;math inline&#34;&gt;\(k\)&lt;/span&gt;?&lt;/p&gt;&lt;/li&gt;
-&lt;/ol&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-</description>
-    </item>
-    
-    <item>
       <title>Advanced Model Building</title>
       <link>https://ssc442kirkpatrick.netlify.app/assignment/07-assignment/</link>
-      <pubDate>Fri, 26 Feb 2021 00:00:00 +0000</pubDate>
+      <pubDate>Sun, 27 Feb 2022 00:00:00 +0000</pubDate>
       <guid>https://ssc442kirkpatrick.netlify.app/assignment/07-assignment/</guid>
       <description>
 
@@ -149,15 +35,15 @@
 &lt;div class=&#34;fyi&#34;&gt;
 &lt;p&gt;&lt;strong&gt;READ THIS CAREFULLY&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;The content below describes both Lab 7 and Lab 8. Lab 7 is Exercise 1; Lab 8 is Exercise 2. Also, you may find some other tasks in the text…&lt;/p&gt;
-&lt;p&gt;You must turn in a PDF document of your &lt;code&gt;R Markdown&lt;/code&gt; code. Submit this to D2L by 11:59 PM Eastern Time on Monday, March 15th for Lab 7; turn in Lab 8 by 11:59 PM Eastern Time on Monday, March 22nd.&lt;/p&gt;
+&lt;p&gt;You must turn in a PDF document of your &lt;code&gt;R Markdown&lt;/code&gt; code. Submit this to D2L by 11:59 PM Eastern Time on Monday, March 14th for both labs (so that you do not have one due during Spring Break). Submit labs separately, though. Uploading both labs to Lab 7 will result in a 0 on Lab 8.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;backstory-and-set-up&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Backstory and Set Up&lt;/h2&gt;
 &lt;p&gt;You still work for Zillow as a junior analyst (sorry). But you’re hunting a promotion. Your job is to present some more advanced predictions for housing values in a small geographic area (Ames, IA) using this historical pricing.&lt;/p&gt;
 &lt;p&gt;As always, let’s load the data.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;Ames &amp;lt;- read.table(&amp;quot;https://msudataanalytics.github.io/SSC442/Labs/data/ames.csv&amp;quot;,
-                 header = TRUE,
-                 sep = &amp;quot;,&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;Ames &amp;lt;- read.table(&amp;#39;https://raw.githubusercontent.com/ajkirkpatrick/FS20/postS21_rev/classdata/ames.csv&amp;#39;, 
+                   header = TRUE,
+                   sep = &amp;#39;,&amp;#39;) &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 &lt;div id=&#34;data-cleaning&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Data Cleaning&lt;/h2&gt;
@@ -349,9 +235,84 @@ lines(model_complexity, test_rmse, type = &amp;quot;b&amp;quot;, col = &amp;quot
     </item>
     
     <item>
+      <title>Model Building</title>
+      <link>https://ssc442kirkpatrick.netlify.app/assignment/06-assignment/</link>
+      <pubDate>Sun, 20 Feb 2022 00:00:00 +0000</pubDate>
+      <guid>https://ssc442kirkpatrick.netlify.app/assignment/06-assignment/</guid>
+      <description>
+
+&lt;div id=&#34;TOC&#34;&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#backstory-and-set-up&#34;&gt;Backstory and Set Up&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#building-a-model&#34;&gt;Building a Model&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+
+&lt;div class=&#34;fyi&#34;&gt;
+&lt;p&gt;&lt;strong&gt;NOTE&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;You must turn in a PDF document of your &lt;code&gt;R Markdown&lt;/code&gt; code. Submit this to D2L by 11:59 PM Eastern Time on Monday, Feb 28th&lt;/p&gt;
+&lt;/div&gt;
+&lt;p&gt;This week’s lab will extend last week’s lab. The introduction is a direct repeat.&lt;/p&gt;
+&lt;div id=&#34;backstory-and-set-up&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Backstory and Set Up&lt;/h2&gt;
+&lt;p&gt;You have been recently hired to Zillow’s Zestimate product team as a junior analyst. As a part of their regular hazing, they have given you access to a small subset of their historic sales data. Your job is to present some basic predictions for housing values in a small geographic area (Ames, IA) using this historical pricing.&lt;/p&gt;
+&lt;p&gt;First, let’s load the data.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ameslist &amp;lt;- read.table(&amp;quot;https://msudataanalytics.github.io/SSC442/Labs/data/ames.csv&amp;quot;,
+                 header = TRUE,
+                 sep = &amp;quot;,&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;building-a-model&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Building a Model&lt;/h2&gt;
+&lt;p&gt;We’re now ready to start playing with a model. We will start by using the &lt;code&gt;lm()&lt;/code&gt; function to fit a simple linear regression
+model, with &lt;code&gt;SalePrice&lt;/code&gt; as the response and lstat as the predictor.&lt;/p&gt;
+&lt;p&gt;Recall that the basic &lt;code&gt;lm()&lt;/code&gt; syntax is &lt;code&gt;lm(y∼x,data)&lt;/code&gt;, where &lt;code&gt;y&lt;/code&gt; is the &lt;strong&gt;response&lt;/strong&gt;, &lt;code&gt;x&lt;/code&gt; is the &lt;strong&gt;predictor&lt;/strong&gt;, and &lt;code&gt;data&lt;/code&gt; is the data set in which these two variables are kept. Let’s quickly run this with two variables:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;lm.fit = lm(SalePrice ~ GrLivArea)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;This yields:
+&lt;code&gt;Error in eval(expr, envir, enclos) : Object &#34;SalePrice&#34; not found&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;This command causes an error because &lt;code&gt;R&lt;/code&gt; does not know where to find the variables. We can fix this by attaching the data:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;attach(Ames)
+lm.fit = lm(SalePrice ~ GrLivArea)
+# Alternatively...
+lm.fit = lm(SalePrice ~ GrLivArea, data=Ames)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The next line tells &lt;code&gt;R&lt;/code&gt; that the variables are in the object known as &lt;code&gt;Ames&lt;/code&gt;. If you haven’t created this object yet (as in the previous lab) you’ll get an error at this stage. But once we attach &lt;code&gt;Ames&lt;/code&gt;, the first line works fine because &lt;code&gt;R&lt;/code&gt; now recognizes the variables. Alternatively, we could specify this within the &lt;code&gt;lm()&lt;/code&gt; call using &lt;code&gt;data = Ames&lt;/code&gt;. We’ve presented this way because it may be new to you; choose whichever you find most reasonable.&lt;/p&gt;
+&lt;p&gt;If we type &lt;code&gt;lm.fit&lt;/code&gt;, some basic information about the model is output. For more detailed information, we use &lt;code&gt;summary(lm.fit)&lt;/code&gt;. This gives us p-values and standard errors for the coefficients, as well as the &lt;span class=&#34;math inline&#34;&gt;\(R^2\)&lt;/span&gt; statistic and &lt;span class=&#34;math inline&#34;&gt;\(F\)&lt;/span&gt;-statistic for the entire model.&lt;a href=&#34;#fn1&#34; class=&#34;footnote-ref&#34; id=&#34;fnref1&#34;&gt;&lt;sup&gt;1&lt;/sup&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Utilizing these functions hels us see some interesting results. Note that we built (nearly) the simplest possible model:&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[\text{SalePrice} = \beta_0 + \beta_1*(\text{GrLivArea}) + \epsilon.\]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;But even on its own, this model is instructive. It suggest that an increase in overall living area of 1 ft &lt;span class=&#34;math inline&#34;&gt;\(^2\)&lt;/span&gt; is correlated with an expected increase in sales price of $107. (Note that we &lt;strong&gt;cannot&lt;/strong&gt; make causal claims!)&lt;/p&gt;
+&lt;p&gt;Saving the model as we did above is useful because we can explore other pieces of information it stores. Specifically, we can use the &lt;code&gt;names()&lt;/code&gt; function in order to find out what else is stored in &lt;code&gt;lm.fit&lt;/code&gt;. Although we can extract these quan- tities by name—e.g. &lt;code&gt;lm.fit$coefficients&lt;/code&gt;—it is safer to use the extractor functions like &lt;code&gt;coef()&lt;/code&gt; to access them. We can also use a handy tool like &lt;code&gt;plot()&lt;/code&gt; applied directly to &lt;code&gt;lm.fit&lt;/code&gt; to see some interesting data that is automatically stored by the model.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Try it:&lt;/strong&gt; Use &lt;code&gt;plot()&lt;/code&gt; to explore the model above. Do you suspect that some outliers have a large influence on the data? We will explore this point specifically in the future.&lt;/p&gt;
+&lt;p&gt;We can now go crazy adding variables to our model. It’s as simple as appending them to the previous code—though you should be careful executing this, as it will overwrite your previous output:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;lm.fit = lm(SalePrice ~ GrLivArea + LotArea)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;Try it:&lt;/strong&gt; Does controlling for &lt;code&gt;LotArea&lt;/code&gt; change the &lt;em&gt;qualitative&lt;/em&gt; conclusions from the previous regression? What about the &lt;em&gt;quantitative&lt;/em&gt; results? Does the direction of the change in the quantitative results make sense to you?&lt;/p&gt;
+&lt;div class=&#34;fyi&#34;&gt;
+&lt;p&gt;&lt;strong&gt;EXERCISES&lt;/strong&gt;&lt;/p&gt;
+&lt;ol style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;&lt;p&gt;Use the &lt;code&gt;lm()&lt;/code&gt; function in a &lt;strong&gt;simple&lt;/strong&gt; linear regression (e.g., with only one predictor) with &lt;code&gt;SalePrice&lt;/code&gt; as the response to determine the value of a garage.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Use the &lt;code&gt;lm()&lt;/code&gt; function to perform a multiple linear regression with &lt;code&gt;SalePrice&lt;/code&gt; as the response and all other variables from your &lt;code&gt;Ames&lt;/code&gt; data as the predictors. Use the &lt;code&gt;summary()&lt;/code&gt; function to print the results. Comment on the output. For instance:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Is there a relationship between the predictors and the response?&lt;/li&gt;
+&lt;li&gt;Which predictors appear to have a statistically significant relationship to the response? (Hint: look for stars)&lt;/li&gt;
+&lt;li&gt;What does the coefficient for the year variable suggest?&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Use the &lt;code&gt;:&lt;/code&gt; symbols to fit a linear regression model with &lt;em&gt;one&lt;/em&gt; well-chosen interaction effects. Why did you do this?&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Try a few (e.g., two) different transformations of the variables, such as &lt;span class=&#34;math inline&#34;&gt;\(ln(x)\)&lt;/span&gt;, &lt;span class=&#34;math inline&#34;&gt;\(x^2\)&lt;/span&gt;, &lt;span class=&#34;math inline&#34;&gt;\(\sqrt x\)&lt;/span&gt;. Do any of these make sense to include in a model of &lt;code&gt;SalePrice&lt;/code&gt;? Comment on your findings.&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;&lt;strong&gt;(Bonus; very very challenging)&lt;/strong&gt; How might we build a model to estimate the elasticity of demand from this dataset?&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&#34;footnotes&#34;&gt;
+&lt;hr /&gt;
+&lt;ol&gt;
+&lt;li id=&#34;fn1&#34;&gt;&lt;p&gt;When we use the simple regression model with a single input, the &lt;span class=&#34;math inline&#34;&gt;\(F\)&lt;/span&gt;-stat includes the intercept term. Otherwise, it does not. See Lecture 5 for more detail.&lt;a href=&#34;#fnref1&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    
+    <item>
       <title>Correlations and Simple Models</title>
       <link>https://ssc442kirkpatrick.netlify.app/assignment/05-assignment/</link>
-      <pubDate>Fri, 19 Feb 2021 00:00:00 +0000</pubDate>
+      <pubDate>Sun, 13 Feb 2022 00:00:00 +0000</pubDate>
       <guid>https://ssc442kirkpatrick.netlify.app/assignment/05-assignment/</guid>
       <description>
 
@@ -365,7 +326,7 @@ lines(model_complexity, test_rmse, type = &amp;quot;b&amp;quot;, col = &amp;quot
 
 &lt;div class=&#34;fyi&#34;&gt;
 &lt;p&gt;&lt;strong&gt;NOTE&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;You must turn in a PDF document of your &lt;code&gt;R Markdown&lt;/code&gt; code. Submit this to D2L by 11:59 PM Eastern Time on Monday, March 1st&lt;/p&gt;
+&lt;p&gt;You must turn in a PDF document of your &lt;code&gt;R Markdown&lt;/code&gt; code. Submit this to D2L by 11:59 PM Eastern Time on Monday, Feb 21st.&lt;/p&gt;
 &lt;/div&gt;
 &lt;p&gt;This week’s lab will (hopefully) not repeat the disaster that was last week’s lab.&lt;/p&gt;
 &lt;div id=&#34;backstory-and-set-up&#34; class=&#34;section level2&#34;&gt;
@@ -487,84 +448,9 @@ unique(ameslist$GarageOutside)
     </item>
     
     <item>
-      <title>Model Building</title>
-      <link>https://ssc442kirkpatrick.netlify.app/assignment/06-assignment/</link>
-      <pubDate>Fri, 19 Feb 2021 00:00:00 +0000</pubDate>
-      <guid>https://ssc442kirkpatrick.netlify.app/assignment/06-assignment/</guid>
-      <description>
-
-&lt;div id=&#34;TOC&#34;&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;a href=&#34;#backstory-and-set-up&#34;&gt;Backstory and Set Up&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;#building-a-model&#34;&gt;Building a Model&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/div&gt;
-
-&lt;div class=&#34;fyi&#34;&gt;
-&lt;p&gt;&lt;strong&gt;NOTE&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;You must turn in a PDF document of your &lt;code&gt;R Markdown&lt;/code&gt; code. Submit this to D2L by 11:59 PM Eastern Time on Monday, March 1st.&lt;/p&gt;
-&lt;/div&gt;
-&lt;p&gt;This week’s lab will extend last week’s lab. The introduction is a direct repeat.&lt;/p&gt;
-&lt;div id=&#34;backstory-and-set-up&#34; class=&#34;section level2&#34;&gt;
-&lt;h2&gt;Backstory and Set Up&lt;/h2&gt;
-&lt;p&gt;You have been recently hired to Zillow’s Zestimate product team as a junior analyst. As a part of their regular hazing, they have given you access to a small subset of their historic sales data. Your job is to present some basic predictions for housing values in a small geographic area (Ames, IA) using this historical pricing.&lt;/p&gt;
-&lt;p&gt;First, let’s load the data.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ameslist &amp;lt;- read.table(&amp;quot;https://msudataanalytics.github.io/SSC442/Labs/data/ames.csv&amp;quot;,
-                 header = TRUE,
-                 sep = &amp;quot;,&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-&lt;div id=&#34;building-a-model&#34; class=&#34;section level2&#34;&gt;
-&lt;h2&gt;Building a Model&lt;/h2&gt;
-&lt;p&gt;We’re now ready to start playing with a model. We will start by using the &lt;code&gt;lm()&lt;/code&gt; function to fit a simple linear regression
-model, with &lt;code&gt;SalePrice&lt;/code&gt; as the response and lstat as the predictor.&lt;/p&gt;
-&lt;p&gt;Recall that the basic &lt;code&gt;lm()&lt;/code&gt; syntax is &lt;code&gt;lm(y∼x,data)&lt;/code&gt;, where &lt;code&gt;y&lt;/code&gt; is the &lt;strong&gt;response&lt;/strong&gt;, &lt;code&gt;x&lt;/code&gt; is the &lt;strong&gt;predictor&lt;/strong&gt;, and &lt;code&gt;data&lt;/code&gt; is the data set in which these two variables are kept. Let’s quickly run this with two variables:&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;lm.fit = lm(SalePrice ~ GrLivArea)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;This yields:
-&lt;code&gt;Error in eval(expr, envir, enclos) : Object &#34;SalePrice&#34; not found&lt;/code&gt;&lt;/p&gt;
-&lt;p&gt;This command causes an error because &lt;code&gt;R&lt;/code&gt; does not know where to find the variables. We can fix this by attaching the data:&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;attach(Ames)
-lm.fit = lm(SalePrice ~ GrLivArea)
-# Alternatively...
-lm.fit = lm(SalePrice ~ GrLivArea, data=Ames)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;The next line tells &lt;code&gt;R&lt;/code&gt; that the variables are in the object known as &lt;code&gt;Ames&lt;/code&gt;. If you haven’t created this object yet (as in the previous lab) you’ll get an error at this stage. But once we attach &lt;code&gt;Ames&lt;/code&gt;, the first line works fine because &lt;code&gt;R&lt;/code&gt; now recognizes the variables. Alternatively, we could specify this within the &lt;code&gt;lm()&lt;/code&gt; call using &lt;code&gt;data = Ames&lt;/code&gt;. We’ve presented this way because it may be new to you; choose whichever you find most reasonable.&lt;/p&gt;
-&lt;p&gt;If we type &lt;code&gt;lm.fit&lt;/code&gt;, some basic information about the model is output. For more detailed information, we use &lt;code&gt;summary(lm.fit)&lt;/code&gt;. This gives us p-values and standard errors for the coefficients, as well as the &lt;span class=&#34;math inline&#34;&gt;\(R^2\)&lt;/span&gt; statistic and &lt;span class=&#34;math inline&#34;&gt;\(F\)&lt;/span&gt;-statistic for the entire model.&lt;a href=&#34;#fn1&#34; class=&#34;footnote-ref&#34; id=&#34;fnref1&#34;&gt;&lt;sup&gt;1&lt;/sup&gt;&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;Utilizing these functions hels us see some interesting results. Note that we built (nearly) the simplest possible model:&lt;/p&gt;
-&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[\text{SalePrice} = \beta_0 + \beta_1*(\text{GrLivArea}) + \epsilon.\]&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;But even on its own, this model is instructive. It suggest that an increase in overall living area of 1 ft &lt;span class=&#34;math inline&#34;&gt;\(^2\)&lt;/span&gt; is correlated with an expected increase in sales price of $107. (Note that we &lt;strong&gt;cannot&lt;/strong&gt; make causal claims!)&lt;/p&gt;
-&lt;p&gt;Saving the model as we did above is useful because we can explore other pieces of information it stores. Specifically, we can use the &lt;code&gt;names()&lt;/code&gt; function in order to find out what else is stored in &lt;code&gt;lm.fit&lt;/code&gt;. Although we can extract these quan- tities by name—e.g. &lt;code&gt;lm.fit$coefficients&lt;/code&gt;—it is safer to use the extractor functions like &lt;code&gt;coef()&lt;/code&gt; to access them. We can also use a handy tool like &lt;code&gt;plot()&lt;/code&gt; applied directly to &lt;code&gt;lm.fit&lt;/code&gt; to see some interesting data that is automatically stored by the model.&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;Try it:&lt;/strong&gt; Use &lt;code&gt;plot()&lt;/code&gt; to explore the model above. Do you suspect that some outliers have a large influence on the data? We will explore this point specifically in the future.&lt;/p&gt;
-&lt;p&gt;We can now go crazy adding variables to our model. It’s as simple as appending them to the previous code—though you should be careful executing this, as it will overwrite your previous output:&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;lm.fit = lm(SalePrice ~ GrLivArea + LotArea)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;strong&gt;Try it:&lt;/strong&gt; Does controlling for &lt;code&gt;LotArea&lt;/code&gt; change the &lt;em&gt;qualitative&lt;/em&gt; conclusions from the previous regression? What about the &lt;em&gt;quantitative&lt;/em&gt; results? Does the direction of the change in the quantitative results make sense to you?&lt;/p&gt;
-&lt;div class=&#34;fyi&#34;&gt;
-&lt;p&gt;&lt;strong&gt;EXERCISES&lt;/strong&gt;&lt;/p&gt;
-&lt;ol style=&#34;list-style-type: decimal&#34;&gt;
-&lt;li&gt;&lt;p&gt;Use the &lt;code&gt;lm()&lt;/code&gt; function in a &lt;strong&gt;simple&lt;/strong&gt; linear regression (e.g., with only one predictor) with &lt;code&gt;SalePrice&lt;/code&gt; as the response to determine the value of a garage.&lt;/p&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;Use the &lt;code&gt;lm()&lt;/code&gt; function to perform a multiple linear regression with &lt;code&gt;SalePrice&lt;/code&gt; as the response and all other variables from your &lt;code&gt;Ames&lt;/code&gt; data as the predictors. Use the &lt;code&gt;summary()&lt;/code&gt; function to print the results. Comment on the output. For instance:&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;Is there a relationship between the predictors and the response?&lt;/li&gt;
-&lt;li&gt;Which predictors appear to have a statistically significant relationship to the response? (Hint: look for stars)&lt;/li&gt;
-&lt;li&gt;What does the coefficient for the year variable suggest?&lt;/li&gt;
-&lt;/ul&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;Use the &lt;code&gt;:&lt;/code&gt; symbols to fit a linear regression model with &lt;em&gt;one&lt;/em&gt; well-chosen interaction effects. Why did you do this?&lt;/p&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;Try a few (e.g., two) different transformations of the variables, such as &lt;span class=&#34;math inline&#34;&gt;\(ln(x)\)&lt;/span&gt;, &lt;span class=&#34;math inline&#34;&gt;\(x^2\)&lt;/span&gt;, &lt;span class=&#34;math inline&#34;&gt;\(\sqrt x\)&lt;/span&gt;. Do any of these make sense to include in a model of &lt;code&gt;SalePrice&lt;/code&gt;? Comment on your findings.&lt;/p&gt;&lt;/li&gt;
-&lt;/ol&gt;
-&lt;p&gt;&lt;strong&gt;(Bonus; very very challenging)&lt;/strong&gt; How might we build a model to estimate the elasticity of demand from this dataset?&lt;/p&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class=&#34;footnotes&#34;&gt;
-&lt;hr /&gt;
-&lt;ol&gt;
-&lt;li id=&#34;fn1&#34;&gt;&lt;p&gt;When we use the simple regression model with a single input, the &lt;span class=&#34;math inline&#34;&gt;\(F\)&lt;/span&gt;-stat includes the intercept term. Otherwise, it does not. See Lecture 5 for more detail.&lt;a href=&#34;#fnref1&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
-&lt;/ol&gt;
-&lt;/div&gt;
-</description>
-    </item>
-    
-    <item>
       <title>Statistical Models</title>
       <link>https://ssc442kirkpatrick.netlify.app/assignment/04-assignment/</link>
-      <pubDate>Fri, 12 Feb 2021 00:00:00 +0000</pubDate>
+      <pubDate>Sun, 06 Feb 2022 00:00:00 +0000</pubDate>
       <guid>https://ssc442kirkpatrick.netlify.app/assignment/04-assignment/</guid>
       <description>
 &lt;script src=&#34;https://ssc442kirkpatrick.netlify.app/rmarkdown-libs/kePrint/kePrint.js&#34;&gt;&lt;/script&gt;
@@ -584,7 +470,7 @@ lm.fit = lm(SalePrice ~ GrLivArea, data=Ames)&lt;/code&gt;&lt;/pre&gt;
 
 &lt;div class=&#34;fyi&#34;&gt;
 &lt;p&gt;&lt;strong&gt;NOTE&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;You must turn in a PDF document of your &lt;code&gt;R Markdown&lt;/code&gt; code. Submit this to D2L by 11:59 PM Eastern Time on Monday, Feb 22nd&lt;/p&gt;
+&lt;p&gt;You must turn in a PDF document of your &lt;code&gt;R Markdown&lt;/code&gt; code. Submit this to D2L by 11:59 PM Eastern Time on Monday, Feb 14th.&lt;/p&gt;
 &lt;/div&gt;
 &lt;p&gt;For this exercise you will need to ensure that you’ve carefully read this week’s content and example. We will build on both. The exercises (which you will turn in as this week’s lab) are at the bottom. Note that this week’s lab is much more theoretical than any other week in this class. This is to ensure that you have the foundations necessary to build rich statistical models and apply them to real-world data.&lt;/p&gt;
 &lt;div id=&#34;models&#34; class=&#34;section level1&#34;&gt;
@@ -740,7 +626,6 @@ moe&lt;/code&gt;&lt;/pre&gt;
 &lt;h3&gt;Pollster bias&lt;/h3&gt;
 &lt;p&gt;Notice that various pollsters are involved and some are taking several polls a week:&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;polls %&amp;gt;% group_by(pollster) %&amp;gt;% summarize(n())&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## `summarise()` ungrouping output (override with `.groups` argument)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## # A tibble: 15 x 2
 ##    pollster                                                   `n()`
 ##    &amp;lt;fct&amp;gt;                                                      &amp;lt;int&amp;gt;
@@ -765,7 +650,6 @@ moe&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;polls %&amp;gt;% group_by(pollster) %&amp;gt;%
   filter(n() &amp;gt;= 6) %&amp;gt;%
   summarize(se = 2 * sqrt(p_hat * (1-p_hat) / median(samplesize)))&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## `summarise()` ungrouping output (override with `.groups` argument)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## # A tibble: 5 x 2
 ##   pollster                     se
 ##   &amp;lt;fct&amp;gt;                     &amp;lt;dbl&amp;gt;
@@ -892,7 +776,7 @@ Y_{i,j} = d + b_i + \varepsilon_{i,j}
     <item>
       <title>Visualizing Large(ish) Data</title>
       <link>https://ssc442kirkpatrick.netlify.app/assignment/03-assignment/</link>
-      <pubDate>Fri, 05 Feb 2021 00:00:00 +0000</pubDate>
+      <pubDate>Sun, 30 Jan 2022 00:00:00 +0000</pubDate>
       <guid>https://ssc442kirkpatrick.netlify.app/assignment/03-assignment/</guid>
       <description>
 
@@ -908,7 +792,7 @@ Y_{i,j} = d + b_i + \varepsilon_{i,j}
 
 &lt;div class=&#34;fyi&#34;&gt;
 &lt;p&gt;&lt;strong&gt;NOTE&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;You must turn in a PDF document of your &lt;code&gt;R Markdown&lt;/code&gt; code. Submit this to D2L by 11:59 PM Eastern Time on Monday, Feb 15th&lt;/p&gt;
+&lt;p&gt;You must turn in a PDF document of your &lt;code&gt;R Markdown&lt;/code&gt; code. Submit this to D2L by 11:59 PM Eastern Time on Monday, Feb 7th&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;getting-started&#34; class=&#34;section level1&#34;&gt;
 &lt;h1&gt;Getting started&lt;/h1&gt;
@@ -980,7 +864,7 @@ Y_{i,j} = d + b_i + \varepsilon_{i,j}
     <item>
       <title>Applying ggplot2 to Real Data</title>
       <link>https://ssc442kirkpatrick.netlify.app/assignment/02-assignment/</link>
-      <pubDate>Fri, 29 Jan 2021 00:00:00 +0000</pubDate>
+      <pubDate>Sun, 23 Jan 2022 00:00:00 +0000</pubDate>
       <guid>https://ssc442kirkpatrick.netlify.app/assignment/02-assignment/</guid>
       <description>
 
@@ -998,7 +882,7 @@ Y_{i,j} = d + b_i + \varepsilon_{i,j}
 
 &lt;div class=&#34;fyi&#34;&gt;
 &lt;p&gt;&lt;strong&gt;NOTE&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;You must turn in a PDF document of your &lt;code&gt;R Markdown&lt;/code&gt; code. Submit this to D2L by 11:59 PM Eastern Time on Monday, Feb 8th.&lt;/p&gt;
+&lt;p&gt;You must turn in a PDF document of your &lt;code&gt;R Markdown&lt;/code&gt; code. Submit this to D2L by 11:59 PM Eastern Time on Monday, Jan 31st.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;preliminaries&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Preliminaries&lt;/h2&gt;
@@ -1053,7 +937,7 @@ Y_{i,j} = d + b_i + \varepsilon_{i,j}
     <item>
       <title>Basics of ggplot</title>
       <link>https://ssc442kirkpatrick.netlify.app/assignment/01-assignment/</link>
-      <pubDate>Fri, 22 Jan 2021 00:00:00 +0000</pubDate>
+      <pubDate>Sun, 16 Jan 2022 00:00:00 +0000</pubDate>
       <guid>https://ssc442kirkpatrick.netlify.app/assignment/01-assignment/</guid>
       <description>
 
@@ -1071,7 +955,7 @@ Y_{i,j} = d + b_i + \varepsilon_{i,j}
 
 &lt;div class=&#34;fyi&#34;&gt;
 &lt;p&gt;&lt;strong&gt;NOTE&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;You must turn in a PDF document of your &lt;code&gt;R markdown&lt;/code&gt; code. Submit this to D2L by 11:59 PM on Monday Feb 1.&lt;/p&gt;
+&lt;p&gt;You must turn in a PDF document of your &lt;code&gt;R markdown&lt;/code&gt; code. Submit this to D2L by 11:59 PM on Monday Jan 24th.&lt;/p&gt;
 &lt;/div&gt;
 &lt;p&gt;Our primary tool for data visualization in the course will be &lt;code&gt;ggplot&lt;/code&gt;. Technically, we’re using &lt;code&gt;ggplot2&lt;/code&gt;; the o.g. version lacked some of the modern features of its big brother. &lt;code&gt;ggplot2&lt;/code&gt; implements the grammar of graphics, a coherent and relatively straightforward system for describing and building graphs. With &lt;code&gt;ggplot2&lt;/code&gt;, you can do more faster by learning one system and applying it in many places. Other languages provide more specific tools, but require you to learn a different tool for each application. In this class, we’ll dig into a single package for our visuals.&lt;/p&gt;
 &lt;div id=&#34;using-ggplot2&#34; class=&#34;section level2&#34;&gt;
@@ -1108,8 +992,9 @@ library(tidyverse)&lt;/code&gt;&lt;/pre&gt;
 &lt;div id=&#34;mappings-link-data-to-things-you-see&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Mappings Link Data to Things You See&lt;/h2&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(gapminder)
-library(ggplot2)
-gapminder::gapminder&lt;/code&gt;&lt;/pre&gt;
+library(ggplot2)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Warning: package &amp;#39;ggplot2&amp;#39; was built under R version 4.0.5&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;gapminder::gapminder&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## # A tibble: 1,704 x 6
 ##    country     continent  year lifeExp      pop gdpPercap
 ##    &amp;lt;fct&amp;gt;       &amp;lt;fct&amp;gt;     &amp;lt;int&amp;gt;   &amp;lt;dbl&amp;gt;    &amp;lt;int&amp;gt;     &amp;lt;dbl&amp;gt;
@@ -1255,7 +1140,7 @@ p + geom_point(mapping = aes(color = continent)) +
     <item>
       <title>Programming Basics in R</title>
       <link>https://ssc442kirkpatrick.netlify.app/assignment/00-assignment/</link>
-      <pubDate>Fri, 15 Jan 2021 00:00:00 +0000</pubDate>
+      <pubDate>Mon, 10 Jan 2022 00:00:00 +0000</pubDate>
       <guid>https://ssc442kirkpatrick.netlify.app/assignment/00-assignment/</guid>
       <description>
 
@@ -1272,7 +1157,7 @@ p + geom_point(mapping = aes(color = continent)) +
 &lt;/ul&gt;
 &lt;/div&gt;
 
-&lt;p&gt;You must turn in a PDF document of your &lt;code&gt;R markdown&lt;/code&gt; code. Submit this to D2L by 11:59 PM on Monday January 25th.&lt;/p&gt;
+&lt;p&gt;You must turn in a PDF document of your &lt;code&gt;R markdown&lt;/code&gt; code. Submit this to D2L by 11:59 PM on Monday January 17th.&lt;/p&gt;
 &lt;div class=&#34;fyi&#34;&gt;
 &lt;p&gt;&lt;strong&gt;NOTE:&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;As you read through this assignment, practice with each of the examples (copy-paste them into an empty R script and run them). At the bottom of this page you will find the questions that comprise the assignment. These questions apply and expand on the topics and R functions in the assignment.&lt;/p&gt;
@@ -1294,8 +1179,9 @@ if(a!=0){
 }&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## [1] &amp;quot;No reciprocal for 0.&amp;quot;&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Let’s look at one more example using the US murders data frame:&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(dslabs)
-data(murders)
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(dslabs)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Warning: package &amp;#39;dslabs&amp;#39; was built under R version 4.0.5&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data(murders)
 murder_rate &amp;lt;- murders$total / murders$population*100000&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Here is a very simple example that tells us which states, if any, have a murder rate lower than 0.5 per 100,000. The &lt;code&gt;if&lt;/code&gt; statement protects us from the case in which no state satisfies the condition.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ind &amp;lt;- which.min(murder_rate)
@@ -1601,7 +1487,6 @@ s_n &amp;lt;- sapply(n, compute_s_n)&lt;/code&gt;&lt;/pre&gt;
 &lt;/ul&gt;
 &lt;div class=&#34;fyi&#34;&gt;
 &lt;p&gt;&lt;strong&gt;EXERCISES&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;Note: these are updated for F2021 so may be different for S2021&lt;/strong&gt;&lt;/p&gt;
 &lt;ol start=&#34;0&#34; style=&#34;list-style-type: decimal&#34;&gt;
 &lt;li&gt;&lt;p&gt;In your first code chunk, load the package library &lt;code&gt;tidyverse&lt;/code&gt;, which you will need for Question 8. Always load all your package libraries at the top, in the first code chunk!&lt;/p&gt;&lt;/li&gt;
 &lt;li&gt;&lt;p&gt;What will this conditional expression return and why?&lt;/p&gt;&lt;/li&gt;
@@ -1649,6 +1534,120 @@ my_func &amp;lt;- function(y){
 &lt;ol&gt;
 &lt;li id=&#34;fn1&#34;&gt;&lt;p&gt;&lt;a href=&#34;http://r-pkgs.had.co.nz/namespace.html&#34; class=&#34;uri&#34;&gt;http://r-pkgs.had.co.nz/namespace.html&lt;/a&gt;&lt;a href=&#34;#fnref1&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
 &lt;/ol&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Applied Logistic Regression</title>
+      <link>https://ssc442kirkpatrick.netlify.app/assignment/10-assignment/</link>
+      <pubDate>Fri, 19 Mar 2021 00:00:00 +0000</pubDate>
+      <guid>https://ssc442kirkpatrick.netlify.app/assignment/10-assignment/</guid>
+      <description>
+
+&lt;div id=&#34;TOC&#34;&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#backstory-and-set-up&#34;&gt;Backstory and Set Up&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+
+&lt;div class=&#34;fyi&#34;&gt;
+&lt;p&gt;You must turn in a PDF document of your &lt;code&gt;R Markdown&lt;/code&gt; code. Submit this to D2L by 11:59 PM Eastern Time on &lt;strong&gt;Monday, Monday April 5th.&lt;/strong&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;backstory-and-set-up&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Backstory and Set Up&lt;/h2&gt;
+&lt;p&gt;You work for a bank. This bank is trying to predict defaults on loans (a relatively uncommon occurence, but one that costs the bank a great deal of money when it does happen.) They’ve given you a dataset on defaults (encoded as the variable &lt;code&gt;y&lt;/code&gt;). You’re going to try to predict this.&lt;/p&gt;
+&lt;p&gt;This is some new data. The snippet below loads it.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;bank &amp;lt;- read.table(&amp;quot;https://msudataanalytics.github.io/SSC442/Labs/data/bank.csv&amp;quot;,
+                 header = TRUE,
+                 sep = &amp;quot;,&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;There’s not going to be a whole lot of wind-up here. You should be well-versed in doing these sorts of things by now (if not, look back at the previous lab for sample code).&lt;/p&gt;
+&lt;div class=&#34;fyi&#34;&gt;
+&lt;p&gt;&lt;strong&gt;EXERCISE 1&lt;/strong&gt;&lt;/p&gt;
+&lt;ol style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;&lt;p&gt;Split the data into an 80/20 train vs. test split. Make sure you explicitly set the seed for replicability, but do not share your seed with others in the class. (We may compare some results across people.)&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Run a series of logistic regressions with between 1 and 4 predictors of your choice (you can use interactions).&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Create eight total confusion matrices: four by applying your models to the training data, and four by applying your models to the test data. &lt;strong&gt;Briefly discuss your findings.&lt;/strong&gt; How does the error rate, sensitivity, and specificity change as the number of predictors increases?&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Applied Data Wrangling</title>
+      <link>https://ssc442kirkpatrick.netlify.app/assignment/11-assignment/</link>
+      <pubDate>Fri, 19 Mar 2021 00:00:00 +0000</pubDate>
+      <guid>https://ssc442kirkpatrick.netlify.app/assignment/11-assignment/</guid>
+      <description>
+
+&lt;div id=&#34;TOC&#34;&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#this-is-a-bonus-lab&#34;&gt;This is a bonus lab&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#data-wrangling-continued&#34;&gt;Data Wrangling Continued…&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+
+&lt;div id=&#34;this-is-a-bonus-lab&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;This is a bonus lab&lt;/h1&gt;
+&lt;p&gt;You have already had 11 labs. This is a bonus lab and any points earned will be bonus points. You do not have to do it, but I encourage anyone worried about their grade to do this lab.&lt;/p&gt;
+&lt;div id=&#34;data-wrangling-continued&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Data Wrangling Continued…&lt;/h2&gt;
+&lt;p&gt;You still work for a travel booking website as a data analyst. The hotel has once again asked your company for data on corporate bookings at the hotel via your site. Specifically, they have five corporations that are frequent customers of the hotel, and they want to know who spends the most with them. They’ve asked you to help out. Most of the corporate spending is in the form of room reservations, but there are also parking fees that the hotel wants included in the analysis. Your goal: total up spending by corporation and report the biggest and smallest spenders inclusive of rooms and parking.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;You did this already in class, but your boss now has some different data. It’s similar, and your code from before will help, but it has some new wrinkles in it to tackle&lt;/strong&gt;. Here’s your data:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;&lt;a href=&#34;https://ssc442kirkpatrick.netlify.app/data/Lab11_booking.csv&#34;&gt;&lt;i class=&#34;fas fa-file-csv&#34;&gt;&lt;/i&gt; &lt;code&gt;booking.csv&lt;/code&gt;&lt;/a&gt; - Contains the corporation name, the room type, and the dates someone from the corporation stayed at the hotel. It was pulled by an intern who doesn’t understand date-time stamps.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;a href=&#34;https://ssc442kirkpatrick.netlify.app/data/Lab11_roomrates.csv&#34;&gt;&lt;i class=&#34;fas fa-file-csv&#34;&gt;&lt;/i&gt; &lt;code&gt;roomrates.csv&lt;/code&gt;&lt;/a&gt; - Contains the price of each room on each day. The Lab 11 version of this data is from our German affiliate, so pay attention to the date format!&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;a href=&#34;https://ssc442kirkpatrick.netlify.app/data/Lab11_parking.csv&#34;&gt;&lt;i class=&#34;fas fa-file-csv&#34;&gt;&lt;/i&gt; &lt;code&gt;parking.csv&lt;/code&gt;&lt;/a&gt; - Contains the corporations who negotiated free parking for employees. It has been updated.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Parking at the hotel is $60 if you don’t have free parking. This hotel is in California, so everyone drives and parks when they stay.&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;fyi&#34;&gt;
+&lt;p&gt;&lt;strong&gt;EXERCISE 1&lt;/strong&gt;&lt;/p&gt;
+&lt;ol style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;&lt;p&gt;As you did in class, but with your new set of data, total up spending by corporation and report the biggest and smallest spenders inclusive of rooms and parking&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Visualize (using &lt;code&gt;ggplot&lt;/code&gt;) each corporation’s spending at the hotel over time and by roomtype. Make one plot with &lt;code&gt;ggplot&lt;/code&gt; that shows this.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Visualize (using &lt;code&gt;ggplot&lt;/code&gt;) the room rates over time by room type. Can you tell what factors determine room price? Note that we know each corporation gets the same room rate as the others on the same day, so this is about room rates, not corporate spending. Make &lt;strong&gt;two&lt;/strong&gt; total plots, the first showing the room rates over time by room type, and the second explaining some feature of one of the room rates (e.g. when is the double room price high? When is it low?). Using the &lt;code&gt;month(...)&lt;/code&gt; and &lt;code&gt;day(...)&lt;/code&gt; functions from &lt;code&gt;lubridate&lt;/code&gt; will help with figuring out the patterns.&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;
+&lt;p&gt;Congrats on finishing your last lab!&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Model Evaluation</title>
+      <link>https://ssc442kirkpatrick.netlify.app/assignment/09-assignment/</link>
+      <pubDate>Tue, 09 Mar 2021 00:00:00 +0000</pubDate>
+      <guid>https://ssc442kirkpatrick.netlify.app/assignment/09-assignment/</guid>
+      <description>
+
+&lt;div id=&#34;TOC&#34;&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#backstory-and-set-up&#34;&gt;Backstory and Set Up&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+
+&lt;div class=&#34;fyi&#34;&gt;
+&lt;p&gt;You must turn in a PDF document of your &lt;code&gt;R Markdown&lt;/code&gt; knitted document. Submit this to D2L by 11:59 PM Eastern Time on Monday, March 29th.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;backstory-and-set-up&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Backstory and Set Up&lt;/h2&gt;
+&lt;p&gt;You work for a bank. This bank is trying to predict defaults on loans (a relatively uncommon occurence, but one that costs the bank a great deal of money when it does happen.) They’ve given you a dataset on defaults (encoded as the variable &lt;code&gt;y&lt;/code&gt;). You’re going to try to predict this.&lt;/p&gt;
+&lt;p&gt;This is some new data. The snippet below loads it.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;bank &amp;lt;- read.table(&amp;quot;https://raw.githubusercontent.com/ajkirkpatrick/FS20/Spring2021/classdata/bank.csv&amp;quot;,
+                 header = TRUE,
+                 sep = &amp;quot;,&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;There’s not going to be a whole lot of wind-up here. You should be well-versed in doing these sorts of things by now (if not, look back at the previous lab for sample code).&lt;/p&gt;
+&lt;div class=&#34;fyi&#34;&gt;
+&lt;p&gt;&lt;strong&gt;EXERCISE 1&lt;/strong&gt;&lt;/p&gt;
+&lt;ol style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;&lt;p&gt;Split the data into an 80/20 train vs. test split. Make sure you explicitly set the seed for replicability, but do not share your seed with others in the class. (We may compare some results across people.)&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Run a series of KNN models with &lt;span class=&#34;math inline&#34;&gt;\(k\)&lt;/span&gt; ranging from 2 to 100. (You need not do every &lt;span class=&#34;math inline&#34;&gt;\(k\)&lt;/span&gt; between 2 and 100, but you can easily write a short function to do this; see the Content tab).&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Create a chart plotting the model complexity as the &lt;span class=&#34;math inline&#34;&gt;\(x\)&lt;/span&gt;-axis variable and RMSE as the &lt;span class=&#34;math inline&#34;&gt;\(y\)&lt;/span&gt;-axis variable for &lt;strong&gt;both&lt;/strong&gt; the training and test data. What do you think is the optimal &lt;span class=&#34;math inline&#34;&gt;\(k\)&lt;/span&gt;?&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;
 &lt;/div&gt;
 </description>
     </item>

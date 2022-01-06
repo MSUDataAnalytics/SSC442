@@ -1,7 +1,7 @@
 ---
 title: "Statistical Models"
 linktitle: "4: Statistical Models"
-publishDate: "2021-02-12"
+publishDate: "2022-02-06"
 output:
   blogdown::html_page:
     toc: true
@@ -32,7 +32,7 @@ editor_options:
 
 <div class="fyi">
 <p><strong>NOTE</strong></p>
-<p>You must turn in a PDF document of your <code>R Markdown</code> code. Submit this to D2L by 11:59 PM Eastern Time on Monday, Feb 22nd</p>
+<p>You must turn in a PDF document of your <code>R Markdown</code> code. Submit this to D2L by 11:59 PM Eastern Time on Monday, Feb 14th.</p>
 </div>
 <p>For this exercise you will need to ensure that you’ve carefully read this week’s content and example. We will build on both. The exercises (which you will turn in as this week’s lab) are at the bottom. Note that this week’s lab is much more theoretical than any other week in this class. This is to ensure that you have the foundations necessary to build rich statistical models and apply them to real-world data.</p>
 <div id="models" class="section level1">
@@ -188,7 +188,6 @@ moe</code></pre>
 <h3>Pollster bias</h3>
 <p>Notice that various pollsters are involved and some are taking several polls a week:</p>
 <pre class="r"><code>polls %&gt;% group_by(pollster) %&gt;% summarize(n())</code></pre>
-<pre><code>## `summarise()` ungrouping output (override with `.groups` argument)</code></pre>
 <pre><code>## # A tibble: 15 x 2
 ##    pollster                                                   `n()`
 ##    &lt;fct&gt;                                                      &lt;int&gt;
@@ -213,7 +212,6 @@ moe</code></pre>
 <pre class="r"><code>polls %&gt;% group_by(pollster) %&gt;%
   filter(n() &gt;= 6) %&gt;%
   summarize(se = 2 * sqrt(p_hat * (1-p_hat) / median(samplesize)))</code></pre>
-<pre><code>## `summarise()` ungrouping output (override with `.groups` argument)</code></pre>
 <pre><code>## # A tibble: 5 x 2
 ##   pollster                     se
 ##   &lt;fct&gt;                     &lt;dbl&gt;
