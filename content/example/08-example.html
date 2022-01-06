@@ -1,8 +1,6 @@
 ---
 title: "Nonparametric Regression"
 linktitle: "8: Nonparametric Regression"
-date: "2021-03-18"
-read_date: "2021-03-18"
 output:
   blogdown::html_page:
     toc: true
@@ -124,7 +122,7 @@ print(i)
 ## [1] &quot;second&quot;
 ## [1] &quot;third&quot;</code></pre>
 <p>Here, R is repeating the thing in the loop (<code>print(i)</code>) with a different value for <code>i</code> each time. R repeats only what is <em>inside the curly-brackets</em>, then when it reaches the close-curly-bracket, it goes back to the top, changes <code>i</code> to the next element, and repeats.</p>
-<p>We can use this to train our models. First, we clear our list object <code>myList</code> by setting it equal to an empty list. Then, we loop over some regression tree tuning parameters. First, we have to figure out how to use the loop to set a <em>unique</em> name for each list container. To do this, we’ll use <code>paste0('Tuning',i)</code> which will result in a character string of <code>Tuning0</code> when <code>i=0</code>, <code>Tuning00.1</code> when <code>i=0.01</code>, etc.</p>
+<p>We can use this to train our models. First, we clear our list object <code>myList</code> by setting it equal to an empty list. Then, we loop over some regression tree tuning parameters. First, we have to figure out how to use the loop to set a <em>unique</em> name for each list container. To do this, we’ll use <code>paste0('Tuning',i)</code> which will result in a character string of <code>Tuning0</code> when <code>i=0</code>, <code>Tuning0.01</code> when <code>i=0.01</code>, etc.</p>
 <pre class="r"><code>myList &lt;- list()   # resets the list. Otherwise, you&#39;ll just be adding to your old list!
 
 for(i in c(0, 0.01, 0.02)){

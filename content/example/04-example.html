@@ -1,10 +1,9 @@
 ---
 title: "Visualizing Uncertainty"
 linktitle: "4: Uncertainty"
-read_date: "2021-02-18"
+read_date: "2022-02-10"
 draft: false
-publishDate: "2021-02-11"
-lastmod: "2021-02-18"
+lastmod: "2022-01-06"
 output:
   blogdown::html_page:
     toc: true
@@ -18,8 +17,6 @@ editor_options:
   chunk_output_type: console
 ---
 
-<script src="/rmarkdown-libs/kePrint/kePrint.js"></script>
-<link href="/rmarkdown-libs/lightable/lightable.css" rel="stylesheet" />
 
 <div id="TOC">
 <ul>
@@ -73,311 +70,6 @@ editor_options:
 <p>Elections are a particularly interesting case of opinion polls because the actual opinion of the entire population is revealed on election day. Of course, it costs millions of dollars to run an actual election which makes polling a cost effective strategy for those that want to forecast the results.</p>
 <p>Although typically the results of these polls are kept private, similar polls are conducted by news organizations because results tend to be of interest to the general public and made public. We will eventually be looking at such data.</p>
 <p>Real Clear Politics<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a> is an example of a news aggregator that organizes and publishes poll results. For example, they present the following poll results reporting estimates of the popular vote for the 2016 presidential election<a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a>:</p>
-<table class="table table-striped" style="width: auto !important; margin-left: auto; margin-right: auto;">
-<thead>
-<tr>
-<th style="text-align:left;">
-Poll
-</th>
-<th style="text-align:left;">
-Date
-</th>
-<th style="text-align:left;">
-Sample
-</th>
-<th style="text-align:left;">
-MoE
-</th>
-<th style="text-align:right;">
-Clinton
-</th>
-<th style="text-align:right;">
-Trump
-</th>
-<th style="text-align:left;">
-Spread
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-Final Results
-</td>
-<td style="text-align:left;">
-–
-</td>
-<td style="text-align:left;">
-–
-</td>
-<td style="text-align:left;">
-–
-</td>
-<td style="text-align:right;">
-48.2
-</td>
-<td style="text-align:right;">
-46.1
-</td>
-<td style="text-align:left;">
-Clinton +2.1
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-RCP Average
-</td>
-<td style="text-align:left;">
-11/1 - 11/7
-</td>
-<td style="text-align:left;">
-–
-</td>
-<td style="text-align:left;">
-–
-</td>
-<td style="text-align:right;">
-46.8
-</td>
-<td style="text-align:right;">
-43.6
-</td>
-<td style="text-align:left;">
-Clinton +3.2
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Bloomberg
-</td>
-<td style="text-align:left;">
-11/4 - 11/6
-</td>
-<td style="text-align:left;">
-799 LV
-</td>
-<td style="text-align:left;">
-3.5
-</td>
-<td style="text-align:right;">
-46.0
-</td>
-<td style="text-align:right;">
-43.0
-</td>
-<td style="text-align:left;">
-Clinton +3
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-IBD
-</td>
-<td style="text-align:left;">
-11/4 - 11/7
-</td>
-<td style="text-align:left;">
-1107 LV
-</td>
-<td style="text-align:left;">
-3.1
-</td>
-<td style="text-align:right;">
-43.0
-</td>
-<td style="text-align:right;">
-42.0
-</td>
-<td style="text-align:left;">
-Clinton +1
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Economist
-</td>
-<td style="text-align:left;">
-11/4 - 11/7
-</td>
-<td style="text-align:left;">
-3669 LV
-</td>
-<td style="text-align:left;">
-–
-</td>
-<td style="text-align:right;">
-49.0
-</td>
-<td style="text-align:right;">
-45.0
-</td>
-<td style="text-align:left;">
-Clinton +4
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-LA Times
-</td>
-<td style="text-align:left;">
-11/1 - 11/7
-</td>
-<td style="text-align:left;">
-2935 LV
-</td>
-<td style="text-align:left;">
-4.5
-</td>
-<td style="text-align:right;">
-44.0
-</td>
-<td style="text-align:right;">
-47.0
-</td>
-<td style="text-align:left;">
-Trump +3
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-ABC
-</td>
-<td style="text-align:left;">
-11/3 - 11/6
-</td>
-<td style="text-align:left;">
-2220 LV
-</td>
-<td style="text-align:left;">
-2.5
-</td>
-<td style="text-align:right;">
-49.0
-</td>
-<td style="text-align:right;">
-46.0
-</td>
-<td style="text-align:left;">
-Clinton +3
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-FOX News
-</td>
-<td style="text-align:left;">
-11/3 - 11/6
-</td>
-<td style="text-align:left;">
-1295 LV
-</td>
-<td style="text-align:left;">
-2.5
-</td>
-<td style="text-align:right;">
-48.0
-</td>
-<td style="text-align:right;">
-44.0
-</td>
-<td style="text-align:left;">
-Clinton +4
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Monmouth
-</td>
-<td style="text-align:left;">
-11/3 - 11/6
-</td>
-<td style="text-align:left;">
-748 LV
-</td>
-<td style="text-align:left;">
-3.6
-</td>
-<td style="text-align:right;">
-50.0
-</td>
-<td style="text-align:right;">
-44.0
-</td>
-<td style="text-align:left;">
-Clinton +6
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-NBC News
-</td>
-<td style="text-align:left;">
-11/3 - 11/5
-</td>
-<td style="text-align:left;">
-1282 LV
-</td>
-<td style="text-align:left;">
-2.7
-</td>
-<td style="text-align:right;">
-48.0
-</td>
-<td style="text-align:right;">
-43.0
-</td>
-<td style="text-align:left;">
-Clinton +5
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-CBS News
-</td>
-<td style="text-align:left;">
-11/2 - 11/6
-</td>
-<td style="text-align:left;">
-1426 LV
-</td>
-<td style="text-align:left;">
-3.0
-</td>
-<td style="text-align:right;">
-47.0
-</td>
-<td style="text-align:right;">
-43.0
-</td>
-<td style="text-align:left;">
-Clinton +4
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Reuters
-</td>
-<td style="text-align:left;">
-11/2 - 11/6
-</td>
-<td style="text-align:left;">
-2196 LV
-</td>
-<td style="text-align:left;">
-2.3
-</td>
-<td style="text-align:right;">
-44.0
-</td>
-<td style="text-align:right;">
-39.0
-</td>
-<td style="text-align:left;">
-Clinton +5
-</td>
-</tr>
-</tbody>
-</table>
 <!-- (Source: [Real Clear Politics](https://www.realclearpolitics.com/epolls/2016/president/us/general_election_trump_vs_clinton-5491.html)) -->
 <p>Although in the United States the popular vote does not determine the result of the presidential election, we will use it as an illustrative and simple example of how well polls work. Forecasting the election is a more complex process since it involves combining results from 50 states and DC and we will go into some detail on this later.</p>
 <p>Let’s make some observations about the table above. First, note that different polls, all taken days before the election, report a different <em>spread</em>: the estimated difference between support for the two candidates. Notice also that the reported spreads hover around what ended up being the actual result: Clinton won the popular vote by 2.1%. We also see a column titled <strong>MoE</strong> which stands for <em>margin of error</em>.</p>
@@ -582,6 +274,8 @@ library(gghalves)</code></pre>
   scale_x_continuous(breaks = seq(0, 12, by = 1)) +
   guides(fill = FALSE) +
   facet_wrap(vars(Month))</code></pre>
+<pre><code>## Warning: `guides(&lt;scale&gt; = FALSE)` is deprecated. Please use `guides(&lt;scale&gt; =
+## &quot;none&quot;)` instead.</code></pre>
 <p><img src="/example/04-example_files/figure-html/histogram-by-month-facet-1.png" width="768" style="display: block; margin: auto;" /></p>
 <p>Neat! January, March, and April appear to have the most variation in windy days, with a few wind-less days and a few very-windy days, while August was very wind-less.</p>
 </div>
@@ -605,21 +299,29 @@ library(gghalves)</code></pre>
   geom_density(alpha = 0.5) +
   guides(fill = FALSE) +
   facet_wrap(vars(Month))</code></pre>
+<pre><code>## Warning: `guides(&lt;scale&gt; = FALSE)` is deprecated. Please use `guides(&lt;scale&gt; =
+## &quot;none&quot;)` instead.</code></pre>
 <p><img src="/example/04-example_files/figure-html/density-facet-by-month-1.png" width="768" style="display: block; margin: auto;" /></p>
 <p>Or we can stack the density plots behind each other with <a href="https://cran.r-project.org/web/packages/ggridges/vignettes/introduction.html"><strong>ggridges</strong></a>. For that to work, we also need to map <code>Month</code> to the y-axis. We can reverse the y-axis so that January is at the top if we use the <code>fct_rev()</code> function:</p>
 <pre class="r"><code>ggplot(weather_atl, aes(x = windSpeed, y = fct_rev(Month), fill = Month)) +
   geom_density_ridges() +
   guides(fill = FALSE)</code></pre>
+<pre><code>## Warning: `guides(&lt;scale&gt; = FALSE)` is deprecated. Please use `guides(&lt;scale&gt; =
+## &quot;none&quot;)` instead.</code></pre>
 <p><img src="/example/04-example_files/figure-html/ggridges-basic-1.png" width="576" style="display: block; margin: auto;" /></p>
 <p>We can add some extra information to <code>geom_density_ridges()</code> with some other arguments like <code>quantile_lines</code>. We can use the <code>quantiles</code> argument to tell the plow how many parts to be cut into. Since we just want to show the median, we’ll set that to 2 so each density plot is divided in half:</p>
 <pre class="r"><code>ggplot(weather_atl, aes(x = windSpeed, y = fct_rev(Month), fill = Month)) +
   geom_density_ridges(quantile_lines = TRUE, quantiles = 2) +
   guides(fill = FALSE)</code></pre>
+<pre><code>## Warning: `guides(&lt;scale&gt; = FALSE)` is deprecated. Please use `guides(&lt;scale&gt; =
+## &quot;none&quot;)` instead.</code></pre>
 <p><img src="/example/04-example_files/figure-html/ggridges-quantile-1.png" width="576" style="display: block; margin: auto;" /></p>
 <p>Now that we have good working code, we can easily substitute in other variables by changing the x mapping:</p>
 <pre class="r"><code>ggplot(weather_atl, aes(x = temperatureHigh, y = fct_rev(Month), fill = Month)) +
   geom_density_ridges(quantile_lines = TRUE, quantiles = 2) +
   guides(fill = FALSE)</code></pre>
+<pre><code>## Warning: `guides(&lt;scale&gt; = FALSE)` is deprecated. Please use `guides(&lt;scale&gt; =
+## &quot;none&quot;)` instead.</code></pre>
 <p><img src="/example/04-example_files/figure-html/ggridges-quantile-temp-1.png" width="576" style="display: block; margin: auto;" /></p>
 <p>We can get extra fancy if we fill by temperature instead of filling by month. To get this to work, we need to use <code>geom_density_ridges_gradient()</code>, and we need to change the <code>fill</code> mapping to the strange looking <code>..x..</code>, which is a weird ggplot trick that tells it to use the variable we mapped to the x-axis. For whatever reason, <code>fill = temperatureHigh</code> doesn’t work 🤷:</p>
 <pre class="r"><code>ggplot(weather_atl, aes(x = temperatureHigh, y = fct_rev(Month), fill = ..x..)) +
@@ -677,6 +379,8 @@ head(weather_atl_long)</code></pre>
   geom_violin() +
   geom_point(size = 0.5, position = position_jitter(width = 0.1)) +
   guides(fill = FALSE)</code></pre>
+<pre><code>## Warning: `guides(&lt;scale&gt; = FALSE)` is deprecated. Please use `guides(&lt;scale&gt; =
+## &quot;none&quot;)` instead.</code></pre>
 <p><img src="/example/04-example_files/figure-html/violin-strip-1.png" width="576" style="display: block; margin: auto;" /></p>
 <p>We can also add larger points for the daily averages. We’ll use a special layer for this: <code>stat_summary()</code>. It has a slightly different syntax, since we’re not actually mapping a column from the dataset. Instead, we’re feeding a column from a dataset into a function (here <code>"mean"</code>) and then plotting that result:</p>
 <pre class="r"><code>ggplot(weather_atl,
@@ -685,6 +389,8 @@ head(weather_atl_long)</code></pre>
   stat_summary(geom = &quot;point&quot;, fun = &quot;mean&quot;, size = 5, color = &quot;white&quot;) +
   geom_point(size = 0.5, position = position_jitter(width = 0.1)) +
   guides(fill = FALSE)</code></pre>
+<pre><code>## Warning: `guides(&lt;scale&gt; = FALSE)` is deprecated. Please use `guides(&lt;scale&gt; =
+## &quot;none&quot;)` instead.</code></pre>
 <p><img src="/example/04-example_files/figure-html/violin-strip-mean-1.png" width="576" style="display: block; margin: auto;" /></p>
 <p>We can also show the mean and confidence interval at the same time by changing the summary function:</p>
 <pre class="r"><code>ggplot(weather_atl,
@@ -693,6 +399,8 @@ head(weather_atl_long)</code></pre>
   stat_summary(geom = &quot;pointrange&quot;, fun.data = &quot;mean_se&quot;, size = 1, color = &quot;white&quot;) +
   geom_point(size = 0.5, position = position_jitter(width = 0.1)) +
   guides(fill = FALSE)</code></pre>
+<pre><code>## Warning: `guides(&lt;scale&gt; = FALSE)` is deprecated. Please use `guides(&lt;scale&gt; =
+## &quot;none&quot;)` instead.</code></pre>
 <p><img src="/example/04-example_files/figure-html/violin-strip-mean-ci-1.png" width="576" style="display: block; margin: auto;" /></p>
 <p>Overlaying the points directly on top of the violins shows extra information, but it’s also really crowded and hard to read. If we use <a href="https://github.com/erocoar/gghalves">the <strong>gghalves</strong> package</a>, we can use special halved versions of some of these geoms like so:</p>
 <pre class="r"><code>ggplot(weather_atl,
@@ -700,6 +408,8 @@ head(weather_atl_long)</code></pre>
   geom_half_point(aes(color = Day), side = &quot;l&quot;, size = 0.5) +
   geom_half_boxplot(aes(fill = Day), side = &quot;r&quot;) +
   guides(color = FALSE, fill = FALSE)</code></pre>
+<pre><code>## Warning: `guides(&lt;scale&gt; = FALSE)` is deprecated. Please use `guides(&lt;scale&gt; =
+## &quot;none&quot;)` instead.</code></pre>
 <p><img src="/example/04-example_files/figure-html/gghalves-point-boxplot-1.png" width="576" style="display: block; margin: auto;" /></p>
 <p>Note the <code>side</code> argument for specifying which half of the column the geom goes. We can also use <code>geom_half_violin()</code>:</p>
 <pre class="r"><code>ggplot(weather_atl,
@@ -707,6 +417,8 @@ head(weather_atl_long)</code></pre>
   geom_half_point(aes(color = Day), side = &quot;l&quot;, size = 0.5) +
   geom_half_violin(aes(fill = Day), side = &quot;r&quot;) +
   guides(color = FALSE, fill = FALSE)</code></pre>
+<pre><code>## Warning: `guides(&lt;scale&gt; = FALSE)` is deprecated. Please use `guides(&lt;scale&gt; =
+## &quot;none&quot;)` instead.</code></pre>
 <p><img src="/example/04-example_files/figure-html/gghalves-point-violon-1.png" width="576" style="display: block; margin: auto;" /></p>
 <p>If we flip the plot, we can make a <a href="https://micahallen.org/2018/03/15/introducing-raincloud-plots/">rain cloud plot</a>:</p>
 <pre class="r"><code>ggplot(weather_atl,
@@ -716,6 +428,8 @@ head(weather_atl_long)</code></pre>
   geom_half_violin(aes(fill = Day), side = &quot;r&quot;) +
   guides(color = FALSE, fill = FALSE) +
   coord_flip()</code></pre>
+<pre><code>## Warning: `guides(&lt;scale&gt; = FALSE)` is deprecated. Please use `guides(&lt;scale&gt; =
+## &quot;none&quot;)` instead.</code></pre>
 <p><img src="/example/04-example_files/figure-html/gghalves-rain-cloud-1.png" width="768" style="display: block; margin: auto;" /></p>
 </div>
 </div>

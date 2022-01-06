@@ -58,3 +58,12 @@ knitr::purl(input = knitr::current_input(), documentation = 0, output = 'example
 +++ assignment template
 https://raw.githubusercontent.com/ajkirkpatrick/FS20/Spring2021/Rmarkdown_templates/SSC442_Lab_Assignment_Template.Rmd
 
+
+
+++ Knitting (to update) a whole folder like /content/example, filled with .RMDs
++ Open up the directory, open one file from it. Copy-paste (this is a text doc you're looking at):
+
+kn.dir = list.files(dirname(rstudioapi::getSourceEditorContext()$path), pattern = '.Rmd', full.names=TRUE)
+kn.dir = kn.dir[-15]
+lapply(kn.dir, function(xx) rmarkdown::render_site(xx,  encoding = 'UTF-8'))
+
