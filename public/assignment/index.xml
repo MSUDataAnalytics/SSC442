@@ -289,6 +289,407 @@ p + geom_point(mapping = aes(color = continent)) +
     </item>
     
     <item>
+      <title>Programming Basics in R</title>
+      <link>https://datavizm20.classes.andrewheiss.com/assignment/00-assignment/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>https://datavizm20.classes.andrewheiss.com/assignment/00-assignment/</guid>
+      <description>
+
+&lt;div id=&#34;TOC&#34;&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#programming-basics&#34;&gt;Programming basics&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#conditionals&#34;&gt;Conditional expressions&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#defining-functions&#34;&gt;Defining functions&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#namespaces&#34;&gt;Namespaces&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#for-loops&#34;&gt;For-loops&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#vectorization&#34;&gt;Vectorization and functionals&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#exercises&#34;&gt;Exercises&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+
+&lt;p&gt;You must turn in a PDF document of your &lt;code&gt;R markdown&lt;/code&gt; code. Submit this to D2L by 11:59 PM on Monday January 17th.&lt;/p&gt;
+&lt;div class=&#34;fyi&#34;&gt;
+&lt;p&gt;&lt;strong&gt;NOTE:&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;As you read through this assignment, practice with each of the examples (copy-paste them into an empty R script and run them). At the bottom of this page you will find the questions that comprise the assignment. These questions apply and expand on the topics and R functions in the assignment.&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://raw.githubusercontent.com/ajkirkpatrick/FS20/Spring2021/Rmarkdown_templates/SSC442_Lab_Assignment_Template.Rmd&#34;&gt;Right-click to download the homework .Rmd template &lt;i class=&#34;fas fa-file-download&#34;&gt;&lt;/i&gt;&lt;/a&gt;. Please save the template into the labs folder in the SSC442 folder on your local hard drive. If you don’t have a nice file structure setup for the course, please do so now. &lt;em&gt;It will save you headaches in the future&lt;/em&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;programming-basics&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Programming basics&lt;/h1&gt;
+&lt;p&gt;We teach &lt;code&gt;R&lt;/code&gt; because it greatly facilitates data analysis, the main topic of this book. By coding in R, we can efficiently perform exploratory data analysis, build data analysis pipelines, and prepare data visualization to communicate results. However, &lt;code&gt;R&lt;/code&gt; is not just a data analysis environment but a programming language. Advanced &lt;code&gt;R&lt;/code&gt; programmers can develop complex packages and even improve &lt;code&gt;R&lt;/code&gt; itself, but we do not cover advanced programming in this book. Nonetheless, in this section, we introduce three key programming concepts: conditional expressions, for-loops, and functions. These are not just key building blocks for advanced programming, but are sometimes useful during data analysis. We also note that there are several functions that are widely used to program in &lt;code&gt;R&lt;/code&gt; but that we will not cover in this book. These include &lt;code&gt;split&lt;/code&gt;, &lt;code&gt;cut&lt;/code&gt;, &lt;code&gt;do.call&lt;/code&gt;, and &lt;code&gt;Reduce&lt;/code&gt;, as well as the &lt;strong&gt;data.table&lt;/strong&gt; package. These are worth learning if you plan to become an expert &lt;code&gt;R&lt;/code&gt; programmer.&lt;/p&gt;
+&lt;div id=&#34;conditionals&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Conditional expressions&lt;/h2&gt;
+&lt;p&gt;Conditional expressions are one of the basic features of programming. They are used for what is called &lt;em&gt;flow control&lt;/em&gt;. The most common conditional expression is the if-else statement. In R, we can actually perform quite a bit of data analysis without conditionals. However, they do come up occasionally, and you will need them once you start writing your own functions and packages.&lt;/p&gt;
+&lt;p&gt;Here is a very simple example showing the general structure of an if-else statement. The basic idea is to print the reciprocal of &lt;code&gt;a&lt;/code&gt; unless &lt;code&gt;a&lt;/code&gt; is 0:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;a &amp;lt;- 0
+
+if(a!=0){
+  print(1/a)
+} else{
+  print(&amp;quot;No reciprocal for 0.&amp;quot;)
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;No reciprocal for 0.&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Let’s look at one more example using the US murders data frame:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(dslabs)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Warning: package &amp;#39;dslabs&amp;#39; was built under R version 4.0.5&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data(murders)
+murder_rate &amp;lt;- murders$total / murders$population*100000&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Here is a very simple example that tells us which states, if any, have a murder rate lower than 0.5 per 100,000. The &lt;code&gt;if&lt;/code&gt; statement protects us from the case in which no state satisfies the condition.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ind &amp;lt;- which.min(murder_rate)
+
+if(murder_rate[ind] &amp;lt; 0.5){
+  print(murders$state[ind])
+} else{
+  print(&amp;quot;No state has murder rate that low&amp;quot;)
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;Vermont&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;If we try it again with a rate of 0.25, we get a different answer:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;if(murder_rate[ind] &amp;lt; 0.25){
+  print(murders$state[ind])
+} else{
+  print(&amp;quot;No state has a murder rate that low.&amp;quot;)
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;No state has a murder rate that low.&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;A related function that is very useful is &lt;code&gt;ifelse&lt;/code&gt;. This function takes three arguments: a logical and two possible answers. If the logical is &lt;code&gt;TRUE&lt;/code&gt;, the value in the second argument is returned and if &lt;code&gt;FALSE&lt;/code&gt;, the value in the third argument is returned. Here is an example:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;a &amp;lt;- 0
+ifelse(a &amp;gt; 0, 1/a, NA)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] NA&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The function is particularly useful because it works on vectors. It examines each entry of the logical vector and returns elements from the vector provided in the second argument, if the entry is &lt;code&gt;TRUE&lt;/code&gt;, or elements from the vector provided in the third argument, if the entry is &lt;code&gt;FALSE&lt;/code&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;a &amp;lt;- c(0, 1, 2, -4, 5)
+result &amp;lt;- ifelse(a &amp;gt; 0, 1/a, NA)&lt;/code&gt;&lt;/pre&gt;
+This table helps us see what happened:
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th style=&#34;text-align:right;&#34;&gt;
+a
+&lt;/th&gt;
+&lt;th style=&#34;text-align:left;&#34;&gt;
+is_a_positive
+&lt;/th&gt;
+&lt;th style=&#34;text-align:right;&#34;&gt;
+answer1
+&lt;/th&gt;
+&lt;th style=&#34;text-align:left;&#34;&gt;
+answer2
+&lt;/th&gt;
+&lt;th style=&#34;text-align:right;&#34;&gt;
+result
+&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0
+&lt;/td&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+FALSE
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+Inf
+&lt;/td&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+NA
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+NA
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+1
+&lt;/td&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+TRUE
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+1.00
+&lt;/td&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+NA
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+1.0
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+2
+&lt;/td&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+TRUE
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0.50
+&lt;/td&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+NA
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0.5
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-4
+&lt;/td&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+FALSE
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.25
+&lt;/td&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+NA
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+NA
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+5
+&lt;/td&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+TRUE
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0.20
+&lt;/td&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+NA
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0.2
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;Here is an example of how this function can be readily used to replace all the missing values in a vector with zeros:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data(na_example)
+no_nas &amp;lt;- ifelse(is.na(na_example), 0, na_example)
+sum(is.na(no_nas))&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 0&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Two other useful functions are &lt;code&gt;any&lt;/code&gt; and &lt;code&gt;all&lt;/code&gt;. The &lt;code&gt;any&lt;/code&gt; function takes a vector of logicals and returns &lt;code&gt;TRUE&lt;/code&gt; if any of the entries is &lt;code&gt;TRUE&lt;/code&gt;. The &lt;code&gt;all&lt;/code&gt; function takes a vector of logicals and returns &lt;code&gt;TRUE&lt;/code&gt; if all of the entries are &lt;code&gt;TRUE&lt;/code&gt;. Here is an example:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;z &amp;lt;- c(TRUE, TRUE, FALSE)
+any(z)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] TRUE&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;all(z)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] FALSE&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;defining-functions&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Defining functions&lt;/h2&gt;
+&lt;p&gt;As you become more experienced, you will find yourself needing to perform the same operations over and over. A simple example is computing averages. We can compute the average of a vector &lt;code&gt;x&lt;/code&gt; using the &lt;code&gt;sum&lt;/code&gt; and &lt;code&gt;length&lt;/code&gt; functions: &lt;code&gt;sum(x)/length(x)&lt;/code&gt;. Because we do this repeatedly, it is much more efficient to write a function that performs this operation. This particular operation is so common that someone already wrote the &lt;code&gt;mean&lt;/code&gt; function and it is included in base R. However, you will encounter situations in which the function does not already exist, so &lt;code&gt;R&lt;/code&gt; permits you to write your own. A simple version of a function that computes the average can be defined like this:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;avg &amp;lt;- function(x){
+  s &amp;lt;- sum(x)
+  n &amp;lt;- length(x)
+  s/n
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Now &lt;code&gt;avg&lt;/code&gt; is a function that computes the mean:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;x &amp;lt;- 1:100
+identical(mean(x), avg(x))&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] TRUE&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Notice that variables defined inside a function are not saved in the workspace. So while we use &lt;code&gt;s&lt;/code&gt; and &lt;code&gt;n&lt;/code&gt; when we call &lt;code&gt;avg&lt;/code&gt;, the values are created and changed only during the call. Here is an illustrative example:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;s &amp;lt;- 3
+avg(1:10)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 5.5&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;s&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 3&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Note how &lt;code&gt;s&lt;/code&gt; is still 3 after we call &lt;code&gt;avg&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;In general, functions are objects, so we assign them to variable names with &lt;code&gt;&amp;lt;-&lt;/code&gt;. The function &lt;code&gt;function&lt;/code&gt; tells &lt;code&gt;R&lt;/code&gt; you are about to define a function. The general form of a function definition looks like this:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;my_function &amp;lt;- function(VARIABLE_NAME){
+  perform operations on VARIABLE_NAME and calculate VALUE
+  VALUE
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The functions you define can have multiple arguments as well as default values. For example, we can define a function that computes either the arithmetic or geometric average depending on a user defined variable like this:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;avg &amp;lt;- function(x, arithmetic = TRUE){
+  n &amp;lt;- length(x)
+  ifelse(arithmetic, sum(x)/n, prod(x)^(1/n))
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;We will learn more about how to create functions through experience as we face more complex tasks.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;namespaces&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Namespaces&lt;/h2&gt;
+&lt;p&gt;Once you start becoming more of an &lt;code&gt;R&lt;/code&gt; expert user, you will likely need to load several add-on packages for some of your analysis. Once you start doing this, it is likely that two packages use the same name for two different functions. And often these functions do completely different things. In fact, you have already encountered this because both &lt;strong&gt;dplyr&lt;/strong&gt; and the R-base &lt;strong&gt;stats&lt;/strong&gt; package define a &lt;code&gt;filter&lt;/code&gt; function. There are five other examples in &lt;strong&gt;dplyr&lt;/strong&gt;. We know this because when we first load &lt;strong&gt;dplyr&lt;/strong&gt; we see the following message:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;The following objects are masked from ‘package:stats’:
+
+    filter, lag
+
+The following objects are masked from ‘package:base’:
+
+    intersect, setdiff, setequal, union&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;So what does &lt;code&gt;R&lt;/code&gt; do when we type &lt;code&gt;filter&lt;/code&gt;? Does it use the &lt;strong&gt;dplyr&lt;/strong&gt; function or the &lt;strong&gt;stats&lt;/strong&gt; function? From our previous work we know it uses the &lt;strong&gt;dplyr&lt;/strong&gt; one. But what if we want to use the &lt;strong&gt;stats&lt;/strong&gt; version?&lt;/p&gt;
+&lt;p&gt;These functions live in different &lt;em&gt;namespaces&lt;/em&gt;. &lt;code&gt;R&lt;/code&gt; will follow a certain order when searching for a function in these &lt;em&gt;namespaces&lt;/em&gt;. You can see the order by typing:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;search()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The first entry in this list is the global environment which includes all the objects you define.&lt;/p&gt;
+&lt;p&gt;So what if we want to use the &lt;strong&gt;stats&lt;/strong&gt; &lt;code&gt;filter&lt;/code&gt; instead of the &lt;strong&gt;dplyr&lt;/strong&gt; filter but &lt;strong&gt;dplyr&lt;/strong&gt; appears first in the search list? You can force the use of a specific namespace by using double colons (&lt;code&gt;::&lt;/code&gt;) like this:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;stats::filter&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;If we want to be absolutely sure that we use the &lt;strong&gt;dplyr&lt;/strong&gt; &lt;code&gt;filter&lt;/code&gt;, we can use&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;dplyr::filter&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Also note that if we want to use a function in a package without loading the entire package, we can use the double colon as well.&lt;/p&gt;
+&lt;p&gt;For more on this more advanced topic we recommend the &lt;code&gt;R&lt;/code&gt; packages book&lt;a href=&#34;#fn1&#34; class=&#34;footnote-ref&#34; id=&#34;fnref1&#34;&gt;&lt;sup&gt;1&lt;/sup&gt;&lt;/a&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;for-loops&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;For-loops&lt;/h2&gt;
+&lt;p&gt;If we had to write this section in a single sentence, it would be: Don’t use for-loops. Looping is intuitive, but &lt;code&gt;R&lt;/code&gt; is designed to provide more computationally efficient solutions. For-loops should be considered a quick-and-dirty way to get an answer. But, hey, you live your own life. Below we provide a brief overview to for-looping.&lt;/p&gt;
+&lt;p&gt;The formula for the sum of the series &lt;span class=&#34;math inline&#34;&gt;\(1+2+\dots+n\)&lt;/span&gt; is &lt;span class=&#34;math inline&#34;&gt;\(n(n+1)/2\)&lt;/span&gt;. What if we weren’t sure that was the right function? How could we check? Using what we learned about functions we can create one that computes the &lt;span class=&#34;math inline&#34;&gt;\(S_n\)&lt;/span&gt;:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;compute_s_n &amp;lt;- function(n){
+  x &amp;lt;- 1:n
+  sum(x)
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;How can we compute &lt;span class=&#34;math inline&#34;&gt;\(S_n\)&lt;/span&gt; for various values of &lt;span class=&#34;math inline&#34;&gt;\(n\)&lt;/span&gt;, say &lt;span class=&#34;math inline&#34;&gt;\(n=1,\dots,25\)&lt;/span&gt;? Do we write 25 lines of code calling &lt;code&gt;compute_s_n&lt;/code&gt;? No, that is what for-loops are for in programming. In this case, we are performing exactly the same task over and over, and the only thing that is changing is the value of &lt;span class=&#34;math inline&#34;&gt;\(n\)&lt;/span&gt;. For-loops let us define the range that our variable takes (in our example &lt;span class=&#34;math inline&#34;&gt;\(n=1,\dots,10\)&lt;/span&gt;), then change the value and evaluate expression as you &lt;em&gt;loop&lt;/em&gt;.&lt;/p&gt;
+&lt;p&gt;Perhaps the simplest example of a for-loop is this useless piece of code:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;for(i in 1:5){
+  print(i)
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 1
+## [1] 2
+## [1] 3
+## [1] 4
+## [1] 5&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Here is the for-loop we would write for our &lt;span class=&#34;math inline&#34;&gt;\(S_n\)&lt;/span&gt; example:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;m &amp;lt;- 25
+s_n &amp;lt;- vector(length = m) # create an empty vector
+for(n in 1:m){
+  s_n[n] &amp;lt;- compute_s_n(n)
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;In each iteration &lt;span class=&#34;math inline&#34;&gt;\(n=1\)&lt;/span&gt;, &lt;span class=&#34;math inline&#34;&gt;\(n=2\)&lt;/span&gt;, etc…, we compute &lt;span class=&#34;math inline&#34;&gt;\(S_n\)&lt;/span&gt; and store it in the &lt;span class=&#34;math inline&#34;&gt;\(n\)&lt;/span&gt;th entry of &lt;code&gt;s_n&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;Now we can create a plot to search for a pattern:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;n &amp;lt;- 1:m
+plot(n, s_n)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/assignment/00-assignment_files/figure-html/sum-of-consecutive-squares-1.png&#34; width=&#34;50%&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;If you noticed that it appears to be a quadratic, you are on the right track because the formula is &lt;span class=&#34;math inline&#34;&gt;\(n(n+1)/2\)&lt;/span&gt;.
+&lt;!--
+which we can confirm with a table:
+
+
+```r
+head(data.frame(s_n = s_n, formula = n*(n+1)/2))
+```
+
+```
+##   s_n formula
+## 1   1       1
+## 2   3       3
+## 3   6       6
+## 4  10      10
+## 5  15      15
+## 6  21      21
+```
+
+We can also overlay the two results by using the function `lines` to draw a line over the previously plotted points:
+
+
+```r
+plot(n, s_n)
+lines(n, n*(n+1)/2)
+```
+
+&lt;img src=&#34;https://datavizm20.classes.andrewheiss.com/assignment/00-assignment_files/figure-html/s_n-v-n-1.png&#34; width=&#34;672&#34; /&gt;
+
+--&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;vectorization&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Vectorization and functionals&lt;/h2&gt;
+&lt;p&gt;Although for-loops are an important concept to understand, in &lt;code&gt;R&lt;/code&gt; we rarely use them. As you learn more &lt;code&gt;R&lt;/code&gt;, you will realize that &lt;em&gt;vectorization&lt;/em&gt; is preferred over for-loops since it results in shorter and clearer code. (It’s also vastly more efficient computationally, which can matter as your data grows.) A &lt;em&gt;vectorized&lt;/em&gt; function is a function that will apply the same operation on each of the vectors.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;x &amp;lt;- 1:10
+sqrt(x)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;##  [1] 1.000000 1.414214 1.732051 2.000000 2.236068 2.449490 2.645751 2.828427
+##  [9] 3.000000 3.162278&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;y &amp;lt;- 1:10
+x*y&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;##  [1]   1   4   9  16  25  36  49  64  81 100&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;To make this calculation, there is no need for for-loops. However, not all functions work this way. For instance, the function we just wrote, &lt;code&gt;compute_s_n&lt;/code&gt;, does not work element-wise since it is expecting a scalar. This piece of code does not run the function on each entry of &lt;code&gt;n&lt;/code&gt;:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;n &amp;lt;- 1:25
+compute_s_n(n)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;Functionals&lt;/em&gt; are functions that help us apply the same function to each entry in a vector, matrix, data frame, or list. Here we cover the functional that operates on numeric, logical, and character vectors: &lt;code&gt;sapply&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;The function &lt;code&gt;sapply&lt;/code&gt; permits us to perform element-wise operations on any function. Here is how it works:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;x &amp;lt;- 1:10
+sapply(x, sqrt)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;##  [1] 1.000000 1.414214 1.732051 2.000000 2.236068 2.449490 2.645751 2.828427
+##  [9] 3.000000 3.162278&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Each element of &lt;code&gt;x&lt;/code&gt; is passed on to the function &lt;code&gt;sqrt&lt;/code&gt; and the result is returned. These results are concatenated. In this case, the result is a vector of the same length as the original &lt;code&gt;x&lt;/code&gt;. This implies that the for-loop above can be written as follows:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;n &amp;lt;- 1:25
+s_n &amp;lt;- sapply(n, compute_s_n)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Other functionals are &lt;code&gt;apply&lt;/code&gt;, &lt;code&gt;lapply&lt;/code&gt;, &lt;code&gt;tapply&lt;/code&gt;, &lt;code&gt;mapply&lt;/code&gt;, &lt;code&gt;vapply&lt;/code&gt;, and &lt;code&gt;replicate&lt;/code&gt;. We mostly use &lt;code&gt;sapply&lt;/code&gt;, &lt;code&gt;apply&lt;/code&gt;, and &lt;code&gt;replicate&lt;/code&gt; in this book, but we recommend familiarizing yourselves with the others as they can be very useful.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;exercises&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Exercises&lt;/h2&gt;
+&lt;p&gt;This is your first weekly lab assignment. Each lab assignment will need to be done in Rmarkdown using &lt;a href=&#34;https://raw.githubusercontent.com/ajkirkpatrick/FS20/Spring2021/Rmarkdown_templates/SSC442_Lab_Assignment_Template.Rmd&#34;&gt;the lab template&lt;/a&gt;, just right-click and Save As…&lt;strong&gt;Start a new folder on your drive for this course, and inside that a new folder for lab assignments, and inside that a new folder for Lab No. 1&lt;/strong&gt;. Rmarkdown will place some intermediate files in that folder, so leaving .Rmd files on your desktop will make things messy, fast.&lt;/p&gt;
+&lt;p&gt;Once you’ve saved the file, open it up in Rstudio.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;Change the title to “Lab 1”&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Put your name on it&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Leave the date alone. That little &lt;code&gt;`r Sys.time(...)`&lt;/code&gt; will ask R to return the date (with M-D-Y formatting), which Rmarkdown will put in as if you had typed in the actual date.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;When you type &lt;code&gt;## 1. Text of...&lt;/code&gt;, Markdown will recognize “1. Text of” as a header and will &lt;em&gt;automatically&lt;/em&gt; make it big.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;So please copy the number and text of the question you are answering here.&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Next will be the &lt;code&gt;```{r q1}&lt;/code&gt; text that will be in gray. &lt;strong&gt;R will recognize this as code and will treat it as such&lt;/strong&gt;. Anything run in that block will have an output.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;If you want to see what the code will do, copy the code and paste it into the gray area. Then, click the green right arrow in the top-right corner &lt;em&gt;of the gray code chunk&lt;/em&gt;. It should show you the results.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Use the results (plus your understanding of the code) to answer the question&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;With each completed question, clidk the “Knit” button up above the script window. Rmarkdown will create a .pdf for you of your work (as long as it doesn’t hit any R errors). Knit often to make sure you haven’t hit an error!&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;The &lt;code&gt;\newpage&lt;/code&gt; line is a Latex command (the program that makes the typesetting look nice). It will start a new pdf page.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;On the next page, copy question #2 to a new header using &lt;code&gt;##&lt;/code&gt;.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Once done, render one last .pdf and turn it in on D2L!&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;fyi&#34;&gt;
+&lt;p&gt;&lt;strong&gt;EXERCISES&lt;/strong&gt;&lt;/p&gt;
+&lt;ol start=&#34;0&#34; style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;&lt;p&gt;In your first code chunk, load the package library &lt;code&gt;tidyverse&lt;/code&gt;, which you will need for Question 8. Always load all your package libraries at the top, in the first code chunk!&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;What will this conditional expression return and why?&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;x &amp;lt;- c(1,2,-3,4)
+
+if(all(x&amp;gt;0)){
+  print(&amp;quot;All Postives&amp;quot;)
+} else{
+  print(&amp;quot;Not all positives&amp;quot;)
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;ol start=&#34;2&#34; style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;Which of the following expressions is always &lt;code&gt;FALSE&lt;/code&gt; when at least one entry of a logical vector &lt;code&gt;x&lt;/code&gt; is TRUE?&lt;/li&gt;
+&lt;/ol&gt;
+&lt;ol style=&#34;list-style-type: lower-alpha&#34;&gt;
+&lt;li&gt;&lt;code&gt;all(x)&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;any(x)&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;any(!x)&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;all(!x)&lt;/code&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;ol start=&#34;3&#34; style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;&lt;p&gt;The function &lt;code&gt;nchar&lt;/code&gt; tells you how many characters long a character vector is. Write a line of code that assigns to the object &lt;code&gt;new_names&lt;/code&gt; the state abbreviation when the state name is longer than 8 characters.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Create a function &lt;code&gt;sum_n&lt;/code&gt; that for any given value, say &lt;span class=&#34;math inline&#34;&gt;\(n\)&lt;/span&gt;, computes the sum of the integers from 1 to n (inclusive). Use the function to determine the sum of integers from 1 to 5,000.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Create a function &lt;code&gt;altman_plot&lt;/code&gt; that takes two arguments, &lt;code&gt;x&lt;/code&gt; and &lt;code&gt;y&lt;/code&gt;, and plots the difference against the sum. Use it to make an altman plot of &lt;code&gt;x &amp;lt;- c(5,7,9)&lt;/code&gt; and &lt;code&gt;y &amp;lt;- c(10,11,12)&lt;/code&gt;. When your function creates the plot, it will output automatically in your Rmarkdown knitted .pdf.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;After running the code below, what is the value of &lt;code&gt;x&lt;/code&gt; and why?&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;x &amp;lt;- 3
+my_func &amp;lt;- function(y){
+  x &amp;lt;- 5
+  y+5
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;ol start=&#34;7&#34; style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;&lt;p&gt;Write a function &lt;code&gt;compute_s_n&lt;/code&gt; that for any given &lt;span class=&#34;math inline&#34;&gt;\(n\)&lt;/span&gt; computes the sum &lt;span class=&#34;math inline&#34;&gt;\(S_n = 1^2 + 2^2 + 3^2 + \dots n^2\)&lt;/span&gt;. Report the value of the sum when &lt;span class=&#34;math inline&#34;&gt;\(n=10\)&lt;/span&gt;.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Define an empty numerical vector &lt;code&gt;s_n&lt;/code&gt; of size 25 using &lt;code&gt;s_n &amp;lt;- vector(&#34;numeric&#34;, 25)&lt;/code&gt; and store in the results of &lt;span class=&#34;math inline&#34;&gt;\(S_1, S_2, \dots S_{25}\)&lt;/span&gt; using a for-loop.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Repeat exercise 8, but this time use &lt;code&gt;sapply&lt;/code&gt;.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Repeat exercise 8, but this time use &lt;code&gt;map_dbl&lt;/code&gt;.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Plot &lt;span class=&#34;math inline&#34;&gt;\(S_n\)&lt;/span&gt; versus &lt;span class=&#34;math inline&#34;&gt;\(n\)&lt;/span&gt;. Use points defined by &lt;span class=&#34;math inline&#34;&gt;\(n=1,\dots,25\)&lt;/span&gt;.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Confirm that the formula for this sum is &lt;span class=&#34;math inline&#34;&gt;\(S_n= n(n+1)(2n+1)/6\)&lt;/span&gt;.&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&#34;footnotes&#34;&gt;
+&lt;hr /&gt;
+&lt;ol&gt;
+&lt;li id=&#34;fn1&#34;&gt;&lt;p&gt;&lt;a href=&#34;http://r-pkgs.had.co.nz/namespace.html&#34; class=&#34;uri&#34;&gt;http://r-pkgs.had.co.nz/namespace.html&lt;/a&gt;&lt;a href=&#34;#fnref1&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    
+    <item>
       <title>Final project</title>
       <link>https://datavizm20.classes.andrewheiss.com/assignment/final-project/</link>
       <pubDate>Sun, 04 Apr 2021 00:00:00 +0000</pubDate>
