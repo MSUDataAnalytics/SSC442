@@ -1,0 +1,80 @@
+---
+title: "Applying ggplot2 to Real Data"
+linktitle: "2: Visualization II"
+output:
+  blogdown::html_page:
+    toc: true
+menu:
+  assignment:
+    parent: Labs
+    weight: 2
+type: docs
+weight: 1
+editor_options:
+  chunk_output_type: console
+---
+
+
+<div id="TOC">
+<ul>
+<li><a href="#preliminaries">Preliminaries</a></li>
+<li><a href="#background">Background</a><ul>
+<li><a href="#r-markdown">R Markdown</a></li>
+<li><a href="#data-prep">Data Prep</a></li>
+</ul></li>
+<li><a href="#getting-help">Getting help</a></li>
+<li><a href="#turning-everything-in">Turning everything in</a></li>
+</ul>
+</div>
+
+<div class="fyi">
+<p><strong>NOTE</strong></p>
+<p>You must turn in a PDF document of your <code>R Markdown</code> code. Submit this to D2L by 11:59 PM Eastern Time on Monday, Jan 31st.</p>
+</div>
+<div id="preliminaries" class="section level2">
+<h2>Preliminaries</h2>
+<p>As always, we will first have to load <code>ggplot2</code>. To do this, we will load the tidyverse by running this code:</p>
+<pre><code>library(tidyverse)</code></pre>
+</div>
+<div id="background" class="section level2">
+<h2>Background</h2>
+<p>The New York City Department of Buildings (DOB) maintains a list of construction sites that have been categorized as “essential” during the city’s shelter-in-place pandemic order. They’ve provided <a href="https://www1.nyc.gov/assets/buildings/html/essential-active-construction.html">an interactive map here</a> where you can see the different projects. There’s also a link there to download the complete dataset.</p>
+<p>For this exercise, you’re going to use this data to visualize the amounts or proportions of different types of essential projects in the five boroughs of New York City (Brooklyn, Manhattan, the Bronx, Queens, and Staten Island).</p>
+<p>As you hopefully figured out by now, you’ll be doing all your <code>R</code> work in <code>R Markdown</code>. You can use an RStudio Project to keep your files well organized (either on your computer or on RStudio.cloud), but this is optional. If you decide to do so, either create a new project for this exercise only, or make a project for all your work in this class.</p>
+<p>You’ll need to download one CSV file and put it somewhere on your computer or upload it to RStudio.cloud—preferably in a folder named <code>data</code> in your project folder. You can download the data from <a href="https://www1.nyc.gov/assets/buildings/html/essential-active-construction.html">the DOB’s map</a>, or use this link to get it directly:</p>
+<ul>
+<li><a href="/data/EssentialConstruction.csv"><i class="fas fa-file-csv"></i> <code>EssentialConstruction.csv</code></a></li>
+</ul>
+<div id="r-markdown" class="section level3">
+<h3>R Markdown</h3>
+<p>Writing regular text with <code>R Markdown</code> follows the rules of Markdown. You can make lists; different-size headers, etc. This should be relatively straightfoward. We talked about a few Markdown features like <strong>bold</strong> and <em>italics</em> in class. See <a href="https://ssc442kirkpatrick.netlify.app/resource/">this resource for more formatting</a>.</p>
+<p>You’ll also need to insert your own code chunks where needed. Rather than typing them by hand (that’s tedious and you might miscount the number of backticks!), use the “Insert” button at the top of the editing window, or type <kbd>ctrl</kbd> + <kbd>alt</kbd> + <kbd>i</kbd> on Windows, or <kbd>⌘</kbd> + <kbd>⌥</kbd> + <kbd>i</kbd> on macOS.</p>
+<p><img src="/img/assignments/insert-chunk-button.png" width="19%" /></p>
+</div>
+<div id="data-prep" class="section level3">
+<h3>Data Prep</h3>
+<p>Once you download the <code>EssentialConstruction.csv</code> file and save it in your project folder, you can open it and start cleaning. I’ll help with that. I’ll give you a .Rmd that will get you started on the Exercises below. Download this and use it in place of your lab assignment template.</p>
+<ul>
+<li><a href="/projects/02-lab/02-lab.Rmd"><i class="fab fa-r-project"></i> <code>02-lab.Rmd</code></a></li>
+</ul>
+<p><strong>NOTE: YOU WILL NEED TO CHANGE THE HEADER TO SAY: output: pdf_document, and change the title to Lab Assignment 02</strong></p>
+<div class="fyi">
+<p><strong>Exercise 1 of 1: Essential pandemic construction</strong></p>
+<p>Using the Lab 02 template above, do the following:</p>
+<p>A. Show the count or proportion of approved projects by borough using a bar chart.</p>
+<p>B. Show the count or proportion of approved projects by category using a lollipop chart. Not sure of what a lollipop chart is? Google <code>R ggplot lollipop</code>. A huge portion of knowing how to code is knowing how to google, find examples, and figure out where to put your variables from your data!</p>
+<p>C. Show the proportion of approved projects by borough and category <em>simultaneously</em> using a heatmap.</p>
+<p>You don’t need to make these super fancy, but if you’re feeling brave, experiment with adding a <code>labs()</code> layer or changing fill colors with <code>scale_fill_manual()</code> or with palettes.</p>
+<p><strong>Bonus</strong></p>
+<p>Overlay the data from Part 1 above onto a map of NYC. For double bonus, color the boroughs.</p>
+</div>
+</div>
+</div>
+<div id="getting-help" class="section level2">
+<h2>Getting help</h2>
+<p>Use the SSC442 Slack if you get stuck (click the Slack logo at the top right of this website header).</p>
+</div>
+<div id="turning-everything-in" class="section level2">
+<h2>Turning everything in</h2>
+<p>When you’re all done, click on the “Knit” button at the top of the editing window and create a PDF. Upload the PDF file to D2L.</p>
+</div>

@@ -1,0 +1,146 @@
+---
+title: "Correlations and Simple Models"
+linktitle: "5: Linear Regression I"
+publishDate: "2022-02-13"
+output:
+  blogdown::html_page:
+    toc: true
+menu:
+  assignment:
+    parent: Labs
+    weight: 2
+type: docs
+weight: 1
+editor_options:
+  chunk_output_type: console
+---
+
+
+<div id="TOC">
+<ul>
+<li><a href="#backstory-and-set-up">Backstory and Set Up</a><ul>
+<li><a href="#data-exploration-and-processing">Data Exploration and Processing</a></li>
+</ul></li>
+</ul>
+</div>
+
+<div class="fyi">
+<p><strong>NOTE</strong></p>
+<p>You must turn in a PDF document of your <code>R Markdown</code> code. Submit this to D2L by 11:59 PM Eastern Time on Monday, Feb 21st.</p>
+</div>
+<p>This week’s lab will (hopefully) not repeat the disaster that was last week’s lab.</p>
+<div id="backstory-and-set-up" class="section level2">
+<h2>Backstory and Set Up</h2>
+<p>You have been recently hired to Zillow’s Zestimate product team as a junior analyst. As a part of their regular hazing, they have given you access to a small subset of their historic sales data. Your job is to present some basic predictions for housing values in a small geographic area (Ames, IA) using this historical pricing.</p>
+<p>First, let’s load the data.</p>
+<pre class="r"><code>ameslist  &lt;- read.table(&#39;https://raw.githubusercontent.com/ajkirkpatrick/FS20/postS21_rev/classdata/ames.csv&#39;, 
+                   header = TRUE,
+                   sep = &#39;,&#39;) </code></pre>
+<p>Before we proceed, let’s note a few things about the (simple) code above. First, we have specified <code>header = TRUE</code> because—you guessed it—the original dataset has headers. Although simple, this is an incredibly important step because it allows <code>R</code> to do some smart <code>R</code> things. Specifically, once the headers are in, the variables are formatted as <code>int</code> and <code>factor</code> where appropriate. It is absolutely vital that we format the data correctly; otherwise, many <code>R</code> commands will whine at us.</p>
+<p><strong>Try it:</strong> Run the above, but instead specifying <code>header = FALSE</code>. What data type are the various columns? Now try ommitting the line altogether. What is the default behavior of the <code>read.table</code> function?<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a></p>
+<div id="data-exploration-and-processing" class="section level3">
+<h3>Data Exploration and Processing</h3>
+<p>We are not going to tell you anything about this data. This is intended to replicate a real-world experience that you will all encounter in the (possibly near) future: someone hands you data and you’re expected to make sense of it. Fortunately for us, this data is (somewhat) self-contained. We’ll first check the variable names to try to divine some information. Recall, we have a handy little function for that:</p>
+<pre class="r"><code>names(ameslist)</code></pre>
+<p>Note that, when doing data exploration, we will sometimes choose to not save our output. This is a judgement call; here we’ve chosen to merely inspect the variables rather than diving in.</p>
+<p>Inspection yields some obvious truths. For example:</p>
+<table>
+<thead>
+<tr class="header">
+<th>Variable</th>
+<th align="center">Explanation</th>
+<th align="right">Type</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>ID</code></td>
+<td align="center">Unique identifier for each row</td>
+<td align="right"><code>int</code></td>
+</tr>
+<tr class="even">
+<td><code>LotArea</code></td>
+<td align="center">Size of lot (<strong>units unknown</strong>)</td>
+<td align="right"><code>int</code></td>
+</tr>
+<tr class="odd">
+<td><code>SalePrice</code></td>
+<td align="center">Sale price of house ($)</td>
+<td align="right"><code>int</code></td>
+</tr>
+</tbody>
+</table>
+<p>…but we face some not-so-obvious things as well. For example:</p>
+<table>
+<thead>
+<tr class="header">
+<th>Variable</th>
+<th align="center">Explanation</th>
+<th align="right">Type</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>LotShape</code></td>
+<td align="center">? Something about the lot</td>
+<td align="right"><code>factor</code></td>
+</tr>
+<tr class="even">
+<td><code>MSSubClass</code></td>
+<td align="center">? No clue at all</td>
+<td align="right"><code>int</code></td>
+</tr>
+<tr class="odd">
+<td><code>Condition1</code></td>
+<td align="center">? Seems like street info</td>
+<td align="right"><code>factor</code></td>
+</tr>
+</tbody>
+</table>
+<p>It will be difficult to learn anything about the data that is of type <code>int</code> without outside documentation. However, we can learn something more about the <code>factor</code>-type variables. In order to understand these a little better, we need to review some of the values that each take on.</p>
+<p><strong>Try it:</strong> Go through the variables in the dataset and make a note about your interpretation for each. Many will be obvious, but some require additional thought.</p>
+<p>We now turn to another central issue—and one that explains our nomenclature choice thus far: the data object is of type <code>list</code>. To verify this for yourself, check:</p>
+<pre class="r"><code>typeof(ameslist)</code></pre>
+<p>This isn’t ideal—for some visualization packages, for instance, we need data frames and not lists. We’ll make a mental note of this as something to potentially clean up if we desire.</p>
+<p>Although there are some variables that would be difficult to clean, there are a few that we can address with relative ease. Consider, for instance, the variable <code>GarageType</code>. This might not be that important, but, remember, the weather in Ames, IA is pretty crummy—a detached garage might be a dealbreaker for some would-be homebuyers. Let’s inspect the values:</p>
+<pre class="r"><code>&gt; unique(ameslist$GarageType)
+[1] Attchd  Detchd  BuiltIn CarPort &lt;NA&gt; Basment 2Types</code></pre>
+<p>With this, we could make an informed decision and create a new variable. Let’s create <code>OutdoorGarage</code> to indicate, say, homes that have any type of garage that requires the homeowner to walk outdoors after parking their car. (For those who aren’t familiar with different garage types, a car port is not insulated and is therefore considered outdoors. A detached garage presumably requires that the person walks outside after parking. The three other types are inside the main structure, and <code>2Types</code> we can assume includes at least one attached garage of some sort). This is going to require a bit more coding and we will have to think through each step carefully.</p>
+<p>First, let’s create a new object that has indicator variables (that is, a variable whose values are either zero or one) for each of the <code>GarageType</code> values. As with everything in <code>R</code>, there’s a handy function to do this for us:</p>
+<pre class="r"><code>GarageTemp = model.matrix( ~ GarageType - 1, data=ameslist )</code></pre>
+<p>We now have two separate objects living in our computer’s memory: <code>ameslist</code> and <code>GarageTemp</code>—so named to indicate that it is a temporary object.<a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a> We now need to stitch it back onto our original data; we’ll use a simple concatenation and write over our old list with the new one:</p>
+<pre class="r"><code>ameslist &lt;- cbind(ameslist, GarageTemp)
+&gt; Error in data.frame(..., check.names = FALSE) :
+  arguments imply differing number of rows: 1460, 1379</code></pre>
+<p>Huh. What’s going on?</p>
+<p><strong>Try it:</strong> Figure out what’s going on above. Fix this code so that you have a working version.</p>
+<p>Now that we’ve got that working (ha!) we can generate a new variable for our outdoor garage. We’ll use a somewhat gross version below because it is <em>verbose</em>; that said, this can be easily accomplished using logical indexing for those who like that approach.</p>
+<pre class="r"><code>ameslist$GarageOutside &lt;- ifelse(ameslist$GarageTypeDetchd == 1 | ameslist$GarageTypeCarPort == 1, 1, 0)
+unique(ameslist$GarageOutside)
+[1]  0  1 NA</code></pre>
+<p>This seems to have worked. The command above <code>ifelse()</code> does what it says: <code>if</code> some condition is met (here, either of two variables equals one) then it returns a one; <code>else</code> it returns a zero. Such functions are very handy, though as mentioned above, there are other ways of doing this. Also note, that while fixed the issue with <code>NA</code> above, we’ve got new issues: we definitely don’t want <code>NA</code> outputted from this operation. Accordingly, we’re going to need to deal with it somehow.</p>
+<p><strong>Try it:</strong> Utilizing a similar approach to what you did above, fix this so that the only outputs are zero and one.</p>
+<p>Generally speaking, this is a persistent issue, and you will spend an extraordinary amount of time dealing with missing data or data that does not encode a variable exactly as you want it. This is expecially true if you deal with real-world data: you will need to learn how to handle <code>NA</code>s. There are a number of fixes (as always, Google is your friend) and anything that works is good. But you should spend some time thinking about this and learning at least one approach.</p>
+<div class="fyi">
+<p><strong>EXERCISES</strong></p>
+<ol style="list-style-type: decimal">
+<li><p>Prune the data to all of the variables that are <code>type = int</code> about which you have some reasonable intuition for what they mean. This <strong>must</strong> include the variable <code>SalePrice</code>. Save this new dataset as <code>Ames</code>. Produce documentation for this object in the form of a .txt file. This must describe each of the preserved variables, the values it can take (e.g., can it be negative?) and your interpretation of the variable.</p></li>
+<li><p>Produce a <em>scatterplot matrix</em> which includes 12 of the variables that are <code>type = int</code> in the data set. Choose those that you believe are likely to be correlated with <code>SalePrice</code>.<a href="#fn3" class="footnote-ref" id="fnref3"><sup>3</sup></a></p></li>
+<li><p>Compute a matrix of correlations between these variables using the function <code>cor()</code>. Does this match your prior beliefs? Briefly discuss the correlation between the miscellaneous variables and <code>SalePrice</code>.</p></li>
+<li><p>Produce a scatterplot between <code>SalePrice</code> and <code>GrLivArea</code>. Run a linear model using <code>lm()</code> to explore the relationship. Finally, use the <code>abline()</code> function to plot the relationship that you’ve found in the simple linear regression.</p>
+<ul>
+<li>What is the largest outlier that is above the regression line? Produce the other information about this house.</li>
+</ul></li>
+</ol>
+<p><strong>(Bonus)</strong> Create a visualization that shows the rise of air conditioning over time in homes in Ames.</p>
+</div>
+</div>
+</div>
+<div class="footnotes">
+<hr />
+<ol>
+<li id="fn1"><p>Of course, you could find out the defaults of the function by simply using the handy <code>?</code> command. Don’t forget about this tool!<a href="#fnref1" class="footnote-back">↩︎</a></p></li>
+<li id="fn2"><p>It’s not exactly true that these objects are in memory. They are… sort of. But how <code>R</code> handles memory is complicated and silly and blah blah who cares. It’s basically in memory.<a href="#fnref2" class="footnote-back">↩︎</a></p></li>
+<li id="fn3"><p>If you are not familiar with this type of visualization, consult the book (<em>Introduction to Statistical Learning</em>), Chapters 2 and 3. Google it; it’s free.<a href="#fnref3" class="footnote-back">↩︎</a></p></li>
+</ol>
+</div>

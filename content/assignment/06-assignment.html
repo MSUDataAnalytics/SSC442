@@ -1,0 +1,83 @@
+---
+title: "Model Building"
+linktitle: "6: Linear Regression II"
+publishDate: "2022-02-20"
+output:
+  blogdown::html_page:
+    toc: true
+menu:
+  assignment:
+    parent: Labs
+    weight: 2
+type: docs
+weight: 1
+editor_options:
+  chunk_output_type: console
+---
+
+
+<div id="TOC">
+<ul>
+<li><a href="#backstory-and-set-up">Backstory and Set Up</a></li>
+<li><a href="#building-a-model">Building a Model</a></li>
+</ul>
+</div>
+
+<div class="fyi">
+<p><strong>NOTE</strong></p>
+<p>You must turn in a PDF document of your <code>R Markdown</code> code. Submit this to D2L by 11:59 PM Eastern Time on Monday, Feb 28th</p>
+</div>
+<p>This week’s lab will extend last week’s lab. The introduction is a direct repeat.</p>
+<div id="backstory-and-set-up" class="section level2">
+<h2>Backstory and Set Up</h2>
+<p>You have been recently hired to Zillow’s Zestimate product team as a junior analyst. As a part of their regular hazing, they have given you access to a small subset of their historic sales data. Your job is to present some basic predictions for housing values in a small geographic area (Ames, IA) using this historical pricing.</p>
+<p>First, let’s load the data.</p>
+<pre class="r"><code>ameslist &lt;- read.table(&#39;https://raw.githubusercontent.com/ajkirkpatrick/FS20/postS21_rev/classdata/ames.csv&#39;, 
+                   header = TRUE,
+                   sep = &#39;,&#39;) </code></pre>
+</div>
+<div id="building-a-model" class="section level2">
+<h2>Building a Model</h2>
+<p>We’re now ready to start playing with a model. We will start by using the <code>lm()</code> function to fit a simple linear regression
+model, with <code>SalePrice</code> as the response and lstat as the predictor.</p>
+<p>Recall that the basic <code>lm()</code> syntax is <code>lm(y∼x,data)</code>, where <code>y</code> is the <strong>response</strong>, <code>x</code> is the <strong>predictor</strong>, and <code>data</code> is the data set in which these two variables are kept. Let’s quickly run this with two variables:</p>
+<pre class="r"><code>lm.fit = lm(SalePrice ~ GrLivArea)</code></pre>
+<p>This yields:
+<code>Error in eval(expr, envir, enclos) : Object "SalePrice" not found</code></p>
+<p>This command causes an error because <code>R</code> does not know where to find the variables. We can fix this by attaching the data:</p>
+<pre class="r"><code>attach(Ames)
+lm.fit = lm(SalePrice ~ GrLivArea)
+# Alternatively...
+lm.fit = lm(SalePrice ~ GrLivArea, data=Ames)</code></pre>
+<p>The next line tells <code>R</code> that the variables are in the object known as <code>Ames</code>. If you haven’t created this object yet (as in the previous lab) you’ll get an error at this stage. But once we attach <code>Ames</code>, the first line works fine because <code>R</code> now recognizes the variables. Alternatively, we could specify this within the <code>lm()</code> call using <code>data = Ames</code>. We’ve presented this way because it may be new to you; choose whichever you find most reasonable.</p>
+<p>If we type <code>lm.fit</code>, some basic information about the model is output. For more detailed information, we use <code>summary(lm.fit)</code>. This gives us p-values and standard errors for the coefficients, as well as the <span class="math inline">\(R^2\)</span> statistic and <span class="math inline">\(F\)</span>-statistic for the entire model.<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a></p>
+<p>Utilizing these functions hels us see some interesting results. Note that we built (nearly) the simplest possible model:</p>
+<p><span class="math display">\[\text{SalePrice} = \beta_0 + \beta_1*(\text{GrLivArea}) + \epsilon.\]</span></p>
+<p>But even on its own, this model is instructive. It suggest that an increase in overall living area of 1 ft <span class="math inline">\(^2\)</span> is correlated with an expected increase in sales price of $107. (Note that we <strong>cannot</strong> make causal claims!)</p>
+<p>Saving the model as we did above is useful because we can explore other pieces of information it stores. Specifically, we can use the <code>names()</code> function in order to find out what else is stored in <code>lm.fit</code>. Although we can extract these quan- tities by name—e.g. <code>lm.fit$coefficients</code>—it is safer to use the extractor functions like <code>coef()</code> to access them. We can also use a handy tool like <code>plot()</code> applied directly to <code>lm.fit</code> to see some interesting data that is automatically stored by the model.</p>
+<p><strong>Try it:</strong> Use <code>plot()</code> to explore the model above. Do you suspect that some outliers have a large influence on the data? We will explore this point specifically in the future.</p>
+<p>We can now go crazy adding variables to our model. It’s as simple as appending them to the previous code—though you should be careful executing this, as it will overwrite your previous output:</p>
+<pre class="r"><code>lm.fit = lm(SalePrice ~ GrLivArea + LotArea)</code></pre>
+<p><strong>Try it:</strong> Does controlling for <code>LotArea</code> change the <em>qualitative</em> conclusions from the previous regression? What about the <em>quantitative</em> results? Does the direction of the change in the quantitative results make sense to you?</p>
+<div class="fyi">
+<p><strong>EXERCISES</strong></p>
+<ol style="list-style-type: decimal">
+<li><p>Use the <code>lm()</code> function in a <strong>simple</strong> linear regression (e.g., with only one predictor) with <code>SalePrice</code> as the response to determine the value of a garage.</p></li>
+<li><p>Use the <code>lm()</code> function to perform a multiple linear regression with <code>SalePrice</code> as the response and all other variables from your <code>Ames</code> data as the predictors. Use the <code>summary()</code> function to print the results. Comment on the output. For instance:</p>
+<ul>
+<li>Is there a relationship between the predictors and the response?</li>
+<li>Which predictors appear to have a statistically significant relationship to the response? (Hint: look for stars)</li>
+<li>What does the coefficient for the year variable suggest?</li>
+</ul></li>
+<li><p>Use the <code>:</code> symbols to fit a linear regression model with <em>one</em> well-chosen interaction effects. Why did you do this?</p></li>
+<li><p>Try a few (e.g., two) different transformations of the variables, such as <span class="math inline">\(ln(x)\)</span>, <span class="math inline">\(x^2\)</span>, <span class="math inline">\(\sqrt x\)</span>. Do any of these make sense to include in a model of <code>SalePrice</code>? Comment on your findings.</p></li>
+</ol>
+<p><strong>(Bonus; very very challenging)</strong> How might we build a model to estimate the elasticity of demand from this dataset?</p>
+</div>
+</div>
+<div class="footnotes">
+<hr />
+<ol>
+<li id="fn1"><p>When we use the simple regression model with a single input, the <span class="math inline">\(F\)</span>-stat includes the intercept term. Otherwise, it does not. See Lecture 5 for more detail.<a href="#fnref1" class="footnote-back">↩︎</a></p></li>
+</ol>
+</div>
