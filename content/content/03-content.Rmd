@@ -38,8 +38,13 @@ As with last week's content, the technical aspects of this lecture will be explo
 
 # Data visualization principles
 
-```{r, echo=FALSE}
-img_path <- paste(here::here(), "/img/", sep = "", collapse = NULL)
+```{r, echo=FALSE, warning=F, message=F}
+img_path <- paste(here::here(), "/content/content/img", sep = "", collapse = NULL)
+library(knitr)
+knitr::opts_chunk$set(
+ echo = FALSE, warning=FALSE, message = FALSE, error = FALSE,
+ fig.align='center'
+)
 ```
 
 We have already provided some rules to follow as we created plots for our examples. Here, we aim to provide some general principles we can use as a guide for effective data visualization. Much of this section is based on a talk by Karl Broman^[http://kbroman.org/] titled "Creating Effective Figures and Tables"^[https://www.biostat.wisc.edu/~kbroman/presentations/graphs2017.pdf] and includes some of the figures which were made with code that Karl makes available on his GitHub repository^[https://github.com/kbroman/Talk_Graphs], as well as class notes from Peter Aldhous' Introduction to Data Visualization course^[http://paldhous.github.io/ucb/2016/dataviz/index.html]. Following Karl's approach, we show some examples of plot styles we should avoid, explain how to improve them, and use these as motivation for a list of principles. We compare and contrast plots that follow these principles to those that don't.
@@ -49,14 +54,24 @@ The principles are mostly based on research related to how humans detect pattern
 As with the discussion above, we will be using these libraries---note the addition of __gridExtra__:
 
 
-```{r, warning=FALSE, message=FALSE}
+```{r, echo = TRUE, warning=FALSE, message=FALSE}
 library(tidyverse)
 library(dslabs)
 library(gridExtra)
+
+
 ```
 
 
 ### Encoding data using visual cues
+
+**Visual cues** are any element of design that gives the viewer clues as to how to use the object. For instance, we can look at door handles like these
+
+```{r, warning=FALSE, message=FALSE, fig.align = 'center', fig.subcap='imaginXP'}
+include_graphics(file.path(img_path, 'pushpull.jpg'))
+
+```
+and know exactly what to do with them. We don't even need the "PUSH" and "PULL" -- approaching just the pull handle in the wild gives sufficient visual cues that you know the door is a "pull" door. Encountering a metal plate with no handle is going to imply "push". If the door on the right were a "push" door, you'd be momentarily confused! It's poor design. Your plots should use visual cues to help readers understand how to use them with no confusion.
 
 We start by describing some principles for encoding data. There are several approaches at our disposal including position, aligned lengths, angles, area, brightness, and color hue.
 
@@ -158,7 +173,10 @@ In general, when displaying quantities, position and length are preferred over a
 The figure below, taken from the scientific literature^[https://projecteuclid.org/download/pdf_1/euclid.ss/1177010488],
 shows three variables: dose, drug type and survival. Although your screen/book page is flat and two-dimensional, the plot tries to imitate three dimensions and assigned a dimension to each variable.
 
-![](/./02-content_files/fig8b.png)
+```{r, echo=F, message=F, warning=F}
+include_graphics(file.path(img_path, 'fig8b.png'))
+```
+
 
 (Image courtesy of Karl Broman)
 
@@ -180,9 +198,14 @@ Notice how much easier it is to determine the survival values.
 
 Pseudo-3D is sometimes used completely gratuitously: plots are made to look 3D even when the 3rd dimension does not represent a quantity. This only adds confusion and makes it harder to relay your message.  Here are two examples:
 
-![](/./02-content_files/fig1e.png)
-![](/./02-content_files/fig2d.png)
+```{r}
+include_graphics(file.path(img_path, 'fig1e.png'))
+```
 
+
+```{r}
+include_graphics(file.path(img_path, 'fig2d.png'))
+```
 (Images courtesy of Karl Broman)
 
 
@@ -260,8 +283,10 @@ As a simple example, consider that for your own exploration it may be more usefu
 
 When using barplots, it is misinformative not to start the bars at 0. This is because, by using a barplot, we are implying the length is proportional to the quantities being displayed. By avoiding 0, relatively small differences can be made to look much bigger than they actually are. This approach is often used by politicians or media organizations trying to exaggerate a difference. Below is an illustrative example used by Peter Aldhous in this lecture: [http://paldhous.github.io/ucb/2016/dataviz/week2.html](http://paldhous.github.io/ucb/2016/dataviz/week2.html).
 
+```{r}
+include_graphics(file.path(img_path, 'class2_8.jpg'))
+```
 ![](/./02-content_files/class2_8.jpg)
-
 (Source: Fox News, via Media Matters^[http://mediamatters.org/blog/2013/04/05/fox-news-newest-dishonest-chart-immigration-enf/193507].)
 
 From the plot above, it appears that apprehensions have almost tripled when, in fact, they have only increased by about 16%. Starting the graph at 0 illustrates this clearly:
@@ -274,6 +299,9 @@ data.frame(Year = as.character(c(2011, 2012, 2013)),Southwest_Border_Apprehensio
 
 Here is another example, described in detail in a Flowing Data blog post:
 
+```{r}
+include_graphics(file.path(img_path, 'Bush-cuts.png'))
+```
 ![](/./02-content_files/Bush-cuts.png)
 
 (Source: Fox News, via Flowing Data^[http://flowingdata.com/2012/08/06/fox-news-continues-charting-excellence/].)
@@ -290,7 +318,12 @@ data.frame(date = c("Now", "Jan 1, 2013"), tax_rate = c(35, 39.6)) %>%
 
 Finally, here is an extreme example that makes a very small difference of under 2% look like a 10-100 fold change:
 
-![](/./02-content_files/venezuela-election.png)
+```{r}
+include_graphics(file.path(img_path, 'venezuela-election.png'))
+# ![](/./02-content_files/venezuela-election.png)
+```
+
+
 
 (Source:
 Venezolana de Televisión via Pakistan Today^[https://www.pakistantoday.com.pk/2018/05/18/whats-at-stake-in-venezuelan-presidential-vote] and Diego Mariano.)
@@ -322,7 +355,10 @@ Note that in the plot on the left, which includes 0, the space between 0 and 43 
 
 During President Barack Obama’s 2011 State of the Union Address, the following chart was used to compare the US GDP to the GDP of four competing nations:
 
-![](/./02-content_files/state-of-the-union.png)
+```{r}
+include_graphics(file.path(img_path, 'state-of-the-union.png'))
+# ![](/./02-content_files/state-of-the-union.png)
+```
 
 (Source: The 2011 State of the Union Address^[https://www.youtube.com/watch?v=kl2g40GoRxg])
 
@@ -655,8 +691,10 @@ p1 + scale_color_manual(values=color_blind_friendly_cols)
 ```
 
 From [Seafood Prices Reveal Impacts of a Major Ecological Disturbance](http://www.pnas.org/content/pnas/early/2017/01/24/1617948114.full.pdf):
-
-![](/content/02-content_files/Colorblind_example.png) 
+```{r}
+include_graphics(file.path(img_path, 'Colorblind_example.png'))
+# ![](/content/02-content_files/Colorblind_example.png)
+```
 
 
 
