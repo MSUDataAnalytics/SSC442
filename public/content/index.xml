@@ -3551,7 +3551,6 @@ library(gridExtra)&lt;/code&gt;&lt;/pre&gt;
 &lt;h3&gt;Encoding data using visual cues&lt;/h3&gt;
 &lt;p&gt;&lt;strong&gt;Visual cues&lt;/strong&gt; are any element of design that gives the viewer clues as to how to use the object. For instance, we can look at door handles like these
 &lt;img src=&#34;img/pushpull.jpg&#34; /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/./content/03-content_files/img/pushpull.jpg&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;and know exactly what to do with them. We don’t even need the “PUSH” and “PULL” – approaching just the pull handle in the wild gives sufficient visual cues that you know the door is a “pull” door. Encountering a metal plate with no handle is going to imply “push”. If the door on the right were a “push” door, you’d be momentarily confused! It’s poor design. Your plots should use visual cues to help readers understand how to use them with no confusion.&lt;/p&gt;
 &lt;p&gt;We start by describing some principles for encoding data. There are several approaches at our disposal including position, aligned lengths, angles, area, brightness, and color hue.&lt;/p&gt;
 &lt;p&gt;To illustrate how some of these strategies compare, let’s suppose we want to report the results from two hypothetical polls regarding browser preference taken in 2000 and then 2015. For each year, we are simply comparing five quantities – the five percentages. A widely used graphical representation of percentages, popularized by Microsoft Excel, is the pie chart:&lt;/p&gt;
@@ -3646,7 +3645,8 @@ IE
 &lt;h3&gt;Avoid pseudo-three-dimensional plots&lt;/h3&gt;
 &lt;p&gt;The figure below, taken from the scientific literature&lt;a href=&#34;#fn5&#34; class=&#34;footnote-ref&#34; id=&#34;fnref5&#34;&gt;&lt;sup&gt;5&lt;/sup&gt;&lt;/a&gt;,
 shows three variables: dose, drug type and survival. Although your screen/book page is flat and two-dimensional, the plot tries to imitate three dimensions and assigned a dimension to each variable.&lt;/p&gt;
-&lt;p&gt;(Image courtesy of Karl Broman)&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;img/fig8b.png&#34; /&gt;
+(Image courtesy of Karl Broman)&lt;/p&gt;
 &lt;p&gt;Humans are not good at seeing in three dimensions (which explains why it is hard to parallel park) and our limitation is even worse with regard to pseudo-three-dimensions. To see this, try to determine the values of the survival variable in the plot above. Can you tell when the purple ribbon intersects the red one? This is an example in which we can easily use color to represent the categorical variable instead of using a pseudo-3D:&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;##First read data
 url &amp;lt;- &amp;quot;https://github.com/kbroman/Talk_Graphs/raw/master/R/fig8dat.csv&amp;quot;
@@ -3660,7 +3660,9 @@ dat %&amp;gt;% gather(drug, survival, -log.dose) %&amp;gt;%
 &lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/03-content_files/figure-html/colors-for-different-lines-1.png&#34; width=&#34;672&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Notice how much easier it is to determine the survival values.&lt;/p&gt;
 &lt;p&gt;Pseudo-3D is sometimes used completely gratuitously: plots are made to look 3D even when the 3rd dimension does not represent a quantity. This only adds confusion and makes it harder to relay your message. Here are two examples:&lt;/p&gt;
-&lt;p&gt;(Images courtesy of Karl Broman)&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;img/fig1e.png&#34; /&gt;
+&lt;img src=&#34;img/fig2d.png&#34; /&gt;
+(Images courtesy of Karl Broman)&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;avoid-too-many-significant-digits&#34; class=&#34;section level3&#34;&gt;
 &lt;h3&gt;Avoid too many significant digits&lt;/h3&gt;
@@ -3991,16 +3993,17 @@ NA
 &lt;div id=&#34;know-when-to-include-0&#34; class=&#34;section level3&#34;&gt;
 &lt;h3&gt;Know when to include 0&lt;/h3&gt;
 &lt;p&gt;When using barplots, it is misinformative not to start the bars at 0. This is because, by using a barplot, we are implying the length is proportional to the quantities being displayed. By avoiding 0, relatively small differences can be made to look much bigger than they actually are. This approach is often used by politicians or media organizations trying to exaggerate a difference. Below is an illustrative example used by Peter Aldhous in this lecture: &lt;a href=&#34;http://paldhous.github.io/ucb/2016/dataviz/week2.html&#34;&gt;http://paldhous.github.io/ucb/2016/dataviz/week2.html&lt;/a&gt;.&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/./02-content_files/class2_8.jpg&#34; /&gt;
+&lt;p&gt;&lt;img src=&#34;img/class2_8.jpg&#34; /&gt;
 (Source: Fox News, via Media Matters&lt;a href=&#34;#fn6&#34; class=&#34;footnote-ref&#34; id=&#34;fnref6&#34;&gt;&lt;sup&gt;6&lt;/sup&gt;&lt;/a&gt;.)&lt;/p&gt;
 &lt;p&gt;From the plot above, it appears that apprehensions have almost tripled when, in fact, they have only increased by about 16%. Starting the graph at 0 illustrates this clearly:&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/03-content_files/figure-html/barplot-from-zero-1-1.png&#34; width=&#34;672&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
-&lt;p&gt;Here is another example, described in detail in a Flowing Data blog post:&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/./02-content_files/Bush-cuts.png&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Here is another example, described in detail in a Flowing Data blog post:
+&lt;img src=&#34;img/Bush-cuts.png&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;(Source: Fox News, via Flowing Data&lt;a href=&#34;#fn7&#34; class=&#34;footnote-ref&#34; id=&#34;fnref7&#34;&gt;&lt;sup&gt;7&lt;/sup&gt;&lt;/a&gt;.)&lt;/p&gt;
 &lt;p&gt;This plot makes a 13% increase look like a five fold change. Here is the appropriate plot:&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/03-content_files/figure-html/barplot-from-zero-2-1.png&#34; width=&#34;672&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
-&lt;p&gt;Finally, here is an extreme example that makes a very small difference of under 2% look like a 10-100 fold change:&lt;/p&gt;
+&lt;p&gt;Finally, here is an extreme example that makes a very small difference of under 2% look like a 10-100 fold change:
+&lt;img src=&#34;img/venezuela-election.png&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;(Source:
 Venezolana de Televisión via Pakistan Today&lt;a href=&#34;#fn8&#34; class=&#34;footnote-ref&#34; id=&#34;fnref8&#34;&gt;&lt;sup&gt;8&lt;/sup&gt;&lt;/a&gt; and Diego Mariano.)&lt;/p&gt;
 &lt;p&gt;Here is the appropriate plot:&lt;/p&gt;
@@ -4011,7 +4014,8 @@ Venezolana de Televisión via Pakistan Today&lt;a href=&#34;#fn8&#34; class=&#34
 &lt;/div&gt;
 &lt;div id=&#34;do-not-distort-quantities&#34; class=&#34;section level3&#34;&gt;
 &lt;h3&gt;Do not distort quantities&lt;/h3&gt;
-&lt;p&gt;During President Barack Obama’s 2011 State of the Union Address, the following chart was used to compare the US GDP to the GDP of four competing nations:&lt;/p&gt;
+&lt;p&gt;During President Barack Obama’s 2011 State of the Union Address, the following chart was used to compare the US GDP to the GDP of four competing nations:
+&lt;img src=&#34;img/state-of-the-union.png&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;(Source: The 2011 State of the Union Address&lt;a href=&#34;#fn9&#34; class=&#34;footnote-ref&#34; id=&#34;fnref9&#34;&gt;&lt;sup&gt;9&lt;/sup&gt;&lt;/a&gt;)&lt;/p&gt;
 &lt;p&gt;Judging by the area of the circles, the US appears to have an economy over five times larger than China’s and over 30 times larger than France’s. However, if we look at the actual numbers, we see that this is not the case. The actual ratios are 2.6 and 5.8 times bigger than China and France, respectively. The reason for this distortion is that the radius, rather than the area, was made to be proportional to the quantity, which implies that the proportion between the areas is squared: 2.6 turns into 6.5 and 5.8 turns into 34.1. Here is a comparison of the circles we get if we make the value proportional to the radius and to the area:&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;gdp &amp;lt;- c(14.6, 5.7, 5.3, 3.3, 2.5)
@@ -4083,7 +4087,7 @@ grid.arrange(p1, p2, ncol = 2) # we&amp;#39;ll cover this later&lt;/code&gt;&lt;
   ggplot(aes(x = height, fill = sex)) +
   geom_histogram(alpha = .5, show.legend = TRUE) +
   labs(fill = &amp;#39;Sex&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/03-content_files/figure-html/unnamed-chunk-17-1.png&#34; width=&#34;672&#34; style=&#34;display: block; margin: auto;&#34; /&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/03-content_files/figure-html/unnamed-chunk-9-1.png&#34; width=&#34;672&#34; style=&#34;display: block; margin: auto;&#34; /&gt;
 Sometimes, putting the plots on top of each other, even with a well-chosen alpha, does not clearly communicate the differences in the distribution. When we want to compare side-by-side, we will often use &lt;strong&gt;facets&lt;/strong&gt;. Facets are a bit like supercharged aesthetic mapping because they let us separate plots based on categorical variables, but instead of putting them together, we can have side-by-side plots.&lt;/p&gt;
 &lt;p&gt;Two functions in &lt;code&gt;ggplot&lt;/code&gt; give facets: &lt;code&gt;facet_wrap&lt;/code&gt; and &lt;code&gt;facet_grid&lt;/code&gt;. We’ll use &lt;code&gt;facet_grid&lt;/code&gt; as this is a little more powerful.&lt;/p&gt;
 &lt;p&gt;Facets are added as an additional layer like this: &lt;code&gt;+ facet_grid(. ~ sex)&lt;/code&gt;. Inside the function, we have a “formula” that is written without quotes (which is unusual for R). Since &lt;code&gt;facet_grid&lt;/code&gt; takes a “formula”, all we have to do to facet is decide how we want to lay out our plots. If we want each of the faceting groups to lie along the vertical axis, we put the variable on which we want to facet before the “~”, and after the “~” we simply put a period. If we want the groups to lie along the horizontal axis, we put the variable after the “~” and the period before. In the example, we’ll separate the histogram by drawing them side by side along the horizontal axis.&lt;/p&gt;
@@ -4091,7 +4095,7 @@ Sometimes, putting the plots on top of each other, even with a well-chosen alpha
   ggplot(aes(x = height)) +
   geom_histogram(binwidth = 1, color=&amp;quot;black&amp;quot;) +
   facet_grid(.~sex)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/03-content_files/figure-html/unnamed-chunk-18-1.png&#34; width=&#34;672&#34; style=&#34;display: block; margin: auto;&#34; /&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/03-content_files/figure-html/unnamed-chunk-10-1.png&#34; width=&#34;672&#34; style=&#34;display: block; margin: auto;&#34; /&gt;
 This would be the result if we took the females, plotted the histogram, then took the males, made another histogram, and then put them side by side. But we do it in one command by adding &lt;code&gt;+facet_grid(...)&lt;/code&gt;&lt;/p&gt;
 &lt;div id=&#34;use-common-axes-with-facets&#34; class=&#34;section level3&#34;&gt;
 &lt;h3&gt;Use common axes with facets&lt;/h3&gt;
@@ -4111,10 +4115,10 @@ This would be the result if we took the females, plotted the histogram, then too
   geom_histogram(binwidth = 1, color=&amp;quot;black&amp;quot;) +
   facet_grid(. ~ sex)&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/03-content_files/figure-html/common-axes-histograms-right-2-1.png&#34; width=&#34;672&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/03-content_files/figure-html/unnamed-chunk-19-1.png&#34; width=&#34;672&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/03-content_files/figure-html/unnamed-chunk-11-1.png&#34; width=&#34;672&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;This plot makes it much easier to notice that men’s heights are, on average, higher.&lt;/p&gt;
 &lt;p&gt;The sample size of females is smaller than of males – that is, we have more males in the data. Try &lt;code&gt;table(heights$sex)&lt;/code&gt; to see this. It’s also clear from the above plot because the height of the bars on the y-axis (&lt;code&gt;count&lt;/code&gt;) are smaller for females. If we are interested in the distribution within our sample, this is useful. If we’re interested in the distribution of females vs. the distribution of males, we might want to re-scale the y-axis.&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/03-content_files/figure-html/unnamed-chunk-20-1.png&#34; width=&#34;672&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/03-content_files/figure-html/unnamed-chunk-12-1.png&#34; width=&#34;672&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;We still have &lt;code&gt;count&lt;/code&gt; on the y-axis, so we didn’t switch to density (though it would look the same). Instead, we rescaled the y-axis, which gives us a different perspective but still contains the count information.&lt;/p&gt;
 &lt;p&gt;If we want the more compact summary provided by boxplots, we then align them horizontally since, by default, boxplots move up and down with changes in height. Following our &lt;em&gt;show the data&lt;/em&gt; principle, we then overlay all the data points:&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p3=heights %&amp;gt;%
@@ -4138,7 +4142,7 @@ p3&lt;/code&gt;&lt;/pre&gt;
   ggplot(aes(x = lifeExp)) + 
   geom_density() +
   facet_grid(continent ~ year)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/03-content_files/figure-html/unnamed-chunk-21-1.png&#34; width=&#34;672&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/03-content_files/figure-html/unnamed-chunk-13-1.png&#34; width=&#34;672&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;This makes it easy to read the life expectancy distribution over time (left-to-right) and across continents (up-and-down). It makes it easy to see that Africa has spread it’s life expectancy distribution (some improved, some didn’t), while Europe has become more clustered at the top end over time. Faceting in a grid is very helpful when you have a time dimension.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;visual-cues-to-be-compared-should-be-adjacent-continued&#34; class=&#34;section level3&#34;&gt;
@@ -4178,7 +4182,8 @@ p3&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;About 10% of the population is color blind. Unfortunately, the default colors used in &lt;strong&gt;ggplot2&lt;/strong&gt; are not optimal for this group. However, &lt;strong&gt;ggplot2&lt;/strong&gt; does make it easy to change the color palette used in the plots. An example of how we can use a color blind friendly palette is described here: &lt;a href=&#34;http://www.cookbook-r.com/Graphs/Colors_(ggplot2)/#a-colorblind-friendly-palette&#34;&gt;http://www.cookbook-r.com/Graphs/Colors_(ggplot2)/#a-colorblind-friendly-palette&lt;/a&gt;:&lt;/p&gt;
 &lt;p&gt;Here are the colors
 &lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/03-content_files/figure-html/color-blind-friendly-colors-1.png&#34; width=&#34;672&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
-&lt;p&gt;From &lt;a href=&#34;http://www.pnas.org/content/pnas/early/2017/01/24/1617948114.full.pdf&#34;&gt;Seafood Prices Reveal Impacts of a Major Ecological Disturbance&lt;/a&gt;:&lt;/p&gt;
+&lt;p&gt;From &lt;a href=&#34;http://www.pnas.org/content/pnas/early/2017/01/24/1617948114.full.pdf&#34;&gt;Seafood Prices Reveal Impacts of a Major Ecological Disturbance&lt;/a&gt;:
+&lt;img src=&#34;img/Colorblind_example.png&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;There are several resources that can help you select colors, for example this one: &lt;a href=&#34;http://bconnelly.net/2013/10/creating-colorblind-friendly-figures/&#34;&gt;http://bconnelly.net/2013/10/creating-colorblind-friendly-figures/&lt;/a&gt;.&lt;/p&gt;
 &lt;div id=&#34;using-a-discrete-color-palette&#34; class=&#34;section level3&#34;&gt;
 &lt;h3&gt;Using a discrete color palette&lt;/h3&gt;
@@ -4190,7 +4195,7 @@ filter(year == 1990 | year == 1995 | year==2000 |  year == 2005 | year==2010 ) %
 ggplot(aes(x = continent, y = gdp/population, fill = as.factor(year)))  + coord_flip()
 
 gp + geom_boxplot()  + labs(title = &amp;#39;Default&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/03-content_files/figure-html/unnamed-chunk-24-1.png&#34; width=&#34;672&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/03-content_files/figure-html/unnamed-chunk-15-1.png&#34; width=&#34;672&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;The default uses five different colors plucked seemingly at random. They are actually drawn from a palette of default ggplot colors.&lt;/p&gt;
 &lt;p&gt;Let’s try Viridis&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;gp = dslabs::gapminder %&amp;gt;% 
@@ -4203,7 +4208,7 @@ viridis_c = gp + geom_boxplot()  + labs(title = &amp;#39;Viridis C&amp;#39;) + s
 viridis_d = gp + geom_boxplot()  + labs(title = &amp;#39;Viridis D&amp;#39;) + scale_fill_viridis_d(option = &amp;#39;D&amp;#39;)
 
 grid.arrange(viridis_a, viridis_b, viridis_c, viridis_d)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/03-content_files/figure-html/unnamed-chunk-25-1.png&#34; width=&#34;672&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/03-content_files/figure-html/unnamed-chunk-16-1.png&#34; width=&#34;672&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Viridis uses a better palette of colors that, though distinct, have some cohesiveness to them.&lt;/p&gt;
 &lt;p&gt;We can also use a custom palette, like the colorblind palette from before. If the palette has more entries than we have (N) distinct categories, R reverts to the default.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;gp = dslabs::gapminder %&amp;gt;% 
@@ -4214,7 +4219,7 @@ custom_a = gp + geom_boxplot()  + labs(title = &amp;#39;Viridis A&amp;#39;) + sc
 custom_b = gp + geom_boxplot()  + labs(title = &amp;#39;Viridis A&amp;#39;) + scale_fill_discrete(type = color_blind_friendly_cols[1:3])
 
 grid.arrange(custom_a, custom_b)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/03-content_files/figure-html/unnamed-chunk-26-1.png&#34; width=&#34;672&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/03-content_files/figure-html/unnamed-chunk-17-1.png&#34; width=&#34;672&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;In the lower plot, we only give it a length-3 vector of colors, and it needs 5, so it returns to default.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;using-a-continuous-color-palette&#34; class=&#34;section level3&#34;&gt;
@@ -4227,7 +4232,7 @@ grid.arrange(custom_a, custom_b)&lt;/code&gt;&lt;/pre&gt;
   scale_fill_continuous() + 
   geom_point(size = 5) +
   labs(x = &amp;#39;Year&amp;#39;, y = &amp;#39;GDP Per Capita&amp;#39;, fill = &amp;#39;Life Expectancy&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/03-content_files/figure-html/unnamed-chunk-27-1.png&#34; width=&#34;672&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/03-content_files/figure-html/unnamed-chunk-18-1.png&#34; width=&#34;672&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;We can see that GDP per capita went up, then down in 1989 (fall of the Soviet Union), then up after that. The color ramp tells us that life expectancy reached 75 years near the end, and it certainly improved in the post-2000 era.&lt;/p&gt;
 &lt;p&gt;We can set some of the points on the ramp manually - here, the ramp starts at dark blue and ends at light blue, but what if we wanted to start at red, and at blue, and cross white in the middle? Easy! We use &lt;code&gt;scale_color_gradient2&lt;/code&gt; and specify the colors for low, mid, and high, and specify the midpoint at 72.5 years.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;dslabs::gapminder %&amp;gt;%
@@ -4236,7 +4241,7 @@ grid.arrange(custom_a, custom_b)&lt;/code&gt;&lt;/pre&gt;
   scale_color_gradient2(low = &amp;#39;red&amp;#39;, mid = &amp;#39;white&amp;#39;, high = &amp;#39;blue&amp;#39;, midpoint = 72.5) + 
   geom_point(size = 5) +
   labs(x = &amp;#39;Year&amp;#39;, y = &amp;#39;GDP Per Capita&amp;#39;, fill = &amp;#39;Life Expectancy&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/03-content_files/figure-html/unnamed-chunk-28-1.png&#34; width=&#34;672&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/03-content_files/figure-html/unnamed-chunk-19-1.png&#34; width=&#34;672&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;The midpoint specification is extra useful when there is a threshold (like 50% of the vote) that indicates a different qualitative outcome.&lt;/p&gt;
 &lt;p&gt;The gradient2 method does not always work with the colorblind discrete palette - the colors interpolated may be in the range in which colorblindness tends to be a problem:&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;dslabs::gapminder %&amp;gt;%
@@ -4245,7 +4250,7 @@ grid.arrange(custom_a, custom_b)&lt;/code&gt;&lt;/pre&gt;
   scale_color_gradient2(low = color_blind_friendly_cols[3], mid = color_blind_friendly_cols[4], high = color_blind_friendly_cols[5], midpoint = 72.5) + 
   geom_point(size = 5) +
   labs(x = &amp;#39;Year&amp;#39;, y = &amp;#39;GDP Per Capita&amp;#39;, fill = &amp;#39;Life Expectancy&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/03-content_files/figure-html/unnamed-chunk-29-1.png&#34; width=&#34;672&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/03-content_files/figure-html/unnamed-chunk-20-1.png&#34; width=&#34;672&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;div id=&#34;gridextra-and-grid.arrange&#34; class=&#34;section level2&#34;&gt;
