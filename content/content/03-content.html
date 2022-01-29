@@ -74,8 +74,7 @@ library(gridExtra)</code></pre>
 <div id="encoding-data-using-visual-cues" class="section level3">
 <h3>Encoding data using visual cues</h3>
 <p><strong>Visual cues</strong> are any element of design that gives the viewer clues as to how to use the object. For instance, we can look at door handles like these</p>
-<p><img src="img/pushpull.jpg" width="341" style="display: block; margin: auto;" />
-and know exactly what to do with them. We don’t even need the “PUSH” and “PULL” – approaching just the pull handle in the wild gives sufficient visual cues that you know the door is a “pull” door. Encountering a metal plate with no handle is going to imply “push”. If the door on the right were a “push” door, you’d be momentarily confused! It’s poor design. Your plots should use visual cues to help readers understand how to use them with no confusion.</p>
+<p>and know exactly what to do with them. We don’t even need the “PUSH” and “PULL” – approaching just the pull handle in the wild gives sufficient visual cues that you know the door is a “pull” door. Encountering a metal plate with no handle is going to imply “push”. If the door on the right were a “push” door, you’d be momentarily confused! It’s poor design. Your plots should use visual cues to help readers understand how to use them with no confusion.</p>
 <p>We start by describing some principles for encoding data. There are several approaches at our disposal including position, aligned lengths, angles, area, brightness, and color hue.</p>
 <p>To illustrate how some of these strategies compare, let’s suppose we want to report the results from two hypothetical polls regarding browser preference taken in 2000 and then 2015. For each year, we are simply comparing five quantities – the five percentages. A widely used graphical representation of percentages, popularized by Microsoft Excel, is the pie chart:</p>
 <p><img src="/content/03-content_files/figure-html/piechart-1.png" width="672" style="display: block; margin: auto;" /></p>
@@ -169,7 +168,6 @@ IE
 <h3>Avoid pseudo-three-dimensional plots</h3>
 <p>The figure below, taken from the scientific literature<a href="#fn5" class="footnote-ref" id="fnref5"><sup>5</sup></a>,
 shows three variables: dose, drug type and survival. Although your screen/book page is flat and two-dimensional, the plot tries to imitate three dimensions and assigned a dimension to each variable.</p>
-<p><img src="img/fig8b.png" width="223" style="display: block; margin: auto;" /></p>
 <p>(Image courtesy of Karl Broman)</p>
 <p>Humans are not good at seeing in three dimensions (which explains why it is hard to parallel park) and our limitation is even worse with regard to pseudo-three-dimensions. To see this, try to determine the values of the survival variable in the plot above. Can you tell when the purple ribbon intersects the red one? This is an example in which we can easily use color to represent the categorical variable instead of using a pseudo-3D:</p>
 <pre class="r"><code>##First read data
@@ -184,9 +182,7 @@ dat %&gt;% gather(drug, survival, -log.dose) %&gt;%
 <p><img src="/content/03-content_files/figure-html/colors-for-different-lines-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>Notice how much easier it is to determine the survival values.</p>
 <p>Pseudo-3D is sometimes used completely gratuitously: plots are made to look 3D even when the 3rd dimension does not represent a quantity. This only adds confusion and makes it harder to relay your message. Here are two examples:</p>
-<p><img src="img/fig1e.png" width="222" style="display: block; margin: auto;" /></p>
-<p><img src="img/fig2d.png" width="469" style="display: block; margin: auto;" />
-(Images courtesy of Karl Broman)</p>
+<p>(Images courtesy of Karl Broman)</p>
 </div>
 <div id="avoid-too-many-significant-digits" class="section level3">
 <h3>Avoid too many significant digits</h3>
@@ -517,19 +513,16 @@ NA
 <div id="know-when-to-include-0" class="section level3">
 <h3>Know when to include 0</h3>
 <p>When using barplots, it is misinformative not to start the bars at 0. This is because, by using a barplot, we are implying the length is proportional to the quantities being displayed. By avoiding 0, relatively small differences can be made to look much bigger than they actually are. This approach is often used by politicians or media organizations trying to exaggerate a difference. Below is an illustrative example used by Peter Aldhous in this lecture: <a href="http://paldhous.github.io/ucb/2016/dataviz/week2.html">http://paldhous.github.io/ucb/2016/dataviz/week2.html</a>.</p>
-<p><img src="img/class2_8.jpg" width="188" style="display: block; margin: auto;" />
-<img src="/./02-content_files/class2_8.jpg" />
+<p><img src="/./02-content_files/class2_8.jpg" />
 (Source: Fox News, via Media Matters<a href="#fn6" class="footnote-ref" id="fnref6"><sup>6</sup></a>.)</p>
 <p>From the plot above, it appears that apprehensions have almost tripled when, in fact, they have only increased by about 16%. Starting the graph at 0 illustrates this clearly:</p>
 <p><img src="/content/03-content_files/figure-html/barplot-from-zero-1-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>Here is another example, described in detail in a Flowing Data blog post:</p>
-<p><img src="img/Bush-cuts.png" width="215" style="display: block; margin: auto;" />
-<img src="/./02-content_files/Bush-cuts.png" /></p>
+<p><img src="/./02-content_files/Bush-cuts.png" /></p>
 <p>(Source: Fox News, via Flowing Data<a href="#fn7" class="footnote-ref" id="fnref7"><sup>7</sup></a>.)</p>
 <p>This plot makes a 13% increase look like a five fold change. Here is the appropriate plot:</p>
 <p><img src="/content/03-content_files/figure-html/barplot-from-zero-2-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>Finally, here is an extreme example that makes a very small difference of under 2% look like a 10-100 fold change:</p>
-<p><img src="img/venezuela-election.png" width="213" style="display: block; margin: auto;" /></p>
 <p>(Source:
 Venezolana de Televisión via Pakistan Today<a href="#fn8" class="footnote-ref" id="fnref8"><sup>8</sup></a> and Diego Mariano.)</p>
 <p>Here is the appropriate plot:</p>
@@ -541,7 +534,6 @@ Venezolana de Televisión via Pakistan Today<a href="#fn8" class="footnote-ref" 
 <div id="do-not-distort-quantities" class="section level3">
 <h3>Do not distort quantities</h3>
 <p>During President Barack Obama’s 2011 State of the Union Address, the following chart was used to compare the US GDP to the GDP of four competing nations:</p>
-<p><img src="img/state-of-the-union.png" width="956" style="display: block; margin: auto;" /></p>
 <p>(Source: The 2011 State of the Union Address<a href="#fn9" class="footnote-ref" id="fnref9"><sup>9</sup></a>)</p>
 <p>Judging by the area of the circles, the US appears to have an economy over five times larger than China’s and over 30 times larger than France’s. However, if we look at the actual numbers, we see that this is not the case. The actual ratios are 2.6 and 5.8 times bigger than China and France, respectively. The reason for this distortion is that the radius, rather than the area, was made to be proportional to the quantity, which implies that the proportion between the areas is squared: 2.6 turns into 6.5 and 5.8 turns into 34.1. Here is a comparison of the circles we get if we make the value proportional to the radius and to the area:</p>
 <pre class="r"><code>gdp &lt;- c(14.6, 5.7, 5.3, 3.3, 2.5)
@@ -708,8 +700,7 @@ p3</code></pre>
 <p>About 10% of the population is color blind. Unfortunately, the default colors used in <strong>ggplot2</strong> are not optimal for this group. However, <strong>ggplot2</strong> does make it easy to change the color palette used in the plots. An example of how we can use a color blind friendly palette is described here: <a href="http://www.cookbook-r.com/Graphs/Colors_(ggplot2)/#a-colorblind-friendly-palette">http://www.cookbook-r.com/Graphs/Colors_(ggplot2)/#a-colorblind-friendly-palette</a>:</p>
 <p>Here are the colors
 <img src="/content/03-content_files/figure-html/color-blind-friendly-colors-1.png" width="672" style="display: block; margin: auto;" /></p>
-<p>From <a href="http://www.pnas.org/content/pnas/early/2017/01/24/1617948114.full.pdf">Seafood Prices Reveal Impacts of a Major Ecological Disturbance</a>:
-<img src="img/Colorblind_example.png" width="256" style="display: block; margin: auto;" /></p>
+<p>From <a href="http://www.pnas.org/content/pnas/early/2017/01/24/1617948114.full.pdf">Seafood Prices Reveal Impacts of a Major Ecological Disturbance</a>:</p>
 <p>There are several resources that can help you select colors, for example this one: <a href="http://bconnelly.net/2013/10/creating-colorblind-friendly-figures/">http://bconnelly.net/2013/10/creating-colorblind-friendly-figures/</a>.</p>
 <div id="using-a-discrete-color-palette" class="section level3">
 <h3>Using a discrete color palette</h3>
