@@ -39,24 +39,29 @@ give an error.
 
 ++++ Why are my pictures not working locally but are on site? Or not working on site but working locally?
 In local, server will look on the path local to, I think, the .RMD location
-On the web, server will look on the path local to public/
+On the web, server will look on the path local to the index.html file in public/content/XX-content/ ( or public/example/XX-example). 
+--> But it seems to get 03-content and 03-content_files mixed up?
 
-Solution: In both the SSC442_SS21>content>content folder AND in public/, have an "img" folder. Refer to graphics
+Solution: In both the SSC442_SS21>content>content folder AND in public/content/XX-content/, have an "img" folder. Refer to graphics
 using ![](./img/filename.png). Make sure it appears in both public>img and the local img. It should appear in-line as well.
   build site before pushing to github
   
-  If the site publishes links that are broken, right-click and look at the link path. .app is "public" so follow from there
+  If the site publishes links that are broken, right-click and look at the link path. .app can be thought of as a stub
+  for the index.html file under "public" so follow from there
   
   Wait, the path is relative to the index.html file in public/content/XX-contentorexmple
+  - finally, it worked when I copied all the images needed to the public/content/03-content/img folder and refer to it as ./img/filename.png
 
 ++++
 Why is my website not formateed?
 
----> this one::: OK, there was a content-03 hanging around naked in public/content (but not 02 or 04 etc). That had to be deleted. No idea how it got there.
+---> this one::: OK, there was a content-03.html hanging around naked in public/content (but not 02 or 04 etc). That had to be deleted. No idea how it got there.
 
 /public/ is still used, and build_site button under Build tab is what updates that. Tried changing netlify.toml to static...def not it!
 
 Might also have needed to clear knitr cache?
+
+SOLUTION: LOOK FOR NAKED content-XX.html in public/content (or example-XX.html in public/example). Delete it!
 
 +++
 
