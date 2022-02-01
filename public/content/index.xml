@@ -4122,7 +4122,12 @@ This would be the result if we took the females, plotted the histogram, then too
 &lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/03-content_files/figure-html/common-axes-histograms-right-2-1.png&#34; width=&#34;672&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/03-content_files/figure-html/unnamed-chunk-11-1.png&#34; width=&#34;672&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;This plot makes it much easier to notice that men’s heights are, on average, higher.&lt;/p&gt;
-&lt;p&gt;The sample size of females is smaller than of males – that is, we have more males in the data. Try &lt;code&gt;table(heights$sex)&lt;/code&gt; to see this. It’s also clear from the above plot because the height of the bars on the y-axis (&lt;code&gt;count&lt;/code&gt;) are smaller for females. If we are interested in the distribution within our sample, this is useful. If we’re interested in the distribution of females vs. the distribution of males, we might want to re-scale the y-axis.&lt;/p&gt;
+&lt;p&gt;The sample size of females is smaller than of males – that is, we have more males in the data. Try &lt;code&gt;table(heights$sex)&lt;/code&gt; to see this. It’s also clear from the above plot because the height of the bars on the y-axis (&lt;code&gt;count&lt;/code&gt;) are smaller for females. If we are interested in the distribution within our sample, this is useful. If we’re interested in the distribution of females vs. the distribution of males, we might want to re-scale the y-axis. Here we use &lt;code&gt;scales = &#39;free_y&#39;&lt;/code&gt; to allow each of the y-axes to have their own scale. Pay close attention to the axis labels now!&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p2 &amp;lt;- heights %&amp;gt;%
+  ggplot(aes(height)) +
+  geom_histogram(binwidth = 1, color=&amp;quot;black&amp;quot;) +
+  facet_grid(sex~., scales = &amp;#39;free_y&amp;#39;)
+p2&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/03-content_files/figure-html/unnamed-chunk-12-1.png&#34; width=&#34;672&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;We still have &lt;code&gt;count&lt;/code&gt; on the y-axis, so we didn’t switch to density (though it would look the same). Instead, we rescaled the y-axis, which gives us a different perspective but still contains the count information.&lt;/p&gt;
 &lt;p&gt;If we want the more compact summary provided by boxplots, we then align them horizontally since, by default, boxplots move up and down with changes in height. Following our &lt;em&gt;show the data&lt;/em&gt; principle, we then overlay all the data points:&lt;/p&gt;
@@ -4185,8 +4190,27 @@ p3&lt;/code&gt;&lt;/pre&gt;
 &lt;div id=&#34;think-of-the-color-blind&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Think of the color blind&lt;/h2&gt;
 &lt;p&gt;About 10% of the population is color blind. Unfortunately, the default colors used in &lt;strong&gt;ggplot2&lt;/strong&gt; are not optimal for this group. However, &lt;strong&gt;ggplot2&lt;/strong&gt; does make it easy to change the color palette used in the plots. An example of how we can use a color blind friendly palette is described here: &lt;a href=&#34;http://www.cookbook-r.com/Graphs/Colors_(ggplot2)/#a-colorblind-friendly-palette&#34;&gt;http://www.cookbook-r.com/Graphs/Colors_(ggplot2)/#a-colorblind-friendly-palette&lt;/a&gt;:&lt;/p&gt;
-&lt;p&gt;Here are the colors
-&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/03-content_files/figure-html/color-blind-friendly-colors-1.png&#34; width=&#34;672&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Here are the colors&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;color_blind_friendly_cols &amp;lt;-
+  c(&amp;quot;#999999&amp;quot;, &amp;quot;#E69F00&amp;quot;, &amp;quot;#56B4E9&amp;quot;, &amp;quot;#009E73&amp;quot;,
+    &amp;quot;#F0E442&amp;quot;, &amp;quot;#0072B2&amp;quot;, &amp;quot;#D55E00&amp;quot;, &amp;quot;#CC79A7&amp;quot;)
+
+
+
+p1 &amp;lt;- data.frame(x=1:8, y=rep(1,8), col = as.character(1:8)) %&amp;gt;%
+  ggplot(aes(x, y, color = col)) +
+  geom_point(size=8, show.legend = FALSE) +
+  theme(axis.title.x=element_blank(),
+        axis.text.x=element_blank(),
+        axis.ticks.x=element_blank(),
+        axis.title.y=element_blank(),
+        axis.text.y=element_blank(),
+        axis.ticks.y=element_blank(),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank())
+
+p1 + scale_color_manual(values=color_blind_friendly_cols)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/03-content_files/figure-html/color-blind-friendly-colors-1.png&#34; width=&#34;672&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;From &lt;a href=&#34;http://www.pnas.org/content/pnas/early/2017/01/24/1617948114.full.pdf&#34;&gt;Seafood Prices Reveal Impacts of a Major Ecological Disturbance&lt;/a&gt;:
 &lt;img src=&#34;img/Colorblind_example.png&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;There are several resources that can help you select colors, for example this one: &lt;a href=&#34;http://bconnelly.net/2013/10/creating-colorblind-friendly-figures/&#34;&gt;http://bconnelly.net/2013/10/creating-colorblind-friendly-figures/&lt;/a&gt;.&lt;/p&gt;
@@ -4215,7 +4239,7 @@ viridis_d = gp + geom_boxplot()  + labs(title = &amp;#39;Viridis D&amp;#39;) + s
 grid.arrange(viridis_a, viridis_b, viridis_c, viridis_d)&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/03-content_files/figure-html/unnamed-chunk-16-1.png&#34; width=&#34;672&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Viridis uses a better palette of colors that, though distinct, have some cohesiveness to them.&lt;/p&gt;
-&lt;p&gt;We can also use a custom palette, like the colorblind palette from before. If the palette has more entries than we have (N) distinct categories, R reverts to the default.&lt;/p&gt;
+&lt;p&gt;We can also use a custom palette, like the colorblind palette from before (see above where we defined &lt;code&gt;color_blind_friendly_cols&lt;/code&gt;). If the palette has more entries than we have (N) distinct categories, R reverts to the default.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;gp = dslabs::gapminder %&amp;gt;% 
 filter(year == 1990 | year == 1995 | year==2000 |  year == 2005 | year==2010 ) %&amp;gt;%
 ggplot(aes(x = continent, y = gdp/population, fill = as.factor(year)))  + coord_flip() + labs(fill = &amp;#39;Year&amp;#39;) 
@@ -4225,7 +4249,7 @@ custom_b = gp + geom_boxplot()  + labs(title = &amp;#39;Viridis A&amp;#39;) + sc
 
 grid.arrange(custom_a, custom_b)&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/03-content_files/figure-html/unnamed-chunk-17-1.png&#34; width=&#34;672&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
-&lt;p&gt;In the lower plot, we only give it a length-3 vector of colors, and it needs 5, so it returns to default.&lt;/p&gt;
+&lt;p&gt;In the lower plot, we only give it a length-3 vector of colors, and it needs 5, so it returns to default. Unfortunately, it doesn’t warn you as to this behavior. Bad R!&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;using-a-continuous-color-palette&#34; class=&#34;section level3&#34;&gt;
 &lt;h3&gt;Using a continuous color palette&lt;/h3&gt;

@@ -529,9 +529,10 @@ p2
 
 This plot makes it much easier to notice that men's heights are, on average, higher.
 
-The sample size of females is smaller than of males -- that is, we have more males in the data. Try `table(heights$sex)` to see this. It's also clear from the above plot because the height of the bars on the y-axis (`count`) are smaller for females. If we are interested in the distribution within our sample, this is useful. If we're interested in the distribution of females vs. the distribution of males, we might want to re-scale the y-axis.
+The sample size of females is smaller than of males -- that is, we have more males in the data. Try `table(heights$sex)` to see this. It's also clear from the above plot because the height of the bars on the y-axis (`count`) are smaller for females. If we are interested in the distribution within our sample, this is useful. If we're interested in the distribution of females vs. the distribution of males, we might want to re-scale the y-axis. Here we use `scales = 'free_y'` to allow each of the y-axes to have their own scale. Pay close attention to the axis labels now!
 
-```{r, eval = TRUE}
+
+```{r, eval = TRUE, echo = TRUE}
 p2 <- heights %>%
   ggplot(aes(height)) +
   geom_histogram(binwidth = 1, color="black") +
@@ -639,10 +640,12 @@ color_blind_friendly_cols <-
 ```
 
 Here are the colors
-```{r color-blind-friendly-colors, echo=FALSE, fig.height=0.5}
+```{r color-blind-friendly-colors, echo=TRUE, fig.height=0.5, collapse = TRUE}
 color_blind_friendly_cols <-
   c("#999999", "#E69F00", "#56B4E9", "#009E73",
     "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
+
+
 
 p1 <- data.frame(x=1:8, y=rep(1,8), col = as.character(1:8)) %>%
   ggplot(aes(x, y, color = col)) +
@@ -699,7 +702,7 @@ The default uses five different colors plucked seemingly at random. They are act
 
 Let's try Viridis
 
-```{r, echo=TRUE, warning=FALSE, error = FALSE}
+```{r, echo=TRUE, warning=FALSE, error = FALSE, echo = TRUE}
 gp = dslabs::gapminder %>% 
 filter(year == 1990 | year == 1995 | year==2000 |  year == 2005 | year==2010 ) %>%
 ggplot(aes(x = continent, y = gdp/population, fill = as.factor(year)))  + coord_flip() + labs(fill = 'Year')
@@ -714,9 +717,9 @@ grid.arrange(viridis_a, viridis_b, viridis_c, viridis_d)
 
 Viridis uses a better palette of colors that, though distinct, have some cohesiveness to them. 
 
-We can also use a custom palette, like the colorblind palette from before. If the palette has more entries than we have (N) distinct categories, R reverts to the default.
+We can also use a custom palette, like the colorblind palette from before (see above where we defined `color_blind_friendly_cols`). If the palette has more entries than we have (N) distinct categories, R reverts to the default.
 
-```{r, echo=TRUE, warning=FALSE, error = FALSE}
+```{r, echo=TRUE, warning=FALSE, error = FALSE, echo = TRUE}
 gp = dslabs::gapminder %>% 
 filter(year == 1990 | year == 1995 | year==2000 |  year == 2005 | year==2010 ) %>%
 ggplot(aes(x = continent, y = gdp/population, fill = as.factor(year)))  + coord_flip() + labs(fill = 'Year') 
@@ -727,7 +730,7 @@ custom_b = gp + geom_boxplot()  + labs(title = 'Viridis A') + scale_fill_discret
 grid.arrange(custom_a, custom_b)
 ```
 
-In the lower plot, we only give it a length-3 vector of colors, and it needs 5, so it returns to default.
+In the lower plot, we only give it a length-3 vector of colors, and it needs 5, so it returns to default. Unfortunately, it doesn't warn you as to this behavior. Bad R!
 
 
 

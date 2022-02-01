@@ -1222,7 +1222,12 @@ This would be the result if we took the females, plotted the histogram, then too
 <p><img src="/content/03-content_files/figure-html/common-axes-histograms-right-2-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p><img src="/content/03-content_files/figure-html/unnamed-chunk-11-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>This plot makes it much easier to notice that men’s heights are, on average, higher.</p>
-<p>The sample size of females is smaller than of males – that is, we have more males in the data. Try <code>table(heights$sex)</code> to see this. It’s also clear from the above plot because the height of the bars on the y-axis (<code>count</code>) are smaller for females. If we are interested in the distribution within our sample, this is useful. If we’re interested in the distribution of females vs. the distribution of males, we might want to re-scale the y-axis.</p>
+<p>The sample size of females is smaller than of males – that is, we have more males in the data. Try <code>table(heights$sex)</code> to see this. It’s also clear from the above plot because the height of the bars on the y-axis (<code>count</code>) are smaller for females. If we are interested in the distribution within our sample, this is useful. If we’re interested in the distribution of females vs. the distribution of males, we might want to re-scale the y-axis. Here we use <code>scales = 'free_y'</code> to allow each of the y-axes to have their own scale. Pay close attention to the axis labels now!</p>
+<pre class="r"><code>p2 &lt;- heights %&gt;%
+  ggplot(aes(height)) +
+  geom_histogram(binwidth = 1, color=&quot;black&quot;) +
+  facet_grid(sex~., scales = &#39;free_y&#39;)
+p2</code></pre>
 <p><img src="/content/03-content_files/figure-html/unnamed-chunk-12-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>We still have <code>count</code> on the y-axis, so we didn’t switch to density (though it would look the same). Instead, we rescaled the y-axis, which gives us a different perspective but still contains the count information.</p>
 <p>If we want the more compact summary provided by boxplots, we then align them horizontally since, by default, boxplots move up and down with changes in height. Following our <em>show the data</em> principle, we then overlay all the data points:</p>
@@ -1285,8 +1290,27 @@ p3</code></pre>
 <div id="think-of-the-color-blind" class="section level2">
 <h2>Think of the color blind</h2>
 <p>About 10% of the population is color blind. Unfortunately, the default colors used in <strong>ggplot2</strong> are not optimal for this group. However, <strong>ggplot2</strong> does make it easy to change the color palette used in the plots. An example of how we can use a color blind friendly palette is described here: <a href="http://www.cookbook-r.com/Graphs/Colors_(ggplot2)/#a-colorblind-friendly-palette">http://www.cookbook-r.com/Graphs/Colors_(ggplot2)/#a-colorblind-friendly-palette</a>:</p>
-<p>Here are the colors
-<img src="/content/03-content_files/figure-html/color-blind-friendly-colors-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Here are the colors</p>
+<pre class="r"><code>color_blind_friendly_cols &lt;-
+  c(&quot;#999999&quot;, &quot;#E69F00&quot;, &quot;#56B4E9&quot;, &quot;#009E73&quot;,
+    &quot;#F0E442&quot;, &quot;#0072B2&quot;, &quot;#D55E00&quot;, &quot;#CC79A7&quot;)
+
+
+
+p1 &lt;- data.frame(x=1:8, y=rep(1,8), col = as.character(1:8)) %&gt;%
+  ggplot(aes(x, y, color = col)) +
+  geom_point(size=8, show.legend = FALSE) +
+  theme(axis.title.x=element_blank(),
+        axis.text.x=element_blank(),
+        axis.ticks.x=element_blank(),
+        axis.title.y=element_blank(),
+        axis.text.y=element_blank(),
+        axis.ticks.y=element_blank(),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank())
+
+p1 + scale_color_manual(values=color_blind_friendly_cols)</code></pre>
+<p><img src="/content/03-content_files/figure-html/color-blind-friendly-colors-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>From <a href="http://www.pnas.org/content/pnas/early/2017/01/24/1617948114.full.pdf">Seafood Prices Reveal Impacts of a Major Ecological Disturbance</a>:
 <img src="img/Colorblind_example.png" /></p>
 <p>There are several resources that can help you select colors, for example this one: <a href="http://bconnelly.net/2013/10/creating-colorblind-friendly-figures/">http://bconnelly.net/2013/10/creating-colorblind-friendly-figures/</a>.</p>
@@ -1315,7 +1339,7 @@ viridis_d = gp + geom_boxplot()  + labs(title = &#39;Viridis D&#39;) + scale_fil
 grid.arrange(viridis_a, viridis_b, viridis_c, viridis_d)</code></pre>
 <p><img src="/content/03-content_files/figure-html/unnamed-chunk-16-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>Viridis uses a better palette of colors that, though distinct, have some cohesiveness to them.</p>
-<p>We can also use a custom palette, like the colorblind palette from before. If the palette has more entries than we have (N) distinct categories, R reverts to the default.</p>
+<p>We can also use a custom palette, like the colorblind palette from before (see above where we defined <code>color_blind_friendly_cols</code>). If the palette has more entries than we have (N) distinct categories, R reverts to the default.</p>
 <pre class="r"><code>gp = dslabs::gapminder %&gt;% 
 filter(year == 1990 | year == 1995 | year==2000 |  year == 2005 | year==2010 ) %&gt;%
 ggplot(aes(x = continent, y = gdp/population, fill = as.factor(year)))  + coord_flip() + labs(fill = &#39;Year&#39;) 
@@ -1325,7 +1349,7 @@ custom_b = gp + geom_boxplot()  + labs(title = &#39;Viridis A&#39;) + scale_fill
 
 grid.arrange(custom_a, custom_b)</code></pre>
 <p><img src="/content/03-content_files/figure-html/unnamed-chunk-17-1.png" width="672" style="display: block; margin: auto;" /></p>
-<p>In the lower plot, we only give it a length-3 vector of colors, and it needs 5, so it returns to default.</p>
+<p>In the lower plot, we only give it a length-3 vector of colors, and it needs 5, so it returns to default. Unfortunately, it doesn’t warn you as to this behavior. Bad R!</p>
 </div>
 <div id="using-a-continuous-color-palette" class="section level3">
 <h3>Using a continuous color palette</h3>
