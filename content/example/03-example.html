@@ -3,7 +3,7 @@ title: "Visualizations"
 linktitle: "3: Visualization III"
 read_date: "2022-02-03"
 draft: false
-lastmod: "2022-01-06"
+lastmod: "2022-02-02"
 output:
   blogdown::html_page:
     toc: true
@@ -82,11 +82,6 @@ gapminder = dslabs::gapminder %&gt;% as_tibble()</code></pre>
 ## 2    Turkey             11.6</code></pre>
 <p>Turkey has the higher infant mortality rate.</p>
 <p>We can use this code on all comparisons and find the following:</p>
-<pre><code>## New names:
-## * country -&gt; country...1
-## * infant_mortality -&gt; infant_mortality...2
-## * country -&gt; country...3
-## * infant_mortality -&gt; infant_mortality...4</code></pre>
 <table class="table table-striped" style="width: auto !important; margin-left: auto; margin-right: auto;">
 <thead>
 <tr>
@@ -204,9 +199,6 @@ dat %&gt;%
   geom_text_repel(aes(label = label_first, color = country), direction = &#39;y&#39;, nudge_x = -1, seed = 1234, show.legend = FALSE) +
   geom_text_repel(aes(label = label_last, color = country), direction = &#39;y&#39;, nudge_x =  1, seed = 1234, show.legend = FALSE) +
   xlab(&quot;&quot;) + ylab(&quot;Life Expectancy&quot;)</code></pre>
-<pre><code>## Warning: Removed 12 rows containing missing values (geom_text_repel).
-
-## Warning: Removed 12 rows containing missing values (geom_text_repel).</code></pre>
 <p><img src="/example/03-example_files/figure-html/slope-plot-1.png" width="672" /></p>
 <p>An advantage of the slope chart is that it permits us to quickly get an idea of changes based on the slope of the lines. Although we are using angle as the visual cue, we also have position to determine the exact values. Comparing the improvements is a bit harder with a scatterplot:</p>
 <p><img src="/example/03-example_files/figure-html/scatter-plot-instead-of-slope-1.png" width="672" /></p>
@@ -257,10 +249,9 @@ dat %&gt;%
   scale_y_reverse(breaks = 1:8) +
   scale_x_continuous(breaks = 2004:2014) +
   scale_color_viridis_d(option = &quot;C&quot;, begin = 0.2, end = 0.9) +
-  labs(x = NULL, y = &quot;Rank&quot;)</code></pre>
-<pre><code>## Warning: `guides(&lt;scale&gt; = FALSE)` is deprecated. Please use `guides(&lt;scale&gt; =
-## &quot;none&quot;)` instead.</code></pre>
-<pre class="r"><code>bumpplot</code></pre>
+  labs(x = NULL, y = &quot;Rank&quot;)
+
+bumpplot</code></pre>
 <p><img src="/example/03-example_files/figure-html/bump-plot-fancier-1.png" width="672" /></p>
 <p>If you want to be <em>super</em> fancy, you can use flags instead of country codes, but that’s a little more complicated (you need to install the <a href="https://github.com/rensa/ggflags"><strong>ggflags</strong> package</a>. <a href="https://dominikkoch.github.io/Bump-Chart/">See here for an example</a>.</p>
 </div>
@@ -367,7 +358,7 @@ ggsave(&quot;china_co2.png&quot;, plot_china, width = 1, height = 0.15, units = 
 China &lt;img class=&quot;img-inline&quot; src=&quot;/your/path/to/china-spark-1.png&quot; width = &quot;100&quot;/&gt; have 
 seen increased CO~2~ emissions over the past 20 years.</code></pre>
 <blockquote>
-<p>Both India <img class="img-inline" src="/example/08-example_files/figure-html/india-spark-1.png" width = "100"/> and China <img class="img-inline" src="/example/08-example_files/figure-html/china-spark-1.png" width = "100"/> have seen increased CO<sub>2</sub> emissions over the past 20 years.</p>
+<p>Both India <img class="img-inline" src="/example/03-example_files/figure-html/india-spark-1.png" width = "100"/> and China <img class="img-inline" src="/example/03-example_files/figure-html/china-spark-1.png" width = "100"/> have seen increased CO<sub>2</sub> emissions over the past 20 years.</p>
 </blockquote>
 </div>
 </div>
@@ -389,8 +380,6 @@ seen increased CO~2~ emissions over the past 20 years.</code></pre>
 <h3>Show the data</h3>
 <p>Now, back to our plot. Based on the plot above, do we conclude that a country with a low income is destined to have low survival rate? Do we conclude that survival rates in Sub-Saharan Africa are all lower than in Southern Asia, which in turn are lower than in the Pacific Islands, and so on?</p>
 <p>Jumping to this conclusion based on a plot showing averages is referred to as the <em>ecological fallacy</em>. The almost perfect relationship between survival rates and income is only observed for the averages at the region level. Once we show all the data, we see a somewhat more complicated story:</p>
-<pre><code>## Warning: ggrepel: 1 unlabeled data points (too many overlaps). Consider
-## increasing max.overlaps</code></pre>
 <p><img src="/example/03-example_files/figure-html/ecological-fallacy-all-data-1.png" width="672" /></p>
 <p>Specifically, we see that there is a large amount of variability. We see that countries from the same regions can be quite different and that countries with the same income can have different survival rates. For example, while on average Sub-Saharan Africa had the worse health and economic outcomes, there is wide variability within that group. Mauritius and Botswana are doing better than Angola and Sierra Leone, with Mauritius comparable to Western countries.</p>
 </div>
