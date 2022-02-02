@@ -10272,6 +10272,7 @@ myData = WDI(country = refugees_clean$iso2, indicator = &amp;#39;SP.POP.TOTL&amp
 &lt;li&gt;&lt;a href=&#34;#align-plots-vertically-to-see-horizontal-changes-and-horizontally-to-see-vertical-changes&#34;&gt;Align plots vertically to see horizontal changes and horizontally to see vertical changes&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;#facet-grids&#34;&gt;Facet grids&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;#visual-cues-to-be-compared-should-be-adjacent-continued&#34;&gt;Visual cues to be compared should be adjacent, continued&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#leave-some-space&#34;&gt;Leave some space&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;#use-color&#34;&gt;Use color&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;#think-of-the-color-blind&#34;&gt;Think of the color blind&lt;/a&gt;&lt;ul&gt;
@@ -10279,6 +10280,7 @@ myData = WDI(country = refugees_clean$iso2, indicator = &amp;#39;SP.POP.TOTL&amp
 &lt;li&gt;&lt;a href=&#34;#using-a-continuous-color-palette&#34;&gt;Using a continuous color palette&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;#gridextra-and-grid.arrange&#34;&gt;gridExtra and &lt;code&gt;grid.arrange&lt;/code&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#lecture-videos&#34;&gt;Lecture Videos&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/div&gt;
@@ -10936,8 +10938,25 @@ p3&lt;/code&gt;&lt;/pre&gt;
   geom_boxplot() +
   theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = .25)) +
   scale_y_continuous(trans = &amp;quot;log2&amp;quot;) +
-  ylab(&amp;quot;Income in dollars per day&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+  ylab(&amp;quot;Income in dollars per day&amp;quot;) + xlab(&amp;#39;Continent and Year&amp;#39;) &lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/03-content_files/figure-html/boxplot-adjacent-comps-1.png&#34; width=&#34;672&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;leave-some-space&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Leave some space&lt;/h3&gt;
+&lt;p&gt;The design maven Edward Tufte emphasizes th eneed for clarifying and empty space. Resist the urge to pack everything into a small layout. Especially in digital formats, space can be inexpensive, and can help attract the eye to your work.&lt;/p&gt;
+&lt;p&gt;We can control the space around our plots using the &lt;code&gt;theme()&lt;/code&gt; function. We’ll cover more details of &lt;code&gt;theme()&lt;/code&gt; on Thursday. To add some space around a plot, we use &lt;code&gt;theme(plot.margin = margin(t=2, r = 2, b = 2, l = 2, unit = &#39;cm&#39;))&lt;/code&gt;, where the arguments correspond to top, right, bottom, left (in that order). I’m also going to add a black border to the outside so that we can see the boundary of the frame.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;dslabs::gapminder %&amp;gt;%
+  filter(year %in% c(1970, 2010) &amp;amp; !is.na(gdp)) %&amp;gt;%
+  mutate(dollars_per_day = gdp/population/365) %&amp;gt;%
+  mutate(labels = paste(continent, year)) %&amp;gt;%
+  ggplot(aes(labels, dollars_per_day)) +
+  geom_boxplot() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = .25)) +
+  scale_y_continuous(trans = &amp;quot;log2&amp;quot;) +
+  ylab(&amp;quot;Income in dollars per day&amp;quot;) + xlab(&amp;#39;Continent and Year&amp;#39;) +
+  theme(plot.margin = margin(t=2, r = 2, b = 2, l = 2, unit = &amp;#39;cm&amp;#39;),
+        plot.background = element_rect(color = &amp;#39;black&amp;#39;, size = 1)) # Adds black border&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/03-content_files/figure-html/boxplot-adjacent-comps2-1.png&#34; width=&#34;672&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;use-color&#34; class=&#34;section level3&#34;&gt;
 &lt;h3&gt;Use color&lt;/h3&gt;
@@ -10948,27 +10967,11 @@ p3&lt;/code&gt;&lt;/pre&gt;
 &lt;div id=&#34;think-of-the-color-blind&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Think of the color blind&lt;/h2&gt;
 &lt;p&gt;About 10% of the population is color blind. Unfortunately, the default colors used in &lt;strong&gt;ggplot2&lt;/strong&gt; are not optimal for this group. However, &lt;strong&gt;ggplot2&lt;/strong&gt; does make it easy to change the color palette used in the plots. An example of how we can use a color blind friendly palette is described here: &lt;a href=&#34;http://www.cookbook-r.com/Graphs/Colors_(ggplot2)/#a-colorblind-friendly-palette&#34;&gt;http://www.cookbook-r.com/Graphs/Colors_(ggplot2)/#a-colorblind-friendly-palette&lt;/a&gt;:&lt;/p&gt;
-&lt;p&gt;Here are the colors&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;color_blind_friendly_cols &amp;lt;-
   c(&amp;quot;#999999&amp;quot;, &amp;quot;#E69F00&amp;quot;, &amp;quot;#56B4E9&amp;quot;, &amp;quot;#009E73&amp;quot;,
-    &amp;quot;#F0E442&amp;quot;, &amp;quot;#0072B2&amp;quot;, &amp;quot;#D55E00&amp;quot;, &amp;quot;#CC79A7&amp;quot;)
-
-
-
-p1 &amp;lt;- data.frame(x=1:8, y=rep(1,8), col = as.character(1:8)) %&amp;gt;%
-  ggplot(aes(x, y, color = col)) +
-  geom_point(size=8, show.legend = FALSE) +
-  theme(axis.title.x=element_blank(),
-        axis.text.x=element_blank(),
-        axis.ticks.x=element_blank(),
-        axis.title.y=element_blank(),
-        axis.text.y=element_blank(),
-        axis.ticks.y=element_blank(),
-        panel.grid.major = element_blank(),
-        panel.grid.minor = element_blank())
-
-p1 + scale_color_manual(values=color_blind_friendly_cols)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/03-content_files/figure-html/color-blind-friendly-colors-1.png&#34; width=&#34;672&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+    &amp;quot;#F0E442&amp;quot;, &amp;quot;#0072B2&amp;quot;, &amp;quot;#D55E00&amp;quot;, &amp;quot;#CC79A7&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Here are the colors
+&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/03-content_files/figure-html/color-blind-friendly-colors-1.png&#34; width=&#34;672&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;From &lt;a href=&#34;http://www.pnas.org/content/pnas/early/2017/01/24/1617948114.full.pdf&#34;&gt;Seafood Prices Reveal Impacts of a Major Ecological Disturbance&lt;/a&gt;:
 &lt;img src=&#34;img/Colorblind_example.png&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;There are several resources that can help you select colors, for example this one: &lt;a href=&#34;http://bconnelly.net/2013/10/creating-colorblind-friendly-figures/&#34;&gt;http://bconnelly.net/2013/10/creating-colorblind-friendly-figures/&lt;/a&gt;.&lt;/p&gt;
@@ -10997,7 +11000,7 @@ viridis_d = gp + geom_boxplot()  + labs(title = &amp;#39;Viridis D&amp;#39;) + s
 grid.arrange(viridis_a, viridis_b, viridis_c, viridis_d)&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/03-content_files/figure-html/unnamed-chunk-16-1.png&#34; width=&#34;672&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Viridis uses a better palette of colors that, though distinct, have some cohesiveness to them.&lt;/p&gt;
-&lt;p&gt;We can also use a custom palette, like the colorblind palette from before (see above where we defined &lt;code&gt;color_blind_friendly_cols&lt;/code&gt;). If the palette has more entries than we have (N) distinct categories, R reverts to the default.&lt;/p&gt;
+&lt;p&gt;We can also use a custom palette, like the colorblind palette from before (see above where we defined &lt;code&gt;color_blind_friendly_cols&lt;/code&gt;). We just need to use the &lt;code&gt;type=&lt;/code&gt; argument and give ggplot our color-blind friendly palette of colors. If the palette has more entries than we have (N) distinct categories, R reverts to the default.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;gp = dslabs::gapminder %&amp;gt;% 
 filter(year == 1990 | year == 1995 | year==2000 |  year == 2005 | year==2010 ) %&amp;gt;%
 ggplot(aes(x = continent, y = gdp/population, fill = as.factor(year)))  + coord_flip() + labs(fill = &amp;#39;Year&amp;#39;) 
@@ -11012,11 +11015,10 @@ grid.arrange(custom_a, custom_b)&lt;/code&gt;&lt;/pre&gt;
 &lt;div id=&#34;using-a-continuous-color-palette&#34; class=&#34;section level3&#34;&gt;
 &lt;h3&gt;Using a continuous color palette&lt;/h3&gt;
 &lt;p&gt;We may often want to use the color to indicate a numeric value instead of simply using it to delineate groupings. When this is the case, the &lt;code&gt;fill&lt;/code&gt; or &lt;code&gt;color&lt;/code&gt; aesthetic is set to a continuous value. For instance, if one were to plot election results by precinct, we may represent precincts with heavy Republican support as dark red, swing districts as purple or white, and Democratic districts as blue. The intensity of red/blue indicates how heavily slanted votes in that precinct were in the election. This is known as a &lt;em&gt;color ramp&lt;/em&gt;.&lt;/p&gt;
-&lt;p&gt;Lets plot one country’s GDP by year, but have the color indicate the life expectancy:&lt;/p&gt;
+&lt;p&gt;Lets plot one country’s GDP by year, but have the color indicate the life expectancy. Whenever you map a continuous variable to a color or fill aesthetic, you get the default color ramp – dark-to-light blue:&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;dslabs::gapminder %&amp;gt;%
   filter(country==&amp;#39;Romania&amp;#39; &amp;amp; year&amp;gt;1980) %&amp;gt;%
   ggplot(aes(x = year, y = gdp/population, color = life_expectancy)) + 
-  scale_fill_continuous() + 
   geom_point(size = 5) +
   labs(x = &amp;#39;Year&amp;#39;, y = &amp;#39;GDP Per Capita&amp;#39;, fill = &amp;#39;Life Expectancy&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/03-content_files/figure-html/unnamed-chunk-18-1.png&#34; width=&#34;672&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
@@ -11044,6 +11046,10 @@ grid.arrange(custom_a, custom_b)&lt;/code&gt;&lt;/pre&gt;
 &lt;h2&gt;gridExtra and &lt;code&gt;grid.arrange&lt;/code&gt;&lt;/h2&gt;
 &lt;p&gt;The &lt;code&gt;gridExtra&lt;/code&gt; package has been used a few times in this lesson to combine plots using the &lt;code&gt;grid.arrange&lt;/code&gt; function. The use is pretty intuitive - you save your plots as objects &lt;code&gt;plot1 &amp;lt;- ggplot(data, aes(x = var1))&lt;/code&gt; and &lt;code&gt;plot2 &amp;lt;- ggplot(data, aes(x = var2))&lt;/code&gt;, and then use &lt;code&gt;grid.arrange(plot1, plot2)&lt;/code&gt; to combine. The function will align as best it can, and there are more advanced &lt;a href=&#34;https://cran.r-project.org/web/packages/gridExtra/vignettes/arrangeGrob.html&#34;&gt;grob-based functions&lt;/a&gt; that can adjust and align axes between plots, but we won’t get into them. If we want to set the layout, we can specify &lt;code&gt;nrow&lt;/code&gt; and &lt;code&gt;ncol&lt;/code&gt; to set the rows and columns.&lt;/p&gt;
 &lt;p&gt;The very-useful &lt;code&gt;patchwork&lt;/code&gt; package is quickly replacing &lt;code&gt;grid.arrange&lt;/code&gt; and provides more flexibility.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;lecture-videos&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Lecture Videos&lt;/h2&gt;
+&lt;p&gt;The video from this lecture is &lt;a href=&#34;https://mediaspace.msu.edu/media/SSC442+-+03+Content+-+Feb+1st/1_33t9o0pg&#34;&gt;available here &lt;i class=&#34;fas fa-film&#34;&gt;&lt;/i&gt;&lt;/a&gt;. This lecture was in-person, so recording begins with some classroom chatter.&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;div class=&#34;footnotes&#34;&gt;

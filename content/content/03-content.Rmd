@@ -609,8 +609,30 @@ dslabs::gapminder %>%
   geom_boxplot() +
   theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = .25)) +
   scale_y_continuous(trans = "log2") +
-  ylab("Income in dollars per day")
+  ylab("Income in dollars per day") + xlab('Continent and Year') 
 ```
+
+
+### Leave some space
+The design maven Edward Tufte emphasizes th eneed for clarifying and empty space. Resist the urge to pack everything into a small layout. Especially in digital formats, space can be inexpensive, and can help attract the eye to your work.
+
+We can control the space around our plots using the `theme()` function. We'll cover more details of `theme()` on Thursday. To add some space around a plot, we use `theme(plot.margin = margin(t=2, r = 2, b = 2, l = 2, unit = 'cm'))`, where the arguments correspond to top, right, bottom, left (in that order). I'm also going to add a black border to the outside so that we can see the boundary of the frame.
+
+```{r boxplot-adjacent-comps2, echo=TRUE}
+dslabs::gapminder %>%
+  filter(year %in% c(1970, 2010) & !is.na(gdp)) %>%
+  mutate(dollars_per_day = gdp/population/365) %>%
+  mutate(labels = paste(continent, year)) %>%
+  ggplot(aes(labels, dollars_per_day)) +
+  geom_boxplot() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = .25)) +
+  scale_y_continuous(trans = "log2") +
+  ylab("Income in dollars per day") + xlab('Continent and Year') +
+  theme(plot.margin = margin(t=2, r = 2, b = 2, l = 2, unit = 'cm'),
+        plot.background = element_rect(color = 'black', size = 1)) # Adds black border
+  
+```
+
 
 ### Use color
 
@@ -633,14 +655,14 @@ The comparison becomes even easier to make if we use color to denote the two thi
 
 About 10% of the population is color blind. Unfortunately, the default colors used in __ggplot2__ are not optimal for this group. However, __ggplot2__ does make it easy to change the color palette used in the plots. An example of how we can use a color blind friendly palette is described here: [http://www.cookbook-r.com/Graphs/Colors_(ggplot2)/#a-colorblind-friendly-palette](http://www.cookbook-r.com/Graphs/Colors_(ggplot2)/#a-colorblind-friendly-palette):
 
-```{r, eval=TRUE}
+```{r, eval=TRUE, echo = TRUE}
 color_blind_friendly_cols <-
   c("#999999", "#E69F00", "#56B4E9", "#009E73",
     "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
 ```
 
 Here are the colors
-```{r color-blind-friendly-colors, echo=TRUE, fig.height=0.5, collapse = TRUE}
+```{r color-blind-friendly-colors, echo=FALSE, fig.height=0.5, collapse = TRUE}
 color_blind_friendly_cols <-
   c("#999999", "#E69F00", "#56B4E9", "#009E73",
     "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
@@ -717,7 +739,7 @@ grid.arrange(viridis_a, viridis_b, viridis_c, viridis_d)
 
 Viridis uses a better palette of colors that, though distinct, have some cohesiveness to them. 
 
-We can also use a custom palette, like the colorblind palette from before (see above where we defined `color_blind_friendly_cols`). If the palette has more entries than we have (N) distinct categories, R reverts to the default.
+We can also use a custom palette, like the colorblind palette from before (see above where we defined `color_blind_friendly_cols`). We just need to use the `type=` argument and give ggplot our color-blind friendly palette of colors. If the palette has more entries than we have (N) distinct categories, R reverts to the default.
 
 ```{r, echo=TRUE, warning=FALSE, error = FALSE, echo = TRUE}
 gp = dslabs::gapminder %>% 
@@ -735,15 +757,14 @@ In the lower plot, we only give it a length-3 vector of colors, and it needs 5, 
 
 
 ### Using a continuous color palette
-We may often want to use the color to indicate a numeric value instead of simply using it to delineate groupings. When this is the case, the `fill` or `color` aesthetic is set to a continuous value. For instance, if one were to plot election results by precinct, we may represent precincts with heavy Republican support as dark red, swing districts as purple or white, and Democratic districts as blue. The intensity of red/blue indicates how heavily slanted votes in that precinct were in the election. This is known as a *color ramp*. 
+We may often want to use the color to indicate a numeric value instead of simply using it to delineate groupings. When this is the case, the `fill` or `color` aesthetic is set to a continuous value. For instance, if one were to plot election results by precinct, we may represent precincts with heavy Republican support as dark red, swing districts as purple or white, and Democratic districts as blue. The intensity of red/blue indicates how heavily slanted votes in that precinct were in the election. This is known as a *color ramp*.
 
-Lets plot one country's GDP by year, but have the color indicate the life expectancy:
+Lets plot one country's GDP by year, but have the color indicate the life expectancy. Whenever you map a continuous variable to a color or fill aesthetic, you get the default color ramp -- dark-to-light blue:
 
 ```{r, echo=T, warning=F, error=F, message=F}
 dslabs::gapminder %>%
   filter(country=='Romania' & year>1980) %>%
   ggplot(aes(x = year, y = gdp/population, color = life_expectancy)) + 
-  scale_fill_continuous() + 
   geom_point(size = 5) +
   labs(x = 'Year', y = 'GDP Per Capita', fill = 'Life Expectancy')
 ```
@@ -782,3 +803,8 @@ The `gridExtra` package has been used a few times in this lesson to combine plot
 
 The very-useful `patchwork` package is quickly replacing `grid.arrange` and provides more flexibility.
 
+
+
+
+## Lecture Videos
+The video from this lecture is [available here <i class="fas fa-film"></i>](https://mediaspace.msu.edu/media/SSC442+-+03+Content+-+Feb+1st/1_33t9o0pg). This lecture was in-person, so recording begins with some classroom chatter.
