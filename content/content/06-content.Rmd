@@ -28,16 +28,16 @@ output:
 - When should we turn to linear regression versus alternative approaches?
 - Why do we use linear regression so often in data analytics?
 
-### Slides
+<!-- ### Slides -->
 
-```{r show-slide-tabs, echo=FALSE, results="asis"}
-source(here::here("R", "slide_tabs.R"))
-sections <- tibble::tribble(
-  ~name, ~slide, ~active,
-  "Introduction", "Introduction", TRUE,
-)
-slide_tabs(sections, "/slides/06-slides.html")
-```
+<!-- ```{r show-slide-tabs, echo=FALSE, results="asis"} -->
+<!-- source(here::here("R", "slide_tabs.R")) -->
+<!-- sections <- tibble::tribble( -->
+<!--   ~name, ~slide, ~active, -->
+<!--   "Introduction", "Introduction", TRUE, -->
+<!-- ) -->
+<!-- slide_tabs(sections, "/slides/06-slides.html") -->
+<!-- ``` -->
 
 As with recent weeks, we will work with real data during the lecture. Please download the following dataset and load it into `R`.
 
@@ -99,7 +99,7 @@ Here is a video showing a success: [https://www.youtube.com/watch?v=HL-XjMCPfio]
 
 Now there are several ways to succeed. Understanding this distinction will be important for our analysis. When the batter hits the ball, the batter wants to pass as many _bases_ as possible. There are four bases with the fourth one called _home plate_. Home plate is where batters start by trying to hit, so the bases form a cycle.
 
-![](/./06-content_files/Baseball_Diamond1.png)
+![](./content/06-content_files/Baseball_Diamond1.png)
 (Courtesy of Cburnett^[https://en.wikipedia.org/wiki/User:Cburnett]. CC BY-SA 3.0 license^[https://creativecommons.org/licenses/by-sa/3.0/deed.en].)
 <!--Source: [Wikipedia Commons](https://commons.wikimedia.org/wiki/File:Baseball_diamond_simplified.svg))-->
 
@@ -125,7 +125,7 @@ All these events are kept track of during the season and are available to us thr
 Historically, the _batting average_ has been considered the most important offensive statistic. To define this average, we define a _hit_ (H) and an _at bat_ (AB). Singles, doubles, triples, and home runs are hits. The fifth way to be successful, BB, is not a hit. An AB is the number of times you either get a hit or make an out; BBs are excluded. The batting average is simply H/AB and is considered the main measure of a success rate. Today this success rate ranges from 20% to 38%. We refer to the batting average in thousands so, for example, if your success rate is 28%, we call it _batting 280_.
 
 
-![](/./06-content_files/JumboTron.png)
+![](./content/06-content_files/JumboTron.png)
 (Picture courtesy of Keith Allison^[https://www.flickr.com/people/27003603@N00]. CC BY-SA 2.0 license^[https://creativecommons.org/licenses/by-sa/2.0].)
 
 One of Bill James' first important insights is that the batting average ignores BB, but a BB is a success.  He proposed we use the _on base percentage_ (OBP) instead of batting average. He defined OBP as (H+BB)/(AB+BB) which is simply the proportion of plate appearances that don't result in an out, a very intuitive measure. He noted that a player that gets many more BB than the average player might not be recognized if the batter does not excel in batting average. But is this player not helping produce runs? No award is given to the player with the most BB. However, bad habits are hard to break and baseball did not immediately adopt OBP as an important statistic. In contrast, total stolen bases were considered important and an award^[http://www.baseball-almanac.com/awards/lou_brock_award.shtml] given to the player with the most. But players with high totals of SB also made more outs as they did not always succeed. Does a player with high SB total help produce runs? Can we use data science to determine if it's better to pay for players with high BB or SB?
