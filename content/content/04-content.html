@@ -68,6 +68,7 @@ output:
 <li><a href="#law-of-large-numbers">Law of large numbers</a><ul>
 <li><a href="#misinterpreting-law-of-averages">Misinterpreting law of averages</a></li>
 </ul></li>
+<li><a href="#lecture-video">Lecture Video</a></li>
 </ul></li>
 </ul>
 </div>
@@ -151,7 +152,7 @@ beads</code></pre>
 <pre><code>## [1] &quot;red&quot;  &quot;red&quot;  &quot;blue&quot; &quot;blue&quot; &quot;blue&quot;</code></pre>
 <p>and then use <code>sample</code> to pick a bead at random:</p>
 <pre class="r"><code>sample(beads, 1)</code></pre>
-<pre><code>## [1] &quot;red&quot;</code></pre>
+<pre><code>## [1] &quot;blue&quot;</code></pre>
 <p>This line of code produces one random outcome. We want to repeat this experiment an infinite number of times, but it is impossible to repeat forever. Instead, we repeat the experiment a large enough number of times to make the results practically equivalent to repeating forever. <strong>This is an example of a <em>Monte Carlo</em> simulation</strong>.</p>
 <p>Much of what mathematical and theoretical statisticians study, which we do not cover in this class, relates to providing rigorous definitions of “practically equivalent” as well as studying how close a large number of experiments gets us to what happens in the limit. Later in this lecture, we provide a practical approach to deciding what is “large enough”.</p>
 <p>To perform our first Monte Carlo simulation, we use the <code>replicate</code> function, which permits us to repeat the same task any number of times. Here, we repeat the random event <span class="math inline">\(B =\)</span> 10,000 times:</p>
@@ -162,12 +163,12 @@ events &lt;- replicate(B, sample(beads, 1))</code></pre>
 tab</code></pre>
 <pre><code>## events
 ## blue  red 
-## 5999 4001</code></pre>
+## 6068 3932</code></pre>
 <p>and <code>prop.table</code> gives us the proportions:</p>
 <pre class="r"><code>prop.table(tab)</code></pre>
 <pre><code>## events
 ##   blue    red 
-## 0.5999 0.4001</code></pre>
+## 0.6068 0.3932</code></pre>
 <p>The numbers above are the estimated probabilities provided by this Monte Carlo simulation. Statistical theory, not covered here, tells us that as <span class="math inline">\(B\)</span> gets larger, the estimates get closer to 3/5=.6 and 2/5=.4.</p>
 <p>Although this is a simple and not very useful example, we will use Monte Carlo simulations to estimate probabilities in cases in which it is harder to compute the exact ones. Before delving into more complex examples, we use simple ones to demonstrate the computing tools available in R.</p>
 <div id="setting-the-random-seed" class="section level3">
@@ -397,16 +398,15 @@ mean(results)</code></pre>
 <p>Let’s start with the stick strategy:</p>
 <pre class="r"><code>B &lt;- 10000
 monty_hall &lt;- function(strategy){
-  doors &lt;- as.character(1:3)
-  prize &lt;- sample(c(&quot;car&quot;, &quot;goat&quot;, &quot;goat&quot;))
-  prize_door &lt;- doors[prize == &quot;car&quot;]
-  my_pick  &lt;- sample(doors, 1)
+  doors &lt;- as.character(1:3) 
+  prize &lt;- sample(c(&quot;car&quot;, &quot;goat&quot;, &quot;goat&quot;)) # no replacement
+  prize_door &lt;- doors[prize == &quot;car&quot;] # which door has the prize?
+  my_pick  &lt;- sample(doors, 1) # we pick a door at random
   show &lt;- sample(doors[!doors %in% c(my_pick, prize_door)],1)
   stick &lt;- my_pick
-  stick == prize_door
   switch &lt;- doors[!doors%in%c(my_pick, show)]
-  choice &lt;- ifelse(strategy == &quot;stick&quot;, stick, switch)
-  choice == prize_door
+  choice &lt;- ifelse(strategy == &quot;stick&quot;, stick, switch) # apply the strategy
+  choice == prize_door # did we win?
 }
 stick &lt;- replicate(B, monty_hall(&quot;stick&quot;))
 mean(stick)</code></pre>
@@ -924,6 +924,10 @@ pnorm(0, mu, se)</code></pre>
 <p>The law of averages is sometimes misinterpreted. For example, if you toss a coin 5 times and see a head each time, you might hear someone argue that the next toss is probably a tail because of the law of averages: on average we should see 50% heads and 50% tails. A similar argument would be to say that red “is due” on the roulette wheel after seeing black come up five times in a row. These events are independent so the chance of a coin landing heads is 50% regardless of the previous 5. This is also the case for the roulette outcome. The law of averages applies only when the number of draws is very large and not in small samples. After a million tosses, you will definitely see about 50% heads regardless of the outcome of the first five tosses.</p>
 <p>Another funny misuse of the law of averages is in sports when TV sportscasters predict a player is about to succeed because they have failed a few times in a row.</p>
 </div>
+</div>
+<div id="lecture-video" class="section level2">
+<h2>Lecture Video</h2>
+<p>The lecture video for Tuesday (this material, but we only made it about 2/3rds of the way) is <a href="https://mediaspace.msu.edu/media/SSC442+-+04+Content+-+February+8th/1_tfes2b1a">available here <i class="fas fa-film"></i></a></p>
 </div>
 </div>
 <div class="footnotes">

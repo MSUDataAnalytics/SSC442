@@ -6387,6 +6387,7 @@ mpg %&amp;gt;%
 &lt;li&gt;&lt;a href=&#34;#law-of-large-numbers&#34;&gt;Law of large numbers&lt;/a&gt;&lt;ul&gt;
 &lt;li&gt;&lt;a href=&#34;#misinterpreting-law-of-averages&#34;&gt;Misinterpreting law of averages&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#lecture-video&#34;&gt;Lecture Video&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/div&gt;
@@ -6470,7 +6471,7 @@ beads&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## [1] &amp;quot;red&amp;quot;  &amp;quot;red&amp;quot;  &amp;quot;blue&amp;quot; &amp;quot;blue&amp;quot; &amp;quot;blue&amp;quot;&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;and then use &lt;code&gt;sample&lt;/code&gt; to pick a bead at random:&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;sample(beads, 1)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;red&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;blue&amp;quot;&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;This line of code produces one random outcome. We want to repeat this experiment an infinite number of times, but it is impossible to repeat forever. Instead, we repeat the experiment a large enough number of times to make the results practically equivalent to repeating forever. &lt;strong&gt;This is an example of a &lt;em&gt;Monte Carlo&lt;/em&gt; simulation&lt;/strong&gt;.&lt;/p&gt;
 &lt;p&gt;Much of what mathematical and theoretical statisticians study, which we do not cover in this class, relates to providing rigorous definitions of “practically equivalent” as well as studying how close a large number of experiments gets us to what happens in the limit. Later in this lecture, we provide a practical approach to deciding what is “large enough”.&lt;/p&gt;
 &lt;p&gt;To perform our first Monte Carlo simulation, we use the &lt;code&gt;replicate&lt;/code&gt; function, which permits us to repeat the same task any number of times. Here, we repeat the random event &lt;span class=&#34;math inline&#34;&gt;\(B =\)&lt;/span&gt; 10,000 times:&lt;/p&gt;
@@ -6481,12 +6482,12 @@ events &amp;lt;- replicate(B, sample(beads, 1))&lt;/code&gt;&lt;/pre&gt;
 tab&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## events
 ## blue  red 
-## 5999 4001&lt;/code&gt;&lt;/pre&gt;
+## 6068 3932&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;and &lt;code&gt;prop.table&lt;/code&gt; gives us the proportions:&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;prop.table(tab)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## events
 ##   blue    red 
-## 0.5999 0.4001&lt;/code&gt;&lt;/pre&gt;
+## 0.6068 0.3932&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;The numbers above are the estimated probabilities provided by this Monte Carlo simulation. Statistical theory, not covered here, tells us that as &lt;span class=&#34;math inline&#34;&gt;\(B\)&lt;/span&gt; gets larger, the estimates get closer to 3/5=.6 and 2/5=.4.&lt;/p&gt;
 &lt;p&gt;Although this is a simple and not very useful example, we will use Monte Carlo simulations to estimate probabilities in cases in which it is harder to compute the exact ones. Before delving into more complex examples, we use simple ones to demonstrate the computing tools available in R.&lt;/p&gt;
 &lt;div id=&#34;setting-the-random-seed&#34; class=&#34;section level3&#34;&gt;
@@ -6716,16 +6717,15 @@ mean(results)&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Let’s start with the stick strategy:&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;B &amp;lt;- 10000
 monty_hall &amp;lt;- function(strategy){
-  doors &amp;lt;- as.character(1:3)
-  prize &amp;lt;- sample(c(&amp;quot;car&amp;quot;, &amp;quot;goat&amp;quot;, &amp;quot;goat&amp;quot;))
-  prize_door &amp;lt;- doors[prize == &amp;quot;car&amp;quot;]
-  my_pick  &amp;lt;- sample(doors, 1)
+  doors &amp;lt;- as.character(1:3) 
+  prize &amp;lt;- sample(c(&amp;quot;car&amp;quot;, &amp;quot;goat&amp;quot;, &amp;quot;goat&amp;quot;)) # no replacement
+  prize_door &amp;lt;- doors[prize == &amp;quot;car&amp;quot;] # which door has the prize?
+  my_pick  &amp;lt;- sample(doors, 1) # we pick a door at random
   show &amp;lt;- sample(doors[!doors %in% c(my_pick, prize_door)],1)
   stick &amp;lt;- my_pick
-  stick == prize_door
   switch &amp;lt;- doors[!doors%in%c(my_pick, show)]
-  choice &amp;lt;- ifelse(strategy == &amp;quot;stick&amp;quot;, stick, switch)
-  choice == prize_door
+  choice &amp;lt;- ifelse(strategy == &amp;quot;stick&amp;quot;, stick, switch) # apply the strategy
+  choice == prize_door # did we win?
 }
 stick &amp;lt;- replicate(B, monty_hall(&amp;quot;stick&amp;quot;))
 mean(stick)&lt;/code&gt;&lt;/pre&gt;
@@ -7243,6 +7243,10 @@ pnorm(0, mu, se)&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;The law of averages is sometimes misinterpreted. For example, if you toss a coin 5 times and see a head each time, you might hear someone argue that the next toss is probably a tail because of the law of averages: on average we should see 50% heads and 50% tails. A similar argument would be to say that red “is due” on the roulette wheel after seeing black come up five times in a row. These events are independent so the chance of a coin landing heads is 50% regardless of the previous 5. This is also the case for the roulette outcome. The law of averages applies only when the number of draws is very large and not in small samples. After a million tosses, you will definitely see about 50% heads regardless of the outcome of the first five tosses.&lt;/p&gt;
 &lt;p&gt;Another funny misuse of the law of averages is in sports when TV sportscasters predict a player is about to succeed because they have failed a few times in a row.&lt;/p&gt;
 &lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;lecture-video&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Lecture Video&lt;/h2&gt;
+&lt;p&gt;The lecture video for Tuesday (this material, but we only made it about 2/3rds of the way) is &lt;a href=&#34;https://mediaspace.msu.edu/media/SSC442+-+04+Content+-+February+8th/1_tfes2b1a&#34;&gt;available here &lt;i class=&#34;fas fa-film&#34;&gt;&lt;/i&gt;&lt;/a&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;div class=&#34;footnotes&#34;&gt;

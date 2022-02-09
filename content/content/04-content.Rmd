@@ -452,16 +452,15 @@ Let's start with the stick strategy:
 ```{r}
 B <- 10000
 monty_hall <- function(strategy){
-  doors <- as.character(1:3)
-  prize <- sample(c("car", "goat", "goat"))
-  prize_door <- doors[prize == "car"]
-  my_pick  <- sample(doors, 1)
+  doors <- as.character(1:3) 
+  prize <- sample(c("car", "goat", "goat")) # no replacement
+  prize_door <- doors[prize == "car"] # which door has the prize?
+  my_pick  <- sample(doors, 1) # we pick a door at random
   show <- sample(doors[!doors %in% c(my_pick, prize_door)],1)
   stick <- my_pick
-  stick == prize_door
   switch <- doors[!doors%in%c(my_pick, show)]
-  choice <- ifelse(strategy == "stick", stick, switch)
-  choice == prize_door
+  choice <- ifelse(strategy == "stick", stick, switch) # apply the strategy
+  choice == prize_door # did we win?
 }
 stick <- replicate(B, monty_hall("stick"))
 mean(stick)
@@ -1321,3 +1320,7 @@ An important implication of the final result is that the standard error of the a
 The law of averages is sometimes misinterpreted. For example, if you toss a coin 5 times and see a head each time, you might hear someone argue that the next toss is probably a tail because of the law of averages: on average we should see 50\% heads and 50\% tails. A similar argument would be to say that red "is due" on the roulette wheel after seeing black come up five times in a row. These events are independent so the chance of a coin landing heads is 50\% regardless of the previous 5. This is also the case for the roulette outcome. The law of averages applies only when the number of draws is very large and not in small samples. After a million tosses, you will definitely see about 50\% heads regardless of the outcome of the first five tosses.
 
 Another funny misuse of the law of averages is in sports when TV sportscasters predict a player is about to succeed because they have failed a few times in a row.
+
+
+## Lecture Video
+The lecture video for Tuesday (this material, but we only made it about 2/3rds of the way) is [available here <i class="fas fa-film"></i>](https://mediaspace.msu.edu/media/SSC442+-+04+Content+-+February+8th/1_tfes2b1a)
