@@ -246,7 +246,7 @@ We will also use the Ames data again (in addition to the Atlanta weather data). 
   <meta property="twitter:image" content="https://ssc442kirkpatrick.netlify.app/img/social-image.png"><meta property="og:locale" content="en-us">
   
     
-    <meta property="article:modified_time" content="2022-01-06T13:37:54-05:00">
+    <meta property="article:modified_time" content="2022-02-17T17:36:50-05:00">
   
 
   
@@ -944,6 +944,10 @@ newdata_example</code></pre>
 # and gets cut off
 augment(model_complex, newdata = newdata_example, se_fit=TRUE) %&gt;%
   select(.fitted, .se.fit)</code></pre>
+<pre><code>## # A tibble: 1 x 2
+##   .fitted .se.fit
+##     &lt;dbl&gt;   &lt;dbl&gt;
+## 1    96.2    3.19</code></pre>
 <p>Given these weather conditions, the predicted high temperature is 96.2°. Now you’re an armchair meteorologist!</p>
 <p>We can follow the same pattern to show how the predicted temperature changes as specific variables change across a whole range. Here, we create a data frame of possible wind speeds and keep all the other explanatory variables at their means:</p>
 <pre class="r"><code>newdata &lt;- tibble(windSpeed = seq(0, 8, 0.5),
@@ -1053,7 +1057,7 @@ ggplot(predicted_values_fancy, aes(x = windSpeed, y = .fitted)) +
                 </div>
 
                 <div class="body-footer">
-                    <p>Last updated on January 6, 2022</p>
+                    <p>Last updated on February 17, 2022</p>
 
                     
 
