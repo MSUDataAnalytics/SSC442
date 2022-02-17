@@ -36,7 +36,7 @@ If you want to follow along with this example, you can download the data below (
 ## Code
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(fig.width = 6, fig.height = 3.6, fig.align = "center")
+knitr::opts_chunk$set(fig.width = 6, fig.height = 3.6, fig.align = "center", warnings = FALSE, message = FALSE, error = FALSE)
 set.seed(1234)
 options("digits" = 2, "width" = 150)
 ```
@@ -108,7 +108,7 @@ ggplot(weather_atl, aes(x = time, y = temperatureHigh)) +
 
 ### Combining plots
 
-A good alternative to using two y-axes is to use two plots instead. The [**patchwork** package](https://github.com/thomasp85/patchwork) makes this *really* easy to do with R. There are other similar packages that do this, like **cowplot** and **gridExtra**, but I've found that **patchwork** is the easiest to use *and* it actually aligns the different plot elements like axis lines and legends (yay alignment in CRAP!). The [documentation for **patchwork**](https://patchwork.data-imaginist.com/articles/guides/assembly.html) is really great and full of examples—you should check it out to see all the things you can do with it!
+A good alternative to using two y-axes is to use two plots instead. The [**patchwork** package](https://github.com/thomasp85/patchwork) makes this *really* easy to do with R. There are other similar packages that do this, like **cowplot** and **gridExtra**, but I've found that **patchwork** is the easiest to use *and* it actually aligns the different plot elements like axis lines and legends. The [documentation for **patchwork**](https://patchwork.data-imaginist.com/articles/guides/assembly.html) is really great and full of examples—you should check it out to see all the things you can do with it!
 
 To use **patchwork**, we need to (1) save our plots as objects and (2) add them together with `+`.
 

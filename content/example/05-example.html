@@ -14,11 +14,13 @@ editor_options:
   chunk_output_type: console
 ---
 
+<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
 
 <div id="TOC">
 <ul>
 <li><a href="#preliminaries">Preliminaries</a></li>
-<li><a href="#code">Code</a><ul>
+<li><a href="#code">Code</a>
+<ul>
 <li><a href="#load-and-clean-data">Load and clean data</a></li>
 <li><a href="#legal-dual-y-axes">Legal dual y-axes</a></li>
 <li><a href="#combining-plots">Combining plots</a></li>
@@ -90,7 +92,7 @@ library(broom)      # For converting model objects to data frames</code></pre>
 </div>
 <div id="combining-plots" class="section level3">
 <h3>Combining plots</h3>
-<p>A good alternative to using two y-axes is to use two plots instead. The <a href="https://github.com/thomasp85/patchwork"><strong>patchwork</strong> package</a> makes this <em>really</em> easy to do with R. There are other similar packages that do this, like <strong>cowplot</strong> and <strong>gridExtra</strong>, but I’ve found that <strong>patchwork</strong> is the easiest to use <em>and</em> it actually aligns the different plot elements like axis lines and legends (yay alignment in CRAP!). The <a href="https://patchwork.data-imaginist.com/articles/guides/assembly.html">documentation for <strong>patchwork</strong></a> is really great and full of examples—you should check it out to see all the things you can do with it!</p>
+<p>A good alternative to using two y-axes is to use two plots instead. The <a href="https://github.com/thomasp85/patchwork"><strong>patchwork</strong> package</a> makes this <em>really</em> easy to do with R. There are other similar packages that do this, like <strong>cowplot</strong> and <strong>gridExtra</strong>, but I’ve found that <strong>patchwork</strong> is the easiest to use <em>and</em> it actually aligns the different plot elements like axis lines and legends. The <a href="https://patchwork.data-imaginist.com/articles/guides/assembly.html">documentation for <strong>patchwork</strong></a> is really great and full of examples—you should check it out to see all the things you can do with it!</p>
 <p>To use <strong>patchwork</strong>, we need to (1) save our plots as objects and (2) add them together with <code>+</code>.</p>
 <p>For instance, is there a relationship between temperature and humidity in Atlanta? We can plot both:</p>
 <pre class="r"><code># Temperature in Atlanta
@@ -266,7 +268,6 @@ tidy(model_simple, conf.int = TRUE)</code></pre>
        aes(x = humidity_scaled, y = temperatureHigh)) +
   geom_point() +
   geom_smooth(method = &quot;lm&quot;)</code></pre>
-<pre><code>## `geom_smooth()` using formula &#39;y ~ x&#39;</code></pre>
 <p><img src="/example/05-example_files/figure-html/plot-simple-model-1.png" width="576" style="display: block; margin: auto;" /></p>
 <p>And indeed, as humidity increases, temperatures decrease.</p>
 </div>
