@@ -51,7 +51,7 @@ When we are not able to randomly assign each individual to a treatment or contro
 ## Case study: Moneyball
 
 ```{r,echo=FALSE}
-img_path <- "regression/img/"
+img_path <- "img/"
 ```
 
 _Moneyball: The Art of Winning an Unfair Game_ is a book by Michael Lewis about the Oakland Athletics (A's) baseball team and its general manager, the person tasked with building the team, Billy Beane.
@@ -60,7 +60,7 @@ Traditionally, baseball teams use _scouts_ to help them decide what players to h
 
 From 1989 to 1991, the A's had one of the highest payrolls in baseball. They were able to buy the best players and, during that time, they were one of the best teams. However, in 1995 the A's team owner changed and the new management cut the budget drastically, leaving then general manager, Sandy Alderson, with one of the lowest payrolls in baseball. He could no longer afford the most sought-after players. Alderson began using a statistical approach to find inefficiencies in the market. Alderson was a mentor to Billy Beane, who succeeded him in 1998 and fully embraced data science, as opposed to scouts, as a method for finding low-cost players that data predicted would help the team win. Today, this strategy has been adapted by most baseball teams. As we will see, regression plays a large role in this approach.
 
-As motivation for this lecture, we will pretend it is 2002 (holy shit I'm old) and try to build a baseball team with a limited budget, just like the A's had to do. To appreciate what you are up against, note that in 2002 the Yankees' payroll of \$125,928,583 more than tripled the Oakland A's \$39,679,746:
+As motivation for this lecture, we will pretend it is 2002 (holy shit I'm old) and try to build a baseball team with a limited budget, just like the A's had to do. To appreciate what you are up against, note that in 2002 the Yankees' payroll of $125,928,583 more than tripled the Oakland A's \$39,679,746:
 
 ```{r mlb-2002-payroll, echo=FALSE, message=FALSE, warning=FALSE, fig.height = 4.5}
 library(tidyverse)
@@ -515,7 +515,7 @@ lse %>% summarize(se_0 = sd(beta_0), se_1 = sd(beta_1))
 
 The `summary` function also reports t-statistics (`t value`) and p-values (`Pr(>|t|)`). The t-statistic is not actually based on the central limit theorem but rather on the assumption that the $\varepsilon$s follow a normal distribution. Under this assumption, mathematical theory tells us that the LSE divided by their standard error, $\hat{\beta}_0 / \hat{\mbox{SE}}(\hat{\beta}_0 )$ and $\hat{\beta}_1 / \hat{\mbox{SE}}(\hat{\beta}_1 )$, follow a t-distribution with $N-p$ degrees of freedom, with $p$ the number of parameters in our model. In the case of height $p=2$, the two p-values are testing the null hypothesis that $\beta_0 = 0$ and $\beta_1=0$, respectively.
 
-Remember that, as we described in Section \@ref(t-dist) for large enough $N$, the CLT works and the t-distribution becomes almost the same as the normal distribution. Also, notice that we can construct confidence intervals, but we will soon learn about __broom__, an add-on package that makes this easy.
+Remember that, as we described in the section on t-tests for large enough $N$, the CLT works and the t-distribution becomes almost the same as the normal distribution. Also, notice that we can construct confidence intervals, but we will soon learn about __broom__, an add-on package that makes this easy.
 
 Although we do not show examples in this book, hypothesis testing with regression models is commonly used in epidemiology and economics to make statements such as "the effect of A on B was statistically significant after adjusting for X, Y, and Z". However, several assumptions have to hold for these statements to be true.
 
@@ -856,7 +856,13 @@ qplot(R_hat, data = players, binwidth = 0.5, color = I("black"))
 
 ### Adding salary and position information
 
-To actually build the team, we will need to know their salaries as well as their defensive position. For this, we join the `players` data frame we just created with the player information data frame included in some of the other Lahman data tables. We will learn more about the join function (and we will discuss this further in a later lecture).
+To actually build the team, we will need to know their salaries as well as their defensive position. For this, we join the `players` data frame we just created with the player information data frame included in some of the other Lahman data tables. We will learn more about the join function (and we will discuss this further in a later lecture). For now, we just need to know that a join matches a "key" field that is shared between the two datasets. Here, it is `playerID`.
+
+Each join consists of two datasets, a shared key (or keys), and a type of join. A **right join** takes any rows in X that match rows in Y, and *all* rows in Y. A **left join** takes all rows of X and any rows of Y that match. With *left* and *right* joins, you may end up with observations where some columns do not have data. R will give these an "NA". 
+
+An **inner join** takes only the rows in X and Y that match, so all observations will have data. A **full join** takes all rows in X and Y.
+
+If more than one observation in Y matches the key field in X (or vice-versa), then you can get duplicated observations. We'll cover joins more later. For now, we'll just use **right** and **left** joins on data we know is safe to merge.
 
 Start by adding the 2002 salary of each player:
 
@@ -920,7 +926,7 @@ players %>% ggplot(aes(salary, R_hat, color = POS)) +
 
 <!--Notice the very high salaries for most players. We do see some low-cost players with very high metrics. These will be great for our team. Some of these are likely young players that have not yet been able to negotiate a salary and are unavailable.
 
-Here we remake plot without players that debuted before 1998. We use the __lubridate__ function `year`, introduced in Section \@ref(lubridate).
+Here we remake plot without players that debuted before 1998. We use the __lubridate__ function `year`.
 ```{r predicted-runs-vs-salary-no-rookies, message=FALSE, warning=FALSE}
 library(lubridate)
 players %>% filter(year(debut) < 1998) %>%
@@ -929,6 +935,8 @@ players %>% filter(year(debut) < 1998) %>%
   scale_x_log10()
 ```
 -->
+
+
 We can search for good deals by looking at players who produce many more runs than others with similar salaries. We can use this table to decide what players to pick and keep our total salary below the 40 million dollars Billy Beane had to work with. This can be done using what computer scientists call linear programming. This is not something we teach, but here are the position players selected with this approach:
 
 ```{r, message=FALSE, warning=FALSE, echo=FALSE}
@@ -1038,14 +1046,12 @@ Finally, we will use the `spread` function to have one column for the rookie and
 ROY <- ROY %>% spread(rookie, AVG) %>% arrange(desc(rookie))
 tmp <- ROY %>% slice(1:5) %>%
   select(nameFirst, nameLast, rookie_year, rookie, sophomore)
-if(knitr::is_html_output()){
+
+
   knitr::kable(tmp, "html") %>%
     kableExtra::kable_styling(bootstrap_options = "striped",
                               full_width = FALSE)
-} else{
-  knitr::kable(tmp, "latex", booktabs = TRUE) %>%
-    kableExtra::kable_styling(font_size = 8)
-}
+
 ```
 
 In fact, the proportion of players that have a lower batting average their sophomore year is `r mean(ROY$sophomore - ROY$rookie <= 0)`.
@@ -1054,7 +1060,7 @@ So is it "jitters" or "jinx"? To answer this question, let's turn our attention 
 
 <!--We perform similar operations to what we did above: -->
 
-```{r, echo=FALSE}
+```{r, echo=FALSE, warnings = FALSE, message = FALSE}
 two_years <- Batting %>%
   filter(yearID %in% 2013:2014) %>%
   group_by(playerID, yearID) %>%
@@ -1074,31 +1080,28 @@ The same pattern arises when we look at the top performers: batting averages go 
 
 ```{r, echo=FALSE}
 tmp <- two_years %>% slice(1:5)
-if(knitr::is_html_output()){
-  knitr::kable(tmp, "html") %>%
-    kableExtra::kable_styling(bootstrap_options = "striped", full_width = FALSE)
-} else{
-  knitr::kable(tmp, "latex", booktabs = TRUE) %>%
-    kableExtra::kable_styling(font_size = 8)
-}
+
+
+  knitr::kable(tmp, "html")   %>%
+    kableExtra::kable_styling(bootstrap_options = "striped",
+                              full_width = FALSE)
+
+
 ```
 
 But these are not rookies! Also, look at what happens to the worst performers of 2013:
 
 ```{r, echo=FALSE}
 tmp <- arrange(two_years, `2013`) %>% slice(1:5)
-if(knitr::is_html_output()){
+
   knitr::kable(tmp, "html") %>%
     kableExtra::kable_styling(bootstrap_options = "striped", full_width = FALSE)
-} else{
-  knitr::kable(tmp, "latex", booktabs = TRUE) %>%
-    kableExtra::kable_styling(font_size = 8)
-}
+
 ```
 
 Their batting averages mostly go up! Is this some sort of reverse sophomore slump? It is not. There is no such thing as the sophomore slump. This is all explained with a simple statistical fact: the correlation for performance in two separate years is high, but not perfect:
 
-```{r regression-fallacy, echo=FALSE, fig.height=3, fig.width=3, out.width="40%"}
+```{r regression-fallacy, echo=FALSE, fig.height=3, fig.width=5, out.width="40%"}
 qplot(`2013`, `2014`, data = two_years)
 ```
 

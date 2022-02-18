@@ -12,28 +12,34 @@ output:
     toc: true
 ---
 
+<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
 <script src="/rmarkdown-libs/kePrint/kePrint.js"></script>
 <link href="/rmarkdown-libs/lightable/lightable.css" rel="stylesheet" />
 
 <div id="TOC">
 <ul>
-<li><a href="#required-reading">Required Reading</a><ul>
+<li><a href="#required-reading">Required Reading</a>
+<ul>
 <li><a href="#supplemental-readings">Supplemental Readings</a></li>
 <li><a href="#guiding-questions">Guiding Questions</a></li>
 </ul></li>
-<li><a href="#linear-models-ii">Linear Models II</a><ul>
-<li><a href="#case-study-moneyball">Case study: Moneyball</a><ul>
+<li><a href="#linear-models-ii">Linear Models II</a>
+<ul>
+<li><a href="#case-study-moneyball">Case study: Moneyball</a>
+<ul>
 <li><a href="#sabermetics">Sabermetics</a></li>
 <li><a href="#baseball-basics">Baseball basics</a></li>
 <li><a href="#no-awards-for-bb">No awards for BB</a></li>
 <li><a href="#base-on-balls-or-stolen-bases">Base on balls or stolen bases?</a></li>
 <li><a href="#regression-applied-to-baseball-statistics">Regression applied to baseball statistics</a></li>
 </ul></li>
-<li><a href="#confounding">Confounding</a><ul>
+<li><a href="#confounding">Confounding</a>
+<ul>
 <li><a href="#understanding-confounding-through-stratification">Understanding confounding through stratification</a></li>
 <li><a href="#multivariate-regression">Multivariate regression</a></li>
 </ul></li>
-<li><a href="#lse">Least squares estimates</a><ul>
+<li><a href="#lse">Least squares estimates</a>
+<ul>
 <li><a href="#interpreting-linear-models">Interpreting linear models</a></li>
 <li><a href="#least-squares-estimates-lse">Least Squares Estimates (LSE)</a></li>
 <li><a href="#the-lm-function">The <code>lm</code> function</a></li>
@@ -41,10 +47,12 @@ output:
 <li><a href="#predicted-values-are-random-variables">Predicted values are random variables</a></li>
 </ul></li>
 <li><a href="#exercises">Exercises</a></li>
-<li><a href="#linear-regression-in-the-tidyverse">Linear regression in the tidyverse</a><ul>
+<li><a href="#linear-regression-in-the-tidyverse">Linear regression in the tidyverse</a>
+<ul>
 <li><a href="#the-broom-package">The broom package</a></li>
 </ul></li>
-<li><a href="#case-study-moneyball-continued">Case study: Moneyball (continued)</a><ul>
+<li><a href="#case-study-moneyball-continued">Case study: Moneyball (continued)</a>
+<ul>
 <li><a href="#adding-salary-and-position-information">Adding salary and position information</a></li>
 <li><a href="#picking-nine-players">Picking nine players</a></li>
 </ul></li>
@@ -111,7 +119,7 @@ output:
 <p>The goal of a baseball game is to score more runs (points) than the other team. Each team has 9 batters that have an opportunity to hit a ball with a bat in a predetermined order. After the 9th batter has had their turn, the first batter bats again, then the second, and so on. Each time a batter has an opportunity to bat, we call it a plate appearance (PA). At each PA, the other team’s <em>pitcher</em> throws the ball and the batter tries to hit it. The PA ends with an binary outcome: the batter either makes an <em>out</em> (failure) and returns to the bench or the batter doesn’t (success) and can run around the bases, and potentially score a run (reach all 4 bases). Each team gets nine tries, referred to as <em>innings</em>, to score runs and each inning ends after three outs (three failures).</p>
 <p>Here is a video showing a success: <a href="https://www.youtube.com/watch?v=HL-XjMCPfio">https://www.youtube.com/watch?v=HL-XjMCPfio</a>. And here is one showing a failure: <a href="https://www.youtube.com/watch?v=NeloljCx-1g">https://www.youtube.com/watch?v=NeloljCx-1g</a>. In these videos, we see how luck is involved in the process. When at bat, the batter wants to hit the ball hard. If the batter hits it hard enough, it is a HR, the best possible outcome as the batter gets at least one automatic run. But sometimes, due to chance, the batter hits the ball very hard and a defender catches it, resulting in an out. In contrast, sometimes the batter hits the ball softly, but it lands just in the right place. The fact that there is chance involved hints at why probability models will be involved.</p>
 <p>Now there are several ways to succeed. Understanding this distinction will be important for our analysis. When the batter hits the ball, the batter wants to pass as many <em>bases</em> as possible. There are four bases with the fourth one called <em>home plate</em>. Home plate is where batters start by trying to hit, so the bases form a cycle.</p>
-<p><img src="./img/Baseball_Diamond1.png" />
+<p><img src="img/Baseball_Diamond1.png" />
 (Courtesy of Cburnett<a href="#fn4" class="footnote-ref" id="fnref4"><sup>4</sup></a>. CC BY-SA 3.0 license<a href="#fn5" class="footnote-ref" id="fnref5"><sup>5</sup></a>.)
 <!--Source: [Wikipedia Commons](https://commons.wikimedia.org/wiki/File:Baseball_diamond_simplified.svg))--></p>
 <p>A batter who <em>goes around the bases</em> and arrives home, scores a run.</p>
@@ -356,9 +364,8 @@ Y_i = \beta_0 + \beta_1 (x_i - \bar{x}) + \varepsilon_i, \, i=1,\dots,N
 RSS = \sum_{i=1}^n \left\{  y_i - \left(\beta_0 + \beta_1 x_i \right)\right\}^2
 \]</span></p>
 <p>This quantity is called the residual sum of squares (RSS). Once we find the values that minimize the RSS, we will call the values the least squares estimates (LSE) and denote them with <span class="math inline">\(\hat{\beta}_0\)</span> and <span class="math inline">\(\hat{\beta}_1\)</span>. Let’s demonstrate this with the previously defined dataset:</p>
-<pre class="r"><code>library(HistData)</code></pre>
-<pre><code>## Warning: package &#39;HistData&#39; was built under R version 4.0.4</code></pre>
-<pre class="r"><code>data(&quot;GaltonFamilies&quot;)
+<pre class="r"><code>library(HistData)
+data(&quot;GaltonFamilies&quot;)
 set.seed(1983)
 galton_heights &lt;- GaltonFamilies %&gt;%
   filter(gender == &quot;male&quot;) %&gt;%
@@ -446,7 +453,7 @@ lse &lt;- data.frame(beta_0 = lse[1,], beta_1 = lse[2,])</code></pre>
 <pre><code>##      se_0      se_1
 ## 1 8.83591 0.1278812</code></pre>
 <p>The <code>summary</code> function also reports t-statistics (<code>t value</code>) and p-values (<code>Pr(&gt;|t|)</code>). The t-statistic is not actually based on the central limit theorem but rather on the assumption that the <span class="math inline">\(\varepsilon\)</span>s follow a normal distribution. Under this assumption, mathematical theory tells us that the LSE divided by their standard error, <span class="math inline">\(\hat{\beta}_0 / \hat{\mbox{SE}}(\hat{\beta}_0 )\)</span> and <span class="math inline">\(\hat{\beta}_1 / \hat{\mbox{SE}}(\hat{\beta}_1 )\)</span>, follow a t-distribution with <span class="math inline">\(N-p\)</span> degrees of freedom, with <span class="math inline">\(p\)</span> the number of parameters in our model. In the case of height <span class="math inline">\(p=2\)</span>, the two p-values are testing the null hypothesis that <span class="math inline">\(\beta_0 = 0\)</span> and <span class="math inline">\(\beta_1=0\)</span>, respectively.</p>
-<p>Remember that, as we described in Section <a href="#t-dist"><strong>??</strong></a> for large enough <span class="math inline">\(N\)</span>, the CLT works and the t-distribution becomes almost the same as the normal distribution. Also, notice that we can construct confidence intervals, but we will soon learn about <strong>broom</strong>, an add-on package that makes this easy.</p>
+<p>Remember that, as we described in the section on t-tests for large enough <span class="math inline">\(N\)</span>, the CLT works and the t-distribution becomes almost the same as the normal distribution. Also, notice that we can construct confidence intervals, but we will soon learn about <strong>broom</strong>, an add-on package that makes this easy.</p>
 <p>Although we do not show examples in this book, hypothesis testing with regression models is commonly used in epidemiology and economics to make statements such as “the effect of A on B was statistically significant after adjusting for X, Y, and Z”. However, several assumptions have to hold for these statements to be true.</p>
 </div>
 <div id="predicted-values-are-random-variables" class="section level3">
@@ -611,9 +618,8 @@ dat %&gt;%
 <h3>The broom package</h3>
 <p>Our original task was to provide an estimate and confidence interval for the slope estimates of each strata. The <strong>broom</strong> package will make this quite easy.</p>
 <p>The <strong>broom</strong> package has three main functions, all of which extract information from the object returned by <code>lm</code> and return it in a <strong>tidyverse</strong> friendly data frame. These functions are <code>tidy</code>, <code>glance</code>, and <code>augment</code>. The <code>tidy</code> function returns estimates and related information as a data frame:</p>
-<pre class="r"><code>library(broom)</code></pre>
-<pre><code>## Warning: package &#39;broom&#39; was built under R version 4.0.5</code></pre>
-<pre class="r"><code>fit &lt;- lm(R ~ BB, data = dat)
+<pre class="r"><code>library(broom)
+fit &lt;- lm(R ~ BB, data = dat)
 tidy(fit)</code></pre>
 <pre><code>## # A tibble: 2 x 5
 ##   term        estimate std.error statistic  p.value
@@ -752,7 +758,10 @@ coefs</code></pre>
 <p><img src="/content/06-content_files/figure-html/r-hat-hist-1.png" width="672" /></p>
 <div id="adding-salary-and-position-information" class="section level3">
 <h3>Adding salary and position information</h3>
-<p>To actually build the team, we will need to know their salaries as well as their defensive position. For this, we join the <code>players</code> data frame we just created with the player information data frame included in some of the other Lahman data tables. We will learn more about the join function (and we will discuss this further in a later lecture).</p>
+<p>To actually build the team, we will need to know their salaries as well as their defensive position. For this, we join the <code>players</code> data frame we just created with the player information data frame included in some of the other Lahman data tables. We will learn more about the join function (and we will discuss this further in a later lecture). For now, we just need to know that a join matches a “key” field that is shared between the two datasets. Here, it is <code>playerID</code>.</p>
+<p>Each join consists of two datasets, a shared key (or keys), and a type of join. A <strong>right join</strong> takes any rows in X that match rows in Y, and <em>all</em> rows in Y. A <strong>left join</strong> takes all rows of X and any rows of Y that match. With <em>left</em> and <em>right</em> joins, you may end up with observations where some columns do not have data. R will give these an “NA”.</p>
+<p>An <strong>inner join</strong> takes only the rows in X and Y that match, so all observations will have data. A <strong>full join</strong> takes all rows in X and Y.</p>
+<p>If more than one observation in Y matches the key field in X (or vice-versa), then you can get duplicated observations. We’ll cover joins more later. For now, we’ll just use <strong>right</strong> and <strong>left</strong> joins on data we know is safe to merge.</p>
 <p>Start by adding the 2002 salary of each player:</p>
 <pre class="r"><code>players &lt;- Salaries %&gt;%
   filter(yearID == 2002) %&gt;%
@@ -811,7 +820,7 @@ pos &lt;- tmp %&gt;%
 <p><img src="/content/06-content_files/figure-html/predicted-runs-vs-salary-1.png" width="672" /></p>
 <!--Notice the very high salaries for most players. We do see some low-cost players with very high metrics. These will be great for our team. Some of these are likely young players that have not yet been able to negotiate a salary and are unavailable.
 
-Here we remake plot without players that debuted before 1998. We use the __lubridate__ function `year`, introduced in Section \@ref(lubridate).
+Here we remake plot without players that debuted before 1998. We use the __lubridate__ function `year`.
 
 ```r
 library(lubridate)
@@ -1398,7 +1407,6 @@ Pujols
 <p>In fact, the proportion of players that have a lower batting average their sophomore year is 0.6862745.</p>
 <p>So is it “jitters” or “jinx”? To answer this question, let’s turn our attention to all players that played the 2013 and 2014 seasons and batted more than 130 times (minimum to win Rookie of the Year).</p>
 <!--We perform similar operations to what we did above: -->
-<pre><code>## `summarise()` has grouped output by &#39;playerID&#39;. You can override using the `.groups` argument.</code></pre>
 <p>The same pattern arises when we look at the top performers: batting averages go down for most of the top performers.</p>
 <table class="table table-striped" style="width: auto !important; margin-left: auto; margin-right: auto;">
 <thead>
@@ -1592,9 +1600,8 @@ the data look very much like a bivariate normal distribution, which means we pre
 <h2>Measurement error models</h2>
 <p>Up to now, all our linear regression examples have been applied to two or more random variables. We assume the pairs are bivariate normal and use this to motivate a linear model. This approach covers most real-life examples of linear regression. The other major application comes from measurement errors models. In these applications, it is common to have a non-random covariate, such as time, and randomness is introduced from measurement error rather than sampling or natural variability.</p>
 <p>To understand these models, imagine you are Galileo in the 16th century trying to describe the velocity of a falling object. An assistant climbs the Tower of Pisa and drops a ball, while several other assistants record the position at different times. Let’s simulate some data using the equations we know today and adding some measurement error. The <strong>dslabs</strong> function <code>rfalling_object</code> generates these simulations:</p>
-<pre class="r"><code>library(dslabs)</code></pre>
-<pre><code>## Warning: package &#39;dslabs&#39; was built under R version 4.0.5</code></pre>
-<pre class="r"><code>falling_object &lt;- rfalling_object()</code></pre>
+<pre class="r"><code>library(dslabs)
+falling_object &lt;- rfalling_object()</code></pre>
 <p>The assistants hand the data to Galileo and this is what he sees:</p>
 <pre class="r"><code>falling_object %&gt;%
   ggplot(aes(time, observed_distance)) +
