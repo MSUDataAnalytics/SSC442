@@ -495,7 +495,7 @@ ggplot(weather_atl, aes(x = temperatureHigh, y = fct_rev(Month), fill = Month)) 
   guides(fill = FALSE)
 ```
 
-We can get extra fancy if we fill by temperature instead of filling by month. To get this to work, we need to use `geom_density_ridges_gradient()`, and we need to change the `fill` mapping to the strange looking `..x..`, which is a weird ggplot trick that tells it to use the variable we mapped to the x-axis. For whatever reason, `fill = temperatureHigh` doesn't work `r emo::ji("shrug")`:
+We can get extra fancy if we fill by temperature instead of filling by month. To get this to work, we need to use `geom_density_ridges_gradient()`, and we need to change the `fill` mapping to the strange looking `..x..`, which is a weird ggplot trick that tells it to use the variable we mapped to the x-axis. For whatever reason, `fill = temperatureHigh` doesn't work:
 
 ```{r ggridges-gradient-temp, message=FALSE}
 ggplot(weather_atl, aes(x = temperatureHigh, y = fct_rev(Month), fill = ..x..)) +
@@ -615,3 +615,8 @@ ggplot(weather_atl,
   guides(color = FALSE, fill = FALSE) +
   coord_flip()
 ```
+
+
+
+## Lecture Video
+The lecture video for Tuesday (this material, but we only made it about 2/3rds of the way) is [available here <i class="fas fa-film"></i>](https://mediaspace.msu.edu/media/SSC442+-+Example+04+-+Feb+10th/1_tyohp7mc)

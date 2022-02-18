@@ -3,7 +3,7 @@ title: "Visualizing Uncertainty"
 linktitle: "4: Uncertainty"
 read_date: "2022-02-10"
 draft: false
-lastmod: "2022-01-06"
+lastmod: "2022-02-18"
 output:
   blogdown::html_page:
     toc: true
@@ -17,32 +17,40 @@ editor_options:
   chunk_output_type: console
 ---
 
+<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
 
 <div id="TOC">
 <ul>
-<li><a href="#part-1-statistical-inference-and-polls">Part 1: Statistical Inference and Polls</a><ul>
-<li><a href="#polls">Polls</a><ul>
+<li><a href="#part-1-statistical-inference-and-polls">Part 1: Statistical Inference and Polls</a>
+<ul>
+<li><a href="#polls">Polls</a>
+<ul>
 <li><a href="#the-sampling-model-for-polls">The sampling model for polls</a></li>
 </ul></li>
-<li><a href="#populations-samples-parameters-and-estimates">Populations, samples, parameters, and estimates</a><ul>
+<li><a href="#populations-samples-parameters-and-estimates">Populations, samples, parameters, and estimates</a>
+<ul>
 <li><a href="#the-sample-average">The sample average</a></li>
 <li><a href="#parameters">Parameters</a></li>
 <li><a href="#polling-versus-forecasting">Polling versus forecasting</a></li>
 <li><a href="#properties-of-our-estimate-expected-value-and-standard-error">Properties of our estimate: expected value and standard error</a></li>
 </ul></li>
-<li><a href="#clt">Central Limit Theorem</a><ul>
+<li><a href="#clt">Central Limit Theorem</a>
+<ul>
 <li><a href="#a-monte-carlo-simulation">A Monte Carlo simulation</a></li>
 <li><a href="#the-spread">The spread</a></li>
 <li><a href="#bias-why-not-run-a-very-large-poll">Bias: why not run a very large poll?</a></li>
 </ul></li>
 </ul></li>
-<li><a href="#part-2-supplemental-additional-visualization-techniques">Part 2: (Supplemental) Additional Visualization Techniques</a><ul>
-<li><a href="#code">Code</a><ul>
+<li><a href="#part-2-supplemental-additional-visualization-techniques">Part 2: (Supplemental) Additional Visualization Techniques</a>
+<ul>
+<li><a href="#code">Code</a>
+<ul>
 <li><a href="#load-and-clean-data">Load and clean data</a></li>
 <li><a href="#histograms">Histograms</a></li>
 <li><a href="#density-plots">Density plots</a></li>
 <li><a href="#box-violin-and-rain-cloud-plots">Box, violin, and rain cloud plots</a></li>
 </ul></li>
+<li><a href="#lecture-video">Lecture Video</a></li>
 </ul></li>
 </ul>
 </div>
@@ -323,7 +331,7 @@ library(gghalves)</code></pre>
 <pre><code>## Warning: `guides(&lt;scale&gt; = FALSE)` is deprecated. Please use `guides(&lt;scale&gt; =
 ## &quot;none&quot;)` instead.</code></pre>
 <p><img src="/example/04-example_files/figure-html/ggridges-quantile-temp-1.png" width="576" style="display: block; margin: auto;" /></p>
-<p>We can get extra fancy if we fill by temperature instead of filling by month. To get this to work, we need to use <code>geom_density_ridges_gradient()</code>, and we need to change the <code>fill</code> mapping to the strange looking <code>..x..</code>, which is a weird ggplot trick that tells it to use the variable we mapped to the x-axis. For whatever reason, <code>fill = temperatureHigh</code> doesn’t work 🤷:</p>
+<p>We can get extra fancy if we fill by temperature instead of filling by month. To get this to work, we need to use <code>geom_density_ridges_gradient()</code>, and we need to change the <code>fill</code> mapping to the strange looking <code>..x..</code>, which is a weird ggplot trick that tells it to use the variable we mapped to the x-axis. For whatever reason, <code>fill = temperatureHigh</code> doesn’t work:</p>
 <pre class="r"><code>ggplot(weather_atl, aes(x = temperatureHigh, y = fct_rev(Month), fill = ..x..)) +
   geom_density_ridges_gradient(quantile_lines = TRUE, quantiles = 2) +
   scale_fill_viridis_c(option = &quot;plasma&quot;) +
@@ -432,6 +440,10 @@ head(weather_atl_long)</code></pre>
 ## &quot;none&quot;)` instead.</code></pre>
 <p><img src="/example/04-example_files/figure-html/gghalves-rain-cloud-1.png" width="768" style="display: block; margin: auto;" /></p>
 </div>
+</div>
+<div id="lecture-video" class="section level2">
+<h2>Lecture Video</h2>
+<p>The lecture video for Tuesday (this material, but we only made it about 2/3rds of the way) is <a href="https://mediaspace.msu.edu/media/SSC442+-+Example+04+-+Feb+10th/1_tyohp7mc">available here <i class="fas fa-film"></i></a></p>
 </div>
 </div>
 <div class="footnotes">
