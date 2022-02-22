@@ -30,7 +30,7 @@
   
     
   
-  <meta name="description" content="Backstory and Set UpData Exploration and ProcessingNOTE
+  <meta name="description" content="Backstory and Set UpData Exploration and ProcessingNOTE
 You must turn in a PDF document of your R Markdown code. Submit this to D2L by 11:59 PM Eastern Time on Monday, Feb 21st.
 This week’s lab will (hopefully) not repeat the disaster that was last week’s lab.
 Backstory and Set UpYou have been recently hired to Zillow’s Zestimate product team as a junior analyst.">
@@ -241,7 +241,7 @@ Backstory and Set UpYou have been recently hired to Zillow’s Zestimate produc
   <meta property="og:site_name" content="Data Analytics">
   <meta property="og:url" content="https://ssc442kirkpatrick.netlify.app/assignment/05-assignment/">
   <meta property="og:title" content="Correlations and Simple Models | Data Analytics">
-  <meta property="og:description" content="Backstory and Set UpData Exploration and ProcessingNOTE
+  <meta property="og:description" content="Backstory and Set UpData Exploration and ProcessingNOTE
 You must turn in a PDF document of your R Markdown code. Submit this to D2L by 11:59 PM Eastern Time on Monday, Feb 21st.
 This week’s lab will (hopefully) not repeat the disaster that was last week’s lab.
 Backstory and Set UpYou have been recently hired to Zillow’s Zestimate product team as a junior analyst."><meta property="og:image" content="https://ssc442kirkpatrick.netlify.app/img/social-image.png">
@@ -626,10 +626,12 @@ Backstory and Set UpYou have been recently hired to Zillow’s Zestimate produc
 
                     <div class="article-style">
                         
+<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
 
 <div id="TOC">
 <ul>
-<li><a href="#backstory-and-set-up">Backstory and Set Up</a><ul>
+<li><a href="#backstory-and-set-up">Backstory and Set Up</a>
+<ul>
 <li><a href="#data-exploration-and-processing">Data Exploration and Processing</a></li>
 </ul></li>
 </ul>
@@ -730,15 +732,15 @@ Backstory and Set UpYou have been recently hired to Zillow’s Zestimate produc
 unique(ameslist$GarageOutside)
 [1]  0  1 NA</code></pre>
 <p>This seems to have worked. The command above <code>ifelse()</code> does what it says: <code>if</code> some condition is met (here, either of two variables equals one) then it returns a one; <code>else</code> it returns a zero. Such functions are very handy, though as mentioned above, there are other ways of doing this. Also note, that while fixed the issue with <code>NA</code> above, we’ve got new issues: we definitely don’t want <code>NA</code> outputted from this operation. Accordingly, we’re going to need to deal with it somehow.</p>
-<p><strong>Try it:</strong> Utilizing a similar approach to what you did above, fix this so that the only outputs are zero and one.</p>
+<p><strong>Try it:</strong> Utilizing a similar approach to what you did above, fix this so that the only outputs are zero and one. This requires taking a stand on what the <code>NA</code> values mean. If you think they correspond to a detached garage (or something functionally equivalent, like “no parking whatsoever”), then change the <code>NA</code> values to zero. If you think they are mistakes, then we should drop all data with <code>NA</code> for the this column. State what you did and why.</p>
 <p>Generally speaking, this is a persistent issue, and you will spend an extraordinary amount of time dealing with missing data or data that does not encode a variable exactly as you want it. This is expecially true if you deal with real-world data: you will need to learn how to handle <code>NA</code>s. There are a number of fixes (as always, Google is your friend) and anything that works is good. But you should spend some time thinking about this and learning at least one approach.</p>
 <div class="fyi">
 <p><strong>EXERCISES</strong></p>
 <ol style="list-style-type: decimal">
-<li><p>Prune the data to all of the variables that are <code>type = int</code> about which you have some reasonable intuition for what they mean. This <strong>must</strong> include the variable <code>SalePrice</code>. Save this new dataset as <code>Ames</code>. Produce documentation for this object in the form of a .txt file. This must describe each of the preserved variables, the values it can take (e.g., can it be negative?) and your interpretation of the variable.</p></li>
-<li><p>Produce a <em>scatterplot matrix</em> which includes 12 of the variables that are <code>type = int</code> in the data set. Choose those that you believe are likely to be correlated with <code>SalePrice</code>.<a href="#fn3" class="footnote-ref" id="fnref3"><sup>3</sup></a></p></li>
-<li><p>Compute a matrix of correlations between these variables using the function <code>cor()</code>. Does this match your prior beliefs? Briefly discuss the correlation between the miscellaneous variables and <code>SalePrice</code>.</p></li>
-<li><p>Produce a scatterplot between <code>SalePrice</code> and <code>GrLivArea</code>. Run a linear model using <code>lm()</code> to explore the relationship. Finally, use the <code>abline()</code> function to plot the relationship that you’ve found in the simple linear regression.</p>
+<li><p>Prune the data to all of the variables that are <code>type = int</code> about which you have some reasonable intuition for what they mean. This <strong>must</strong> include the variable <code>SalePrice</code>. Save this new dataset as <code>Ames</code>. Produce documentation for this object in the form of a .txt file or use <a href="https://www.markdownguide.org/extended-syntax/">Markdown’s table format</a>. This must describe each of the preserved variables, the values it can take (e.g., can it be negative?) and your interpretation of the variable.</p></li>
+<li><p>Produce a <em>scatterplot matrix</em> which includes <code>SalePrice</code> and 9 of the variables that are <code>type = int</code> in the data set. Choose those that you believe are likely to be correlated with <code>SalePrice</code>.<a href="#fn3" class="footnote-ref" id="fnref3"><sup>3</sup></a></p></li>
+<li><p>Compute a matrix of correlations between these variables using the function <code>cor()</code>. Does this match your prior beliefs? Briefly discuss the correlation between the miscellaneous variables and <code>SalePrice</code> and any correlations between these variables.</p></li>
+<li><p>Produce a scatterplot between <code>SalePrice</code> and <code>GrLivArea</code>. Run a linear model using <code>lm()</code> to explore the relationship. Finally, use the <code>geom_abline()</code> function to plot the relationship that you’ve found in the simple linear regression. You’ll need to extract the intercept and slope from your <code>lm</code> object. See <code>coef(...)</code> for information on this.</p>
 <ul>
 <li>What is the largest outlier that is above the regression line? Produce the other information about this house.</li>
 </ul></li>

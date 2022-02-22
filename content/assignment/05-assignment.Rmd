@@ -114,7 +114,7 @@ unique(ameslist$GarageOutside)
 
 This seems to have worked. The command above `ifelse()` does what it says: `if` some condition is met (here, either of two variables equals one) then it returns a one; `else` it returns a zero. Such functions are very handy, though as mentioned above, there are other ways of doing this. Also note, that while fixed the issue with `NA` above, we've got new issues: we definitely don't want `NA` outputted from this operation. Accordingly, we're going to need to deal with it somehow.
 
-**Try it:** Utilizing a similar approach to what you did above, fix this so that the only outputs are zero and one.
+**Try it:** Utilizing a similar approach to what you did above, fix this so that the only outputs are zero and one. This requires taking a stand on what the `NA` values mean. If you think they correspond to a detached garage (or something functionally equivalent, like "no parking whatsoever"), then change the `NA` values to zero. If you think they are mistakes, then we should drop all data with `NA` for the this column. State what you did and why.
 
 Generally speaking, this is a persistent issue, and you will spend an extraordinary amount of time dealing with missing data or data that does not encode a variable exactly as you want it. This is expecially true if you deal with real-world data: you will need to learn how to handle `NA`s. There are a number of fixes (as always, Google is your friend) and anything that works is good. But you should spend some time thinking about this and learning at least one approach.
 
@@ -124,13 +124,13 @@ Generally speaking, this is a persistent issue, and you will spend an extraordin
 
 __EXERCISES__
 
-1. Prune the data to all of the variables that are `type = int` about which you have some reasonable intuition for what they mean. This **must** include the variable `SalePrice`. Save this new dataset as `Ames`. Produce documentation for this object in the form of a .txt file. This must describe each of the preserved variables, the values it can take (e.g., can it be negative?) and your interpretation of the variable.
+1. Prune the data to all of the variables that are `type = int` about which you have some reasonable intuition for what they mean. This **must** include the variable `SalePrice`. Save this new dataset as `Ames`. Produce documentation for this object in the form of a .txt file or use [Markdown's table format](https://www.markdownguide.org/extended-syntax/). This must describe each of the preserved variables, the values it can take (e.g., can it be negative?) and your interpretation of the variable.
 
-2. Produce a *scatterplot matrix* which includes 12 of the variables that are `type = int` in the data set. Choose those that you believe are likely to be correlated with `SalePrice`.[^2]
+2. Produce a *scatterplot matrix* which includes `SalePrice` and 9 of the variables that are `type = int` in the data set. Choose those that you believe are likely to be correlated with `SalePrice`.[^2]
 
-3. Compute a matrix of correlations between these variables using the function `cor()`. Does this match your prior beliefs? Briefly discuss the correlation between the miscellaneous variables and `SalePrice`.
+3. Compute a matrix of correlations between these variables using the function `cor()`. Does this match your prior beliefs? Briefly discuss the correlation between the miscellaneous variables and `SalePrice` and any correlations between these variables.
 
-4. Produce a scatterplot between `SalePrice` and `GrLivArea`. Run a linear model using `lm()` to explore the relationship. Finally, use the `abline()` function to plot the relationship that you've found in the simple linear regression.
+4. Produce a scatterplot between `SalePrice` and `GrLivArea`. Run a linear model using `lm()` to explore the relationship. Finally, use the `geom_abline()` function to plot the relationship that you've found in the simple linear regression. You'll need to extract the intercept and slope from your `lm` object. See `coef(...)` for information on this.
     - What is the largest outlier that is above the regression line? Produce the other information about this house.
 
 **(Bonus)** Create a visualization that shows the rise of air conditioning over time in homes in Ames.
