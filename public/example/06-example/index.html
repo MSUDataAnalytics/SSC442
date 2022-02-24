@@ -781,7 +781,7 @@ H_0: \beta_2 = 0 \quad \text{vs} \quad H_1: \beta_2 \neq 0.
 <pre class="r"><code>summary(mpg_hp_add)$coefficients[&quot;am&quot;,]</code></pre>
 <pre><code>##     Estimate   Std. Error      t value     Pr(&gt;|t|) 
 ## 5.277085e+00 1.079541e+00 4.888270e+00 3.460318e-05</code></pre>
-<p>To do the same for the <span class="math inline">\(F\)</span> test, we would use</p>
+<p>To do the same for the <span class="math inline">\(F\)</span> test, we would use a call to <code>anova</code>. One way of comparing the fit of models (which accounts for the fact that one model is more “flexible” than another) is to use <code>anova</code>. The null hypothesis of the <code>anova</code> is that the two models explain the same amount of variation in the dependent variable (<code>mpg</code>). If we reject the F-test in the <code>anova</code> (if the p-value is small), then the more flexible model is actually explaining more.</p>
 <pre class="r"><code>anova(mpg_hp_slr, mpg_hp_add)</code></pre>
 <pre><code>## Analysis of Variance Table
 ## 
@@ -792,7 +792,7 @@ H_0: \beta_2 = 0 \quad \text{vs} \quad H_1: \beta_2 \neq 0.
 ## 2     29 245.44  1    202.24 23.895 3.46e-05 ***
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
-<p>Notice that these are indeed testing the same thing, as the p-values are exactly equal. (And the <span class="math inline">\(F\)</span> test statistic is the <span class="math inline">\(t\)</span> test statistic squared.)</p>
+<p>Notice that these are indeed testing the same thing, as the p-values are exactly equal. (And the <span class="math inline">\(F\)</span> test statistic is the <span class="math inline">\(t\)</span> test statistic squared.) This is only the case for different models that differ only by one additional variable.</p>
 <p>Recapping some interpretations:</p>
 <ul>
 <li><p><span class="math inline">\(\hat{\beta}_0 = 26.5849137\)</span> is the estimated average <code>mpg</code> for a car with an automatic transmission and <strong>0</strong> <code>hp</code>.</p></li>
@@ -1489,7 +1489,7 @@ H_0: \beta_7 = 0.
 <li>Full Model: <span class="math inline">\(Y = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + \beta_3 x_3 + \beta_4 x_1 x_2 + \beta_5 x_1 x_3 + \beta_6 x_2 x_3 + \beta_7 x_1 x_2 x_3 + \epsilon\)</span></li>
 <li>Null Model: <span class="math inline">\(Y = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + \beta_3 x_3 + \beta_4 x_1 x_2 + \beta_5 x_1 x_3 + \beta_6 x_2 x_3 + \epsilon\)</span></li>
 </ul>
-<p>We fit the null model in <code>R</code> as <code>two_way_int_mod</code>. One way of comparing the fit of models (which accounts for the fact that one model is more “flexible” than another) is to use <code>anova</code>. The null hypothesis of the <code>anova</code> is that the two models explain the same amount of variation in the dependent variable (<code>mpg</code>). If we reject the F-test in the <code>anova</code> (if the p-value is small), then the more flexible model is actually explaining more.</p>
+<p>We fit the null model in <code>R</code> as <code>two_way_int_mod</code>. Again, we check to see if the big model is any more explanatory:</p>
 <pre class="r"><code>two_way_int_mod = lm(mpg ~ disp * hp + disp * domestic + hp * domestic, data = autompg)
 #two_way_int_mod = lm(mpg ~ (disp + hp + domestic) ^ 2, data = autompg)
 anova(two_way_int_mod, big_model)</code></pre>
