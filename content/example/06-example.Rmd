@@ -29,9 +29,10 @@ So far in each of our analyses, we have only used numeric variables as predictor
 
 ## Dummy Variables
 
-For this example and discussion, we will briefly use the built in dataset `mtcars` before returning to our favorite `autompg` dataset. During the in-class lecture / example, I will also use much more interesting datasets. The reason to use these easy, straightforward datasets is that they make visualization of the __entire dataset__ trivially easy. Accordingly, the `mtcars` dataset is small, so we'll quickly take a look at the entire dataset.
+For this example and discussion, we will briefly use the built in dataset `mtcars` before introducing the `autompg` dataset. The reason to use these easy, straightforward datasets is that they make visualization of the __entire dataset__ trivially easy. Accordingly, the `mtcars` dataset is small, so we'll quickly take a look at the entire dataset.
 
 ```{r}
+library(tidyverse)
 mtcars
 ```
 
@@ -193,7 +194,7 @@ Here we restricted ourselves to a single numerical predictor $x_1$ and one dummy
 
 ## Interactions
 
-To remove the "same slope" restriction, we will now discuss **interaction**. To illustrate this concept, we will return to the `autompg` dataset we created in the last chapter, with a few more modifications.
+To remove the "same slope" restriction, we will now discuss **interactions**. To illustrate this concept, we will use the `autompg` dataset with a few modifications.
 
 ```{r}
 # read data frame from the web
@@ -204,25 +205,15 @@ autompg = read.table(
   stringsAsFactors = FALSE)
 # give the dataframe headers
 colnames(autompg) = c("mpg", "cyl", "disp", "hp", "wt", "acc", "year", "origin", "name")
-# remove missing data, which is stored as "?"
-autompg = subset(autompg, autompg$hp != "?")
-# remove the plymouth reliant, as it causes some issues
-autompg = subset(autompg, autompg$name != "plymouth reliant")
-# give the dataset row names, based on the engine, year and name
-rownames(autompg) = paste(autompg$cyl, "cylinder", autompg$year, autompg$name)
-# remove the variable for name
-autompg = subset(autompg, select = c("mpg", "cyl", "disp", "hp", "wt", "acc", "year", "origin"))
-# change horsepower from character to numeric
-autompg$hp = as.numeric(autompg$hp)
-# create a dummary variable for foreign vs domestic cars. domestic = 1.
-autompg$domestic = as.numeric(autompg$origin == 1)
-# remove 3 and 5 cylinder cars (which are very rare.)
-autompg = autompg[autompg$cyl != 5,]
-autompg = autompg[autompg$cyl != 3,]
-# the following line would verify the remaining cylinder possibilities are 4, 6, 8
-#unique(autompg$cyl)
-# change cyl to a factor variable
-autompg$cyl = as.factor(autompg$cyl)
+
+
+autompg = autompg %>%
+  filter(hp !='?' & name !='plymouth reliant') %>% # the reliant causes some issues
+  mutate(hp = as.numeric(hp),
+         domestic = as.numeric(origin==1)) %>%
+  filter(!cyl %in% c(5,3)) %>%
+  mutate(cyl = as.factor(cyl))
+
 ```
 
 ```{r}
@@ -254,18 +245,24 @@ x_2 =
 We will fit this model, extract the slope and intercept for the "two lines," plot the data and add the lines.
 
 ```{r}
-mpg_disp_add = lm(mpg ~ disp + domestic, data = autompg)
+mpg_disp_add = lm(mpg ~ disp + as.factor(domestic), data = autompg)
 
 int_for = coef(mpg_disp_add)[1]
 int_dom = coef(mpg_disp_add)[1] + coef(mpg_disp_add)[3]
 
 slope_for = coef(mpg_disp_add)[2]
-slope_dom = coef(mpg_disp_add)[2]
+slope_dom = coef(mpg_disp_add)[2] #--> same slope!
 
-plot(mpg ~ disp, data = autompg, col = domestic + 1, pch = domestic + 1)
-abline(int_for, slope_for, col = 1, lty = 1, lwd = 2) # add line for foreign cars
-abline(int_dom, slope_dom, col = 2, lty = 2, lwd = 2) # add line for domestic cars
-legend("topright", c("Foreign", "Domestic"), pch = c(1, 2), col = c(1, 2))
+ggplot(autompg, aes(x = disp, y = mpg, col = as.factor(domestic))) + 
+  geom_point() +
+  geom_abline(intercept = int_dom, 
+              slope = slope_dom, col = 'blue') +
+  geom_abline(intercept = int_for,
+              slope = slope_for, col = 'red') +
+  labs(color = 'Origin') +
+  scale_color_manual(labels = c('Foreign','Domestic'), values = c('red','blue')) +
+  theme_bw()
+
 ```
 
 This is a model that allows for two *parallel* lines, meaning the `mpg` can be different on average between foreign and domestic cars of the same engine displacement, but the change in average `mpg` for an increase in displacement is the same for both. We can see this model isn't doing very well here. The red line fits the red points fairly well, but the black line isn't doing very well for the black points, it should clearly have a more negative slope. Essentially, we would like a model that allows for two different slopes.
@@ -341,13 +338,6 @@ H_0: \beta_3 = 0.
 
 In this case, testing for $\beta_3 = 0$ is testing for two lines with parallel slopes versus two lines with possibly different slopes. The `disp:domestic` line in the `summary()` output uses a $t$-test to perform the test.
 
-We could also use an ANOVA $F$-test. The additive model, without interaction is our null model, and the interaction model is the alternative.
-
-```{r}
-anova(mpg_disp_add, mpg_disp_int)
-```
-
-Again we see this test has the same p-value as the $t$-test. Also the p-value is extremely low, so between the two, we choose the interaction model.
 
 ```{r}
 int_for = coef(mpg_disp_int)[1]
@@ -360,10 +350,19 @@ slope_dom = coef(mpg_disp_int)[2] + coef(mpg_disp_int)[4]
 Here we again calculate the slope and intercepts for the two lines for use in plotting.
 
 ```{r}
-plot(mpg ~ disp, data = autompg, col = domestic + 1, pch = domestic + 1)
-abline(int_for, slope_for, col = 1, lty = 1, lwd = 2) # line for foreign cars
-abline(int_dom, slope_dom, col = 2, lty = 2, lwd = 2) # line for domestic cars
-legend("topright", c("Foreign", "Domestic"), pch = c(1, 2), col = c(1, 2))
+
+
+ggplot(autompg, aes(x = disp, y = mpg, col = as.factor(domestic))) + 
+  geom_point() +
+  geom_abline(intercept = int_dom, 
+              slope = slope_dom, col = 'blue') +
+  geom_abline(intercept = int_for,
+              slope = slope_for, col = 'red') +
+  labs(color = 'Origin') +
+  scale_color_manual(labels = c('Foreign','Domestic'), values = c('red','blue')) +
+  theme_bw()
+
+
 ```
 
 We see that these lines fit the data much better, which matches the result of our tests.
@@ -404,12 +403,7 @@ Using `summary()` we focus on the row for `disp:hp` which tests,
 H_0: \beta_3 = 0.
 \]
 
-Again, we see a very low p-value so we reject the null (additive model) in favor of the interaction model. Again, there is an equivalent $F$-test.
-
-```{r}
-anova(mpg_disp_add_hp, mpg_disp_int_hp)
-```
-
+Again, we see a very low p-value so we reject the null (additive model) in favor of the interaction model.
 We can take a closer look at the coefficients of our fitted interaction model.
 
 ```{r}
@@ -910,7 +904,7 @@ So,
 - Full Model: $Y = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + \beta_3 x_3 + \beta_4 x_1 x_2 + \beta_5 x_1 x_3 + \beta_6 x_2 x_3 + \beta_7 x_1 x_2 x_3 + \epsilon$
 - Null Model: $Y = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + \beta_3 x_3 + \beta_4 x_1 x_2 + \beta_5 x_1 x_3 + \beta_6 x_2 x_3 + \epsilon$
 
-We fit the null model in `R` as `two_way_int_mod`, then use `anova()` to perform an $F$-test as usual.
+We fit the null model in `R` as `two_way_int_mod`. One way of comparing the fit of models (which accounts for the fact that one model is more "flexible" than another) is to use `anova`. The null hypothesis of the `anova` is that the two models explain the same amount of variation in the dependent variable (`mpg`). If we reject the F-test in the `anova` (if the p-value is small), then the more flexible model is actually explaining more.
 
 ```{r}
 two_way_int_mod = lm(mpg ~ disp * hp + disp * domestic + hp * domestic, data = autompg)
