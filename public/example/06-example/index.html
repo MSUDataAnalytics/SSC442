@@ -30,7 +30,7 @@
   
     
   
-  <meta name="description" content="PreliminariesDummy VariablesInteractionsFactor VariablesFactors with More Than Two LevelsParameterizationBuilding Larger ModelsToday’s example will pivot between the content from this week and the example below.
+  <meta name="description" content="PreliminariesDummy VariablesInteractionsFactor VariablesFactors with More Than Two LevelsParameterizationBuilding Larger ModelsToday’s example will pivot between the content from this week and the example below.
 We will also use the Ames data again. Maybe some new data. Who knows. The Ames data is linked below:
  Ames.csvPreliminariesSo far in each of our analyses, we have only used numeric variables as predictors.">
 
@@ -240,13 +240,13 @@ We will also use the Ames data again. Maybe some new data. Who knows. The Ames d
   <meta property="og:site_name" content="Data Analytics">
   <meta property="og:url" content="https://ssc442kirkpatrick.netlify.app/example/06-example/">
   <meta property="og:title" content="Linear Regression: Interpreting Coefficients | Data Analytics">
-  <meta property="og:description" content="PreliminariesDummy VariablesInteractionsFactor VariablesFactors with More Than Two LevelsParameterizationBuilding Larger ModelsToday’s example will pivot between the content from this week and the example below.
+  <meta property="og:description" content="PreliminariesDummy VariablesInteractionsFactor VariablesFactors with More Than Two LevelsParameterizationBuilding Larger ModelsToday’s example will pivot between the content from this week and the example below.
 We will also use the Ames data again. Maybe some new data. Who knows. The Ames data is linked below:
  Ames.csvPreliminariesSo far in each of our analyses, we have only used numeric variables as predictors."><meta property="og:image" content="https://ssc442kirkpatrick.netlify.app/img/social-image.png">
   <meta property="twitter:image" content="https://ssc442kirkpatrick.netlify.app/img/social-image.png"><meta property="og:locale" content="en-us">
   
     
-    <meta property="article:modified_time" content="2022-01-06T13:37:54-05:00">
+    <meta property="article:modified_time" content="2022-02-24T09:05:59-05:00">
   
 
   
@@ -620,13 +620,15 @@ We will also use the Ames data again. Maybe some new data. Who knows. The Ames d
 
                     <div class="article-style">
                         
+<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
 
 <div id="TOC">
 <ul>
 <li><a href="#preliminaries">Preliminaries</a></li>
 <li><a href="#dummy-variables">Dummy Variables</a></li>
 <li><a href="#interactions">Interactions</a></li>
-<li><a href="#factor-variables">Factor Variables</a><ul>
+<li><a href="#factor-variables">Factor Variables</a>
+<ul>
 <li><a href="#factors-with-more-than-two-levels">Factors with More Than Two Levels</a></li>
 </ul></li>
 <li><a href="#parameterization">Parameterization</a></li>
@@ -647,7 +649,16 @@ We will also use the Ames data again. Maybe some new data. Who knows. The Ames d
 </div>
 <div id="dummy-variables" class="section level2">
 <h2>Dummy Variables</h2>
-<p>For this example and discussion, we will briefly use the built in dataset <code>mtcars</code> before returning to our favorite <code>autompg</code> dataset. During the in-class lecture / example, I will also use much more interesting datasets. The reason to use these easy, straightforward datasets is that they make visualization of the <strong>entire dataset</strong> trivially easy. Accordingly, the <code>mtcars</code> dataset is small, so we’ll quickly take a look at the entire dataset.</p>
+<p>For this example and discussion, we will briefly use the built in dataset <code>mtcars</code> before introducing the <code>autompg</code> dataset. The reason to use these easy, straightforward datasets is that they make visualization of the <strong>entire dataset</strong> trivially easy. Accordingly, the <code>mtcars</code> dataset is small, so we’ll quickly take a look at the entire dataset.</p>
+<pre class="r"><code>library(tidyverse)</code></pre>
+<pre><code>## -- Attaching packages --------------------------------------- tidyverse 1.3.1 --</code></pre>
+<pre><code>## v ggplot2 3.3.5     v purrr   0.3.4
+## v tibble  3.1.6     v dplyr   1.0.8
+## v tidyr   1.2.0     v stringr 1.4.0
+## v readr   2.1.2     v forcats 0.5.1</code></pre>
+<pre><code>## -- Conflicts ------------------------------------------ tidyverse_conflicts() --
+## x dplyr::filter() masks stats::filter()
+## x dplyr::lag()    masks stats::lag()</code></pre>
 <pre class="r"><code>mtcars</code></pre>
 <pre><code>##                      mpg cyl  disp  hp drat    wt  qsec vs am gear carb
 ## Mazda RX4           21.0   6 160.0 110 3.90 2.620 16.46  0  1    4    4
@@ -798,7 +809,7 @@ Y = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + \epsilon,
 </div>
 <div id="interactions" class="section level2">
 <h2>Interactions</h2>
-<p>To remove the “same slope” restriction, we will now discuss <strong>interaction</strong>. To illustrate this concept, we will return to the <code>autompg</code> dataset we created in the last chapter, with a few more modifications.</p>
+<p>To remove the “same slope” restriction, we will now discuss <strong>interactions</strong>. To illustrate this concept, we will use the <code>autompg</code> dataset with a few modifications.</p>
 <pre class="r"><code># read data frame from the web
 autompg = read.table(
   &quot;http://archive.ics.uci.edu/ml/machine-learning-databases/auto-mpg/auto-mpg.data&quot;,
@@ -807,27 +818,16 @@ autompg = read.table(
   stringsAsFactors = FALSE)
 # give the dataframe headers
 colnames(autompg) = c(&quot;mpg&quot;, &quot;cyl&quot;, &quot;disp&quot;, &quot;hp&quot;, &quot;wt&quot;, &quot;acc&quot;, &quot;year&quot;, &quot;origin&quot;, &quot;name&quot;)
-# remove missing data, which is stored as &quot;?&quot;
-autompg = subset(autompg, autompg$hp != &quot;?&quot;)
-# remove the plymouth reliant, as it causes some issues
-autompg = subset(autompg, autompg$name != &quot;plymouth reliant&quot;)
-# give the dataset row names, based on the engine, year and name
-rownames(autompg) = paste(autompg$cyl, &quot;cylinder&quot;, autompg$year, autompg$name)
-# remove the variable for name
-autompg = subset(autompg, select = c(&quot;mpg&quot;, &quot;cyl&quot;, &quot;disp&quot;, &quot;hp&quot;, &quot;wt&quot;, &quot;acc&quot;, &quot;year&quot;, &quot;origin&quot;))
-# change horsepower from character to numeric
-autompg$hp = as.numeric(autompg$hp)
-# create a dummary variable for foreign vs domestic cars. domestic = 1.
-autompg$domestic = as.numeric(autompg$origin == 1)
-# remove 3 and 5 cylinder cars (which are very rare.)
-autompg = autompg[autompg$cyl != 5,]
-autompg = autompg[autompg$cyl != 3,]
-# the following line would verify the remaining cylinder possibilities are 4, 6, 8
-#unique(autompg$cyl)
-# change cyl to a factor variable
-autompg$cyl = as.factor(autompg$cyl)</code></pre>
+
+
+autompg = autompg %&gt;%
+  filter(hp !=&#39;?&#39; &amp; name !=&#39;plymouth reliant&#39;) %&gt;% # the reliant causes some issues
+  mutate(hp = as.numeric(hp),
+         domestic = as.numeric(origin==1)) %&gt;%
+  filter(!cyl %in% c(5,3)) %&gt;%
+  mutate(cyl = as.factor(cyl))</code></pre>
 <pre class="r"><code>str(autompg)</code></pre>
-<pre><code>## &#39;data.frame&#39;:    383 obs. of  9 variables:
+<pre><code>## &#39;data.frame&#39;:    383 obs. of  10 variables:
 ##  $ mpg     : num  18 15 18 16 17 15 14 14 14 15 ...
 ##  $ cyl     : Factor w/ 3 levels &quot;4&quot;,&quot;6&quot;,&quot;8&quot;: 3 3 3 3 3 3 3 3 3 3 ...
 ##  $ disp    : num  307 350 318 304 302 429 454 440 455 390 ...
@@ -836,6 +836,7 @@ autompg$cyl = as.factor(autompg$cyl)</code></pre>
 ##  $ acc     : num  12 11.5 11 12 10.5 10 9 8.5 10 8.5 ...
 ##  $ year    : int  70 70 70 70 70 70 70 70 70 70 ...
 ##  $ origin  : int  1 1 1 1 1 1 1 1 1 1 ...
+##  $ name    : chr  &quot;chevrolet chevelle malibu&quot; &quot;buick skylark 320&quot; &quot;plymouth satellite&quot; &quot;amc rebel sst&quot; ...
 ##  $ domestic: num  1 1 1 1 1 1 1 1 1 1 ...</code></pre>
 <p>We’ve removed cars with <code>3</code> and <code>5</code> cylinders , as well as created a new variable <code>domestic</code> which indicates whether or not a car was built in the United States. Removing the <code>3</code> and <code>5</code> cylinders is simply for ease of demonstration later in the chapter and would not be done in practice. The new variable <code>domestic</code> takes the value <code>1</code> if the car was built in the United States, and <code>0</code> otherwise, which we will refer to as “foreign.” (We are arbitrarily using the United States as the reference point here.) We have also made <code>cyl</code> and <code>origin</code> into factor variables, which we will discuss later.</p>
 <p>We’ll now be concerned with three variables: <code>mpg</code>, <code>disp</code>, and <code>domestic</code>. We will use <code>mpg</code> as the response. We can fit a model,</p>
@@ -856,18 +857,23 @@ x_2 =
   \end{cases}
 \]</span></p>
 <p>We will fit this model, extract the slope and intercept for the “two lines,” plot the data and add the lines.</p>
-<pre class="r"><code>mpg_disp_add = lm(mpg ~ disp + domestic, data = autompg)
+<pre class="r"><code>mpg_disp_add = lm(mpg ~ disp + as.factor(domestic), data = autompg)
 
 int_for = coef(mpg_disp_add)[1]
 int_dom = coef(mpg_disp_add)[1] + coef(mpg_disp_add)[3]
 
 slope_for = coef(mpg_disp_add)[2]
-slope_dom = coef(mpg_disp_add)[2]
+slope_dom = coef(mpg_disp_add)[2] #--&gt; same slope!
 
-plot(mpg ~ disp, data = autompg, col = domestic + 1, pch = domestic + 1)
-abline(int_for, slope_for, col = 1, lty = 1, lwd = 2) # add line for foreign cars
-abline(int_dom, slope_dom, col = 2, lty = 2, lwd = 2) # add line for domestic cars
-legend(&quot;topright&quot;, c(&quot;Foreign&quot;, &quot;Domestic&quot;), pch = c(1, 2), col = c(1, 2))</code></pre>
+ggplot(autompg, aes(x = disp, y = mpg, col = as.factor(domestic))) + 
+  geom_point() +
+  geom_abline(intercept = int_dom, 
+              slope = slope_dom, col = &#39;blue&#39;) +
+  geom_abline(intercept = int_for,
+              slope = slope_for, col = &#39;red&#39;) +
+  labs(color = &#39;Origin&#39;) +
+  scale_color_manual(labels = c(&#39;Foreign&#39;,&#39;Domestic&#39;), values = c(&#39;red&#39;,&#39;blue&#39;)) +
+  theme_bw()</code></pre>
 <p><img src="/example/06-example_files/figure-html/unnamed-chunk-14-1.png" width="672" /></p>
 <p>This is a model that allows for two <em>parallel</em> lines, meaning the <code>mpg</code> can be different on average between foreign and domestic cars of the same engine displacement, but the change in average <code>mpg</code> for an increase in displacement is the same for both. We can see this model isn’t doing very well here. The red line fits the red points fairly well, but the black line isn’t doing very well for the black points, it should clearly have a more negative slope. Essentially, we would like a model that allows for two different slopes.</p>
 <p>Consider the following model,</p>
@@ -933,29 +939,22 @@ do_not_do_this = lm(mpg ~ disp + domestic + x3, data = autompg) # THIS CODE NOT 
 H_0: \beta_3 = 0.
 \]</span></p>
 <p>In this case, testing for <span class="math inline">\(\beta_3 = 0\)</span> is testing for two lines with parallel slopes versus two lines with possibly different slopes. The <code>disp:domestic</code> line in the <code>summary()</code> output uses a <span class="math inline">\(t\)</span>-test to perform the test.</p>
-<p>We could also use an ANOVA <span class="math inline">\(F\)</span>-test. The additive model, without interaction is our null model, and the interaction model is the alternative.</p>
-<pre class="r"><code>anova(mpg_disp_add, mpg_disp_int)</code></pre>
-<pre><code>## Analysis of Variance Table
-## 
-## Model 1: mpg ~ disp + domestic
-## Model 2: mpg ~ disp + domestic + disp:domestic
-##   Res.Df    RSS Df Sum of Sq      F    Pr(&gt;F)    
-## 1    380 7714.0                                  
-## 2    379 7032.6  1    681.36 36.719 3.294e-09 ***
-## ---
-## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
-<p>Again we see this test has the same p-value as the <span class="math inline">\(t\)</span>-test. Also the p-value is extremely low, so between the two, we choose the interaction model.</p>
 <pre class="r"><code>int_for = coef(mpg_disp_int)[1]
 int_dom = coef(mpg_disp_int)[1] + coef(mpg_disp_int)[3]
 
 slope_for = coef(mpg_disp_int)[2]
 slope_dom = coef(mpg_disp_int)[2] + coef(mpg_disp_int)[4]</code></pre>
 <p>Here we again calculate the slope and intercepts for the two lines for use in plotting.</p>
-<pre class="r"><code>plot(mpg ~ disp, data = autompg, col = domestic + 1, pch = domestic + 1)
-abline(int_for, slope_for, col = 1, lty = 1, lwd = 2) # line for foreign cars
-abline(int_dom, slope_dom, col = 2, lty = 2, lwd = 2) # line for domestic cars
-legend(&quot;topright&quot;, c(&quot;Foreign&quot;, &quot;Domestic&quot;), pch = c(1, 2), col = c(1, 2))</code></pre>
-<p><img src="/example/06-example_files/figure-html/unnamed-chunk-22-1.png" width="672" /></p>
+<pre class="r"><code>ggplot(autompg, aes(x = disp, y = mpg, col = as.factor(domestic))) + 
+  geom_point() +
+  geom_abline(intercept = int_dom, 
+              slope = slope_dom, col = &#39;blue&#39;) +
+  geom_abline(intercept = int_for,
+              slope = slope_for, col = &#39;red&#39;) +
+  labs(color = &#39;Origin&#39;) +
+  scale_color_manual(labels = c(&#39;Foreign&#39;,&#39;Domestic&#39;), values = c(&#39;red&#39;,&#39;blue&#39;)) +
+  theme_bw()</code></pre>
+<p><img src="/example/06-example_files/figure-html/unnamed-chunk-21-1.png" width="672" /></p>
 <p>We see that these lines fit the data much better, which matches the result of our tests.</p>
 <p>So far we have only seen interaction between a categorical variable (<code>domestic</code>) and a numerical variable (<code>disp</code>). While this is easy to visualize, since it allows for different slopes for two lines, it is not the only type of interaction we can use in a model. We can also consider interactions between two numerical variables.</p>
 <p>Consider the model,</p>
@@ -1001,18 +1000,8 @@ summary(mpg_disp_int_hp)</code></pre>
 <p><span class="math display">\[
 H_0: \beta_3 = 0.
 \]</span></p>
-<p>Again, we see a very low p-value so we reject the null (additive model) in favor of the interaction model. Again, there is an equivalent <span class="math inline">\(F\)</span>-test.</p>
-<pre class="r"><code>anova(mpg_disp_add_hp, mpg_disp_int_hp)</code></pre>
-<pre><code>## Analysis of Variance Table
-## 
-## Model 1: mpg ~ disp + hp
-## Model 2: mpg ~ disp * hp
-##   Res.Df    RSS Df Sum of Sq      F    Pr(&gt;F)    
-## 1    380 7576.6                                  
-## 2    379 5754.2  1    1822.3 120.03 &lt; 2.2e-16 ***
-## ---
-## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
-<p>We can take a closer look at the coefficients of our fitted interaction model.</p>
+<p>Again, we see a very low p-value so we reject the null (additive model) in favor of the interaction model.
+We can take a closer look at the coefficients of our fitted interaction model.</p>
 <pre class="r"><code>coef(mpg_disp_int_hp)</code></pre>
 <pre><code>##   (Intercept)          disp            hp       disp:hp 
 ## 52.4081997848 -0.1001737655 -0.2198199720  0.0005658269</code></pre>
@@ -1059,7 +1048,7 @@ head(autompg$origin)</code></pre>
 <pre class="r"><code>autompg$origin = as.factor(autompg$origin)</code></pre>
 <p>Now when we check the structure of the <code>autompg</code> dataset, we see that <code>origin</code> is a factor variable.</p>
 <pre class="r"><code>str(autompg)</code></pre>
-<pre><code>## &#39;data.frame&#39;:    383 obs. of  9 variables:
+<pre><code>## &#39;data.frame&#39;:    383 obs. of  10 variables:
 ##  $ mpg     : num  18 15 18 16 17 15 14 14 14 15 ...
 ##  $ cyl     : Factor w/ 3 levels &quot;4&quot;,&quot;6&quot;,&quot;8&quot;: 3 3 3 3 3 3 3 3 3 3 ...
 ##  $ disp    : num  307 350 318 304 302 429 454 440 455 390 ...
@@ -1068,6 +1057,7 @@ head(autompg$origin)</code></pre>
 ##  $ acc     : num  12 11.5 11 12 10.5 10 9 8.5 10 8.5 ...
 ##  $ year    : int  70 70 70 70 70 70 70 70 70 70 ...
 ##  $ origin  : Factor w/ 2 levels &quot;domestic&quot;,&quot;foreign&quot;: 1 1 1 1 1 1 1 1 1 1 ...
+##  $ name    : chr  &quot;chevrolet chevelle malibu&quot; &quot;buick skylark 320&quot; &quot;plymouth satellite&quot; &quot;amc rebel sst&quot; ...
 ##  $ domestic: num  1 1 1 1 1 1 1 1 1 1 ...</code></pre>
 <p>Factor variables have <strong>levels</strong> which are the possible values (categories) that the variable may take, in this case foreign or domestic.</p>
 <pre class="r"><code>levels(autompg$origin)</code></pre>
@@ -1200,7 +1190,7 @@ abline(int_6cyl, slope_all_cyl, col = plot_colors[2], lty = 2, lwd = 2)
 abline(int_8cyl, slope_all_cyl, col = plot_colors[3], lty = 3, lwd = 2)
 legend(&quot;topright&quot;, c(&quot;4 Cylinder&quot;, &quot;6 Cylinder&quot;, &quot;8 Cylinder&quot;),
        col = plot_colors, lty = c(1, 2, 3), pch = c(1, 2, 3))</code></pre>
-<p><img src="/example/06-example_files/figure-html/unnamed-chunk-36-1.png" width="672" /></p>
+<p><img src="/example/06-example_files/figure-html/unnamed-chunk-34-1.png" width="672" /></p>
 <p>On this plot, we have</p>
 <ul>
 <li>4 Cylinder: orange dots, solid orange line.</li>
@@ -1252,7 +1242,7 @@ abline(int_6cyl, slope_6cyl, col = plot_colors[2], lty = 2, lwd = 2)
 abline(int_8cyl, slope_8cyl, col = plot_colors[3], lty = 3, lwd = 2)
 legend(&quot;topright&quot;, c(&quot;4 Cylinder&quot;, &quot;6 Cylinder&quot;, &quot;8 Cylinder&quot;),
        col = plot_colors, lty = c(1, 2, 3), pch = c(1, 2, 3))</code></pre>
-<p><img src="/example/06-example_files/figure-html/unnamed-chunk-38-1.png" width="672" /></p>
+<p><img src="/example/06-example_files/figure-html/unnamed-chunk-36-1.png" width="672" /></p>
 <p>This looks much better! We can see that for medium displacement cars, 6 cylinder cars now perform better than 8 cylinder cars, which seems much more reasonable than before.</p>
 <p>To completely justify the interaction model (i.e., a unique slope for each <code>cyl</code> level) compared to the additive model (single slope), we can perform an <span class="math inline">\(F\)</span>-test. Notice first, that there is no <span class="math inline">\(t\)</span>-test that will be able to do this since the difference between the two models is not a single parameter.</p>
 <p>We will test,</p>
@@ -1499,7 +1489,7 @@ H_0: \beta_7 = 0.
 <li>Full Model: <span class="math inline">\(Y = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + \beta_3 x_3 + \beta_4 x_1 x_2 + \beta_5 x_1 x_3 + \beta_6 x_2 x_3 + \beta_7 x_1 x_2 x_3 + \epsilon\)</span></li>
 <li>Null Model: <span class="math inline">\(Y = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + \beta_3 x_3 + \beta_4 x_1 x_2 + \beta_5 x_1 x_3 + \beta_6 x_2 x_3 + \epsilon\)</span></li>
 </ul>
-<p>We fit the null model in <code>R</code> as <code>two_way_int_mod</code>, then use <code>anova()</code> to perform an <span class="math inline">\(F\)</span>-test as usual.</p>
+<p>We fit the null model in <code>R</code> as <code>two_way_int_mod</code>. One way of comparing the fit of models (which accounts for the fact that one model is more “flexible” than another) is to use <code>anova</code>. The null hypothesis of the <code>anova</code> is that the two models explain the same amount of variation in the dependent variable (<code>mpg</code>). If we reject the F-test in the <code>anova</code> (if the p-value is small), then the more flexible model is actually explaining more.</p>
 <pre class="r"><code>two_way_int_mod = lm(mpg ~ disp * hp + disp * domestic + hp * domestic, data = autompg)
 #two_way_int_mod = lm(mpg ~ (disp + hp + domestic) ^ 2, data = autompg)
 anova(two_way_int_mod, big_model)</code></pre>
@@ -1554,7 +1544,7 @@ Y = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + \beta_3 x_3 + \beta_4 x_1 x_2 + \beta_
                 </div>
 
                 <div class="body-footer">
-                    <p>Last updated on January 6, 2022</p>
+                    <p>Last updated on February 24, 2022</p>
 
                     
 
