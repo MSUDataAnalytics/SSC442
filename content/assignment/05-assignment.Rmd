@@ -126,15 +126,17 @@ __EXERCISES__
 
 1. Prune the data to all of the variables that are `type = int` about which you have some reasonable intuition for what they mean. This **must** include the variable `SalePrice`. Save this new dataset as `Ames`. Produce documentation for this object in the form of a .txt file or use [Markdown's table format](https://www.markdownguide.org/extended-syntax/). This must describe each of the preserved variables, the values it can take (e.g., can it be negative?) and your interpretation of the variable.
 
-2. Produce a *scatterplot matrix* which includes `SalePrice` and 9 of the variables that are `type = int` in the data set. Choose those that you believe are likely to be correlated with `SalePrice`.[^2]
+2. Produce a *scatterplot matrix* which includes `SalePrice` and 6 of the variables that are `type = int` in the data set. Choose those that you believe are likely to be correlated with `SalePrice`.[^5]
 
 3. Compute a matrix of correlations between these variables using the function `cor()`. Does this match your prior beliefs? Briefly discuss the correlation between the miscellaneous variables and `SalePrice` and any correlations between these variables.
 
-4. Produce a scatterplot between `SalePrice` and `GrLivArea`. Run a linear model using `lm()` to explore the relationship. Finally, use the `geom_abline()` function to plot the relationship that you've found in the simple linear regression. You'll need to extract the intercept and slope from your `lm` object. See `coef(...)` for information on this.
+4. Produce a scatterplot between `SalePrice` and `GrLivArea`. Run a linear model using `lm()` to explore the relationship. Finally, use the `geom_abline()` function to plot the relationship that you've found in the simple linear regression. You'll need to extract the intercept and slope from your `lm` object. See `coef(...)` for information on this.[^6]
     - What is the largest outlier that is above the regression line? Produce the other information about this house.
 
 **(Bonus)** Create a visualization that shows the rise of air conditioning over time in homes in Ames.
 
 :::
 
-[^2]: If you are not familiar with this type of visualization, consult the book (*Introduction to Statistical Learning*), Chapters 2 and 3. Google it; it's free.
+[^5]: If you are not familiar with this type of visualization, consult the book (*Introduction to Statistical Learning*), Chapters 2 and 3. Google it; it's free.
+
+[^6]: We could also use `geom_smooth(method = 'lm')` to add the regression line, but it's good practice to work with `lm` objects.

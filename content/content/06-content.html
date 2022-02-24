@@ -27,7 +27,7 @@ output:
 <ul>
 <li><a href="#case-study-moneyball">Case study: Moneyball</a>
 <ul>
-<li><a href="#sabermetics">Sabermetics</a></li>
+<li><a href="#sabermetrics">Sabermetrics</a></li>
 <li><a href="#baseball-basics">Baseball basics</a></li>
 <li><a href="#no-awards-for-bb">No awards for BB</a></li>
 <li><a href="#base-on-balls-or-stolen-bases">Base on balls or stolen bases?</a></li>
@@ -46,7 +46,6 @@ output:
 <li><a href="#lse-are-random-variables">LSE are random variables</a></li>
 <li><a href="#predicted-values-are-random-variables">Predicted values are random variables</a></li>
 </ul></li>
-<li><a href="#exercises">Exercises</a></li>
 <li><a href="#linear-regression-in-the-tidyverse">Linear regression in the tidyverse</a>
 <ul>
 <li><a href="#the-broom-package">The broom package</a></li>
@@ -105,11 +104,11 @@ output:
 <p><em>Moneyball: The Art of Winning an Unfair Game</em> is a book by Michael Lewis about the Oakland Athletics (A’s) baseball team and its general manager, the person tasked with building the team, Billy Beane.</p>
 <p>Traditionally, baseball teams use <em>scouts</em> to help them decide what players to hire. These scouts evaluate players by observing them perform. Scouts tend to favor athletic players with observable physical abilities. For this reason, scouts tend to agree on who the best players are and, as a result, these players tend to be in high demand. This in turn drives up their salaries.</p>
 <p>From 1989 to 1991, the A’s had one of the highest payrolls in baseball. They were able to buy the best players and, during that time, they were one of the best teams. However, in 1995 the A’s team owner changed and the new management cut the budget drastically, leaving then general manager, Sandy Alderson, with one of the lowest payrolls in baseball. He could no longer afford the most sought-after players. Alderson began using a statistical approach to find inefficiencies in the market. Alderson was a mentor to Billy Beane, who succeeded him in 1998 and fully embraced data science, as opposed to scouts, as a method for finding low-cost players that data predicted would help the team win. Today, this strategy has been adapted by most baseball teams. As we will see, regression plays a large role in this approach.</p>
-<p>As motivation for this lecture, we will pretend it is 2002 (holy shit I’m old) and try to build a baseball team with a limited budget, just like the A’s had to do. To appreciate what you are up against, note that in 2002 the Yankees’ payroll of $125,928,583 more than tripled the Oakland A’s $39,679,746:</p>
+<p>As motivation for this lecture, we will pretend it is 2002 (holy sh*t I’m old) and try to build a baseball team with a limited budget, just like the A’s had to do. To appreciate what you are up against, note that in 2002 the Yankees’ payroll of $125,928,583 more than tripled the Oakland A’s $39,679,746:</p>
 <p><img src="/content/06-content_files/figure-html/mlb-2002-payroll-1.png" width="672" /></p>
-<div id="sabermetics" class="section level3">
-<h3>Sabermetics</h3>
-<p>Statistics have been used in baseball since its beginnings. The dataset we will be using, included in the <strong>Lahman</strong> library, goes back to the 19th century. For example, a summary statistics we will describe soon, the <em>batting average</em>, has been used for decades to summarize a batter’s success. Other statistics<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a> such as home runs (HR), runs batted in (RBI), and stolen bases (SB) are reported for each player in the game summaries included in the sports section of newspapers, with players rewarded for high numbers. Although summary statistics such as these were widely used in baseball, data analysis per se was not. These statistics were arbitrarily decided on without much thought as to whether they actually predicted anything or were related to helping a team win.</p>
+<div id="sabermetrics" class="section level3">
+<h3>Sabermetrics</h3>
+<p>Statistics have been used in baseball since its beginnings. The dataset we will be using, included in the <strong>Lahman</strong> library, goes back to the 19th century. For example, a summary statistic we will describe soon, the <em>batting average</em>, has been used for decades to summarize a batter’s success. Other statistics<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a> such as home runs (HR), runs batted in (RBI), and stolen bases (SB) are reported for each player in the game summaries included in the sports section of newspapers, with players rewarded for high numbers. Although summary statistics such as these were widely used in baseball, data analysis per se was not. These statistics were arbitrarily decided on without much thought as to whether they actually predicted anything or were related to helping a team win.</p>
 <p>This changed with Bill James<a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a>. In the late 1970s, this aspiring writer and baseball fan started publishing articles describing more in-depth analysis of baseball data. He named the approach of using data to predict what outcomes best predicted if a team would win <em>sabermetrics</em><a href="#fn3" class="footnote-ref" id="fnref3"><sup>3</sup></a>. Until Billy Beane made sabermetrics the center of his baseball operation, Bill James’ work was mostly ignored by the baseball world. Currently, sabermetrics popularity is no longer limited to just baseball; other sports have started to use this approach as well.</p>
 <p>In this lecture, to simplify the exercise, we will focus on scoring runs and ignore the two other important aspects of the game: pitching and fielding. We will see how regression analysis can help develop strategies to build a competitive baseball team with a constrained budget. The approach can be divided into two separate data analyses. In the first, we determine which recorded player-specific statistics predict runs. In the second, we examine if players were undervalued based on what our first analysis predicts.</p>
 </div>
@@ -207,16 +206,25 @@ p</code></pre>
 summary_stats</code></pre>
 <pre><code>##      avg_HR      s_HR    avg_R       s_R         r
 ## 1 0.8547104 0.2429707 4.355262 0.5885791 0.7615597</code></pre>
-<p>and use the formulas given above to create the regression lines:</p>
+<p>and use the formulas given above to create the regression lines, as we did in Week 5’s Content, and adding the line to our plot <code>p</code> created earlier:</p>
 <pre class="r"><code>reg_line &lt;- summary_stats %&gt;% summarize(slope = r*s_R/s_HR,
                             intercept = avg_R - slope*avg_HR)
 
 p + geom_abline(intercept = reg_line$intercept, slope = reg_line$slope)</code></pre>
 <p><img src="/content/06-content_files/figure-html/hr-versus-runs-regression-1.png" width="672" /></p>
-<p>Soon we will learn R functions, such as <code>lm</code>, that make fitting regression lines much easier. Another example is the <strong>ggplot2</strong> function <code>geom_smooth</code> which computes and adds a regression line to plot along with confidence intervals, which we also learn about later. We use the argument <code>method = "lm"</code> which stands for <em>linear model</em>, the title of an upcoming section. So we can simplify the code above like this:</p>
+<p>For plotting, we can also use the argument <code>method = "lm"</code> which stands for <em>linear model</em>, the title of an upcoming section. So we can simplify the code above like this:</p>
 <pre class="r"><code>p + geom_smooth(method = &quot;lm&quot;)</code></pre>
 <pre><code>## `geom_smooth()` using formula &#39;y ~ x&#39;</code></pre>
 <p><img src="/content/06-content_files/figure-html/hr-versus-runs-regression-easy-1.png" width="672" /></p>
+<p>And, for complete review, we can also use <code>lm</code> to run the regression, and then extract the coefficients to use in <code>geom_abline()</code>. Results are the same.</p>
+<pre class="r"><code>reg_data = Teams %&gt;% filter(yearID %in% 1961:2001 ) %&gt;%
+  mutate(HR_per_game = HR/G, R_per_game = R/G)
+
+reg_lm &lt;- lm(R_per_game ~ HR_per_game, reg_data)
+
+p + geom_abline(intercept = coefficients(reg_lm)[&#39;(Intercept)&#39;],
+                slope = coefficients(reg_lm)[&#39;HR_per_game&#39;])</code></pre>
+<p><img src="/content/06-content_files/figure-html/complete-1.png" width="672" /></p>
 <p>In the example above, the slope is 1.8448241. So this tells us that teams that hit 1 more HR per game than the average team, score 1.8448241 more runs per game than the average team. Given that the most common final score is a difference of a run, this can certainly lead to a large increase in wins. Not surprisingly, HR hitters are very expensive. Because we are working on a budget, we will need to find some other way to increase wins. So in the next section we move our attention to BB.</p>
 </div>
 </div>
@@ -271,6 +279,11 @@ singles_slope</code></pre>
   facet_wrap( ~ HR_strata)</code></pre>
 <pre><code>## `geom_smooth()` using formula &#39;y ~ x&#39;</code></pre>
 <p><img src="/content/06-content_files/figure-html/runs-vs-bb-by-hr-strata-1.png" width="80%" /></p>
+<pre class="r"><code># Note: we&#39;ll get a &quot;warning&quot;
+# telling us that ggplot has
+# used lm(y ~ x) where
+# y refers to the aesthetic mapping of y
+# x refers to the aesthetic mapping of x</code></pre>
 <p>Remember that the regression slope for predicting runs with BB was 0.7. Once we stratify by HR, these slopes are substantially reduced:</p>
 <pre class="r"><code>dat %&gt;%
   group_by(HR_strata) %&gt;%
@@ -391,7 +404,7 @@ results %&gt;% ggplot(aes(beta1, rss)) + geom_line() +
 </div>
 <div id="the-lm-function" class="section level3">
 <h3>The <code>lm</code> function</h3>
-<p>In R, we can obtain the least squares estimates using the <code>lm</code> function. To fit the model:</p>
+<p>We previously used the <code>lm</code> function to fit a regression. This is the workhorse for linear models in R. Let’s review for a second. To fit the model:</p>
 <p><span class="math display">\[
 Y_i = \beta_0 + \beta_1 x_i + \varepsilon_i
 \]</span></p>
@@ -435,11 +448,6 @@ lse &lt;- replicate(B, {
 })
 lse &lt;- data.frame(beta_0 = lse[1,], beta_1 = lse[2,])</code></pre>
 <p>We can see the variability of the estimates by plotting their distributions:</p>
-<pre><code>## 
-## Attaching package: &#39;gridExtra&#39;</code></pre>
-<pre><code>## The following object is masked from &#39;package:dplyr&#39;:
-## 
-##     combine</code></pre>
 <p><img src="/content/06-content_files/figure-html/lse-distributions-1.png" width="100%" /></p>
 <p>The reason these look normal is because the central limit theorem applies here as well: for large enough <span class="math inline">\(N\)</span>, the least squares estimates will be approximately normal with expected value <span class="math inline">\(\beta_0\)</span> and <span class="math inline">\(\beta_1\)</span>, respectively. The standard errors are a bit complicated to compute, but mathematical theory does allow us to compute them and they are included in the summary provided by the <code>lm</code> function. Here it is for one of our simulated data sets:</p>
 <pre class="r"><code> sample_n(galton_heights, N, replace = TRUE) %&gt;%
@@ -454,7 +462,7 @@ lse &lt;- data.frame(beta_0 = lse[1,], beta_1 = lse[2,])</code></pre>
 ## 1 8.83591 0.1278812</code></pre>
 <p>The <code>summary</code> function also reports t-statistics (<code>t value</code>) and p-values (<code>Pr(&gt;|t|)</code>). The t-statistic is not actually based on the central limit theorem but rather on the assumption that the <span class="math inline">\(\varepsilon\)</span>s follow a normal distribution. Under this assumption, mathematical theory tells us that the LSE divided by their standard error, <span class="math inline">\(\hat{\beta}_0 / \hat{\mbox{SE}}(\hat{\beta}_0 )\)</span> and <span class="math inline">\(\hat{\beta}_1 / \hat{\mbox{SE}}(\hat{\beta}_1 )\)</span>, follow a t-distribution with <span class="math inline">\(N-p\)</span> degrees of freedom, with <span class="math inline">\(p\)</span> the number of parameters in our model. In the case of height <span class="math inline">\(p=2\)</span>, the two p-values are testing the null hypothesis that <span class="math inline">\(\beta_0 = 0\)</span> and <span class="math inline">\(\beta_1=0\)</span>, respectively.</p>
 <p>Remember that, as we described in the section on t-tests for large enough <span class="math inline">\(N\)</span>, the CLT works and the t-distribution becomes almost the same as the normal distribution. Also, notice that we can construct confidence intervals, but we will soon learn about <strong>broom</strong>, an add-on package that makes this easy.</p>
-<p>Although we do not show examples in this book, hypothesis testing with regression models is commonly used in epidemiology and economics to make statements such as “the effect of A on B was statistically significant after adjusting for X, Y, and Z”. However, several assumptions have to hold for these statements to be true.</p>
+<p>Although we do not show examples in this section, hypothesis testing with regression models is commonly used in epidemiology and economics to make statements such as “the effect of A on B was statistically significant after adjusting for X, Y, and Z”. However, several assumptions have to hold for these statements to be true.</p>
 </div>
 <div id="predicted-values-are-random-variables" class="section level3">
 <h3>Predicted values are random variables</h3>
@@ -465,7 +473,6 @@ lse &lt;- data.frame(beta_0 = lse[1,], beta_1 = lse[2,])</code></pre>
 <pre class="r"><code>galton_heights %&gt;% ggplot(aes(son, father)) +
   geom_point() +
   geom_smooth(method = &quot;lm&quot;)</code></pre>
-<pre><code>## `geom_smooth()` using formula &#39;y ~ x&#39;</code></pre>
 <p><img src="/content/06-content_files/figure-html/father-son-regression-1.png" width="672" /></p>
 <p>The R function <code>predict</code> takes an <code>lm</code> object as input and returns the prediction. If requested, the standard errors and other information from which we can construct confidence intervals is provided:</p>
 <pre class="r"><code>fit &lt;- galton_heights %&gt;% lm(son ~ father, data = .)
@@ -475,23 +482,6 @@ y_hat &lt;- predict(fit, se.fit = TRUE)
 names(y_hat)</code></pre>
 <pre><code>## [1] &quot;fit&quot;            &quot;se.fit&quot;         &quot;df&quot;             &quot;residual.scale&quot;</code></pre>
 </div>
-</div>
-<div id="exercises" class="section level2">
-<h2>Exercises</h2>
-<p>We have shown how BB and singles have similar predictive power for scoring runs. Another way to compare the usefulness of these baseball metrics is by assessing how stable they are across the years. Since we have to pick players based on their previous performances, we will prefer metrics that are more stable. In these exercises, we will compare the stability of singles and BBs.</p>
-<p>1. Before we get started, we want to generate two tables. One for 2002 and another for the average of 1999-2001 seasons. We want to define per plate appearance statistics. Here is how we create the 2017 table. Keeping only players with more than 100 plate appearances.</p>
-<pre class="r"><code>library(Lahman)
-dat &lt;- Batting %&gt;% filter(yearID == 2002) %&gt;%
-  mutate(pa = AB + BB,
-         singles = (H - X2B - X3B - HR) / pa, bb = BB / pa) %&gt;%
-  filter(pa &gt;= 100) %&gt;%
-  select(playerID, singles, bb)</code></pre>
-<p>Now compute a similar table but with rates computed over 1999-2001.</p>
-<p>2. In Section <a href="#joins"><strong>??</strong></a> we learn about the <code>inner_join</code>, which you can use to have the 2001 data and averages in the same table:</p>
-<pre class="r"><code>dat &lt;- inner_join(dat, avg, by = &quot;playerID&quot;)</code></pre>
-<p>Compute the correlation between 2002 and the previous seasons for singles and BB.</p>
-<p>3. Note that the correlation is higher for BB. To quickly get an idea of the uncertainty associated with this correlation estimate, we will fit a linear model and compute confidence intervals for the slope coefficient. However, first make scatterplots to confirm that fitting a linear model is appropriate.</p>
-<p>4. Now fit a linear model for each metric and use the <code>confint</code> function to compare the estimates.</p>
 </div>
 <div id="linear-regression-in-the-tidyverse" class="section level2">
 <h2>Linear regression in the tidyverse</h2>

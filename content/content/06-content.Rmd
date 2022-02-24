@@ -60,7 +60,7 @@ Traditionally, baseball teams use _scouts_ to help them decide what players to h
 
 From 1989 to 1991, the A's had one of the highest payrolls in baseball. They were able to buy the best players and, during that time, they were one of the best teams. However, in 1995 the A's team owner changed and the new management cut the budget drastically, leaving then general manager, Sandy Alderson, with one of the lowest payrolls in baseball. He could no longer afford the most sought-after players. Alderson began using a statistical approach to find inefficiencies in the market. Alderson was a mentor to Billy Beane, who succeeded him in 1998 and fully embraced data science, as opposed to scouts, as a method for finding low-cost players that data predicted would help the team win. Today, this strategy has been adapted by most baseball teams. As we will see, regression plays a large role in this approach.
 
-As motivation for this lecture, we will pretend it is 2002 (holy shit I'm old) and try to build a baseball team with a limited budget, just like the A's had to do. To appreciate what you are up against, note that in 2002 the Yankees' payroll of $125,928,583 more than tripled the Oakland A's \$39,679,746:
+As motivation for this lecture, we will pretend it is 2002 (holy sh*t I'm old) and try to build a baseball team with a limited budget, just like the A's had to do. To appreciate what you are up against, note that in 2002 the Yankees' payroll of \$125,928,583 more than tripled the Oakland A's \$39,679,746:
 
 ```{r mlb-2002-payroll, echo=FALSE, message=FALSE, warning=FALSE, fig.height = 4.5}
 library(tidyverse)
@@ -79,9 +79,9 @@ h %>% html_nodes("table") %>% .[[i]] %>% html_table(header = TRUE) %>%
 
 
 
-### Sabermetics
+### Sabermetrics
 
-Statistics have been used in baseball since its beginnings. The dataset we will be using, included in the __Lahman__ library, goes back to the 19th century. For example, a summary statistics we will describe soon, the _batting average_, has been used for decades to summarize a batter's success. Other statistics^[http://mlb.mlb.com/stats/league_leaders.jsp] such as home runs (HR), runs batted in (RBI), and stolen bases (SB) are reported for each player in the game summaries included in the sports section of newspapers, with players rewarded for high numbers. Although summary statistics such as these were widely used in baseball, data analysis per se was not. These statistics were arbitrarily decided on without much thought as to whether they actually predicted anything or were related to helping a team win.
+Statistics have been used in baseball since its beginnings. The dataset we will be using, included in the __Lahman__ library, goes back to the 19th century. For example, a summary statistic we will describe soon, the _batting average_, has been used for decades to summarize a batter's success. Other statistics^[http://mlb.mlb.com/stats/league_leaders.jsp] such as home runs (HR), runs batted in (RBI), and stolen bases (SB) are reported for each player in the game summaries included in the sports section of newspapers, with players rewarded for high numbers. Although summary statistics such as these were widely used in baseball, data analysis per se was not. These statistics were arbitrarily decided on without much thought as to whether they actually predicted anything or were related to helping a team win.
 
 This changed with Bill James^[https://en.wikipedia.org/wiki/Bill_James]. In the late 1970s, this aspiring writer and baseball fan started publishing articles describing more in-depth analysis of baseball data. He named the approach of using data to predict what outcomes best predicted if a team would win _sabermetrics_^[https://en.wikipedia.org/wiki/Sabermetrics]. Until Billy Beane made sabermetrics the center of his baseball operation, Bill James' work was mostly ignored by the baseball world. Currently, sabermetrics popularity is no longer limited to just baseball; other sports have started to use this approach as well.
 
@@ -218,7 +218,7 @@ summary_stats <- Teams %>%
 summary_stats
 ```
 
-and use the formulas given above to create the regression lines:
+and use the formulas given above to create the regression lines, as we did in Week 5's Content, and adding the line to our plot `p` created earlier:
 
 ```{r hr-versus-runs-regression}
 reg_line <- summary_stats %>% summarize(slope = r*s_R/s_HR,
@@ -227,10 +227,22 @@ reg_line <- summary_stats %>% summarize(slope = r*s_R/s_HR,
 p + geom_abline(intercept = reg_line$intercept, slope = reg_line$slope)
 ```
 
-Soon we will learn R functions, such as `lm`, that make fitting regression lines much easier. Another example is the __ggplot2__ function `geom_smooth` which computes and adds a regression line to plot along with confidence intervals, which we also learn about later. We use the argument `method = "lm"` which stands for _linear model_, the title of an upcoming section. So we can simplify the code above like this:
+For plotting, we can also use the argument `method = "lm"` which stands for _linear model_, the title of an upcoming section. So we can simplify the code above like this:
 
 ```{r  hr-versus-runs-regression-easy}
 p + geom_smooth(method = "lm")
+```
+
+And, for complete review, we can also use `lm` to run the regression, and then extract the coefficients to use in `geom_abline()`. Results are the same.
+
+```{r complete, echo = TRUE}
+reg_data = Teams %>% filter(yearID %in% 1961:2001 ) %>%
+  mutate(HR_per_game = HR/G, R_per_game = R/G)
+
+reg_lm <- lm(R_per_game ~ HR_per_game, reg_data)
+
+p + geom_abline(intercept = coefficients(reg_lm)['(Intercept)'],
+                slope = coefficients(reg_lm)['HR_per_game'])
 ```
 
 In the example above, the slope is `r reg_line$slope`. So this tells us that teams that hit 1 more HR per game than the average team, score `r reg_line$slope` more runs per game than the average team. Given that the most common final score is a difference of a run, this can certainly lead to a large increase in wins. Not surprisingly, HR hitters are very expensive. Because we are working on a budget, we will need to find some other way to increase wins. So in the next section we move our attention to BB.
@@ -299,6 +311,12 @@ dat %>%
   geom_point(alpha = 0.5) +
   geom_smooth(method = "lm") +
   facet_wrap( ~ HR_strata)
+
+# Note: we'll get a "warning"
+# telling us that ggplot has
+# used lm(y ~ x) where
+# y refers to the aesthetic mapping of y
+# x refers to the aesthetic mapping of x
 ```
 
 Remember that the regression slope for predicting runs with BB was `r round(bb_slope, 1)`. Once we stratify by HR, these slopes are substantially reduced:
@@ -449,7 +467,7 @@ Trial and error is not going to work in this case. We could search for a minimum
 
 ### The `lm` function
 
-In R, we can obtain the least squares estimates using the `lm` function. To fit the model:
+We previously used the `lm` function to fit a regression. This is the workhorse for linear models in R. Let's review for a second. To fit the model:
 
 $$
 Y_i = \beta_0 + \beta_1 x_i + \varepsilon_i
@@ -490,7 +508,7 @@ lse <- data.frame(beta_0 = lse[1,], beta_1 = lse[2,])
 
 We can see the variability of the estimates by plotting their distributions:
 
-```{r lse-distributions, out.width="100%", fig.width=6, fig.height=3, echo=FALSE}
+```{r lse-distributions, out.width="100%", fig.width=6, fig.height=3, echo=FALSE, warning = FALSE, message=FALSE}
 library(gridExtra)
 p1 <- lse %>% ggplot(aes(beta_0)) +
   geom_histogram(binwidth = 5, color = "black")
@@ -517,7 +535,7 @@ The `summary` function also reports t-statistics (`t value`) and p-values (`Pr(>
 
 Remember that, as we described in the section on t-tests for large enough $N$, the CLT works and the t-distribution becomes almost the same as the normal distribution. Also, notice that we can construct confidence intervals, but we will soon learn about __broom__, an add-on package that makes this easy.
 
-Although we do not show examples in this book, hypothesis testing with regression models is commonly used in epidemiology and economics to make statements such as "the effect of A on B was statistically significant after adjusting for X, Y, and Z". However, several assumptions have to hold for these statements to be true.
+Although we do not show examples in this section, hypothesis testing with regression models is commonly used in epidemiology and economics to make statements such as "the effect of A on B was statistically significant after adjusting for X, Y, and Z". However, several assumptions have to hold for these statements to be true.
 
 
 ### Predicted values are random variables
@@ -530,7 +548,7 @@ When we plot $\hat{Y}$ versus $x$, we see the regression line.
 
 Keep in mind that the prediction $\hat{Y}$ is also a random variable and mathematical theory tells us what the standard errors are. If we assume the errors are normal, or have a large enough sample size, we can use theory to construct confidence intervals as well. In fact, the __ggplot2__ layer `geom_smooth(method = "lm")` that we previously used plots $\hat{Y}$ and surrounds it by confidence intervals:
 
-```{r father-son-regression}
+```{r father-son-regression, warning = FALSE, message = FALSE}
 galton_heights %>% ggplot(aes(son, father)) +
   geom_point() +
   geom_smooth(method = "lm")
@@ -545,38 +563,6 @@ y_hat <- predict(fit, se.fit = TRUE)
 
 names(y_hat)
 ```
-
-## Exercises
-
-
-We have shown how BB and singles have similar predictive power for scoring runs. Another way to compare the usefulness of these baseball metrics is by assessing how stable they are across the years. Since we have to pick players based on their previous performances, we will prefer metrics that are more stable. In these exercises, we will compare the stability of singles and BBs.
-
-1\. Before we get started, we want to generate two tables. One for 2002 and another for the average of 1999-2001 seasons. We want to define per plate appearance statistics. Here is how we create the 2017 table. Keeping only players with more than 100 plate appearances.
-
-```{r, eval=FALSE}
-library(Lahman)
-dat <- Batting %>% filter(yearID == 2002) %>%
-  mutate(pa = AB + BB,
-         singles = (H - X2B - X3B - HR) / pa, bb = BB / pa) %>%
-  filter(pa >= 100) %>%
-  select(playerID, singles, bb)
-```
-
-Now compute a similar table but with rates computed over 1999-2001.
-
-2\. In Section \@ref(joins) we learn about the `inner_join`, which you can use to have the 2001 data and averages in the same table:
-
-```{r, eval = FALSE}
-dat <- inner_join(dat, avg, by = "playerID")
-```
-
-Compute the correlation between 2002 and the previous seasons for singles and BB.
-
-
-3\. Note that the correlation is higher for BB. To quickly get an idea of the uncertainty associated with this correlation estimate, we will fit a linear model and compute confidence intervals for the slope coefficient. However, first make scatterplots to confirm that fitting a linear model is appropriate.
-
-
-4\. Now fit a linear model for each metric and use the `confint` function to compare the estimates.
 
 
 ## Linear regression in the tidyverse
