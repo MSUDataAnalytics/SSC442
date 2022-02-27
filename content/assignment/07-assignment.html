@@ -1,7 +1,6 @@
 ---
 title: "Advanced Model Building"
 linktitle: "7/8: Linear Regression III"
-publishDate: "2022-02-27"
 output:
   blogdown::html_page:
     toc: true
@@ -15,12 +14,14 @@ editor_options:
   chunk_output_type: console
 ---
 
+<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
 
 <div id="TOC">
 <ul>
 <li><a href="#backstory-and-set-up">Backstory and Set Up</a></li>
 <li><a href="#data-cleaning">Data Cleaning</a></li>
-<li><a href="#linear-models">Linear Models</a><ul>
+<li><a href="#linear-models">Linear Models</a>
+<ul>
 <li><a href="#assesing-model-accuracy">Assesing Model Accuracy</a></li>
 <li><a href="#model-complexity">Model Complexity</a></li>
 <li><a href="#test-train-split">Test-Train Split</a></li>
@@ -31,7 +32,7 @@ editor_options:
 
 <div class="fyi">
 <p><strong>READ THIS CAREFULLY</strong></p>
-<p>The content below describes both Lab 7 and Lab 8. Lab 7 is Exercise 1; Lab 8 is Exercise 2. Also, you may find some other tasks in the text…</p>
+<p>The content below describes both Lab 7 and Lab 8. Lab 7 is Exercise 1; Lab 8 is Exercise 2.</p>
 <p>You must turn in a PDF document of your <code>R Markdown</code> code. Submit this to D2L by 11:59 PM Eastern Time on Monday, March 14th for both labs (so that you do not have one due during Spring Break). Submit labs separately, though. Uploading both labs to Lab 7 will result in a 0 on Lab 8.</p>
 </div>
 <div id="backstory-and-set-up" class="section level2">
@@ -82,7 +83,7 @@ editor_options:
 <ol style="list-style-type: decimal">
 <li><p>Load the <code>Ames</code> data. Using <code>skimr::skim</code>, find the variables that have a complete rate of below 60% and drop them. 60% isn’t a magic number by any means, the “right” number is entirely dependent on your data. It is always standard practice to document the fields you have dropped from the data, so make sure you state which variables have been dropped.</p></li>
 <li><p>Take a look at <code>Utilities</code>. Use the <code>table</code> function to see a tabulation of the values of <code>Utilities</code>. Do you see why this field is not likely to be useful to us, or even problematic?</p></li>
-<li><p>Using <strong>forward selection</strong> (that is, select one variable, then select another) create a series of models up to complexity length 15. You may use any variable within the dataset, including categorical variables.</p></li>
+<li><p>Using <strong>forward selection</strong> (that is, select one variable, then select another) create a series of models up to complexity length 15. You may use any variable within the dataset, including categorical variables. While you can code each of the 15 regressions separately, if you really want to be efficient, try to use a loop along with a character vector of your 15 variables to “step” through the 15 regressions. Use a list object to hold your results, and use the <code>tidy</code> and <code>glance</code> functions from <code>broom</code> to extract your <code>lm</code> results.</p></li>
 <li><p>Create a chart plotting the model complexity as the <span class="math inline">\(x\)</span>-axis variable and RMSE as the <span class="math inline">\(y\)</span>-axis variable. Describe any patterns you see. Do you think you should use the full-size model? Why or why not? What criterion are you using to make this statement?</p></li>
 </ol>
 </div>
