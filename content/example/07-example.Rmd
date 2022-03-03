@@ -14,15 +14,6 @@ editor_options:
   chunk_output_type: console
 ---
 
-:::fyi
-
-Today's example will pivot between the content from this week and the example below.
-
-We will also use the Ames data again. Maybe some new data. Who knows. The Ames data is linked below:
-
-- [<i class="fas fa-file-csv"></i> `Ames.csv`](/projects/data/ames.csv)
-
-:::
 
 
 ##  Model Selection
@@ -33,9 +24,9 @@ Often when we are developing a linear regression model, part of our goal is to *
 
 First, note that a linear model is one of many methods used in regression.
 
-```{r, message = FALSE, warning = FALSE, echo = TRUE}
+```{r, message = FALSE, warning = FALSE, echo = FALSE}
 library(readr)
-# Advertising <- read_csv(here::here("static", "data", "Advertising.csv"))
+library(ggplot2)
 Advertising <- read_csv('https://www.statlearning.com/s/Advertising.csv')
 ```
 
@@ -45,10 +36,17 @@ To discuss linear models in the context of prediction, we introduce the (very bo
 Advertising
 ```
 
+We can take a look at the relationship between `sales` and the three modes of advertising using the `patchwork` package (or any number of other ways)
+
 ```{r, fig.height = 4, fig.width = 10, message = FALSE, warning = FALSE}
-library(caret)
-featurePlot(x = Advertising[ , c("TV", "radio", "newspaper")], y = Advertising$sales)
+library(patchwork)
+tv = ggplot(Advertising, aes(x = TV, y = sales)) + geom_point() + theme_bw()
+rad = ggplot(Advertising, aes(x = radio, y = sales)) + geom_point() + theme_bw()
+news = ggplot(Advertising, aes(x = newspaper, y = sales)) + geom_point() + theme_bw()
+tv + rad + news
 ```
+
+Here we see a relationship between each of the advertising modes and sales, but we might want to know more. Specifically, we probably want to know something about the sales-maximizing combination of the three modes. For that, we'd need a good model of sales. But what does "good" mean?
 
 
 ## Assesing Model Accuracy
