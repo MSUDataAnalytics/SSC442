@@ -30,9 +30,9 @@
   
     
   
-  <meta name="description" content="Backstory and Set UpData CleaningLinear ModelsAssesing Model AccuracyModel ComplexityTest-Train SplitAdding Flexibility to Linear ModelsREAD THIS CAREFULLY
+  <meta name="description" content="Backstory and Set UpData CleaningMany models do not like NA valuesLinear ModelsAssesing Model AccuracyModel ComplexityTest-Train Split (Lab 8)Adding Flexibility to Linear ModelsREAD THIS CAREFULLY
 The content below describes both Lab 7 and Lab 8. Lab 7 is Exercise 1; Lab 8 is Exercise 2.
-You must turn in a PDF document of your R Markdown code. Submit this to D2L by 11:59 PM Eastern Time on Monday, March 14th for both labs (so that you do not have one due during Spring Break).">
+You must turn in a PDF document of your R Markdown code.">
 
   
   <link rel="alternate" hreflang="en-us" href="https://ssc442kirkpatrick.netlify.app/assignment/07-assignment/">
@@ -240,9 +240,9 @@ You must turn in a PDF document of your R Markdown code. Submit this to D2L by 1
   <meta property="og:site_name" content="Data Analytics">
   <meta property="og:url" content="https://ssc442kirkpatrick.netlify.app/assignment/07-assignment/">
   <meta property="og:title" content="Advanced Model Building | Data Analytics">
-  <meta property="og:description" content="Backstory and Set UpData CleaningLinear ModelsAssesing Model AccuracyModel ComplexityTest-Train SplitAdding Flexibility to Linear ModelsREAD THIS CAREFULLY
+  <meta property="og:description" content="Backstory and Set UpData CleaningMany models do not like NA valuesLinear ModelsAssesing Model AccuracyModel ComplexityTest-Train Split (Lab 8)Adding Flexibility to Linear ModelsREAD THIS CAREFULLY
 The content below describes both Lab 7 and Lab 8. Lab 7 is Exercise 1; Lab 8 is Exercise 2.
-You must turn in a PDF document of your R Markdown code. Submit this to D2L by 11:59 PM Eastern Time on Monday, March 14th for both labs (so that you do not have one due during Spring Break)."><meta property="og:image" content="https://ssc442kirkpatrick.netlify.app/img/social-image.png">
+You must turn in a PDF document of your R Markdown code."><meta property="og:image" content="https://ssc442kirkpatrick.netlify.app/img/social-image.png">
   <meta property="twitter:image" content="https://ssc442kirkpatrick.netlify.app/img/social-image.png"><meta property="og:locale" content="en-us">
   
     
@@ -582,6 +582,10 @@ You must turn in a PDF document of your R Markdown code. Submit this to D2L by 1
         <a href="/assignment/09-assignment/">9: Model Evaluation</a>
       </li>
       
+      <li >
+        <a href="/assignment/10-assignment/">10: Classification</a>
+      </li>
+      
     </ul>
     
 
@@ -635,17 +639,21 @@ You must turn in a PDF document of your R Markdown code. Submit this to D2L by 1
 <div id="TOC">
 <ul>
 <li><a href="#backstory-and-set-up">Backstory and Set Up</a></li>
-<li><a href="#data-cleaning">Data Cleaning</a></li>
+<li><a href="#data-cleaning">Data Cleaning</a>
+<ul>
+<li><a href="#many-models-do-not-like-na-values">Many models do not like <code>NA</code> values</a></li>
+</ul></li>
 <li><a href="#linear-models">Linear Models</a>
 <ul>
 <li><a href="#assesing-model-accuracy">Assesing Model Accuracy</a></li>
 <li><a href="#model-complexity">Model Complexity</a></li>
-<li><a href="#test-train-split">Test-Train Split</a></li>
+<li><a href="#test-train-split-lab-8">Test-Train Split (Lab 8)</a></li>
 <li><a href="#adding-flexibility-to-linear-models">Adding Flexibility to Linear Models</a></li>
 </ul></li>
 </ul>
 </div>
 
+<!-- Updated after Sp2022 -->
 <div class="fyi">
 <p><strong>READ THIS CAREFULLY</strong></p>
 <p>The content below describes both Lab 7 and Lab 8. Lab 7 is Exercise 1; Lab 8 is Exercise 2.</p>
@@ -661,9 +669,17 @@ You must turn in a PDF document of your R Markdown code. Submit this to D2L by 1
 </div>
 <div id="data-cleaning" class="section level2">
 <h2>Data Cleaning</h2>
+<p><strong>Do not skip this section. This isn’t your kitchen junk drawer – you can’t get away with not cleaning your data.</strong></p>
 <p>Oh, the Ames data yet again. It’s given us lots of trouble. Many of you have found a few variables (columns) that should be avoided. The main problem is that some columns have only one value in them, or they have only <code>NA</code> and one value, so once <code>lm(...)</code> drops the <code>NA</code> rows, they are left with only one value. Linear regression by OLS does not like variables that don’t vary! So, let’s be systematic about figuring out which columns in our data are to be avoided.</p>
-<p>The <code>skimr</code> package is very helpful for seeing what our data contains. Install it, and then use <code>skim(Ames)</code> directly in the console (we’re just looking at data at the moment). Take a look at the “complete rate” column - this tells us the fraction of observations in that column that are <code>NA</code>. If it’s very small (see <code>Alley</code>), then that variable will be problematic. The “n_unique” column tells us if there are few or many different values - a “1” in “n_unique” is definitely going to be a problem!</p>
+<p>The <code>skimr</code> package is very helpful for seeing what our data contains. Install it, and then use <code>skim(Ames)</code> directly in the console (we’re just looking at data at the moment – do <strong>not</strong> put <code>skim</code> output into your RMarkdwon output - it will give you an error). Take a look at the “complete rate” column - this tells us the fraction of observations in that column that are <code>NA</code>. If it’s very small (see <code>Alley</code>), then that variable will be problematic. The “n_unique” column tells us if there are few or many different values - a “1” in “n_unique” is definitely going to be a problem and you must drop that variable.</p>
 <p>You can make a note of those columns that have extremely low “complete rates” and drop them to start off. There are about 5-6 of them that will cause an error if we include them in a regression.</p>
+<div id="many-models-do-not-like-na-values" class="section level3">
+<h3>Many models do not like <code>NA</code> values</h3>
+<p><code>predict</code> has some unusual behavior that can give unexpected results. Thus far, we have mostly used <code>predict(myOLS)</code>, which gives the predicted values from a model <em>using the same data that estimated the model</em>. When we ask <code>lm</code> (or, later, other machine learning models) to estimate a model, it will drop any rows of our data that contain a <code>NA</code> value for any of the variables used in the estimation. If your regression is <code>SalePrice ~ GrLivArea</code>, then it will check <code>SalePrice</code> and <code>GrLivArea</code> for NA’s. If you add another variable, then you add another possible set of <code>NA</code> values that can be dropped, and R will estimate the model on a subset of the data.</p>
+<p>This will mess with your measure of <span class="math inline">\(RMSE\)</span> - if you compare two models that use different sets of the data, then you aren’t really comparing the fit very well. Because of that, we need to take a moment to check our data.</p>
+<p>Ames has a lot of variables, and in this assignment, you’re going to be asked to construct 15 regressions of increasing complexity. So we’re going to choose 15 variables to be explanatory, one variable we want to be the target variable we predict (your choice for Lab 7), plus <code>SalePrice</code>, which will be our target variable for Lab 8. Make sure we have dropped any observation (row) that contains one or more <code>NA</code> value across the 17 columns. You should have already dropped any variable with a very low complete rate or small “n_unique” count.</p>
+<p>Make a character vector of the variables you think will best predict your chosen variable. Then, make a new version of <code>Ames</code> that contains only those 17 variables (you can use <code>dplyr::select</code> or any other method). Once you’ve done that, use <code>na.omit</code> to make a new, clean version of Ames that has (1) no NA’s in it, and (2) 16 variables of your choice (as long as one is <code>SalePrice</code>). This way, we know every model we make will have the same number of rows in it as none will be dropped due to NA values.</p>
+</div>
 </div>
 <div id="linear-models" class="section level2">
 <h2>Linear Models</h2>
@@ -697,16 +713,18 @@ You must turn in a PDF document of your R Markdown code. Submit this to D2L by 1
 <div class="fyi">
 <p><strong>EXERCISE 1</strong></p>
 <ol style="list-style-type: decimal">
-<li><p>Load the <code>Ames</code> data. Using <code>skimr::skim</code>, find the variables that have a complete rate of below 60% and drop them. 60% isn’t a magic number by any means, the “right” number is entirely dependent on your data. It is always standard practice to document the fields you have dropped from the data, so make sure you state which variables have been dropped.</p></li>
-<li><p>Take a look at <code>Utilities</code>. Use the <code>table</code> function to see a tabulation of the values of <code>Utilities</code>. Do you see why this field is not likely to be useful to us, or even problematic?</p></li>
-<li><p>Using <strong>forward selection</strong> (that is, select one variable, then select another) create a series of models up to complexity length 15. You may use any variable within the dataset, including categorical variables. While you can code each of the 15 regressions separately, if you really want to be efficient, try to use a loop along with a character vector of your 15 variables to “step” through the 15 regressions. Use a list object to hold your results, and use the <code>tidy</code> and <code>glance</code> functions from <code>broom</code> to extract your <code>lm</code> results.</p></li>
-<li><p>Create a chart plotting the model complexity as the <span class="math inline">\(x\)</span>-axis variable and RMSE as the <span class="math inline">\(y\)</span>-axis variable. Describe any patterns you see. Do you think you should use the full-size model? Why or why not? What criterion are you using to make this statement?</p></li>
+<li><p>Load the <code>Ames</code> data. Take a look at <code>Utilities</code>. Use the <code>table</code> function to see a tabulation of the values of <code>Utilities</code>. Do you see why this field is not likely to be useful to us, or even problematic?</p></li>
+<li><p>Using <code>skimr::skim</code>, find the variables that have a complete rate of below 60% and drop them. 60% isn’t a magic number by any means, the “right” number is entirely dependent on your data. It is always standard practice to document the fields you have dropped from the data, so make sure you state which variables have been dropped. Also using <code>skim</code>, note the variables with values for “n_unique” equal to 1 and drop them.</p></li>
+<li><p>Then, choose one numeric variable to be your target variable (the variable you want to explain or predict), and the 15 variables you want to use to predict it - they can be numeric or categorical, both will work. Then, use <code>na.omit</code> to make a clean version of <code>Ames</code> where every variable is 100% complete. See the instructions above under “Data Cleaning”. Include <code>SalePrice</code> in your cleaning, but don’t use it yet – it will be the target variable for your Lab 8.</p></li>
+<li><p>Using <strong>forward selection</strong> (that is, select one variable, then select another) create a series of models up to complexity length 15. While you can code each of the 15 regressions separately, if you really want to be efficient, try to use a loop along with a character vector of your 15 variables to “step” through the 15 regressions. Use a list object to hold your results, and use <code>lapply</code> along with your RMSE function(s) to get a list of the RMSE’s, one for each model.</p></li>
+<li><p>Make a <code>data.frame</code> or <code>tibble</code> of the RMSE results and the model complexity (the function <code>unlist</code> is helpful when you have a list of identical types, as should be the case with your measures of model complexity and RMSE). Create a chart plotting the model complexity as the <span class="math inline">\(x\)</span>-axis variable and RMSE as the <span class="math inline">\(y\)</span>-axis variable. Describe any patterns you see. Do you think you should use the full-size model? Why or why not? What criterion are you using to make this statement?</p></li>
 </ol>
 </div>
 <hr />
 </div>
-<div id="test-train-split" class="section level3">
-<h3>Test-Train Split</h3>
+<div id="test-train-split-lab-8" class="section level3">
+<h3>Test-Train Split (Lab 8)</h3>
+<p>Here, we will use <code>SalePrice</code> as our target variable. You can re-use your code for cleaning from above (you included <code>SalePrice</code> there, right?), and if you want to choose different predictors, feel free to do so.</p>
 <p>There is an issue with fitting a model to all available data then using RMSE to determine how well the model predicts: it is essentially cheating. As a linear model becomes more complex, the RSS, thus RMSE, can never go up. It will only go down—or, in very specific cases where a new predictor is completely uncorrelated with the target, stay the same. This might seem to suggest that in order to predict well, we should use the largest possible model. However, in reality we have fit to a specific dataset, but as soon as we see new data, a large model may (in fact) predict poorly. This is called <strong>overfitting</strong>.</p>
 <p>The most common approach to overfitting is to take a dataset of interest and split it in two. One part of the datasets will be used to fit (train) a model, which we will call the <strong>training</strong> data. The remainder of the original data will be used to assess how well the model is predicting, which we will call the <strong>test</strong> data. Test data should <em>never</em> be used to train a model—its pupose is to evaluate the fitted model once you’ve settled on something.<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a></p>
 <p>Here we use the <code>sample()</code> function to obtain a random sample of the rows of the original data. We then use those row numbers (and remaining row numbers) to split the data accordingly. Notice we used the <code>set.seed()</code> function to allow use to reproduce the same random split each time we perform this analysis. Sometimes we don’t want to do this; if we want to run lots of independent splits, then we do not need to set the initial seed.</p>
@@ -753,7 +771,7 @@ rmse(actual = test_data$SalePrice, predicted = predict(fit_0, test_data))</code>
 <pre class="r"><code>get_rmse(model = fit_0, data = test_data, response = &quot;SalePrice&quot;) # test RMSE</code></pre>
 <pre><code>## [1] 77928.62</code></pre>
 <p><strong>Try it:</strong> Apply this basic function with different arguments. Do you understand how we’ve nested functions within functions?</p>
-<p><strong>Try it:</strong> Define a total of five models using the first five models you fit in Exercise 1. Define these as <code>fit_1</code> through <code>fit_5</code></p>
+<p><strong>Try it:</strong> Define a total of <strong>five</strong> models with increasing complexity (see Exercises 2, Question 1)</p>
 </div>
 <div id="adding-flexibility-to-linear-models" class="section level3">
 <h3>Adding Flexibility to Linear Models</h3>
@@ -764,7 +782,7 @@ rmse(actual = test_data$SalePrice, predicted = predict(fit_0, test_data))</code>
 <pre class="r"><code>train_rmse = sapply(model_list, get_rmse, data = train_data, response = &quot;SalePrice&quot;)
 test_rmse = sapply(model_list, get_rmse, data = test_data, response = &quot;SalePrice&quot;)
 model_complexity = sapply(model_list, get_complexity)</code></pre>
-<p><strong>Try it:</strong> Run <code>?sapply()</code> to understand what are valid arguments to the function.</p>
+<p><strong>Try it:</strong> Run <code>?sapply()</code> to understand what are valid arguments to the function. It’s just like <code>lapply</code>, but instead of outputting a list, it outputs a vector of results.</p>
 <p>Once you’ve done this, you’ll notice the following:</p>
 <pre class="r"><code># This is the same as the apply command above
 
@@ -828,8 +846,9 @@ lines(model_complexity, test_rmse, type = &quot;b&quot;, col = &quot;darkorange&
 <p><strong>EXERCISE 2</strong></p>
 <p>(AKA Lab 8)</p>
 <ol style="list-style-type: decimal">
-<li><p>Make a table exactly like the table above for the 15 models you fit in Exercise 1.</p></li>
-<li><p><strong>This question should be the most time-consuming question.</strong> Using any method you choose and any number of regressors, predict <code>SalePrice</code>. Calculate the Train and Test RMSE. Your goal is to have a lower Test RMSE than others in the class.</p></li>
+<li><p>Using any method you choose and any number of regressors, predict <code>SalePrice</code> with no fewer than five models of increasing complexity. Complexity can be increased by adding variables <em>or</em> by adding interactions of existing variables. Put the five models into a list.</p></li>
+<li><p>Calculate the Train and Test RMSE. Your goal is to have a lower <em>Test</em> RMSE than others in the class.</p></li>
+<li><p>Make a table exactly like the table above for the 5 models you just fit. The first column should have the name of the model (e.g. <code>fit_1</code>). Hint: you can get the names of the entries in a list using <code>names(model_list)</code> provided you named the list items when you added them.</p></li>
 <li><p>In a short paragraph, describe the resulting model. Discuss how you arrived at this model, what interactions you’re using (if any) and how confident you are that your prediction will perform well, relative to other people in the class.</p></li>
 <li><p><strong>Difficult; extra credit:</strong> Visualize your final model in a sensible way and provide a two-paragraph interpretation.</p></li>
 </ol>
@@ -841,7 +860,7 @@ lines(model_complexity, test_rmse, type = &quot;b&quot;, col = &quot;darkorange&
 <hr />
 <ol>
 <li id="fn1"><p>Note that sometimes the terms <em>evaluation set</em> and <em>test set</em> are used interchangeably. We will give somewhat specific definitions to these later. For now we will simply use a single test set for a training set.<a href="#fnref1" class="footnote-back">↩︎</a></p></li>
-<li id="fn2"><p>The train RMSE is guaranteed to follow this non-increasing pattern. The same is not true of test RMSE. We often see a nice U-shaped curve. There are theoretical reasons why we should expect this, but that is on average. Because of the randomness of one test-train split, we may not always see this result. Re-perform this analysis with a different seed value and the pattern may not hold. We will discuss why we expect this next chapter. We will discuss how we can help create this U-shape much later. Also, we might intuitively expect train RMSE to be lower than test RMSE. Again, due to the randomness of the split, you may get (un)lucky and this will not be true.<a href="#fnref2" class="footnote-back">↩︎</a></p></li>
+<li id="fn2"><p>The train RMSE is guaranteed to follow this non-increasing pattern as long as no data is being dropped when new variables are added (see <a href="#Data%20Cleaning">Data Cleaning</a> above). The same is not true of test RMSE. We often see a nice U-shaped curve. There are theoretical reasons why we should expect this, but that is on average. Because of the randomness of one test-train split, we may not always see this result. Re-perform this analysis with a different seed value and the pattern may not hold. We will discuss why we expect this next chapter. We will discuss how we can help create this U-shape much later. Also, we might intuitively expect train RMSE to be lower than test RMSE. Again, due to the randomness of the split, you may get (un)lucky and this will not be true.<a href="#fnref2" class="footnote-back">↩︎</a></p></li>
 <li id="fn3"><p>The labels of under and overfitting are <em>relative</em> to the best model we see. Any model more complex with higher Test RMSE is overfitting. Any model less complex with higher Test RMSE is underfitting.<a href="#fnref3" class="footnote-back">↩︎</a></p></li>
 </ol>
 </div>

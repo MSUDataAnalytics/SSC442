@@ -14,6 +14,8 @@ editor_options:
   chunk_output_type: console
 ---
 
+<!-- Updated after Sp2022 -->
+
 :::fyi
 
 **READ THIS CAREFULLY**
@@ -37,11 +39,24 @@ Ames <- read.table('https://raw.githubusercontent.com/ajkirkpatrick/FS20/postS21
 ```
 
 ## Data Cleaning
+**Do not skip this section. This isn't your kitchen junk drawer -- you can't get away with not cleaning your data.**
+
 Oh, the Ames data yet again. It's given us lots of trouble. Many of you have found a few variables (columns) that should be avoided. The main problem is that some columns have only one value in them, or they have only `NA` and one value, so once `lm(...)` drops the `NA` rows, they are left with only one value. Linear regression by OLS does not like variables that don't vary! So, let's be systematic about figuring out which columns in our data are to be avoided.
 
-The `skimr` package is very helpful for seeing what our data contains. Install it, and then use `skim(Ames)` directly in the console (we're just looking at data at the moment). Take a look at the "complete rate" column - this tells us the fraction of observations in that column that are `NA`. If it's very small (see `Alley`), then that variable will be problematic. The "n_unique" column tells us if there are few or many different values - a "1" in "n_unique" is definitely going to be a problem!
+The `skimr` package is very helpful for seeing what our data contains. Install it, and then use `skim(Ames)` directly in the console (we're just looking at data at the moment -- do **not** put `skim` output into your RMarkdwon output - it will give you an error). Take a look at the "complete rate" column - this tells us the fraction of observations in that column that are `NA`. If it's very small (see `Alley`), then that variable will be problematic. The "n_unique" column tells us if there are few or many different values - a "1" in "n_unique" is definitely going to be a problem and you must drop that variable.
 
 You can make a note of those columns that have extremely low "complete rates" and drop them to start off. There are about 5-6 of them that will cause an error if we include them in a regression.
+
+### Many models do not like `NA` values
+`predict` has some unusual behavior that can give unexpected results. Thus far, we have mostly used `predict(myOLS)`, which gives the predicted values from a model *using the same data that estimated the model*. When we ask `lm` (or, later, other machine learning models) to estimate a model, it will drop any rows of our data that contain a `NA` value for any of the variables used in the estimation. If your regression is `SalePrice ~ GrLivArea`, then it will check `SalePrice` and `GrLivArea` for NA's. If you add another variable, then you add another possible set of `NA` values that can be dropped, and R will estimate the model on a subset of the data.
+
+This will mess with your measure of $RMSE$ - if you compare two models that use different sets of the data, then you aren't really comparing the fit very well. Because of that, we need to take a moment to check our data.
+
+Ames has a lot of variables, and in this assignment, you're going to be asked to construct 15 regressions of increasing complexity. So we're going to choose 15 variables to be explanatory, one variable we want to be the target variable we predict (your choice for Lab 7), plus `SalePrice`, which will be our target variable for Lab 8. Make sure we have dropped any observation (row) that contains one or more `NA` value across the 17 columns. You should have already dropped any variable with a very low complete rate or small "n_unique" count. 
+
+Make a character vector of the variables you think will best predict your chosen variable. Then, make a new version of `Ames` that contains only those 17 variables (you can use `dplyr::select` or any other method). Once you've done that, use `na.omit` to make a new, clean version of Ames that has (1) no NA's in it, and (2) 16 variables of your choice (as long as one is `SalePrice`). This way, we know every model we make will have the same number of rows in it as none will be dropped due to NA values.
+
+
 
 ## Linear Models
 When exploring linear models in other classes, we often emphasize asymptotic results under distributional assumptions. That is, we make assumptions about the model in order to derive properties of large samples. This general approach is useful for creating and performing hypothesis tests. Frequently, when developing a linear regression model, part of the goal is to **explain** a relationship. However, this isn't always the case. And it's often not a valid approach, as we discussed in this week's content.
@@ -94,13 +109,16 @@ When deciding how complex of a model to use, we can utilize two techniques: *for
 
 __EXERCISE 1__
 
-1. Load the `Ames` data. Using `skimr::skim`, find the variables that have a complete rate of below 60\% and drop them. 60\% isn't a magic number by any means, the "right" number is entirely dependent on your data. It is always standard practice to document the fields you have dropped from the data, so make sure you state which variables have been dropped. 
+1. Load the `Ames` data. Take a look at `Utilities`. Use the `table` function to see a tabulation of the values of `Utilities`. Do you see why this field is not likely to be useful to us, or even problematic?
 
-2. Take a look at `Utilities`. Use the `table` function to see a tabulation of the values of `Utilities`. Do you see why this field is not likely to be useful to us, or even problematic?
+2. Using `skimr::skim`, find the variables that have a complete rate of below 60\% and drop them. 60\% isn't a magic number by any means, the "right" number is entirely dependent on your data. It is always standard practice to document the fields you have dropped from the data, so make sure you state which variables have been dropped. Also using `skim`, note the variables with values for "n_unique" equal to 1 and drop them. 
 
-3. Using **forward selection** (that is, select one variable, then select another) create a series of models up to complexity length 15. You may use any variable within the dataset, including categorical variables. While you can code each of the 15 regressions separately, if you really want to be efficient, try to use a loop along with a character vector of your 15 variables to "step" through the 15 regressions. Use a list object to hold your results, and use the `tidy` and `glance` functions from `broom` to extract your `lm` results. 
+3. Then, choose one numeric variable to be your target variable (the variable you want to explain or predict), and the 15 variables you want to use to predict it - they can be numeric or categorical, both will work. Then, use `na.omit` to make a clean version of `Ames` where every variable is 100% complete. See the instructions above under "Data Cleaning". Include `SalePrice` in your cleaning, but don't use it yet -- it will be the target variable for your Lab 8.
 
-4. Create a chart plotting the model complexity as the $x$-axis variable and RMSE as the $y$-axis variable. Describe any patterns you see. Do you think you should use the full-size model? Why or why not? What criterion are you using to make this statement?
+
+4. Using **forward selection** (that is, select one variable, then select another) create a series of models up to complexity length 15. While you can code each of the 15 regressions separately, if you really want to be efficient, try to use a loop along with a character vector of your 15 variables to "step" through the 15 regressions. Use a list object to hold your results, and use `lapply` along with your RMSE function(s) to get a list of the RMSE's, one for each model.
+
+5. Make a `data.frame` or `tibble` of the RMSE results and the model complexity (the function `unlist` is helpful when you have a list of identical types, as should be the case with your measures of model complexity and RMSE). Create a chart plotting the model complexity as the $x$-axis variable and RMSE as the $y$-axis variable. Describe any patterns you see. Do you think you should use the full-size model? Why or why not? What criterion are you using to make this statement?
 
 :::
 
@@ -108,7 +126,10 @@ __EXERCISE 1__
 ---
 
 
-### Test-Train Split
+### Test-Train Split (Lab 8)
+
+Here, we will use `SalePrice` as our target variable. You can re-use your code for cleaning from above (you included `SalePrice` there, right?), and if you want to choose different predictors, feel free to do so.
+
 
 There is an issue with fitting a model to all available data then using RMSE to determine how well the model predicts: it is essentially cheating. As a linear model becomes more complex, the RSS, thus RMSE, can never go up. It will only go down---or, in very specific cases where a new predictor is completely uncorrelated with the target, stay the same. This might seem to suggest that in order to predict well, we should use the largest possible model. However, in reality we have fit to a specific dataset, but as soon as we see new data, a large model may (in fact) predict poorly. This is called **overfitting**.
 
@@ -180,7 +201,7 @@ get_rmse(model = fit_0, data = test_data, response = "SalePrice") # test RMSE
 
 **Try it:** Apply this basic function with different arguments. Do you understand how we've nested functions within functions?
 
-**Try it:** Define a total of five models using the first five models you fit in Exercise 1. Define these as `fit_1` through `fit_5`
+**Try it:** Define a total of **five** models with increasing complexity (see Exercises 2, Question 1)
 
 
 ### Adding Flexibility to Linear Models
@@ -201,7 +222,7 @@ test_rmse = sapply(model_list, get_rmse, data = test_data, response = "SalePrice
 model_complexity = sapply(model_list, get_complexity)
 ```
 
-**Try it:** Run `?sapply()` to understand what are valid arguments to the function.
+**Try it:** Run `?sapply()` to understand what are valid arguments to the function. It's just like `lapply`, but instead of outputting a list, it outputs a vector of results.
 
 Once you've done this, you'll notice the following:
 
@@ -217,7 +238,7 @@ test_rmse = c(get_rmse(fit_1, test_data, "SalePrice"),
 
 We can plot the results. If you execute the code below, you'll see the train RMSE in blue, while the test RMSE is given in orange.[^3]
 
-[^3]: The train RMSE is guaranteed to follow this non-increasing pattern. The same is not true of test RMSE. We often see a nice U-shaped curve. There are theoretical reasons why we should expect this, but that is on average. Because of the randomness of one test-train split, we may not always see this result. Re-perform this analysis with a different seed value and the pattern may not hold. We will discuss why we expect this next chapter. We will discuss how we can help create this U-shape much later. Also, we might intuitively expect train RMSE to be lower than test RMSE. Again, due to the randomness of the split, you may get (un)lucky and this will not be true.
+[^3]: The train RMSE is guaranteed to follow this non-increasing pattern as long as no data is being dropped when new variables are added (see [Data Cleaning](#Data Cleaning) above). The same is not true of test RMSE. We often see a nice U-shaped curve. There are theoretical reasons why we should expect this, but that is on average. Because of the randomness of one test-train split, we may not always see this result. Re-perform this analysis with a different seed value and the pattern may not hold. We will discuss why we expect this next chapter. We will discuss how we can help create this U-shape much later. Also, we might intuitively expect train RMSE to be lower than test RMSE. Again, due to the randomness of the split, you may get (un)lucky and this will not be true.
 
 ```{r, eval=FALSE}
 plot(model_complexity, train_rmse, type = "b",
@@ -253,9 +274,11 @@ __EXERCISE 2__
 
 (AKA Lab 8)
 
-1. Make a table exactly like the table above for the 15 models you fit in Exercise 1.
+1. Using any method you choose and any number of regressors, predict `SalePrice` with no fewer than five models of increasing complexity. Complexity can be increased by adding variables *or* by adding interactions of existing variables. Put the five models into a list.
 
-2. **This question should be the most time-consuming question.** Using any method you choose and any number of regressors, predict `SalePrice`. Calculate the Train and Test RMSE. Your goal is to have a lower Test RMSE than others in the class.
+2. Calculate the Train and Test RMSE. Your goal is to have a lower *Test* RMSE than others in the class. 
+
+2. Make a table exactly like the table above for the 5 models you just fit. The first column should have the name of the model (e.g. `fit_1`). Hint: you can get the names of the entries in a list using `names(model_list)` provided you named the list items when you added them.
 
 3. In a short paragraph, describe the resulting model. Discuss how you arrived at this model, what interactions you're using (if any) and how confident you are that your prediction will perform well, relative to other people in the class.
 
