@@ -30,7 +30,7 @@
   
     
   
-  <meta name="description" content="Required ReadingGuiding IdeasNonparametric RegressionR SetupMathematical Setupk-Nearest NeighborsDecision TreesExample: Credit Card DataLecture VideoRequired ReadingThis page.Guiding IdeasHow to use k-nearest neighbors for regression through the use of the knnreg() function from the caret packageHow to use decision trees for regression through the use of the rpart() function from the rpart package.">
+  <meta name="description" content="Required ReadingGuiding IdeasNonparametric RegressionR SetupMathematical Setupk-Nearest NeighborsDecision TreesExample: Credit Card DataExample KNN: Credit Card DataExample Decision Tree: Credit Card DataLecture VideoRequired ReadingThis page.Guiding IdeasHow to use k-nearest neighbors for regression through the use of the knnreg() function from the caret packageHow to use decision trees for regression through the use of the rpart() function from the rpart package.">
 
   
   <link rel="alternate" hreflang="en-us" href="https://ssc442kirkpatrick.netlify.app/content/08-content/">
@@ -238,7 +238,7 @@
   <meta property="og:site_name" content="Data Analytics">
   <meta property="og:url" content="https://ssc442kirkpatrick.netlify.app/content/08-content/">
   <meta property="og:title" content="Nonparametric Regression | Data Analytics">
-  <meta property="og:description" content="Required ReadingGuiding IdeasNonparametric RegressionR SetupMathematical Setupk-Nearest NeighborsDecision TreesExample: Credit Card DataLecture VideoRequired ReadingThis page.Guiding IdeasHow to use k-nearest neighbors for regression through the use of the knnreg() function from the caret packageHow to use decision trees for regression through the use of the rpart() function from the rpart package."><meta property="og:image" content="https://ssc442kirkpatrick.netlify.app/img/social-image.png">
+  <meta property="og:description" content="Required ReadingGuiding IdeasNonparametric RegressionR SetupMathematical Setupk-Nearest NeighborsDecision TreesExample: Credit Card DataExample KNN: Credit Card DataExample Decision Tree: Credit Card DataLecture VideoRequired ReadingThis page.Guiding IdeasHow to use k-nearest neighbors for regression through the use of the knnreg() function from the caret packageHow to use decision trees for regression through the use of the rpart() function from the rpart package."><meta property="og:image" content="https://ssc442kirkpatrick.netlify.app/img/social-image.png">
   <meta property="twitter:image" content="https://ssc442kirkpatrick.netlify.app/img/social-image.png"><meta property="og:locale" content="en-us">
   
     
@@ -633,7 +633,11 @@
 <li><a href="#mathematical-setup">Mathematical Setup</a></li>
 <li><a href="#k-nearest-neighbors">k-Nearest Neighbors</a></li>
 <li><a href="#decision-trees">Decision Trees</a></li>
-<li><a href="#example-credit-card-data">Example: Credit Card Data</a></li>
+<li><a href="#example-credit-card-data">Example: Credit Card Data</a>
+<ul>
+<li><a href="#example-knn-credit-card-data">Example KNN: Credit Card Data</a></li>
+<li><a href="#example-decision-tree-credit-card-data">Example Decision Tree: Credit Card Data</a></li>
+</ul></li>
 <li><a href="#lecture-video">Lecture Video</a></li>
 </ul></li>
 </ul>
@@ -773,7 +777,7 @@ Y = 1 - 2x - 3x ^ 2 + 5x ^ 3 + \epsilon
 <li><strong>Model parameters</strong> are “learned” using the same data that was used to fit the model.</li>
 <li><strong>Tuning parameters</strong> are “chosen” using data not used to fit the model.</li>
 </ul>
-<p>This tuning parameter <span class="math inline">\(k\)</span> also defines the <strong>flexibility</strong> of the model. In KNN, a small value of <span class="math inline">\(k\)</span> is a flexible model, while a large value of <span class="math inline">\(k\)</span> is inflexible.<a href="#fn4" class="footnote-ref" id="fnref4"><sup>4</sup></a></p>
+<p>This tuning parameter <span class="math inline">\(k\)</span> also defines the <strong>flexibility</strong> of the model and plays a similar role as <strong>complexity</strong>, or the number of parameters, did in our linear regressions. In KNN, a small value of <span class="math inline">\(k\)</span> is a flexible model, while a large value of <span class="math inline">\(k\)</span> is inflexible.<a href="#fn4" class="footnote-ref" id="fnref4"><sup>4</sup></a></p>
 <p>Before moving to an example of tuning a KNN model, we will first introduce decision trees.</p>
 </div>
 <div id="decision-trees" class="section level2">
@@ -884,6 +888,8 @@ Right SSE
 </div>
 <div id="example-credit-card-data" class="section level2">
 <h2>Example: Credit Card Data</h2>
+<div id="example-knn-credit-card-data" class="section level3">
+<h3>Example KNN: Credit Card Data</h3>
 <pre class="r"><code># load data, coerce to tibble
 crdt = as_tibble(ISLR::Credit)</code></pre>
 <p>Again, we are using the <code>Credit</code> data form the <code>ISLR</code> package. Note: <strong>this is not real data.</strong> It has been simulated.</p>
@@ -895,99 +901,101 @@ crdt = crdt %&gt;%
 <pre class="r"><code># test-train split
 set.seed(1)
 crdt_trn_idx = sample(nrow(crdt), size = 0.8 * nrow(crdt))
-crdt_trn = crdt[crdt_trn_idx, ]
-crdt_tst = crdt[-crdt_trn_idx, ]</code></pre>
+crdt_est = crdt[crdt_trn_idx, ]
+crdt_val = crdt[-crdt_trn_idx, ]</code></pre>
 <pre class="r"><code># estimation-validation split
 crdt_est_idx = sample(nrow(crdt_trn), size = 0.8 * nrow(crdt_trn))
 crdt_est = crdt_trn[crdt_est_idx, ]
 crdt_val = crdt_trn[-crdt_est_idx, ]</code></pre>
 <p>After train-test (with 80% of the data) and estimation-validation splitting the data, we look at the train data.</p>
 <pre class="r"><code># check data
-head(crdt_trn, n = 10)</code></pre>
+head(crdt_est, n = 10)</code></pre>
 <pre><code>## # A tibble: 10 x 11
-##    Income Limit Cards   Age Education Gender  Student Married Ethnicity  Balance
-##     &lt;dbl&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt;     &lt;int&gt; &lt;fct&gt;   &lt;fct&gt;   &lt;fct&gt;   &lt;fct&gt;        &lt;int&gt;
-##  1  183.  13913     4    98        17 &quot; Male&quot; No      Yes     Caucasian     1999
-##  2   35.7  2880     2    35        15 &quot; Male&quot; No      No      African A~       0
-##  3  123.   8376     2    89        17 &quot; Male&quot; Yes     No      African A~    1259
-##  4   20.8  2672     1    70        18 &quot;Femal~ No      No      African A~       0
-##  5   39.1  5565     4    48        18 &quot;Femal~ No      Yes     Caucasian      772
-##  6   36.5  3806     2    52        13 &quot; Male&quot; No      No      African A~     188
-##  7   45.1  3762     3    80         8 &quot; Male&quot; No      Yes     Caucasian       70
-##  8   43.5  2906     4    69        11 &quot; Male&quot; No      No      Caucasian        0
-##  9   23.1  3476     2    50        15 &quot;Femal~ No      No      Caucasian      209
-## 10   53.2  4943     2    46        16 &quot;Femal~ No      Yes     Asian          382
+##    Income Limit Cards   Age Education Gender   Student Married Ethnicity Balance
+##     &lt;dbl&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt;     &lt;int&gt; &lt;fct&gt;    &lt;fct&gt;   &lt;fct&gt;   &lt;fct&gt;       &lt;int&gt;
+##  1  183.  13913     4    98        17 &quot; Male&quot;  No      Yes     Caucasian    1999
+##  2   35.7  2880     2    35        15 &quot; Male&quot;  No      No      African ~       0
+##  3  123.   8376     2    89        17 &quot; Male&quot;  Yes     No      African ~    1259
+##  4   20.8  2672     1    70        18 &quot;Female&quot; No      No      African ~       0
+##  5   39.1  5565     4    48        18 &quot;Female&quot; No      Yes     Caucasian     772
+##  6   36.5  3806     2    52        13 &quot; Male&quot;  No      No      African ~     188
+##  7   45.1  3762     3    80         8 &quot; Male&quot;  No      Yes     Caucasian      70
+##  8   43.5  2906     4    69        11 &quot; Male&quot;  No      No      Caucasian       0
+##  9   23.1  3476     2    50        15 &quot;Female&quot; No      No      Caucasian     209
+## 10   53.2  4943     2    46        16 &quot;Female&quot; No      Yes     Asian         382
 ## # ... with 1 more variable: Rating &lt;int&gt;</code></pre>
 <p>In this simulated data, we would like to predict the <code>Rating</code> variable. For now, let’s try to use only demographic information as predictors.<a href="#fn9" class="footnote-ref" id="fnref9"><sup>9</sup></a> In particular, let’s focus on <code>Age</code> (numeric), <code>Gender</code> (categorical), and <code>Student</code> (categorical).</p>
 <p>Let’s fit KNN models with these features, and various values of <span class="math inline">\(k\)</span>. To do so, we use the <code>knnreg()</code> function from the <code>caret</code> package.<a href="#fn10" class="footnote-ref" id="fnref10"><sup>10</sup></a> Use <code>?knnreg</code> for documentation and details.</p>
 <pre class="r"><code>crdt_knn_01 = knnreg(Rating ~ Age + Gender + Student, data = crdt_est, k = 1)
 crdt_knn_10 = knnreg(Rating ~ Age + Gender + Student, data = crdt_est, k = 10)
-crdt_knn_25 = knnreg(Rating ~ Age + Gender + Student, data = crdt_est, k = 25)</code></pre>
+crdt_knn_25 = knnreg(Rating ~ Age + Gender + Student, data = crdt_est, k = 25)
+crdt_knn_100= knnreg(Rating ~ Age + Gender + Student, data = crdt_est, k = 100)</code></pre>
 <p>Here, we fit three models to the estimation data. We supply the variables that will be used as features as we would with <code>lm()</code>. We also specify how many neighbors to consider via the <code>k</code> argument.</p>
 <p>But wait a second, what is the distance from non-student to student? From male to female? In other words, how does KNN handle categorical variables? It doesn’t! Like <code>lm()</code> it creates dummy variables under the hood.</p>
 <p><strong>Note:</strong> To this point, and until we specify otherwise, we will always coerce categorical variables to be factor variables in R. We will then let modeling functions such as <code>lm()</code> or <code>knnreg()</code> deal with the creation of dummy variables internally.</p>
 <pre class="r"><code>head(crdt_knn_10$learn$X)</code></pre>
 <pre><code>##   Age GenderFemale StudentYes
-## 1  30            0          0
-## 2  25            0          0
-## 3  44            0          0
-## 4  73            1          0
-## 5  44            0          1
-## 6  71            0          0</code></pre>
-<p>Once these dummy variables have been created, we have a numeric <span class="math inline">\(X\)</span> matrix, which makes distance calculations easy.<a href="#fn11" class="footnote-ref" id="fnref11"><sup>11</sup></a> For example, the distance between the 3rd and 4th observation here is 29.017.</p>
+## 1  98            0          0
+## 2  35            0          0
+## 3  89            0          1
+## 4  70            1          0
+## 5  48            1          0
+## 6  52            0          0</code></pre>
+<p>Once these dummy variables have been created, we have a numeric <span class="math inline">\(X\)</span> matrix, which makes distance calculations easy.<a href="#fn11" class="footnote-ref" id="fnref11"><sup>11</sup></a> For example, the distance between the 3rd and 4th observation here is 19.053.</p>
 <pre class="r"><code>dist(head(crdt_knn_10$learn$X))</code></pre>
 <pre><code>##           1         2         3         4         5
-## 2  5.000000                                        
-## 3 14.000000 19.000000                              
-## 4 43.011626 48.010416 29.017236                    
-## 5 14.035669 19.026298  1.000000 29.034462          
-## 6 41.000000 46.000000 27.000000  2.236068 27.018512</code></pre>
+## 2 63.000000                                        
+## 3  9.055385 54.009258                              
+## 4 28.017851 35.014283 19.052559                    
+## 5 50.009999 13.038405 41.024383 22.000000          
+## 6 46.000000 17.000000 37.013511 18.027756  4.123106</code></pre>
 <pre class="r"><code>sqrt(sum((crdt_knn_10$learn$X[3, ] - crdt_knn_10$learn$X[4, ]) ^ 2))</code></pre>
-<pre><code>## [1] 29.01724</code></pre>
+<pre><code>## [1] 19.05256</code></pre>
 <p>What about interactions? Basically, you’d have to create them the same way as you do for linear models. We only mention this to contrast with trees in a bit.</p>
 <p>OK, so of these three models, which one performs best? (Where for now, “best” is obtaining the lowest validation RMSE.)</p>
 <p>First, note that we return to the <code>predict()</code> function as we did with <code>lm()</code>.</p>
 <pre class="r"><code>predict(crdt_knn_10, crdt_val[1:5, ])</code></pre>
-<pre><code>## [1] 337.7857 356.0000 295.7692 360.8182 306.8000</code></pre>
+<pre><code>## [1] 334.9091 346.0000 459.3333 342.0909 450.8000</code></pre>
 <p>This uses the 10-NN (10 nearest neighbors) model to make predictions (estimate the regression function) given the first five observations of the validation data. <strong>Note:</strong> We did not name the second argument to <code>predict()</code>. Again, you’ve been warned.</p>
 <p>Now that we know how to use the <code>predict()</code> function, let’s calculate the validation RMSE for each of these models.</p>
 <pre class="r"><code>knn_mod_list = list(
   crdt_knn_01 = knnreg(Rating ~ Age + Gender + Student, data = crdt_est, k = 1),
   crdt_knn_10 = knnreg(Rating ~ Age + Gender + Student, data = crdt_est, k = 10),
-  crdt_knn_25 = knnreg(Rating ~ Age + Gender + Student, data = crdt_est, k = 25)
+  crdt_knn_25 = knnreg(Rating ~ Age + Gender + Student, data = crdt_est, k = 25),
+  crdt_knn_100= knnreg(Rating ~ Age + Gender + Student, data = crdt_est, k = 100)
 )</code></pre>
 <pre class="r"><code>knn_val_pred = lapply(knn_mod_list, predict, crdt_val)</code></pre>
 <pre class="r"><code>calc_rmse = function(actual, predicted) {
   sqrt(mean((actual - predicted) ^ 2))
 }</code></pre>
 <pre class="r"><code>sapply(knn_val_pred, calc_rmse, crdt_val$Rating)</code></pre>
-<pre><code>## crdt_knn_01 crdt_knn_10 crdt_knn_25 
-##    182.3469    149.2172    138.6527</code></pre>
+<pre><code>##  crdt_knn_01  crdt_knn_10  crdt_knn_25 crdt_knn_100 
+##     163.9868     142.2242     135.3838     143.7588</code></pre>
 <p>So, of these three values of <span class="math inline">\(k\)</span>, the model with <span class="math inline">\(k = 25\)</span> achieves the lowest validation RMSE.</p>
 <p>This process, fitting a number of models with different values of the <em>tuning parameter</em>, in this case <span class="math inline">\(k\)</span>, and then finding the “best” tuning parameter value based on performance on the validation data is called <strong>tuning</strong>. In practice, we would likely consider more values of <span class="math inline">\(k\)</span>, but this should illustrate the point.</p>
 <p>In the next lectures, we will discuss the details of model flexibility and model tuning, and how these concepts are tied together. However, even though we will present some theory behind this relationship, in practice, <strong>you must tune and validate your models</strong>. There is no theory that will inform you ahead of tuning and validation which model will be the best. By teaching you <em>how</em> to fit KNN models in R and how to calculate validation RMSE, you already have all a set of tools you can use to find a good model.</p>
+<p>Tuning isn’t necessarily something we’ve never done before – in our linear regression section, we fit our model using more and more variables (and transformations of those variables), which allowed more <em>flexibility</em> but, as we saw, resulted in over-fitting. The same principle applies to KNN when we allow <span class="math inline">\(k\)</span> to decrease towards 1.</p>
+</div>
+<div id="example-decision-tree-credit-card-data" class="section level3">
+<h3>Example Decision Tree: Credit Card Data</h3>
 <p>Let’s turn to decision trees which we will fit with the <code>rpart()</code> function from the <code>rpart</code> package. Use <code>?rpart</code> and <code>?rpart.control</code> for documentation and details. In particular, <code>?rpart.control</code> will detail the many tuning parameters of this implementation of decision tree models in R.</p>
 <p>We’ll start by using default tuning parameters.</p>
 <pre class="r"><code>crdt_tree = rpart(Rating ~ Age + Gender + Student, data = crdt_est)</code></pre>
 <pre class="r"><code>crdt_tree</code></pre>
-<pre><code>## n= 256 
+<pre><code>## n= 320 
 ## 
 ## node), split, n, deviance, yval
 ##       * denotes terminal node
 ## 
-##  1) root 256 6667400.0 357.0781  
-##    2) Age&lt; 82.5 242 5865419.0 349.3719  
-##      4) Age&gt;=69.5 52 1040678.0 313.0385 *
-##      5) Age&lt; 69.5 190 4737307.0 359.3158  
-##       10) Age&lt; 38.5 55  700013.2 326.6000 *
-##       11) Age&gt;=38.5 135 3954443.0 372.6444  
-##         22) Student=Yes 14  180764.4 297.7857 *
-##         23) Student=No 121 3686148.0 381.3058  
-##           46) Age&gt;=50.5 64 1881299.0 359.2344  
-##             92) Age&lt; 53.5 9   48528.0 278.3333 *
-##             93) Age&gt;=53.5 55 1764228.0 372.4727 *
-##           47) Age&lt; 50.5 57 1738665.0 406.0877 *
-##    3) Age&gt;=82.5 14  539190.9 490.2857 *</code></pre>
+##  1) root 320 7922208.00 355.2781  
+##    2) Age&lt; 82.5 305 7065419.00 348.3639  
+##      4) Age&gt;=58.5 123 3041404.00 333.0488  
+##        8) Age&lt; 61.5 12   62253.67 253.8333 *
+##        9) Age&gt;=61.5 111 2895708.00 341.6126 *
+##      5) Age&lt; 58.5 182 3975667.00 358.7143  
+##       10) Age&lt; 38.5 64  828707.90 324.4531 *
+##       11) Age&gt;=38.5 118 3031089.00 377.2966 *
+##    3) Age&gt;=82.5 15  545731.70 495.8667 *</code></pre>
 <p>Above we see the resulting tree printed, however, this is difficult to read. Instead, we use the <code>rpart.plot()</code> function from the <code>rpart.plot</code> package to better visualize the tree.</p>
 <pre class="r"><code>rpart.plot(crdt_tree)</code></pre>
 <p><img src="/content/08-content_files/figure-html/unnamed-chunk-40-1.png" width="672" style="display: block; margin: auto;" /></p>
@@ -1023,7 +1031,7 @@ crdt_knn_25 = knnreg(Rating ~ Age + Gender + Student, data = crdt_est, k = 25)</
 <pre class="r"><code>tree_val_pred = lapply(tree_mod_list, predict, crdt_val)</code></pre>
 <pre class="r"><code>sapply(tree_val_pred, calc_rmse, crdt_val$Rating)</code></pre>
 <pre><code>## crdt_tree_0000 crdt_tree_0001 crdt_tree_0010 crdt_tree_0100 
-##       156.3527       155.4262       151.9081       140.0806</code></pre>
+##       154.3480       154.0967       139.5584       142.7289</code></pre>
 <p>Here we see the least flexible model, with <code>cp = 0.100</code>, performs best.</p>
 <p>Note that by only using these three features, we are severely limiting our models performance. Let’s quickly assess using all available predictors.</p>
 <pre class="r"><code>crdt_tree_all = rpart(Rating ~ ., data = crdt_est)</code></pre>
@@ -1034,13 +1042,14 @@ crdt_knn_25 = knnreg(Rating ~ Age + Gender + Student, data = crdt_est, k = 25)</
   actual = crdt_val$Rating,
   predicted = predict(crdt_tree_all, crdt_val)
 )</code></pre>
-<pre><code>## [1] 28.8498</code></pre>
+<pre><code>## [1] 32.83517</code></pre>
 <p>This model performs much better. You should try something similar with the KNN models above. Also, consider comparing this result to results from last lectures using linear models.</p>
 <p>Notice that we’ve been using that trusty <code>predict()</code> function here again.</p>
 <pre class="r"><code>predict(crdt_tree_all, crdt_val[1:5, ])</code></pre>
 <pre><code>##        1        2        3        4        5 
-## 292.8182 467.5152 467.5152 467.5152 772.4000</code></pre>
+## 565.4643 242.7317 467.4390 242.7317 467.4390</code></pre>
 <p>What does this code do? It estimates the mean <code>Rating</code> given the feature information (the “x” values) from the first five observations from the validation data using a decision tree model with default tuning parameters. Hopefully a theme is emerging.</p>
+</div>
 </div>
 <div id="lecture-video" class="section level2">
 <h2>Lecture Video</h2>

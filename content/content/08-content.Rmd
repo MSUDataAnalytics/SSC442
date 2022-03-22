@@ -261,7 +261,7 @@ This $k$, the number of neighbors, is an example of a **tuning parameter**. Inst
 - **Model parameters** are "learned" using the same data that was used to fit the model.
 - **Tuning parameters** are "chosen" using data not used to fit the model.
 
-This tuning parameter $k$ also defines the **flexibility** of the model. In KNN, a small value of $k$ is a flexible model, while a large value of $k$ is inflexible.^[Many texts use the term complex instead of flexible. We feel this is confusing as complex is often associated with difficult. KNN with $k = 1$ is actually a very simple model to understand, but it is very flexible as defined here.]
+This tuning parameter $k$ also defines the **flexibility** of the model and plays a similar role as **complexity**, or the number of parameters, did in our linear regressions. In KNN, a small value of $k$ is a flexible model, while a large value of $k$ is inflexible.^[Many texts use the term complex instead of flexible. We feel this is confusing as complex is often associated with difficult. KNN with $k = 1$ is actually a very simple model to understand, but it is very flexible as defined here.]
 
 Before moving to an example of tuning a KNN model, we will first introduce decision trees.
 
@@ -463,6 +463,8 @@ We see that as `minsplit` *decreases*, model flexibility **increases**. By allow
 
 ## Example: Credit Card Data
 
+### Example KNN: Credit Card Data
+
 ```{r}
 # load data, coerce to tibble
 crdt = as_tibble(ISLR::Credit)
@@ -483,11 +485,11 @@ We remove the `ID` variable as it should have no predictive power. We also move 
 # test-train split
 set.seed(1)
 crdt_trn_idx = sample(nrow(crdt), size = 0.8 * nrow(crdt))
-crdt_trn = crdt[crdt_trn_idx, ]
-crdt_tst = crdt[-crdt_trn_idx, ]
+crdt_est = crdt[crdt_trn_idx, ]
+crdt_val = crdt[-crdt_trn_idx, ]
 ```
 
-```{r}
+```{r, eval = FALSE}
 # estimation-validation split
 crdt_est_idx = sample(nrow(crdt_trn), size = 0.8 * nrow(crdt_trn))
 crdt_est = crdt_trn[crdt_est_idx, ]
@@ -498,7 +500,7 @@ After train-test (with 80% of the data) and estimation-validation splitting the 
 
 ```{r}
 # check data
-head(crdt_trn, n = 10)
+head(crdt_est, n = 10)
 ```
 
 In this simulated data, we would like to predict the `Rating` variable. For now, let's try to use only demographic information as predictors.^[There is a question of whether or not we *should* use these variables. For example, should men and women be given different ratings when all other variables are the same? Using the `Gender` variable allows for this to happen. Also, you might think, just don't use the `Gender` variable. Unfortunately, it's not that easy. There is an increasingly popular field of study centered around these ideas called [machine learning **fairness**](https://en.wikipedia.org/wiki/Fairness_(machine_learning)).] In particular, let's focus on `Age` (numeric), `Gender` (categorical), and `Student` (categorical).
@@ -509,6 +511,7 @@ Let's fit KNN models with these features, and various values of $k$. To do so, w
 crdt_knn_01 = knnreg(Rating ~ Age + Gender + Student, data = crdt_est, k = 1)
 crdt_knn_10 = knnreg(Rating ~ Age + Gender + Student, data = crdt_est, k = 10)
 crdt_knn_25 = knnreg(Rating ~ Age + Gender + Student, data = crdt_est, k = 25)
+crdt_knn_100= knnreg(Rating ~ Age + Gender + Student, data = crdt_est, k = 100)
 ```
 
 Here, we fit three models to the estimation data. We supply the variables that will be used as features as we would with `lm()`. We also specify how many neighbors to consider via the `k` argument.
@@ -549,7 +552,8 @@ Now that we know how to use the `predict()` function, let's calculate the valida
 knn_mod_list = list(
   crdt_knn_01 = knnreg(Rating ~ Age + Gender + Student, data = crdt_est, k = 1),
   crdt_knn_10 = knnreg(Rating ~ Age + Gender + Student, data = crdt_est, k = 10),
-  crdt_knn_25 = knnreg(Rating ~ Age + Gender + Student, data = crdt_est, k = 25)
+  crdt_knn_25 = knnreg(Rating ~ Age + Gender + Student, data = crdt_est, k = 25),
+  crdt_knn_100= knnreg(Rating ~ Age + Gender + Student, data = crdt_est, k = 100)
 )
 ```
 
@@ -572,6 +576,11 @@ So, of these three values of $k$, the model with $k = 25$ achieves the lowest va
 This process, fitting a number of models with different values of the *tuning parameter*, in this case $k$, and then finding the "best" tuning parameter value based on performance on the validation data is called **tuning**. In practice, we would likely consider more values of $k$, but this should illustrate the point.
 
 In the next lectures, we will discuss the details of model flexibility and model tuning, and how these concepts are tied together. However, even though we will present some theory behind this relationship, in practice, **you must tune and validate your models**. There is no theory that will inform you ahead of tuning and validation which model will be the best. By teaching you *how* to fit KNN models in R and how to calculate validation RMSE, you already have all a set of tools you can use to find a good model.
+
+Tuning isn't necessarily something we've never done before -- in our linear regression section, we fit our model using more and more variables (and transformations of those variables), which allowed more *flexibility* but, as we saw, resulted in over-fitting. The same principle applies to KNN when we allow $k$ to decrease towards 1.
+
+
+### Example Decision Tree: Credit Card Data 
 
 Let's turn to decision trees which we will fit with the `rpart()` function from the `rpart` package. Use `?rpart` and `?rpart.control` for documentation and details. In particular, `?rpart.control` will detail the many tuning parameters of this implementation of decision tree models in R.
 

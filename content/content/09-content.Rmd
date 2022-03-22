@@ -31,8 +31,6 @@ knitr::opts_chunk$set(echo = TRUE, fig.align = "center", cache = TRUE, autodep =
 
 This lecture will begin to dig into some theoretical details of estimating regression functions, in particular how the **bias-variance tradeoff** helps explain the relationship between **model flexibility** and the errors a model makes.
 
-This content is currently **under construction**. You can expect it to be a lot less polished than other sections.
-
 Don't freak out if this seems mathematically overwhelming. We'll walk through relatively slowly. It's not super important to follow the nitty-gritty details; but the broad takeaways are quite important.
 
 ## R Setup and Source
@@ -156,7 +154,7 @@ $$
 
 In a perfect world, we would be able to find some $\hat{f}$ which is **unbiased**, that is $\text{bias}\left(\hat{f}(x) \right) = 0$, which also has low variance. In practice, this isn't always possible.
 
-It turns out, there is a **bias-variance tradeoff**. That is, often, the more bias in our estimation, the lesser the variance. Similarly, less variance is often accompanied by more bias. Flexible models tend to be unbiased, but highly variable. Simple models are often extremely biased, but have low variance.
+It turns out, there is a **bias-variance tradeoff**. That is, often, the more bias in our estimation, the lesser the variance. Similarly, less variance is often accompanied by more bias. <span style="color: red;">Flexible models tend to be unbiased, but highly variable. Simple models are often extremely biased, but have low variance.</span>
 
 In the context of regression, models are biased when:
 
@@ -166,7 +164,7 @@ In the context of regression, models are biased when:
 In the context of regression, models are variable when:
 
 - Parametric: The form of the model incorporates too many variables, or the form of the relationship is too flexible. For example, a parametric model assumes a cubic relationship, but the true relationship is linear.
-- Non-parametric: The model does not provide enough smoothing. It is very, "wiggly."
+- Non-parametric: The model does not provide enough smoothing. It is very, "wiggly." [Recall our KNN model example from Content 08](https://ssc442kirkpatrick.netlify.app/content/08-content/#k-nearest-neighbors-1)
 
 So for us, to select a model that appropriately balances the tradeoff between bias and variance, and thus minimizes the reducible error, we need to select a model of the appropriate flexibility for the data.
 
@@ -227,7 +225,7 @@ epe = b + v + bayes
 
 plot(x, b, type = "l", ylim = c(0, 10), col = "dodgerblue", lwd = 2, lty = 3,
      xlab = "Model flexibility", ylab = "Error", axes = FALSE,
-     main = "Decomposition of Prediction Error")
+     main = "Somewhat Neutral")
 axis(1, labels = FALSE)
 axis(2, labels = FALSE)
 grid()
@@ -389,7 +387,7 @@ fit_2 = lm(y ~ poly(x, degree = 2), data = sim_data)
 fit_9 = lm(y ~ poly(x, degree = 9), data = sim_data)
 ```
 
-Note that technically we're being lazy and using orthogonal polynomials, but the fitted values are the same, so this makes no difference for our purposes.
+Note that technically we're being lazy and using orthogonal polynomials, but the fitted values are the same, so this makes no difference for our purposes. These could be KNN, or decision trees just the same - the principle still applies.
 
 Plotting these four trained models, we see that the zero predictor model does very poorly. The first degree model is reasonable, but we can see that the second degree model fits much better. The ninth degree model seem rather wild.
 

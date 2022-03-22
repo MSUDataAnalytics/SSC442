@@ -661,7 +661,6 @@
 <div id="the-biasvariance-tradeoff" class="section level1">
 <h1>The Bias–Variance Tradeoff</h1>
 <p>This lecture will begin to dig into some theoretical details of estimating regression functions, in particular how the <strong>bias-variance tradeoff</strong> helps explain the relationship between <strong>model flexibility</strong> and the errors a model makes.</p>
-<p>This content is currently <strong>under construction</strong>. You can expect it to be a lot less polished than other sections.</p>
 <p>Don’t freak out if this seems mathematically overwhelming. We’ll walk through relatively slowly. It’s not super important to follow the nitty-gritty details; but the broad takeaways are quite important.</p>
 <div id="r-setup-and-source" class="section level2">
 <h2>R Setup and Source</h2>
@@ -753,7 +752,7 @@ f(x) = \text{median}(Y \mid X = x)
 \text{MSE}\left(f(x), \hat{f}(x)\right) = \text{bias}^2 \left(\hat{f}(x) \right) + \text{var} \left(\hat{f}(x) \right)
 \]</span></p>
 <p>In a perfect world, we would be able to find some <span class="math inline">\(\hat{f}\)</span> which is <strong>unbiased</strong>, that is <span class="math inline">\(\text{bias}\left(\hat{f}(x) \right) = 0\)</span>, which also has low variance. In practice, this isn’t always possible.</p>
-<p>It turns out, there is a <strong>bias-variance tradeoff</strong>. That is, often, the more bias in our estimation, the lesser the variance. Similarly, less variance is often accompanied by more bias. Flexible models tend to be unbiased, but highly variable. Simple models are often extremely biased, but have low variance.</p>
+<p>It turns out, there is a <strong>bias-variance tradeoff</strong>. That is, often, the more bias in our estimation, the lesser the variance. Similarly, less variance is often accompanied by more bias. <span style="color: red;">Flexible models tend to be unbiased, but highly variable. Simple models are often extremely biased, but have low variance.</span></p>
 <p>In the context of regression, models are biased when:</p>
 <ul>
 <li>Parametric: The form of the model <a href="https://en.wikipedia.org/wiki/Omitted-variable_bias">does not incorporate all the necessary variables</a>, or the form of the relationship is too simple. For example, a parametric model assumes a linear relationship, but the true relationship is quadratic.</li>
@@ -762,7 +761,7 @@ f(x) = \text{median}(Y \mid X = x)
 <p>In the context of regression, models are variable when:</p>
 <ul>
 <li>Parametric: The form of the model incorporates too many variables, or the form of the relationship is too flexible. For example, a parametric model assumes a cubic relationship, but the true relationship is linear.</li>
-<li>Non-parametric: The model does not provide enough smoothing. It is very, “wiggly.”</li>
+<li>Non-parametric: The model does not provide enough smoothing. It is very, “wiggly.” <a href="https://ssc442kirkpatrick.netlify.app/content/08-content/#k-nearest-neighbors-1">Recall our KNN model example from Content 08</a></li>
 </ul>
 <p>So for us, to select a model that appropriately balances the tradeoff between bias and variance, and thus minimizes the reducible error, we need to select a model of the appropriate flexibility for the data.</p>
 <p>Recall that when fitting models, we’ve seen that train RMSE decreases as model flexibility is increasing. (Technically it is non-increasing.) For validation RMSE, we expect to see a U-shaped curve. Importantly, validation RMSE decreases, until a certain flexibility, then begins to increase.</p>
@@ -839,7 +838,7 @@ sim_data = gen_sim_data(f)</code></pre>
 fit_1 = lm(y ~ poly(x, degree = 1), data = sim_data)
 fit_2 = lm(y ~ poly(x, degree = 2), data = sim_data)
 fit_9 = lm(y ~ poly(x, degree = 9), data = sim_data)</code></pre>
-<p>Note that technically we’re being lazy and using orthogonal polynomials, but the fitted values are the same, so this makes no difference for our purposes.</p>
+<p>Note that technically we’re being lazy and using orthogonal polynomials, but the fitted values are the same, so this makes no difference for our purposes. These could be KNN, or decision trees just the same - the principle still applies.</p>
 <p>Plotting these four trained models, we see that the zero predictor model does very poorly. The first degree model is reasonable, but we can see that the second degree model fits much better. The ninth degree model seem rather wild.</p>
 <p><img src="/content/09-content_files/figure-html/unnamed-chunk-9-1.png" width="864" style="display: block; margin: auto;" /></p>
 <p>The following three plots were created using three additional simulated datasets. The zero predictor and ninth degree polynomial were fit to each.</p>
