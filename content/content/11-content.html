@@ -1,10 +1,7 @@
 ---
 title: "Data Wrangling"
 linktitle: "11: Data Wrangling"
-date: "2022-04-05"
 read_date: "2022-04-05"
-draft: false
-publishDate: "2022-03-28"
 menu:
   content:
     parent: Course content
@@ -15,21 +12,26 @@ output:
     toc: true
 ---
 
+<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
 
 <div id="TOC">
 <ul>
-<li><a href="#required-reading">Required Reading</a><ul>
+<li><a href="#required-reading">Required Reading</a>
+<ul>
 <li><a href="#guiding-questions">Guiding Questions</a></li>
 </ul></li>
 <li><a href="#introduction-to-data-wrangling">Introduction to data wrangling</a></li>
-<li><a href="#reshaping-data">Reshaping data</a><ul>
+<li><a href="#reshaping-data">Reshaping data</a>
+<ul>
 <li><a href="#gather"><code>gather</code></a></li>
 <li><a href="#spread"><code>spread</code></a></li>
 <li><a href="#separate"><code>separate</code></a></li>
 <li><a href="#unite"><code>unite</code></a></li>
 </ul></li>
-<li><a href="#joining-tables">Joining tables</a><ul>
-<li><a href="#joins">Joins</a><ul>
+<li><a href="#joining-tables">Joining tables</a>
+<ul>
+<li><a href="#joins">Joins</a>
+<ul>
 <li><a href="#left-join">Left join</a></li>
 <li><a href="#right-join">Right join</a></li>
 <li><a href="#inner-join">Inner join</a></li>
@@ -37,11 +39,13 @@ output:
 <li><a href="#semi-join">Semi join</a></li>
 <li><a href="#anti-join">Anti join</a></li>
 </ul></li>
-<li><a href="#binding">Binding</a><ul>
+<li><a href="#binding">Binding</a>
+<ul>
 <li><a href="#binding-columns">Binding columns</a></li>
 <li><a href="#binding-by-rows">Binding by rows</a></li>
 </ul></li>
-<li><a href="#set-operators">Set operators</a><ul>
+<li><a href="#set-operators">Set operators</a>
+<ul>
 <li><a href="#intersect">Intersect</a></li>
 <li><a href="#union">Union</a></li>
 <li><a href="#setdiff"><code>setdiff</code></a></li>
@@ -49,7 +53,8 @@ output:
 </ul></li>
 <li><a href="#a-note-about-merging-and-dupliacted-rows">A note about merging and dupliacted rows</a></li>
 </ul></li>
-<li><a href="#parsing-dates-and-times">Parsing dates and times</a><ul>
+<li><a href="#parsing-dates-and-times">Parsing dates and times</a>
+<ul>
 <li><a href="#the-date-data-type">The date data type</a></li>
 <li><a href="#lubridate">The lubridate package</a></li>
 </ul></li>
@@ -155,10 +160,10 @@ filename &lt;-  file.path(path, filename)
 raw_dat &lt;- read_csv(filename)
 dplyr::select(raw_dat, 1:5)</code></pre>
 <pre><code>## # A tibble: 2 x 5
-##   country  `1960_fertility` `1960_life_expec~ `1961_fertility` `1961_life_expec~
-##   &lt;chr&gt;               &lt;dbl&gt;             &lt;dbl&gt;            &lt;dbl&gt;             &lt;dbl&gt;
-## 1 Germany              2.41              69.3             2.44              69.8
-## 2 South K~             6.16              53.0             5.99              53.8</code></pre>
+##   country    `1960_fertility` `1960_life_exp~` `1961_fertility` `1961_life_exp~`
+##   &lt;chr&gt;                 &lt;dbl&gt;            &lt;dbl&gt;            &lt;dbl&gt;            &lt;dbl&gt;
+## 1 Germany                2.41             69.3             2.44             69.8
+## 2 South Kor~             6.16             53.0             5.99             53.8</code></pre>
 <p>First, note that the data is in wide format. Second, notice that this table includes values for two variables, fertility and life expectancy, with the column name encoding which column represents which variable. Encoding information in the column names is not recommended but, unfortunately, it is quite common. We will put our wrangling skills to work to extract this information and store it in a tidy fashion.</p>
 <p>We can start the data wrangling with the <code>gather</code> function, but we should no longer use the column name <code>year</code> for the new column since it also contains the variable type. We will call it <code>key</code>, the default, for now:</p>
 <pre class="r"><code>dat &lt;- raw_dat %&gt;% gather(key, value, -country)
@@ -766,17 +771,17 @@ In these cases, examining the entire vector of dates will help you determine wha
 <pre><code>## [1] &quot;2001-02-09&quot;</code></pre>
 <p>The <strong>lubridate</strong> package is also useful for dealing with times. In R base, you can get the current time typing <code>Sys.time()</code>. The <strong>lubridate</strong> package provides a slightly more advanced function, <code>now</code>, that permits you to define the time zone:</p>
 <pre class="r"><code>now()</code></pre>
-<pre><code>## [1] &quot;2022-01-06 13:03:02 EST&quot;</code></pre>
+<pre><code>## [1] &quot;2022-03-23 06:53:58 EDT&quot;</code></pre>
 <pre class="r"><code>now(&quot;GMT&quot;)</code></pre>
-<pre><code>## [1] &quot;2022-01-06 18:03:02 GMT&quot;</code></pre>
+<pre><code>## [1] &quot;2022-03-23 10:53:58 GMT&quot;</code></pre>
 <p>You can see all the available time zones with <code>OlsonNames()</code> function.</p>
 <p>We can also extract hours, minutes, and seconds:</p>
 <pre class="r"><code>now() %&gt;% hour()</code></pre>
-<pre><code>## [1] 13</code></pre>
+<pre><code>## [1] 6</code></pre>
 <pre class="r"><code>now() %&gt;% minute()</code></pre>
-<pre><code>## [1] 3</code></pre>
+<pre><code>## [1] 53</code></pre>
 <pre class="r"><code>now() %&gt;% second()</code></pre>
-<pre><code>## [1] 2.683261</code></pre>
+<pre><code>## [1] 58.22048</code></pre>
 <p>The package also includes a function to parse strings into times as well as parsers for time objects that include dates:</p>
 <pre class="r"><code>x &lt;- c(&quot;12:34:56&quot;)
 hms(x)</code></pre>

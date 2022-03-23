@@ -4185,6 +4185,1586 @@ case_when(x &amp;lt; 0 ~ &amp;quot;Negative&amp;quot;,
     </item>
     
     <item>
+      <title>Data Wrangling</title>
+      <link>https://ssc442kirkpatrick.netlify.app/content/11-content/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>https://ssc442kirkpatrick.netlify.app/content/11-content/</guid>
+      <description>
+&lt;script src=&#34;https://ssc442kirkpatrick.netlify.app/rmarkdown-libs/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
+
+&lt;div id=&#34;TOC&#34;&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#required-reading&#34;&gt;Required Reading&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#guiding-questions&#34;&gt;Guiding Questions&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#introduction-to-data-wrangling&#34;&gt;Introduction to data wrangling&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#reshaping-data&#34;&gt;Reshaping data&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#gather&#34;&gt;&lt;code&gt;gather&lt;/code&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#spread&#34;&gt;&lt;code&gt;spread&lt;/code&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#separate&#34;&gt;&lt;code&gt;separate&lt;/code&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#unite&#34;&gt;&lt;code&gt;unite&lt;/code&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#joining-tables&#34;&gt;Joining tables&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#joins&#34;&gt;Joins&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#left-join&#34;&gt;Left join&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#right-join&#34;&gt;Right join&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#inner-join&#34;&gt;Inner join&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#full-join&#34;&gt;Full join&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#semi-join&#34;&gt;Semi join&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#anti-join&#34;&gt;Anti join&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#binding&#34;&gt;Binding&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#binding-columns&#34;&gt;Binding columns&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#binding-by-rows&#34;&gt;Binding by rows&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#set-operators&#34;&gt;Set operators&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#intersect&#34;&gt;Intersect&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#union&#34;&gt;Union&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#setdiff&#34;&gt;&lt;code&gt;setdiff&lt;/code&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#setequal&#34;&gt;&lt;code&gt;setequal&lt;/code&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#a-note-about-merging-and-dupliacted-rows&#34;&gt;A note about merging and dupliacted rows&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#parsing-dates-and-times&#34;&gt;Parsing dates and times&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#the-date-data-type&#34;&gt;The date data type&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#lubridate&#34;&gt;The lubridate package&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+
+&lt;div id=&#34;required-reading&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Required Reading&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;This page.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div id=&#34;guiding-questions&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Guiding Questions&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;How can we reshape data into a useable &lt;code&gt;tidy&lt;/code&gt; form?&lt;/li&gt;
+&lt;li&gt;What is a &lt;em&gt;join&lt;/em&gt; and why is it a common data wrangling maneuver?&lt;/li&gt;
+&lt;li&gt;What is a &lt;em&gt;primary key&lt;/em&gt; and why is it important to think about our data in this way?&lt;/li&gt;
+&lt;li&gt;How do we deal with messy date variables?&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;introduction-to-data-wrangling&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Introduction to data wrangling&lt;/h1&gt;
+&lt;p&gt;Many of the datasets used in this class have been made available to you as &lt;code&gt;R&lt;/code&gt; objects, specifically as data frames. The US murders data, the reported heights data, and the Gapminder data were all data frames. Furthermore, much of the data is available in what is referred to as &lt;code&gt;tidy&lt;/code&gt; form. The tidyverse packages and functions assume that the data is &lt;code&gt;tidy&lt;/code&gt; and this assumption is a big part of the reason these packages work so well together.&lt;/p&gt;
+&lt;p&gt;However, very rarely in a data science project is data easily available as part of a package. People did quite a bit of work “behind the scenes” to get the original raw data into the &lt;em&gt;tidy&lt;/em&gt; tables. Much more typical is for the data to be in a file, a database, or extracted from a document, including web pages, tweets, or PDFs. In these cases, the first step is to import the data into &lt;code&gt;R&lt;/code&gt; and, when using the &lt;strong&gt;tidyverse&lt;/strong&gt;, tidy up the data. This initial step in the data analysis process usually involves several, often complicated, steps to convert data from its raw form to the &lt;em&gt;tidy&lt;/em&gt; form that greatly facilitates the rest of the analysis. We refer to this process as &lt;code&gt;data wrangling&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;Here we cover several common steps of the data wrangling process including tidying data, string processing, html parsing, working with dates and times, and text mining. Rarely are &lt;strong&gt;all&lt;/strong&gt; these wrangling steps necessary in a single analysis, but data scientists will likely face them all at some point.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;reshaping-data&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Reshaping data&lt;/h1&gt;
+&lt;p&gt;As we have seen through the class, having data in &lt;em&gt;tidy&lt;/em&gt; format is what makes the tidyverse flow. After the first step in the data analysis process, importing data, a common next step is to reshape the data into a form that facilitates the rest of the analysis. The &lt;strong&gt;tidyr&lt;/strong&gt; package includes several functions that are useful for tidying data.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(tidyverse)
+library(dslabs)
+path &amp;lt;- system.file(&amp;quot;extdata&amp;quot;, package=&amp;quot;dslabs&amp;quot;)
+filename &amp;lt;- file.path(path, &amp;quot;fertility-two-countries-example.csv&amp;quot;)
+wide_data &amp;lt;- read_csv(filename)&lt;/code&gt;&lt;/pre&gt;
+&lt;div id=&#34;gather&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;&lt;code&gt;gather&lt;/code&gt;&lt;/h2&gt;
+&lt;p&gt;One of the most used functions in the &lt;strong&gt;tidyr&lt;/strong&gt; package is &lt;code&gt;gather&lt;/code&gt;, which is useful for converting wide data into tidy data.&lt;/p&gt;
+&lt;p&gt;As with most tidyverse functions, the &lt;code&gt;gather&lt;/code&gt; function’s first argument is the data frame that will be converted. Here we want to reshape the &lt;code&gt;wide_data&lt;/code&gt; dataset so that each row represents a fertility observation, which implies we need three columns to store the year, country, and the observed value. In its current form, data from different years are in different columns with the year values stored in the column names. Through the second and third argument we will tell &lt;code&gt;gather&lt;/code&gt; the column names we want to assign to the columns containing the current column names and observations, respectively. In this case a good choice for these two arguments would be &lt;code&gt;year&lt;/code&gt; and &lt;code&gt;fertility&lt;/code&gt;. Note that nowhere in the data file does it tell us this is fertility data. Instead, we deciphered this from the file name. Through the fourth argument we specify the columns containing observed values; these are the columns that will be &lt;em&gt;gathered&lt;/em&gt;. The default is to gather all columns so, in most cases, we have to specify the columns. In our example we want columns &lt;code&gt;1960&lt;/code&gt;, &lt;code&gt;1961&lt;/code&gt; up to &lt;code&gt;2015&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;The code to gather the fertility data therefore looks like this:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;new_tidy_data &amp;lt;- gather(wide_data, year, fertility, `1960`:`2015`)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;We can also use the pipe like this:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;new_tidy_data &amp;lt;- wide_data %&amp;gt;% gather(year, fertility, `1960`:`2015`)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;We can see that the data have been converted to tidy format with columns &lt;code&gt;year&lt;/code&gt; and &lt;code&gt;fertility&lt;/code&gt;:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;head(new_tidy_data)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 6 x 3
+##   country     year  fertility
+##   &amp;lt;chr&amp;gt;       &amp;lt;chr&amp;gt;     &amp;lt;dbl&amp;gt;
+## 1 Germany     1960       2.41
+## 2 South Korea 1960       6.16
+## 3 Germany     1961       2.44
+## 4 South Korea 1961       5.99
+## 5 Germany     1962       2.47
+## 6 South Korea 1962       5.79&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;and that each year resulted in two rows since we have two countries and this column was not gathered.
+A somewhat quicker way to write this code is to specify which column will &lt;strong&gt;not&lt;/strong&gt; be gathered, rather than all the columns that will be gathered:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;new_tidy_data &amp;lt;- wide_data %&amp;gt;%
+  gather(year, fertility, -country)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The &lt;code&gt;new_tidy_data&lt;/code&gt; object looks like the original &lt;code&gt;tidy_data&lt;/code&gt; we defined this way&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data(&amp;quot;gapminder&amp;quot;)
+tidy_data &amp;lt;- gapminder %&amp;gt;%
+  dplyr::filter(country %in% c(&amp;quot;South Korea&amp;quot;, &amp;quot;Germany&amp;quot;) &amp;amp; !is.na(fertility)) %&amp;gt;%
+  dplyr::select(country, year, fertility)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;with just one minor difference. Can you spot it? Look at the data type of the year column:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;class(tidy_data$year)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;integer&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;class(new_tidy_data$year)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;character&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The &lt;code&gt;gather&lt;/code&gt; function assumes that column names are characters. So we need a bit more wrangling before we are ready to make a plot. We need to convert the year column to be numbers. The &lt;code&gt;gather&lt;/code&gt; function includes the &lt;code&gt;convert&lt;/code&gt; argument for this purpose:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;new_tidy_data &amp;lt;- wide_data %&amp;gt;%
+  gather(year, fertility, -country, convert = TRUE)
+class(new_tidy_data$year)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;integer&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Note that we could have also used the &lt;code&gt;mutate&lt;/code&gt; and &lt;code&gt;as.numeric&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;Now that the data is tidy, we can use this relatively simple ggplot code:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;new_tidy_data %&amp;gt;% ggplot(aes(year, fertility, color = country)) +
+  geom_point()&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;spread&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;&lt;code&gt;spread&lt;/code&gt;&lt;/h2&gt;
+&lt;p&gt;As we will see in later examples, it is sometimes useful for data wrangling purposes to convert tidy data into wide data. We often use this as an intermediate step in tidying up data. The &lt;code&gt;spread&lt;/code&gt; function is basically the inverse of &lt;code&gt;gather&lt;/code&gt;. The first argument is for the data, but since we are using the pipe, we don’t show it. The second argument tells &lt;code&gt;spread&lt;/code&gt; which variable will be used as the column names. The third argument specifies which variable to use to fill out the cells:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;new_wide_data &amp;lt;- new_tidy_data %&amp;gt;% spread(year, fertility)
+dplyr::select(new_wide_data, country, `1960`:`1967`)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 2 x 9
+##   country     `1960` `1961` `1962` `1963` `1964` `1965` `1966` `1967`
+##   &amp;lt;chr&amp;gt;        &amp;lt;dbl&amp;gt;  &amp;lt;dbl&amp;gt;  &amp;lt;dbl&amp;gt;  &amp;lt;dbl&amp;gt;  &amp;lt;dbl&amp;gt;  &amp;lt;dbl&amp;gt;  &amp;lt;dbl&amp;gt;  &amp;lt;dbl&amp;gt;
+## 1 Germany       2.41   2.44   2.47   2.49   2.49   2.48   2.44   2.37
+## 2 South Korea   6.16   5.99   5.79   5.57   5.36   5.16   4.99   4.85&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The following diagram can help remind you how these two functions work:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/./11-content_files/gather-spread.png&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;img/gather-spread.png&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;(Image courtesy of RStudio&lt;a href=&#34;#fn1&#34; class=&#34;footnote-ref&#34; id=&#34;fnref1&#34;&gt;&lt;sup&gt;1&lt;/sup&gt;&lt;/a&gt;. CC-BY-4.0 license&lt;a href=&#34;#fn2&#34; class=&#34;footnote-ref&#34; id=&#34;fnref2&#34;&gt;&lt;sup&gt;2&lt;/sup&gt;&lt;/a&gt;. Cropped from original.)
+&lt;!-- (Source: RStudio. The image is a section of this [cheat sheet](https://github.com/rstudio/cheatsheets/raw/master/data-transformation.pdf).)--&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;separate&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;&lt;code&gt;separate&lt;/code&gt;&lt;/h2&gt;
+&lt;p&gt;The data wrangling shown above was simple compared to what is usually required. In our example spreadsheet files, we include an illustration that is slightly more complicated. It contains two variables: life expectancy and fertility. However, the way it is stored is not tidy and, as we will explain, not optimal.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;path &amp;lt;- system.file(&amp;quot;extdata&amp;quot;, package = &amp;quot;dslabs&amp;quot;)
+
+filename &amp;lt;- &amp;quot;life-expectancy-and-fertility-two-countries-example.csv&amp;quot;
+filename &amp;lt;-  file.path(path, filename)
+
+raw_dat &amp;lt;- read_csv(filename)
+dplyr::select(raw_dat, 1:5)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 2 x 5
+##   country    `1960_fertility` `1960_life_exp~` `1961_fertility` `1961_life_exp~`
+##   &amp;lt;chr&amp;gt;                 &amp;lt;dbl&amp;gt;            &amp;lt;dbl&amp;gt;            &amp;lt;dbl&amp;gt;            &amp;lt;dbl&amp;gt;
+## 1 Germany                2.41             69.3             2.44             69.8
+## 2 South Kor~             6.16             53.0             5.99             53.8&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;First, note that the data is in wide format. Second, notice that this table includes values for two variables, fertility and life expectancy, with the column name encoding which column represents which variable. Encoding information in the column names is not recommended but, unfortunately, it is quite common. We will put our wrangling skills to work to extract this information and store it in a tidy fashion.&lt;/p&gt;
+&lt;p&gt;We can start the data wrangling with the &lt;code&gt;gather&lt;/code&gt; function, but we should no longer use the column name &lt;code&gt;year&lt;/code&gt; for the new column since it also contains the variable type. We will call it &lt;code&gt;key&lt;/code&gt;, the default, for now:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;dat &amp;lt;- raw_dat %&amp;gt;% gather(key, value, -country)
+head(dat)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 6 x 3
+##   country     key                  value
+##   &amp;lt;chr&amp;gt;       &amp;lt;chr&amp;gt;                &amp;lt;dbl&amp;gt;
+## 1 Germany     1960_fertility        2.41
+## 2 South Korea 1960_fertility        6.16
+## 3 Germany     1960_life_expectancy 69.3 
+## 4 South Korea 1960_life_expectancy 53.0 
+## 5 Germany     1961_fertility        2.44
+## 6 South Korea 1961_fertility        5.99&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The result is not exactly what we refer to as tidy since each observation (year-country combination) is associated with two, not one, rows. We want to have the values from the two variables, fertility and life expectancy, in two separate columns. The first challenge to achieve this is to separate the &lt;code&gt;key&lt;/code&gt; column into the year and the variable type. Notice that the entries in this column separate the year from the variable name with an underscore:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;dat$key[1:5]&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;1960_fertility&amp;quot;       &amp;quot;1960_fertility&amp;quot;       &amp;quot;1960_life_expectancy&amp;quot;
+## [4] &amp;quot;1960_life_expectancy&amp;quot; &amp;quot;1961_fertility&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Encoding multiple variables in a column name is such a common problem that the &lt;strong&gt;tidyverse&lt;/strong&gt; package includes a function to separate these columns into two or more. Apart from the data, the &lt;code&gt;separate&lt;/code&gt; function takes three arguments: the name of the column to be separated, the names to be used for the new columns, and the character that separates the variables. So, a first attempt at this is:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;dat %&amp;gt;% separate(col = key, into = c(&amp;quot;year&amp;quot;, &amp;quot;variable_name&amp;quot;), sep = &amp;quot;_&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The function does separate the values, but we run into a new problem. We receive the warning &lt;code&gt;Additional pieces discarded in 112 rows [3, 4, 7,...]&lt;/code&gt;. (Earlier versions may give the error &lt;code&gt;Too many values at 112 locations:&lt;/code&gt;) and that the &lt;code&gt;life_expectancy&lt;/code&gt; variable is truncated to &lt;code&gt;life&lt;/code&gt;. This is because the &lt;code&gt;_&lt;/code&gt; is used to separate &lt;code&gt;life&lt;/code&gt; and &lt;code&gt;expectancy&lt;/code&gt;, not just year and variable name! We could add a third column to catch this and let the &lt;code&gt;separate&lt;/code&gt; function know which column to &lt;em&gt;fill in&lt;/em&gt; with missing values, &lt;code&gt;NA&lt;/code&gt;, when there is no third value. Here we tell it to fill the column on the right:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;dat %&amp;gt;% separate(key, into = c(&amp;quot;year&amp;quot;, &amp;quot;first_variable_name&amp;quot;, &amp;quot;second_variable_name&amp;quot;), fill = &amp;quot;right&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 224 x 5
+##    country     year  first_variable_name second_variable_name value
+##    &amp;lt;chr&amp;gt;       &amp;lt;chr&amp;gt; &amp;lt;chr&amp;gt;               &amp;lt;chr&amp;gt;                &amp;lt;dbl&amp;gt;
+##  1 Germany     1960  fertility           &amp;lt;NA&amp;gt;                  2.41
+##  2 South Korea 1960  fertility           &amp;lt;NA&amp;gt;                  6.16
+##  3 Germany     1960  life                expectancy           69.3 
+##  4 South Korea 1960  life                expectancy           53.0 
+##  5 Germany     1961  fertility           &amp;lt;NA&amp;gt;                  2.44
+##  6 South Korea 1961  fertility           &amp;lt;NA&amp;gt;                  5.99
+##  7 Germany     1961  life                expectancy           69.8 
+##  8 South Korea 1961  life                expectancy           53.8 
+##  9 Germany     1962  fertility           &amp;lt;NA&amp;gt;                  2.47
+## 10 South Korea 1962  fertility           &amp;lt;NA&amp;gt;                  5.79
+## # ... with 214 more rows&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;However, if we read the &lt;code&gt;separate&lt;/code&gt; help file, we find that a better approach is to merge the last two variables when there is an extra separation:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;dat %&amp;gt;% separate(key, into = c(&amp;quot;year&amp;quot;, &amp;quot;variable_name&amp;quot;), extra = &amp;quot;merge&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 224 x 4
+##    country     year  variable_name   value
+##    &amp;lt;chr&amp;gt;       &amp;lt;chr&amp;gt; &amp;lt;chr&amp;gt;           &amp;lt;dbl&amp;gt;
+##  1 Germany     1960  fertility        2.41
+##  2 South Korea 1960  fertility        6.16
+##  3 Germany     1960  life_expectancy 69.3 
+##  4 South Korea 1960  life_expectancy 53.0 
+##  5 Germany     1961  fertility        2.44
+##  6 South Korea 1961  fertility        5.99
+##  7 Germany     1961  life_expectancy 69.8 
+##  8 South Korea 1961  life_expectancy 53.8 
+##  9 Germany     1962  fertility        2.47
+## 10 South Korea 1962  fertility        5.79
+## # ... with 214 more rows&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;This achieves the separation we wanted. However, we are not done yet. We need to create a column for each variable. As we learned, the &lt;code&gt;spread&lt;/code&gt; function can do this:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;dat %&amp;gt;%
+  separate(key, c(&amp;quot;year&amp;quot;, &amp;quot;variable_name&amp;quot;), extra = &amp;quot;merge&amp;quot;) %&amp;gt;%
+  spread(variable_name, value)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 112 x 4
+##    country year  fertility life_expectancy
+##    &amp;lt;chr&amp;gt;   &amp;lt;chr&amp;gt;     &amp;lt;dbl&amp;gt;           &amp;lt;dbl&amp;gt;
+##  1 Germany 1960       2.41            69.3
+##  2 Germany 1961       2.44            69.8
+##  3 Germany 1962       2.47            70.0
+##  4 Germany 1963       2.49            70.1
+##  5 Germany 1964       2.49            70.7
+##  6 Germany 1965       2.48            70.6
+##  7 Germany 1966       2.44            70.8
+##  8 Germany 1967       2.37            71.0
+##  9 Germany 1968       2.28            70.6
+## 10 Germany 1969       2.17            70.5
+## # ... with 102 more rows&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The data is now in tidy format with one row for each observation with three variables: year, fertility, and life expectancy.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;unite&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;&lt;code&gt;unite&lt;/code&gt;&lt;/h2&gt;
+&lt;p&gt;It is sometimes useful to do the inverse of &lt;code&gt;separate&lt;/code&gt;, unite two columns into one. To demonstrate how to use &lt;code&gt;unite&lt;/code&gt;, we show code that, although &lt;em&gt;not&lt;/em&gt; the optimal approach, serves as an illustration. Suppose that we did not know about &lt;code&gt;extra&lt;/code&gt; and used this command to separate:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;dat %&amp;gt;%
+  separate(key, c(&amp;quot;year&amp;quot;, &amp;quot;first_variable_name&amp;quot;, &amp;quot;second_variable_name&amp;quot;), fill = &amp;quot;right&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 224 x 5
+##    country     year  first_variable_name second_variable_name value
+##    &amp;lt;chr&amp;gt;       &amp;lt;chr&amp;gt; &amp;lt;chr&amp;gt;               &amp;lt;chr&amp;gt;                &amp;lt;dbl&amp;gt;
+##  1 Germany     1960  fertility           &amp;lt;NA&amp;gt;                  2.41
+##  2 South Korea 1960  fertility           &amp;lt;NA&amp;gt;                  6.16
+##  3 Germany     1960  life                expectancy           69.3 
+##  4 South Korea 1960  life                expectancy           53.0 
+##  5 Germany     1961  fertility           &amp;lt;NA&amp;gt;                  2.44
+##  6 South Korea 1961  fertility           &amp;lt;NA&amp;gt;                  5.99
+##  7 Germany     1961  life                expectancy           69.8 
+##  8 South Korea 1961  life                expectancy           53.8 
+##  9 Germany     1962  fertility           &amp;lt;NA&amp;gt;                  2.47
+## 10 South Korea 1962  fertility           &amp;lt;NA&amp;gt;                  5.79
+## # ... with 214 more rows&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;We can achieve the same final result by uniting the second and third columns, then spreading the columns and renaming &lt;code&gt;fertility_NA&lt;/code&gt; to &lt;code&gt;fertility&lt;/code&gt;:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;dat %&amp;gt;%
+  separate(key, c(&amp;quot;year&amp;quot;, &amp;quot;first_variable_name&amp;quot;, &amp;quot;second_variable_name&amp;quot;), fill = &amp;quot;right&amp;quot;) %&amp;gt;%
+  unite(variable_name, first_variable_name, second_variable_name) %&amp;gt;%
+  spread(variable_name, value) %&amp;gt;%
+  rename(fertility = fertility_NA)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 112 x 4
+##    country year  fertility life_expectancy
+##    &amp;lt;chr&amp;gt;   &amp;lt;chr&amp;gt;     &amp;lt;dbl&amp;gt;           &amp;lt;dbl&amp;gt;
+##  1 Germany 1960       2.41            69.3
+##  2 Germany 1961       2.44            69.8
+##  3 Germany 1962       2.47            70.0
+##  4 Germany 1963       2.49            70.1
+##  5 Germany 1964       2.49            70.7
+##  6 Germany 1965       2.48            70.6
+##  7 Germany 1966       2.44            70.8
+##  8 Germany 1967       2.37            71.0
+##  9 Germany 1968       2.28            70.6
+## 10 Germany 1969       2.17            70.5
+## # ... with 102 more rows&lt;/code&gt;&lt;/pre&gt;
+&lt;div class=&#34;fyi&#34;&gt;
+&lt;p&gt;&lt;strong&gt;TRY IT&lt;/strong&gt;&lt;/p&gt;
+&lt;ol style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;Run the following command to define the &lt;code&gt;co2_wide&lt;/code&gt; object using the &lt;code&gt;co2&lt;/code&gt; data built in to R (see &lt;code&gt;?co2&lt;/code&gt;):&lt;/li&gt;
+&lt;/ol&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;co2_wide &amp;lt;- data.frame(matrix(co2, ncol = 12, byrow = TRUE)) %&amp;gt;%
+  setNames(1:12) %&amp;gt;%
+  mutate(year = as.character(1959:1997))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Use the gather function to wrangle this into a tidy dataset. Call the column with the CO2 measurements &lt;code&gt;co2&lt;/code&gt; and call the month column &lt;code&gt;month&lt;/code&gt;. Call the resulting object &lt;code&gt;co2_tidy&lt;/code&gt;.&lt;/p&gt;
+&lt;ol start=&#34;2&#34; style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;Plot CO2 versus month with a different curve for each year using this code:&lt;/li&gt;
+&lt;/ol&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;co2_tidy %&amp;gt;% ggplot(aes(month, co2, color = year)) + geom_line()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;If the expected plot is not made, it is probably because &lt;code&gt;co2_tidy$month&lt;/code&gt; is not numeric:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;class(co2_tidy$month)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Rewrite the call to gather using an argument that assures the month column will be numeric. Then make the plot.&lt;/p&gt;
+&lt;ol start=&#34;3&#34; style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;What do we learn from this plot?&lt;/li&gt;
+&lt;/ol&gt;
+&lt;ol style=&#34;list-style-type: lower-alpha&#34;&gt;
+&lt;li&gt;CO2 measures increase monotonically from 1959 to 1997.&lt;/li&gt;
+&lt;li&gt;CO2 measures are higher in the summer and the yearly average increased from 1959 to 1997.&lt;/li&gt;
+&lt;li&gt;CO2 measures appear constant and random variability explains the differences.&lt;/li&gt;
+&lt;li&gt;CO2 measures do not have a seasonal trend.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;ol start=&#34;4&#34; style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;Now load the &lt;code&gt;admissions&lt;/code&gt; data set, which contains admission information for men and women across six majors and keep only the admitted percentage column:&lt;/li&gt;
+&lt;/ol&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;load(admissions)
+dat &amp;lt;- admissions %&amp;gt;% dplyr::select(-applicants)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;If we think of an observation as a major, and that each observation has two variables (men admitted percentage and women admitted percentage) then this is not tidy. Use the &lt;code&gt;spread&lt;/code&gt; function to wrangle into tidy shape: one row for each major.&lt;/p&gt;
+&lt;ol start=&#34;5&#34; style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;Now we will try a more advanced wrangling challenge. We want to wrangle the admissions data so that for each major we have 4 observations: &lt;code&gt;admitted_men&lt;/code&gt;, &lt;code&gt;admitted_women&lt;/code&gt;, &lt;code&gt;applicants_men&lt;/code&gt; and &lt;code&gt;applicants_women&lt;/code&gt;. The &lt;em&gt;trick&lt;/em&gt; we perform here is actually quite common: first gather to generate an intermediate data frame and then spread to obtain the tidy data we want. We will go step by step in this and the next two exercises.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;Use the gather function to create a &lt;code&gt;tmp&lt;/code&gt; data.frame with a column containing the type of observation &lt;code&gt;admitted&lt;/code&gt; or &lt;code&gt;applicants&lt;/code&gt;. Call the new columns &lt;code&gt;key&lt;/code&gt; and value.&lt;/p&gt;
+&lt;ol start=&#34;6&#34; style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;&lt;p&gt;Now you have an object &lt;code&gt;tmp&lt;/code&gt; with columns &lt;code&gt;major&lt;/code&gt;, &lt;code&gt;gender&lt;/code&gt;, &lt;code&gt;key&lt;/code&gt; and &lt;code&gt;value&lt;/code&gt;. Note that if you combine the key and gender, we get the column names we want: &lt;code&gt;admitted_men&lt;/code&gt;, &lt;code&gt;admitted_women&lt;/code&gt;, &lt;code&gt;applicants_men&lt;/code&gt; and &lt;code&gt;applicants_women&lt;/code&gt;. Use the function &lt;code&gt;unite&lt;/code&gt; to create a new column called &lt;code&gt;column_name&lt;/code&gt;.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Now use the &lt;code&gt;spread&lt;/code&gt; function to generate the tidy data with four variables for each major.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Now use the pipe to write a line of code that turns &lt;code&gt;admissions&lt;/code&gt; to the table produced in the previous exercise.&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;joining-tables&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Joining tables&lt;/h1&gt;
+&lt;p&gt;The information we need for a given analysis may not be just in one table. For example, when forecasting elections we used the function &lt;code&gt;left_join&lt;/code&gt; to combine the information from two tables. We also saw this in action using the &lt;code&gt;WDI&lt;/code&gt; function (technically, the &lt;code&gt;WDI&lt;/code&gt; API) in Project 2. Here we use a simpler example to illustrate the general challenge of combining tables.&lt;/p&gt;
+&lt;p&gt;Suppose we want to explore the relationship between population size for US states and electoral votes. We have the population size in this table:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(tidyverse)
+library(dslabs)
+data(murders)
+head(murders)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;##        state abb region population total
+## 1    Alabama  AL  South    4779736   135
+## 2     Alaska  AK   West     710231    19
+## 3    Arizona  AZ   West    6392017   232
+## 4   Arkansas  AR  South    2915918    93
+## 5 California  CA   West   37253956  1257
+## 6   Colorado  CO   West    5029196    65&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;and electoral votes in this one:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data(polls_us_election_2016)
+head(results_us_election_2016)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;##          state electoral_votes clinton trump others
+## 1   California              55    61.7  31.6    6.7
+## 2        Texas              38    43.2  52.2    4.5
+## 3      Florida              29    47.8  49.0    3.2
+## 4     New York              29    59.0  36.5    4.5
+## 5     Illinois              20    55.8  38.8    5.4
+## 6 Pennsylvania              20    47.9  48.6    3.6&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Just concatenating these two tables together will not work since the order of the states is not the same.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;identical(results_us_election_2016$state, murders$state)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] FALSE&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The &lt;em&gt;join&lt;/em&gt; functions, described below, are designed to handle this challenge.&lt;/p&gt;
+&lt;div id=&#34;joins&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Joins&lt;/h2&gt;
+&lt;p&gt;The &lt;em&gt;join&lt;/em&gt; functions in the &lt;strong&gt;dplyr&lt;/strong&gt; package (part of the tidyverse) make sure that the tables are combined so that matching rows are together. If you know SQL, you will see that the approach and syntax is very similar. The general idea is that one needs to identify one or more columns that will serve to match the two tables. Then a new table with the combined information is returned. Notice what happens if we join the two tables above by state using &lt;code&gt;left_join&lt;/code&gt; (we will remove the &lt;code&gt;others&lt;/code&gt; column and rename &lt;code&gt;electoral_votes&lt;/code&gt; so that the tables fit on the page):&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;tab &amp;lt;- left_join(murders, results_us_election_2016, by = &amp;quot;state&amp;quot;) %&amp;gt;%
+  dplyr::select(-others) %&amp;gt;% 
+  rename(ev = electoral_votes)
+head(tab)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;##        state abb region population total ev clinton trump
+## 1    Alabama  AL  South    4779736   135  9    34.4  62.1
+## 2     Alaska  AK   West     710231    19  3    36.6  51.3
+## 3    Arizona  AZ   West    6392017   232 11    45.1  48.7
+## 4   Arkansas  AR  South    2915918    93  6    33.7  60.6
+## 5 California  CA   West   37253956  1257 55    61.7  31.6
+## 6   Colorado  CO   West    5029196    65  9    48.2  43.3&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The data has been successfully joined and we can now, for example, make a plot to explore the relationship:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(ggrepel)
+tab %&amp;gt;% ggplot(aes(population/10^6, ev, label = abb)) +
+  geom_point() +
+  geom_text_repel() +
+  scale_x_continuous(trans = &amp;quot;log2&amp;quot;) +
+  scale_y_continuous(trans = &amp;quot;log2&amp;quot;) +
+  geom_smooth(method = &amp;quot;lm&amp;quot;, se = FALSE)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/11-content_files/figure-html/ev-vs-population-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;We see the relationship is close to linear with about 2 electoral votes for every million persons, but with very small states getting higher ratios.&lt;/p&gt;
+&lt;p&gt;In practice, it is not always the case that each row in one table has a matching row in the other. For this reason, we have several versions of join. To illustrate this challenge, we will take subsets of the tables above. We create the tables &lt;code&gt;tab1&lt;/code&gt; and &lt;code&gt;tab2&lt;/code&gt; so that they have some states in common but not all:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;tab_1 &amp;lt;- slice(murders, 1:6) %&amp;gt;% dplyr::select(state, population)
+tab_1&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;##        state population
+## 1    Alabama    4779736
+## 2     Alaska     710231
+## 3    Arizona    6392017
+## 4   Arkansas    2915918
+## 5 California   37253956
+## 6   Colorado    5029196&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;tab_2 &amp;lt;- results_us_election_2016 %&amp;gt;%
+  dplyr::filter(state%in%c(&amp;quot;Alabama&amp;quot;, &amp;quot;Alaska&amp;quot;, &amp;quot;Arizona&amp;quot;,
+                    &amp;quot;California&amp;quot;, &amp;quot;Connecticut&amp;quot;, &amp;quot;Delaware&amp;quot;)) %&amp;gt;%
+  dplyr::select(state, electoral_votes) %&amp;gt;% rename(ev = electoral_votes)
+tab_2&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;##         state ev
+## 1  California 55
+## 2     Arizona 11
+## 3     Alabama  9
+## 4 Connecticut  7
+## 5      Alaska  3
+## 6    Delaware  3&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;We will use these two tables as examples in the next sections.&lt;/p&gt;
+&lt;div id=&#34;left-join&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Left join&lt;/h3&gt;
+&lt;p&gt;Suppose we want a table like &lt;code&gt;tab_1&lt;/code&gt;, but adding electoral votes to whatever states we have available. For this, we use &lt;code&gt;left_join&lt;/code&gt; with &lt;code&gt;tab_1&lt;/code&gt; as the first argument. We specify which column to use to match with the &lt;code&gt;by&lt;/code&gt; argument.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;left_join(tab_1, tab_2, by = &amp;quot;state&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;##        state population ev
+## 1    Alabama    4779736  9
+## 2     Alaska     710231  3
+## 3    Arizona    6392017 11
+## 4   Arkansas    2915918 NA
+## 5 California   37253956 55
+## 6   Colorado    5029196 NA&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Note that &lt;code&gt;NA&lt;/code&gt;s are added to the two states not appearing in &lt;code&gt;tab_2&lt;/code&gt;. Also, notice that this function, as well as all the other joins, can receive the first arguments through the pipe:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;tab_1 %&amp;gt;% left_join(tab_2, by = &amp;quot;state&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;right-join&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Right join&lt;/h3&gt;
+&lt;p&gt;If instead of a table with the same rows as first table, we want one with the same rows as second table, we can use &lt;code&gt;right_join&lt;/code&gt;:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;tab_1 %&amp;gt;% right_join(tab_2, by = &amp;quot;state&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;##         state population ev
+## 1     Alabama    4779736  9
+## 2      Alaska     710231  3
+## 3     Arizona    6392017 11
+## 4  California   37253956 55
+## 5 Connecticut         NA  7
+## 6    Delaware         NA  3&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Now the NAs are in the column coming from &lt;code&gt;tab_1&lt;/code&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;inner-join&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Inner join&lt;/h3&gt;
+&lt;p&gt;If we want to keep only the rows that have information in both tables, we use &lt;code&gt;inner_join&lt;/code&gt;. You can think of this as an intersection:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;inner_join(tab_1, tab_2, by = &amp;quot;state&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;##        state population ev
+## 1    Alabama    4779736  9
+## 2     Alaska     710231  3
+## 3    Arizona    6392017 11
+## 4 California   37253956 55&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;full-join&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Full join&lt;/h3&gt;
+&lt;p&gt;If we want to keep all the rows and fill the missing parts with NAs, we can use &lt;code&gt;full_join&lt;/code&gt;. You can think of this as a union:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;full_join(tab_1, tab_2, by = &amp;quot;state&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;##         state population ev
+## 1     Alabama    4779736  9
+## 2      Alaska     710231  3
+## 3     Arizona    6392017 11
+## 4    Arkansas    2915918 NA
+## 5  California   37253956 55
+## 6    Colorado    5029196 NA
+## 7 Connecticut         NA  7
+## 8    Delaware         NA  3&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;semi-join&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Semi join&lt;/h3&gt;
+&lt;p&gt;The &lt;code&gt;semi_join&lt;/code&gt; function lets us keep the part of first table for which we have information in the second. It does not add the columns of the second. It isn’t often used:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;semi_join(tab_1, tab_2, by = &amp;quot;state&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;##        state population
+## 1    Alabama    4779736
+## 2     Alaska     710231
+## 3    Arizona    6392017
+## 4 California   37253956&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;This gives the same result as:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;tab_1 %&amp;gt;% 
+  filter(state %in% tab_2$state) &lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;##        state population
+## 1    Alabama    4779736
+## 2     Alaska     710231
+## 3    Arizona    6392017
+## 4 California   37253956&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;anti-join&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Anti join&lt;/h3&gt;
+&lt;p&gt;The function &lt;code&gt;anti_join&lt;/code&gt; is the opposite of &lt;code&gt;semi_join&lt;/code&gt;. It keeps the elements of the first table for which there is no information in the second:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;anti_join(tab_1, tab_2, by = &amp;quot;state&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;##      state population
+## 1 Arkansas    2915918
+## 2 Colorado    5029196&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The following diagram summarizes the above joins:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/./11-content_files/joins.png&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;img/joins.png&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;(Image courtesy of RStudio&lt;a href=&#34;#fn3&#34; class=&#34;footnote-ref&#34; id=&#34;fnref3&#34;&gt;&lt;sup&gt;3&lt;/sup&gt;&lt;/a&gt;. CC-BY-4.0 license&lt;a href=&#34;#fn4&#34; class=&#34;footnote-ref&#34; id=&#34;fnref4&#34;&gt;&lt;sup&gt;4&lt;/sup&gt;&lt;/a&gt;. Cropped from original.)&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;binding&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Binding&lt;/h2&gt;
+&lt;p&gt;Although we have yet to use it in this book, another common way in which datasets are combined is by &lt;em&gt;binding&lt;/em&gt; them. Unlike the join function, the binding functions do not try to match by a variable, but instead simply combine datasets. If the datasets don’t match by the appropriate dimensions, one obtains an error.&lt;/p&gt;
+&lt;div id=&#34;binding-columns&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Binding columns&lt;/h3&gt;
+&lt;p&gt;The &lt;strong&gt;dplyr&lt;/strong&gt; function &lt;em&gt;bind_cols&lt;/em&gt; binds two objects by making them columns in a tibble. For example, we quickly want to make a data frame consisting of numbers we can use.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;bind_cols(a = 1:3, b = 4:6)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 3 x 2
+##       a     b
+##   &amp;lt;int&amp;gt; &amp;lt;int&amp;gt;
+## 1     1     4
+## 2     2     5
+## 3     3     6&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;This function requires that we assign names to the columns. Here we chose &lt;code&gt;a&lt;/code&gt; and &lt;code&gt;b&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;Note that there is an R-base function &lt;code&gt;cbind&lt;/code&gt; with the exact same functionality. An important difference is that &lt;code&gt;cbind&lt;/code&gt; can create different types of objects, while &lt;code&gt;bind_cols&lt;/code&gt; always produces a data frame.&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;bind_cols&lt;/code&gt; can also bind two different data frames. For example, here we break up the &lt;code&gt;tab&lt;/code&gt; data frame and then bind them back together:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;tab_1 &amp;lt;- tab[, 1:3]
+tab_2 &amp;lt;- tab[, 4:6]
+tab_3 &amp;lt;- tab[, 7:8]
+new_tab &amp;lt;- bind_cols(tab_1, tab_2, tab_3)
+head(new_tab)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;##        state abb region population total ev clinton trump
+## 1    Alabama  AL  South    4779736   135  9    34.4  62.1
+## 2     Alaska  AK   West     710231    19  3    36.6  51.3
+## 3    Arizona  AZ   West    6392017   232 11    45.1  48.7
+## 4   Arkansas  AR  South    2915918    93  6    33.7  60.6
+## 5 California  CA   West   37253956  1257 55    61.7  31.6
+## 6   Colorado  CO   West    5029196    65  9    48.2  43.3&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;binding-by-rows&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Binding by rows&lt;/h3&gt;
+&lt;p&gt;The &lt;code&gt;bind_rows&lt;/code&gt; function is similar to &lt;code&gt;bind_cols&lt;/code&gt;, but binds rows instead of columns:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;tab_1 &amp;lt;- tab[1:2,]
+tab_2 &amp;lt;- tab[3:4,]
+bind_rows(tab_1, tab_2)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;##      state abb region population total ev clinton trump
+## 1  Alabama  AL  South    4779736   135  9    34.4  62.1
+## 2   Alaska  AK   West     710231    19  3    36.6  51.3
+## 3  Arizona  AZ   West    6392017   232 11    45.1  48.7
+## 4 Arkansas  AR  South    2915918    93  6    33.7  60.6&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;This is based on an R-base function &lt;code&gt;rbind&lt;/code&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;set-operators&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Set operators&lt;/h2&gt;
+&lt;p&gt;Another set of commands useful for combining datasets are the set operators. When applied to vectors, these behave as their names suggest. Examples are &lt;code&gt;intersect&lt;/code&gt;, &lt;code&gt;union&lt;/code&gt;, &lt;code&gt;setdiff&lt;/code&gt;, and &lt;code&gt;setequal&lt;/code&gt;. However, if the &lt;strong&gt;tidyverse&lt;/strong&gt;, or more specifically &lt;strong&gt;dplyr&lt;/strong&gt;, is loaded, these functions can be used on data frames as opposed to just on vectors.&lt;/p&gt;
+&lt;div id=&#34;intersect&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Intersect&lt;/h3&gt;
+&lt;p&gt;You can take intersections of vectors of any type, such as numeric:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;intersect(1:10, 6:15)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1]  6  7  8  9 10&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;or characters:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;intersect(c(&amp;quot;a&amp;quot;,&amp;quot;b&amp;quot;,&amp;quot;c&amp;quot;), c(&amp;quot;b&amp;quot;,&amp;quot;c&amp;quot;,&amp;quot;d&amp;quot;))&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;b&amp;quot; &amp;quot;c&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The &lt;strong&gt;dplyr&lt;/strong&gt; package includes an &lt;code&gt;intersect&lt;/code&gt; function that can be applied to tables with the same column names. This function returns the rows in common between two tables. To make sure we use the &lt;strong&gt;dplyr&lt;/strong&gt; version of &lt;code&gt;intersect&lt;/code&gt; rather than the base package version, we can use &lt;code&gt;dplyr::intersect&lt;/code&gt; like this:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;tab_1 &amp;lt;- tab[1:5,]
+tab_2 &amp;lt;- tab[3:7,]
+dplyr::intersect(tab_1, tab_2)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;##        state abb region population total ev clinton trump
+## 1    Arizona  AZ   West    6392017   232 11    45.1  48.7
+## 2   Arkansas  AR  South    2915918    93  6    33.7  60.6
+## 3 California  CA   West   37253956  1257 55    61.7  31.6&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;union&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Union&lt;/h3&gt;
+&lt;p&gt;Similarly &lt;em&gt;union&lt;/em&gt; takes the union of vectors. For example:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;union(1:10, 6:15)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;##  [1]  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;union(c(&amp;quot;a&amp;quot;,&amp;quot;b&amp;quot;,&amp;quot;c&amp;quot;), c(&amp;quot;b&amp;quot;,&amp;quot;c&amp;quot;,&amp;quot;d&amp;quot;))&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;a&amp;quot; &amp;quot;b&amp;quot; &amp;quot;c&amp;quot; &amp;quot;d&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The &lt;strong&gt;dplyr&lt;/strong&gt; package includes a version of &lt;code&gt;union&lt;/code&gt; that combines all the rows of two tables with the same column names.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;tab_1 &amp;lt;- tab[1:5,]
+tab_2 &amp;lt;- tab[3:7,]
+dplyr::union(tab_1, tab_2)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;##         state abb    region population total ev clinton trump
+## 1     Alabama  AL     South    4779736   135  9    34.4  62.1
+## 2      Alaska  AK      West     710231    19  3    36.6  51.3
+## 3     Arizona  AZ      West    6392017   232 11    45.1  48.7
+## 4    Arkansas  AR     South    2915918    93  6    33.7  60.6
+## 5  California  CA      West   37253956  1257 55    61.7  31.6
+## 6    Colorado  CO      West    5029196    65  9    48.2  43.3
+## 7 Connecticut  CT Northeast    3574097    97  7    54.6  40.9&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Note that we get 7 unique rows from this. We do not get duplicated rows from the overlap in &lt;code&gt;1:5&lt;/code&gt; and &lt;code&gt;3:7&lt;/code&gt;. If we were to &lt;code&gt;bind_rows&lt;/code&gt; on the two subsets, we would get duplicates.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;setdiff&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;&lt;code&gt;setdiff&lt;/code&gt;&lt;/h3&gt;
+&lt;p&gt;The set difference between a first and second argument can be obtained with &lt;code&gt;setdiff&lt;/code&gt;. Unlike &lt;code&gt;intersect&lt;/code&gt; and &lt;code&gt;union&lt;/code&gt;, this function is not symmetric:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;setdiff(1:10, 6:15)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 1 2 3 4 5&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;setdiff(6:15, 1:10)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 11 12 13 14 15&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;As with the functions shown above, &lt;strong&gt;dplyr&lt;/strong&gt; has a version for data frames:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;tab_1 &amp;lt;- tab[1:5,]
+tab_2 &amp;lt;- tab[3:7,]
+dplyr::setdiff(tab_1, tab_2)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;##     state abb region population total ev clinton trump
+## 1 Alabama  AL  South    4779736   135  9    34.4  62.1
+## 2  Alaska  AK   West     710231    19  3    36.6  51.3&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;setequal&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;&lt;code&gt;setequal&lt;/code&gt;&lt;/h3&gt;
+&lt;p&gt;Finally, the function &lt;code&gt;setequal&lt;/code&gt; tells us if two sets are the same, regardless of order. So notice that:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;setequal(1:5, 1:6)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] FALSE&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;but:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;setequal(1:5, 5:1)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] TRUE&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;When applied to data frames that are not equal, regardless of order, the &lt;strong&gt;dplyr&lt;/strong&gt; version provides a useful message letting us know how the sets are different:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;dplyr::setequal(tab_1, tab_2)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] FALSE&lt;/code&gt;&lt;/pre&gt;
+&lt;div class=&#34;fyi&#34;&gt;
+&lt;p&gt;&lt;strong&gt;TRY IT&lt;/strong&gt;&lt;/p&gt;
+&lt;ol style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;Install and load the &lt;strong&gt;Lahman&lt;/strong&gt; library. This database includes data related to baseball teams. It includes summary statistics about how the players performed on offense and defense for several years. It also includes personal information about the players.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;The &lt;code&gt;Batting&lt;/code&gt; data frame contains the offensive statistics for all players for many years. You can see, for example, the top 10 hitters by running this code:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(Lahman)
+
+top &amp;lt;- Batting %&amp;gt;%
+  dplyr::filter(yearID == 2016) %&amp;gt;%
+  arrange(desc(HR)) %&amp;gt;%
+  slice(1:10)
+
+top %&amp;gt;% as_tibble()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;But who are these players? We see an ID, but not the names. The player names are in this table&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;Master %&amp;gt;% as_tibble()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;We can see column names &lt;code&gt;nameFirst&lt;/code&gt; and &lt;code&gt;nameLast&lt;/code&gt;. Use the &lt;code&gt;left_join&lt;/code&gt; function to create a table of the top home run hitters. The table should have &lt;code&gt;playerID&lt;/code&gt;, first name, last name, and number of home runs (HR). Rewrite the object &lt;code&gt;top&lt;/code&gt; with this new table.&lt;/p&gt;
+&lt;ol start=&#34;2&#34; style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;&lt;p&gt;Now use the &lt;code&gt;Salaries&lt;/code&gt; data frame to add each player’s salary to the table you created in exercise 1. Note that salaries are different every year so make sure to filter for the year 2016, then use &lt;code&gt;right_join&lt;/code&gt;. This time show first name, last name, team, HR, and salary.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;In a previous exercise, we created a tidy version of the &lt;code&gt;co2&lt;/code&gt; dataset:&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;co2_wide &amp;lt;- data.frame(matrix(co2, ncol = 12, byrow = TRUE)) %&amp;gt;%
+  setNames(1:12) %&amp;gt;%
+  mutate(year = 1959:1997) %&amp;gt;%
+  gather(month, co2, -year, convert = TRUE)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;We want to see if the monthly trend is changing so we are going to remove the year effects and then plot the results. We will first compute the year averages. Use the &lt;code&gt;group_by&lt;/code&gt; and &lt;code&gt;summarize&lt;/code&gt; to compute the average co2 for each year. Save in an object called &lt;code&gt;yearly_avg&lt;/code&gt;.&lt;/p&gt;
+&lt;ol start=&#34;4&#34; style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;&lt;p&gt;Now use the &lt;code&gt;left_join&lt;/code&gt; function to add the yearly average to the &lt;code&gt;co2_wide&lt;/code&gt; dataset. Then compute the residuals: observed co2 measure - yearly average.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Make a plot of the seasonal trends by year but only after removing the year effect.&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;a-note-about-merging-and-dupliacted-rows&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;A note about merging and dupliacted rows&lt;/h2&gt;
+&lt;p&gt;When we merge data, we have to be very careful about duplicated rows. Specifically, we have to be certain that the fields we use to join on are unique &lt;strong&gt;or&lt;/strong&gt; that we know they aren’t unique and intend to duplicate rows.&lt;/p&gt;
+&lt;p&gt;When we have tidy data, we have one row per observation. When we join data that has more than one row per observation, the new dataset will no longer be tidy. For instance:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;tidyData &amp;lt;- bind_cols( state = c(&amp;#39;MI&amp;#39;,&amp;#39;CA&amp;#39;,&amp;#39;MI&amp;#39;,&amp;#39;CA&amp;#39;), 
+                       year = c(2001, 2002, 2001, 2002),  
+                       Arrests = c(10, 21, 30, 12))
+
+notTidyData &amp;lt;- bind_cols(state = c(&amp;#39;MI&amp;#39;,&amp;#39;MI&amp;#39;,&amp;#39;MI&amp;#39;,&amp;#39;CA&amp;#39;,&amp;#39;CA&amp;#39;,&amp;#39;CA&amp;#39;), 
+                         County = c(&amp;#39;Ingham&amp;#39;,&amp;#39;Clinton&amp;#39;,&amp;#39;Wayne&amp;#39;,&amp;#39;Orange&amp;#39;,&amp;#39;Los Angeles&amp;#39;,&amp;#39;Kern&amp;#39;),
+                         InNOut_locations = c(0,0,0,20, 31, 8))
+
+head(tidyData)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 4 x 3
+##   state  year Arrests
+##   &amp;lt;chr&amp;gt; &amp;lt;dbl&amp;gt;   &amp;lt;dbl&amp;gt;
+## 1 MI     2001      10
+## 2 CA     2002      21
+## 3 MI     2001      30
+## 4 CA     2002      12&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;head(notTidyData)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 6 x 3
+##   state County      InNOut_locations
+##   &amp;lt;chr&amp;gt; &amp;lt;chr&amp;gt;                  &amp;lt;dbl&amp;gt;
+## 1 MI    Ingham                     0
+## 2 MI    Clinton                    0
+## 3 MI    Wayne                      0
+## 4 CA    Orange                    20
+## 5 CA    Los Angeles               31
+## 6 CA    Kern                       8&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;If we use the only common field, &lt;code&gt;state&lt;/code&gt; to merge &lt;code&gt;tidyData&lt;/code&gt;, which is unique on &lt;code&gt;state&lt;/code&gt; and &lt;code&gt;year&lt;/code&gt;, to &lt;code&gt;notTidyData&lt;/code&gt;, which is unique on &lt;code&gt;county&lt;/code&gt;, then every time we see &lt;code&gt;state&lt;/code&gt; in our “left” data, we will get &lt;strong&gt;all three counties in that state and for that year&lt;/strong&gt;. Even worse, we will get the &lt;code&gt;InNOut_locations&lt;/code&gt; tally repeated for every matching &lt;code&gt;state&lt;/code&gt;!&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;joinedData &amp;lt;- left_join(tidyData, notTidyData, by = c(&amp;#39;state&amp;#39;))
+joinedData&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 12 x 5
+##    state  year Arrests County      InNOut_locations
+##    &amp;lt;chr&amp;gt; &amp;lt;dbl&amp;gt;   &amp;lt;dbl&amp;gt; &amp;lt;chr&amp;gt;                  &amp;lt;dbl&amp;gt;
+##  1 MI     2001      10 Ingham                     0
+##  2 MI     2001      10 Clinton                    0
+##  3 MI     2001      10 Wayne                      0
+##  4 CA     2002      21 Orange                    20
+##  5 CA     2002      21 Los Angeles               31
+##  6 CA     2002      21 Kern                       8
+##  7 MI     2001      30 Ingham                     0
+##  8 MI     2001      30 Clinton                    0
+##  9 MI     2001      30 Wayne                      0
+## 10 CA     2002      12 Orange                    20
+## 11 CA     2002      12 Los Angeles               31
+## 12 CA     2002      12 Kern                       8&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Because we asked for all columns of &lt;code&gt;tidyData&lt;/code&gt; that matched (on &lt;code&gt;state&lt;/code&gt;) in &lt;code&gt;notTidyData&lt;/code&gt;, we get replicated &lt;code&gt;Arrests&lt;/code&gt; - look at MI in 2001 in the first three rows. The original data had 10 Arrests in Michigan in 2001. Now, &lt;em&gt;for every MI County in &lt;code&gt;notTidyData&lt;/code&gt;, we have replicated the statewide arrests!&lt;/em&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;sum(joinedData$Arrests)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 219&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;sum(tidyData$Arrests)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 73&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Yikes! We now have 3x the number of arrests in our data.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;sum(joinedData$InNOut_locations)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 118&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;sum(notTidyData$InNOut_locations)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 59&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;And while we might like that we have 3x the In-N-Out locations, we definitely think our data shouldn’t suddenly have more.&lt;/p&gt;
+&lt;p&gt;The reason this happens is that we do not have a unique &lt;em&gt;key&lt;/em&gt; variable. In the &lt;code&gt;WDI&lt;/code&gt; tip in Project 2, we didn’t have a single unique key variable - there were multiple values of &lt;code&gt;iso2&lt;/code&gt; country code in the data because we had multiple years for each &lt;code&gt;iso2&lt;/code&gt;. Thus, when we merged, use used &lt;code&gt;by = c(&#39;iso2&#39;,&#39;year&#39;)&lt;/code&gt; because &lt;strong&gt;the &lt;code&gt;iso2&lt;/code&gt; x &lt;code&gt;year&lt;/code&gt; combination was the unique key&lt;/strong&gt;.&lt;/p&gt;
+&lt;p&gt;The lesson is this: always know what your join is doing. Know your unique keys. Use &lt;code&gt;sum(duplicated(tidyData$key))&lt;/code&gt; to see if all values are unique, or &lt;code&gt;NROW(unique(tidyData %&amp;gt;% dplyr::select(key1, key2)))&lt;/code&gt; to see if all rows are unique over the 2 keys (replacing “key1” and “key2” with your key fields).&lt;/p&gt;
+&lt;p&gt;If it shouldn’t add rows, then make sure the new data has the same number of rows as the old one, or use &lt;code&gt;setequal&lt;/code&gt; to check.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;parsing-dates-and-times&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Parsing dates and times&lt;/h1&gt;
+&lt;div id=&#34;the-date-data-type&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;The date data type&lt;/h2&gt;
+&lt;p&gt;We have described three main types of vectors: numeric, character, and logical. In data science projects, we very often encounter variables that are dates. Although we can represent a date with a string, for example &lt;code&gt;November 2, 2017&lt;/code&gt;, once we pick a reference day, referred to as the &lt;em&gt;epoch&lt;/em&gt;, they can be converted to numbers by calculating the number of days since the epoch. Computer languages usually use January 1, 1970, as the epoch. So, for example, January 2, 2017 is day 1, December 31, 1969 is day -1, and November 2, 2017, is day 17,204.&lt;/p&gt;
+&lt;p&gt;Now how should we represent dates and times when analyzing data in R? We could just use days since the epoch, but then it is almost impossible to interpret. If I tell you it’s November 2, 2017, you know what this means immediately. If I tell you it’s day 17,204, you will be quite confused. Similar problems arise with times and even more complications can appear due to time zones.&lt;/p&gt;
+&lt;p&gt;For this reason, &lt;code&gt;R&lt;/code&gt; defines a data type just for dates and times. We saw an example in the polls data:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(tidyverse)
+library(dslabs)
+data(&amp;quot;polls_us_election_2016&amp;quot;)
+polls_us_election_2016$startdate %&amp;gt;% head&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;2016-11-03&amp;quot; &amp;quot;2016-11-01&amp;quot; &amp;quot;2016-11-02&amp;quot; &amp;quot;2016-11-04&amp;quot; &amp;quot;2016-11-03&amp;quot;
+## [6] &amp;quot;2016-11-03&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;These look like strings, but they are not:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;class(polls_us_election_2016$startdate)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;Date&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Look at what happens when we convert them to numbers:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;as.numeric(polls_us_election_2016$startdate) %&amp;gt;% head&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 17108 17106 17107 17109 17108 17108&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;It turns them into days since the epoch. The &lt;code&gt;as.Date&lt;/code&gt; function can convert a character into a date. So to see that the epoch is day 0 we can type&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;as.Date(&amp;quot;1970-01-01&amp;quot;) %&amp;gt;% as.numeric&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 0&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Plotting functions, such as those in ggplot, are aware of the date format. This means that, for example, a scatterplot can use the numeric representation to decide on the position of the point, but include the string in the labels:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;polls_us_election_2016 %&amp;gt;% dplyr::filter(pollster == &amp;quot;Ipsos&amp;quot; &amp;amp; state ==&amp;quot;U.S.&amp;quot;) %&amp;gt;%
+  ggplot(aes(startdate, rawpoll_trump)) +
+  geom_line()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/11-content_files/figure-html/rawpolls-vs-time-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Note in particular that the month names are displayed, a very convenient feature.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;lubridate&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;The lubridate package&lt;/h2&gt;
+&lt;p&gt;The &lt;strong&gt;tidyverse&lt;/strong&gt; includes functionality for dealing with dates through the &lt;strong&gt;lubridate&lt;/strong&gt; package.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(lubridate)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;We will take a random sample of dates to show some of the useful things one can do:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;set.seed(2002)
+dates &amp;lt;- sample(polls_us_election_2016$startdate, 10) %&amp;gt;% sort
+dates&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;##  [1] &amp;quot;2016-05-31&amp;quot; &amp;quot;2016-08-08&amp;quot; &amp;quot;2016-08-19&amp;quot; &amp;quot;2016-09-22&amp;quot; &amp;quot;2016-09-27&amp;quot;
+##  [6] &amp;quot;2016-10-12&amp;quot; &amp;quot;2016-10-24&amp;quot; &amp;quot;2016-10-26&amp;quot; &amp;quot;2016-10-29&amp;quot; &amp;quot;2016-10-30&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The functions &lt;code&gt;year&lt;/code&gt;, &lt;code&gt;month&lt;/code&gt; and &lt;code&gt;day&lt;/code&gt; extract those values:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;tibble(date = dates,
+       month = month(dates),
+       day = day(dates),
+       year = year(dates))&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 10 x 4
+##    date       month   day  year
+##    &amp;lt;date&amp;gt;     &amp;lt;dbl&amp;gt; &amp;lt;int&amp;gt; &amp;lt;dbl&amp;gt;
+##  1 2016-05-31     5    31  2016
+##  2 2016-08-08     8     8  2016
+##  3 2016-08-19     8    19  2016
+##  4 2016-09-22     9    22  2016
+##  5 2016-09-27     9    27  2016
+##  6 2016-10-12    10    12  2016
+##  7 2016-10-24    10    24  2016
+##  8 2016-10-26    10    26  2016
+##  9 2016-10-29    10    29  2016
+## 10 2016-10-30    10    30  2016&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;We can also extract the month labels:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;month(dates, label = TRUE)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;##  [1] May Aug Aug Sep Sep Oct Oct Oct Oct Oct
+## 12 Levels: Jan &amp;lt; Feb &amp;lt; Mar &amp;lt; Apr &amp;lt; May &amp;lt; Jun &amp;lt; Jul &amp;lt; Aug &amp;lt; Sep &amp;lt; ... &amp;lt; Dec&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Another useful set of functions are the &lt;em&gt;parsers&lt;/em&gt; that convert strings into dates. The function &lt;code&gt;ymd&lt;/code&gt; assumes the dates are in the format YYYY-MM-DD and tries to parse as well as possible.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;x &amp;lt;- c(20090101, &amp;quot;2009-01-02&amp;quot;, &amp;quot;2009 01 03&amp;quot;, &amp;quot;2009-1-4&amp;quot;,
+       &amp;quot;2009-1, 5&amp;quot;, &amp;quot;Created on 2009 1 6&amp;quot;, &amp;quot;200901 !!! 07&amp;quot;)
+ymd(x)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;2009-01-01&amp;quot; &amp;quot;2009-01-02&amp;quot; &amp;quot;2009-01-03&amp;quot; &amp;quot;2009-01-04&amp;quot; &amp;quot;2009-01-05&amp;quot;
+## [6] &amp;quot;2009-01-06&amp;quot; &amp;quot;2009-01-07&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;A further complication comes from the fact that dates often come in different formats in which the order of year, month, and day are different. The preferred format is to show year (with all four digits), month (two digits), and then day, or what is called the ISO 8601. Specifically we use YYYY-MM-DD so that if we order the string, it will be ordered by date. You can see the function &lt;code&gt;ymd&lt;/code&gt; returns them in this format.&lt;/p&gt;
+&lt;p&gt;But, what if you encounter dates such as “09/01/02”? This could be September 1, 2002 or January 2, 2009 or January 9, 2002.
+In these cases, examining the entire vector of dates will help you determine what format it is by process of elimination. Once you know, you can use the many parses provided by &lt;strong&gt;lubridate&lt;/strong&gt;.&lt;/p&gt;
+&lt;p&gt;For example, if the string is:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;x &amp;lt;- &amp;quot;09/01/02&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The &lt;code&gt;ymd&lt;/code&gt; function assumes the first entry is the year, the second is the month, and the third is the day, so it converts it to:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ymd(x)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;2009-01-02&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The &lt;code&gt;mdy&lt;/code&gt; function assumes the first entry is the month, then the day, then the year:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;mdy(x)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;2002-09-01&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The &lt;em&gt;lubridate&lt;/em&gt; package provides a function for every possibility:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ydm(x)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;2009-02-01&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;myd(x)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;2001-09-02&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;dmy(x)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;2002-01-09&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;dym(x)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;2001-02-09&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The &lt;strong&gt;lubridate&lt;/strong&gt; package is also useful for dealing with times. In R base, you can get the current time typing &lt;code&gt;Sys.time()&lt;/code&gt;. The &lt;strong&gt;lubridate&lt;/strong&gt; package provides a slightly more advanced function, &lt;code&gt;now&lt;/code&gt;, that permits you to define the time zone:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;now()&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;2022-03-23 06:53:58 EDT&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;now(&amp;quot;GMT&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;2022-03-23 10:53:58 GMT&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;You can see all the available time zones with &lt;code&gt;OlsonNames()&lt;/code&gt; function.&lt;/p&gt;
+&lt;p&gt;We can also extract hours, minutes, and seconds:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;now() %&amp;gt;% hour()&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 6&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;now() %&amp;gt;% minute()&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 53&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;now() %&amp;gt;% second()&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 58.22048&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The package also includes a function to parse strings into times as well as parsers for time objects that include dates:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;x &amp;lt;- c(&amp;quot;12:34:56&amp;quot;)
+hms(x)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;12H 34M 56S&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;x &amp;lt;- &amp;quot;Nov/2/2012 12:34:56&amp;quot;
+mdy_hms(x)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;2012-11-02 12:34:56 UTC&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;This package has many other useful functions. We describe two of these here that we find particularly useful.&lt;/p&gt;
+&lt;p&gt;The &lt;code&gt;make_date&lt;/code&gt; function can be used to quickly create a date object. It takes three arguments: year, month, day, hour, minute, seconds, and time zone defaulting to the epoch values on UTC time. So create an date object representing, for example, July 6, 2019 we write:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;make_date(2019, 7, 6)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;2019-07-06&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;To make a vector of January 1 for the 80s we write:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;make_date(1980:1989)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;##  [1] &amp;quot;1980-01-01&amp;quot; &amp;quot;1981-01-01&amp;quot; &amp;quot;1982-01-01&amp;quot; &amp;quot;1983-01-01&amp;quot; &amp;quot;1984-01-01&amp;quot;
+##  [6] &amp;quot;1985-01-01&amp;quot; &amp;quot;1986-01-01&amp;quot; &amp;quot;1987-01-01&amp;quot; &amp;quot;1988-01-01&amp;quot; &amp;quot;1989-01-01&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Another very useful function is the &lt;code&gt;round_date&lt;/code&gt;. It can be used to &lt;em&gt;round&lt;/em&gt; dates to nearest year, quarter, month, week, day, hour, minutes, or seconds. So if we want to group all the polls by week of the year we can do the following:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;polls_us_election_2016 %&amp;gt;%
+  mutate(week = round_date(startdate, &amp;quot;week&amp;quot;)) %&amp;gt;%
+  group_by(week) %&amp;gt;%
+  summarize(margin = mean(rawpoll_clinton - rawpoll_trump)) %&amp;gt;%
+  qplot(week, margin, data = .)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/11-content_files/figure-html/poll-margin-versus-week-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Date objects can be added to and subtracted from with &lt;code&gt;hours&lt;/code&gt;, &lt;code&gt;minutes&lt;/code&gt;, etc.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;startDate &amp;lt;- ymd_hms(&amp;#39;2021-06-14 12:20:57&amp;#39;)
+
+startDate + seconds(4)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;2021-06-14 12:21:01 UTC&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;startDate + hours(1) + days(2) - seconds(10)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;2021-06-16 13:20:47 UTC&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;You can even calculate time differences in specific units:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;endDate = ymd_hms(&amp;#39;2021-06-15 01:00:00&amp;#39;)
+
+endDate - startDate&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Time difference of 12.65083 hours&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;difftime(endDate, startDate, units = &amp;#39;days&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Time difference of 0.5271181 days&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Note that both of these result in a &lt;code&gt;difftime&lt;/code&gt; object. You can use &lt;code&gt;as.numeric(difftime(endDate, startDate))&lt;/code&gt; to get the numeric difference in times.&lt;/p&gt;
+&lt;p&gt;Sequences can be created as well:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;seq(from = startDate, to = endDate, by = &amp;#39;hour&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;##  [1] &amp;quot;2021-06-14 12:20:57 UTC&amp;quot; &amp;quot;2021-06-14 13:20:57 UTC&amp;quot;
+##  [3] &amp;quot;2021-06-14 14:20:57 UTC&amp;quot; &amp;quot;2021-06-14 15:20:57 UTC&amp;quot;
+##  [5] &amp;quot;2021-06-14 16:20:57 UTC&amp;quot; &amp;quot;2021-06-14 17:20:57 UTC&amp;quot;
+##  [7] &amp;quot;2021-06-14 18:20:57 UTC&amp;quot; &amp;quot;2021-06-14 19:20:57 UTC&amp;quot;
+##  [9] &amp;quot;2021-06-14 20:20:57 UTC&amp;quot; &amp;quot;2021-06-14 21:20:57 UTC&amp;quot;
+## [11] &amp;quot;2021-06-14 22:20:57 UTC&amp;quot; &amp;quot;2021-06-14 23:20:57 UTC&amp;quot;
+## [13] &amp;quot;2021-06-15 00:20:57 UTC&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&#34;footnotes&#34;&gt;
+&lt;hr /&gt;
+&lt;ol&gt;
+&lt;li id=&#34;fn1&#34;&gt;&lt;p&gt;&lt;a href=&#34;https://github.com/rstudio/cheatsheets&#34; class=&#34;uri&#34;&gt;https://github.com/rstudio/cheatsheets&lt;/a&gt;&lt;a href=&#34;#fnref1&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li id=&#34;fn2&#34;&gt;&lt;p&gt;&lt;a href=&#34;https://github.com/rstudio/cheatsheets/blob/master/LICENSE&#34; class=&#34;uri&#34;&gt;https://github.com/rstudio/cheatsheets/blob/master/LICENSE&lt;/a&gt;&lt;a href=&#34;#fnref2&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li id=&#34;fn3&#34;&gt;&lt;p&gt;&lt;a href=&#34;https://github.com/rstudio/cheatsheets&#34; class=&#34;uri&#34;&gt;https://github.com/rstudio/cheatsheets&lt;/a&gt;&lt;a href=&#34;#fnref3&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li id=&#34;fn4&#34;&gt;&lt;p&gt;&lt;a href=&#34;https://github.com/rstudio/cheatsheets/blob/master/LICENSE&#34; class=&#34;uri&#34;&gt;https://github.com/rstudio/cheatsheets/blob/master/LICENSE&lt;/a&gt;&lt;a href=&#34;#fnref4&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Geospatial with R</title>
+      <link>https://ssc442kirkpatrick.netlify.app/content/13-content/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>https://ssc442kirkpatrick.netlify.app/content/13-content/</guid>
+      <description>
+&lt;script src=&#34;https://ssc442kirkpatrick.netlify.app/rmarkdown-libs/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
+
+&lt;div id=&#34;TOC&#34;&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#required-reading&#34;&gt;Required Reading&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#guiding-questions&#34;&gt;Guiding Questions&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#geospatial-in-r&#34;&gt;Geospatial in R&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#vector-vs.-raster&#34;&gt;Vector vs. Raster&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#vectors-are-scalable.-rasters-are-not&#34;&gt;Vectors are scalable. Rasters are not&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#vectors-points-lines-and-polygons&#34;&gt;Vectors: points, lines, and polygons&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#making-polygons&#34;&gt;Making polygons&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#getting-points-on-a-plot&#34;&gt;Getting points on a plot&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#making-lines&#34;&gt;Making lines&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#reading-spatial-data&#34;&gt;Reading spatial data&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#where-to-find-spatial-data&#34;&gt;Where to find spatial data&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#loading-the-data&#34;&gt;Loading the data&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#projections-briefly&#34;&gt;Projections, briefly&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#spatial-merges&#34;&gt;Spatial merges&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#point-to-polygon-merges&#34;&gt;Point-to-polygon merges&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#mapview&#34;&gt;Mapview&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#polygon-to-polygon-merges&#34;&gt;Polygon-to-polygon merges&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#summarizing&#34;&gt;Summarizing&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#cropping-vs.-merging&#34;&gt;Cropping vs. merging&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#bounding-boxes&#34;&gt;Bounding boxes&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#distance-matrices&#34;&gt;Distance matrices&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#st_nearest_feature&#34;&gt;st_nearest_feature&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#other-resources&#34;&gt;Other resources&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+
+&lt;div id=&#34;required-reading&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Required Reading&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;This page.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div id=&#34;guiding-questions&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Guiding Questions&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;What are the building blocks of geospatial data?&lt;/li&gt;
+&lt;li&gt;How do we handle uniquely geospatial properties like distance or spatial correlation?&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;geospatial-in-r&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Geospatial in R&lt;/h1&gt;
+&lt;p&gt;We will need a handful of new packages for our introduction to geospatial analysis in R. The primary package we will interact with is the &lt;code&gt;sf&lt;/code&gt; package. &lt;code&gt;sf&lt;/code&gt; stands for “simple features.” It has become the standard for geospatial work in R, and relies on the &lt;code&gt;rgeos&lt;/code&gt; and &lt;code&gt;rgdal&lt;/code&gt; libraries (which are themselves &lt;code&gt;R&lt;/code&gt; compilations of the &lt;code&gt;geos&lt;/code&gt; and &lt;code&gt;gdal&lt;/code&gt; libraries). Documentation of sf &lt;a href=&#34;https://r-spatial.github.io/sf/&#34;&gt;can be found here&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;We will also use the &lt;code&gt;mapview&lt;/code&gt; package, as well as the &lt;code&gt;tmaptools&lt;/code&gt; package. Plus, we’ll use &lt;code&gt;tigris&lt;/code&gt; to get state boundaries and &lt;code&gt;tidycensus&lt;/code&gt; to pull down census maps. Install those, and any of the many dependencies that they also install.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(sf)
+library(mapview)
+library(tigris)
+library(tidycensus)
+library(tidyverse)
+library(tmaptools)&lt;/code&gt;&lt;/pre&gt;
+&lt;div id=&#34;vector-vs.-raster&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Vector vs. Raster&lt;/h2&gt;
+&lt;p&gt;There are two ways of storing 2-D mapped spatial data, &lt;em&gt;raster&lt;/em&gt; and &lt;em&gt;vector&lt;/em&gt;. A &lt;em&gt;vector&lt;/em&gt; representation of a 2-D shape is best described as an irregular polygon with points defining vertices. A square plotted in cartesian coordinates is a vector representation. Conversely, a &lt;em&gt;raster&lt;/em&gt; image is a grid of cells where each cell is defined as “in” or “out” of the square. Most computer graphics like JPEG and TIFF are raster graphics and each pixel has an assigned color. To make a raster image of a blue square, we’d make a big grid of pixels, and then color some blue based on their location. To make a blue square in vector form, we’d record &lt;em&gt;just the location of the corners&lt;/em&gt; and add instructions to color inside the polygon formed by those corners blue.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://vector-conversions.com/images/vector_vs_raster.jpg&#34; width=&#34;50%&#34; /&gt;&lt;/p&gt;
+&lt;div id=&#34;vectors-are-scalable.-rasters-are-not&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Vectors are scalable. Rasters are not&lt;/h3&gt;
+&lt;p&gt;Rasters are great for detail, like pixels in a picture, but they do not scale up very well. Vectors are great for things that do need to scale up. They are also smaller and easier to work with when they aren’t trying to replicate photo-realistic images. Vectors can handle curves by recording the properties of the curve (e.g. bezier curves), while rasters have to approximate curves along the grid of cells, so if you want a smooth curve, you need lots of cells.&lt;/p&gt;
+&lt;p&gt;Geospatial work is almost always done in vectors because (1) it is easier to store data as vectors, and (2) it is easier to manipulate, project, intersect, or connect vector points, lines, and polygons.&lt;/p&gt;
+&lt;p&gt;We are going to work entirely with vectors today.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;vectors-points-lines-and-polygons&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Vectors: points, lines, and polygons&lt;/h1&gt;
+&lt;p&gt;Most everything we would want to map can be represented as a point, a line, or a polygon. Points could be the location of power plants in the US, or the location of COVID cases, or the location of major intersections. Lines could be the location of train tracks, the shortest distance between someone’s house and the nearest restaurants, or a major road. Polygons could be county boundaries, landowner’s lot lines, or bodies of water.&lt;/p&gt;
+&lt;p&gt;We can start by making some points, then turning them into a polygon. We’ll just use arbitrary coordinates for now, but will move into GPS latitude-longitude coordinates shortly. We’ll use &lt;code&gt;st_multipoint&lt;/code&gt; to create our points object. It takes a numeric matrix only.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;myPoints = tribble(~X, ~Y,
+                   0, 0,
+                   0, 4,
+                   1, 4,
+                   1, 1,
+                   .5, 0,
+                   0, 0)
+
+myPoints = st_multipoint(as.matrix(myPoints))
+plot(myPoints)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/13-content_files/figure-html/unnamed-chunk-3-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;div id=&#34;making-polygons&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Making polygons&lt;/h3&gt;
+&lt;p&gt;We’ve begun making our first spatial object! Now, we can turn it into a polygon under one condition: the polygon has to “close” in order for R to know which side is the inside. In &lt;code&gt;myPoints&lt;/code&gt;, the &lt;em&gt;last&lt;/em&gt; point is identical to the &lt;em&gt;first&lt;/em&gt; point, so R will “close” it:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;plot(st_polygon(list(myPoints)), col = &amp;#39;darkgreen&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/13-content_files/figure-html/unnamed-chunk-4-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;That’s just one polylgon. Let’s add another one. When we created the polygon, we put the points object, &lt;code&gt;myPoints&lt;/code&gt;, into a list. If we have a list of, say, two points objects, then we’ll get two polygons:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;myPoints2 = tribble(~X, ~Y,
+                    1,1,
+                    2,1,
+                    2,2,
+                    1,2,
+                    1,1)
+                    
+myPoints2 = st_multipoint(as.matrix(myPoints2))
+
+myPolygons = st_polygon(list(myPoints, myPoints2))
+plot(myPolygons, col = &amp;#39;lightblue&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/13-content_files/figure-html/unnamed-chunk-5-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Now we can see two polygons. Looking at the &lt;code&gt;str&lt;/code&gt;ucture of the polygons:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;str(myPolygons)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## List of 2
+##  $ : &amp;#39;XY&amp;#39; num [1:6, 1:2] 0 0 1 1 0.5 0 0 4 4 1 ...
+##   ..- attr(*, &amp;quot;dimnames&amp;quot;)=List of 2
+##   .. ..$ : NULL
+##   .. ..$ : chr [1:2] &amp;quot;X&amp;quot; &amp;quot;Y&amp;quot;
+##  $ : &amp;#39;XY&amp;#39; num [1:5, 1:2] 1 2 2 1 1 1 1 2 2 1
+##   ..- attr(*, &amp;quot;dimnames&amp;quot;)=List of 2
+##   .. ..$ : NULL
+##   .. ..$ : chr [1:2] &amp;quot;X&amp;quot; &amp;quot;Y&amp;quot;
+##  - attr(*, &amp;quot;class&amp;quot;)= chr [1:3] &amp;quot;XY&amp;quot; &amp;quot;POLYGON&amp;quot; &amp;quot;sfg&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Notice that one of the classes is &lt;code&gt;sfg&lt;/code&gt;. This is a &lt;code&gt;sf&lt;/code&gt; package-defined spatial object.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;getting-points-on-a-plot&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Getting points on a plot&lt;/h3&gt;
+&lt;p&gt;One little-known trick in R is super helpful in spatial work. If you &lt;code&gt;plot(myPolygons)&lt;/code&gt; in your own R-studio console (so it appears in your “Plots” pane, not knit into your document), you can use &lt;code&gt;click(n)&lt;/code&gt; to interactively get &lt;span class=&#34;math inline&#34;&gt;\(n\)&lt;/span&gt; spatial points in the coordinate system of your plot.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;myClicks = click(n = 3)
+myClicks = rbind(myClicks, myClicks[1,])  # copy the first point to the last point to &amp;quot;close&amp;quot;
+myNewPolygon = st_polygon(list(st_multipoint(myClicks)))
+plot(myPolygons, col = &amp;#39;lightblue&amp;#39;)
+plot(myNewPolygon, col = &amp;#39;green&amp;#39;, add=T)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/13-content_files/figure-html/unnamed-chunk-8-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;making-lines&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Making lines&lt;/h3&gt;
+&lt;p&gt;We could also create a line with our points. I’ll leave off the one point we added to “close” the polygon. Note that the line is colored blue, not the (uncompleted) polygon.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;myLine = st_linestring(myPoints[1:4,])
+plot(myLine, col = &amp;#39;blue&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/13-content_files/figure-html/unnamed-chunk-9-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;reading-spatial-data&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Reading spatial data&lt;/h1&gt;
+&lt;p&gt;While it’s fun to draw our own shapes (caution: my definition of fun &lt;span class=&#34;math inline&#34;&gt;\(\neq\)&lt;/span&gt; your definition of fun), we’re probably most interested in finding and using existing spatial data. Let’s talk briefly about the types of spatial data out there:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Shapefiles
+&lt;ul&gt;
+&lt;li&gt;Shapefiles are not actually single files - they’re usually 4-6 files with similar names and different suffixes like .dbf, .shx, etc. This is because the shapefile format kind of pre-dates our current way of thinking of file storage. The most common program for reading or making shapefiles is ESRI’s ArcGIS. It is expensive, cumbersome, and some may say bloated. Our goal in this section is to be able to rescue shapefiles from the clutches of ArcGIS and open them in R&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;GEOJSON
+&lt;ul&gt;
+&lt;li&gt;JSON is a way of structuring text data (like a .csv) but with the potential for nests in the data (like our &lt;code&gt;list&lt;/code&gt; object) where each nest has a different data structure. GEOJSON pairs this with &lt;strong&gt;WKT&lt;/strong&gt; or Well-Known Text representations of coordinates and takes care of making sure that each observation in the JSON data has a corresponding polygon in WKT coordinates.&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;KML
+&lt;ul&gt;
+&lt;li&gt;Bare-bones storage of coordinates and basic data&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;.RDS
+&lt;ul&gt;
+&lt;li&gt;Okay, this is just R’s native data type for storage, but it’s really helpful for storing &lt;code&gt;sf&lt;/code&gt; objects&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;Comma separated values (.csv)
+&lt;ul&gt;
+&lt;li&gt;Just like the CSV’s we’ve been using, but with Latitude and Longitude columns. Only works for points (one point per .csv line), but is very commonly found. We can use &lt;code&gt;st_as_sf&lt;/code&gt; to tell R which columns are the latitude and longitude.&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;We can open and use any one of these filetypes. I will cover Shapefiles and GEOJSON as the latter has become a very popular way of sharing spatial datasets.&lt;/p&gt;
+&lt;div id=&#34;where-to-find-spatial-data&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Where to find spatial data&lt;/h3&gt;
+&lt;p&gt;Spatial data is all around us! Try searching google for a topic + “spatial shapefile”. One of my favorite sources for spatial data is the DHS &lt;a href=&#34;https://hifld-geoplatform.opendata.arcgis.com/&#34;&gt;HIFLD Open database&lt;/a&gt;, which has lots of government datasets that are well-organized by category. Click through, and when you find something you like, click the “Download” button. If there is a GEOJSON or KML file available, &lt;strong&gt;right-click&lt;/strong&gt; and copy the link address. Then, use that with &lt;code&gt;st_read()&lt;/code&gt;. On many maps (including this one), the GeoJSON link is shown under the API drop-down. Use GeoJSON over KML as some systems have issues importing the data fields in KML.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;loading-the-data&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Loading the data&lt;/h3&gt;
+&lt;p&gt;We’ll use the &lt;code&gt;sf&lt;/code&gt; package’s &lt;code&gt;st_read&lt;/code&gt; to open spatial data. Here, I’m loading the Natural Gas Processing Plants data from the Energy section of HIFLD. I’m using the &lt;strong&gt;GeoJSON&lt;/strong&gt; option, which &lt;code&gt;st_read()&lt;/code&gt; knows how to handle:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;gasplants = st_read(&amp;#39;https://opendata.arcgis.com/datasets/ca984888f8154c63bf3a023f0a1f9ac2_0.geojson&amp;#39;) %&amp;gt;%
+  dplyr::select(name = NAME)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Reading layer `Natural_Gas_Processing_Plants&amp;#39; from data source 
+##   `https://opendata.arcgis.com/datasets/ca984888f8154c63bf3a023f0a1f9ac2_0.geojson&amp;#39; 
+##   using driver `GeoJSON&amp;#39;
+## Simple feature collection with 840 features and 44 fields
+## Geometry type: POINT
+## Dimension:     XY
+## Bounding box:  xmin: -158.0906 ymin: 21.30889 xmax: -78.6591 ymax: 65.2873
+## Geodetic CRS:  WGS 84&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;head(gasplants)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Simple feature collection with 6 features and 1 field
+## Geometry type: POINT
+## Dimension:     XY
+## Bounding box:  xmin: -88.1682 ymin: 30.94855 xmax: -86.88647 ymax: 31.29632
+## Geodetic CRS:  WGS 84
+##                               name                   geometry
+## 1              CHUNCHULA GAS PLANT  POINT (-88.1682 30.94855)
+## 2         ATMORE TREATING FACILITY POINT (-87.43715 31.17234)
+## 3    FLARE-BUTLER STREET GAS PLANT POINT (-87.42975 31.24128)
+## 4     BIG ESCAMBIA CREEK GAS PLANT POINT (-87.36302 31.07158)
+## 5               DOGWOOD OAKS PLANT POINT (-87.18784 31.24347)
+## 6 CASTLEBERRY GAS PROCESSING PLANT POINT (-86.88647 31.29632)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The &lt;code&gt;sf&lt;/code&gt; data type holds both the data (which here is just the name of the plant) &lt;em&gt;and&lt;/em&gt; the “geometry”, which are the points. It’s tidy data - one row is one observation of one plant, and each row has a set of coordinates telling us where to find the plant.&lt;/p&gt;
+&lt;p&gt;We can use ggplot with &lt;code&gt;geom_sf()&lt;/code&gt; to plot these points. They’re just scattered across the country and we don’t automatically get a background map, but here are the points&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(gasplants) + geom_sf() + theme_minimal()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/13-content_files/figure-html/unnamed-chunk-11-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Well, we’re missing some context here – we can kind of make out the point of Texas down there, but it’s hard to tell anything about where these plants are located. Let’s use &lt;code&gt;tidycensus&lt;/code&gt; to get a map of the US, then plot it plus the points. Note we use different &lt;code&gt;data =&lt;/code&gt; in each of the &lt;code&gt;geom_sf()&lt;/code&gt; calls:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;US &amp;lt;- states(cb = TRUE, progress_bar = FALSE)  # tidycensus maps
+
+ggplot() + geom_sf(data = US, col = &amp;#39;gray50&amp;#39;) +
+  geom_sf(data = gasplants) + theme_minimal()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/13-content_files/figure-html/unnamed-chunk-12-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Getting there. The problem now is that the &lt;code&gt;tigris&lt;/code&gt; data covers all US territories, which are really spread out! Let’s drop down to just Michigan. We can use good old &lt;code&gt;filter&lt;/code&gt; just like with regular data:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;MI = states(cb = TRUE) %&amp;gt;% dplyr::filter(STUSPS==&amp;#39;MI&amp;#39;)
+
+ggplot() + geom_sf(data = MI, col = &amp;#39;gray50&amp;#39;) +
+  geom_sf(data = gasplants) + theme_minimal()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/13-content_files/figure-html/unnamed-chunk-13-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Well, now we have a different problem. We want to have only the &lt;code&gt;gasplants&lt;/code&gt; that are &lt;code&gt;over&lt;/code&gt; the state of Michigan. That requires a &lt;strong&gt;spatial join&lt;/strong&gt;. Luckily, our &lt;code&gt;tidyverse&lt;/code&gt; syntax &lt;strong&gt;works pretty seamlessly on &lt;code&gt;sf&lt;/code&gt; objects&lt;/strong&gt;. First, we have to take care of a little issue with spatial data. The &lt;strong&gt;projection&lt;/strong&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;projections-briefly&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Projections, briefly&lt;/h3&gt;
+&lt;p&gt;The &lt;em&gt;projection&lt;/em&gt; for spatial data is the translation from a 3-D object (e.g. the globe) to a 2-D space (a map, or the cartesian x-y coordinates of our screen). This is no simple matter! There are entire PhD programs dedicated to forming and processing projections and datum (which refer to the shape of the globe, which is not actually round). It can all be a nightmare. Worst of all, projections determine the definition of your coordinates, so you may be at -81 latitude, +30 longitude, but in another projection, you might be 1245349m above some reference point, and -2452849m to the left of that point. Projections define the distance along the X and Y axis, the scale of the coordinates, and a lot of other stuff about your 2-D polygons.&lt;/p&gt;
+&lt;p&gt;Luckily, over the last few years, very smart people have been working on regularizing “projections”. Now, we really need to know three things:&lt;/p&gt;
+&lt;ol style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;The &lt;em&gt;projection&lt;/em&gt; of your data’s coordinates when you read it in&lt;/li&gt;
+&lt;li&gt;The &lt;em&gt;projection&lt;/em&gt; you want your data to be in when you map it&lt;/li&gt;
+&lt;li&gt;The &lt;em&gt;projection&lt;/em&gt; of other spatial data you may want to combine.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div id=&#34;importing-projected-data&#34; class=&#34;section level4&#34;&gt;
+&lt;h4&gt;Importing projected data&lt;/h4&gt;
+&lt;p&gt;GEOJSON, shapefiles, and KML files usually come with embedded projections stored as &lt;strong&gt;EPSG&lt;/strong&gt; numbers like ‘4326’ (incidentally, ‘4326’ is the usual projection for GPS coordinates). Thus, the first one is usually already taken care of. If your data doesnt have a PROJ4 or EPSG number but the coordinates are all between -180 and +180, it’s likely in EPSG=4326. If none of those, then the data creator should have &lt;em&gt;metadata&lt;/em&gt; stating the proejction. It might take some googling and some trial and error.&lt;/p&gt;
+&lt;p&gt;For mapping, you might need to &lt;em&gt;transform&lt;/em&gt; your data between projections (or “reproject” it, same thing). We use &lt;code&gt;st_transform&lt;/code&gt; for this. We only need to give &lt;code&gt;R&lt;/code&gt; the EPSG (Geodetic Parameter Dataset) of the projection you want to end up in. As long as it’s already in a known projection, &lt;code&gt;R&lt;/code&gt; can re-project it. The projection is refered to by the Coordinate Reference System (CRS). &lt;code&gt;st_crs&lt;/code&gt; will tell us the projection (EPSG number and a lot more) of any spatial object. If they do not match, then &lt;code&gt;R&lt;/code&gt; will give an error or, worse, plot them on totally different scales - sometimes you end up with points from the US landing in the middle of the Indian Ocean! In fact, look back at our map of gas plants and the US.&lt;/p&gt;
+&lt;div class=&#34;Notice&#34;&gt;
+&lt;p&gt;Did you notice that a lot of the US gas plants mapped to…Canada? Those might be Alaskan plants, but the &lt;em&gt;projections&lt;/em&gt; were not identical, so the definition of coordinates were different between our US map and our gas plants maps. Neither is “right” or “wrong” - they just have to be the same. Differences in projections tend to be worse at the extreme latitudes.&lt;/p&gt;
+&lt;/div&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;st_crs(gasplants)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Coordinate Reference System:
+##   User input: WGS 84 
+##   wkt:
+## GEOGCRS[&amp;quot;WGS 84&amp;quot;,
+##     DATUM[&amp;quot;World Geodetic System 1984&amp;quot;,
+##         ELLIPSOID[&amp;quot;WGS 84&amp;quot;,6378137,298.257223563,
+##             LENGTHUNIT[&amp;quot;metre&amp;quot;,1]]],
+##     PRIMEM[&amp;quot;Greenwich&amp;quot;,0,
+##         ANGLEUNIT[&amp;quot;degree&amp;quot;,0.0174532925199433]],
+##     CS[ellipsoidal,2],
+##         AXIS[&amp;quot;geodetic latitude (Lat)&amp;quot;,north,
+##             ORDER[1],
+##             ANGLEUNIT[&amp;quot;degree&amp;quot;,0.0174532925199433]],
+##         AXIS[&amp;quot;geodetic longitude (Lon)&amp;quot;,east,
+##             ORDER[2],
+##             ANGLEUNIT[&amp;quot;degree&amp;quot;,0.0174532925199433]],
+##     ID[&amp;quot;EPSG&amp;quot;,4326]]&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;st_crs(MI)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Coordinate Reference System:
+##   User input: NAD83 
+##   wkt:
+## GEOGCRS[&amp;quot;NAD83&amp;quot;,
+##     DATUM[&amp;quot;North American Datum 1983&amp;quot;,
+##         ELLIPSOID[&amp;quot;GRS 1980&amp;quot;,6378137,298.257222101,
+##             LENGTHUNIT[&amp;quot;metre&amp;quot;,1]]],
+##     PRIMEM[&amp;quot;Greenwich&amp;quot;,0,
+##         ANGLEUNIT[&amp;quot;degree&amp;quot;,0.0174532925199433]],
+##     CS[ellipsoidal,2],
+##         AXIS[&amp;quot;latitude&amp;quot;,north,
+##             ORDER[1],
+##             ANGLEUNIT[&amp;quot;degree&amp;quot;,0.0174532925199433]],
+##         AXIS[&amp;quot;longitude&amp;quot;,east,
+##             ORDER[2],
+##             ANGLEUNIT[&amp;quot;degree&amp;quot;,0.0174532925199433]],
+##     ID[&amp;quot;EPSG&amp;quot;,4269]]&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;One is in 4326, the other in 4269. We can use &lt;code&gt;st_transform&lt;/code&gt; on the &lt;code&gt;gasplants&lt;/code&gt; data, which will reproject the points (and won’t change the data at all). The data won’t be any different, and the points won’t look too much different&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;gasplants = gasplants %&amp;gt;%
+  st_transform(st_crs(MI))
+
+ggplot(gasplants) + geom_sf() + theme_minimal()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/13-content_files/figure-html/unnamed-chunk-15-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;importing-unprojected-data&#34; class=&#34;section level4&#34;&gt;
+&lt;h4&gt;Importing unprojected data&lt;/h4&gt;
+&lt;p&gt;Sometimes, we have data only in .csv format, but with X and Y coordinates (e.g. Longitude and Latitude). To import this data, we do the following:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Read in from .csv, .xls, etc.&lt;/li&gt;
+&lt;li&gt;Determine the CRS of the data (usually 4326 for gps coordinates)&lt;/li&gt;
+&lt;li&gt;Set the spatial coordinates and CRS&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;We know how to do the first, and the 2nd and 3rd are done in one step. We’ll make a data.frame of city names and use the &lt;code&gt;tmaptools&lt;/code&gt; package’s &lt;code&gt;geocode_OSM&lt;/code&gt; to get the latitudes and longitudes of the city centers. This function uses open-source Open Street Maps instead of the google API (which is used by &lt;code&gt;ggmap&lt;/code&gt;). This way, we don’t need an API key.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ourCities = geocode_OSM(c(&amp;#39;Detroit&amp;#39;,&amp;#39;Lansing&amp;#39;,&amp;#39;Grand Rapids&amp;#39;,&amp;#39;Kalamazoo&amp;#39;,&amp;#39;Traverse City&amp;#39;,&amp;#39;Marquette&amp;#39;)) %&amp;gt;%
+  select(City = query, lat = lat, lon = lon)
+
+head(ourCities)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;##            City      lat       lon
+## 1       Detroit 42.33155 -83.04664
+## 2       Lansing 42.73377 -84.55538
+## 3  Grand Rapids 42.96324 -85.66786
+## 4     Kalamazoo 42.29171 -85.58723
+## 5 Traverse City 44.76064 -85.61653
+## 6     Marquette 46.44815 -87.63059&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Since these are GPS-type coordinates, we are going to assume the CRS is EPSG=4326. Longitude is the “x” axis, and latitude is the “y” axis.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ourCities.spatial = st_as_sf(ourCities, coords = c(&amp;#39;lon&amp;#39;,&amp;#39;lat&amp;#39;), crs = 4326)
+head(ourCities.spatial)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Simple feature collection with 6 features and 1 field
+## Geometry type: POINT
+## Dimension:     XY
+## Bounding box:  xmin: -87.63059 ymin: 42.29171 xmax: -83.04664 ymax: 46.44815
+## Geodetic CRS:  WGS 84
+##            City                   geometry
+## 1       Detroit POINT (-83.04664 42.33155)
+## 2       Lansing POINT (-84.55538 42.73377)
+## 3  Grand Rapids POINT (-85.66786 42.96324)
+## 4     Kalamazoo POINT (-85.58723 42.29171)
+## 5 Traverse City POINT (-85.61653 44.76064)
+## 6     Marquette POINT (-87.63059 46.44815)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Now we have the point geometries! We can map this:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot() +
+  geom_sf(data = MI, fill = &amp;#39;gray90&amp;#39;) +
+  geom_sf(data = ourCities.spatial, col = &amp;#39;blue&amp;#39;) +
+  theme_minimal()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/13-content_files/figure-html/unnamed-chunk-18-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;spatial-merges&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Spatial merges&lt;/h2&gt;
+&lt;p&gt;Combining spatial data is the strength of geospatial analysis. We have our map of MI, and we have out points. Let’s “merge” the points to the map, meaning let’s connect the elements in our map (the state of MI) to the elements in our points (gas plants). This is a point-to-polygon merge.&lt;/p&gt;
+&lt;div id=&#34;point-to-polygon-merges&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Point-to-polygon merges&lt;/h3&gt;
+&lt;p&gt;We’ll use &lt;code&gt;st_join&lt;/code&gt; to produce an inner join, so we keep only those points that are “in” (spatially) the state of Michigan. I’m specifying &lt;code&gt;join = st_intersects&lt;/code&gt; though this is the default. Note that all the points that remain in the merged &lt;code&gt;MI.gasplants&lt;/code&gt; are in Michigan, and note that all the data columns from &lt;code&gt;MI&lt;/code&gt; are now in &lt;code&gt;gasplants&lt;/code&gt;. We’ll use a county map of MI here so we will have the &lt;em&gt;county&lt;/em&gt; data for each county containing a gas plant.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;MI.counties = counties(state = &amp;#39;MI&amp;#39;, cb = TRUE, progress_bar = FALSE)
+
+MI.gasplants = gasplants %&amp;gt;%
+  st_transform(st_crs(MI.counties)) %&amp;gt;%
+  st_join(MI.counties, left = FALSE,
+          join = st_intersects)
+
+head(MI.gasplants)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Simple feature collection with 6 features and 10 fields
+## Geometry type: POINT
+## Dimension:     XY
+## Bounding box:  xmin: -85.36458 ymin: 42.61859 xmax: -82.73532 ymax: 44.69001
+## Geodetic CRS:  NAD83
+##                                     name STATEFP COUNTYFP COUNTYNS
+## 166                           MONITOR 11      26      017 01622951
+## 167                   DRZ (BEAVER CREEK)      26      039 01622962
+## 168 HIGHLAND CENTRAL PROCESSING FACILITY      26      125 01623005
+## 169                   KALKASKA GAS PLANT      26      079 01622982
+## 170          LENOX 36 CENTRAL PRODUCTION      26      099 01622992
+## 171                           SHERMAN 35      26      133 01623009
+##           AFFGEOID GEOID     NAME LSAD      ALAND    AWATER
+## 166 0500000US26017 26017      Bay   06 1145399057 488149217
+## 167 0500000US26039 26039 Crawford   06 1441077804  17917861
+## 168 0500000US26125 26125  Oakland   06 2245928625 103804387
+## 169 0500000US26079 26079 Kalkaska   06 1449729125  28020185
+## 170 0500000US26099 26099   Macomb   06 1241050552 237627819
+## 171 0500000US26133 26133  Osceola   06 1466674350  17425112
+##                       geometry
+## 166 POINT (-83.95389 43.62672)
+## 167 POINT (-84.81844 44.55881)
+## 168 POINT (-83.57433 42.61859)
+## 169 POINT (-85.19667 44.69001)
+## 170 POINT (-82.73532 42.73481)
+## 171 POINT (-85.36458 44.07761)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Now, we can plot the counties map with the gasplants over it. We can even use &lt;code&gt;aes(...)&lt;/code&gt; to &lt;code&gt;fill&lt;/code&gt; the counties:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot() + 
+  geom_sf(data = MI.counties, aes(fill = NAME), show.legend = F) +  
+  geom_sf(data = MI.gasplants) + 
+  theme_minimal()  &lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/13-content_files/figure-html/unnamed-chunk-20-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Huh. Most gas plants in Michigan are to the north of here. Interesting.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;mapview&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Mapview&lt;/h3&gt;
+&lt;p&gt;Sometimes, we want to be able to zoom in and out. &lt;code&gt;ggplot&lt;/code&gt; is static, so that won’t work too well. Thanks to the &lt;code&gt;leaflet&lt;/code&gt; engine, the &lt;code&gt;mapview&lt;/code&gt; packages is stellar for exploration of spatial data. You can specify &lt;code&gt;zcol = Name&lt;/code&gt; if you want to color by the &lt;code&gt;Name&lt;/code&gt; field. I can’t embed this in the website, but you can run this at home. It will appear in the “Viewer” pane, not in the “Plots” pane. Unlike the static image here, you will be able to zoom and pan.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;mapview(MI.gasplants)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;img/MIgas.png&#34; width=&#34;259&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;In an actual mapview window (not this static image here), clicking on the points or polygons will bring up a pop-up of the data for that row. Mapview is very useful for exploring your spatial data.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;polygon-to-polygon-merges&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Polygon-to-polygon merges&lt;/h3&gt;
+&lt;p&gt;The gas plants and state merge, above, was very simple because points are always either within or not within a polygon. Worst that can happen is some of your points are not over any polygon at all (resulting in &lt;code&gt;NA&lt;/code&gt; values). But what if you’re merging polygons to polygons?&lt;/p&gt;
+&lt;p&gt;First, let’s load some (overlapping) polygons. We can load up all of our states again (dropping the territories). We’ll also use a map of watersheds (which cross state boundaries). This is the HUC-4 map of the Rockies from the &lt;a href=&#34;https://hub.arcgis.com/datasets/7f8632f3e3114623b4f5c8f97d935dca_1?geometry=-157.095%2C32.305%2C-73.379%2C44.324&#34;&gt;US Geological Survey&lt;/a&gt;. The HUC-4 is a definition of a watershed where the area of the HUC-4 is the area drained by a major tributary:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;US = states(cb=TRUE) %&amp;gt;%
+  dplyr::filter(!STUSPS %in% c(&amp;#39;PR&amp;#39;,&amp;#39;GU&amp;#39;,&amp;#39;VI&amp;#39;,&amp;#39;MP&amp;#39;,&amp;#39;AS&amp;#39;,&amp;#39;AK&amp;#39;,&amp;#39;HI&amp;#39;))
+
+HUC4 = st_read(&amp;#39;https://opendata.arcgis.com/datasets/7f8632f3e3114623b4f5c8f97d935dca_1.kml&amp;#39;) %&amp;gt;%
+  st_transform(st_crs(US)) %&amp;gt;%
+  dplyr::mutate(randomData = rpois(n(), 20))&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Reading layer `USGS_NHD_Hydrologic_Units__HUCs_&amp;#39; from data source 
+##   `https://opendata.arcgis.com/datasets/7f8632f3e3114623b4f5c8f97d935dca_1.kml&amp;#39; 
+##   using driver `KML&amp;#39;
+## Simple feature collection with 12 features and 2 fields
+## Geometry type: POLYGON
+## Dimension:     XY
+## Bounding box:  xmin: -121.5779 ymin: 31.5082 xmax: -109.7625 ymax: 45.25827
+## Geodetic CRS:  WGS 84&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot() + 
+  geom_sf(data = US, col = &amp;#39;gray50&amp;#39;) +
+  geom_sf(data = HUC4, aes(fill = Name), show.legend = FALSE) + 
+  theme_minimal()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/13-content_files/figure-html/unnamed-chunk-22-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;These watersheds clearly overlap state boundaries. So what happens if we merge them? &lt;code&gt;sf&lt;/code&gt; will create a new obsveration (row) for every HUC-4 / State combination&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;poly.merge = HUC4 %&amp;gt;%
+  st_join(US, left = TRUE)
+
+head(poly.merge)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Simple feature collection with 6 features and 12 fields
+## Geometry type: POLYGON
+## Dimension:     XY
+## Bounding box:  xmin: -115.7061 ymin: 31.5082 xmax: -111.5061 ymax: 39.30285
+## Geodetic CRS:  NAD83
+##                         Name Description randomData STATEFP  STATENS
+## 1             Lower Colorado                     27      06 01779778
+## 1.1           Lower Colorado                     27      32 01779793
+## 1.2           Lower Colorado                     27      04 01779777
+## 2   Lower Colorado-Lake Mead                     18      49 01455989
+## 2.1 Lower Colorado-Lake Mead                     18      32 01779793
+## 2.2 Lower Colorado-Lake Mead                     18      04 01779777
+##        AFFGEOID GEOID STUSPS       NAME LSAD        ALAND      AWATER
+## 1   0400000US06    06     CA California   00 403660088482 20305454540
+## 1.1 0400000US32    32     NV     Nevada   00 284537049864  1839662829
+## 1.2 0400000US04    04     AZ    Arizona   00 294360282618   859561204
+## 2   0400000US49    49     UT       Utah   00 213355135666  6529910339
+## 2.1 0400000US32    32     NV     Nevada   00 284537049864  1839662829
+## 2.2 0400000US04    04     AZ    Arizona   00 294360282618   859561204
+##                           geometry
+## 1   POLYGON ((-114.6233 36.0304...
+## 1.1 POLYGON ((-114.6233 36.0304...
+## 1.2 POLYGON ((-114.6233 36.0304...
+## 2   POLYGON ((-115.0786 39.3005...
+## 2.1 POLYGON ((-115.0786 39.3005...
+## 2.2 POLYGON ((-115.0786 39.3005...&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Now, every HUC-4 like “Lower Colorado” has multiple observations, one for each STUSPS that it touches. When we plot it, though, each of those observations are still attached to the same HUC-4 polygon.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(poly.merge) + geom_sf() + 
+  theme_minimal()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/13-content_files/figure-html/unnamed-chunk-24-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;We have another option in our join - we can ask &lt;code&gt;st_join&lt;/code&gt; to keep just the &lt;code&gt;largest&lt;/code&gt;:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;poly.merge.largest = HUC4 %&amp;gt;%
+  st_join(US, left = TRUE, largest = TRUE)
+
+head(poly.merge.largest)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Simple feature collection with 6 features and 12 fields
+## Geometry type: POLYGON
+## Dimension:     XY
+## Bounding box:  xmin: -121.255 ymin: 31.5082 xmax: -111.5061 ymax: 42.3448
+## Geodetic CRS:  NAD83
+##                           Name Description randomData STATEFP  STATENS
+## 1               Lower Colorado                     27      04 01779777
+## 2     Lower Colorado-Lake Mead                     18      04 01779777
+## 3    Northern Mojave-Mono Lake                     15      06 01779778
+## 4 Central Nevada Desert Basins                     26      32 01779793
+## 5               North Lahontan                     23      06 01779778
+## 6   Black Rock Desert-Humboldt                     29      32 01779793
+##      AFFGEOID GEOID STUSPS       NAME LSAD        ALAND      AWATER
+## 1 0400000US04    04     AZ    Arizona   00 294360282618   859561204
+## 2 0400000US04    04     AZ    Arizona   00 294360282618   859561204
+## 3 0400000US06    06     CA California   00 403660088482 20305454540
+## 4 0400000US32    32     NV     Nevada   00 284537049864  1839662829
+## 5 0400000US06    06     CA California   00 403660088482 20305454540
+## 6 0400000US32    32     NV     Nevada   00 284537049864  1839662829
+##                         geometry
+## 1 POLYGON ((-114.6233 36.0304...
+## 2 POLYGON ((-115.0786 39.3005...
+## 3 POLYGON ((-118.7594 38.3208...
+## 4 POLYGON ((-114.7211 41.2410...
+## 5 POLYGON ((-120.1835 41.9743...
+## 6 POLYGON ((-117.9693 42.3430...&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Now, there is only &lt;em&gt;one&lt;/em&gt; observation per HUC-4, and it corresponds to the state that has the most overlap area-wise. For Lower Colorado, Arizona has the most overlap. There are lots of things besides &lt;code&gt;st_intersect&lt;/code&gt; we can use to call two things “joined”. &lt;code&gt;?st_join&lt;/code&gt; tells you about them. For instance, we can use &lt;code&gt;join = st_covers&lt;/code&gt; and we will only get a merge when HUC-4 completely covers the state.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;HUC4 %&amp;gt;%
+  st_join(US, left = TRUE, join = st_covers) %&amp;gt;%
+  head()&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Simple feature collection with 6 features and 12 fields
+## Geometry type: POLYGON
+## Dimension:     XY
+## Bounding box:  xmin: -121.255 ymin: 31.5082 xmax: -111.5061 ymax: 42.3448
+## Geodetic CRS:  NAD83
+##                           Name Description randomData STATEFP STATENS AFFGEOID
+## 1               Lower Colorado                     27    &amp;lt;NA&amp;gt;    &amp;lt;NA&amp;gt;     &amp;lt;NA&amp;gt;
+## 2     Lower Colorado-Lake Mead                     18    &amp;lt;NA&amp;gt;    &amp;lt;NA&amp;gt;     &amp;lt;NA&amp;gt;
+## 3    Northern Mojave-Mono Lake                     15    &amp;lt;NA&amp;gt;    &amp;lt;NA&amp;gt;     &amp;lt;NA&amp;gt;
+## 4 Central Nevada Desert Basins                     26    &amp;lt;NA&amp;gt;    &amp;lt;NA&amp;gt;     &amp;lt;NA&amp;gt;
+## 5               North Lahontan                     23    &amp;lt;NA&amp;gt;    &amp;lt;NA&amp;gt;     &amp;lt;NA&amp;gt;
+## 6   Black Rock Desert-Humboldt                     29    &amp;lt;NA&amp;gt;    &amp;lt;NA&amp;gt;     &amp;lt;NA&amp;gt;
+##   GEOID STUSPS NAME LSAD ALAND AWATER                       geometry
+## 1  &amp;lt;NA&amp;gt;   &amp;lt;NA&amp;gt; &amp;lt;NA&amp;gt; &amp;lt;NA&amp;gt;    NA     NA POLYGON ((-114.6233 36.0304...
+## 2  &amp;lt;NA&amp;gt;   &amp;lt;NA&amp;gt; &amp;lt;NA&amp;gt; &amp;lt;NA&amp;gt;    NA     NA POLYGON ((-115.0786 39.3005...
+## 3  &amp;lt;NA&amp;gt;   &amp;lt;NA&amp;gt; &amp;lt;NA&amp;gt; &amp;lt;NA&amp;gt;    NA     NA POLYGON ((-118.7594 38.3208...
+## 4  &amp;lt;NA&amp;gt;   &amp;lt;NA&amp;gt; &amp;lt;NA&amp;gt; &amp;lt;NA&amp;gt;    NA     NA POLYGON ((-114.7211 41.2410...
+## 5  &amp;lt;NA&amp;gt;   &amp;lt;NA&amp;gt; &amp;lt;NA&amp;gt; &amp;lt;NA&amp;gt;    NA     NA POLYGON ((-120.1835 41.9743...
+## 6  &amp;lt;NA&amp;gt;   &amp;lt;NA&amp;gt; &amp;lt;NA&amp;gt; &amp;lt;NA&amp;gt;    NA     NA POLYGON ((-117.9693 42.3430...&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;None of the HUC-4’s completely cover a state, so we get &lt;code&gt;NA&lt;/code&gt; for all the state data.&lt;/p&gt;
+&lt;p&gt;The other thing we can do is ask &lt;code&gt;R&lt;/code&gt; to create separate polygons - one for every HUC-4 / state combination. That isn’t a merge, but it plays a similar role. Note this uses &lt;code&gt;st_intersection&lt;/code&gt;:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;poly.int = HUC4 %&amp;gt;%
+  st_intersection(US) %&amp;gt;%
+  arrange(Name)
+
+head(poly.int)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Simple feature collection with 6 features and 12 fields
+## Geometry type: GEOMETRY
+## Dimension:     XY
+## Bounding box:  xmin: -120.4649 ymin: 35.20662 xmax: -114.7152 ymax: 42.3448
+## Geodetic CRS:  NAD83
+##                             Name Description randomData STATEFP  STATENS
+## 6     Black Rock Desert-Humboldt                     29      06 01779778
+## 6.1   Black Rock Desert-Humboldt                     29      32 01779793
+## 6.2   Black Rock Desert-Humboldt                     29      41 01155107
+## 7               Central Lahontan                     22      06 01779778
+## 7.1             Central Lahontan                     22      32 01779793
+## 4   Central Nevada Desert Basins                     26      06 01779778
+##        AFFGEOID GEOID STUSPS       NAME LSAD        ALAND      AWATER
+## 6   0400000US06    06     CA California   00 403660088482 20305454540
+## 6.1 0400000US32    32     NV     Nevada   00 284537049864  1839662829
+## 6.2 0400000US41    41     OR     Oregon   00 248607777514  6191602576
+## 7   0400000US06    06     CA California   00 403660088482 20305454540
+## 7.1 0400000US32    32     NV     Nevada   00 284537049864  1839662829
+## 4   0400000US06    06     CA California   00 403660088482 20305454540
+##                           geometry
+## 6   MULTIPOLYGON (((-119.9997 4...
+## 6.1 MULTIPOLYGON (((-119.9997 4...
+## 6.2 MULTIPOLYGON (((-118.7203 4...
+## 7   POLYGON ((-120.0016 39.5794...
+## 7.1 POLYGON ((-120.0057 39.2252...
+## 4   MULTIPOLYGON (((-118.7021 3...&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Now, we have a unique polygon for every combination of HUC-4 and State:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot() + 
+  geom_sf(data = US, fill = &amp;#39;gray50&amp;#39;) +
+  geom_sf(data = poly.int, aes(fill = STUSPS), show.legend = FALSE) +
+  theme_minimal()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/13-content_files/figure-html/unnamed-chunk-28-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Here, I’ve set the fill to the state, but you can see that the HUC-4’s have boundaries at the state line.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;summarizing&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Summarizing&lt;/h3&gt;
+&lt;p&gt;Our &lt;code&gt;summarize&lt;/code&gt; function let us collapse by groups and calculate interseting things like average (over a group or region). The neat part is that &lt;em&gt;it works on spatial data as well&lt;/em&gt;. Let’s look at the data again:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;head(poly.int %&amp;gt;% 
+       dplyr::select(Name, randomData, STUSPS) %&amp;gt;%
+       arrange(STUSPS))&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Simple feature collection with 6 features and 3 fields
+## Geometry type: GEOMETRY
+## Dimension:     XY
+## Bounding box:  xmin: -120.4649 ymin: 32.2603 xmax: -111.5061 ymax: 41.10578
+## Geodetic CRS:  NAD83
+##                             Name randomData STUSPS
+## 1.2               Lower Colorado         27     AZ
+## 2.2     Lower Colorado-Lake Mead         18     AZ
+## 6     Black Rock Desert-Humboldt         29     CA
+## 7               Central Lahontan         22     CA
+## 4   Central Nevada Desert Basins         26     CA
+## 1                 Lower Colorado         27     CA
+##                           geometry
+## 1.2 POLYGON ((-114.8165 32.5069...
+## 2.2 POLYGON ((-114.7368 36.0159...
+## 6   MULTIPOLYGON (((-119.9997 4...
+## 7   POLYGON ((-120.0016 39.5794...
+## 4   MULTIPOLYGON (((-118.7021 3...
+## 1   POLYGON ((-115.137 35.40604...&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;So AZ has two HUC-4’s in it - Lower Colorado and Lower Coloardo - Lake Mead (you can see them above). Summarize on geospatial data works just like regular data - we can &lt;code&gt;group_by(STUSPS)&lt;/code&gt;, and we can &lt;code&gt;summarize()&lt;/code&gt; any of the data. I threw some random data into &lt;code&gt;HUC-4&lt;/code&gt; so we can summarize that.&lt;/p&gt;
+&lt;p&gt;But how do we combine data specific to each HUC-4 in AZ? We could:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;Just take the average of all of the &lt;code&gt;randomData&lt;/code&gt; values within the state.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Take a weighted average of &lt;code&gt;randomData&lt;/code&gt; where the &lt;em&gt;area&lt;/em&gt; is the weight&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Take some other function (min, max, etc.) of &lt;code&gt;randomData&lt;/code&gt;.&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;We can implement any of these using &lt;code&gt;sf&lt;/code&gt;. Let’s do the second since it nests the first. First, we’ll add the area of the State x HUC-4 using &lt;code&gt;st_area&lt;/code&gt;, which gives a &lt;code&gt;units&lt;/code&gt; object. We can turn that into a numeric:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;poly.int.summary = poly.int %&amp;gt;%
+  dplyr::mutate(State.HUC.area = as.numeric(st_area(.))) %&amp;gt;%
+  group_by(STUSPS) %&amp;gt;%
+  dplyr::summarize(mean.randomData = weighted.mean(randomData, w = State.HUC.area))
+
+head(poly.int.summary)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Simple feature collection with 6 features and 2 fields
+## Geometry type: GEOMETRY
+## Dimension:     XY
+## Bounding box:  xmin: -121.5779 ymin: 32.2603 xmax: -111.0436 ymax: 45.25827
+## Geodetic CRS:  NAD83
+## # A tibble: 6 x 3
+##   STUSPS mean.randomData                                                geometry
+##   &amp;lt;chr&amp;gt;            &amp;lt;dbl&amp;gt;                                          &amp;lt;GEOMETRY [°]&amp;gt;
+## 1 AZ                22.0 POLYGON ((-114.7368 36.01591, -114.737 36.01577, -114.~
+## 2 CA                17.9 POLYGON ((-120.2083 41.9941, -120.2083 41.99408, -120.~
+## 3 ID                23.8 POLYGON ((-112.9978 44.44793, -112.9979 44.44793, -112~
+## 4 MT                23   MULTIPOLYGON (((-111.3842 44.75446, -111.3846 44.75484~
+## 5 NV                25.2 POLYGON ((-115.0339 41.99601, -115.0382 41.99601, -115~
+## 6 OR                27.8 POLYGON ((-118.2951 41.99658, -118.1974 41.99699, -118~&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;code&gt;sf&lt;/code&gt; with the &lt;code&gt;tidyverse&lt;/code&gt; makes it really easy to apply spatial versions of &lt;code&gt;summarize&lt;/code&gt; and &lt;code&gt;mutate&lt;/code&gt;. Very useful.&lt;/p&gt;
+&lt;p&gt;If we had wanted to just take the average (ignoring area), we’d just leave out the &lt;code&gt;w = State.HUC.area&lt;/code&gt; or just used &lt;code&gt;mean&lt;/code&gt;. If we had wanted to take, say, the minimum, we would use &lt;code&gt;min(randomData)&lt;/code&gt; instead of &lt;code&gt;weighted.mean&lt;/code&gt;. We can use whatever function we want in &lt;code&gt;summarize&lt;/code&gt;, just as we did with non-spatial data.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;cropping-vs.-merging&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Cropping vs. merging&lt;/h2&gt;
+&lt;p&gt;Sometimes, we wish to only crop to a region rather than merging. &lt;code&gt;sf&lt;/code&gt; has the &lt;code&gt;st_crop&lt;/code&gt; function to do this. Let’s crop our &lt;code&gt;HUC-4&lt;/code&gt; data to just the &lt;strong&gt;bounding box&lt;/strong&gt; of the state of Nevada&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;HUC4.nv = HUC4 %&amp;gt;%
+  st_crop(US %&amp;gt;% dplyr::filter(STUSPS==&amp;#39;NV&amp;#39;))
+
+ggplot(HUC4.nv) + geom_sf(aes(fill = Name), show.legend = F) +
+  geom_sf(data = US %&amp;gt;% dplyr::filter(STUSPS==&amp;#39;NV&amp;#39;),  fill = NA, col = &amp;#39;gray20&amp;#39;, lwd = 3 ) +
+  theme_minimal()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/13-content_files/figure-html/unnamed-chunk-31-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;div id=&#34;bounding-boxes&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Bounding boxes&lt;/h3&gt;
+&lt;p&gt;Notice that this forms a box around Nevada and uses that to crop. To get the shape of Nevada, we would have to use &lt;code&gt;st_intersection&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;But this introduces a useful concept: the &lt;em&gt;bounding box&lt;/em&gt;. The bounding box is defined by the closest 4 points that form a box that perfectly encloses the object (even when the object is not a rectangle). The extent of the above plot is the bounding box for Nevada.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;Nevada.bbox = st_bbox(US %&amp;gt;% dplyr::filter(STUSPS==&amp;#39;NV&amp;#39;))
+Nevada.bbox&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;##       xmin       ymin       xmax       ymax 
+## -120.00575   35.00186 -114.03965   42.00221&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The bounding box can be used to frame a “window” in a &lt;code&gt;ggplot&lt;/code&gt; using &lt;code&gt;geom_sf()&lt;/code&gt;. That is, sometimes, we want to &lt;em&gt;plot&lt;/em&gt; just a subsection of a map, but we still want the data to be the whole map. Here’s an example using the HOLC Redlining Maps, which were created in the 1930’s and were used to segregate US housing up until the 1970’s. They are available at the &lt;a href=&#34;https://dsl.richmond.edu/panorama/redlining&#34;&gt;University of Richmond’s &lt;em&gt;Mapping Inequality&lt;/em&gt; site&lt;/a&gt;. We can load Lansing and Detroit using the code below:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;lansing = st_read(&amp;#39;https://dsl.richmond.edu/panorama/redlining/static/downloads/geojson/MILansing19XX.geojson&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Reading layer `MILansing19XX&amp;#39; from data source 
+##   `https://dsl.richmond.edu/panorama/redlining/static/downloads/geojson/MILansing19XX.geojson&amp;#39; 
+##   using driver `GeoJSON&amp;#39;
+## Simple feature collection with 4 features and 4 fields
+## Geometry type: MULTIPOLYGON
+## Dimension:     XY
+## Bounding box:  xmin: -84.60737 ymin: 42.67877 xmax: -84.45292 ymax: 42.77022
+## Geodetic CRS:  WGS 84&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;detroit = st_read(&amp;#39;https://dsl.richmond.edu/panorama/redlining/static/downloads/geojson/MIDetroit1939.geojson&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Reading layer `MIDetroit1939&amp;#39; from data source 
+##   `https://dsl.richmond.edu/panorama/redlining/static/downloads/geojson/MIDetroit1939.geojson&amp;#39; 
+##   using driver `GeoJSON&amp;#39;
+## Simple feature collection with 238 features and 4 fields
+## Geometry type: MULTIPOLYGON
+## Dimension:     XY
+## Bounding box:  xmin: -83.40036 ymin: 42.13495 xmax: -82.87286 ymax: 42.56012
+## Geodetic CRS:  WGS 84&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;mi.redlining = bind_rows(lansing, detroit) %&amp;gt;%
+  st_transform(st_crs(MI))
+
+ggplot(mi.redlining) +
+  geom_sf(aes(fill = holc_grade, col = holc_grade)) + 
+  geom_sf(data = MI, fill = NA, col = &amp;#39;gray50&amp;#39;) +
+  scale_fill_manual(values = c(&amp;#39;A&amp;#39; = &amp;#39;green&amp;#39;, &amp;#39;B&amp;#39; = &amp;#39;blue&amp;#39;, &amp;#39;C&amp;#39; = &amp;#39;yellow&amp;#39;, &amp;#39;D&amp;#39; = &amp;#39;red&amp;#39;),
+                    aesthetics = c(&amp;#39;color&amp;#39;,&amp;#39;fill&amp;#39;)) +
+  theme_minimal()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/13-content_files/figure-html/unnamed-chunk-33-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;We can tell that our polygons have plotted, but since we have the whole state of Michigan, they’re almost unreadable. We need to set our window over the lower part of the lower peninsula. We’ll use &lt;code&gt;coord_sf&lt;/code&gt; to do this, but first we need to define a window. Since windows are almost always rectangular, we can use the &lt;code&gt;st_bbox(mi.redlining)&lt;/code&gt;, but we have to pull out the xlim (xmin, xmax) and ylim (ymin, ymax):&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(mi.redlining) +
+  geom_sf(aes(fill = holc_grade, col = holc_grade)) + 
+  geom_sf(data = MI, fill = NA, col = &amp;#39;gray50&amp;#39;) +
+  scale_fill_manual(values = c(&amp;#39;A&amp;#39; = &amp;#39;green&amp;#39;, &amp;#39;B&amp;#39; = &amp;#39;blue&amp;#39;, &amp;#39;C&amp;#39; = &amp;#39;yellow&amp;#39;, &amp;#39;D&amp;#39; = &amp;#39;red&amp;#39;),
+                    aesthetics = c(&amp;#39;color&amp;#39;,&amp;#39;fill&amp;#39;)) +
+  theme_minimal() +
+  coord_sf(xlim = st_bbox(mi.redlining)[c(1, 3)],
+           ylim = st_bbox(mi.redlining)[c(2, 4)])&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/13-content_files/figure-html/unnamed-chunk-34-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;distance-matrices&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Distance matrices&lt;/h2&gt;
+&lt;p&gt;One of the most common spatial statistics we’d use in data analytics is the &lt;em&gt;distance&lt;/em&gt; matrix. If we have a set of points and we think that we can explain some data about those points (unemployment, ag production, murders per capita) based on the distance to some explanatory source (gas plants, superfund site, etc.), then we might want to include &lt;em&gt;distance to gas plants&lt;/em&gt; in our model as a predictor. Frequently, we’ll use inverse distance, &lt;span class=&#34;math inline&#34;&gt;\(\frac{1}{d}\)&lt;/span&gt;, so that closer things can have more of an impact. To do this, we need a distance matrix.&lt;/p&gt;
+&lt;p&gt;Let’s combine our &lt;code&gt;gasplants&lt;/code&gt; and our &lt;code&gt;ourCities&lt;/code&gt; to get the distance from each of our cities to the nearest gas plant. Maybe we have city-level data on student achievements and we want to see if gas plants lower student achievement. While we would need a lot more information to make this model, we can look at what we have for now.&lt;/p&gt;
+&lt;p&gt;We will use &lt;code&gt;st_distance&lt;/code&gt;, which will generate a special type of object that contains the distance information. &lt;code&gt;MI.gasplants&lt;/code&gt; has 15 observations, and ourCities has 6, so for each row in &lt;code&gt;ourCities&lt;/code&gt; we will get 15 distances, one to each gasplant. This forms a &lt;em&gt;distance matrix&lt;/em&gt; where each row is an object in &lt;code&gt;ourCities&lt;/code&gt; and each column is an object in &lt;code&gt;MI.gasplants&lt;/code&gt;. We are going to take only a few &lt;code&gt;MI.gasplants&lt;/code&gt; so we can easily view the results:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ourCities.spatial = ourCities.spatial %&amp;gt;% 
+  st_transform(st_crs(MI.gasplants))
+
+MI.gasplants.small = MI.gasplants[1:4,]
+
+ourDistance = st_distance(x = ourCities.spatial, y = MI.gasplants.small)
+ourDistance&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Units: [m]
+##          [,1]      [,2]      [,3]      [,4]
+## [1,] 161824.4 285981.74  53774.05 314356.35
+## [2,] 110622.4 204035.47  81217.07 223545.24
+## [3,] 157108.6 190078.23 175071.56 195692.59
+## [4,] 199248.1 259619.40 169087.39 268533.27
+## [5,] 182936.7  66993.37 289278.25  34087.52
+## [6,] 426387.5 303552.04 533415.88 272213.63&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;We get a &lt;code&gt;units&lt;/code&gt; matrix, which has extra properties that allow us to convert the units. The units will be in whatever the CRS of the objects is in - &lt;code&gt;st_crs(ourCities.spatial)&lt;/code&gt; tells us the units are meters.&lt;/p&gt;
+&lt;p&gt;What if we wanted to find the closest gas plant to each city? That is akin to looking at each row, and finding the column that is the smallest, right? We will use &lt;code&gt;apply&lt;/code&gt;, and we will note that the order of the columns is the same as the order in &lt;code&gt;MI.gasplants.small&lt;/code&gt;, so we can use &lt;code&gt;MI.gasplants.small$name&lt;/code&gt; to tell us the name of the closest gas plant. We will &lt;code&gt;apply&lt;/code&gt; over each row (&lt;code&gt;MAR=1&lt;/code&gt;) and use the &lt;code&gt;which.min&lt;/code&gt; function, which returns the &lt;em&gt;index&lt;/em&gt; number of the maximum column.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;max.index = apply(ourDistance, MAR = 1, which.min)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;We can combine this index with the &lt;code&gt;MI.gasplants.small&lt;/code&gt; object to get the names of the closest gas plant for each of the cities. We’ll make a nice, neat tibble with the city name (in the order from ourCities.spatial), the closest gas plant name, and the distance to that plant:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;tibble(City = ourCities.spatial$City,
+       Closest.gasplant = MI.gasplants.small$name[max.index],
+       Distance.to.closest = ourDistance[cbind(1:length(max.index), max.index)])&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 6 x 3
+##   City          Closest.gasplant                     Distance.to.closest
+##   &amp;lt;chr&amp;gt;         &amp;lt;chr&amp;gt;                                                [m]
+## 1 Detroit       HIGHLAND CENTRAL PROCESSING FACILITY              53774.
+## 2 Lansing       HIGHLAND CENTRAL PROCESSING FACILITY              81217.
+## 3 Grand Rapids  MONITOR 11                                       157109.
+## 4 Kalamazoo     HIGHLAND CENTRAL PROCESSING FACILITY             169087.
+## 5 Traverse City KALKASKA GAS PLANT                                34088.
+## 6 Marquette     KALKASKA GAS PLANT                               272214.&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;But wait, what is going on in the last line there? Well, recall our distance matrix and &lt;code&gt;max.index&lt;/code&gt;:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ourDistance&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Units: [m]
+##          [,1]      [,2]      [,3]      [,4]
+## [1,] 161824.4 285981.74  53774.05 314356.35
+## [2,] 110622.4 204035.47  81217.07 223545.24
+## [3,] 157108.6 190078.23 175071.56 195692.59
+## [4,] 199248.1 259619.40 169087.39 268533.27
+## [5,] 182936.7  66993.37 289278.25  34087.52
+## [6,] 426387.5 303552.04 533415.88 272213.63&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#
+max.index&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 3 3 1 3 4 4&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;we want to select from our distance matrix the 1st row, 3rd column; the 2nd row, 3rd column; 3rd row, 1st column; 4th row, 3rd column; 5th row, 4th column; and 6th row, 4th column. This means the row index and column index are not ranges, but are paired. Using &lt;code&gt;cbind(1:6, max.index)&lt;/code&gt; makes them paired entries, and we can select specific row x column combinations that way.&lt;/p&gt;
+&lt;div id=&#34;st_nearest_feature&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;st_nearest_feature&lt;/h3&gt;
+&lt;p&gt;As is common in R, there is a function that will get the closest points between to spatial objects. &lt;code&gt;st_nearest_points&lt;/code&gt; takes two geometries, and returns the neaarest point in &lt;code&gt;y&lt;/code&gt; for every point in &lt;code&gt;x&lt;/code&gt;, which is what we did with the MI gas plants.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;st_nearest_feature(x = ourCities.spatial, y = MI.gasplants.small)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 3 3 1 3 4 4&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;This is exactly our &lt;code&gt;max.index&lt;/code&gt; and can be used *on the &lt;code&gt;y&lt;/code&gt; object, &lt;code&gt;MI.gasplants.small&lt;/code&gt;, to pull the names, subset, get distances etc.&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;st_nearest_feature&lt;/code&gt; also works for points and polygons, or polygons and polygons, where it returns the index of the polygon that contains the nearest point to the features in &lt;code&gt;x&lt;/code&gt;. Let’s find the nearest Great Lake for each of our cities using a &lt;a href=&#34;https://hub.arcgis.com/datasets/wi-dnr::great-lakes?geometry=-127.301%2C37.038%2C-43.585%2C48.298&#34;&gt;KML shapefile of the Great Lakes from WI DNR&lt;/a&gt; Note that the GeoJSON link is under “API” on this site. We run into a complex geometry problem, and add &lt;code&gt;st_make_valid()&lt;/code&gt; to fix it:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;GL = st_read(&amp;#39;https://opendata.arcgis.com/datasets/a8bb79fc10e64eee8c3a9db97cc5dc80_4.geojson&amp;#39;) %&amp;gt;%
+  st_transform(st_crs(ourCities.spatial)) %&amp;gt;% st_make_valid()&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Reading layer `Great_Lakes&amp;#39; from data source 
+##   `https://opendata.arcgis.com/datasets/a8bb79fc10e64eee8c3a9db97cc5dc80_4.geojson&amp;#39; 
+##   using driver `GeoJSON&amp;#39;
+## Simple feature collection with 15 features and 3 fields
+## Geometry type: MULTIPOLYGON
+## Dimension:     XY
+## Bounding box:  xmin: -92.10222 ymin: 41.38576 xmax: -75.95819 ymax: 49.00535
+## Geodetic CRS:  WGS 84&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;closest.GL.index = st_nearest_feature(x = ourCities.spatial, y = GL)
+ourCities %&amp;gt;% dplyr::mutate(Closest.GreatLake = GL$FEAT_NAME[closest.GL.index])&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;##            City      lat       lon Closest.GreatLake
+## 1       Detroit 42.33155 -83.04664         Lake Erie
+## 2       Lansing 42.73377 -84.55538        Lake Huron
+## 3  Grand Rapids 42.96324 -85.66786     Lake Michigan
+## 4     Kalamazoo 42.29171 -85.58723     Lake Michigan
+## 5 Traverse City 44.76064 -85.61653     Lake Michigan
+## 6     Marquette 46.44815 -87.63059     Lake Superior&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;other-resources&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Other resources&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;Claudia Engel’s “&lt;a href=&#34;https://cengel.github.io/R-spatial/&#34;&gt;Using Spatial Data with R&lt;/a&gt;” is a very useful resource. It covers &lt;code&gt;sf&lt;/code&gt; and an older geospatial library called &lt;code&gt;sp&lt;/code&gt; that has similar functionality but was not tidyverse-friendly.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;The &lt;a href=&#34;https://github.com/rstudio/cheatsheets/raw/master/sf.pdf&#34;&gt;Rstudio Spatial Cheat Sheet&lt;/a&gt;.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;There are &lt;a href=&#34;https://www.rstudio.com/resources/cheatsheets/&#34;&gt;lots of useful RStudio cheat sheets, actually.&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    
+    <item>
       <title>Visualizations in Practice</title>
       <link>https://ssc442kirkpatrick.netlify.app/content/03-content/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
@@ -7790,6 +9370,7 @@ crdt_knn_100= knnreg(Rating ~ Age + Gender + Student, data = crdt_est, k = 100)&
 &lt;li&gt;&lt;a href=&#34;#k-nearest-neighbors&#34;&gt;k-Nearest Neighbors&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;#decision-trees&#34;&gt;Decision Trees&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#lecture-video&#34;&gt;Lecture Video&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/div&gt;
@@ -8334,6 +9915,10 @@ tree_mod_est_list = lapply(cp_to_try, tree_knn_mod)&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/09-content_files/figure-html/unnamed-chunk-43-1.png&#34; width=&#34;672&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Based on this plot, how is &lt;code&gt;cp&lt;/code&gt; related to model flexibility?&lt;a href=&#34;#fn6&#34; class=&#34;footnote-ref&#34; id=&#34;fnref6&#34;&gt;&lt;sup&gt;6&lt;/sup&gt;&lt;/a&gt;&lt;/p&gt;
 &lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;lecture-video&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Lecture Video&lt;/h2&gt;
+&lt;p&gt;The lecture video for this material is &lt;a href=&#34;https://mediaspace.msu.edu/media/SSC442+-+Content+09+-+March+22nd/1_navp4aji?st=423&#34;&gt;available here &lt;i class=&#34;fas fa-film&#34;&gt;&lt;/i&gt;&lt;/a&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;div class=&#34;footnotes&#34;&gt;
