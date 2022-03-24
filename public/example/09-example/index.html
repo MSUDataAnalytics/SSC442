@@ -30,8 +30,8 @@
   
     
   
-  <meta name="description" content="Review and ClarifyIllustration of Bias vs. VarianceA quick bit of R code to help with todays exampleToday’s ExampleSimulationHere’s the codeReview and ClarifyBias and Variance are tricky subjects. Hopefully the illustrations from yesterday are helpful. Let’s talk through a few things based on questions some of you have asked since Content 9.
-Illustration of Bias vs. VarianceBias is about how close you are on average to the correct answer.">
+  <meta name="description" content="Review and ClarifyIllustration of Bias vs. VarianceA quick bit of R code to help with todays exampleToday’s ExampleSimulationHere’s the codeReview and ClarifyBias and Variance are tricky subjects. Hopefully the illustrations from yesterday are helpful. Let’s talk through a few things based on questions some of you have asked since Content 9.
+Illustration of Bias vs.">
 
   
   <link rel="alternate" hreflang="en-us" href="https://ssc442kirkpatrick.netlify.app/example/09-example/">
@@ -239,8 +239,8 @@ Illustration of Bias vs. VarianceBias is about how close you are on average to
   <meta property="og:site_name" content="Data Analytics">
   <meta property="og:url" content="https://ssc442kirkpatrick.netlify.app/example/09-example/">
   <meta property="og:title" content="Illustrating Bias vs. Variance | Data Analytics">
-  <meta property="og:description" content="Review and ClarifyIllustration of Bias vs. VarianceA quick bit of R code to help with todays exampleToday’s ExampleSimulationHere’s the codeReview and ClarifyBias and Variance are tricky subjects. Hopefully the illustrations from yesterday are helpful. Let’s talk through a few things based on questions some of you have asked since Content 9.
-Illustration of Bias vs. VarianceBias is about how close you are on average to the correct answer."><meta property="og:image" content="https://ssc442kirkpatrick.netlify.app/img/social-image.png">
+  <meta property="og:description" content="Review and ClarifyIllustration of Bias vs. VarianceA quick bit of R code to help with todays exampleToday’s ExampleSimulationHere’s the codeReview and ClarifyBias and Variance are tricky subjects. Hopefully the illustrations from yesterday are helpful. Let’s talk through a few things based on questions some of you have asked since Content 9.
+Illustration of Bias vs."><meta property="og:image" content="https://ssc442kirkpatrick.netlify.app/img/social-image.png">
   <meta property="twitter:image" content="https://ssc442kirkpatrick.netlify.app/img/social-image.png"><meta property="og:locale" content="en-us">
   
     
@@ -618,14 +618,17 @@ Illustration of Bias vs. VarianceBias is about how close you are on average to
 
                     <div class="article-style">
                         
+<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
 
 <div id="TOC">
 <ul>
-<li><a href="#review-and-clarify">Review and Clarify</a><ul>
+<li><a href="#review-and-clarify">Review and Clarify</a>
+<ul>
 <li><a href="#illustration-of-bias-vs.-variance">Illustration of Bias vs. Variance</a></li>
 </ul></li>
 <li><a href="#a-quick-bit-of-r-code-to-help-with-todays-example">A quick bit of R code to help with todays example</a></li>
-<li><a href="#todays-example">Today’s Example</a><ul>
+<li><a href="#todays-example">Today’s Example</a>
+<ul>
 <li><a href="#simulation">Simulation</a></li>
 <li><a href="#heres-the-code">Here’s the code</a></li>
 </ul></li>
@@ -668,7 +671,7 @@ EPE = E[(y - \hat{y})^2] =
 \]</span></p>
 <p>And:</p>
 <p><span class="math display">\[
-MSE(f(x), \hat{f}(x)) = E_{\mathcal{D}}\left[\left(f(x) - \hat{f}(x)\right)^2\right]
+MSE(f(x), \hat{f}(x)) = \mathbb{E}_{\mathcal{D}}\left[\left(f(x) - \hat{f}(x)\right)^2\right]
 \]</span></p>
 <p>Some of you asked about this equation from last time that decomposed our MSE:</p>
 <p><span class="math display">\[
@@ -694,7 +697,7 @@ Let’s talk about what’s in this equation:</p>
 </ul></li>
 <li>It is an expectation over all the possible <span class="math inline">\(\mathcal{D}\)</span> draws of the data we could have
 <ul>
-<li>Because of this <span class="math inline">\(f(x)\)</span> and <span class="math inline">\(\mathbb{E}\left[\hat{f}(x)\right]\)</span> can move out of the expectation. This lets us cancel that last term with the “2” in it.</li>
+<li>Because of this <span class="math inline">\(\hat{f}(x)\)</span> and <span class="math inline">\(E\left[\hat{f}(x)\right]\)</span> can move out of the expectation. This lets us cancel that last term with the “2” in it.</li>
 </ul></li>
 </ul>
 <p>The main takeaway is that, even given the error, <span class="math inline">\(\epsilon\)</span>, we <em>still</em> have additional error coming from our inability to perfectly get <span class="math inline">\(\hat{f}(x) = f(x)\)</span>.</p>
@@ -737,7 +740,7 @@ print(myList)</code></pre>
 ## 
 ## $H
 ## [1] &quot;This loop is on H&quot;</code></pre>
-<p>We’re almost there. It turns out, we have our original <span class="math inline">\(I\)</span> in there left over from the previous creation of the list. That’s why its out of order. What we want to do is start with a fresh, clean list. If we run <code>rm(myList)</code>, the old list will no longer exist, and *our code will create a fresh one when we run it again!</p>
+<p>We’re almost there. It turns out, we have our original <span class="math inline">\(I\)</span> in there left over from the previous creation of the list. That’s why its out of order. What we want to do is start with a fresh, clean list. If we run <code>rm(myList)</code>, the old list will no longer exist, and <em>our code will create a fresh one when we run it again!</em></p>
 <pre class="r"><code>rm(myList)
 for(i in c(&#39;G&#39;,&#39;H&#39;,&#39;I&#39;)){
   if(!exists(&#39;myList&#39;)) myList = list()
@@ -753,6 +756,21 @@ print(myList)</code></pre>
 ## $I
 ## [1] &quot;This loop is on I&quot;</code></pre>
 <p>You’re going to use this in your breakout rooms today. You’re going to be asked to run some code that stores a plot in a list. To reset the list that stores things, just use <code>rm(listName)</code> (where <code>listName</code> is the name of the list).</p>
+<p>Alternatively, you can make sure you run code (outside of the loop) that makes a new list. This will re-set the list to be empty going into the loop:</p>
+<pre class="r"><code>myList = list()
+for(i in c(&#39;G&#39;,&#39;H&#39;,&#39;I&#39;)){
+  if(!exists(&#39;myList&#39;)) myList = list()
+  myList[[i]] = paste0(&#39;This loop is on &#39;,i)
+}
+print(myList)</code></pre>
+<pre><code>## $G
+## [1] &quot;This loop is on G&quot;
+## 
+## $H
+## [1] &quot;This loop is on H&quot;
+## 
+## $I
+## [1] &quot;This loop is on I&quot;</code></pre>
 </div>
 <div id="todays-example" class="section level2">
 <h2>Today’s Example</h2>
@@ -769,7 +787,16 @@ print(myList)</code></pre>
 <p>We will use the exact code from Content 9, which I have reproduced here. I have removed the in-between parts with notation so we can focus on the example. I have <strong>copied all of the relevant code into one chunk down at the bottom as well</strong></p>
 <p>We’ll need the following libraries:</p>
 <pre class="r"><code>library(ggplot2)
-library(patchwork)</code></pre>
+library(patchwork)
+library(tidyverse)</code></pre>
+<pre><code>## -- Attaching packages --------------------------------------- tidyverse 1.3.1 --</code></pre>
+<pre><code>## v tibble  3.1.6     v dplyr   1.0.8
+## v tidyr   1.2.0     v stringr 1.4.0
+## v readr   2.1.2     v forcats 0.5.1
+## v purrr   0.3.4</code></pre>
+<pre><code>## -- Conflicts ------------------------------------------ tidyverse_conflicts() --
+## x dplyr::filter() masks stats::filter()
+## x dplyr::lag()    masks stats::lag()</code></pre>
 <p>And here, I’ve made a little change to Content 9’s code so we can play with sample size <code>NN</code> and the SD of the irreducible Bayes error.</p>
 <pre class="r"><code>NN = 100   #----&gt; In class, we will change this to 
 #                 see how our results change in response
@@ -787,7 +814,7 @@ SD.of.Bayes.Error = .75   #-----&gt; This, too, will change.
   x = runif(n = sample_size, min = 0, max = 1)
   eps = rnorm(n = sample_size, mean = 0, sd = SD.of.Bayes.Error)
   y = f(x) + eps
-  data.frame(x, y)
+  tibble(x, y)
 }</code></pre>
 <p>To completely specify the data generating process, we have made more model assumptions than simply <span class="math inline">\(\mathbb{E}[Y \mid X = x] = x^2\)</span> and <span class="math inline">\(\mathbb{V}[Y \mid X = x] = \sigma ^ 2\)</span>. In particular,</p>
 <ul>
@@ -812,7 +839,7 @@ fit_1 = lm(y ~ poly(x, degree = 1), data = sim_data)
 fit_2 = lm(y ~ poly(x, degree = 2), data = sim_data)
 fit_9 = lm(y ~ poly(x, degree = 9), data = sim_data)</code></pre>
 <p>Plotting these four trained models, we see that the zero predictor model does very poorly. The first degree model is reasonable, but we can see that the second degree model fits much better. The ninth degree model seem rather wild.</p>
-<p><img src="/example/09-example_files/figure-html/unnamed-chunk-12-1.png" width="864" /></p>
+<p><img src="/example/09-example_files/figure-html/unnamed-chunk-13-1.png" width="864" /></p>
 <p>…</p>
 <p>We will now complete a simulation study to understand the relationship between the bias, variance, and mean squared error for the estimates for <span class="math inline">\(f(x)\)</span> given by these four models at the point <span class="math inline">\(x = 0.90\)</span>. We use simulation to complete this task, as performing the analytical calculations would prove to be rather tedious and difficult.</p>
 <pre class="r"><code>set.seed(1)
@@ -840,11 +867,11 @@ predictions = matrix(0, nrow = n_sims, ncol = n_models)</code></pre>
   predictions[sim, 4] = predict(fit_9, x)
 }</code></pre>
 <p>Compile all of the results:</p>
-<p><img src="/example/09-example_files/figure-html/unnamed-chunk-15-1.png" width="864" /></p>
+<p><img src="/example/09-example_files/figure-html/unnamed-chunk-16-1.png" width="864" /></p>
 <div class="fyi">
 <p>In your breakout room and using the code below:</p>
 <p><strong>First Breakout</strong>: set <code>NN</code> = 100, the value we used in our Content 9 lecture. The value is set in one of the first code chunks. Step through the code to get your finalPlot and make sure it looks like the plot in Content 9. I changed the code to use ggplot (easier to save output), so the formatting and colors will be different - that’s OK, we want to get the same results, not copy the layout of the plot. Note that at the end of the code, a list is created that will hold all of your results. In case you need to clear this list, <code>rm(FinalResults)</code> will do so and the code will initate a new blank list to hold subsequent results.</p>
-<p><strong>Second Breakout</strong>: set NN to a larger number. Usually, more data means more precise predictions. Run your code again stepping through it, until you get to this plot. Note that at the end of the code provided, there is a list that aggregates your results. <strong>Repeat this</strong> with a 3rd, even larger value for NN. Don’t go much beyond 50,000 or it’ll take too long. Your <code>FinalResults</code> list should have 3 elements in it. Use <code>wrap_plots(FinalResults, nrow = 1)</code> to see all 3 side-by-side.</p>
+<p><strong>Second Breakout</strong>: set NN to a larger number. Usually, more data means more precise predictions. Run your code again stepping through it, until you get to this plot. Note that at the end of the code provided, there is a list that aggregates your results. <strong>Repeat this</strong> with a 3rd, even larger value for NN. Don’t go much beyond 50,000 or it’ll take too long. Your <code>FinalResults</code> list should have 3 elements in it. Use <code>patchwork::wrap_plots(FinalResults, nrow = 1)</code> to see all 3 side-by-side.</p>
 <p><strong>Third Breakout</strong>: Finally, change the <code>SD.of.Bayes.Error</code> value to make it higher or lower. Remember, this is the <em>irreducible</em> error. Run your code again with your first, second, and third different value for sample size <code>NN</code>. You should have 6 plots in your <code>FinalResults</code> list - 3 from before, and 3 more with the new SD of Bayes Error. Use <code>wrap_plots</code> with the right number of rows to see a 2x3 grid of the results.</p>
 <ul>
 <li>Usually we think larger sample sizes and lower error lead to better overall prediction. Do we see any change in the bias vs. tradeoff relationship with lower/higher sample size <code>NN</code> and lower/higher SD of Bayes Error?</li>
@@ -857,6 +884,7 @@ predictions = matrix(0, nrow = n_sims, ncol = n_models)</code></pre>
 <p>I’ve merged all of the code together for you here. Copy this into a new .R script - you don’t need to use a full Markdown.</p>
 <pre class="r"><code>library(ggplot2)
 library(patchwork)
+library(tidyverse)
 
 
 
@@ -865,11 +893,6 @@ NN = 100   #----&gt; In class, we will change this to
 SD.of.Bayes.Error = 0.75   #-----&gt; This, too, will change. 
 
 # Note that both of these are used in the next chunk(s) to generate data.
-
-
-
-
-
 
 
 f = function(x) {
@@ -882,11 +905,15 @@ get_sim_data = function(f, sample_size = NN) {
   x = runif(n = sample_size, min = 0, max = 1)
   eps = rnorm(n = sample_size, mean = 0, sd = SD.of.Bayes.Error)
   y = f(x) + eps
-  data.frame(x, y)
+  tibble(x, y)
 }
 
 
 
+
+
+
+## See the fit of the four models (viz only)
 set.seed(1)
 sim_data = get_sim_data(f)
 
@@ -898,10 +925,6 @@ fit_2 = lm(y ~ poly(x, degree = 2), data = sim_data)
 fit_9 = lm(y ~ poly(x, degree = 9), data = sim_data)
 
 
-
-
-
-set.seed(42)
 plot(y ~ x, data = sim_data, col = &quot;grey&quot;, pch = 20,
      main = &quot;Four Polynomial Models fit to a Simulated Dataset&quot;)
 
@@ -915,6 +938,16 @@ lines(grid, predict(fit_9, newdata = data.frame(x = grid)), col = &quot;darkoran
 legend(&quot;topleft&quot;, 
        c(&quot;y ~ 1&quot;, &quot;y ~ poly(x, 1)&quot;, &quot;y ~ poly(x, 2)&quot;,  &quot;y ~ poly(x, 9)&quot;, &quot;truth&quot;), 
        col = c(&quot;dodgerblue&quot;, &quot;firebrick&quot;, &quot;springgreen&quot;, &quot;darkorange&quot;, &quot;black&quot;), lty = c(2, 3, 4, 5, 1), lwd = 2)
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -978,7 +1011,7 @@ FinalResults[[paste0(&#39;finalPlot.NN.&#39;,NN,&#39;.SDBayes.&#39;,SD.of.Bayes.
 # grid()
 # stripchart(value ~ key, data = tall_predictions, add = TRUE, vertical = TRUE, method = &quot;jitter&quot;, jitter = 0.15, pch = 1, col = c(&quot;dodgerblue&quot;, &quot;firebrick&quot;, &quot;springgreen&quot;, &quot;darkorange&quot;))
 # abline(h = f(x = 0.90), lwd = 2)</code></pre>
-<p>And to output <em>whatever is in your list</em>:</p>
+<p>And to output <em>whatever is in your list of ggplot objects</em>:</p>
 <pre class="r"><code>## This not run automatically.
 ## To plot the whole list of ggplot objects in FinalResults:
 wrap_plots(FinalResults, nrow = 2, guides = &#39;collect&#39;)</code></pre>

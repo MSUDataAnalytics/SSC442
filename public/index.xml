@@ -5454,14 +5454,17 @@ myList[[3]] = get_rmse(x, wage_clean, &amp;#39;wage&amp;#39;)&lt;/code&gt;&lt;/p
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       <guid>https://ssc442kirkpatrick.netlify.app/example/09-example/</guid>
       <description>
+&lt;script src=&#34;https://ssc442kirkpatrick.netlify.app/rmarkdown-libs/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
 
 &lt;div id=&#34;TOC&#34;&gt;
 &lt;ul&gt;
-&lt;li&gt;&lt;a href=&#34;#review-and-clarify&#34;&gt;Review and Clarify&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#review-and-clarify&#34;&gt;Review and Clarify&lt;/a&gt;
+&lt;ul&gt;
 &lt;li&gt;&lt;a href=&#34;#illustration-of-bias-vs.-variance&#34;&gt;Illustration of Bias vs. Variance&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;#a-quick-bit-of-r-code-to-help-with-todays-example&#34;&gt;A quick bit of R code to help with todays example&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;#todays-example&#34;&gt;Today’s Example&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#todays-example&#34;&gt;Today’s Example&lt;/a&gt;
+&lt;ul&gt;
 &lt;li&gt;&lt;a href=&#34;#simulation&#34;&gt;Simulation&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;#heres-the-code&#34;&gt;Here’s the code&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;&lt;/li&gt;
@@ -5504,7 +5507,7 @@ EPE = E[(y - \hat{y})^2] =
 \]&lt;/span&gt;&lt;/p&gt;
 &lt;p&gt;And:&lt;/p&gt;
 &lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
-MSE(f(x), \hat{f}(x)) = E_{\mathcal{D}}\left[\left(f(x) - \hat{f}(x)\right)^2\right]
+MSE(f(x), \hat{f}(x)) = \mathbb{E}_{\mathcal{D}}\left[\left(f(x) - \hat{f}(x)\right)^2\right]
 \]&lt;/span&gt;&lt;/p&gt;
 &lt;p&gt;Some of you asked about this equation from last time that decomposed our MSE:&lt;/p&gt;
 &lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
@@ -5530,7 +5533,7 @@ Let’s talk about what’s in this equation:&lt;/p&gt;
 &lt;/ul&gt;&lt;/li&gt;
 &lt;li&gt;It is an expectation over all the possible &lt;span class=&#34;math inline&#34;&gt;\(\mathcal{D}\)&lt;/span&gt; draws of the data we could have
 &lt;ul&gt;
-&lt;li&gt;Because of this &lt;span class=&#34;math inline&#34;&gt;\(f(x)\)&lt;/span&gt; and &lt;span class=&#34;math inline&#34;&gt;\(\mathbb{E}\left[\hat{f}(x)\right]\)&lt;/span&gt; can move out of the expectation. This lets us cancel that last term with the “2” in it.&lt;/li&gt;
+&lt;li&gt;Because of this &lt;span class=&#34;math inline&#34;&gt;\(\hat{f}(x)\)&lt;/span&gt; and &lt;span class=&#34;math inline&#34;&gt;\(E\left[\hat{f}(x)\right]\)&lt;/span&gt; can move out of the expectation. This lets us cancel that last term with the “2” in it.&lt;/li&gt;
 &lt;/ul&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;The main takeaway is that, even given the error, &lt;span class=&#34;math inline&#34;&gt;\(\epsilon\)&lt;/span&gt;, we &lt;em&gt;still&lt;/em&gt; have additional error coming from our inability to perfectly get &lt;span class=&#34;math inline&#34;&gt;\(\hat{f}(x) = f(x)\)&lt;/span&gt;.&lt;/p&gt;
@@ -5573,7 +5576,7 @@ print(myList)&lt;/code&gt;&lt;/pre&gt;
 ## 
 ## $H
 ## [1] &amp;quot;This loop is on H&amp;quot;&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;We’re almost there. It turns out, we have our original &lt;span class=&#34;math inline&#34;&gt;\(I\)&lt;/span&gt; in there left over from the previous creation of the list. That’s why its out of order. What we want to do is start with a fresh, clean list. If we run &lt;code&gt;rm(myList)&lt;/code&gt;, the old list will no longer exist, and *our code will create a fresh one when we run it again!&lt;/p&gt;
+&lt;p&gt;We’re almost there. It turns out, we have our original &lt;span class=&#34;math inline&#34;&gt;\(I\)&lt;/span&gt; in there left over from the previous creation of the list. That’s why its out of order. What we want to do is start with a fresh, clean list. If we run &lt;code&gt;rm(myList)&lt;/code&gt;, the old list will no longer exist, and &lt;em&gt;our code will create a fresh one when we run it again!&lt;/em&gt;&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;rm(myList)
 for(i in c(&amp;#39;G&amp;#39;,&amp;#39;H&amp;#39;,&amp;#39;I&amp;#39;)){
   if(!exists(&amp;#39;myList&amp;#39;)) myList = list()
@@ -5589,6 +5592,21 @@ print(myList)&lt;/code&gt;&lt;/pre&gt;
 ## $I
 ## [1] &amp;quot;This loop is on I&amp;quot;&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;You’re going to use this in your breakout rooms today. You’re going to be asked to run some code that stores a plot in a list. To reset the list that stores things, just use &lt;code&gt;rm(listName)&lt;/code&gt; (where &lt;code&gt;listName&lt;/code&gt; is the name of the list).&lt;/p&gt;
+&lt;p&gt;Alternatively, you can make sure you run code (outside of the loop) that makes a new list. This will re-set the list to be empty going into the loop:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;myList = list()
+for(i in c(&amp;#39;G&amp;#39;,&amp;#39;H&amp;#39;,&amp;#39;I&amp;#39;)){
+  if(!exists(&amp;#39;myList&amp;#39;)) myList = list()
+  myList[[i]] = paste0(&amp;#39;This loop is on &amp;#39;,i)
+}
+print(myList)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## $G
+## [1] &amp;quot;This loop is on G&amp;quot;
+## 
+## $H
+## [1] &amp;quot;This loop is on H&amp;quot;
+## 
+## $I
+## [1] &amp;quot;This loop is on I&amp;quot;&lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 &lt;div id=&#34;todays-example&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Today’s Example&lt;/h2&gt;
@@ -5605,7 +5623,16 @@ print(myList)&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;We will use the exact code from Content 9, which I have reproduced here. I have removed the in-between parts with notation so we can focus on the example. I have &lt;strong&gt;copied all of the relevant code into one chunk down at the bottom as well&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;We’ll need the following libraries:&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(ggplot2)
-library(patchwork)&lt;/code&gt;&lt;/pre&gt;
+library(patchwork)
+library(tidyverse)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## -- Attaching packages --------------------------------------- tidyverse 1.3.1 --&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## v tibble  3.1.6     v dplyr   1.0.8
+## v tidyr   1.2.0     v stringr 1.4.0
+## v readr   2.1.2     v forcats 0.5.1
+## v purrr   0.3.4&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## -- Conflicts ------------------------------------------ tidyverse_conflicts() --
+## x dplyr::filter() masks stats::filter()
+## x dplyr::lag()    masks stats::lag()&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;And here, I’ve made a little change to Content 9’s code so we can play with sample size &lt;code&gt;NN&lt;/code&gt; and the SD of the irreducible Bayes error.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;NN = 100   #----&amp;gt; In class, we will change this to 
 #                 see how our results change in response
@@ -5623,7 +5650,7 @@ SD.of.Bayes.Error = .75   #-----&amp;gt; This, too, will change.
   x = runif(n = sample_size, min = 0, max = 1)
   eps = rnorm(n = sample_size, mean = 0, sd = SD.of.Bayes.Error)
   y = f(x) + eps
-  data.frame(x, y)
+  tibble(x, y)
 }&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;To completely specify the data generating process, we have made more model assumptions than simply &lt;span class=&#34;math inline&#34;&gt;\(\mathbb{E}[Y \mid X = x] = x^2\)&lt;/span&gt; and &lt;span class=&#34;math inline&#34;&gt;\(\mathbb{V}[Y \mid X = x] = \sigma ^ 2\)&lt;/span&gt;. In particular,&lt;/p&gt;
 &lt;ul&gt;
@@ -5648,7 +5675,7 @@ fit_1 = lm(y ~ poly(x, degree = 1), data = sim_data)
 fit_2 = lm(y ~ poly(x, degree = 2), data = sim_data)
 fit_9 = lm(y ~ poly(x, degree = 9), data = sim_data)&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Plotting these four trained models, we see that the zero predictor model does very poorly. The first degree model is reasonable, but we can see that the second degree model fits much better. The ninth degree model seem rather wild.&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/example/09-example_files/figure-html/unnamed-chunk-12-1.png&#34; width=&#34;864&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/example/09-example_files/figure-html/unnamed-chunk-13-1.png&#34; width=&#34;864&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;…&lt;/p&gt;
 &lt;p&gt;We will now complete a simulation study to understand the relationship between the bias, variance, and mean squared error for the estimates for &lt;span class=&#34;math inline&#34;&gt;\(f(x)\)&lt;/span&gt; given by these four models at the point &lt;span class=&#34;math inline&#34;&gt;\(x = 0.90\)&lt;/span&gt;. We use simulation to complete this task, as performing the analytical calculations would prove to be rather tedious and difficult.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;set.seed(1)
@@ -5676,11 +5703,11 @@ predictions = matrix(0, nrow = n_sims, ncol = n_models)&lt;/code&gt;&lt;/pre&gt;
   predictions[sim, 4] = predict(fit_9, x)
 }&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Compile all of the results:&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/example/09-example_files/figure-html/unnamed-chunk-15-1.png&#34; width=&#34;864&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/example/09-example_files/figure-html/unnamed-chunk-16-1.png&#34; width=&#34;864&#34; /&gt;&lt;/p&gt;
 &lt;div class=&#34;fyi&#34;&gt;
 &lt;p&gt;In your breakout room and using the code below:&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;First Breakout&lt;/strong&gt;: set &lt;code&gt;NN&lt;/code&gt; = 100, the value we used in our Content 9 lecture. The value is set in one of the first code chunks. Step through the code to get your finalPlot and make sure it looks like the plot in Content 9. I changed the code to use ggplot (easier to save output), so the formatting and colors will be different - that’s OK, we want to get the same results, not copy the layout of the plot. Note that at the end of the code, a list is created that will hold all of your results. In case you need to clear this list, &lt;code&gt;rm(FinalResults)&lt;/code&gt; will do so and the code will initate a new blank list to hold subsequent results.&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;Second Breakout&lt;/strong&gt;: set NN to a larger number. Usually, more data means more precise predictions. Run your code again stepping through it, until you get to this plot. Note that at the end of the code provided, there is a list that aggregates your results. &lt;strong&gt;Repeat this&lt;/strong&gt; with a 3rd, even larger value for NN. Don’t go much beyond 50,000 or it’ll take too long. Your &lt;code&gt;FinalResults&lt;/code&gt; list should have 3 elements in it. Use &lt;code&gt;wrap_plots(FinalResults, nrow = 1)&lt;/code&gt; to see all 3 side-by-side.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Second Breakout&lt;/strong&gt;: set NN to a larger number. Usually, more data means more precise predictions. Run your code again stepping through it, until you get to this plot. Note that at the end of the code provided, there is a list that aggregates your results. &lt;strong&gt;Repeat this&lt;/strong&gt; with a 3rd, even larger value for NN. Don’t go much beyond 50,000 or it’ll take too long. Your &lt;code&gt;FinalResults&lt;/code&gt; list should have 3 elements in it. Use &lt;code&gt;patchwork::wrap_plots(FinalResults, nrow = 1)&lt;/code&gt; to see all 3 side-by-side.&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;Third Breakout&lt;/strong&gt;: Finally, change the &lt;code&gt;SD.of.Bayes.Error&lt;/code&gt; value to make it higher or lower. Remember, this is the &lt;em&gt;irreducible&lt;/em&gt; error. Run your code again with your first, second, and third different value for sample size &lt;code&gt;NN&lt;/code&gt;. You should have 6 plots in your &lt;code&gt;FinalResults&lt;/code&gt; list - 3 from before, and 3 more with the new SD of Bayes Error. Use &lt;code&gt;wrap_plots&lt;/code&gt; with the right number of rows to see a 2x3 grid of the results.&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;Usually we think larger sample sizes and lower error lead to better overall prediction. Do we see any change in the bias vs. tradeoff relationship with lower/higher sample size &lt;code&gt;NN&lt;/code&gt; and lower/higher SD of Bayes Error?&lt;/li&gt;
@@ -5693,6 +5720,7 @@ predictions = matrix(0, nrow = n_sims, ncol = n_models)&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;I’ve merged all of the code together for you here. Copy this into a new .R script - you don’t need to use a full Markdown.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(ggplot2)
 library(patchwork)
+library(tidyverse)
 
 
 
@@ -5701,11 +5729,6 @@ NN = 100   #----&amp;gt; In class, we will change this to
 SD.of.Bayes.Error = 0.75   #-----&amp;gt; This, too, will change. 
 
 # Note that both of these are used in the next chunk(s) to generate data.
-
-
-
-
-
 
 
 f = function(x) {
@@ -5718,11 +5741,15 @@ get_sim_data = function(f, sample_size = NN) {
   x = runif(n = sample_size, min = 0, max = 1)
   eps = rnorm(n = sample_size, mean = 0, sd = SD.of.Bayes.Error)
   y = f(x) + eps
-  data.frame(x, y)
+  tibble(x, y)
 }
 
 
 
+
+
+
+## See the fit of the four models (viz only)
 set.seed(1)
 sim_data = get_sim_data(f)
 
@@ -5734,10 +5761,6 @@ fit_2 = lm(y ~ poly(x, degree = 2), data = sim_data)
 fit_9 = lm(y ~ poly(x, degree = 9), data = sim_data)
 
 
-
-
-
-set.seed(42)
 plot(y ~ x, data = sim_data, col = &amp;quot;grey&amp;quot;, pch = 20,
      main = &amp;quot;Four Polynomial Models fit to a Simulated Dataset&amp;quot;)
 
@@ -5751,6 +5774,16 @@ lines(grid, predict(fit_9, newdata = data.frame(x = grid)), col = &amp;quot;dark
 legend(&amp;quot;topleft&amp;quot;, 
        c(&amp;quot;y ~ 1&amp;quot;, &amp;quot;y ~ poly(x, 1)&amp;quot;, &amp;quot;y ~ poly(x, 2)&amp;quot;,  &amp;quot;y ~ poly(x, 9)&amp;quot;, &amp;quot;truth&amp;quot;), 
        col = c(&amp;quot;dodgerblue&amp;quot;, &amp;quot;firebrick&amp;quot;, &amp;quot;springgreen&amp;quot;, &amp;quot;darkorange&amp;quot;, &amp;quot;black&amp;quot;), lty = c(2, 3, 4, 5, 1), lwd = 2)
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -5814,7 +5847,7 @@ FinalResults[[paste0(&amp;#39;finalPlot.NN.&amp;#39;,NN,&amp;#39;.SDBayes.&amp;#
 # grid()
 # stripchart(value ~ key, data = tall_predictions, add = TRUE, vertical = TRUE, method = &amp;quot;jitter&amp;quot;, jitter = 0.15, pch = 1, col = c(&amp;quot;dodgerblue&amp;quot;, &amp;quot;firebrick&amp;quot;, &amp;quot;springgreen&amp;quot;, &amp;quot;darkorange&amp;quot;))
 # abline(h = f(x = 0.90), lwd = 2)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;And to output &lt;em&gt;whatever is in your list&lt;/em&gt;:&lt;/p&gt;
+&lt;p&gt;And to output &lt;em&gt;whatever is in your list of ggplot objects&lt;/em&gt;:&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;## This not run automatically.
 ## To plot the whole list of ggplot objects in FinalResults:
 wrap_plots(FinalResults, nrow = 2, guides = &amp;#39;collect&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
@@ -19202,8 +19235,10 @@ tree_mod_est_list = lapply(cp_to_try, tree_knn_mod)&lt;/code&gt;&lt;/pre&gt;
                     &lt;i class=&#34;fas fa-book-reader fa-lg&#34;&gt;&lt;/i&gt;&lt;/a&gt;&lt;/td&gt;
             &lt;td align=&#34;center&#34; style=&#34;width:10%;text-align:center&#34;&gt;&lt;a href=&#34;https://ssc442kirkpatrick.netlify.app/example/09-example/&#34;&gt;
                     &lt;i class=&#34;fas fa-laptop-code fa-lg&#34;&gt;&lt;/i&gt;&lt;/a&gt;&lt;/td&gt;
-            &lt;td align=&#34;center&#34; style=&#34;width:10%;text-align:center&#34;&gt;&lt;a href=&#34;https://ssc442kirkpatrick.netlify.app/assignment/09-assignment/&#34;&gt;
-                    &lt;i class=&#34;fas fa-pencil-ruler fa-lg&#34;&gt;&lt;/i&gt;&lt;/a&gt;&lt;/td&gt;
+            &lt;td align=&#34;center&#34; style=&#34;width:10%;text-align:center&#34;&gt;
+                &lt;font color=&#34;f1f1f1&#34;&gt;
+                    &lt;i class=&#34;fas fa-pencil-ruler fa-lg&#34;&gt;&lt;/i&gt;&lt;/font&gt;
+            &lt;/td&gt;
         &lt;/tr&gt;
         &lt;tr&gt;
             &lt;td align=&#34;right&#34; style=&#34;width:18%;text-align:right&#34;&gt;Week 10 (March 29/31)&lt;/td&gt;

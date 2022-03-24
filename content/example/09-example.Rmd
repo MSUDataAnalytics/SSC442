@@ -55,7 +55,7 @@ $$
 And:
 
 $$
-MSE(f(x), \hat{f}(x)) = E_{\mathcal{D}}\left[\left(f(x) - \hat{f}(x)\right)^2\right]
+MSE(f(x), \hat{f}(x)) = \mathbb{E}_{\mathcal{D}}\left[\left(f(x) - \hat{f}(x)\right)^2\right]
 $$
 
 
@@ -84,7 +84,7 @@ Let's talk about what's in this equation:
  
   
 - It is an expectation over all the possible $\mathcal{D}$ draws of the data we could have
-  - Because of this $f(x)$ and $\mathbb{E}\left[\hat{f}(x)\right]$ can move out of the expectation. This lets us cancel that last term with the "2" in it.
+  - Because of this $\hat{f}(x)$ and $E\left[\hat{f}(x)\right]$ can move out of the expectation. This lets us cancel that last term with the "2" in it.
   
 
 The main takeaway is that, even given the error, $\epsilon$, we *still* have additional error coming from our inability to perfectly get $\hat{f}(x) = f(x)$.
@@ -122,7 +122,7 @@ for(i in c('G','H','I')){
 print(myList)
 ```
 
-We're almost there. It turns out, we have our original $I$ in there left over from the previous creation of the list. That's why its out of order. What we want to do is start with a fresh, clean list. If we run `rm(myList)`, the old list will no longer exist, and *our code will create a fresh one when we run it again!
+We're almost there. It turns out, we have our original $I$ in there left over from the previous creation of the list. That's why its out of order. What we want to do is start with a fresh, clean list. If we run `rm(myList)`, the old list will no longer exist, and *our code will create a fresh one when we run it again!*
 
 ```{r}
 rm(myList)
@@ -134,6 +134,19 @@ print(myList)
 ```
 
 You're going to use this in your breakout rooms today. You're going to be asked to run some code that stores a plot in a list. To reset the list that stores things, just use `rm(listName)` (where `listName` is the name of the list).
+
+Alternatively, you can make sure you run code (outside of the loop) that makes a new list. This will re-set the list to be empty going into the loop:
+
+```{r}
+myList = list()
+for(i in c('G','H','I')){
+  if(!exists('myList')) myList = list()
+  myList[[i]] = paste0('This loop is on ',i)
+}
+print(myList)
+```
+
+
 
 
 ## Today's Example
@@ -156,6 +169,7 @@ We'll need the following libraries:
 ```{r, warning = FALSE, error = FALSE}
 library(ggplot2)
 library(patchwork)
+library(tidyverse)
 ```
 
 And here, I've made a little change to Content 9's code so we can play with sample size `NN` and the SD of the irreducible Bayes error.
@@ -191,7 +205,7 @@ get_sim_data = function(f, sample_size = NN) {
   x = runif(n = sample_size, min = 0, max = 1)
   eps = rnorm(n = sample_size, mean = 0, sd = SD.of.Bayes.Error)
   y = f(x) + eps
-  data.frame(x, y)
+  tibble(x, y)
 }
 ```
 
@@ -318,7 +332,7 @@ In your breakout room and using the code below:
 
 **First Breakout**: set `NN` = 100, the value we used in our Content 9 lecture. The value is set in one of the first code chunks. Step through the code to get your finalPlot and make sure it looks like the plot in Content 9. I changed the code to use ggplot (easier to save output), so the formatting and colors will be different - that's OK, we want to get the same results, not copy the layout of the plot. Note that at the end of the code, a list is created that will hold all of your results. In case you need to clear this list, `rm(FinalResults)` will do so and the code will initate a new blank list to hold subsequent results.
 
-**Second Breakout**: set NN to a larger number. Usually, more data means more precise predictions. Run your code again stepping through it, until you get to this plot. Note that at the end of the code provided, there is a list that aggregates your results. **Repeat this** with a 3rd, even larger value for NN. Don't go much beyond 50,000 or it'll take too long. Your `FinalResults` list should have 3 elements in it. Use `wrap_plots(FinalResults, nrow = 1)` to see all 3 side-by-side.
+**Second Breakout**: set NN to a larger number. Usually, more data means more precise predictions. Run your code again stepping through it, until you get to this plot. Note that at the end of the code provided, there is a list that aggregates your results. **Repeat this** with a 3rd, even larger value for NN. Don't go much beyond 50,000 or it'll take too long. Your `FinalResults` list should have 3 elements in it. Use  `patchwork::wrap_plots(FinalResults, nrow = 1)` to see all 3 side-by-side.
 
 **Third Breakout**: Finally, change the `SD.of.Bayes.Error` value to make it higher or lower. Remember, this is the *irreducible* error. Run your code again with your first, second, and third different value for sample size `NN`. You should have 6 plots in your `FinalResults` list - 3 from before, and 3 more with the new SD of Bayes Error. Use `wrap_plots` with the right number of rows to see a 2x3 grid of the results. 
 
@@ -333,6 +347,7 @@ I've merged all of the code together for you here. Copy this into a new .R scrip
 ```{r, eval = F}
 library(ggplot2)
 library(patchwork)
+library(tidyverse)
 
 
 
@@ -341,11 +356,6 @@ NN = 100   #----> In class, we will change this to
 SD.of.Bayes.Error = 0.75   #-----> This, too, will change. 
 
 # Note that both of these are used in the next chunk(s) to generate data.
-
-
-
-
-
 
 
 f = function(x) {
@@ -358,11 +368,15 @@ get_sim_data = function(f, sample_size = NN) {
   x = runif(n = sample_size, min = 0, max = 1)
   eps = rnorm(n = sample_size, mean = 0, sd = SD.of.Bayes.Error)
   y = f(x) + eps
-  data.frame(x, y)
+  tibble(x, y)
 }
 
 
 
+
+
+
+## See the fit of the four models (viz only)
 set.seed(1)
 sim_data = get_sim_data(f)
 
@@ -374,10 +388,6 @@ fit_2 = lm(y ~ poly(x, degree = 2), data = sim_data)
 fit_9 = lm(y ~ poly(x, degree = 9), data = sim_data)
 
 
-
-
-
-set.seed(42)
 plot(y ~ x, data = sim_data, col = "grey", pch = 20,
      main = "Four Polynomial Models fit to a Simulated Dataset")
 
@@ -391,6 +401,16 @@ lines(grid, predict(fit_9, newdata = data.frame(x = grid)), col = "darkorange", 
 legend("topleft", 
        c("y ~ 1", "y ~ poly(x, 1)", "y ~ poly(x, 2)",  "y ~ poly(x, 9)", "truth"), 
        col = c("dodgerblue", "firebrick", "springgreen", "darkorange", "black"), lty = c(2, 3, 4, 5, 1), lwd = 2)
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -456,7 +476,7 @@ FinalResults[[paste0('finalPlot.NN.',NN,'.SDBayes.',SD.of.Bayes.Error)]] = Final
 # abline(h = f(x = 0.90), lwd = 2)
 ```
 
-And to output *whatever is in your list*:
+And to output *whatever is in your list of ggplot objects*:
 
 ```{r, eval=FALSE}
 ## This not run automatically.
