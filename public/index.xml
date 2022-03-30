@@ -3289,10 +3289,41 @@ my_func &amp;lt;- function(y){
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       <guid>https://ssc442kirkpatrick.netlify.app/example/10-example/</guid>
       <description>
+&lt;script src=&#34;https://ssc442kirkpatrick.netlify.app/rmarkdown-libs/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
 
+&lt;div id=&#34;TOC&#34;&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#predicting-defaults&#34;&gt;Predicting Defaults&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
 
 &lt;div class=&#34;fyi&#34;&gt;
-&lt;p&gt;Today’s example will come from the “Content” tab.&lt;/p&gt;
+&lt;p&gt;Today’s example will build on material in the “Content” tab.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;predicting-defaults&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Predicting Defaults&lt;/h2&gt;
+&lt;p&gt;Today, we will continue to use the &lt;code&gt;ISLR&lt;/code&gt; data on defaults:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(ISLR)
+library(tibble)
+Default = ISLR::Default&lt;/code&gt;&lt;/pre&gt;
+&lt;div class=&#34;fyi&#34;&gt;
+&lt;p&gt;In our first breakout:&lt;/p&gt;
+&lt;ol style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;&lt;p&gt;Clean the data so that the &lt;code&gt;default&lt;/code&gt; column is a binary indicator for default&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Build a logistic model to predict &lt;code&gt;default&lt;/code&gt; using any combination of variables and interactions in the data. For now, just use your best judgement for choosing the variables and interactions – your lab for this week will have you formally tune a logistic model to optimize results.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Use a Bayes Classifier cutoff of .50 to generate your classifier output.&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;
+&lt;p&gt;Back in class, let’s look at how we did. What variables were most useful in explaining &lt;code&gt;default&lt;/code&gt;?&lt;/p&gt;
+&lt;div class=&#34;fyi&#34;&gt;
+&lt;p&gt;In our second breakout, we will create a ROC curve manually. To do this&lt;/p&gt;
+&lt;ol style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;&lt;p&gt;Take your model from the first breakout, and using a loop (or &lt;code&gt;sapply&lt;/code&gt;), step through a large number of possible cutoffs for classification ranging from 0 to 1.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;For each cutoff, generate a confusion matrix with &lt;em&gt;accuracy&lt;/em&gt;, &lt;em&gt;sensitivity&lt;/em&gt; and &lt;em&gt;specificity&lt;/em&gt;.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Combine the cutoff with the &lt;em&gt;sensitivity&lt;/em&gt; and &lt;em&gt;specificity&lt;/em&gt; results and make a ROC plot. Use &lt;code&gt;ggplot&lt;/code&gt; for your plot and map the color aesthetic to the cutoff value.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Calculate the AUC (the &lt;em&gt;area under the curve&lt;/em&gt;). This is a little tricky but can be done with your data.&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;
 &lt;/div&gt;
 </description>
     </item>

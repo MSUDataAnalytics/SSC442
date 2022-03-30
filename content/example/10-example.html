@@ -14,8 +14,39 @@ editor_options:
   chunk_output_type: console
 ---
 
+<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
 
+<div id="TOC">
+<ul>
+<li><a href="#predicting-defaults">Predicting Defaults</a></li>
+</ul>
+</div>
 
 <div class="fyi">
-<p>Today’s example will come from the “Content” tab.</p>
+<p>Today’s example will build on material in the “Content” tab.</p>
+</div>
+<div id="predicting-defaults" class="section level2">
+<h2>Predicting Defaults</h2>
+<p>Today, we will continue to use the <code>ISLR</code> data on defaults:</p>
+<pre class="r"><code>library(ISLR)
+library(tibble)
+Default = ISLR::Default</code></pre>
+<div class="fyi">
+<p>In our first breakout:</p>
+<ol style="list-style-type: decimal">
+<li><p>Clean the data so that the <code>default</code> column is a binary indicator for default</p></li>
+<li><p>Build a logistic model to predict <code>default</code> using any combination of variables and interactions in the data. For now, just use your best judgement for choosing the variables and interactions – your lab for this week will have you formally tune a logistic model to optimize results.</p></li>
+<li><p>Use a Bayes Classifier cutoff of .50 to generate your classifier output.</p></li>
+</ol>
+</div>
+<p>Back in class, let’s look at how we did. What variables were most useful in explaining <code>default</code>?</p>
+<div class="fyi">
+<p>In our second breakout, we will create a ROC curve manually. To do this</p>
+<ol style="list-style-type: decimal">
+<li><p>Take your model from the first breakout, and using a loop (or <code>sapply</code>), step through a large number of possible cutoffs for classification ranging from 0 to 1.</p></li>
+<li><p>For each cutoff, generate a confusion matrix with <em>accuracy</em>, <em>sensitivity</em> and <em>specificity</em>.</p></li>
+<li><p>Combine the cutoff with the <em>sensitivity</em> and <em>specificity</em> results and make a ROC plot. Use <code>ggplot</code> for your plot and map the color aesthetic to the cutoff value.</p></li>
+<li><p>Calculate the AUC (the <em>area under the curve</em>). This is a little tricky but can be done with your data.</p></li>
+</ol>
+</div>
 </div>
