@@ -16,9 +16,11 @@ editor_options:
   chunk_output_type: console
 ---
 
+Updated 4-4-2022 (no longer applicable for Sp22)
+
 :::fyi
 
-Each member of the group should submit a copy of the project to D2L (for ease of evaluation and to ensure communication across the group). Please write your group number and the group members' names across the top.
+One member of each group should turn in the group's work on D2L. In addition to the requirements below, the project should have the group member's names. All other group members should turn in a text document stating the group members (D2L requires something be turned in to give a grade and feedback, but I do not want to accidentally grade your projects 2-3 times over.)
 
 Turn in your copies by **11:59 on the date listed on the Schedule** 
 
@@ -33,7 +35,7 @@ New York City is full of urban wildlife, and rats are one of the city's most inf
 
 NYC keeps incredibly detailed data regarding animal sightings, including rats, and [it makes this data publicly available](https://www.kaggle.com/new-york-city/nyc-rat-sightings/data).
 
-For this first project, you will use **R and ggplot2** to tell an interesting story hidden in the data. You must create a story by looking carefully at the data.
+For this first project, pretend that you are an analyst with the NYC Mayor's office, and you have been tasked with getting a better understanding of the rat problem. Your job is to use **R and ggplot2** to tell an interesting story hidden in the data. You must create a story by looking carefully at the data, finding some insight into where or when rat sightings occur, and describing to the Mayor how this insight may inform a strategy to address the rats. Your assignment will take the form of a memo that presents the data and insights along with appropriate visualizations that communicate the story in-line. Your memo should be approximately 2-4 pages (including plots) and, of course, will use Rmarkdown rendered to PDF using LaTeX.
 
 ### Instructions
 
@@ -47,18 +49,27 @@ Here's what you need to do:
 
 3. **Create** an appropriate visualization based on the data you summarized.
 
-4. **Write** a memo explaining your process. We are specifically looking for a discussion of the following:
+4. **Write** a polished, professional memo presenting your analysis. We are specifically looking for a discussion of the following:
 
     - What story are you telling with your new graphic?
     - How have you applied reasonable standards in visual storytelling?
     - What policy implication is there (if any)?
+  
 
 5. **Upload** the following outputs to D2L:
 
-    - A PDF file of your memo with your final code and graphic embedded in it.^[You can approach this in a couple different ways—you can write the memo and then include the full figure and code at the end, [similar to this blog post](https://rud.is/b/2017/09/18/mapping-fall-foliage-with-sf/), or you can write the memo in an incremental way, describing the different steps of creating the figure, ultimately arriving at a clean final figure, [like this blog post](https://rudeboybert.github.io/fivethirtyeight/articles/bechdel.html).] This means you'll need to do all your coding in an `R` Markdown file and embed your code in chunks. Note that Part 2 of this project should be included in this PDF (see below).
-    - A standalone PDF version of your graphic. Use `ggsave(plot_name, filename = "output/blah.pdf", width = XX, height = XX)`
+    - A PDF file of your memo with your graphics embedded in it.^[You can approach this in a couple different ways—you can write the memo and then include the full figure and code at the end, [similar to this blog post](https://rud.is/b/2017/09/18/mapping-fall-foliage-with-sf/), or you can write the memo in an incremental way, describing the different steps of creating the figure, ultimately arriving at a clean final figure, [like this blog post](https://rudeboybert.github.io/fivethirtyeight/articles/bechdel.html).] This means you'll need to do all your coding in an `R` Markdown file and embed your code in chunks. 
+    - Note that Part 2 of this project should be included in this PDF in it's own section (see below).
+    - Nothing else. No .Rmd, no code, nothing but your clean, polished memo with Part 1 and Part 2.
+    
+Some important notes on your assignment
 
-
+- Your assignment should be clean and polished as if you were a city employee and you were turning in a work product. It should should flow nicely and use subsections (using ```###``` at the start of the line) as appropriate.
+- Do **not** "annotate" your thought process (e.g. do not write "we tried X but there were too many NA's, so we did Y instead"). This should be a polished memo suitable for turning in as a work product.
+- Your code should **not** appear in your output - it should be only your plots and memo writing. 
+  - To turn off code echoing, add `echo = FALSE` in each of your code chunk options (e.g. `{r setup, echo = FALSE}`), or set it globally in the first code chunk inside the `knitr::opts_chunk$set` function.
+    
+    
 ### Starter code
 
 I've provided some starter code below. A couple comments about it:
@@ -119,7 +130,11 @@ rats_clean %>%
 
 For the second part of the project, your task is simple. Your group must identify three different data sources^[The three different sources need not be different websites or from different organizations. For example, three different tables from the US Census would be sufficient] for potential use in your final project. You are not bound to this decision.
 
-For each, you must write a single paragraph about what about this data interests you. Add this to the memo from Part 1.
+Do **not** use Kaggle data. While Kaggle is useful for learning data science, part of this assignment is learning how to find actual data in the wild. 
+
+For each dataset, you must write a single short paragraph about what about this data interests you. Add this to the memo from Part 1, using `##` to make a new header in Rmarkdown for this section. 
+
+
 
 ## Evaluations
 
@@ -127,12 +142,14 @@ I will evaluate these projects (not the TA). I will only give top marks to those
 
 __Part 1__
 
-1. Technical difficulty: Does the final project show mastery of the skills we've discussed thus far? (10 points)
+1. Technical difficulty: Does the final project show mastery of the skills we've discussed thus far? Are axes and legends appropriately labeled? (12 points)
 
 2. Appropriateness of visuals: Do the visualizations tell a clear story? Have we learned something? (10 points)
 
-3. Storytelling: Does your memo clearly convey what you're doing and why? (9 points)
+3. Storytelling: Does your memo clearly convey what you're doing and why? (10 points)
 
 __Part 2__
 
-Each piece of data (and description) is worth 7 points. (21 points total)
+Each piece of data (and description) is worth 6 points. (18 points total)
+
+.small[Updated 4-4-2022]

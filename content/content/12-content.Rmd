@@ -46,7 +46,7 @@ Base R includes functions to perform all these tasks. However, they don't follow
 Most of the examples will come from the second case study which deals with self-reported heights by students and most of the chapter is dedicated to learning regular expressions (regex), and functions in the __stringr__ package.
 
 
-## The stringr package {#stringr}
+## The stringr package
 
 ```{r, message=FALSE, warning=FALSE}
 library(tidyverse)
@@ -423,14 +423,14 @@ We take this opportunity to introduce the `str_view` function, which is helpful 
 ```{r, eval=FALSE}
 str_view(s, pattern)
 ```
-![](/./12-content_files/str_view-1.png)
+![](./img/str_view-1.png)
 
 and `str_view_all` shows us all the matches, so `3'2` has two matches and `5'10` has three.
 
 ```{r, eval=FALSE}
 str_view_all(s, pattern)
 ```
-![](/./12-content_files/str_view-2.png)
+![](./img/str_view-2.png)
 
 
 There are many other special characters. We will learn some others below, but you can see most or all of them in the cheat sheet^[https://www.rstudio.com/wp-content/uploads/2016/09/RegExCheatsheet.pdf] mentioned earlier.
@@ -443,7 +443,7 @@ Character classes are used to define a series of characters that can be matched.
 ```{r, eval=FALSE}
 str_view(s, "[56]")
 ```
-![](/./12-content_files/str_view-3.png)
+![](./img/str_view-3.png)
 
 
 Suppose we want to match values between 4 and 7. A common way to define character classes is with ranges.  So, for example, `[0-9]` is equivalent to `\\d`. The pattern we want is therefore `[4-7]`.
@@ -584,7 +584,7 @@ str_detect(no, pattern)
 
 Another way to generate a pattern that searches for _everything except_ is to use the upper case of the special character. For example `\\D` means anything other than a digit, `\\S` means anything except a space, and so on.
 
-### Groups {#groups}
+### Groups
 
 _Groups_ are a powerful aspect of regex that permits the extraction of values. Groups are defined using parentheses. They don't affect the pattern matching per se. Instead, it permits tools to identify specific parts of the pattern so we can extract them.
 
@@ -1199,7 +1199,7 @@ We can see that the objects are identical:
 identical(research_funding_rates, new_research_funding_rates)
 ```
 
-## Recoding {#recode}
+## Recoding
 
 Another common operation involving strings is recoding the names of categorical variables. Let's say you have really long names for your levels and you will be displaying them in plots, you might want to use shorter versions of these names. For example, in character vectors with country names, you might want to change "United States of America" to "USA" and "United Kingdom" to UK, and so on. We can do this with `case_when`, although the __tidyverse__ offers an option that is specifically designed for this task: the `recode` function.
 
@@ -1368,7 +1368,7 @@ url <- paste0("https://en.wikipedia.org/w/index.php?title=",
 
 You can see the data table when you visit the webpage:
 
-![](/./12-content_files/murders-data-wiki-page.png)
+![](./img/murders-data-wiki-page.png)
 
 (Web page courtesy of Wikipedia^[https://en.wikipedia.org/w/index.php?title=Gun_violence_in_the_United_States_by_state&direction=prev&oldid=810166167]. CC-BY-SA-3.0 license^[https://en.wikipedia.org/wiki/Wikipedia:Text_of_Creative_Commons_Attribution-ShareAlike_3.0_Unported_License]. Screenshot of part of the page.)
 
@@ -1376,7 +1376,7 @@ Unfortunately, there is no link to a data file. To make the data frame that is l
 
 _Web scraping_, or _web harvesting_, is the term we use to describe the process of extracting data from a website. The reason we can do this is because the information used by a browser to render webpages is received as a text file from a server. The text is code written in hyper text markup language (HTML). Every browser has a way to show the html source code for a page, each one different. On Chrome, you can use Control-U on a PC and command+alt+U on a Mac. You will see something like this:
 
-![](/./12-content_files/html-code.png)
+![](./img/html-code.png)
 
 ## HTML
 
@@ -1491,7 +1491,7 @@ head(tab)
 We still have some wrangling to do. For example, we need to remove the commas and turn characters into numbers. Before continuing with this, we will learn a more general approach to extracting information from web sites.
 
 
-## CSS selectors {#css-selectors}
+## CSS selectors
 The default look of a webpage made with the most basic HTML is quite unattractive. The aesthetically pleasing pages we see today are made using CSS to define the look and style of webpages. The fact that all pages for a company have the same style usually results from their use of the same CSS file to define the style. The general way these CSS files work is by defining how each of the elements of a webpage will look. The title, headings, itemized lists, tables, and links, for example, each receive their own style including font, color, size, and distance from the margin. CSS does this by leveraging patterns used to define these elements, referred to as _selectors_. An example of such a pattern, which we used above, is `table`, but there are many, many more.
 
 If we want to grab data from a webpage and we happen to know a selector that is unique to the part of the page containing this data, we can use the `html_nodes` function. However, knowing which selector can be quite complicated.
