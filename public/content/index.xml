@@ -4234,7 +4234,7 @@ case_when(x &amp;lt; 0 ~ &amp;quot;Negative&amp;quot;,
 &lt;li&gt;&lt;a href=&#34;#setdiff&#34;&gt;&lt;code&gt;setdiff&lt;/code&gt;&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;#setequal&#34;&gt;&lt;code&gt;setequal&lt;/code&gt;&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;#a-note-about-merging-and-dupliacted-rows&#34;&gt;A note about merging and dupliacted rows&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#a-note-about-merging-and-duplicated-rows&#34;&gt;A note about merging and duplicated rows&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;#parsing-dates-and-times&#34;&gt;Parsing dates and times&lt;/a&gt;
 &lt;ul&gt;
@@ -4327,7 +4327,6 @@ dplyr::select(new_wide_data, country, `1960`:`1967`)&lt;/code&gt;&lt;/pre&gt;
 ## 1 Germany       2.41   2.44   2.47   2.49   2.49   2.48   2.44   2.37
 ## 2 South Korea   6.16   5.99   5.79   5.57   5.36   5.16   4.99   4.85&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;The following diagram can help remind you how these two functions work:&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/./11-content_files/gather-spread.png&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;img/gather-spread.png&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;(Image courtesy of RStudio&lt;a href=&#34;#fn1&#34; class=&#34;footnote-ref&#34; id=&#34;fnref1&#34;&gt;&lt;sup&gt;1&lt;/sup&gt;&lt;/a&gt;. CC-BY-4.0 license&lt;a href=&#34;#fn2&#34; class=&#34;footnote-ref&#34; id=&#34;fnref2&#34;&gt;&lt;sup&gt;2&lt;/sup&gt;&lt;/a&gt;. Cropped from original.)
 &lt;!-- (Source: RStudio. The image is a section of this [cheat sheet](https://github.com/rstudio/cheatsheets/raw/master/data-transformation.pdf).)--&gt;&lt;/p&gt;
@@ -4653,7 +4652,6 @@ tab_2&lt;/code&gt;&lt;/pre&gt;
 ## 1 Arkansas    2915918
 ## 2 Colorado    5029196&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;The following diagram summarizes the above joins:&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/./11-content_files/joins.png&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;img/joins.png&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;(Image courtesy of RStudio&lt;a href=&#34;#fn3&#34; class=&#34;footnote-ref&#34; id=&#34;fnref3&#34;&gt;&lt;sup&gt;3&lt;/sup&gt;&lt;/a&gt;. CC-BY-4.0 license&lt;a href=&#34;#fn4&#34; class=&#34;footnote-ref&#34; id=&#34;fnref4&#34;&gt;&lt;sup&gt;4&lt;/sup&gt;&lt;/a&gt;. Cropped from original.)&lt;/p&gt;
 &lt;/div&gt;
@@ -4801,8 +4799,8 @@ top %&amp;gt;% as_tibble()&lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;div id=&#34;a-note-about-merging-and-dupliacted-rows&#34; class=&#34;section level2&#34;&gt;
-&lt;h2&gt;A note about merging and dupliacted rows&lt;/h2&gt;
+&lt;div id=&#34;a-note-about-merging-and-duplicated-rows&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;A note about merging and duplicated rows&lt;/h2&gt;
 &lt;p&gt;When we merge data, we have to be very careful about duplicated rows. Specifically, we have to be certain that the fields we use to join on are unique &lt;strong&gt;or&lt;/strong&gt; that we know they aren’t unique and intend to duplicate rows.&lt;/p&gt;
 &lt;p&gt;When we have tidy data, we have one row per observation. When we join data that has more than one row per observation, the new dataset will no longer be tidy. For instance:&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;tidyData &amp;lt;- bind_cols( state = c(&amp;#39;MI&amp;#39;,&amp;#39;CA&amp;#39;,&amp;#39;MI&amp;#39;,&amp;#39;CA&amp;#39;), 
@@ -4954,17 +4952,17 @@ In these cases, examining the entire vector of dates will help you determine wha
 &lt;pre&gt;&lt;code&gt;## [1] &amp;quot;2001-02-09&amp;quot;&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;The &lt;strong&gt;lubridate&lt;/strong&gt; package is also useful for dealing with times. In R base, you can get the current time typing &lt;code&gt;Sys.time()&lt;/code&gt;. The &lt;strong&gt;lubridate&lt;/strong&gt; package provides a slightly more advanced function, &lt;code&gt;now&lt;/code&gt;, that permits you to define the time zone:&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;now()&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;2022-03-23 06:53:58 EDT&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;2022-04-04 13:22:50 EDT&amp;quot;&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;now(&amp;quot;GMT&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;2022-03-23 10:53:58 GMT&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;2022-04-04 17:22:50 GMT&amp;quot;&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;You can see all the available time zones with &lt;code&gt;OlsonNames()&lt;/code&gt; function.&lt;/p&gt;
 &lt;p&gt;We can also extract hours, minutes, and seconds:&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;now() %&amp;gt;% hour()&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## [1] 6&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 13&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;now() %&amp;gt;% minute()&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## [1] 53&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 22&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;now() %&amp;gt;% second()&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## [1] 58.22048&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 50.7043&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;The package also includes a function to parse strings into times as well as parsers for time objects that include dates:&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;x &amp;lt;- c(&amp;quot;12:34:56&amp;quot;)
 hms(x)&lt;/code&gt;&lt;/pre&gt;

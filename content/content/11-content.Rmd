@@ -34,10 +34,6 @@ Here we cover several common steps of the data wrangling process including tidyi
 
 # Reshaping data
 
-```{r, echo=FALSE}
-img_path <- "wrangling/img/"
-```
-
 As we have seen through the class, having data in _tidy_ format is what makes the tidyverse flow. After the first step in the data analysis process, importing data, a common next step is to reshape the data into a form that facilitates the rest of the analysis. The __tidyr__ package includes several functions that are useful for tidying data.
 
 ```{r, message=FALSE, warning=FALSE}
@@ -125,7 +121,6 @@ dplyr::select(new_wide_data, country, `1960`:`1967`)
 
 The following diagram can help remind you how these two functions work:
 
-![](/./11-content_files/gather-spread.png)
 
 ![](./img/gather-spread.png)
 
@@ -406,8 +401,6 @@ anti_join(tab_1, tab_2, by = "state")
 The following diagram summarizes the above joins:
 
 
-![](/./11-content_files/joins.png)
-
 ![](./img/joins.png)
 
 
@@ -590,7 +583,7 @@ We want to see if the monthly trend is changing so we are going to remove the ye
 :::
 
 
-## A note about merging and dupliacted rows
+## A note about merging and duplicated rows
 
 When we merge data, we have to be very careful about duplicated rows. Specifically, we have to be certain that the fields we use to join on are unique **or** that we know they aren't unique and intend to duplicate rows.
 

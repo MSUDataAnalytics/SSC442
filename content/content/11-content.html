@@ -51,7 +51,7 @@ output:
 <li><a href="#setdiff"><code>setdiff</code></a></li>
 <li><a href="#setequal"><code>setequal</code></a></li>
 </ul></li>
-<li><a href="#a-note-about-merging-and-dupliacted-rows">A note about merging and dupliacted rows</a></li>
+<li><a href="#a-note-about-merging-and-duplicated-rows">A note about merging and duplicated rows</a></li>
 </ul></li>
 <li><a href="#parsing-dates-and-times">Parsing dates and times</a>
 <ul>
@@ -144,7 +144,6 @@ dplyr::select(new_wide_data, country, `1960`:`1967`)</code></pre>
 ## 1 Germany       2.41   2.44   2.47   2.49   2.49   2.48   2.44   2.37
 ## 2 South Korea   6.16   5.99   5.79   5.57   5.36   5.16   4.99   4.85</code></pre>
 <p>The following diagram can help remind you how these two functions work:</p>
-<p><img src="/./11-content_files/gather-spread.png" /></p>
 <p><img src="img/gather-spread.png" /></p>
 <p>(Image courtesy of RStudio<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a>. CC-BY-4.0 license<a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a>. Cropped from original.)
 <!-- (Source: RStudio. The image is a section of this [cheat sheet](https://github.com/rstudio/cheatsheets/raw/master/data-transformation.pdf).)--></p>
@@ -470,7 +469,6 @@ tab_2</code></pre>
 ## 1 Arkansas    2915918
 ## 2 Colorado    5029196</code></pre>
 <p>The following diagram summarizes the above joins:</p>
-<p><img src="/./11-content_files/joins.png" /></p>
 <p><img src="img/joins.png" /></p>
 <p>(Image courtesy of RStudio<a href="#fn3" class="footnote-ref" id="fnref3"><sup>3</sup></a>. CC-BY-4.0 license<a href="#fn4" class="footnote-ref" id="fnref4"><sup>4</sup></a>. Cropped from original.)</p>
 </div>
@@ -618,8 +616,8 @@ top %&gt;% as_tibble()</code></pre>
 </div>
 </div>
 </div>
-<div id="a-note-about-merging-and-dupliacted-rows" class="section level2">
-<h2>A note about merging and dupliacted rows</h2>
+<div id="a-note-about-merging-and-duplicated-rows" class="section level2">
+<h2>A note about merging and duplicated rows</h2>
 <p>When we merge data, we have to be very careful about duplicated rows. Specifically, we have to be certain that the fields we use to join on are unique <strong>or</strong> that we know they aren’t unique and intend to duplicate rows.</p>
 <p>When we have tidy data, we have one row per observation. When we join data that has more than one row per observation, the new dataset will no longer be tidy. For instance:</p>
 <pre class="r"><code>tidyData &lt;- bind_cols( state = c(&#39;MI&#39;,&#39;CA&#39;,&#39;MI&#39;,&#39;CA&#39;), 
@@ -771,17 +769,17 @@ In these cases, examining the entire vector of dates will help you determine wha
 <pre><code>## [1] &quot;2001-02-09&quot;</code></pre>
 <p>The <strong>lubridate</strong> package is also useful for dealing with times. In R base, you can get the current time typing <code>Sys.time()</code>. The <strong>lubridate</strong> package provides a slightly more advanced function, <code>now</code>, that permits you to define the time zone:</p>
 <pre class="r"><code>now()</code></pre>
-<pre><code>## [1] &quot;2022-03-23 06:53:58 EDT&quot;</code></pre>
+<pre><code>## [1] &quot;2022-04-04 13:22:50 EDT&quot;</code></pre>
 <pre class="r"><code>now(&quot;GMT&quot;)</code></pre>
-<pre><code>## [1] &quot;2022-03-23 10:53:58 GMT&quot;</code></pre>
+<pre><code>## [1] &quot;2022-04-04 17:22:50 GMT&quot;</code></pre>
 <p>You can see all the available time zones with <code>OlsonNames()</code> function.</p>
 <p>We can also extract hours, minutes, and seconds:</p>
 <pre class="r"><code>now() %&gt;% hour()</code></pre>
-<pre><code>## [1] 6</code></pre>
+<pre><code>## [1] 13</code></pre>
 <pre class="r"><code>now() %&gt;% minute()</code></pre>
-<pre><code>## [1] 53</code></pre>
+<pre><code>## [1] 22</code></pre>
 <pre class="r"><code>now() %&gt;% second()</code></pre>
-<pre><code>## [1] 58.22048</code></pre>
+<pre><code>## [1] 50.7043</code></pre>
 <p>The package also includes a function to parse strings into times as well as parsers for time objects that include dates:</p>
 <pre class="r"><code>x &lt;- c(&quot;12:34:56&quot;)
 hms(x)</code></pre>
