@@ -30,7 +30,7 @@
   
     
   
-  <meta name="description" content="Required ReadingGuiding QuestionsString processingThe stringr packageCase study 1: US murders dataCase study 2: self-reported heightsHow to escape when defining stringsRegular expressionsStrings are a regexpSpecial charactersCharacter classesAnchorsQuantifiersWhite space \sQuantifiers: *, ?, &#43;NotGroupsSearch and replace with regexSearch and replace using groupsTesting and improvingTrimmingChanging lettercaseCase study 2: self-reported heights (continued)The extract functionPutting it all togetherString splittingCase study 3: extracting tables from a PDFRecodingWeb scrapingHTMLThe rvest packageCSS selectorsJSONRequired ReadingThis page.">
+  <meta name="description" content="Required ReadingGuiding QuestionsString processingThe stringr packageCase study 1: US murders dataCase study 2: self-reported heightsHow to escape when defining stringsRegular expressionsStrings are a regexSpecial charactersCharacter classesAnchorsQuantifiersWhite space \sQuantifiers: *, ?, &#43;NotGroupsSearch and replace with regexSearch and replace using groupsTesting and improvingTrimmingChanging lettercaseCase study 2: self-reported heights (continued)The extract functionPutting it all togetherString splittingCase study 3: extracting tables from a PDFRecodingWeb scrapingHTMLThe rvest packageCSS selectorsJSONLecture VideoRequired ReadingThis page.">
 
   
   <link rel="alternate" hreflang="en-us" href="https://ssc442kirkpatrick.netlify.app/content/12-content/">
@@ -238,7 +238,7 @@
   <meta property="og:site_name" content="Data Analytics">
   <meta property="og:url" content="https://ssc442kirkpatrick.netlify.app/content/12-content/">
   <meta property="og:title" content="Text as Data | Data Analytics">
-  <meta property="og:description" content="Required ReadingGuiding QuestionsString processingThe stringr packageCase study 1: US murders dataCase study 2: self-reported heightsHow to escape when defining stringsRegular expressionsStrings are a regexpSpecial charactersCharacter classesAnchorsQuantifiersWhite space \sQuantifiers: *, ?, &#43;NotGroupsSearch and replace with regexSearch and replace using groupsTesting and improvingTrimmingChanging lettercaseCase study 2: self-reported heights (continued)The extract functionPutting it all togetherString splittingCase study 3: extracting tables from a PDFRecodingWeb scrapingHTMLThe rvest packageCSS selectorsJSONRequired ReadingThis page."><meta property="og:image" content="https://ssc442kirkpatrick.netlify.app/img/social-image.png">
+  <meta property="og:description" content="Required ReadingGuiding QuestionsString processingThe stringr packageCase study 1: US murders dataCase study 2: self-reported heightsHow to escape when defining stringsRegular expressionsStrings are a regexSpecial charactersCharacter classesAnchorsQuantifiersWhite space \sQuantifiers: *, ?, &#43;NotGroupsSearch and replace with regexSearch and replace using groupsTesting and improvingTrimmingChanging lettercaseCase study 2: self-reported heights (continued)The extract functionPutting it all togetherString splittingCase study 3: extracting tables from a PDFRecodingWeb scrapingHTMLThe rvest packageCSS selectorsJSONLecture VideoRequired ReadingThis page."><meta property="og:image" content="https://ssc442kirkpatrick.netlify.app/img/social-image.png">
   <meta property="twitter:image" content="https://ssc442kirkpatrick.netlify.app/img/social-image.png"><meta property="og:locale" content="en-us">
   
     
@@ -645,7 +645,7 @@
 <li><a href="#how-to-escape-when-defining-strings">How to <em>escape</em> when defining strings</a></li>
 <li><a href="#regular-expressions">Regular expressions</a>
 <ul>
-<li><a href="#strings-are-a-regexp">Strings are a regexp</a></li>
+<li><a href="#strings-are-a-regex">Strings are a regex</a></li>
 <li><a href="#special-characters">Special characters</a></li>
 <li><a href="#character-classes">Character classes</a></li>
 <li><a href="#anchors">Anchors</a></li>
@@ -677,6 +677,7 @@
 <li><a href="#the-rvest-package">The rvest package</a></li>
 <li><a href="#css-selectors">CSS selectors</a></li>
 <li><a href="#json">JSON</a></li>
+<li><a href="#lecture-video">Lecture Video</a></li>
 </ul></li>
 </ul>
 </div>
@@ -713,7 +714,7 @@ splitting strings into multiple values.</p>
 library(stringr)</code></pre>
 <p>In general, string processing tasks can be divided into <strong>detecting</strong>, <strong>locating</strong>, <strong>extracting</strong>, or <strong>replacing</strong> patterns in strings. We will see several examples. The table below includes the functions available to you in the <strong>stringr</strong> package. We split them by task. We also include the R-base equivalent when available.</p>
 <p>All these functions take a character vector as first argument. Also, for each function, operations are vectorized: the operation gets applied to each string in the vector.</p>
-<p>Finally, note that in this table we mention <em>groups</em>. These will be explained in Section <a href="#groups"><strong>??</strong></a>.</p>
+<p>Finally, note that in this table we mention <em>groups</em>. These will be explained later on.</p>
 <table>
 <colgroup>
 <col width="19%" />
@@ -935,7 +936,18 @@ url &lt;- paste0(&quot;https://en.wikipedia.org/w/index.php?title=&quot;,
 murders_raw &lt;- read_html(url) %&gt;%
   html_node(&quot;table&quot;) %&gt;%
   html_table() %&gt;%
-  setNames(c(&quot;state&quot;, &quot;population&quot;, &quot;total&quot;, &quot;murder_rate&quot;))</code></pre>
+  setNames(c(&quot;state&quot;, &quot;population&quot;, &quot;total&quot;, &quot;murder_rate&quot;))
+
+head(murders_raw)</code></pre>
+<pre><code>## # A tibble: 6 x 4
+##   state      population total murder_rate
+##   &lt;chr&gt;      &lt;chr&gt;      &lt;chr&gt;       &lt;dbl&gt;
+## 1 Alabama    4,853,875  348           7.2
+## 2 Alaska     737,709    59            8  
+## 3 Arizona    6,817,565  309           4.5
+## 4 Arkansas   2,977,853  181           6.1
+## 5 California 38,993,940 1,861         4.8
+## 6 Colorado   5,448,819  176           3.2</code></pre>
 <p>The code above shows the first step in constructing the dataset</p>
 <pre class="r"><code>library(dslabs)
 data(murders)</code></pre>
@@ -958,7 +970,8 @@ murders_raw %&gt;% summarize_all(commas)</code></pre>
 <p>We can then use the <code>str_replace_all</code> function to remove them:</p>
 <pre class="r"><code>test_1 &lt;- str_replace_all(murders_raw$population, &quot;,&quot;, &quot;&quot;)
 test_1 &lt;- as.numeric(test_1)</code></pre>
-<p>We can then use <code>mutate_all</code> to apply this operation to each column, since it won’t affect the columns without commas.</p>
+<p>The <code>stringr</code> function <code>str_replace_all</code> replaces all of the first argument’s instances of <code>,</code> (the second argument) with <code>''</code> (the third argument). The first input for the function is the character vector on which you’d like to operate.</p>
+<p>We can then use <code>mutate_all</code> to apply this operation to each column, since it won’t affect the columns without commas. You may notice the use of <code>mutate_all</code> and <code>summarize_all</code> here. These are versions of <code>mutate</code> and <code>summarize</code> that apply a given <em>function</em> to every column in the data. Above, the function we apply to every column is the <code>commas</code> function. Note that in using <code>summarize_all</code> we pipe the data in, but we <em>do not list the columns</em> we wish to create via <code>summarize</code>. To apply <code>as.numeric</code> to each column in <code>murders_raw</code>, we’d use: <code>murders_raw %&gt;% mutate_all(str_replace_all, ',', '')</code>. <strong>Note, the <code>str_replace_all</code> function is NOT an analog to <code>mutate_all</code> that applies to each column in the data!</strong></p>
 <p>It turns out that this operation is so common that <code>readr</code> includes the function <code>parse_number</code> specifically meant to remove non-numeric characters before coercing:</p>
 <pre class="r"><code>test_2 &lt;- parse_number(murders_raw$population)
 identical(test_1, test_2)</code></pre>
@@ -1023,7 +1036,7 @@ head(murders_new)</code></pre>
   pull(height)
 length(problems)</code></pre>
 <pre><code>## [1] 292</code></pre>
-<p>We can now view all the cases by simply printing them. We don’t do that here because there are <code>length(problems)</code>, but after surveying them carefully, we see that three patterns can be used to define three large groups within these exceptions.</p>
+<p>We can now view all the cases by simply printing them. We don’t do that here because there are 292 problems, but after surveying them carefully, we see that three patterns can be used to define three large groups within these exceptions.</p>
 <p>1. A pattern of the form <code>x'y</code> or <code>x' y''</code> or <code>x'y"</code> with <code>x</code> and <code>y</code> representing feet and inches, respectively. Here are ten examples:</p>
 <pre><code>## 5&#39; 4&quot; 5&#39;7 5&#39;7&quot; 5&#39;3&quot; 5&#39;11 5&#39;9&#39;&#39; 5&#39;10&#39;&#39; 5&#39; 10 5&#39;5&quot; 5&#39;2&quot;</code></pre>
 <p>2. A pattern of the form <code>x.y</code> or <code>x,y</code> with <code>x</code> feet and <code>y</code> inches. Here are ten examples:</p>
@@ -1081,8 +1094,8 @@ cat(s)</code></pre>
 <p>A regular expression (regex) is a way to describe specific patterns of characters of text. They can be used to determine if a given string matches the pattern. A set of rules has been defined to do this efficiently and precisely and here we show some examples. We can learn more about these rules by reading a detailed tutorials<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a> <a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a>. This RStudio cheat sheet<a href="#fn3" class="footnote-ref" id="fnref3"><sup>3</sup></a> is also very useful.</p>
 <p>The patterns supplied to the <strong>stringr</strong> functions can be a regex rather than a standard string. We will learn how this works through a series of examples.</p>
 <p>Throughout this section you will see that we create strings to test out our regex. To do this, we define patterns that we know should match and also patterns that we know should not. We will call them <code>yes</code> and <code>no</code>, respectively. This permits us to check for the two types of errors: failing to match and incorrectly matching.</p>
-<div id="strings-are-a-regexp" class="section level3">
-<h3>Strings are a regexp</h3>
+<div id="strings-are-a-regex" class="section level3">
+<h3>Strings are a regex</h3>
 <p>Technically any string is a regex, perhaps the simplest example is a single character. So the comma <code>,</code> used in the next code example is a simple example of searching with regex.</p>
 <pre class="r"><code>pattern &lt;- &quot;,&quot;
 str_detect(murders_raw$total, pattern)</code></pre>
@@ -1142,7 +1155,8 @@ yes &lt;- c(&quot;1&quot;, &quot;5&quot;, &quot;9&quot;)
 no &lt;- c(&quot;12&quot;, &quot;123&quot;, &quot; 1&quot;, &quot;a4&quot;, &quot;b&quot;)
 s &lt;- c(yes, no)
 str_view_all(s, pattern)</code></pre>
-<p><img src="/./12-content_files/str_view-4.png" /></p>
+<!-- ![](/./12-content_files/str_view-4.png) -->
+<p><img src="img/str_view-4.png" /></p>
 <p>The <code>1</code> does not match because it does not start with the digit but rather with a space, which is actually not easy to see.</p>
 </div>
 <div id="quantifiers" class="section level3">
@@ -1152,7 +1166,8 @@ str_view_all(s, pattern)</code></pre>
 yes &lt;- c(&quot;1&quot;, &quot;5&quot;, &quot;9&quot;, &quot;12&quot;)
 no &lt;- c(&quot;123&quot;, &quot;a4&quot;, &quot;b&quot;)
 str_view(c(yes, no), pattern)</code></pre>
-<p><img src="/./12-content_files/str_view-5.png" /></p>
+<!-- ![](/./12-content_files/str_view-5.png) -->
+<p><img src="img/str_view-5.png" /></p>
 <p>In this case, <code>123</code> does <strong>not</strong> match, but <code>12</code> does. So to look for our feet and inches pattern, we can add the symbols for feet <code>'</code> and inches <code>"</code> after the digits.</p>
 <p>With what we have learned, we can now construct an example for the pattern <code>x'y\"</code> with <code>x</code> feet and <code>y</code> inches.</p>
 <pre class="r"><code>pattern &lt;- &quot;^[4-7]&#39;\\d{1,2}\&quot;$&quot;</code></pre>
@@ -1262,8 +1277,8 @@ sum(str_detect(problems, pattern))</code></pre>
 <pre><code>## [1] 14</code></pre>
 <p>To see why this is, we show some examples that expose why we don’t have more matches:</p>
 <pre class="r"><code>problems[c(2, 10, 11, 12, 15)] %&gt;% str_view(pattern)</code></pre>
-<p><img src="/./12-content_files/str_view-6.png" />
-An initial problem we see immediately is that some students wrote out the words “feet” and “inches”. We can see the entries that did this with the <code>str_subset</code> function:</p>
+<p><img src="img/str_view-6.png" /></p>
+<p>An initial problem we see immediately is that some students wrote out the words “feet” and “inches”. We can see the entries that did this with the <code>str_subset</code> function:</p>
 <pre class="r"><code>str_subset(problems, &quot;inches&quot;)</code></pre>
 <pre><code>## [1] &quot;5 feet and 8.11 inches&quot; &quot;Five foot eight inches&quot; &quot;5 feet 7inches&quot;        
 ## [4] &quot;5ft 9 inches&quot;           &quot;5 ft 9 inches&quot;          &quot;5 feet 6 inches&quot;</code></pre>
@@ -1431,7 +1446,8 @@ cat(s)</code></pre>
 <pre class="r"><code>s &lt;- c(&quot;Five feet eight inches&quot;)
 str_to_lower(s)</code></pre>
 <pre><code>## [1] &quot;five feet eight inches&quot;</code></pre>
-<p>Other related functions are <code>str_to_upper</code> and <code>str_to_title</code>. We are now ready to define a procedure that converts all the problematic cases to inches.</p>
+<p>Other related functions are <code>str_to_upper</code> and <code>str_to_title</code>. These are especially useful when you’re trying to merge two datasets – you’ll often see state names in various capitalization forms.</p>
+<p>We are now ready to define a procedure that converts all the problematic cases to inches.</p>
 </div>
 <div id="case-study-2-self-reported-heights-continued" class="section level2">
 <h2>Case study 2: self-reported heights (continued)</h2>
@@ -1474,7 +1490,7 @@ remaining_problems[!index]</code></pre>
 <p>If we have a simpler case like this:</p>
 <pre class="r"><code>s &lt;- c(&quot;5&#39;10&quot;, &quot;6&#39;1&quot;)
 tab &lt;- data.frame(x = s)</code></pre>
-<p>In Section <a href="#separate"><strong>??</strong></a> we learned about the <code>separate</code> function, which can be used to achieve our current goal:</p>
+<p>In an earlier Content section we learned about the <code>separate</code> function, which can be used to achieve our current goal:</p>
 <pre class="r"><code>tab %&gt;% separate(x, c(&quot;feet&quot;, &quot;inches&quot;), sep = &quot;&#39;&quot;)</code></pre>
 <pre><code>##   feet inches
 ## 1    5     10
@@ -1635,7 +1651,7 @@ research_funding_rates %&gt;%
 ## 8     Social sciences              15.3                11.5
 ## 9    Medical sciences              18.8                11.2</code></pre>
 <p>The data comes from a paper published in the Proceedings of the National Academy of Science (PNAS)<a href="#fn5" class="footnote-ref" id="fnref5"><sup>5</sup></a>, a widely read scientific journal. However, the data is not provided in a spreadsheet; it is in a table in a PDF document. Here is a screenshot of the table:</p>
-<p><img src="/./12-content_files/pnas-table-s1.png" /></p>
+<p><img src="img/pnas-table-s1.png" /></p>
 <p>(Source: Romy van der Lee and Naomi Ellemers, PNAS 2015 112 (40) 12349-12353<a href="#fn6" class="footnote-ref" id="fnref6"><sup>6</sup></a>.)</p>
 <p>We could extract the numbers by hand, but this could lead to human error. Instead, we can try to wrangle the data using R. We start by downloading the pdf document, then importing into R:</p>
 <pre class="r"><code>library(&quot;pdftools&quot;)
@@ -1971,6 +1987,10 @@ citi_bike &lt;- fromJSON(&quot;http://citibikenyc.com/stations/json&quot;)</code
 <p>and the second is a data table:</p>
 <pre class="r"><code>citi_bike$stationBeanList %&gt;% as_tibble()</code></pre>
 <p>You can learn much more by examining tutorials and help files from the <strong>jsonlite</strong> package. This package is intended for relatively simple tasks such as converting data into tables. For more flexibility, we recommend <code>rjson</code>.</p>
+</div>
+<div id="lecture-video" class="section level2">
+<h2>Lecture Video</h2>
+<p>The lecture video for this material is <a href="https://mediaspace.msu.edu/media/SSC442+-+Content+11+-+April+5th+2022/1_63z01mgu?st=407">available here <i class="fas fa-film"></i></a></p>
 </div>
 </div>
 <div class="footnotes">

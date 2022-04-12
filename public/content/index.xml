@@ -5050,7 +5050,7 @@ endDate - startDate&lt;/code&gt;&lt;/pre&gt;
 &lt;li&gt;&lt;a href=&#34;#how-to-escape-when-defining-strings&#34;&gt;How to &lt;em&gt;escape&lt;/em&gt; when defining strings&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;#regular-expressions&#34;&gt;Regular expressions&lt;/a&gt;
 &lt;ul&gt;
-&lt;li&gt;&lt;a href=&#34;#strings-are-a-regexp&#34;&gt;Strings are a regexp&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#strings-are-a-regex&#34;&gt;Strings are a regex&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;#special-characters&#34;&gt;Special characters&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;#character-classes&#34;&gt;Character classes&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;#anchors&#34;&gt;Anchors&lt;/a&gt;&lt;/li&gt;
@@ -5082,6 +5082,7 @@ endDate - startDate&lt;/code&gt;&lt;/pre&gt;
 &lt;li&gt;&lt;a href=&#34;#the-rvest-package&#34;&gt;The rvest package&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;#css-selectors&#34;&gt;CSS selectors&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;#json&#34;&gt;JSON&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#lecture-video&#34;&gt;Lecture Video&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/div&gt;
@@ -5118,7 +5119,7 @@ splitting strings into multiple values.&lt;/p&gt;
 library(stringr)&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;In general, string processing tasks can be divided into &lt;strong&gt;detecting&lt;/strong&gt;, &lt;strong&gt;locating&lt;/strong&gt;, &lt;strong&gt;extracting&lt;/strong&gt;, or &lt;strong&gt;replacing&lt;/strong&gt; patterns in strings. We will see several examples. The table below includes the functions available to you in the &lt;strong&gt;stringr&lt;/strong&gt; package. We split them by task. We also include the R-base equivalent when available.&lt;/p&gt;
 &lt;p&gt;All these functions take a character vector as first argument. Also, for each function, operations are vectorized: the operation gets applied to each string in the vector.&lt;/p&gt;
-&lt;p&gt;Finally, note that in this table we mention &lt;em&gt;groups&lt;/em&gt;. These will be explained in Section &lt;a href=&#34;#groups&#34;&gt;&lt;strong&gt;??&lt;/strong&gt;&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Finally, note that in this table we mention &lt;em&gt;groups&lt;/em&gt;. These will be explained later on.&lt;/p&gt;
 &lt;table&gt;
 &lt;colgroup&gt;
 &lt;col width=&#34;19%&#34; /&gt;
@@ -5340,7 +5341,18 @@ url &amp;lt;- paste0(&amp;quot;https://en.wikipedia.org/w/index.php?title=&amp;q
 murders_raw &amp;lt;- read_html(url) %&amp;gt;%
   html_node(&amp;quot;table&amp;quot;) %&amp;gt;%
   html_table() %&amp;gt;%
-  setNames(c(&amp;quot;state&amp;quot;, &amp;quot;population&amp;quot;, &amp;quot;total&amp;quot;, &amp;quot;murder_rate&amp;quot;))&lt;/code&gt;&lt;/pre&gt;
+  setNames(c(&amp;quot;state&amp;quot;, &amp;quot;population&amp;quot;, &amp;quot;total&amp;quot;, &amp;quot;murder_rate&amp;quot;))
+
+head(murders_raw)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 6 x 4
+##   state      population total murder_rate
+##   &amp;lt;chr&amp;gt;      &amp;lt;chr&amp;gt;      &amp;lt;chr&amp;gt;       &amp;lt;dbl&amp;gt;
+## 1 Alabama    4,853,875  348           7.2
+## 2 Alaska     737,709    59            8  
+## 3 Arizona    6,817,565  309           4.5
+## 4 Arkansas   2,977,853  181           6.1
+## 5 California 38,993,940 1,861         4.8
+## 6 Colorado   5,448,819  176           3.2&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;The code above shows the first step in constructing the dataset&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(dslabs)
 data(murders)&lt;/code&gt;&lt;/pre&gt;
@@ -5363,7 +5375,8 @@ murders_raw %&amp;gt;% summarize_all(commas)&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;We can then use the &lt;code&gt;str_replace_all&lt;/code&gt; function to remove them:&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;test_1 &amp;lt;- str_replace_all(murders_raw$population, &amp;quot;,&amp;quot;, &amp;quot;&amp;quot;)
 test_1 &amp;lt;- as.numeric(test_1)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;We can then use &lt;code&gt;mutate_all&lt;/code&gt; to apply this operation to each column, since it won’t affect the columns without commas.&lt;/p&gt;
+&lt;p&gt;The &lt;code&gt;stringr&lt;/code&gt; function &lt;code&gt;str_replace_all&lt;/code&gt; replaces all of the first argument’s instances of &lt;code&gt;,&lt;/code&gt; (the second argument) with &lt;code&gt;&#39;&#39;&lt;/code&gt; (the third argument). The first input for the function is the character vector on which you’d like to operate.&lt;/p&gt;
+&lt;p&gt;We can then use &lt;code&gt;mutate_all&lt;/code&gt; to apply this operation to each column, since it won’t affect the columns without commas. You may notice the use of &lt;code&gt;mutate_all&lt;/code&gt; and &lt;code&gt;summarize_all&lt;/code&gt; here. These are versions of &lt;code&gt;mutate&lt;/code&gt; and &lt;code&gt;summarize&lt;/code&gt; that apply a given &lt;em&gt;function&lt;/em&gt; to every column in the data. Above, the function we apply to every column is the &lt;code&gt;commas&lt;/code&gt; function. Note that in using &lt;code&gt;summarize_all&lt;/code&gt; we pipe the data in, but we &lt;em&gt;do not list the columns&lt;/em&gt; we wish to create via &lt;code&gt;summarize&lt;/code&gt;. To apply &lt;code&gt;as.numeric&lt;/code&gt; to each column in &lt;code&gt;murders_raw&lt;/code&gt;, we’d use: &lt;code&gt;murders_raw %&amp;gt;% mutate_all(str_replace_all, &#39;,&#39;, &#39;&#39;)&lt;/code&gt;. &lt;strong&gt;Note, the &lt;code&gt;str_replace_all&lt;/code&gt; function is NOT an analog to &lt;code&gt;mutate_all&lt;/code&gt; that applies to each column in the data!&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;It turns out that this operation is so common that &lt;code&gt;readr&lt;/code&gt; includes the function &lt;code&gt;parse_number&lt;/code&gt; specifically meant to remove non-numeric characters before coercing:&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;test_2 &amp;lt;- parse_number(murders_raw$population)
 identical(test_1, test_2)&lt;/code&gt;&lt;/pre&gt;
@@ -5428,7 +5441,7 @@ head(murders_new)&lt;/code&gt;&lt;/pre&gt;
   pull(height)
 length(problems)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## [1] 292&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;We can now view all the cases by simply printing them. We don’t do that here because there are &lt;code&gt;length(problems)&lt;/code&gt;, but after surveying them carefully, we see that three patterns can be used to define three large groups within these exceptions.&lt;/p&gt;
+&lt;p&gt;We can now view all the cases by simply printing them. We don’t do that here because there are 292 problems, but after surveying them carefully, we see that three patterns can be used to define three large groups within these exceptions.&lt;/p&gt;
 &lt;p&gt;1. A pattern of the form &lt;code&gt;x&#39;y&lt;/code&gt; or &lt;code&gt;x&#39; y&#39;&#39;&lt;/code&gt; or &lt;code&gt;x&#39;y&#34;&lt;/code&gt; with &lt;code&gt;x&lt;/code&gt; and &lt;code&gt;y&lt;/code&gt; representing feet and inches, respectively. Here are ten examples:&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;## 5&amp;#39; 4&amp;quot; 5&amp;#39;7 5&amp;#39;7&amp;quot; 5&amp;#39;3&amp;quot; 5&amp;#39;11 5&amp;#39;9&amp;#39;&amp;#39; 5&amp;#39;10&amp;#39;&amp;#39; 5&amp;#39; 10 5&amp;#39;5&amp;quot; 5&amp;#39;2&amp;quot;&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;2. A pattern of the form &lt;code&gt;x.y&lt;/code&gt; or &lt;code&gt;x,y&lt;/code&gt; with &lt;code&gt;x&lt;/code&gt; feet and &lt;code&gt;y&lt;/code&gt; inches. Here are ten examples:&lt;/p&gt;
@@ -5486,8 +5499,8 @@ cat(s)&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;A regular expression (regex) is a way to describe specific patterns of characters of text. They can be used to determine if a given string matches the pattern. A set of rules has been defined to do this efficiently and precisely and here we show some examples. We can learn more about these rules by reading a detailed tutorials&lt;a href=&#34;#fn1&#34; class=&#34;footnote-ref&#34; id=&#34;fnref1&#34;&gt;&lt;sup&gt;1&lt;/sup&gt;&lt;/a&gt; &lt;a href=&#34;#fn2&#34; class=&#34;footnote-ref&#34; id=&#34;fnref2&#34;&gt;&lt;sup&gt;2&lt;/sup&gt;&lt;/a&gt;. This RStudio cheat sheet&lt;a href=&#34;#fn3&#34; class=&#34;footnote-ref&#34; id=&#34;fnref3&#34;&gt;&lt;sup&gt;3&lt;/sup&gt;&lt;/a&gt; is also very useful.&lt;/p&gt;
 &lt;p&gt;The patterns supplied to the &lt;strong&gt;stringr&lt;/strong&gt; functions can be a regex rather than a standard string. We will learn how this works through a series of examples.&lt;/p&gt;
 &lt;p&gt;Throughout this section you will see that we create strings to test out our regex. To do this, we define patterns that we know should match and also patterns that we know should not. We will call them &lt;code&gt;yes&lt;/code&gt; and &lt;code&gt;no&lt;/code&gt;, respectively. This permits us to check for the two types of errors: failing to match and incorrectly matching.&lt;/p&gt;
-&lt;div id=&#34;strings-are-a-regexp&#34; class=&#34;section level3&#34;&gt;
-&lt;h3&gt;Strings are a regexp&lt;/h3&gt;
+&lt;div id=&#34;strings-are-a-regex&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Strings are a regex&lt;/h3&gt;
 &lt;p&gt;Technically any string is a regex, perhaps the simplest example is a single character. So the comma &lt;code&gt;,&lt;/code&gt; used in the next code example is a simple example of searching with regex.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;pattern &amp;lt;- &amp;quot;,&amp;quot;
 str_detect(murders_raw$total, pattern)&lt;/code&gt;&lt;/pre&gt;
@@ -5547,7 +5560,8 @@ yes &amp;lt;- c(&amp;quot;1&amp;quot;, &amp;quot;5&amp;quot;, &amp;quot;9&amp;qu
 no &amp;lt;- c(&amp;quot;12&amp;quot;, &amp;quot;123&amp;quot;, &amp;quot; 1&amp;quot;, &amp;quot;a4&amp;quot;, &amp;quot;b&amp;quot;)
 s &amp;lt;- c(yes, no)
 str_view_all(s, pattern)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/./12-content_files/str_view-4.png&#34; /&gt;&lt;/p&gt;
+&lt;!-- ![](/./12-content_files/str_view-4.png) --&gt;
+&lt;p&gt;&lt;img src=&#34;img/str_view-4.png&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;The &lt;code&gt;1&lt;/code&gt; does not match because it does not start with the digit but rather with a space, which is actually not easy to see.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;quantifiers&#34; class=&#34;section level3&#34;&gt;
@@ -5557,7 +5571,8 @@ str_view_all(s, pattern)&lt;/code&gt;&lt;/pre&gt;
 yes &amp;lt;- c(&amp;quot;1&amp;quot;, &amp;quot;5&amp;quot;, &amp;quot;9&amp;quot;, &amp;quot;12&amp;quot;)
 no &amp;lt;- c(&amp;quot;123&amp;quot;, &amp;quot;a4&amp;quot;, &amp;quot;b&amp;quot;)
 str_view(c(yes, no), pattern)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/./12-content_files/str_view-5.png&#34; /&gt;&lt;/p&gt;
+&lt;!-- ![](/./12-content_files/str_view-5.png) --&gt;
+&lt;p&gt;&lt;img src=&#34;img/str_view-5.png&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;In this case, &lt;code&gt;123&lt;/code&gt; does &lt;strong&gt;not&lt;/strong&gt; match, but &lt;code&gt;12&lt;/code&gt; does. So to look for our feet and inches pattern, we can add the symbols for feet &lt;code&gt;&#39;&lt;/code&gt; and inches &lt;code&gt;&#34;&lt;/code&gt; after the digits.&lt;/p&gt;
 &lt;p&gt;With what we have learned, we can now construct an example for the pattern &lt;code&gt;x&#39;y\&#34;&lt;/code&gt; with &lt;code&gt;x&lt;/code&gt; feet and &lt;code&gt;y&lt;/code&gt; inches.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;pattern &amp;lt;- &amp;quot;^[4-7]&amp;#39;\\d{1,2}\&amp;quot;$&amp;quot;&lt;/code&gt;&lt;/pre&gt;
@@ -5667,8 +5682,8 @@ sum(str_detect(problems, pattern))&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## [1] 14&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;To see why this is, we show some examples that expose why we don’t have more matches:&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;problems[c(2, 10, 11, 12, 15)] %&amp;gt;% str_view(pattern)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/./12-content_files/str_view-6.png&#34; /&gt;
-An initial problem we see immediately is that some students wrote out the words “feet” and “inches”. We can see the entries that did this with the &lt;code&gt;str_subset&lt;/code&gt; function:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;img/str_view-6.png&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;An initial problem we see immediately is that some students wrote out the words “feet” and “inches”. We can see the entries that did this with the &lt;code&gt;str_subset&lt;/code&gt; function:&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;str_subset(problems, &amp;quot;inches&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## [1] &amp;quot;5 feet and 8.11 inches&amp;quot; &amp;quot;Five foot eight inches&amp;quot; &amp;quot;5 feet 7inches&amp;quot;        
 ## [4] &amp;quot;5ft 9 inches&amp;quot;           &amp;quot;5 ft 9 inches&amp;quot;          &amp;quot;5 feet 6 inches&amp;quot;&lt;/code&gt;&lt;/pre&gt;
@@ -5836,7 +5851,8 @@ cat(s)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;s &amp;lt;- c(&amp;quot;Five feet eight inches&amp;quot;)
 str_to_lower(s)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## [1] &amp;quot;five feet eight inches&amp;quot;&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Other related functions are &lt;code&gt;str_to_upper&lt;/code&gt; and &lt;code&gt;str_to_title&lt;/code&gt;. We are now ready to define a procedure that converts all the problematic cases to inches.&lt;/p&gt;
+&lt;p&gt;Other related functions are &lt;code&gt;str_to_upper&lt;/code&gt; and &lt;code&gt;str_to_title&lt;/code&gt;. These are especially useful when you’re trying to merge two datasets – you’ll often see state names in various capitalization forms.&lt;/p&gt;
+&lt;p&gt;We are now ready to define a procedure that converts all the problematic cases to inches.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;case-study-2-self-reported-heights-continued&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Case study 2: self-reported heights (continued)&lt;/h2&gt;
@@ -5879,7 +5895,7 @@ remaining_problems[!index]&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;If we have a simpler case like this:&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;s &amp;lt;- c(&amp;quot;5&amp;#39;10&amp;quot;, &amp;quot;6&amp;#39;1&amp;quot;)
 tab &amp;lt;- data.frame(x = s)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;In Section &lt;a href=&#34;#separate&#34;&gt;&lt;strong&gt;??&lt;/strong&gt;&lt;/a&gt; we learned about the &lt;code&gt;separate&lt;/code&gt; function, which can be used to achieve our current goal:&lt;/p&gt;
+&lt;p&gt;In an earlier Content section we learned about the &lt;code&gt;separate&lt;/code&gt; function, which can be used to achieve our current goal:&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;tab %&amp;gt;% separate(x, c(&amp;quot;feet&amp;quot;, &amp;quot;inches&amp;quot;), sep = &amp;quot;&amp;#39;&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;##   feet inches
 ## 1    5     10
@@ -6040,7 +6056,7 @@ research_funding_rates %&amp;gt;%
 ## 8     Social sciences              15.3                11.5
 ## 9    Medical sciences              18.8                11.2&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;The data comes from a paper published in the Proceedings of the National Academy of Science (PNAS)&lt;a href=&#34;#fn5&#34; class=&#34;footnote-ref&#34; id=&#34;fnref5&#34;&gt;&lt;sup&gt;5&lt;/sup&gt;&lt;/a&gt;, a widely read scientific journal. However, the data is not provided in a spreadsheet; it is in a table in a PDF document. Here is a screenshot of the table:&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/./12-content_files/pnas-table-s1.png&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;img/pnas-table-s1.png&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;(Source: Romy van der Lee and Naomi Ellemers, PNAS 2015 112 (40) 12349-12353&lt;a href=&#34;#fn6&#34; class=&#34;footnote-ref&#34; id=&#34;fnref6&#34;&gt;&lt;sup&gt;6&lt;/sup&gt;&lt;/a&gt;.)&lt;/p&gt;
 &lt;p&gt;We could extract the numbers by hand, but this could lead to human error. Instead, we can try to wrangle the data using R. We start by downloading the pdf document, then importing into R:&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(&amp;quot;pdftools&amp;quot;)
@@ -6376,6 +6392,10 @@ citi_bike &amp;lt;- fromJSON(&amp;quot;http://citibikenyc.com/stations/json&amp;
 &lt;p&gt;and the second is a data table:&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;citi_bike$stationBeanList %&amp;gt;% as_tibble()&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;You can learn much more by examining tutorials and help files from the &lt;strong&gt;jsonlite&lt;/strong&gt; package. This package is intended for relatively simple tasks such as converting data into tables. For more flexibility, we recommend &lt;code&gt;rjson&lt;/code&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;lecture-video&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Lecture Video&lt;/h2&gt;
+&lt;p&gt;The lecture video for this material is &lt;a href=&#34;https://mediaspace.msu.edu/media/SSC442+-+Content+11+-+April+5th+2022/1_63z01mgu?st=407&#34;&gt;available here &lt;i class=&#34;fas fa-film&#34;&gt;&lt;/i&gt;&lt;/a&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;div class=&#34;footnotes&#34;&gt;
