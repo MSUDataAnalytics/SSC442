@@ -311,7 +311,23 @@ mapview(MI.gasplants)
 knitr::include_graphics('img/MIgas.png')
 ```
 
-In an actual mapview window (not this static image here), clicking on the points or polygons will bring up a pop-up of the data for that row. Mapview is very useful for exploring your spatial data.
+In an actual mapview window (not this static image here), clicking on the points or polygons will bring up a pop-up of the data for that row. Mapview is very useful for *exploring* your spatial data. It is **not** useful for presenting your data. Please, never use `mapview` as an output from a markdown code chunk. Use it for exploring, then use `geom_sf()` to present your analysis.
+
+While Mapview has many features that you will likely find interesting, one of the more useful features is that you can set the display color, which helps for data exploration. 
+```
+mapview(MI.counties, zcol = 'NAME')
+```
+
+This will set each county in Michigan to a different color (using the `viridis` colors). Another very useful feature of `mapview` is that you can layer plots with `+`. Again, I'm including a static image. Using this command in Rstudio will open an interactive map:
+
+```
+mapview(MI.gasplants) + mapview(MI.counties, zcol = 'NAME')
+```
+
+```{r, echo = F, warning=F, message = F}
+knitr::include_graphics('img/mapview_ex2.png')
+```
+
 
 ### Polygon-to-polygon merges
 The gas plants and state merge, above, was very simple because points are always either within or not within a polygon. Worst that can happen is some of your points are not over any polygon at all (resulting in `NA` values). But what if you're merging polygons to polygons?
@@ -531,7 +547,7 @@ As is common in R, there is a function that will get the closest points between 
 ```{r}
 st_nearest_feature(x = ourCities.spatial, y = MI.gasplants.small)
 ```
-This is exactly our `max.index` and can be used *on the `y` object, `MI.gasplants.small`, to pull the names, subset, get distances etc.
+This is exactly our `max.index` and can be used on the `y` object, `MI.gasplants.small`, to pull the names, subset, get distances etc.
 
 `st_nearest_feature` also works for points and polygons, or polygons and polygons, where it returns the index of the polygon that contains the nearest point to the features in `x`. Let's find the nearest Great Lake for each of our cities using a [KML shapefile of the Great Lakes from WI DNR](https://hub.arcgis.com/datasets/wi-dnr::great-lakes?geometry=-127.301%2C37.038%2C-43.585%2C48.298) Note that the GeoJSON link is under "API" on this site. We run into a complex geometry problem, and add `st_make_valid()` to fix it: 
 
