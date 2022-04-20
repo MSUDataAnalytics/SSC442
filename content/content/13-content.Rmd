@@ -180,11 +180,11 @@ We can use ggplot with `geom_sf()` to plot these points. They're just scattered 
 ggplot(gasplants) + geom_sf() + theme_minimal()
 ```
 
-Well, we're missing some context here -- we can kind of make out the point of Texas down there, but it's hard to tell anything about where these plants are located. Let's use `tidycensus` to get a map of the US, then plot it plus the points. Note we use different `data = ` in each of the `geom_sf()` calls:
+Well, we're missing some context here -- we can kind of make out the point of Texas down there, but it's hard to tell anything about where these plants are located. Let's use `tigris` to get a map of the US, then plot it plus the points. Note we use different `data = ` in each of the `geom_sf()` calls:
 
 ```{r, message = F, warning = F, results = 'hide'}
 
-US <- states(cb = TRUE, progress_bar = FALSE)  # tidycensus maps
+US <- tigris::states(cb = TRUE, progress_bar = FALSE)  # tigris maps
 
 ggplot() + geom_sf(data = US, col = 'gray50') +
   geom_sf(data = gasplants) + theme_minimal()

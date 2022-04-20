@@ -1,0 +1,1036 @@
+<!DOCTYPE html>
+<html lang="en-us" 
+      xmlns:og="http://ogp.me/ns#" 
+      xmlns:fb="https://www.facebook.com/2008/fbml">
+
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="generator" content="Source Themes Academic 4.8.0">
+
+  
+
+  
+  
+  
+  
+  
+    
+    
+    
+  
+  
+
+  <meta name="author" content="Ben Bushong">
+
+  
+  
+  
+    
+  
+  <meta name="description" content="A little more on Geospatial in RTigris for polygonsTidycensusFinding variablesTidycensus and geographiesLecture VideoA little more on Geospatial in RWe went over the basics and got some practice using geospatial data in R. Let’s look closely at the tidycensus packages. Thus far, we have used tigris to get TIGER/line census boundaries for things like counties. tidycensus does more than this – we can pull actual census data with its geospatial references (the polygons referring to the counties, tracts, block groups, and blocks) along with census data because tidycensus interfaces with tigris to combine the census data and the census geographies.">
+
+  
+  <link rel="alternate" hreflang="en-us" href="https://ssc442kirkpatrick.netlify.app/example/13-example/">
+
+  
+
+
+  
+  
+  
+  <meta name="theme-color" content="#18453B">
+  
+
+  
+  
+  
+  <script src="/js/mathjax-config.js"></script>
+  
+
+  
+  
+  
+  
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/academicons/1.8.6/css/academicons.min.css" integrity="sha256-uFVgMKfistnJAfoCUQigIl+JfUaP47GrRKjf6CTPVmw=" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.0-1/css/all.min.css" integrity="sha256-4w9DunooKSr3MFXHXWyFER38WmPdm361bQS/2KUWZbU=" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+
+    
+    
+    
+      
+    
+    
+      
+      
+        
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/styles/github.min.css" crossorigin="anonymous" title="hl-light">
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/styles/dracula.min.css" crossorigin="anonymous" title="hl-dark" disabled>
+        
+      
+    
+
+    
+
+    
+
+    
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/lazysizes/5.1.2/lazysizes.min.js" integrity="sha256-Md1qLToewPeKjfAHU1zyPwOutccPAm5tahnaw7Osw0A=" crossorigin="anonymous" async></script>
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" integrity="" crossorigin="anonymous" async></script>
+      
+    
+      
+
+      
+      
+
+      
+    
+
+  
+
+  
+  
+  
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Fira+Sans+Condensed:400,400i,700,700i%7COverpass:400,400i,700,700i&display=swap">
+  
+
+  
+  
+  
+  
+  <link rel="stylesheet" href="/css/academic.css">
+
+  
+
+
+
+
+  
+
+
+  
+  
+
+  
+
+  <link rel="manifest" href="/index.webmanifest">
+  <link rel="icon" type="image/png" href="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_32x32_fill_lanczos_center_2.png">
+  <link rel="apple-touch-icon" type="image/png" href="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_192x192_fill_lanczos_center_2.png">
+
+  <link rel="canonical" href="https://ssc442kirkpatrick.netlify.app/example/13-example/">
+
+  
+  
+  
+  
+  
+  
+  
+    
+  
+  
+  <meta property="twitter:card" content="summary_large_image">
+  
+  <meta property="og:site_name" content="Data Analytics">
+  <meta property="og:url" content="https://ssc442kirkpatrick.netlify.app/example/13-example/">
+  <meta property="og:title" content="Geospatial with R | Data Analytics">
+  <meta property="og:description" content="A little more on Geospatial in RTigris for polygonsTidycensusFinding variablesTidycensus and geographiesLecture VideoA little more on Geospatial in RWe went over the basics and got some practice using geospatial data in R. Let’s look closely at the tidycensus packages. Thus far, we have used tigris to get TIGER/line census boundaries for things like counties. tidycensus does more than this – we can pull actual census data with its geospatial references (the polygons referring to the counties, tracts, block groups, and blocks) along with census data because tidycensus interfaces with tigris to combine the census data and the census geographies."><meta property="og:image" content="https://ssc442kirkpatrick.netlify.app/img/social-image.png">
+  <meta property="twitter:image" content="https://ssc442kirkpatrick.netlify.app/img/social-image.png"><meta property="og:locale" content="en-us">
+  
+    
+    <meta property="article:modified_time" content="2020-07-07T10:13:55-04:00">
+  
+
+  
+
+
+
+  
+
+
+  
+
+
+  <link rel="shortcut icon" href="https://ssc442kirkpatrick.netlify.app/favicon.ico" />
+  <link rel="apple-touch-icon-precomposed" sizes="57x57" href="https://ssc442kirkpatrick.netlify.app/img/apple-touch-icon-57x57.png" />
+  <link rel="apple-touch-icon-precomposed" sizes="114x114" href="https://ssc442kirkpatrick.netlify.app/img/apple-touch-icon-114x114.png" />
+  <link rel="apple-touch-icon-precomposed" sizes="72x72" href="https://ssc442kirkpatrick.netlify.app/img/apple-touch-icon-72x72.png" />
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://ssc442kirkpatrick.netlify.app/img/apple-touch-icon-144x144.png" />
+  <link rel="apple-touch-icon-precomposed" sizes="120x120" href="https://ssc442kirkpatrick.netlify.app/img/apple-touch-icon-120x120.png" />
+  <link rel="apple-touch-icon-precomposed" sizes="152x152" href="https://ssc442kirkpatrick.netlify.app/img/apple-touch-icon-152x152.png" />
+  <link rel="icon" type="image/png" href="https://ssc442kirkpatrick.netlify.app/img/favicon-32x32.png" sizes="32x32" />
+  <link rel="icon" type="image/png" href="https://ssc442kirkpatrick.netlify.app/img/favicon-16x16.png" sizes="16x16" />
+  <meta name="application-name" content="SSC 442: Data Analytics" />
+  <meta name="msapplication-TileColor" content="#FFFFFF" />
+  <meta name="msapplication-TileImage" content="https://ssc442kirkpatrick.netlify.app/img/mstile-144x144.png" />
+
+
+  <title>Geospatial with R | Data Analytics</title>
+
+</head>
+
+
+<body id="top" data-spy="scroll" data-offset="70"
+    data-target="#TableOfContents"
+    >
+
+    <aside class="search-results" id="search">
+  <div class="container">
+    <section class="search-header">
+
+      <div class="row no-gutters justify-content-between mb-3">
+        <div class="col-6">
+          <h1>Search</h1>
+        </div>
+        <div class="col-6 col-search-close">
+          <a class="js-search" href="#"><i class="fas fa-times-circle text-muted" aria-hidden="true"></i></a>
+        </div>
+      </div>
+
+      <div id="search-box">
+        
+        
+        
+      </div>
+
+    </section>
+    <section class="section-search-results">
+
+      <div id="search-hits">
+        
+      </div>
+
+    </section>
+  </div>
+</aside>
+
+
+    
+
+
+
+
+
+
+
+<nav class="navbar navbar-expand-lg navbar-light compensate-for-scrollbar" id="navbar-main">
+  <div class="container">
+
+    
+    <div class="d-none d-lg-inline-flex">
+      <a class="navbar-brand" href="/">Data Analytics</a>
+    </div>
+    
+
+    
+    <button type="button" class="navbar-toggler" data-toggle="collapse"
+            data-target="#navbar-content" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
+    <span><i class="fas fa-bars"></i></span>
+    </button>
+    
+
+    
+    <div class="navbar-brand-mobile-wrapper d-inline-flex d-lg-none">
+      <a class="navbar-brand" href="/">Data Analytics</a>
+    </div>
+    
+
+    
+    
+    <div class="navbar-collapse main-menu-item collapse justify-content-end" id="navbar-content">
+
+      
+      <ul class="navbar-nav d-md-inline-flex">
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/syllabus/"><span>Syllabus</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/schedule/"><span>Schedule</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/content/"><span>Content</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link  active" href="/example/"><span>Examples</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/assignment/"><span>Assignments</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+            
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="https://join.slack.com/t/msu-qs62738/shared_invite/zt-10u63bf0n-b0cePmz9NDhhw3MSUPBP5A" target="_blank" rel="noopener"><span><i class="fab fa-slack"></i></span></a>
+        </li>
+
+        
+        
+
+      
+
+        
+      </ul>
+    </div>
+
+    <ul class="nav-icons navbar-nav flex-row ml-auto d-flex pl-md-2">
+      
+
+      
+
+      
+
+    </ul>
+
+  </div>
+</nav>
+
+
+    
+
+<div class="container-fluid docs">
+    <div class="row flex-xl-nowrap">
+        <div class="col-12 col-md-3 col-xl-2 docs-sidebar">
+            
+
+
+
+
+
+  
+    
+  
+
+
+
+
+<form class="docs-search d-flex align-items-center">
+  <button class="btn docs-toggle d-md-none p-0 mr-3" type="button" data-toggle="collapse" data-target="#docs-nav" aria-controls="docs-nav" aria-expanded="false" aria-label="Toggle section navigation">
+    <span><i class="fas fa-bars"></i></span>
+  </button>
+
+  
+</form>
+
+<nav class="collapse docs-links" id="docs-nav">
+  
+
+  
+  
+  
+  
+  <div class="docs-toc-item">
+    <a class="docs-toc-link" href="/example/">Examples</a>
+    <ul class="nav docs-sidenav">
+      
+      <li >
+        <a href="/example/00-example/">0: Introduction to R</a>
+      </li>
+      
+      <li >
+        <a href="/example/01-example/">1: Visualization I</a>
+      </li>
+      
+      <li >
+        <a href="/example/02-example/">2: Visualization II</a>
+      </li>
+      
+      <li >
+        <a href="/example/03-example/">3: Visualization III</a>
+      </li>
+      
+      <li >
+        <a href="/example/04-example/">4: Uncertainty</a>
+      </li>
+      
+      <li >
+        <a href="/example/05-example/">5: Linear Regression I</a>
+      </li>
+      
+      <li >
+        <a href="/example/06-example/">6: Linear Regression II</a>
+      </li>
+      
+      <li >
+        <a href="/example/07-example/">7: Linear Regression III</a>
+      </li>
+      
+      <li >
+        <a href="/example/08-example/">8: Nonparametric Regression</a>
+      </li>
+      
+      <li >
+        <a href="/example/09-example/">9: Bias vs. Variance</a>
+      </li>
+      
+      <li >
+        <a href="/example/10-example/">10: Classification</a>
+      </li>
+      
+      <li >
+        <a href="/example/11-example/">11: Data Wrangling</a>
+      </li>
+      
+      <li >
+        <a href="/example/12-example/">12: Text as Data</a>
+      </li>
+      
+      <li class="active">
+        <a href="/example/13-example/">13: Geospatial with R</a>
+      </li>
+      
+    </ul>
+    
+
+  </div>
+  
+  
+</nav>
+
+        </div>
+
+        
+
+        <main class="col-12 col-md-9 col-xl-8 py-md-3 pl-md-5 docs-content" role="main">
+
+            <article class="article">
+
+                <div class="docs-article-container">
+                    <h1>Geospatial with R</h1>
+
+                    
+
+                    
+                    <div class="due-date p-2 mb-3 bg-content text-white">
+                        Content for Thursday, April 21, 2022
+                    </div>
+                    
+
+                    
+
+                    <div class="article-style">
+                        
+<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+
+<div id="TOC">
+<ul>
+<li><a href="#a-little-more-on-geospatial-in-r">A little more on Geospatial in R</a>
+<ul>
+<li><a href="#tigris-for-polygons">Tigris for polygons</a></li>
+<li><a href="#tidycensus">Tidycensus</a>
+<ul>
+<li><a href="#finding-variables">Finding variables</a></li>
+<li><a href="#tidycensus-and-geographies">Tidycensus and geographies</a></li>
+</ul></li>
+<li><a href="#lecture-video">Lecture Video</a></li>
+</ul></li>
+</ul>
+</div>
+
+<div id="a-little-more-on-geospatial-in-r" class="section level1">
+<h1>A little more on Geospatial in R</h1>
+<p>We went over the basics and got some practice using geospatial data in R. Let’s look closely at the <code>tidycensus</code> packages. Thus far, we have used <code>tigris</code> to get TIGER/line census boundaries for things like counties. <code>tidycensus</code> does more than this – we can pull actual census data with its geospatial references (the polygons referring to the counties, tracts, block groups, and blocks) <em>along with</em> census data because <code>tidycensus</code> interfaces with <code>tigris</code> to combine the census data and the census geographies.</p>
+<div id="tigris-for-polygons" class="section level2">
+<h2>Tigris for polygons</h2>
+<p>Make sure you load <code>tigris</code> (for spatial data) and <code>tidycensus</code> for census data to attach to the spatial data:</p>
+<pre class="r"><code>library(tigris)</code></pre>
+<pre><code>## To enable 
+## caching of data, set `options(tigris_use_cache = TRUE)` in your R script or .Rprofile.</code></pre>
+<pre class="r"><code>library(tidycensus)</code></pre>
+<pre><code>## 
+## Attaching package: &#39;tidycensus&#39;</code></pre>
+<pre><code>## The following object is masked from &#39;package:tigris&#39;:
+## 
+##     fips_codes</code></pre>
+<pre class="r"><code>library(tidyverse)</code></pre>
+<pre><code>## -- Attaching packages --------------------------------------- tidyverse 1.3.1 --</code></pre>
+<pre><code>## v ggplot2 3.3.5     v purrr   0.3.4
+## v tibble  3.1.6     v dplyr   1.0.8
+## v tidyr   1.2.0     v stringr 1.4.0
+## v readr   2.1.2     v forcats 0.5.1</code></pre>
+<pre><code>## -- Conflicts ------------------------------------------ tidyverse_conflicts() --
+## x dplyr::filter() masks stats::filter()
+## x dplyr::lag()    masks stats::lag()</code></pre>
+<p>We already saw that we could extract counties using the <code>tigris::counties</code> function. Some “census geographies” change from year to year. Counties don’t (usually), but census tracts, block groups, and blocks do. These last three are all nested units of observation - tracts hold multiple block groups, each block group holds multiple blocks. Blocks are pretty small, and a lot of census data isn’t reported at that level for confidentiality. Block groups don’t report all data, either. Tracts are usually the most reliable balance between “census data availability” and “small geographic area”. We’ll use the 2010 census boundaries by specifying <code>year = 2010</code>.</p>
+<p>Let’s look at MI counties, then look at Ingham County census tracts:</p>
+<pre class="r"><code>MI.counties = tigris::counties(state=&#39;MI&#39;, year = 2010, progress_bar = FALSE)
+ggplot(MI.counties, aes(fill = NAME10) ) + geom_sf() + theme_minimal() + theme(legend.position = &#39;none&#39;)</code></pre>
+<p><img src="/example/13-example_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
+<p>As you can see, we get some counties that extend into the Great Lakes. That’s OK - we can use <code>st_intersect</code> with a map of the Great Lakes to clean that up, but I won’t do that here.</p>
+<p>Now, the census tracts for Ingham County. We can use <code>str_detect</code> to find the County FIPS for Ingham:</p>
+<pre class="r"><code>Ingham_FIPS = MI.counties %&gt;%
+  dplyr::filter(str_detect(NAME10, &#39;Ingham&#39;)) %&gt;%
+  dplyr::select(COUNTYFP, STATEFP) %&gt;%
+  pull(COUNTYFP)
+
+Ingham.tracts = tigris::tracts(state=&#39;MI&#39;, county = Ingham_FIPS, year = 2010, progress_bar = FALSE)
+
+print(Ingham.tracts %&gt;% dplyr::select(TRACTCE10, GEOID10))</code></pre>
+<pre><code>## Simple feature collection with 81 features and 2 fields
+## Geometry type: MULTIPOLYGON
+## Dimension:     XY
+## Bounding box:  xmin: -84.60314 ymin: 42.42194 xmax: -84.1406 ymax: 42.77664
+## Geodetic CRS:  NAD83
+## First 10 features:
+##      TRACTCE10     GEOID10                       geometry
+## 2011    006600 26065006600 MULTIPOLYGON (((-84.54269 4...
+## 2012    003103 26065003103 MULTIPOLYGON (((-84.52985 4...
+## 2013    006800 26065006800 MULTIPOLYGON (((-84.56177 4...
+## 2014    006700 26065006700 MULTIPOLYGON (((-84.56159 4...
+## 2015    006001 26065006001 MULTIPOLYGON (((-84.2875 42...
+## 2016    006002 26065006002 MULTIPOLYGON (((-84.21456 4...
+## 2017    002101 26065002101 MULTIPOLYGON (((-84.53305 4...
+## 2018    007000 26065007000 MULTIPOLYGON (((-84.58218 4...
+## 2023    001703 26065001703 MULTIPOLYGON (((-84.58662 4...
+## 2024    004494 26065004494 MULTIPOLYGON (((-84.46658 4...</code></pre>
+<p>Notice the <code>GEOID10</code> starts with the MI FIPS (26), the Ingham FIPS (065), then the 6 digits that make up the <code>TRACTCE10</code> value. This is because tracts are nested in states and counties.</p>
+<p>Finally, let’s show all the Ingham County tracts. I’ve changed the color mapping for the <code>col</code> aesthetic so that the tract that holds MSU will be outlined in green:</p>
+<pre class="r"><code>ggplot(Ingham.tracts, aes(fill = TRACTCE10, col = (NAME10==&#39;9800&#39;))) + 
+  geom_sf() + theme_minimal() + theme(legend.position = &#39;none&#39;) + scale_fill_viridis_d() +
+  scale_color_manual(values = c(&#39;TRUE&#39; = &#39;green&#39;,&#39;FALSE&#39; = &#39;gray50&#39;))</code></pre>
+<p><img src="/example/13-example_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+</div>
+<div id="tidycensus" class="section level2">
+<h2>Tidycensus</h2>
+<p>Tidycensus takes some getting used to because census data is very complicated, has many geographies, and many subsets (e.g. you could be asking about the age of a specific combination of race and income). Here, we’re going to learn two things: how to find some basic census data by tract, and how to extract it with <code>tidycensus</code>.</p>
+<p>First, we can use the <code>tidyverse</code> author’s “basic usage” page as a guide: <a href="https://walker-data.com/tidycensus/articles/basic-usage.html">https://walker-data.com/tidycensus/articles/basic-usage.html</a>. <strong>There are important directions for getting a Census API key, which must be added to your system</strong>. <code>tidycensus</code> makes it easy - once you get your key (free from the US census, see the link for instructions), you just add it to your system using the <code>census_api_key</code> function. You only have to do it once, it records the API key in your system files, and will find it automatically on subsequent projects.</p>
+<div id="finding-variables" class="section level3">
+<h3>Finding variables</h3>
+<p>This is actually pretty tricky. The census asks many questions about demographics and other topics (house characteristics, earnings, health, etc.) and it can be hard to find exactly what you’re looking for. We’re going to seek some simple data: the average income, and the average “tenure” (how long someone has lived in their current residence) in each tract in Ingham County.</p>
+<p><code>tidycensus</code> has some useful functions for finding variables, especially when combined with <code>str_detect</code>, which helps us find certain words or phrases (our RegExp skills come in handy!) in the census variable names. Variables are identified by an ID, not by name. “P013001”, for instance, is the median age in a given geography. All variables are not available at all geographic units: “P013001” is available for all state, county, tract, and block group, but not block. The link above shows all of the geographies available.</p>
+<p>To make things even more complicated, there is more than the decennial census. The American Community Survey (ACS) samples 1-5% of the population each year, and reports yearly but on a limited number of variables. We’ll use the ACS five-year (acs5) as it has more easily available data, even if it asks fewer questions. We’ll use the 2019 data, the most recently available.</p>
+<p>Let’s start by finding all variables that contain “income”. Variable descriptions have the variable name as well as the “concept”. We want to use “concept” to search for our term. Each concept has multiple variables with it:</p>
+<pre class="r"><code>allvars = load_variables(2019, &#39;acs5&#39;)
+incvars = allvars %&gt;%
+  dplyr::filter(str_detect(concept, &#39;MEDIAN INCOME&#39;))
+
+incvars[1:5,]</code></pre>
+<pre><code>## # A tibble: 5 x 3
+##   name       label                                                       concept
+##   &lt;chr&gt;      &lt;chr&gt;                                                       &lt;chr&gt;  
+## 1 B06011_001 Estimate!!Median income in the past 12 months --!!Total:    MEDIAN~
+## 2 B06011_002 Estimate!!Median income in the past 12 months --!!Total:!!~ MEDIAN~
+## 3 B06011_003 Estimate!!Median income in the past 12 months --!!Total:!!~ MEDIAN~
+## 4 B06011_004 Estimate!!Median income in the past 12 months --!!Total:!!~ MEDIAN~
+## 5 B06011_005 Estimate!!Median income in the past 12 months --!!Total:!!~ MEDIAN~</code></pre>
+<p>We got lucky - the first <code>concept</code> is “MEDIAN INCOME IN THE PAST 12 MONTHS (IN 2019 INFLATION-ADJUSTED DOLLARS) BY PLACE OF BIRTH”. Now, we didn’t want the “place of birth” part (though…sounds interesting), but look at the first <code>label</code>. It is the <code>!!Total:</code>, meaning it is the median income when you combine all places of birth. The second label is <code>!!Total:!!Born in state of residence</code>, which is a <em>subset</em> of the total. Same with th next. <strong>We do not need to use the subsets in order to use the <code>!!Total</code> value</strong>. Note the <code>name</code> is <code>B06011_001</code>.</p>
+<p>Lots and lots of variables will have the same total - the next variable <code>B07011_001</code> (after the Puerto Rico version) is the median income broken down by whether or not the household lives in the same house, instead of by place of birth.</p>
+<pre class="r"><code>incvars[6:15,]</code></pre>
+<pre><code>## # A tibble: 10 x 3
+##    name         label                                                    concept
+##    &lt;chr&gt;        &lt;chr&gt;                                                    &lt;chr&gt;  
+##  1 B06011PR_001 Estimate!!Median income in the past 12 months --!!Total: MEDIAN~
+##  2 B06011PR_002 Estimate!!Median income in the past 12 months --!!Total~ MEDIAN~
+##  3 B06011PR_003 Estimate!!Median income in the past 12 months --!!Total~ MEDIAN~
+##  4 B06011PR_004 Estimate!!Median income in the past 12 months --!!Total~ MEDIAN~
+##  5 B06011PR_005 Estimate!!Median income in the past 12 months --!!Total~ MEDIAN~
+##  6 B07011_001   Estimate!!Median income in the past 12 months --!!Total: MEDIAN~
+##  7 B07011_002   Estimate!!Median income in the past 12 months --!!Total~ MEDIAN~
+##  8 B07011_003   Estimate!!Median income in the past 12 months --!!Total~ MEDIAN~
+##  9 B07011_004   Estimate!!Median income in the past 12 months --!!Total~ MEDIAN~
+## 10 B07011_005   Estimate!!Median income in the past 12 months --!!Total~ MEDIAN~</code></pre>
+<p>While the values of the subsets will be different, the <code>!!Total:</code> variable will be the same. So, we can really choose any <code>!!Total:</code> variable for any set of variables in a <code>concept</code> that fits our search.</p>
+<p>Let’s call up the median income using <code>B06011_001</code>. Note that we are naming our variables in the third line, and specifying that we only want <code>county = '065'</code> for Ingham:</p>
+<pre class="r"><code>ing.medincome = get_acs(geography = &#39;tract&#39;,
+                        county = &#39;065&#39;, state = &#39;MI&#39;,
+                        variables = c(medincome = &#39;B06011_001&#39;),
+                        year = 2019)</code></pre>
+<pre><code>## Getting data from the 2015-2019 5-year ACS</code></pre>
+<pre class="r"><code>head(ing.medincome)</code></pre>
+<pre><code>## # A tibble: 6 x 5
+##   GEOID       NAME                                     variable  estimate   moe
+##   &lt;chr&gt;       &lt;chr&gt;                                    &lt;chr&gt;        &lt;dbl&gt; &lt;dbl&gt;
+## 1 26065000100 Census Tract 1, Ingham County, Michigan  medincome    22994  6149
+## 2 26065000400 Census Tract 4, Ingham County, Michigan  medincome    29059  4043
+## 3 26065000600 Census Tract 6, Ingham County, Michigan  medincome    18549  4830
+## 4 26065000700 Census Tract 7, Ingham County, Michigan  medincome    17196  8455
+## 5 26065000800 Census Tract 8, Ingham County, Michigan  medincome    23142  5845
+## 6 26065001000 Census Tract 10, Ingham County, Michigan medincome    30704  1982</code></pre>
+<p>Since the ACS is a sample, the variable is returned as the <code>estimate</code> along with a margin of error, which we’ll ignore for now. Note that the data is “tidy” - each row is one observation of one variable. If we have multiple variables, we can keep it tidy. We’ll compare the <code>B06011_001</code> with <code>B06011PR_001</code>:</p>
+<pre class="r"><code>ing.medincome = get_acs(geography = &#39;tract&#39;,
+                        county = &#39;065&#39;, state = &#39;MI&#39;,
+                        variables = c(medincome = &#39;B06011_001&#39;,
+                                      medincome2 = &#39;B07011_001&#39;), 
+                        year = 2019) %&gt;% arrange(GEOID)</code></pre>
+<pre><code>## Getting data from the 2015-2019 5-year ACS</code></pre>
+<pre class="r"><code>head(ing.medincome)</code></pre>
+<pre><code>## # A tibble: 6 x 5
+##   GEOID       NAME                                    variable   estimate   moe
+##   &lt;chr&gt;       &lt;chr&gt;                                   &lt;chr&gt;         &lt;dbl&gt; &lt;dbl&gt;
+## 1 26065000100 Census Tract 1, Ingham County, Michigan medincome     22994  6149
+## 2 26065000100 Census Tract 1, Ingham County, Michigan medincome2    22994  6149
+## 3 26065000400 Census Tract 4, Ingham County, Michigan medincome     29059  4043
+## 4 26065000400 Census Tract 4, Ingham County, Michigan medincome2    29059  4043
+## 5 26065000600 Census Tract 6, Ingham County, Michigan medincome     18549  4830
+## 6 26065000600 Census Tract 6, Ingham County, Michigan medincome2    18549  4830</code></pre>
+<p>We got to name the variables (useful!), and the results are “tidy” in that each observation-variable combination is a row. Clearly the two variable’s totals are the same, so we have convinced ourselves that <code>!!Total:</code> works for any of the different concepts that cover median income.</p>
+<p>The data is “tidy” but each variable is a row. Tidy data is this way because often, the data we wish to pull is a total, then each of the subcategories is a row. Imagine “race” by tract with counts of households by race. We don’t actually want the data this way if we want to map two different variables.</p>
+</div>
+<div id="tidycensus-and-geographies" class="section level3">
+<h3>Tidycensus and geographies</h3>
+<p>First, Let’s find the other variable we’re interested in - housing tenure. We’ll keep it simple and calculate the percentage of people in a tract who lived in the same house last year.</p>
+<pre class="r"><code>tenvars = allvars %&gt;%
+  dplyr::filter(str_detect(concept, &#39;TENURE&#39;))
+
+tenvars[1:5,]</code></pre>
+<pre><code>## # A tibble: 5 x 3
+##   name       label                                                       concept
+##   &lt;chr&gt;      &lt;chr&gt;                                                       &lt;chr&gt;  
+## 1 B07013_001 Estimate!!Total:                                            GEOGRA~
+## 2 B07013_002 Estimate!!Total:!!Householder lived in owner-occupied hous~ GEOGRA~
+## 3 B07013_003 Estimate!!Total:!!Householder lived in renter-occupied hou~ GEOGRA~
+## 4 B07013_004 Estimate!!Total:!!Same house 1 year ago:                    GEOGRA~
+## 5 B07013_005 Estimate!!Total:!!Same house 1 year ago:!!Householder live~ GEOGRA~</code></pre>
+<p>Here, we get <code>B07013_001</code>, which is the total number of households, and <code>B07014_004</code>, which is the total number of households that lived in the same house a year ago. The ratio of these two tells us what percent didn’t move in the last year, which is what we want. We’re going to take the output in <code>wide</code> format so that we can calculate this ratio.</p>
+<p>Now, with variable numbers in hand, we can pretty easily get the attached geography of interest. We just add <code>geometry = TRUE</code> to the <code>get_acs</code> call. We’re also going to ask for <code>wide</code> format, which gives us on row per tract and a column for each variable.</p>
+<pre class="r"><code>ing.tenure = get_acs(geography = &#39;tract&#39;,
+                     county = &#39;065&#39;, state = &#39;MI&#39;,
+                     variables = c(samehouse = &#39;B07013_004&#39;,
+                                   totalhouse = &#39;B07013_001&#39;),
+                     geometry = TRUE, output = &#39;wide&#39;, progress_bar = FALSE,
+                     year = 2019)</code></pre>
+<pre><code>## Getting data from the 2015-2019 5-year ACS</code></pre>
+<pre><code>## Downloading feature geometry from the Census website.  To cache shapefiles for use in future sessions, set `options(tigris_use_cache = TRUE)`.</code></pre>
+<pre class="r"><code>ing.tenure = ing.tenure %&gt;%
+  dplyr::mutate(percentSameHouse = samehouseE/totalhouseE) %&gt;%
+  dplyr::select(GEOID, NAME, percentSameHouse)
+
+ing.tenure</code></pre>
+<pre><code>## Simple feature collection with 81 features and 3 fields
+## Geometry type: MULTIPOLYGON
+## Dimension:     XY
+## Bounding box:  xmin: -84.60314 ymin: 42.42195 xmax: -84.14062 ymax: 42.77664
+## Geodetic CRS:  NAD83
+## First 10 features:
+##          GEOID                                        NAME percentSameHouse
+## 1  26065004302 Census Tract 43.02, Ingham County, Michigan        0.2089803
+## 2  26065002800    Census Tract 28, Ingham County, Michigan        0.9021084
+## 3  26065005201 Census Tract 52.01, Ingham County, Michigan        0.8750210
+## 4  26065001200    Census Tract 12, Ingham County, Michigan        0.5620028
+## 5  26065006302 Census Tract 63.02, Ingham County, Michigan        0.8842716
+## 6  26065002200    Census Tract 22, Ingham County, Michigan        0.8554217
+## 7  26065000800     Census Tract 8, Ingham County, Michigan        0.8707734
+## 8  26065004494 Census Tract 44.94, Ingham County, Michigan              NaN
+## 9  26065004700    Census Tract 47, Ingham County, Michigan        0.8067400
+## 10 26065006301 Census Tract 63.01, Ingham County, Michigan        0.8481403
+##                          geometry
+## 1  MULTIPOLYGON (((-84.47205 4...
+## 2  MULTIPOLYGON (((-84.54808 4...
+## 3  MULTIPOLYGON (((-84.5826 42...
+## 4  MULTIPOLYGON (((-84.54113 4...
+## 5  MULTIPOLYGON (((-84.48344 4...
+## 6  MULTIPOLYGON (((-84.53812 4...
+## 7  MULTIPOLYGON (((-84.54287 4...
+## 8  MULTIPOLYGON (((-84.46662 4...
+## 9  MULTIPOLYGON (((-84.43269 4...
+## 10 MULTIPOLYGON (((-84.48351 4...</code></pre>
+<p>The NA’s come from tracts with zero households in them (industrial, etc.). Let’s plot this!</p>
+<pre class="r"><code>ggplot(ing.tenure, aes(fill = percentSameHouse)) + 
+  geom_sf() + theme_minimal() + scale_fill_viridis_c() +
+  labs(fill = &#39;Percent Same House\n1 yr ago&#39;)</code></pre>
+<p><img src="/example/13-example_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
+<div class="fyi">
+<p>Try it!</p>
+<ol style="list-style-type: decimal">
+<li><p>Load up all the necessary packages</p></li>
+<li><p>Choose a new county and find the FIPS for that county</p></li>
+<li><p>Choose a variable you’re interested in. Finding census variables can be tricky!</p></li>
+<li><p>Using <code>load_variables</code>, find the best representation of that variable</p></li>
+<li><p>Make a map of that variable at the census tract level</p></li>
+</ol>
+</div>
+</div>
+</div>
+<div id="lecture-video" class="section level2">
+<h2>Lecture Video</h2>
+<p>The lecture video for this material is <a href="">available here <i class="fas fa-film"></i></a></p>
+</div>
+</div>
+
+                    </div>
+
+                    
+
+
+
+                    
+                </div>
+
+                <div class="body-footer">
+                    <p>Last updated on July 7, 2020</p>
+
+                    
+
+
+                    
+
+                </div>
+
+            </article>
+
+            <footer>
+    <hr>
+
+    <div class="row course-info">
+        <div class="col-md-7">
+            <p>
+                <strong>SSC 442: Data Analytics (Spring Semester 2022)</strong><br>
+
+                <a href="https://www.msu.edu" target="_blank" rel="noopener">Michigan State University</a> &emsp;&emsp;
+                <a href="https://socialscience.msu.edu/" target="_blank" rel="noopener">College of Social Science</a>
+            </p>
+
+            <p>
+                <a href="https://www.justinkirkpatrick.com" target="_blank" rel="noopener"><i class="fas fa-user"></i>
+                    Prof. Justin Kirkpatrick</a> &emsp;&emsp;
+                <a href="mailto:jkirk@msu.edu"><i class="fas fa-envelope"></i>
+                    jkirk@msu.edu</a>
+            </p>
+
+            <p>
+                <i class="far fa-calendar-alt"></i> Tuesday and Thursday &emsp;&emsp;
+                <i class="far fa-clock"></i> 6:00pm - 7:20pm 
+                
+            </p>
+        </div>
+
+        <div class="col-md-5 credits">
+            <p>All content licensed under a <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" rel="noopener">Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International License</a>.</p>
+            
+            <p>Content <i class="fab fa-creative-commons"></i> 2020-22 <a href="https://www.justinkirkpatrick.com" target="_blank" rel="noopener">Ben Bushong; Justin Kirkpatrick; based on work by Andrew Heiss</a></p>
+        
+            <p>This site created with the <a href="https://sourcethemes.com/academic/" target="_blank" rel="noopener">Academic theme</a> in <a href="https://bookdown.org/yihui/blogdown/" target="_blank" rel="noopener">blogdown</a> and <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a>. </p>
+            
+            <p><a href="https://github.com/" target="_blank" rel="noopener"><i class="fab fa-github"></i> View the source at GitHub.</a></p>
+        </div>
+    </div>
+</footer>
+
+
+        </main>
+    </div>
+</div>
+
+        
+
+    
+    
+    
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/4.1.4/imagesloaded.pkgd.min.js" integrity="sha256-lqvxZrPLtfffUl2G/e7szqSvPBILGbwmsGE1MKlOi0Q=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.6/isotope.pkgd.min.js" integrity="sha256-CBrpuqrMhXwcLLUd5tvQ4euBHCdh7wGlDfNz8vbu/iI=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+
+      
+
+      
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/highlight.min.js" integrity="sha256-eOgo0OtLL4cdq7RdwRUiGKLX9XsIJ7nGhWEKbohmVAQ=" crossorigin="anonymous"></script>
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/languages/r.min.js"></script>
+        
+      
+
+    
+
+    
+    
+
+    
+    
+    <script>const code_highlighting = true;</script>
+    
+
+    
+    
+    <script>const isSiteThemeDark = false;</script>
+    
+
+    
+
+    
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/anchor-js/4.1.1/anchor.min.js" integrity="sha256-pB/deHc9CGfFpJRjC43imB29Rse8tak+5eXqntO94ck=" crossorigin="anonymous"></script>
+    <script>
+      anchors.add();
+    </script>
+    
+
+    
+
+    
+    
+
+    
+    
+
+    
+    
+
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <script src="/js/academic.min.6f7ce8be710290b8c431bbc97f405d15.js"></script>
+
+    
+
+
+
+    
+    
+
+    
+<div id="modal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Cite</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <pre><code class="tex hljs"></code></pre>
+      </div>
+      <div class="modal-footer">
+        <a class="btn btn-outline-primary my-1 js-copy-cite" href="#" target="_blank">
+          <i class="fas fa-copy"></i> Copy
+        </a>
+        <a class="btn btn-outline-primary my-1 js-download-cite" href="#" target="_blank">
+          <i class="fas fa-download"></i> Download
+        </a>
+        <div id="modal-error"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+
+</html>

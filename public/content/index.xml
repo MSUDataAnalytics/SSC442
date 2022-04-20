@@ -6395,7 +6395,7 @@ citi_bike &amp;lt;- fromJSON(&amp;quot;http://citibikenyc.com/stations/json&amp;
 &lt;/div&gt;
 &lt;div id=&#34;lecture-video&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Lecture Video&lt;/h2&gt;
-&lt;p&gt;The lecture video for this material is &lt;a href=&#34;https://mediaspace.msu.edu/media/SSC442+-+Content+11+-+April+5th+2022/1_63z01mgu?st=407&#34;&gt;available here &lt;i class=&#34;fas fa-film&#34;&gt;&lt;/i&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;The lecture video for this material is &lt;a href=&#34;https://mediaspace.msu.edu/media/SSC442+-+Content+12+-+Apr+12th/1_j5vuuxdl?st=614&#34;&gt;available here &lt;i class=&#34;fas fa-film&#34;&gt;&lt;/i&gt;&lt;/a&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;div class=&#34;footnotes&#34;&gt;
@@ -6801,7 +6801,12 @@ head(MI.gasplants)&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Sometimes, we want to be able to zoom in and out. &lt;code&gt;ggplot&lt;/code&gt; is static, so that won’t work too well. Thanks to the &lt;code&gt;leaflet&lt;/code&gt; engine, the &lt;code&gt;mapview&lt;/code&gt; packages is stellar for exploration of spatial data. You can specify &lt;code&gt;zcol = Name&lt;/code&gt; if you want to color by the &lt;code&gt;Name&lt;/code&gt; field. I can’t embed this in the website, but you can run this at home. It will appear in the “Viewer” pane, not in the “Plots” pane. Unlike the static image here, you will be able to zoom and pan.&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;mapview(MI.gasplants)&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;img src=&#34;img/MIgas.png&#34; width=&#34;259&#34; /&gt;&lt;/p&gt;
-&lt;p&gt;In an actual mapview window (not this static image here), clicking on the points or polygons will bring up a pop-up of the data for that row. Mapview is very useful for exploring your spatial data.&lt;/p&gt;
+&lt;p&gt;In an actual mapview window (not this static image here), clicking on the points or polygons will bring up a pop-up of the data for that row. Mapview is very useful for &lt;em&gt;exploring&lt;/em&gt; your spatial data. It is &lt;strong&gt;not&lt;/strong&gt; useful for presenting your data. Please, never use &lt;code&gt;mapview&lt;/code&gt; as an output from a markdown code chunk. Use it for exploring, then use &lt;code&gt;geom_sf()&lt;/code&gt; to present your analysis.&lt;/p&gt;
+&lt;p&gt;While Mapview has many features that you will likely find interesting, one of the more useful features is that you can set the display color, which helps for data exploration.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;mapview(MI.counties, zcol = &amp;#39;NAME&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;This will set each county in Michigan to a different color (using the &lt;code&gt;viridis&lt;/code&gt; colors). Another very useful feature of &lt;code&gt;mapview&lt;/code&gt; is that you can layer plots with &lt;code&gt;+&lt;/code&gt;. Again, I’m including a static image. Using this command in Rstudio will open an interactive map:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;mapview(MI.gasplants) + mapview(MI.counties, zcol = &amp;#39;NAME&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;img/mapview_ex2.png&#34; width=&#34;323&#34; /&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;polygon-to-polygon-merges&#34; class=&#34;section level3&#34;&gt;
 &lt;h3&gt;Polygon-to-polygon merges&lt;/h3&gt;
@@ -6825,7 +6830,7 @@ HUC4 = st_read(&amp;#39;https://opendata.arcgis.com/datasets/7f8632f3e3114623b4f
   geom_sf(data = US, col = &amp;#39;gray50&amp;#39;) +
   geom_sf(data = HUC4, aes(fill = Name), show.legend = FALSE) + 
   theme_minimal()&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/13-content_files/figure-html/unnamed-chunk-22-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/13-content_files/figure-html/unnamed-chunk-23-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;These watersheds clearly overlap state boundaries. So what happens if we merge them? &lt;code&gt;sf&lt;/code&gt; will create a new obsveration (row) for every HUC-4 / State combination&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;poly.merge = HUC4 %&amp;gt;%
   st_join(US, left = TRUE)
@@ -6837,12 +6842,12 @@ head(poly.merge)&lt;/code&gt;&lt;/pre&gt;
 ## Bounding box:  xmin: -115.7061 ymin: 31.5082 xmax: -111.5061 ymax: 39.30285
 ## Geodetic CRS:  NAD83
 ##                         Name Description randomData STATEFP  STATENS
-## 1             Lower Colorado                     27      06 01779778
-## 1.1           Lower Colorado                     27      32 01779793
-## 1.2           Lower Colorado                     27      04 01779777
-## 2   Lower Colorado-Lake Mead                     18      49 01455989
-## 2.1 Lower Colorado-Lake Mead                     18      32 01779793
-## 2.2 Lower Colorado-Lake Mead                     18      04 01779777
+## 1             Lower Colorado                     28      06 01779778
+## 1.1           Lower Colorado                     28      32 01779793
+## 1.2           Lower Colorado                     28      04 01779777
+## 2   Lower Colorado-Lake Mead                     30      49 01455989
+## 2.1 Lower Colorado-Lake Mead                     30      32 01779793
+## 2.2 Lower Colorado-Lake Mead                     30      04 01779777
 ##        AFFGEOID GEOID STUSPS       NAME LSAD        ALAND      AWATER
 ## 1   0400000US06    06     CA California   00 403660088482 20305454540
 ## 1.1 0400000US32    32     NV     Nevada   00 284537049864  1839662829
@@ -6860,7 +6865,7 @@ head(poly.merge)&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Now, every HUC-4 like “Lower Colorado” has multiple observations, one for each STUSPS that it touches. When we plot it, though, each of those observations are still attached to the same HUC-4 polygon.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(poly.merge) + geom_sf() + 
   theme_minimal()&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/13-content_files/figure-html/unnamed-chunk-24-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/13-content_files/figure-html/unnamed-chunk-25-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;We have another option in our join - we can ask &lt;code&gt;st_join&lt;/code&gt; to keep just the &lt;code&gt;largest&lt;/code&gt;:&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;poly.merge.largest = HUC4 %&amp;gt;%
   st_join(US, left = TRUE, largest = TRUE)
@@ -6872,12 +6877,12 @@ head(poly.merge.largest)&lt;/code&gt;&lt;/pre&gt;
 ## Bounding box:  xmin: -121.255 ymin: 31.5082 xmax: -111.5061 ymax: 42.3448
 ## Geodetic CRS:  NAD83
 ##                           Name Description randomData STATEFP  STATENS
-## 1               Lower Colorado                     27      04 01779777
-## 2     Lower Colorado-Lake Mead                     18      04 01779777
-## 3    Northern Mojave-Mono Lake                     15      06 01779778
-## 4 Central Nevada Desert Basins                     26      32 01779793
-## 5               North Lahontan                     23      06 01779778
-## 6   Black Rock Desert-Humboldt                     29      32 01779793
+## 1               Lower Colorado                     28      04 01779777
+## 2     Lower Colorado-Lake Mead                     30      04 01779777
+## 3    Northern Mojave-Mono Lake                     18      06 01779778
+## 4 Central Nevada Desert Basins                     18      32 01779793
+## 5               North Lahontan                     17      06 01779778
+## 6   Black Rock Desert-Humboldt                     16      32 01779793
 ##      AFFGEOID GEOID STUSPS       NAME LSAD        ALAND      AWATER
 ## 1 0400000US04    04     AZ    Arizona   00 294360282618   859561204
 ## 2 0400000US04    04     AZ    Arizona   00 294360282618   859561204
@@ -6902,12 +6907,12 @@ head(poly.merge.largest)&lt;/code&gt;&lt;/pre&gt;
 ## Bounding box:  xmin: -121.255 ymin: 31.5082 xmax: -111.5061 ymax: 42.3448
 ## Geodetic CRS:  NAD83
 ##                           Name Description randomData STATEFP STATENS AFFGEOID
-## 1               Lower Colorado                     27    &amp;lt;NA&amp;gt;    &amp;lt;NA&amp;gt;     &amp;lt;NA&amp;gt;
-## 2     Lower Colorado-Lake Mead                     18    &amp;lt;NA&amp;gt;    &amp;lt;NA&amp;gt;     &amp;lt;NA&amp;gt;
-## 3    Northern Mojave-Mono Lake                     15    &amp;lt;NA&amp;gt;    &amp;lt;NA&amp;gt;     &amp;lt;NA&amp;gt;
-## 4 Central Nevada Desert Basins                     26    &amp;lt;NA&amp;gt;    &amp;lt;NA&amp;gt;     &amp;lt;NA&amp;gt;
-## 5               North Lahontan                     23    &amp;lt;NA&amp;gt;    &amp;lt;NA&amp;gt;     &amp;lt;NA&amp;gt;
-## 6   Black Rock Desert-Humboldt                     29    &amp;lt;NA&amp;gt;    &amp;lt;NA&amp;gt;     &amp;lt;NA&amp;gt;
+## 1               Lower Colorado                     28    &amp;lt;NA&amp;gt;    &amp;lt;NA&amp;gt;     &amp;lt;NA&amp;gt;
+## 2     Lower Colorado-Lake Mead                     30    &amp;lt;NA&amp;gt;    &amp;lt;NA&amp;gt;     &amp;lt;NA&amp;gt;
+## 3    Northern Mojave-Mono Lake                     18    &amp;lt;NA&amp;gt;    &amp;lt;NA&amp;gt;     &amp;lt;NA&amp;gt;
+## 4 Central Nevada Desert Basins                     18    &amp;lt;NA&amp;gt;    &amp;lt;NA&amp;gt;     &amp;lt;NA&amp;gt;
+## 5               North Lahontan                     17    &amp;lt;NA&amp;gt;    &amp;lt;NA&amp;gt;     &amp;lt;NA&amp;gt;
+## 6   Black Rock Desert-Humboldt                     16    &amp;lt;NA&amp;gt;    &amp;lt;NA&amp;gt;     &amp;lt;NA&amp;gt;
 ##   GEOID STUSPS NAME LSAD ALAND AWATER                       geometry
 ## 1  &amp;lt;NA&amp;gt;   &amp;lt;NA&amp;gt; &amp;lt;NA&amp;gt; &amp;lt;NA&amp;gt;    NA     NA POLYGON ((-114.6233 36.0304...
 ## 2  &amp;lt;NA&amp;gt;   &amp;lt;NA&amp;gt; &amp;lt;NA&amp;gt; &amp;lt;NA&amp;gt;    NA     NA POLYGON ((-115.0786 39.3005...
@@ -6928,12 +6933,12 @@ head(poly.int)&lt;/code&gt;&lt;/pre&gt;
 ## Bounding box:  xmin: -120.4649 ymin: 35.20662 xmax: -114.7152 ymax: 42.3448
 ## Geodetic CRS:  NAD83
 ##                             Name Description randomData STATEFP  STATENS
-## 6     Black Rock Desert-Humboldt                     29      06 01779778
-## 6.1   Black Rock Desert-Humboldt                     29      32 01779793
-## 6.2   Black Rock Desert-Humboldt                     29      41 01155107
+## 6     Black Rock Desert-Humboldt                     16      06 01779778
+## 6.1   Black Rock Desert-Humboldt                     16      32 01779793
+## 6.2   Black Rock Desert-Humboldt                     16      41 01155107
 ## 7               Central Lahontan                     22      06 01779778
 ## 7.1             Central Lahontan                     22      32 01779793
-## 4   Central Nevada Desert Basins                     26      06 01779778
+## 4   Central Nevada Desert Basins                     18      06 01779778
 ##        AFFGEOID GEOID STUSPS       NAME LSAD        ALAND      AWATER
 ## 6   0400000US06    06     CA California   00 403660088482 20305454540
 ## 6.1 0400000US32    32     NV     Nevada   00 284537049864  1839662829
@@ -6953,7 +6958,7 @@ head(poly.int)&lt;/code&gt;&lt;/pre&gt;
   geom_sf(data = US, fill = &amp;#39;gray50&amp;#39;) +
   geom_sf(data = poly.int, aes(fill = STUSPS), show.legend = FALSE) +
   theme_minimal()&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/13-content_files/figure-html/unnamed-chunk-28-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/13-content_files/figure-html/unnamed-chunk-29-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Here, I’ve set the fill to the state, but you can see that the HUC-4’s have boundaries at the state line.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;summarizing&#34; class=&#34;section level3&#34;&gt;
@@ -6968,12 +6973,12 @@ head(poly.int)&lt;/code&gt;&lt;/pre&gt;
 ## Bounding box:  xmin: -120.4649 ymin: 32.2603 xmax: -111.5061 ymax: 41.10578
 ## Geodetic CRS:  NAD83
 ##                             Name randomData STUSPS
-## 1.2               Lower Colorado         27     AZ
-## 2.2     Lower Colorado-Lake Mead         18     AZ
-## 6     Black Rock Desert-Humboldt         29     CA
+## 1.2               Lower Colorado         28     AZ
+## 2.2     Lower Colorado-Lake Mead         30     AZ
+## 6     Black Rock Desert-Humboldt         16     CA
 ## 7               Central Lahontan         22     CA
-## 4   Central Nevada Desert Basins         26     CA
-## 1                 Lower Colorado         27     CA
+## 4   Central Nevada Desert Basins         18     CA
+## 1                 Lower Colorado         28     CA
 ##                           geometry
 ## 1.2 POLYGON ((-114.8165 32.5069...
 ## 2.2 POLYGON ((-114.7368 36.0159...
@@ -7003,12 +7008,12 @@ head(poly.int.summary)&lt;/code&gt;&lt;/pre&gt;
 ## # A tibble: 6 x 3
 ##   STUSPS mean.randomData                                                geometry
 ##   &amp;lt;chr&amp;gt;            &amp;lt;dbl&amp;gt;                                          &amp;lt;GEOMETRY [°]&amp;gt;
-## 1 AZ                22.0 POLYGON ((-114.7368 36.01591, -114.737 36.01577, -114.~
-## 2 CA                17.9 POLYGON ((-120.2083 41.9941, -120.2083 41.99408, -120.~
-## 3 ID                23.8 POLYGON ((-112.9978 44.44793, -112.9979 44.44793, -112~
-## 4 MT                23   MULTIPOLYGON (((-111.3842 44.75446, -111.3846 44.75484~
-## 5 NV                25.2 POLYGON ((-115.0339 41.99601, -115.0382 41.99601, -115~
-## 6 OR                27.8 POLYGON ((-118.2951 41.99658, -118.1974 41.99699, -118~&lt;/code&gt;&lt;/pre&gt;
+## 1 AZ                29.1 POLYGON ((-114.7368 36.01591, -114.737 36.01577, -114.~
+## 2 CA                19.2 POLYGON ((-120.2083 41.9941, -120.2083 41.99408, -120.~
+## 3 ID                22.5 POLYGON ((-112.9978 44.44793, -112.9979 44.44793, -112~
+## 4 MT                25   MULTIPOLYGON (((-111.3842 44.75446, -111.3846 44.75484~
+## 5 NV                19.3 POLYGON ((-115.0339 41.99601, -115.0382 41.99601, -115~
+## 6 OR                26.9 POLYGON ((-118.2951 41.99658, -118.1974 41.99699, -118~&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;code&gt;sf&lt;/code&gt; with the &lt;code&gt;tidyverse&lt;/code&gt; makes it really easy to apply spatial versions of &lt;code&gt;summarize&lt;/code&gt; and &lt;code&gt;mutate&lt;/code&gt;. Very useful.&lt;/p&gt;
 &lt;p&gt;If we had wanted to just take the average (ignoring area), we’d just leave out the &lt;code&gt;w = State.HUC.area&lt;/code&gt; or just used &lt;code&gt;mean&lt;/code&gt;. If we had wanted to take, say, the minimum, we would use &lt;code&gt;min(randomData)&lt;/code&gt; instead of &lt;code&gt;weighted.mean&lt;/code&gt;. We can use whatever function we want in &lt;code&gt;summarize&lt;/code&gt;, just as we did with non-spatial data.&lt;/p&gt;
 &lt;/div&gt;
@@ -7022,7 +7027,7 @@ head(poly.int.summary)&lt;/code&gt;&lt;/pre&gt;
 ggplot(HUC4.nv) + geom_sf(aes(fill = Name), show.legend = F) +
   geom_sf(data = US %&amp;gt;% dplyr::filter(STUSPS==&amp;#39;NV&amp;#39;),  fill = NA, col = &amp;#39;gray20&amp;#39;, lwd = 3 ) +
   theme_minimal()&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/13-content_files/figure-html/unnamed-chunk-31-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/13-content_files/figure-html/unnamed-chunk-32-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;div id=&#34;bounding-boxes&#34; class=&#34;section level3&#34;&gt;
 &lt;h3&gt;Bounding boxes&lt;/h3&gt;
 &lt;p&gt;Notice that this forms a box around Nevada and uses that to crop. To get the shape of Nevada, we would have to use &lt;code&gt;st_intersection&lt;/code&gt;.&lt;/p&gt;
@@ -7059,7 +7064,7 @@ ggplot(mi.redlining) +
   scale_fill_manual(values = c(&amp;#39;A&amp;#39; = &amp;#39;green&amp;#39;, &amp;#39;B&amp;#39; = &amp;#39;blue&amp;#39;, &amp;#39;C&amp;#39; = &amp;#39;yellow&amp;#39;, &amp;#39;D&amp;#39; = &amp;#39;red&amp;#39;),
                     aesthetics = c(&amp;#39;color&amp;#39;,&amp;#39;fill&amp;#39;)) +
   theme_minimal()&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/13-content_files/figure-html/unnamed-chunk-33-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/13-content_files/figure-html/unnamed-chunk-34-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;We can tell that our polygons have plotted, but since we have the whole state of Michigan, they’re almost unreadable. We need to set our window over the lower part of the lower peninsula. We’ll use &lt;code&gt;coord_sf&lt;/code&gt; to do this, but first we need to define a window. Since windows are almost always rectangular, we can use the &lt;code&gt;st_bbox(mi.redlining)&lt;/code&gt;, but we have to pull out the xlim (xmin, xmax) and ylim (ymin, ymax):&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(mi.redlining) +
   geom_sf(aes(fill = holc_grade, col = holc_grade)) + 
@@ -7069,7 +7074,7 @@ ggplot(mi.redlining) +
   theme_minimal() +
   coord_sf(xlim = st_bbox(mi.redlining)[c(1, 3)],
            ylim = st_bbox(mi.redlining)[c(2, 4)])&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/13-content_files/figure-html/unnamed-chunk-34-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/13-content_files/figure-html/unnamed-chunk-35-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;div id=&#34;distance-matrices&#34; class=&#34;section level2&#34;&gt;
@@ -7127,7 +7132,7 @@ max.index&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;As is common in R, there is a function that will get the closest points between to spatial objects. &lt;code&gt;st_nearest_points&lt;/code&gt; takes two geometries, and returns the neaarest point in &lt;code&gt;y&lt;/code&gt; for every point in &lt;code&gt;x&lt;/code&gt;, which is what we did with the MI gas plants.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;st_nearest_feature(x = ourCities.spatial, y = MI.gasplants.small)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## [1] 3 3 1 3 4 4&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;This is exactly our &lt;code&gt;max.index&lt;/code&gt; and can be used *on the &lt;code&gt;y&lt;/code&gt; object, &lt;code&gt;MI.gasplants.small&lt;/code&gt;, to pull the names, subset, get distances etc.&lt;/p&gt;
+&lt;p&gt;This is exactly our &lt;code&gt;max.index&lt;/code&gt; and can be used on the &lt;code&gt;y&lt;/code&gt; object, &lt;code&gt;MI.gasplants.small&lt;/code&gt;, to pull the names, subset, get distances etc.&lt;/p&gt;
 &lt;p&gt;&lt;code&gt;st_nearest_feature&lt;/code&gt; also works for points and polygons, or polygons and polygons, where it returns the index of the polygon that contains the nearest point to the features in &lt;code&gt;x&lt;/code&gt;. Let’s find the nearest Great Lake for each of our cities using a &lt;a href=&#34;https://hub.arcgis.com/datasets/wi-dnr::great-lakes?geometry=-127.301%2C37.038%2C-43.585%2C48.298&#34;&gt;KML shapefile of the Great Lakes from WI DNR&lt;/a&gt; Note that the GeoJSON link is under “API” on this site. We run into a complex geometry problem, and add &lt;code&gt;st_make_valid()&lt;/code&gt; to fix it:&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;GL = st_read(&amp;#39;https://opendata.arcgis.com/datasets/a8bb79fc10e64eee8c3a9db97cc5dc80_4.geojson&amp;#39;) %&amp;gt;%
   st_transform(st_crs(ourCities.spatial)) %&amp;gt;% st_make_valid()&lt;/code&gt;&lt;/pre&gt;
