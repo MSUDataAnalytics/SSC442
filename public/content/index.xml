@@ -6469,6 +6469,7 @@ citi_bike &amp;lt;- fromJSON(&amp;quot;http://citibikenyc.com/stations/json&amp;
 &lt;/ul&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;#other-resources&#34;&gt;Other resources&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#lecture-video&#34;&gt;Lecture Video&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/div&gt;
 
@@ -6632,8 +6633,8 @@ plot(myLine, col = &amp;#39;blue&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;We can use ggplot with &lt;code&gt;geom_sf()&lt;/code&gt; to plot these points. They’re just scattered across the country and we don’t automatically get a background map, but here are the points&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(gasplants) + geom_sf() + theme_minimal()&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/13-content_files/figure-html/unnamed-chunk-11-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
-&lt;p&gt;Well, we’re missing some context here – we can kind of make out the point of Texas down there, but it’s hard to tell anything about where these plants are located. Let’s use &lt;code&gt;tidycensus&lt;/code&gt; to get a map of the US, then plot it plus the points. Note we use different &lt;code&gt;data =&lt;/code&gt; in each of the &lt;code&gt;geom_sf()&lt;/code&gt; calls:&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;US &amp;lt;- states(cb = TRUE, progress_bar = FALSE)  # tidycensus maps
+&lt;p&gt;Well, we’re missing some context here – we can kind of make out the point of Texas down there, but it’s hard to tell anything about where these plants are located. Let’s use &lt;code&gt;tigris&lt;/code&gt; to get a map of the US, then plot it plus the points. Note we use different &lt;code&gt;data =&lt;/code&gt; in each of the &lt;code&gt;geom_sf()&lt;/code&gt; calls:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;US &amp;lt;- tigris::states(cb = TRUE, progress_bar = FALSE)  # tigris maps
 
 ggplot() + geom_sf(data = US, col = &amp;#39;gray50&amp;#39;) +
   geom_sf(data = gasplants) + theme_minimal()&lt;/code&gt;&lt;/pre&gt;
@@ -6842,12 +6843,12 @@ head(poly.merge)&lt;/code&gt;&lt;/pre&gt;
 ## Bounding box:  xmin: -115.7061 ymin: 31.5082 xmax: -111.5061 ymax: 39.30285
 ## Geodetic CRS:  NAD83
 ##                         Name Description randomData STATEFP  STATENS
-## 1             Lower Colorado                     28      06 01779778
-## 1.1           Lower Colorado                     28      32 01779793
-## 1.2           Lower Colorado                     28      04 01779777
-## 2   Lower Colorado-Lake Mead                     30      49 01455989
-## 2.1 Lower Colorado-Lake Mead                     30      32 01779793
-## 2.2 Lower Colorado-Lake Mead                     30      04 01779777
+## 1             Lower Colorado                     26      06 01779778
+## 1.1           Lower Colorado                     26      32 01779793
+## 1.2           Lower Colorado                     26      04 01779777
+## 2   Lower Colorado-Lake Mead                     28      49 01455989
+## 2.1 Lower Colorado-Lake Mead                     28      32 01779793
+## 2.2 Lower Colorado-Lake Mead                     28      04 01779777
 ##        AFFGEOID GEOID STUSPS       NAME LSAD        ALAND      AWATER
 ## 1   0400000US06    06     CA California   00 403660088482 20305454540
 ## 1.1 0400000US32    32     NV     Nevada   00 284537049864  1839662829
@@ -6877,12 +6878,12 @@ head(poly.merge.largest)&lt;/code&gt;&lt;/pre&gt;
 ## Bounding box:  xmin: -121.255 ymin: 31.5082 xmax: -111.5061 ymax: 42.3448
 ## Geodetic CRS:  NAD83
 ##                           Name Description randomData STATEFP  STATENS
-## 1               Lower Colorado                     28      04 01779777
-## 2     Lower Colorado-Lake Mead                     30      04 01779777
-## 3    Northern Mojave-Mono Lake                     18      06 01779778
-## 4 Central Nevada Desert Basins                     18      32 01779793
-## 5               North Lahontan                     17      06 01779778
-## 6   Black Rock Desert-Humboldt                     16      32 01779793
+## 1               Lower Colorado                     26      04 01779777
+## 2     Lower Colorado-Lake Mead                     28      04 01779777
+## 3    Northern Mojave-Mono Lake                     19      06 01779778
+## 4 Central Nevada Desert Basins                     19      32 01779793
+## 5               North Lahontan                     21      06 01779778
+## 6   Black Rock Desert-Humboldt                     26      32 01779793
 ##      AFFGEOID GEOID STUSPS       NAME LSAD        ALAND      AWATER
 ## 1 0400000US04    04     AZ    Arizona   00 294360282618   859561204
 ## 2 0400000US04    04     AZ    Arizona   00 294360282618   859561204
@@ -6907,12 +6908,12 @@ head(poly.merge.largest)&lt;/code&gt;&lt;/pre&gt;
 ## Bounding box:  xmin: -121.255 ymin: 31.5082 xmax: -111.5061 ymax: 42.3448
 ## Geodetic CRS:  NAD83
 ##                           Name Description randomData STATEFP STATENS AFFGEOID
-## 1               Lower Colorado                     28    &amp;lt;NA&amp;gt;    &amp;lt;NA&amp;gt;     &amp;lt;NA&amp;gt;
-## 2     Lower Colorado-Lake Mead                     30    &amp;lt;NA&amp;gt;    &amp;lt;NA&amp;gt;     &amp;lt;NA&amp;gt;
-## 3    Northern Mojave-Mono Lake                     18    &amp;lt;NA&amp;gt;    &amp;lt;NA&amp;gt;     &amp;lt;NA&amp;gt;
-## 4 Central Nevada Desert Basins                     18    &amp;lt;NA&amp;gt;    &amp;lt;NA&amp;gt;     &amp;lt;NA&amp;gt;
-## 5               North Lahontan                     17    &amp;lt;NA&amp;gt;    &amp;lt;NA&amp;gt;     &amp;lt;NA&amp;gt;
-## 6   Black Rock Desert-Humboldt                     16    &amp;lt;NA&amp;gt;    &amp;lt;NA&amp;gt;     &amp;lt;NA&amp;gt;
+## 1               Lower Colorado                     26    &amp;lt;NA&amp;gt;    &amp;lt;NA&amp;gt;     &amp;lt;NA&amp;gt;
+## 2     Lower Colorado-Lake Mead                     28    &amp;lt;NA&amp;gt;    &amp;lt;NA&amp;gt;     &amp;lt;NA&amp;gt;
+## 3    Northern Mojave-Mono Lake                     19    &amp;lt;NA&amp;gt;    &amp;lt;NA&amp;gt;     &amp;lt;NA&amp;gt;
+## 4 Central Nevada Desert Basins                     19    &amp;lt;NA&amp;gt;    &amp;lt;NA&amp;gt;     &amp;lt;NA&amp;gt;
+## 5               North Lahontan                     21    &amp;lt;NA&amp;gt;    &amp;lt;NA&amp;gt;     &amp;lt;NA&amp;gt;
+## 6   Black Rock Desert-Humboldt                     26    &amp;lt;NA&amp;gt;    &amp;lt;NA&amp;gt;     &amp;lt;NA&amp;gt;
 ##   GEOID STUSPS NAME LSAD ALAND AWATER                       geometry
 ## 1  &amp;lt;NA&amp;gt;   &amp;lt;NA&amp;gt; &amp;lt;NA&amp;gt; &amp;lt;NA&amp;gt;    NA     NA POLYGON ((-114.6233 36.0304...
 ## 2  &amp;lt;NA&amp;gt;   &amp;lt;NA&amp;gt; &amp;lt;NA&amp;gt; &amp;lt;NA&amp;gt;    NA     NA POLYGON ((-115.0786 39.3005...
@@ -6933,12 +6934,12 @@ head(poly.int)&lt;/code&gt;&lt;/pre&gt;
 ## Bounding box:  xmin: -120.4649 ymin: 35.20662 xmax: -114.7152 ymax: 42.3448
 ## Geodetic CRS:  NAD83
 ##                             Name Description randomData STATEFP  STATENS
-## 6     Black Rock Desert-Humboldt                     16      06 01779778
-## 6.1   Black Rock Desert-Humboldt                     16      32 01779793
-## 6.2   Black Rock Desert-Humboldt                     16      41 01155107
-## 7               Central Lahontan                     22      06 01779778
-## 7.1             Central Lahontan                     22      32 01779793
-## 4   Central Nevada Desert Basins                     18      06 01779778
+## 6     Black Rock Desert-Humboldt                     26      06 01779778
+## 6.1   Black Rock Desert-Humboldt                     26      32 01779793
+## 6.2   Black Rock Desert-Humboldt                     26      41 01155107
+## 7               Central Lahontan                     26      06 01779778
+## 7.1             Central Lahontan                     26      32 01779793
+## 4   Central Nevada Desert Basins                     19      06 01779778
 ##        AFFGEOID GEOID STUSPS       NAME LSAD        ALAND      AWATER
 ## 6   0400000US06    06     CA California   00 403660088482 20305454540
 ## 6.1 0400000US32    32     NV     Nevada   00 284537049864  1839662829
@@ -6973,12 +6974,12 @@ head(poly.int)&lt;/code&gt;&lt;/pre&gt;
 ## Bounding box:  xmin: -120.4649 ymin: 32.2603 xmax: -111.5061 ymax: 41.10578
 ## Geodetic CRS:  NAD83
 ##                             Name randomData STUSPS
-## 1.2               Lower Colorado         28     AZ
-## 2.2     Lower Colorado-Lake Mead         30     AZ
-## 6     Black Rock Desert-Humboldt         16     CA
-## 7               Central Lahontan         22     CA
-## 4   Central Nevada Desert Basins         18     CA
-## 1                 Lower Colorado         28     CA
+## 1.2               Lower Colorado         26     AZ
+## 2.2     Lower Colorado-Lake Mead         28     AZ
+## 6     Black Rock Desert-Humboldt         26     CA
+## 7               Central Lahontan         26     CA
+## 4   Central Nevada Desert Basins         19     CA
+## 1                 Lower Colorado         26     CA
 ##                           geometry
 ## 1.2 POLYGON ((-114.8165 32.5069...
 ## 2.2 POLYGON ((-114.7368 36.0159...
@@ -7008,12 +7009,12 @@ head(poly.int.summary)&lt;/code&gt;&lt;/pre&gt;
 ## # A tibble: 6 x 3
 ##   STUSPS mean.randomData                                                geometry
 ##   &amp;lt;chr&amp;gt;            &amp;lt;dbl&amp;gt;                                          &amp;lt;GEOMETRY [°]&amp;gt;
-## 1 AZ                29.1 POLYGON ((-114.7368 36.01591, -114.737 36.01577, -114.~
-## 2 CA                19.2 POLYGON ((-120.2083 41.9941, -120.2083 41.99408, -120.~
-## 3 ID                22.5 POLYGON ((-112.9978 44.44793, -112.9979 44.44793, -112~
-## 4 MT                25   MULTIPOLYGON (((-111.3842 44.75446, -111.3846 44.75484~
-## 5 NV                19.3 POLYGON ((-115.0339 41.99601, -115.0382 41.99601, -115~
-## 6 OR                26.9 POLYGON ((-118.2951 41.99658, -118.1974 41.99699, -118~&lt;/code&gt;&lt;/pre&gt;
+## 1 AZ                27.1 POLYGON ((-114.7368 36.01591, -114.737 36.01577, -114.~
+## 2 CA                20.4 POLYGON ((-120.2083 41.9941, -120.2083 41.99408, -120.~
+## 3 ID                26.5 POLYGON ((-112.9978 44.44793, -112.9979 44.44793, -112~
+## 4 MT                33   MULTIPOLYGON (((-111.3842 44.75446, -111.3846 44.75484~
+## 5 NV                22.6 POLYGON ((-115.0339 41.99601, -115.0382 41.99601, -115~
+## 6 OR                18.3 POLYGON ((-118.2951 41.99658, -118.1974 41.99699, -118~&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;code&gt;sf&lt;/code&gt; with the &lt;code&gt;tidyverse&lt;/code&gt; makes it really easy to apply spatial versions of &lt;code&gt;summarize&lt;/code&gt; and &lt;code&gt;mutate&lt;/code&gt;. Very useful.&lt;/p&gt;
 &lt;p&gt;If we had wanted to just take the average (ignoring area), we’d just leave out the &lt;code&gt;w = State.HUC.area&lt;/code&gt; or just used &lt;code&gt;mean&lt;/code&gt;. If we had wanted to take, say, the minimum, we would use &lt;code&gt;min(randomData)&lt;/code&gt; instead of &lt;code&gt;weighted.mean&lt;/code&gt;. We can use whatever function we want in &lt;code&gt;summarize&lt;/code&gt;, just as we did with non-spatial data.&lt;/p&gt;
 &lt;/div&gt;
@@ -7165,6 +7166,10 @@ ourCities %&amp;gt;% dplyr::mutate(Closest.GreatLake = GL$FEAT_NAME[closest.GL.i
 &lt;/ul&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;lecture-video&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Lecture Video&lt;/h1&gt;
+&lt;p&gt;The lecture video for this material is &lt;a href=&#34;https://mediaspace.msu.edu/media/SSC442+-+Example+13+-+April+19th/1_688hit5e&#34;&gt;available here &lt;i class=&#34;fas fa-film&#34;&gt;&lt;/i&gt;&lt;/a&gt;&lt;/p&gt;
 &lt;/div&gt;
 </description>
     </item>

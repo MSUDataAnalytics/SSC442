@@ -30,7 +30,7 @@
   
     
   
-  <meta name="description" content="A little more on Geospatial in RTigris for polygonsTidycensusFinding variablesTidycensus and geographiesLecture VideoA little more on Geospatial in RWe went over the basics and got some practice using geospatial data in R. Let’s look closely at the tidycensus packages. Thus far, we have used tigris to get TIGER/line census boundaries for things like counties. tidycensus does more than this – we can pull actual census data with its geospatial references (the polygons referring to the counties, tracts, block groups, and blocks) along with census data because tidycensus interfaces with tigris to combine the census data and the census geographies.">
+  <meta name="description" content="A little more on Geospatial in RTigris for polygonsTidycensusFinding variablesTidycensus and geographiesWrapping upLecture VideoA little more on Geospatial in RWe went over the basics and got some practice using geospatial data in R. Let’s look closely at the tidycensus packages. Thus far, we have used tigris to get TIGER/line census boundaries for things like counties.">
 
   
   <link rel="alternate" hreflang="en-us" href="https://ssc442kirkpatrick.netlify.app/example/13-example/">
@@ -238,7 +238,7 @@
   <meta property="og:site_name" content="Data Analytics">
   <meta property="og:url" content="https://ssc442kirkpatrick.netlify.app/example/13-example/">
   <meta property="og:title" content="Geospatial with R | Data Analytics">
-  <meta property="og:description" content="A little more on Geospatial in RTigris for polygonsTidycensusFinding variablesTidycensus and geographiesLecture VideoA little more on Geospatial in RWe went over the basics and got some practice using geospatial data in R. Let’s look closely at the tidycensus packages. Thus far, we have used tigris to get TIGER/line census boundaries for things like counties. tidycensus does more than this – we can pull actual census data with its geospatial references (the polygons referring to the counties, tracts, block groups, and blocks) along with census data because tidycensus interfaces with tigris to combine the census data and the census geographies."><meta property="og:image" content="https://ssc442kirkpatrick.netlify.app/img/social-image.png">
+  <meta property="og:description" content="A little more on Geospatial in RTigris for polygonsTidycensusFinding variablesTidycensus and geographiesWrapping upLecture VideoA little more on Geospatial in RWe went over the basics and got some practice using geospatial data in R. Let’s look closely at the tidycensus packages. Thus far, we have used tigris to get TIGER/line census boundaries for things like counties."><meta property="og:image" content="https://ssc442kirkpatrick.netlify.app/img/social-image.png">
   <meta property="twitter:image" content="https://ssc442kirkpatrick.netlify.app/img/social-image.png"><meta property="og:locale" content="en-us">
   
     
@@ -635,6 +635,7 @@
 <ul>
 <li><a href="#finding-variables">Finding variables</a></li>
 <li><a href="#tidycensus-and-geographies">Tidycensus and geographies</a></li>
+<li><a href="#wrapping-up">Wrapping up</a></li>
 </ul></li>
 <li><a href="#lecture-video">Lecture Video</a></li>
 </ul></li>
@@ -647,29 +648,16 @@
 <div id="tigris-for-polygons" class="section level2">
 <h2>Tigris for polygons</h2>
 <p>Make sure you load <code>tigris</code> (for spatial data) and <code>tidycensus</code> for census data to attach to the spatial data:</p>
-<pre class="r"><code>library(tigris)</code></pre>
-<pre><code>## To enable 
-## caching of data, set `options(tigris_use_cache = TRUE)` in your R script or .Rprofile.</code></pre>
-<pre class="r"><code>library(tidycensus)</code></pre>
-<pre><code>## 
-## Attaching package: &#39;tidycensus&#39;</code></pre>
-<pre><code>## The following object is masked from &#39;package:tigris&#39;:
-## 
-##     fips_codes</code></pre>
-<pre class="r"><code>library(tidyverse)</code></pre>
-<pre><code>## -- Attaching packages --------------------------------------- tidyverse 1.3.1 --</code></pre>
-<pre><code>## v ggplot2 3.3.5     v purrr   0.3.4
-## v tibble  3.1.6     v dplyr   1.0.8
-## v tidyr   1.2.0     v stringr 1.4.0
-## v readr   2.1.2     v forcats 0.5.1</code></pre>
-<pre><code>## -- Conflicts ------------------------------------------ tidyverse_conflicts() --
-## x dplyr::filter() masks stats::filter()
-## x dplyr::lag()    masks stats::lag()</code></pre>
+<pre class="r"><code>library(tigris)
+library(tidycensus)
+library(tidyverse)</code></pre>
 <p>We already saw that we could extract counties using the <code>tigris::counties</code> function. Some “census geographies” change from year to year. Counties don’t (usually), but census tracts, block groups, and blocks do. These last three are all nested units of observation - tracts hold multiple block groups, each block group holds multiple blocks. Blocks are pretty small, and a lot of census data isn’t reported at that level for confidentiality. Block groups don’t report all data, either. Tracts are usually the most reliable balance between “census data availability” and “small geographic area”. We’ll use the 2010 census boundaries by specifying <code>year = 2010</code>.</p>
 <p>Let’s look at MI counties, then look at Ingham County census tracts:</p>
 <pre class="r"><code>MI.counties = tigris::counties(state=&#39;MI&#39;, year = 2010, progress_bar = FALSE)
-ggplot(MI.counties, aes(fill = NAME10) ) + geom_sf() + theme_minimal() + theme(legend.position = &#39;none&#39;)</code></pre>
-<p><img src="/example/13-example_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
+ggplot(MI.counties, aes(fill = NAME10) ) + 
+  geom_sf() + 
+  theme_minimal() + theme(legend.position = &#39;none&#39;)</code></pre>
+<p><img src="/example/13-example_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
 <p>As you can see, we get some counties that extend into the Great Lakes. That’s OK - we can use <code>st_intersect</code> with a map of the Great Lakes to clean that up, but I won’t do that here.</p>
 <p>Now, the census tracts for Ingham County. We can use <code>str_detect</code> to find the County FIPS for Ingham:</p>
 <pre class="r"><code>Ingham_FIPS = MI.counties %&gt;%
@@ -679,30 +667,30 @@ ggplot(MI.counties, aes(fill = NAME10) ) + geom_sf() + theme_minimal() + theme(l
 
 Ingham.tracts = tigris::tracts(state=&#39;MI&#39;, county = Ingham_FIPS, year = 2010, progress_bar = FALSE)
 
-print(Ingham.tracts %&gt;% dplyr::select(TRACTCE10, GEOID10))</code></pre>
-<pre><code>## Simple feature collection with 81 features and 2 fields
+print(Ingham.tracts %&gt;% dplyr::select(TRACTCE10, NAME10, GEOID10))</code></pre>
+<pre><code>## Simple feature collection with 81 features and 3 fields
 ## Geometry type: MULTIPOLYGON
 ## Dimension:     XY
 ## Bounding box:  xmin: -84.60314 ymin: 42.42194 xmax: -84.1406 ymax: 42.77664
 ## Geodetic CRS:  NAD83
 ## First 10 features:
-##      TRACTCE10     GEOID10                       geometry
-## 2011    006600 26065006600 MULTIPOLYGON (((-84.54269 4...
-## 2012    003103 26065003103 MULTIPOLYGON (((-84.52985 4...
-## 2013    006800 26065006800 MULTIPOLYGON (((-84.56177 4...
-## 2014    006700 26065006700 MULTIPOLYGON (((-84.56159 4...
-## 2015    006001 26065006001 MULTIPOLYGON (((-84.2875 42...
-## 2016    006002 26065006002 MULTIPOLYGON (((-84.21456 4...
-## 2017    002101 26065002101 MULTIPOLYGON (((-84.53305 4...
-## 2018    007000 26065007000 MULTIPOLYGON (((-84.58218 4...
-## 2023    001703 26065001703 MULTIPOLYGON (((-84.58662 4...
-## 2024    004494 26065004494 MULTIPOLYGON (((-84.46658 4...</code></pre>
+##      TRACTCE10 NAME10     GEOID10                       geometry
+## 2011    006600     66 26065006600 MULTIPOLYGON (((-84.54269 4...
+## 2012    003103  31.03 26065003103 MULTIPOLYGON (((-84.52985 4...
+## 2013    006800     68 26065006800 MULTIPOLYGON (((-84.56177 4...
+## 2014    006700     67 26065006700 MULTIPOLYGON (((-84.56159 4...
+## 2015    006001  60.01 26065006001 MULTIPOLYGON (((-84.2875 42...
+## 2016    006002  60.02 26065006002 MULTIPOLYGON (((-84.21456 4...
+## 2017    002101  21.01 26065002101 MULTIPOLYGON (((-84.53305 4...
+## 2018    007000     70 26065007000 MULTIPOLYGON (((-84.58218 4...
+## 2023    001703  17.03 26065001703 MULTIPOLYGON (((-84.58662 4...
+## 2024    004494  44.94 26065004494 MULTIPOLYGON (((-84.46658 4...</code></pre>
 <p>Notice the <code>GEOID10</code> starts with the MI FIPS (26), the Ingham FIPS (065), then the 6 digits that make up the <code>TRACTCE10</code> value. This is because tracts are nested in states and counties.</p>
 <p>Finally, let’s show all the Ingham County tracts. I’ve changed the color mapping for the <code>col</code> aesthetic so that the tract that holds MSU will be outlined in green:</p>
 <pre class="r"><code>ggplot(Ingham.tracts, aes(fill = TRACTCE10, col = (NAME10==&#39;9800&#39;))) + 
   geom_sf() + theme_minimal() + theme(legend.position = &#39;none&#39;) + scale_fill_viridis_d() +
   scale_color_manual(values = c(&#39;TRUE&#39; = &#39;green&#39;,&#39;FALSE&#39; = &#39;gray50&#39;))</code></pre>
-<p><img src="/example/13-example_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+<p><img src="/example/13-example_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
 </div>
 <div id="tidycensus" class="section level2">
 <h2>Tidycensus</h2>
@@ -727,8 +715,8 @@ incvars[1:5,]</code></pre>
 ## 3 B06011_003 Estimate!!Median income in the past 12 months --!!Total:!!~ MEDIAN~
 ## 4 B06011_004 Estimate!!Median income in the past 12 months --!!Total:!!~ MEDIAN~
 ## 5 B06011_005 Estimate!!Median income in the past 12 months --!!Total:!!~ MEDIAN~</code></pre>
-<p>We got lucky - the first <code>concept</code> is “MEDIAN INCOME IN THE PAST 12 MONTHS (IN 2019 INFLATION-ADJUSTED DOLLARS) BY PLACE OF BIRTH”. Now, we didn’t want the “place of birth” part (though…sounds interesting), but look at the first <code>label</code>. It is the <code>!!Total:</code>, meaning it is the median income when you combine all places of birth. The second label is <code>!!Total:!!Born in state of residence</code>, which is a <em>subset</em> of the total. Same with th next. <strong>We do not need to use the subsets in order to use the <code>!!Total</code> value</strong>. Note the <code>name</code> is <code>B06011_001</code>.</p>
-<p>Lots and lots of variables will have the same total - the next variable <code>B07011_001</code> (after the Puerto Rico version) is the median income broken down by whether or not the household lives in the same house, instead of by place of birth.</p>
+<p>We got lucky - the first <code>concept</code> is “MEDIAN INCOME IN THE PAST 12 MONTHS (IN 2019 INFLATION-ADJUSTED DOLLARS) BY PLACE OF BIRTH”. Now, we didn’t want the “place of birth” part (though…sounds interesting), but look at the first <code>label</code>. It is the <code>!!Total:</code>, meaning it is the median income when you combine all places of birth. The second label is <code>!!Total:!!Born in state of residence</code>, which is a <em>subset</em> of the total. Same with the next. <strong>We do not need to use the subsets in order to use the <code>!!Total</code> value</strong>. Note the <code>name</code> is <code>B06011_001</code>.</p>
+<p>Lots and lots of variables will have the same total - the next variable <code>B07011_001</code> (after the Puerto Rico version) is the median income broken down by whether or not the household lives in the same house, instead of by place of birth. It’s long, but you can see that it is “MEDIAN INCOME IN THE PAST 12 MONTHS (IN 2019 INFLATION-ADJUSTED DOLLARS) BY GEOGRAPHICAL MOBILITY IN THE PAST YEAR FOR CURRENT RESIDENCE IN THE UNITED STATES”</p>
 <pre class="r"><code>incvars[6:15,]</code></pre>
 <pre><code>## # A tibble: 10 x 3
 ##    name         label                                                    concept
@@ -748,9 +736,8 @@ incvars[1:5,]</code></pre>
 <pre class="r"><code>ing.medincome = get_acs(geography = &#39;tract&#39;,
                         county = &#39;065&#39;, state = &#39;MI&#39;,
                         variables = c(medincome = &#39;B06011_001&#39;),
-                        year = 2019)</code></pre>
-<pre><code>## Getting data from the 2015-2019 5-year ACS</code></pre>
-<pre class="r"><code>head(ing.medincome)</code></pre>
+                        year = 2019)
+head(ing.medincome)</code></pre>
 <pre><code>## # A tibble: 6 x 5
 ##   GEOID       NAME                                     variable  estimate   moe
 ##   &lt;chr&gt;       &lt;chr&gt;                                    &lt;chr&gt;        &lt;dbl&gt; &lt;dbl&gt;
@@ -760,14 +747,13 @@ incvars[1:5,]</code></pre>
 ## 4 26065000700 Census Tract 7, Ingham County, Michigan  medincome    17196  8455
 ## 5 26065000800 Census Tract 8, Ingham County, Michigan  medincome    23142  5845
 ## 6 26065001000 Census Tract 10, Ingham County, Michigan medincome    30704  1982</code></pre>
-<p>Since the ACS is a sample, the variable is returned as the <code>estimate</code> along with a margin of error, which we’ll ignore for now. Note that the data is “tidy” - each row is one observation of one variable. If we have multiple variables, we can keep it tidy. We’ll compare the <code>B06011_001</code> with <code>B06011PR_001</code>:</p>
+<p>Since the ACS is a sample, the variable is returned as the <code>estimate</code> along with a margin of error, which we’ll ignore for now. Note that the data is “tidy” - each row is one observation of one variable. If we have multiple variables, we can keep it tidy. We’ll compare the <code>B06011_001</code> with <code>B007011_001</code>:</p>
 <pre class="r"><code>ing.medincome = get_acs(geography = &#39;tract&#39;,
                         county = &#39;065&#39;, state = &#39;MI&#39;,
                         variables = c(medincome = &#39;B06011_001&#39;,
                                       medincome2 = &#39;B07011_001&#39;), 
-                        year = 2019) %&gt;% arrange(GEOID)</code></pre>
-<pre><code>## Getting data from the 2015-2019 5-year ACS</code></pre>
-<pre class="r"><code>head(ing.medincome)</code></pre>
+                        year = 2019) %&gt;% arrange(GEOID)
+head(ing.medincome)</code></pre>
 <pre><code>## # A tibble: 6 x 5
 ##   GEOID       NAME                                    variable   estimate   moe
 ##   &lt;chr&gt;       &lt;chr&gt;                                   &lt;chr&gt;         &lt;dbl&gt; &lt;dbl&gt;
@@ -802,9 +788,37 @@ tenvars[1:5,]</code></pre>
                      variables = c(samehouse = &#39;B07013_004&#39;,
                                    totalhouse = &#39;B07013_001&#39;),
                      geometry = TRUE, output = &#39;wide&#39;, progress_bar = FALSE,
-                     year = 2019)</code></pre>
-<pre><code>## Getting data from the 2015-2019 5-year ACS</code></pre>
-<pre><code>## Downloading feature geometry from the Census website.  To cache shapefiles for use in future sessions, set `options(tigris_use_cache = TRUE)`.</code></pre>
+                     year = 2019)
+ing.tenure</code></pre>
+<pre><code>## Simple feature collection with 81 features and 6 fields
+## Geometry type: MULTIPOLYGON
+## Dimension:     XY
+## Bounding box:  xmin: -84.60314 ymin: 42.42195 xmax: -84.14062 ymax: 42.77664
+## Geodetic CRS:  NAD83
+## First 10 features:
+##          GEOID                                        NAME samehouseE
+## 1  26065004302 Census Tract 43.02, Ingham County, Michigan        498
+## 2  26065002800    Census Tract 28, Ingham County, Michigan       2396
+## 3  26065005201 Census Tract 52.01, Ingham County, Michigan       5216
+## 4  26065001200    Census Tract 12, Ingham County, Michigan       1201
+## 5  26065006302 Census Tract 63.02, Ingham County, Michigan       3660
+## 6  26065002200    Census Tract 22, Ingham County, Michigan       1349
+## 7  26065000800     Census Tract 8, Ingham County, Michigan       2601
+## 8  26065004494 Census Tract 44.94, Ingham County, Michigan          0
+## 9  26065004700    Census Tract 47, Ingham County, Michigan       2346
+## 10 26065006301 Census Tract 63.01, Ingham County, Michigan       3580
+##    samehouseM totalhouseE totalhouseM                       geometry
+## 1         165        2383         326 MULTIPOLYGON (((-84.47205 4...
+## 2         310        2656         296 MULTIPOLYGON (((-84.54808 4...
+## 3         539        5961         481 MULTIPOLYGON (((-84.5826 42...
+## 4         233        2137         239 MULTIPOLYGON (((-84.54113 4...
+## 5         242        4139         201 MULTIPOLYGON (((-84.48344 4...
+## 6         143        1577         110 MULTIPOLYGON (((-84.53812 4...
+## 7         400        2987         403 MULTIPOLYGON (((-84.54287 4...
+## 8          10           0          10 MULTIPOLYGON (((-84.46662 4...
+## 9         181        2908         186 MULTIPOLYGON (((-84.43269 4...
+## 10        257        4221         213 MULTIPOLYGON (((-84.48351 4...</code></pre>
+<p>We get an “E” at the end of the variable which stands for “Estimate” (the “M” is “Margin of Error” since the ACS is a sample). We can now calculate the percent living in the same house they were in last year:</p>
 <pre class="r"><code>ing.tenure = ing.tenure %&gt;%
   dplyr::mutate(percentSameHouse = samehouseE/totalhouseE) %&gt;%
   dplyr::select(GEOID, NAME, percentSameHouse)
@@ -838,11 +852,15 @@ ing.tenure</code></pre>
 ## 8  MULTIPOLYGON (((-84.46662 4...
 ## 9  MULTIPOLYGON (((-84.43269 4...
 ## 10 MULTIPOLYGON (((-84.48351 4...</code></pre>
-<p>The NA’s come from tracts with zero households in them (industrial, etc.). Let’s plot this!</p>
+<p>The NA’s come from tracts with zero households in them (the <a href="https://www.wzzm13.com/article/news/local/michigan-life/seven-gables-road-haunted-michigan/69-e2f92018-59da-473c-ae32-1d7de68dd65e">haunted</a> Seven Gables Nature Area, GM’s Lansing plant, industrial areas, etc.). Let’s plot this!</p>
 <pre class="r"><code>ggplot(ing.tenure, aes(fill = percentSameHouse)) + 
   geom_sf() + theme_minimal() + scale_fill_viridis_c() +
   labs(fill = &#39;Percent Same House\n1 yr ago&#39;)</code></pre>
-<p><img src="/example/13-example_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
+<p><img src="/example/13-example_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
+</div>
+<div id="wrapping-up" class="section level3">
+<h3>Wrapping up</h3>
+<p>Finding census variables via <code>tidycensus</code> can be frustrating, and other sources exist to help lookup census tables. One useful tip is that you can use the “filter” button in your Rstudio <code>View()</code> window to interactively filter the <code>concept</code> column from <code>load_variables</code>. Once you find what you want there, then use the <code>get_acs</code> function in your code. Fundamentally, it’s a lot of information with the ability to subset in many way, which makes it hard to wade through and find what you’re looking for.</p>
 <div class="fyi">
 <p>Try it!</p>
 <ol style="list-style-type: decimal">

@@ -22,6 +22,11 @@ We went over the basics and got some practice using geospatial data in R. Let's 
 ## Tigris for polygons
 Make sure you load `tigris` (for spatial data) and `tidycensus` for census data to attach to the spatial data:
 
+```{r, echo = FALSE,warning = FALSE, error = FALSE, message = FALSE}
+require(knitr)
+knitr::opts_chunk$set(warning = FALSE, error = FALSE, message = FALSE)
+```
+
 ```{r, echo = TRUE}
 library(tigris)
 library(tidycensus)
@@ -34,7 +39,9 @@ Let's look at MI counties, then look at Ingham County census tracts:
 
 ```{r, echo = TRUE}
 MI.counties = tigris::counties(state='MI', year = 2010, progress_bar = FALSE)
-ggplot(MI.counties, aes(fill = NAME10) ) + geom_sf() + theme_minimal() + theme(legend.position = 'none')
+ggplot(MI.counties, aes(fill = NAME10) ) + 
+  geom_sf() + 
+  theme_minimal() + theme(legend.position = 'none')
 ```
 
 As you can see, we get some counties that extend into the Great Lakes. That's OK - we can use `st_intersect` with a map of the Great Lakes to clean that up, but I won't do that here.
@@ -49,7 +56,7 @@ Ingham_FIPS = MI.counties %>%
 
 Ingham.tracts = tigris::tracts(state='MI', county = Ingham_FIPS, year = 2010, progress_bar = FALSE)
 
-print(Ingham.tracts %>% dplyr::select(TRACTCE10, GEOID10))
+print(Ingham.tracts %>% dplyr::select(TRACTCE10, NAME10, GEOID10))
 ```
 
 Notice the `GEOID10` starts with the MI FIPS (26), the Ingham FIPS (065), then the 6 digits that make up the `TRACTCE10` value. This is because tracts are nested in states and counties.
@@ -84,13 +91,16 @@ incvars = allvars %>%
 incvars[1:5,]
 ```
 
-We got lucky - the first `concept` is "MEDIAN INCOME IN THE PAST 12 MONTHS (IN 2019 INFLATION-ADJUSTED DOLLARS) BY PLACE OF BIRTH". Now, we didn't want the "place of birth" part (though...sounds interesting), but look at the first `label`. It is the `!!Total:`, meaning it is the median income when you combine all places of birth. The second label is `!!Total:!!Born in state of residence`, which is a *subset* of the total. Same with th next. **We do not need to use the subsets in order to use the `!!Total` value**. Note the `name` is `B06011_001`. 
+We got lucky - the first `concept` is "MEDIAN INCOME IN THE PAST 12 MONTHS (IN 2019 INFLATION-ADJUSTED DOLLARS) BY PLACE OF BIRTH". Now, we didn't want the "place of birth" part (though...sounds interesting), but look at the first `label`. It is the `!!Total:`, meaning it is the median income when you combine all places of birth. The second label is `!!Total:!!Born in state of residence`, which is a *subset* of the total. Same with the next. **We do not need to use the subsets in order to use the `!!Total` value**. Note the `name` is `B06011_001`. 
 
-Lots and lots of variables will have the same total - the next variable `B07011_001` (after the Puerto Rico version) is the median income broken down by whether or not the household lives in the same house, instead of by place of birth.
+Lots and lots of variables will have the same total - the next variable `B07011_001` (after the Puerto Rico version) is the median income broken down by whether or not the household lives in the same house, instead of by place of birth. It's long, but you can see that it is "MEDIAN INCOME IN THE PAST 12 MONTHS (IN 2019 INFLATION-ADJUSTED DOLLARS) BY GEOGRAPHICAL MOBILITY IN THE PAST YEAR FOR CURRENT RESIDENCE IN THE UNITED STATES"
 
 ```{r, echo = TRUE}
 incvars[6:15,]
 ```
+
+
+
 
 While the values of the subsets will be different, the `!!Total:` variable will be the same. So, we can really choose any `!!Total:` variable for any set of variables in a `concept` that fits our search.
 
@@ -104,7 +114,7 @@ ing.medincome = get_acs(geography = 'tract',
 head(ing.medincome)
 ```
 
-Since the ACS is a sample, the variable is returned as the `estimate` along with a margin of error, which we'll ignore for now. Note that the data is "tidy" - each row is one observation of one variable. If we have multiple variables, we can keep it tidy. We'll compare the `B06011_001` with `B06011PR_001`:
+Since the ACS is a sample, the variable is returned as the `estimate` along with a margin of error, which we'll ignore for now. Note that the data is "tidy" - each row is one observation of one variable. If we have multiple variables, we can keep it tidy. We'll compare the `B06011_001` with `B007011_001`:
 
 ```{r, echo = TRUE}
 ing.medincome = get_acs(geography = 'tract',
@@ -131,7 +141,6 @@ tenvars[1:5,]
 
 Here, we get `B07013_001`, which is the total number of households, and `B07014_004`, which is the total number of households that lived in the same house a year ago. The ratio of these two tells us what percent didn't move in the last year, which is what we want. We're going to take the output in `wide` format so that we can calculate this ratio.
 
-
 Now, with variable numbers in hand, we can pretty easily get the attached geography of interest. We just add `geometry = TRUE` to the `get_acs` call. We're also going to ask for `wide` format, which gives us on row per tract and a column for each variable.
 
 ```{r, echo = TRUE}
@@ -141,7 +150,12 @@ ing.tenure = get_acs(geography = 'tract',
                                    totalhouse = 'B07013_001'),
                      geometry = TRUE, output = 'wide', progress_bar = FALSE,
                      year = 2019)
+ing.tenure
+```
 
+We get an "E" at the end of the variable which stands for "Estimate" (the "M" is "Margin of Error" since the ACS is a sample). We can now calculate the percent living in the same house they were in last year:
+
+```{r, echo = TRUE}
 ing.tenure = ing.tenure %>%
   dplyr::mutate(percentSameHouse = samehouseE/totalhouseE) %>%
   dplyr::select(GEOID, NAME, percentSameHouse)
@@ -149,13 +163,16 @@ ing.tenure = ing.tenure %>%
 ing.tenure
 ```
 
-The NA's come from tracts with zero households in them (industrial, etc.). Let's plot this!
+The NA's come from tracts with zero households in them (the [haunted](https://www.wzzm13.com/article/news/local/michigan-life/seven-gables-road-haunted-michigan/69-e2f92018-59da-473c-ae32-1d7de68dd65e) Seven Gables Nature Area, GM's Lansing plant, industrial areas, etc.). Let's plot this!
 
 ```{r, echo = TRUE}
 ggplot(ing.tenure, aes(fill = percentSameHouse)) + 
   geom_sf() + theme_minimal() + scale_fill_viridis_c() +
   labs(fill = 'Percent Same House\n1 yr ago')
 ```
+
+### Wrapping up
+Finding census variables via `tidycensus` can be frustrating, and other sources exist to help lookup census tables. One useful tip is that you can use the "filter" button in your Rstudio `View()` window to interactively filter the `concept` column from `load_variables`. Once you find what you want there, then use the `get_acs` function in your code. Fundamentally, it's a lot of information with the ability to subset in many way, which makes it hard to wade through and find what you're looking for.
 
 :::fyi
 

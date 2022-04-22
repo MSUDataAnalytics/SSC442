@@ -3448,6 +3448,7 @@ You must turn in a PDF document of your &lt;code&gt;R Markdown&lt;/code&gt; code
 &lt;ul&gt;
 &lt;li&gt;&lt;a href=&#34;#finding-variables&#34;&gt;Finding variables&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;#tidycensus-and-geographies&#34;&gt;Tidycensus and geographies&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#wrapping-up&#34;&gt;Wrapping up&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;#lecture-video&#34;&gt;Lecture Video&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;&lt;/li&gt;
@@ -3460,29 +3461,16 @@ You must turn in a PDF document of your &lt;code&gt;R Markdown&lt;/code&gt; code
 &lt;div id=&#34;tigris-for-polygons&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Tigris for polygons&lt;/h2&gt;
 &lt;p&gt;Make sure you load &lt;code&gt;tigris&lt;/code&gt; (for spatial data) and &lt;code&gt;tidycensus&lt;/code&gt; for census data to attach to the spatial data:&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(tigris)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## To enable 
-## caching of data, set `options(tigris_use_cache = TRUE)` in your R script or .Rprofile.&lt;/code&gt;&lt;/pre&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(tidycensus)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## 
-## Attaching package: &amp;#39;tidycensus&amp;#39;&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## The following object is masked from &amp;#39;package:tigris&amp;#39;:
-## 
-##     fips_codes&lt;/code&gt;&lt;/pre&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(tidyverse)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## -- Attaching packages --------------------------------------- tidyverse 1.3.1 --&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## v ggplot2 3.3.5     v purrr   0.3.4
-## v tibble  3.1.6     v dplyr   1.0.8
-## v tidyr   1.2.0     v stringr 1.4.0
-## v readr   2.1.2     v forcats 0.5.1&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## -- Conflicts ------------------------------------------ tidyverse_conflicts() --
-## x dplyr::filter() masks stats::filter()
-## x dplyr::lag()    masks stats::lag()&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(tigris)
+library(tidycensus)
+library(tidyverse)&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;We already saw that we could extract counties using the &lt;code&gt;tigris::counties&lt;/code&gt; function. Some “census geographies” change from year to year. Counties don’t (usually), but census tracts, block groups, and blocks do. These last three are all nested units of observation - tracts hold multiple block groups, each block group holds multiple blocks. Blocks are pretty small, and a lot of census data isn’t reported at that level for confidentiality. Block groups don’t report all data, either. Tracts are usually the most reliable balance between “census data availability” and “small geographic area”. We’ll use the 2010 census boundaries by specifying &lt;code&gt;year = 2010&lt;/code&gt;.&lt;/p&gt;
 &lt;p&gt;Let’s look at MI counties, then look at Ingham County census tracts:&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;MI.counties = tigris::counties(state=&amp;#39;MI&amp;#39;, year = 2010, progress_bar = FALSE)
-ggplot(MI.counties, aes(fill = NAME10) ) + geom_sf() + theme_minimal() + theme(legend.position = &amp;#39;none&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/example/13-example_files/figure-html/unnamed-chunk-2-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+ggplot(MI.counties, aes(fill = NAME10) ) + 
+  geom_sf() + 
+  theme_minimal() + theme(legend.position = &amp;#39;none&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/example/13-example_files/figure-html/unnamed-chunk-3-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;As you can see, we get some counties that extend into the Great Lakes. That’s OK - we can use &lt;code&gt;st_intersect&lt;/code&gt; with a map of the Great Lakes to clean that up, but I won’t do that here.&lt;/p&gt;
 &lt;p&gt;Now, the census tracts for Ingham County. We can use &lt;code&gt;str_detect&lt;/code&gt; to find the County FIPS for Ingham:&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;Ingham_FIPS = MI.counties %&amp;gt;%
@@ -3492,30 +3480,30 @@ ggplot(MI.counties, aes(fill = NAME10) ) + geom_sf() + theme_minimal() + theme(l
 
 Ingham.tracts = tigris::tracts(state=&amp;#39;MI&amp;#39;, county = Ingham_FIPS, year = 2010, progress_bar = FALSE)
 
-print(Ingham.tracts %&amp;gt;% dplyr::select(TRACTCE10, GEOID10))&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## Simple feature collection with 81 features and 2 fields
+print(Ingham.tracts %&amp;gt;% dplyr::select(TRACTCE10, NAME10, GEOID10))&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Simple feature collection with 81 features and 3 fields
 ## Geometry type: MULTIPOLYGON
 ## Dimension:     XY
 ## Bounding box:  xmin: -84.60314 ymin: 42.42194 xmax: -84.1406 ymax: 42.77664
 ## Geodetic CRS:  NAD83
 ## First 10 features:
-##      TRACTCE10     GEOID10                       geometry
-## 2011    006600 26065006600 MULTIPOLYGON (((-84.54269 4...
-## 2012    003103 26065003103 MULTIPOLYGON (((-84.52985 4...
-## 2013    006800 26065006800 MULTIPOLYGON (((-84.56177 4...
-## 2014    006700 26065006700 MULTIPOLYGON (((-84.56159 4...
-## 2015    006001 26065006001 MULTIPOLYGON (((-84.2875 42...
-## 2016    006002 26065006002 MULTIPOLYGON (((-84.21456 4...
-## 2017    002101 26065002101 MULTIPOLYGON (((-84.53305 4...
-## 2018    007000 26065007000 MULTIPOLYGON (((-84.58218 4...
-## 2023    001703 26065001703 MULTIPOLYGON (((-84.58662 4...
-## 2024    004494 26065004494 MULTIPOLYGON (((-84.46658 4...&lt;/code&gt;&lt;/pre&gt;
+##      TRACTCE10 NAME10     GEOID10                       geometry
+## 2011    006600     66 26065006600 MULTIPOLYGON (((-84.54269 4...
+## 2012    003103  31.03 26065003103 MULTIPOLYGON (((-84.52985 4...
+## 2013    006800     68 26065006800 MULTIPOLYGON (((-84.56177 4...
+## 2014    006700     67 26065006700 MULTIPOLYGON (((-84.56159 4...
+## 2015    006001  60.01 26065006001 MULTIPOLYGON (((-84.2875 42...
+## 2016    006002  60.02 26065006002 MULTIPOLYGON (((-84.21456 4...
+## 2017    002101  21.01 26065002101 MULTIPOLYGON (((-84.53305 4...
+## 2018    007000     70 26065007000 MULTIPOLYGON (((-84.58218 4...
+## 2023    001703  17.03 26065001703 MULTIPOLYGON (((-84.58662 4...
+## 2024    004494  44.94 26065004494 MULTIPOLYGON (((-84.46658 4...&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Notice the &lt;code&gt;GEOID10&lt;/code&gt; starts with the MI FIPS (26), the Ingham FIPS (065), then the 6 digits that make up the &lt;code&gt;TRACTCE10&lt;/code&gt; value. This is because tracts are nested in states and counties.&lt;/p&gt;
 &lt;p&gt;Finally, let’s show all the Ingham County tracts. I’ve changed the color mapping for the &lt;code&gt;col&lt;/code&gt; aesthetic so that the tract that holds MSU will be outlined in green:&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(Ingham.tracts, aes(fill = TRACTCE10, col = (NAME10==&amp;#39;9800&amp;#39;))) + 
   geom_sf() + theme_minimal() + theme(legend.position = &amp;#39;none&amp;#39;) + scale_fill_viridis_d() +
   scale_color_manual(values = c(&amp;#39;TRUE&amp;#39; = &amp;#39;green&amp;#39;,&amp;#39;FALSE&amp;#39; = &amp;#39;gray50&amp;#39;))&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/example/13-example_files/figure-html/unnamed-chunk-4-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/example/13-example_files/figure-html/unnamed-chunk-5-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;tidycensus&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Tidycensus&lt;/h2&gt;
@@ -3540,8 +3528,8 @@ incvars[1:5,]&lt;/code&gt;&lt;/pre&gt;
 ## 3 B06011_003 Estimate!!Median income in the past 12 months --!!Total:!!~ MEDIAN~
 ## 4 B06011_004 Estimate!!Median income in the past 12 months --!!Total:!!~ MEDIAN~
 ## 5 B06011_005 Estimate!!Median income in the past 12 months --!!Total:!!~ MEDIAN~&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;We got lucky - the first &lt;code&gt;concept&lt;/code&gt; is “MEDIAN INCOME IN THE PAST 12 MONTHS (IN 2019 INFLATION-ADJUSTED DOLLARS) BY PLACE OF BIRTH”. Now, we didn’t want the “place of birth” part (though…sounds interesting), but look at the first &lt;code&gt;label&lt;/code&gt;. It is the &lt;code&gt;!!Total:&lt;/code&gt;, meaning it is the median income when you combine all places of birth. The second label is &lt;code&gt;!!Total:!!Born in state of residence&lt;/code&gt;, which is a &lt;em&gt;subset&lt;/em&gt; of the total. Same with th next. &lt;strong&gt;We do not need to use the subsets in order to use the &lt;code&gt;!!Total&lt;/code&gt; value&lt;/strong&gt;. Note the &lt;code&gt;name&lt;/code&gt; is &lt;code&gt;B06011_001&lt;/code&gt;.&lt;/p&gt;
-&lt;p&gt;Lots and lots of variables will have the same total - the next variable &lt;code&gt;B07011_001&lt;/code&gt; (after the Puerto Rico version) is the median income broken down by whether or not the household lives in the same house, instead of by place of birth.&lt;/p&gt;
+&lt;p&gt;We got lucky - the first &lt;code&gt;concept&lt;/code&gt; is “MEDIAN INCOME IN THE PAST 12 MONTHS (IN 2019 INFLATION-ADJUSTED DOLLARS) BY PLACE OF BIRTH”. Now, we didn’t want the “place of birth” part (though…sounds interesting), but look at the first &lt;code&gt;label&lt;/code&gt;. It is the &lt;code&gt;!!Total:&lt;/code&gt;, meaning it is the median income when you combine all places of birth. The second label is &lt;code&gt;!!Total:!!Born in state of residence&lt;/code&gt;, which is a &lt;em&gt;subset&lt;/em&gt; of the total. Same with the next. &lt;strong&gt;We do not need to use the subsets in order to use the &lt;code&gt;!!Total&lt;/code&gt; value&lt;/strong&gt;. Note the &lt;code&gt;name&lt;/code&gt; is &lt;code&gt;B06011_001&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;Lots and lots of variables will have the same total - the next variable &lt;code&gt;B07011_001&lt;/code&gt; (after the Puerto Rico version) is the median income broken down by whether or not the household lives in the same house, instead of by place of birth. It’s long, but you can see that it is “MEDIAN INCOME IN THE PAST 12 MONTHS (IN 2019 INFLATION-ADJUSTED DOLLARS) BY GEOGRAPHICAL MOBILITY IN THE PAST YEAR FOR CURRENT RESIDENCE IN THE UNITED STATES”&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;incvars[6:15,]&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## # A tibble: 10 x 3
 ##    name         label                                                    concept
@@ -3561,9 +3549,8 @@ incvars[1:5,]&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ing.medincome = get_acs(geography = &amp;#39;tract&amp;#39;,
                         county = &amp;#39;065&amp;#39;, state = &amp;#39;MI&amp;#39;,
                         variables = c(medincome = &amp;#39;B06011_001&amp;#39;),
-                        year = 2019)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## Getting data from the 2015-2019 5-year ACS&lt;/code&gt;&lt;/pre&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;head(ing.medincome)&lt;/code&gt;&lt;/pre&gt;
+                        year = 2019)
+head(ing.medincome)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## # A tibble: 6 x 5
 ##   GEOID       NAME                                     variable  estimate   moe
 ##   &amp;lt;chr&amp;gt;       &amp;lt;chr&amp;gt;                                    &amp;lt;chr&amp;gt;        &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt;
@@ -3573,14 +3560,13 @@ incvars[1:5,]&lt;/code&gt;&lt;/pre&gt;
 ## 4 26065000700 Census Tract 7, Ingham County, Michigan  medincome    17196  8455
 ## 5 26065000800 Census Tract 8, Ingham County, Michigan  medincome    23142  5845
 ## 6 26065001000 Census Tract 10, Ingham County, Michigan medincome    30704  1982&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Since the ACS is a sample, the variable is returned as the &lt;code&gt;estimate&lt;/code&gt; along with a margin of error, which we’ll ignore for now. Note that the data is “tidy” - each row is one observation of one variable. If we have multiple variables, we can keep it tidy. We’ll compare the &lt;code&gt;B06011_001&lt;/code&gt; with &lt;code&gt;B06011PR_001&lt;/code&gt;:&lt;/p&gt;
+&lt;p&gt;Since the ACS is a sample, the variable is returned as the &lt;code&gt;estimate&lt;/code&gt; along with a margin of error, which we’ll ignore for now. Note that the data is “tidy” - each row is one observation of one variable. If we have multiple variables, we can keep it tidy. We’ll compare the &lt;code&gt;B06011_001&lt;/code&gt; with &lt;code&gt;B007011_001&lt;/code&gt;:&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ing.medincome = get_acs(geography = &amp;#39;tract&amp;#39;,
                         county = &amp;#39;065&amp;#39;, state = &amp;#39;MI&amp;#39;,
                         variables = c(medincome = &amp;#39;B06011_001&amp;#39;,
                                       medincome2 = &amp;#39;B07011_001&amp;#39;), 
-                        year = 2019) %&amp;gt;% arrange(GEOID)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## Getting data from the 2015-2019 5-year ACS&lt;/code&gt;&lt;/pre&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;head(ing.medincome)&lt;/code&gt;&lt;/pre&gt;
+                        year = 2019) %&amp;gt;% arrange(GEOID)
+head(ing.medincome)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## # A tibble: 6 x 5
 ##   GEOID       NAME                                    variable   estimate   moe
 ##   &amp;lt;chr&amp;gt;       &amp;lt;chr&amp;gt;                                   &amp;lt;chr&amp;gt;         &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt;
@@ -3615,9 +3601,37 @@ tenvars[1:5,]&lt;/code&gt;&lt;/pre&gt;
                      variables = c(samehouse = &amp;#39;B07013_004&amp;#39;,
                                    totalhouse = &amp;#39;B07013_001&amp;#39;),
                      geometry = TRUE, output = &amp;#39;wide&amp;#39;, progress_bar = FALSE,
-                     year = 2019)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## Getting data from the 2015-2019 5-year ACS&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## Downloading feature geometry from the Census website.  To cache shapefiles for use in future sessions, set `options(tigris_use_cache = TRUE)`.&lt;/code&gt;&lt;/pre&gt;
+                     year = 2019)
+ing.tenure&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Simple feature collection with 81 features and 6 fields
+## Geometry type: MULTIPOLYGON
+## Dimension:     XY
+## Bounding box:  xmin: -84.60314 ymin: 42.42195 xmax: -84.14062 ymax: 42.77664
+## Geodetic CRS:  NAD83
+## First 10 features:
+##          GEOID                                        NAME samehouseE
+## 1  26065004302 Census Tract 43.02, Ingham County, Michigan        498
+## 2  26065002800    Census Tract 28, Ingham County, Michigan       2396
+## 3  26065005201 Census Tract 52.01, Ingham County, Michigan       5216
+## 4  26065001200    Census Tract 12, Ingham County, Michigan       1201
+## 5  26065006302 Census Tract 63.02, Ingham County, Michigan       3660
+## 6  26065002200    Census Tract 22, Ingham County, Michigan       1349
+## 7  26065000800     Census Tract 8, Ingham County, Michigan       2601
+## 8  26065004494 Census Tract 44.94, Ingham County, Michigan          0
+## 9  26065004700    Census Tract 47, Ingham County, Michigan       2346
+## 10 26065006301 Census Tract 63.01, Ingham County, Michigan       3580
+##    samehouseM totalhouseE totalhouseM                       geometry
+## 1         165        2383         326 MULTIPOLYGON (((-84.47205 4...
+## 2         310        2656         296 MULTIPOLYGON (((-84.54808 4...
+## 3         539        5961         481 MULTIPOLYGON (((-84.5826 42...
+## 4         233        2137         239 MULTIPOLYGON (((-84.54113 4...
+## 5         242        4139         201 MULTIPOLYGON (((-84.48344 4...
+## 6         143        1577         110 MULTIPOLYGON (((-84.53812 4...
+## 7         400        2987         403 MULTIPOLYGON (((-84.54287 4...
+## 8          10           0          10 MULTIPOLYGON (((-84.46662 4...
+## 9         181        2908         186 MULTIPOLYGON (((-84.43269 4...
+## 10        257        4221         213 MULTIPOLYGON (((-84.48351 4...&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;We get an “E” at the end of the variable which stands for “Estimate” (the “M” is “Margin of Error” since the ACS is a sample). We can now calculate the percent living in the same house they were in last year:&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ing.tenure = ing.tenure %&amp;gt;%
   dplyr::mutate(percentSameHouse = samehouseE/totalhouseE) %&amp;gt;%
   dplyr::select(GEOID, NAME, percentSameHouse)
@@ -3651,11 +3665,15 @@ ing.tenure&lt;/code&gt;&lt;/pre&gt;
 ## 8  MULTIPOLYGON (((-84.46662 4...
 ## 9  MULTIPOLYGON (((-84.43269 4...
 ## 10 MULTIPOLYGON (((-84.48351 4...&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;The NA’s come from tracts with zero households in them (industrial, etc.). Let’s plot this!&lt;/p&gt;
+&lt;p&gt;The NA’s come from tracts with zero households in them (the &lt;a href=&#34;https://www.wzzm13.com/article/news/local/michigan-life/seven-gables-road-haunted-michigan/69-e2f92018-59da-473c-ae32-1d7de68dd65e&#34;&gt;haunted&lt;/a&gt; Seven Gables Nature Area, GM’s Lansing plant, industrial areas, etc.). Let’s plot this!&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(ing.tenure, aes(fill = percentSameHouse)) + 
   geom_sf() + theme_minimal() + scale_fill_viridis_c() +
   labs(fill = &amp;#39;Percent Same House\n1 yr ago&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/example/13-example_files/figure-html/unnamed-chunk-11-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/example/13-example_files/figure-html/unnamed-chunk-13-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;wrapping-up&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Wrapping up&lt;/h3&gt;
+&lt;p&gt;Finding census variables via &lt;code&gt;tidycensus&lt;/code&gt; can be frustrating, and other sources exist to help lookup census tables. One useful tip is that you can use the “filter” button in your Rstudio &lt;code&gt;View()&lt;/code&gt; window to interactively filter the &lt;code&gt;concept&lt;/code&gt; column from &lt;code&gt;load_variables&lt;/code&gt;. Once you find what you want there, then use the &lt;code&gt;get_acs&lt;/code&gt; function in your code. Fundamentally, it’s a lot of information with the ability to subset in many way, which makes it hard to wade through and find what you’re looking for.&lt;/p&gt;
 &lt;div class=&#34;fyi&#34;&gt;
 &lt;p&gt;Try it!&lt;/p&gt;
 &lt;ol style=&#34;list-style-type: decimal&#34;&gt;
@@ -14518,6 +14536,7 @@ citi_bike &amp;lt;- fromJSON(&amp;quot;http://citibikenyc.com/stations/json&amp;
 &lt;/ul&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;#other-resources&#34;&gt;Other resources&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#lecture-video&#34;&gt;Lecture Video&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/div&gt;
 
@@ -14681,8 +14700,8 @@ plot(myLine, col = &amp;#39;blue&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;We can use ggplot with &lt;code&gt;geom_sf()&lt;/code&gt; to plot these points. They’re just scattered across the country and we don’t automatically get a background map, but here are the points&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(gasplants) + geom_sf() + theme_minimal()&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;img src=&#34;https://ssc442kirkpatrick.netlify.app/content/13-content_files/figure-html/unnamed-chunk-11-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
-&lt;p&gt;Well, we’re missing some context here – we can kind of make out the point of Texas down there, but it’s hard to tell anything about where these plants are located. Let’s use &lt;code&gt;tidycensus&lt;/code&gt; to get a map of the US, then plot it plus the points. Note we use different &lt;code&gt;data =&lt;/code&gt; in each of the &lt;code&gt;geom_sf()&lt;/code&gt; calls:&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;US &amp;lt;- states(cb = TRUE, progress_bar = FALSE)  # tidycensus maps
+&lt;p&gt;Well, we’re missing some context here – we can kind of make out the point of Texas down there, but it’s hard to tell anything about where these plants are located. Let’s use &lt;code&gt;tigris&lt;/code&gt; to get a map of the US, then plot it plus the points. Note we use different &lt;code&gt;data =&lt;/code&gt; in each of the &lt;code&gt;geom_sf()&lt;/code&gt; calls:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;US &amp;lt;- tigris::states(cb = TRUE, progress_bar = FALSE)  # tigris maps
 
 ggplot() + geom_sf(data = US, col = &amp;#39;gray50&amp;#39;) +
   geom_sf(data = gasplants) + theme_minimal()&lt;/code&gt;&lt;/pre&gt;
@@ -14891,12 +14910,12 @@ head(poly.merge)&lt;/code&gt;&lt;/pre&gt;
 ## Bounding box:  xmin: -115.7061 ymin: 31.5082 xmax: -111.5061 ymax: 39.30285
 ## Geodetic CRS:  NAD83
 ##                         Name Description randomData STATEFP  STATENS
-## 1             Lower Colorado                     28      06 01779778
-## 1.1           Lower Colorado                     28      32 01779793
-## 1.2           Lower Colorado                     28      04 01779777
-## 2   Lower Colorado-Lake Mead                     30      49 01455989
-## 2.1 Lower Colorado-Lake Mead                     30      32 01779793
-## 2.2 Lower Colorado-Lake Mead                     30      04 01779777
+## 1             Lower Colorado                     26      06 01779778
+## 1.1           Lower Colorado                     26      32 01779793
+## 1.2           Lower Colorado                     26      04 01779777
+## 2   Lower Colorado-Lake Mead                     28      49 01455989
+## 2.1 Lower Colorado-Lake Mead                     28      32 01779793
+## 2.2 Lower Colorado-Lake Mead                     28      04 01779777
 ##        AFFGEOID GEOID STUSPS       NAME LSAD        ALAND      AWATER
 ## 1   0400000US06    06     CA California   00 403660088482 20305454540
 ## 1.1 0400000US32    32     NV     Nevada   00 284537049864  1839662829
@@ -14926,12 +14945,12 @@ head(poly.merge.largest)&lt;/code&gt;&lt;/pre&gt;
 ## Bounding box:  xmin: -121.255 ymin: 31.5082 xmax: -111.5061 ymax: 42.3448
 ## Geodetic CRS:  NAD83
 ##                           Name Description randomData STATEFP  STATENS
-## 1               Lower Colorado                     28      04 01779777
-## 2     Lower Colorado-Lake Mead                     30      04 01779777
-## 3    Northern Mojave-Mono Lake                     18      06 01779778
-## 4 Central Nevada Desert Basins                     18      32 01779793
-## 5               North Lahontan                     17      06 01779778
-## 6   Black Rock Desert-Humboldt                     16      32 01779793
+## 1               Lower Colorado                     26      04 01779777
+## 2     Lower Colorado-Lake Mead                     28      04 01779777
+## 3    Northern Mojave-Mono Lake                     19      06 01779778
+## 4 Central Nevada Desert Basins                     19      32 01779793
+## 5               North Lahontan                     21      06 01779778
+## 6   Black Rock Desert-Humboldt                     26      32 01779793
 ##      AFFGEOID GEOID STUSPS       NAME LSAD        ALAND      AWATER
 ## 1 0400000US04    04     AZ    Arizona   00 294360282618   859561204
 ## 2 0400000US04    04     AZ    Arizona   00 294360282618   859561204
@@ -14956,12 +14975,12 @@ head(poly.merge.largest)&lt;/code&gt;&lt;/pre&gt;
 ## Bounding box:  xmin: -121.255 ymin: 31.5082 xmax: -111.5061 ymax: 42.3448
 ## Geodetic CRS:  NAD83
 ##                           Name Description randomData STATEFP STATENS AFFGEOID
-## 1               Lower Colorado                     28    &amp;lt;NA&amp;gt;    &amp;lt;NA&amp;gt;     &amp;lt;NA&amp;gt;
-## 2     Lower Colorado-Lake Mead                     30    &amp;lt;NA&amp;gt;    &amp;lt;NA&amp;gt;     &amp;lt;NA&amp;gt;
-## 3    Northern Mojave-Mono Lake                     18    &amp;lt;NA&amp;gt;    &amp;lt;NA&amp;gt;     &amp;lt;NA&amp;gt;
-## 4 Central Nevada Desert Basins                     18    &amp;lt;NA&amp;gt;    &amp;lt;NA&amp;gt;     &amp;lt;NA&amp;gt;
-## 5               North Lahontan                     17    &amp;lt;NA&amp;gt;    &amp;lt;NA&amp;gt;     &amp;lt;NA&amp;gt;
-## 6   Black Rock Desert-Humboldt                     16    &amp;lt;NA&amp;gt;    &amp;lt;NA&amp;gt;     &amp;lt;NA&amp;gt;
+## 1               Lower Colorado                     26    &amp;lt;NA&amp;gt;    &amp;lt;NA&amp;gt;     &amp;lt;NA&amp;gt;
+## 2     Lower Colorado-Lake Mead                     28    &amp;lt;NA&amp;gt;    &amp;lt;NA&amp;gt;     &amp;lt;NA&amp;gt;
+## 3    Northern Mojave-Mono Lake                     19    &amp;lt;NA&amp;gt;    &amp;lt;NA&amp;gt;     &amp;lt;NA&amp;gt;
+## 4 Central Nevada Desert Basins                     19    &amp;lt;NA&amp;gt;    &amp;lt;NA&amp;gt;     &amp;lt;NA&amp;gt;
+## 5               North Lahontan                     21    &amp;lt;NA&amp;gt;    &amp;lt;NA&amp;gt;     &amp;lt;NA&amp;gt;
+## 6   Black Rock Desert-Humboldt                     26    &amp;lt;NA&amp;gt;    &amp;lt;NA&amp;gt;     &amp;lt;NA&amp;gt;
 ##   GEOID STUSPS NAME LSAD ALAND AWATER                       geometry
 ## 1  &amp;lt;NA&amp;gt;   &amp;lt;NA&amp;gt; &amp;lt;NA&amp;gt; &amp;lt;NA&amp;gt;    NA     NA POLYGON ((-114.6233 36.0304...
 ## 2  &amp;lt;NA&amp;gt;   &amp;lt;NA&amp;gt; &amp;lt;NA&amp;gt; &amp;lt;NA&amp;gt;    NA     NA POLYGON ((-115.0786 39.3005...
@@ -14982,12 +15001,12 @@ head(poly.int)&lt;/code&gt;&lt;/pre&gt;
 ## Bounding box:  xmin: -120.4649 ymin: 35.20662 xmax: -114.7152 ymax: 42.3448
 ## Geodetic CRS:  NAD83
 ##                             Name Description randomData STATEFP  STATENS
-## 6     Black Rock Desert-Humboldt                     16      06 01779778
-## 6.1   Black Rock Desert-Humboldt                     16      32 01779793
-## 6.2   Black Rock Desert-Humboldt                     16      41 01155107
-## 7               Central Lahontan                     22      06 01779778
-## 7.1             Central Lahontan                     22      32 01779793
-## 4   Central Nevada Desert Basins                     18      06 01779778
+## 6     Black Rock Desert-Humboldt                     26      06 01779778
+## 6.1   Black Rock Desert-Humboldt                     26      32 01779793
+## 6.2   Black Rock Desert-Humboldt                     26      41 01155107
+## 7               Central Lahontan                     26      06 01779778
+## 7.1             Central Lahontan                     26      32 01779793
+## 4   Central Nevada Desert Basins                     19      06 01779778
 ##        AFFGEOID GEOID STUSPS       NAME LSAD        ALAND      AWATER
 ## 6   0400000US06    06     CA California   00 403660088482 20305454540
 ## 6.1 0400000US32    32     NV     Nevada   00 284537049864  1839662829
@@ -15022,12 +15041,12 @@ head(poly.int)&lt;/code&gt;&lt;/pre&gt;
 ## Bounding box:  xmin: -120.4649 ymin: 32.2603 xmax: -111.5061 ymax: 41.10578
 ## Geodetic CRS:  NAD83
 ##                             Name randomData STUSPS
-## 1.2               Lower Colorado         28     AZ
-## 2.2     Lower Colorado-Lake Mead         30     AZ
-## 6     Black Rock Desert-Humboldt         16     CA
-## 7               Central Lahontan         22     CA
-## 4   Central Nevada Desert Basins         18     CA
-## 1                 Lower Colorado         28     CA
+## 1.2               Lower Colorado         26     AZ
+## 2.2     Lower Colorado-Lake Mead         28     AZ
+## 6     Black Rock Desert-Humboldt         26     CA
+## 7               Central Lahontan         26     CA
+## 4   Central Nevada Desert Basins         19     CA
+## 1                 Lower Colorado         26     CA
 ##                           geometry
 ## 1.2 POLYGON ((-114.8165 32.5069...
 ## 2.2 POLYGON ((-114.7368 36.0159...
@@ -15057,12 +15076,12 @@ head(poly.int.summary)&lt;/code&gt;&lt;/pre&gt;
 ## # A tibble: 6 x 3
 ##   STUSPS mean.randomData                                                geometry
 ##   &amp;lt;chr&amp;gt;            &amp;lt;dbl&amp;gt;                                          &amp;lt;GEOMETRY [°]&amp;gt;
-## 1 AZ                29.1 POLYGON ((-114.7368 36.01591, -114.737 36.01577, -114.~
-## 2 CA                19.2 POLYGON ((-120.2083 41.9941, -120.2083 41.99408, -120.~
-## 3 ID                22.5 POLYGON ((-112.9978 44.44793, -112.9979 44.44793, -112~
-## 4 MT                25   MULTIPOLYGON (((-111.3842 44.75446, -111.3846 44.75484~
-## 5 NV                19.3 POLYGON ((-115.0339 41.99601, -115.0382 41.99601, -115~
-## 6 OR                26.9 POLYGON ((-118.2951 41.99658, -118.1974 41.99699, -118~&lt;/code&gt;&lt;/pre&gt;
+## 1 AZ                27.1 POLYGON ((-114.7368 36.01591, -114.737 36.01577, -114.~
+## 2 CA                20.4 POLYGON ((-120.2083 41.9941, -120.2083 41.99408, -120.~
+## 3 ID                26.5 POLYGON ((-112.9978 44.44793, -112.9979 44.44793, -112~
+## 4 MT                33   MULTIPOLYGON (((-111.3842 44.75446, -111.3846 44.75484~
+## 5 NV                22.6 POLYGON ((-115.0339 41.99601, -115.0382 41.99601, -115~
+## 6 OR                18.3 POLYGON ((-118.2951 41.99658, -118.1974 41.99699, -118~&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;code&gt;sf&lt;/code&gt; with the &lt;code&gt;tidyverse&lt;/code&gt; makes it really easy to apply spatial versions of &lt;code&gt;summarize&lt;/code&gt; and &lt;code&gt;mutate&lt;/code&gt;. Very useful.&lt;/p&gt;
 &lt;p&gt;If we had wanted to just take the average (ignoring area), we’d just leave out the &lt;code&gt;w = State.HUC.area&lt;/code&gt; or just used &lt;code&gt;mean&lt;/code&gt;. If we had wanted to take, say, the minimum, we would use &lt;code&gt;min(randomData)&lt;/code&gt; instead of &lt;code&gt;weighted.mean&lt;/code&gt;. We can use whatever function we want in &lt;code&gt;summarize&lt;/code&gt;, just as we did with non-spatial data.&lt;/p&gt;
 &lt;/div&gt;
@@ -15214,6 +15233,10 @@ ourCities %&amp;gt;% dplyr::mutate(Closest.GreatLake = GL$FEAT_NAME[closest.GL.i
 &lt;/ul&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;lecture-video&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Lecture Video&lt;/h1&gt;
+&lt;p&gt;The lecture video for this material is &lt;a href=&#34;https://mediaspace.msu.edu/media/SSC442+-+Example+13+-+April+19th/1_688hit5e&#34;&gt;available here &lt;i class=&#34;fas fa-film&#34;&gt;&lt;/i&gt;&lt;/a&gt;&lt;/p&gt;
 &lt;/div&gt;
 </description>
     </item>
