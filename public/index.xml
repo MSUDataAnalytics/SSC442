@@ -15242,6 +15242,75 @@ ourCities %&amp;gt;% dplyr::mutate(Closest.GreatLake = GL$FEAT_NAME[closest.GL.i
     </item>
     
     <item>
+      <title>Geospatial with R</title>
+      <link>https://ssc442kirkpatrick.netlify.app/content/14-content/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>https://ssc442kirkpatrick.netlify.app/content/14-content/</guid>
+      <description>
+&lt;script src=&#34;https://ssc442kirkpatrick.netlify.app/rmarkdown-libs/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
+
+&lt;div id=&#34;TOC&#34;&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#required-reading&#34;&gt;Required Reading&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#guiding-questions&#34;&gt;Guiding Questions&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#this-week-is-a-little-different&#34;&gt;This week is a little different&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#the-data-and-packages&#34;&gt;The data and packages&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#lecture-video&#34;&gt;Lecture Video&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+
+&lt;div id=&#34;required-reading&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Required Reading&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;This page.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div id=&#34;guiding-questions&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Guiding Questions&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;What is &lt;em&gt;shrinkage&lt;/em&gt;?&lt;/li&gt;
+&lt;li&gt;What do we do with too may right-hand-side variables?&lt;/li&gt;
+&lt;li&gt;What is LASSO?&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;this-week-is-a-little-different&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;This week is a little different&lt;/h1&gt;
+&lt;p&gt;We will use the lecture slides from my friend and ace economist, Ed Rubin (U of Oregon). They are available &lt;a href=&#34;htts://raw.githack.com/edrubin/EC524W20/master/lecture/005/005-slides.html#1&#34;&gt;right here&lt;/a&gt;. A couple things first, though:&lt;/p&gt;
+&lt;div id=&#34;the-data-and-packages&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;The data and packages&lt;/h2&gt;
+&lt;p&gt;Dr. Rubin uses the &lt;code&gt;ISLR&lt;/code&gt; package’s &lt;code&gt;credit&lt;/code&gt; dataset, which is similar to one we’ve used before:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(ISLR)
+credit = ISLR::Credit
+head(credit)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;##   ID  Income Limit Rating Cards Age Education Gender Student Married Ethnicity
+## 1  1  14.891  3606    283     2  34        11   Male      No     Yes Caucasian
+## 2  2 106.025  6645    483     3  82        15 Female     Yes     Yes     Asian
+## 3  3 104.593  7075    514     4  71        11   Male      No      No     Asian
+## 4  4 148.924  9504    681     3  36        11 Female      No      No     Asian
+## 5  5  55.882  4897    357     2  68        16   Male      No     Yes Caucasian
+## 6  6  80.180  8047    569     4  77        10   Male      No      No Caucasian
+##   Balance
+## 1     333
+## 2     903
+## 3     580
+## 4     964
+## 5     331
+## 6    1151&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;We will also need to load the &lt;code&gt;caret&lt;/code&gt; package (which you’re used before), as well as the &lt;code&gt;glmnet&lt;/code&gt; package, which is new for us.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;lecture-video&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Lecture Video&lt;/h1&gt;
+&lt;p&gt;The lecture video for this material is &lt;a href=&#34;&#34;&gt;available here &lt;i class=&#34;fas fa-film&#34;&gt;&lt;/i&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    
+    <item>
       <title>Visualizations in Practice</title>
       <link>https://ssc442kirkpatrick.netlify.app/content/03-content/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
@@ -19677,11 +19746,10 @@ tree_mod_est_list = lapply(cp_to_try, tree_knn_mod)&lt;/code&gt;&lt;/pre&gt;
         &lt;/tr&gt;
         &lt;tr&gt;
             &lt;td align=&#34;right&#34; style=&#34;width:18%;text-align:right&#34;&gt;Week 14 (Apr 26/28)&lt;/td&gt;
-            &lt;td style=&#34;width:50%;text-align:left&#34;&gt;Wild Card&lt;/td&gt;
-            &lt;td align=&#34;center&#34; style=&#34;width:10%;text-align:center&#34;&gt;
-                &lt;font color=&#34;f1f1f1&#34;&gt;
-                    &lt;i class=&#34;fas fa-book-reader fa-lg&#34;&gt;&lt;/i&gt;&lt;/font&gt;
-            &lt;/td&gt;
+            &lt;td style=&#34;width:50%;text-align:left&#34;&gt;Shrinkage with LASSO and Ridge&lt;/td&gt;
+            &lt;td align=&#34;center&#34; style=&#34;width:10%;text-align:center&#34;&gt;&lt;a
+                    href=&#34;https://ssc442kirkpatrick.netlify.app/content/14-content/&#34;&gt;
+                    &lt;i class=&#34;fas fa-book-reader fa-lg&#34;&gt;&lt;/i&gt;&lt;/a&gt;&lt;/td&gt;
             &lt;td align=&#34;center&#34; style=&#34;width:10%;text-align:center&#34;&gt;
                 &lt;font color=&#34;f1f1f1&#34;&gt;
                     &lt;i class=&#34;fas fa-laptop-code fa-lg&#34;&gt;&lt;/i&gt;&lt;/font&gt;
