@@ -23,7 +23,7 @@ output:
 - What is LASSO?
 
 # This week is a little different
-We will use the lecture slides from my friend and ace economist, Ed Rubin (U of Oregon). They are available [right here](htts://raw.githack.com/edrubin/EC524W20/master/lecture/005/005-slides.html#1). A couple things first, though:
+We will use the lecture slides from my friend and ace economist, Ed Rubin (U of Oregon). They are available [right here](https://raw.githack.com/edrubin/EC524W20/master/lecture/005/005-slides.html#1). A couple things first, though:
 
 ## The data and packages
 
@@ -38,11 +38,95 @@ head(credit)
 
 We will also need to load the `caret` package (which you're used before), as well as the `glmnet` package, which is new for us.
 
-Now, back to the [lecture notes for today]](htts://raw.githack.com/edrubin/EC524W20/master/lecture/005/005-slides.html#1)
+Now, back to the [lecture notes for today]](https://raw.githack.com/edrubin/EC524W20/master/lecture/005/005-slides.html#1)
 
 
 
+# Try it!
 
+:::fyi
+Try it! Use the `wooldridge::wage2` dataset and LASSO to predict `wage`. Since these shrinkage methods (LASSO, ridge) work well with many right-hand-side variables, we can create some additional variables. A good candidate would be squared versions of all of the numeric variables. To do this, we'll use `mutate_if` along with `is.numeric`. The function `mutate_if`, when used in a pipe `%>%`, will check each column to see if the given function is true, then will add a new mutation of that column when true. We need this because we don't want to try to add a squared term for things like factor variables. It will look something like this:
+
+```
+data %>%
+  mutate_if(is.numeric, list(squared = function(x) x^2))
+```
+
+
+We pass a list with potentially many functions, but only one here in the example. For each passed function, `mutate_if` will create a copy of each existing column, square the data, and call name it by appending the name (here, 'squared') to the original column name.
+
+This will results in some columns we don't want to keep -- `wage_squared` should be dropped since `wage` is the outcome we want to predict. We should also drop `lwage` and `lwage_squared` since those are transformations of our outcome. We want our data to only have the outcome and all the possible predictors so we can simply pass everything but `wage` for our X's and `wage` for our `y`. 
+
+1. Drop all of the copies of the outcome variable and transformations of the outcome variable. Also, drop any of the squared terms of binary variables -- if a variable is $\{0,1\}$, then the squared term is exactly the same. For instance, `married` and `married_squared` are exactly the same.
+
+2. How many predictors (right-side variabes) do we have?
+
+3. Use `glmnet` from the `glmnet` package to run a LASSO (`alpha=1`) using all of the data you've assembled in the `wage2` dataset. Select a wide range of values for `lambda`. You can use `cv.glmnet` to do the cross-validation for you (see the Rubin lecture notes), or you can do it manually as we did with KNN and Regression Trees (test-train split, etc.).
+
+4. Find the `lambda` that minimizes RMSE in the test data. You can extract the optimal lambda from a `cv.glmnet` object by referring to `object$lambda`, and the RMSE using `sqrt(object$cvm)`. These can be used to make the plots in the Rubin lecture notes, and to find the `lambda` that minimizes RMSE. `object$lambda.min` will also tell you the optimal `lambda`.
+
+5. Using the optimal `lambda`, run a final LASSO model.
+
+6. Use `coef` to extract the coefficients from the optimal model. Coefficients that are zeroed out by the LASSO are shown as '.'
+- Which variables were "kept" in the model?
+- Which variables were eliminated from the model at the optimal `lambda`?
+- Is the train RMSE lower than it would be if we just ran OLS with all of the variables?
+
+:::
+
+```{r, eval = F, echo=F}
+library(wooldridge)
+library(glmnet)
+
+wage2 = wooldridge::wage2 %>%
+   mutate_if(is.numeric, list(squared = function(x) x^2)) %>%
+  dplyr::select(-wage_squared, -lwage, -lwage_squared, -married_squared, -black_squared, -south_squared, -urban_squared)
+
+
+lasso_cv = cv.glmnet(
+  x = wage2 %>% dplyr::select(-wage) %>% as.matrix(),
+  y = wage2$wage,
+  standardize = FALSE,
+  alpha = 1,
+  lambda = 10^seq(from = 1, to = -4, length = 100),
+  type.measure = 'mse',
+  nfolds = 5
+)
+
+## Extract results
+lasso_cv_df = data.frame(
+  lambda = lasso_cv$lambda,
+  rmse = sqrt(lasso_cv$cvm)
+)
+# Plot
+ggplot(
+  data = lasso_cv_df,
+  aes(x = lambda, y = rmse)
+) +
+geom_line() +
+geom_point(
+  data = lasso_cv_df %>% filter(rmse == min(rmse)),
+  size = 3.5,
+  color = '#18453b'
+) +
+scale_y_continuous("RMSE") +
+scale_x_continuous(
+  expression(lambda),
+  trans = "log10",
+  labels = c("0.1", "10", "1,000", "100,000"),
+  breaks = c(0.1, 10, 1000, 100000),
+) +
+theme_minimal(base_size = 20, base_family = "Fira Sans Book")
+
+lasso_cv_fin = glmnet(
+  x = wage2 %>% dplyr::select(-wage) %>% as.matrix(),
+  y = wage2$wage,
+  standardize = TRUE,
+  alpha = 1,
+  lambda = lasso_cv$lambda.min
+)
+
+```
 
 # Lecture Video
 The lecture video for this material is [available here <i class="fas fa-film"></i>]()

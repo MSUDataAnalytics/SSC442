@@ -30,7 +30,7 @@
   
     
   
-  <meta name="description" content="Required ReadingGuiding QuestionsThis week is a little differentThe data and packagesLecture VideoRequired ReadingThis page.Guiding QuestionsWhat is shrinkage?What do we do with too may right-hand-side variables?What is LASSO?This week is a little differentWe will use the lecture slides from my friend and ace economist, Ed Rubin (U of Oregon).">
+  <meta name="description" content="Required ReadingGuiding QuestionsThis week is a little differentThe data and packagesTry it!Lecture VideoRequired ReadingThis page.Guiding QuestionsWhat is shrinkage?What do we do with too may right-hand-side variables?What is LASSO?This week is a little differentWe will use the lecture slides from my friend and ace economist, Ed Rubin (U of Oregon).">
 
   
   <link rel="alternate" hreflang="en-us" href="https://ssc442kirkpatrick.netlify.app/content/14-content/">
@@ -238,11 +238,11 @@
   <meta property="og:site_name" content="Data Analytics">
   <meta property="og:url" content="https://ssc442kirkpatrick.netlify.app/content/14-content/">
   <meta property="og:title" content="Geospatial with R | Data Analytics">
-  <meta property="og:description" content="Required ReadingGuiding QuestionsThis week is a little differentThe data and packagesLecture VideoRequired ReadingThis page.Guiding QuestionsWhat is shrinkage?What do we do with too may right-hand-side variables?What is LASSO?This week is a little differentWe will use the lecture slides from my friend and ace economist, Ed Rubin (U of Oregon)."><meta property="og:image" content="https://ssc442kirkpatrick.netlify.app/img/social-image.png">
+  <meta property="og:description" content="Required ReadingGuiding QuestionsThis week is a little differentThe data and packagesTry it!Lecture VideoRequired ReadingThis page.Guiding QuestionsWhat is shrinkage?What do we do with too may right-hand-side variables?What is LASSO?This week is a little differentWe will use the lecture slides from my friend and ace economist, Ed Rubin (U of Oregon)."><meta property="og:image" content="https://ssc442kirkpatrick.netlify.app/img/social-image.png">
   <meta property="twitter:image" content="https://ssc442kirkpatrick.netlify.app/img/social-image.png"><meta property="og:locale" content="en-us">
   
     
-    <meta property="article:modified_time" content="2020-07-07T10:13:55-04:00">
+    <meta property="article:modified_time" content="2022-04-25T09:10:37-04:00">
   
 
   
@@ -645,6 +645,7 @@
 <ul>
 <li><a href="#the-data-and-packages">The data and packages</a></li>
 </ul></li>
+<li><a href="#try-it">Try it!</a></li>
 <li><a href="#lecture-video">Lecture Video</a></li>
 </ul>
 </div>
@@ -665,7 +666,7 @@
 </div>
 <div id="this-week-is-a-little-different" class="section level1">
 <h1>This week is a little different</h1>
-<p>We will use the lecture slides from my friend and ace economist, Ed Rubin (U of Oregon). They are available <a href="htts://raw.githack.com/edrubin/EC524W20/master/lecture/005/005-slides.html#1">right here</a>. A couple things first, though:</p>
+<p>We will use the lecture slides from my friend and ace economist, Ed Rubin (U of Oregon). They are available <a href="https://raw.githack.com/edrubin/EC524W20/master/lecture/005/005-slides.html#1">right here</a>. A couple things first, though:</p>
 <div id="the-data-and-packages" class="section level2">
 <h2>The data and packages</h2>
 <p>Dr. Rubin uses the <code>ISLR</code> package’s <code>credit</code> dataset, which is similar to one we’ve used before:</p>
@@ -687,6 +688,30 @@ head(credit)</code></pre>
 ## 5     331
 ## 6    1151</code></pre>
 <p>We will also need to load the <code>caret</code> package (which you’re used before), as well as the <code>glmnet</code> package, which is new for us.</p>
+<p>Now, back to the [lecture notes for today]](<a href="https://raw.githack.com/edrubin/EC524W20/master/lecture/005/005-slides.html#1" class="uri">https://raw.githack.com/edrubin/EC524W20/master/lecture/005/005-slides.html#1</a>)</p>
+</div>
+</div>
+<div id="try-it" class="section level1">
+<h1>Try it!</h1>
+<div class="fyi">
+<p>Try it! Use the <code>wooldridge::wage2</code> dataset and LASSO to predict <code>wage</code>. Since these shrinkage methods (LASSO, ridge) work well with many right-hand-side variables, we can create some additional variables. A good candidate would be squared versions of all of the numeric variables. To do this, we’ll use <code>mutate_if</code> along with <code>is.numeric</code>. The function <code>mutate_if</code>, when used in a pipe <code>%&gt;%</code>, will check each column to see if the given function is true, then will add a new mutation of that column when true. We need this because we don’t want to try to add a squared term for things like factor variables. It will look something like this:</p>
+<pre><code>data %&gt;%
+  mutate_if(is.numeric, list(squared = function(x) x^2))</code></pre>
+<p>We pass a list with potentially many functions, but only one here in the example. For each passed function, <code>mutate_if</code> will create a copy of each existing column, square the data, and call name it by appending the name (here, ‘squared’) to the original column name.</p>
+<p>This will results in some columns we don’t want to keep – <code>wage_squared</code> should be dropped since <code>wage</code> is the outcome we want to predict. We should also drop <code>lwage</code> and <code>lwage_squared</code> since those are transformations of our outcome. We want our data to only have the outcome and all the possible predictors so we can simply pass everything but <code>wage</code> for our X’s and <code>wage</code> for our <code>y</code>.</p>
+<ol style="list-style-type: decimal">
+<li><p>Drop all of the copies of the outcome variable and transformations of the outcome variable. Also, drop any of the squared terms of binary variables – if a variable is <span class="math inline">\(\{0,1\}\)</span>, then the squared term is exactly the same. For instance, <code>married</code> and <code>married_squared</code> are exactly the same.</p></li>
+<li><p>How many predictors (right-side variabes) do we have?</p></li>
+<li><p>Use <code>glmnet</code> from the <code>glmnet</code> package to run a LASSO (<code>alpha=1</code>) using all of the data you’ve assembled in the <code>wage2</code> dataset. Select a wide range of values for <code>lambda</code>. You can use <code>cv.glmnet</code> to do the cross-validation for you (see the Rubin lecture notes), or you can do it manually as we did with KNN and Regression Trees (test-train split, etc.).</p></li>
+<li><p>Find the <code>lambda</code> that minimizes RMSE in the test data. You can extract the optimal lambda from a <code>cv.glmnet</code> object by referring to <code>object$lambda</code>, and the RMSE using <code>sqrt(object$cvm)</code>. These can be used to make the plots in the Rubin lecture notes, and to find the <code>lambda</code> that minimizes RMSE. <code>object$lambda.min</code> will also tell you the optimal <code>lambda</code>.</p></li>
+<li><p>Using the optimal <code>lambda</code>, run a final LASSO model.</p></li>
+<li><p>Use <code>coef</code> to extract the coefficients from the optimal model. Coefficients that are zeroed out by the LASSO are shown as ‘.’</p></li>
+</ol>
+<ul>
+<li>Which variables were “kept” in the model?</li>
+<li>Which variables were eliminated from the model at the optimal <code>lambda</code>?</li>
+<li>Is the train RMSE lower than it would be if we just ran OLS with all of the variables?</li>
+</ul>
 </div>
 </div>
 <div id="lecture-video" class="section level1">
@@ -704,7 +729,7 @@ head(credit)</code></pre>
                 </div>
 
                 <div class="body-footer">
-                    <p>Last updated on July 7, 2020</p>
+                    <p>Last updated on April 25, 2022</p>
 
                     
 
