@@ -15,23 +15,29 @@ editor_options:
   chunk_output_type: console
 ---
 
+<!-- Revised assignment 5-5-2022 -->
+
 ## Requirements
 
 Data analytics is inherently a hands-on endeavor. Accordingly, the final project for this class is hands-on. As per the overview page, the final project has the following elements:
 
-1. For your final project in this class, you will analyze **existing data** in some area of interest to you.[^3] Aggregating data from multiple sources is encouraged, but is not required.
+1. For your final project in this class, you will analyze **existing data** in some area of interest to you.[^3] Aggregating data from multiple sources is strongly encouraged.
 
 [^3]: Note that **existing** is taken to mean that you are not permitted to collect data by interacting with other people. That is not to say that you cannot gather data that previously has not been gathered into a single place---this sort of exercise is encouraged. But you cannot stand with a clipboard outside a store and count visitors (for instance).
 
 2. You must visualize (at least) three **interesting** features of that data. Visualizations should aid the reader in understanding something about the data that might not be readily aparent.[^4]
 
-3. You must come up with some analysis---using tools from the course---which relates your data to either a prediction or a policy conclusion. For example, if you collected data from Major League Baseball games, you could try to "predict" whether a left-hander was pitching based solely on the outcomes of the batsmen.
+3. You must come up with some analysis---using tools from the course---which relates your data to either a **prediction** or a **policy conclusion**. For example, if you collected data from Major League Baseball games, you could try to "predict" whether a left-hander was pitching based solely on the outcomes of the batsmen. If you assembled data from COVID lockdowns and unemployment, you could try to understand the labor market and its reaction to COVID. 
+
+If you choose a **prediction** project, you should employ all of the tools we have learned regarding training and testing, and report the relevant measures of fit.
+
+If you choose a **policy conclusion** project, you should explore the relationship you're studying. If you find that low-income workers were most likely to be laid off during COVID, you should examine if this corresponds to, say, industry of employment (e.g. "service jobs were worst hit, and are most likely the job held by low-income workers"). 
 
 4. You will submit **three things** via D2L:
 
-- A PDF of your report (see the outline below for details of what this needs to contain) rendered from your R Markdown. You might want to write the prose-heavy sections in a word processor like Word or Google Docs and copy/paste the text into your `R` Markdown document, since RStudio doesn't have a nice spell checker or grammar checker. This should have *no visible `R` code, warnings, or messages in it*.  To do this, you must set `echo = FALSE` in the code chunk options `knitr::opts_chunk$set(echo = FALSE, ...)` at the beginning of your document template before you knit.
+- A PDF of your report (see the outline below for details of what this needs to contain) rendered from your R Markdown using LaTeX as in our problem sets. You might want to write the prose-heavy sections in a word processor like Word or Google Docs and copy/paste the text into your `R` Markdown document, since RStudio doesn't have a nice spell checker or grammar checker. This should have *no visible `R` code, warnings, or messages in it*.  To do this, you must set `echo = FALSE` in the code chunk options `knitr::opts_chunk$set(echo = FALSE, ...)` at the beginning of your document template before you knit.
 
-- The same PDF as above, but with all the R code in it (set `echo = TRUE` at the beginning of your document and reknit the file). Please label files in an obvious way.
+- The same PDF as above, but with all the R code in it (set `echo = TRUE` at the beginning of your document and reknit the file). Please label files in an obvious way. I will usually grade from this document.
 
 - A CSV file of your data; or a link to the data online if your code pulls from the internet. This must be a separate file titled "data.csv" or "data.txt" as applicable.
 
@@ -48,7 +54,7 @@ The project will ***not*** be graded using a check system, and will be graded by
 
 3. Analytic design: Was the analysis appropriate? Was it sensible, given the dataset? (20%)
 
-4. Story: Did we learn something? (25%)
+4. Story: Did we learn something? Did you explore your findings sufficiently deeply? (25%)
 
 5. Following instructions: Did you surpress `R` code as asked? Did you submit a separate datafile and label it correctly?  (10%)
 
@@ -92,10 +98,10 @@ Your instructors are able to count and are aware the teams are imbalanced. Evalu
 
 ## Suggested outline
 
-You must write and present your analysis as if presenting to a **C-suite executive**. If you are not familiar with this terminology, the C-suite includes, e.g., the CEO, CFO, and COO of a given company. Generally speaking, such executives are not particularly analytically oriented, and therefore your explanations need to be clear, consise (their time is valuable) and contain actionable (or valuable) information.[^6]
-    - Concretely, this requires a written memo, which describes the data, analyses, and results. This must be clear and easy to understand for a non-expert in your field. Figures and tables do not apply to the page limit.
+You must write and present your analysis as if presenting to a **C-suite executive**. If you are not familiar with this terminology, the C-suite includes, e.g., the CEO, CFO, and COO of a given company. Generally speaking, such executives are not particularly analytically oriented, and therefore your explanations need to be clear, consise (their time is valuable) and contain actionable (or valuable) information.[^6] The report should be no more than 3 pages (excluding figures and tables). 
+    - Concretely, this requires a written memo, which describes the data, analyses, and results. This must be clear and easy to understand for a non-expert in your field. Figures and tables do not apply to the page limit. You must use headers (`#` at the beginning of a line for sections, `##` for subsections, etc.) for each of these sections. Make sure you inspect your final product before you upload it.
 
-Below is a very loose guide to the sort of content that we expect for the final project. Word limits are suggestions only. Note your final report will be approximately
+Below is a very loose guide to the sort of content that we expect for the final project.
 
 [^6]: This exercise provides you with an opportunity to identify your marketable skills and to practice them. I encourage those who will be looking for jobs soon to take this exercise seriously.
 
@@ -108,13 +114,13 @@ Describe the motivation for this analysis. Briefly describe the dataset, and exp
 
 Provide in-depth background about the data of interest and about your analytics question. (**≈300 words**)
 
-#### "Theory"
+#### Theory
 
-Provide some theoretical guidance to the functional relationship you hope to explore. If you're interested on how, say, height affects scoring in the NBA, write down a proposed function that might map height to scoring. Describe how you might look for this unknown relationship in the data.(**≈300 words**)
+Provide some theoretical guidance to the functional relationship you hope to explore. If you're interested on how, say, height affects scoring in the NBA, write down a proposed function that might map height to scoring. Describe how you might look for this unknown relationship in the data, but do not describe the data yet. (**≈300 words**)
 
 #### Hypotheses
 
-Make predictions. Declare what you think will happen. (Note, this may carry over from second project.) (**≈250 words**)
+Make predictions to form the questions that you will study. Declare what you think will happen (the *theory* section will explain the "why"). You should be able to reject or fail to reject these hypotheses based on your analyses. (**≈250 words**)
 
 ### Data and Analyses
 
@@ -126,8 +132,6 @@ Given your motivations, limits on feasibility, and hypotheses, describe the data
 
 Generate the analyses relevant to your hypotheses and interests. Here you must include three figures and must describe what they contain in simple, easy to digest language. Why did you visualize these elements? Your analyses also must include brief discussion.
 
-(**As many words as you need to fully describe your analysis and results**)
-
 ### Conclusion
 
-What caveats should we consider? Do you believe this is a truly causal relationship? Why does any of this matter to the decision-maker? (**≈75 words**)
+What caveats should we consider? Do you believe this is a truly causal relationship? Or, if a predictive project, how well did you do and should we bet money / diagnose / rely on your prediction? Why does any of this matter to the decision-maker? (**≈75 words**)
