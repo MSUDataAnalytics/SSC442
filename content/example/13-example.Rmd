@@ -1,0 +1,197 @@
+---
+title: "Geospatial with R"
+linktitle: "13: Geospatial with R"
+read_date: "2022-04-21"
+menu:
+  example:
+    parent: Examples
+    weight: 2
+type: docs
+weight: 1
+editor_options:
+  chunk_output_type: console
+output:
+  blogdown::html_page:
+    toc: true
+---
+
+
+# A little more on Geospatial in R
+We went over the basics and got some practice using geospatial data in R. Let's look closely at the `tidycensus` packages. Thus far, we have used `tigris` to get TIGER/line census boundaries for things like counties. `tidycensus` does more than this -- we can pull actual census data with its geospatial references (the polygons referring to the counties, tracts, block groups, and blocks) *along with* census data because `tidycensus` interfaces with `tigris` to combine the census data and the census geographies.
+
+## Tigris for polygons
+Make sure you load `tigris` (for spatial data) and `tidycensus` for census data to attach to the spatial data:
+
+```{r, echo = FALSE,warning = FALSE, error = FALSE, message = FALSE}
+require(knitr)
+knitr::opts_chunk$set(warning = FALSE, error = FALSE, message = FALSE)
+```
+
+```{r, echo = TRUE}
+library(tigris)
+library(tidycensus)
+library(tidyverse)
+```
+
+We already saw that we could extract counties using the `tigris::counties` function. Some "census geographies" change from year to year. Counties don't (usually), but census tracts, block groups, and blocks do. These last three are all nested units of observation - tracts hold multiple block groups, each block group holds multiple blocks. Blocks are pretty small, and a lot of census data isn't reported at that level for confidentiality. Block groups don't report all data, either. Tracts are usually the most reliable balance between "census data availability" and "small geographic area". We'll use the 2010 census boundaries by specifying `year = 2010`. 
+
+Let's look at MI counties, then look at Ingham County census tracts:
+
+```{r, echo = TRUE}
+MI.counties = tigris::counties(state='MI', year = 2010, progress_bar = FALSE)
+ggplot(MI.counties, aes(fill = NAME10) ) + 
+  geom_sf() + 
+  theme_minimal() + theme(legend.position = 'none')
+```
+
+As you can see, we get some counties that extend into the Great Lakes. That's OK - we can use `st_intersect` with a map of the Great Lakes to clean that up, but I won't do that here.
+
+Now, the census tracts for Ingham County. We can use `str_detect` to find the County FIPS for Ingham:
+
+```{r, echo = TRUE}
+Ingham_FIPS = MI.counties %>%
+  dplyr::filter(str_detect(NAME10, 'Ingham')) %>%
+  dplyr::select(COUNTYFP, STATEFP) %>%
+  pull(COUNTYFP)
+
+Ingham.tracts = tigris::tracts(state='MI', county = Ingham_FIPS, year = 2010, progress_bar = FALSE)
+
+print(Ingham.tracts %>% dplyr::select(TRACTCE10, NAME10, GEOID10))
+```
+
+Notice the `GEOID10` starts with the MI FIPS (26), the Ingham FIPS (065), then the 6 digits that make up the `TRACTCE10` value. This is because tracts are nested in states and counties.
+
+Finally, let's show all the Ingham County tracts. I've changed the color mapping for the `col` aesthetic so that the tract that holds MSU will be outlined in green:
+
+```{r, echo = TRUE}
+ggplot(Ingham.tracts, aes(fill = TRACTCE10, col = (NAME10=='9800'))) + 
+  geom_sf() + theme_minimal() + theme(legend.position = 'none') + scale_fill_viridis_d() +
+  scale_color_manual(values = c('TRUE' = 'green','FALSE' = 'gray50'))
+```
+
+## Tidycensus
+Tidycensus takes some getting used to because census data is very complicated, has many geographies, and many subsets (e.g. you could be asking about the age of a specific combination of race and income). Here, we're going to learn two things: how to find some basic census data by tract, and how to extract it with `tidycensus`.
+
+First, we can use the `tidyverse` author's "basic usage" page as a guide: [https://walker-data.com/tidycensus/articles/basic-usage.html](https://walker-data.com/tidycensus/articles/basic-usage.html). **There are important directions for getting a Census API key, which must be added to your system**. `tidycensus` makes it easy - once you get your key (free from the US census, see the link for instructions), you just add it to your system using the `census_api_key` function. You only have to do it once, it records the API key in your system files, and will find it automatically on subsequent projects.
+
+### Finding variables
+This is actually pretty tricky. The census asks many questions about demographics and other topics (house characteristics, earnings, health, etc.) and it can be hard to find exactly what you're looking for. We're going to seek some simple data: the average income, and the average "tenure" (how long someone has lived in their current residence) in each tract in Ingham County.
+
+`tidycensus` has some useful functions for finding variables, especially when combined with `str_detect`, which helps us find certain words or phrases (our RegExp skills come in handy!) in the census variable names. Variables are identified by an ID, not by name. "P013001", for instance, is the median age in a given geography. All variables are not available at all geographic units: "P013001" is available for all state, county, tract, and block group, but not block. The link above shows all of the geographies available. 
+
+To make things even more complicated, there is more than the decennial census. The American Community Survey (ACS) samples 1-5% of the population each year, and reports yearly but on a limited number of variables. We'll use the ACS five-year (acs5) as it has more easily available data, even if it asks fewer questions. We'll use the 2019 data, the most recently available.
+
+Let's start by finding all variables that contain "income". Variable descriptions have the variable name as well as the "concept". We want to use "concept" to search for our term. Each concept has multiple variables with it:
+
+```{r, echo = TRUE}
+allvars = load_variables(2019, 'acs5')
+incvars = allvars %>%
+  dplyr::filter(str_detect(concept, 'MEDIAN INCOME'))
+
+incvars[1:5,]
+```
+
+We got lucky - the first `concept` is "MEDIAN INCOME IN THE PAST 12 MONTHS (IN 2019 INFLATION-ADJUSTED DOLLARS) BY PLACE OF BIRTH". Now, we didn't want the "place of birth" part (though...sounds interesting), but look at the first `label`. It is the `!!Total:`, meaning it is the median income when you combine all places of birth. The second label is `!!Total:!!Born in state of residence`, which is a *subset* of the total. Same with the next. **We do not need to use the subsets in order to use the `!!Total` value**. Note the `name` is `B06011_001`. 
+
+Lots and lots of variables will have the same total - the next variable `B07011_001` (after the Puerto Rico version) is the median income broken down by whether or not the household lives in the same house, instead of by place of birth. It's long, but you can see that it is "MEDIAN INCOME IN THE PAST 12 MONTHS (IN 2019 INFLATION-ADJUSTED DOLLARS) BY GEOGRAPHICAL MOBILITY IN THE PAST YEAR FOR CURRENT RESIDENCE IN THE UNITED STATES"
+
+```{r, echo = TRUE}
+incvars[6:15,]
+```
+
+
+
+
+While the values of the subsets will be different, the `!!Total:` variable will be the same. So, we can really choose any `!!Total:` variable for any set of variables in a `concept` that fits our search.
+
+Let's call up the median income using `B06011_001`. Note that we are naming our variables in the third line, and specifying that we only want `county = '065'` for Ingham:
+
+```{r, echo = TRUE}
+ing.medincome = get_acs(geography = 'tract',
+                        county = '065', state = 'MI',
+                        variables = c(medincome = 'B06011_001'),
+                        year = 2019)
+head(ing.medincome)
+```
+
+Since the ACS is a sample, the variable is returned as the `estimate` along with a margin of error, which we'll ignore for now. Note that the data is "tidy" - each row is one observation of one variable. If we have multiple variables, we can keep it tidy. We'll compare the `B06011_001` with `B007011_001`:
+
+```{r, echo = TRUE}
+ing.medincome = get_acs(geography = 'tract',
+                        county = '065', state = 'MI',
+                        variables = c(medincome = 'B06011_001',
+                                      medincome2 = 'B07011_001'), 
+                        year = 2019) %>% arrange(GEOID)
+head(ing.medincome)
+```
+
+We got to name the variables (useful!), and the results are "tidy" in that each observation-variable combination is a row. Clearly the two variable's totals are the same, so we have convinced ourselves that `!!Total:` works for any of the different concepts that cover median income. 
+
+The data is "tidy" but each variable is a row. Tidy data is this way because often, the data we wish to pull is a total, then each of the subcategories is a row. Imagine "race" by tract with counts of households by race. We don't actually want the data this way if we want to map two different variables.
+
+### Tidycensus and geographies
+First, Let's find the other variable we're interested in - housing tenure. We'll keep it simple and calculate the percentage of people in a tract who lived in the same house last year.
+
+```{r, echo = TRUE}
+tenvars = allvars %>%
+  dplyr::filter(str_detect(concept, 'TENURE'))
+
+tenvars[1:5,]
+```
+
+Here, we get `B07013_001`, which is the total number of households, and `B07014_004`, which is the total number of households that lived in the same house a year ago. The ratio of these two tells us what percent didn't move in the last year, which is what we want. We're going to take the output in `wide` format so that we can calculate this ratio.
+
+Now, with variable numbers in hand, we can pretty easily get the attached geography of interest. We just add `geometry = TRUE` to the `get_acs` call. We're also going to ask for `wide` format, which gives us on row per tract and a column for each variable.
+
+```{r, echo = TRUE}
+ing.tenure = get_acs(geography = 'tract',
+                     county = '065', state = 'MI',
+                     variables = c(samehouse = 'B07013_004',
+                                   totalhouse = 'B07013_001'),
+                     geometry = TRUE, output = 'wide', progress_bar = FALSE,
+                     year = 2019)
+ing.tenure
+```
+
+We get an "E" at the end of the variable which stands for "Estimate" (the "M" is "Margin of Error" since the ACS is a sample). We can now calculate the percent living in the same house they were in last year:
+
+```{r, echo = TRUE}
+ing.tenure = ing.tenure %>%
+  dplyr::mutate(percentSameHouse = samehouseE/totalhouseE) %>%
+  dplyr::select(GEOID, NAME, percentSameHouse)
+
+ing.tenure
+```
+
+The NA's come from tracts with zero households in them (the [haunted](https://www.wzzm13.com/article/news/local/michigan-life/seven-gables-road-haunted-michigan/69-e2f92018-59da-473c-ae32-1d7de68dd65e) Seven Gables Nature Area, GM's Lansing plant, industrial areas, etc.). Let's plot this!
+
+```{r, echo = TRUE}
+ggplot(ing.tenure, aes(fill = percentSameHouse)) + 
+  geom_sf() + theme_minimal() + scale_fill_viridis_c() +
+  labs(fill = 'Percent Same House\n1 yr ago')
+```
+
+### Wrapping up
+Finding census variables via `tidycensus` can be frustrating, and other sources exist to help lookup census tables. One useful tip is that you can use the "filter" button in your Rstudio `View()` window to interactively filter the `concept` column from `load_variables`. Once you find what you want there, then use the `get_acs` function in your code. Fundamentally, it's a lot of information with the ability to subset in many way, which makes it hard to wade through and find what you're looking for.
+
+:::fyi
+
+Try it! (This is a **bonus** lab due by the last day of finals. Email it to Prof. K and he'll replace your lowest lab grade with this one's grade).
+
+1. Load up all the necessary packages
+
+2. Choose a new county and find the FIPS for that county
+
+3. Choose a variable you're interested in. Finding census variables can be tricky!
+
+4. Using `load_variables`, find the best representation of that variable
+
+5. Make a map of that variable at the census tract level
+
+:::
+
+
+
+
+## Lecture Video
+The lecture video for this material is [available here <i class="fas fa-film"></i>](https://mediaspace.msu.edu/media/SSC442+-+Example+13+-+Apr+21/1_cc8yi2mx?st=898)

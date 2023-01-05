@@ -8,6 +8,8 @@ The remote "AJK" points ot my ajkirkpatrick/FS20, so the Spring2021 branch there
 To update MY FS20>Spring2021, make sure you are on the Spring2021 branch, then use terminal:
 
 			git push AJK
+			
+			NOTE: As of F22, I can push directly and it will go to my repo (AJK)
 
 This will push to my copy of Spring2021 and WILL NOT add the Spring2021 branch to thr origin (Ben's MSUDataAnalytics)
 Go to netlify and deploy the website (might happen automatically). Make sure to commit .html files as well.
@@ -37,10 +39,41 @@ Not sure what happens if you use "pull" - will it overwrite local files with the
 give an error.
 
 
+++++ Why are my pictures not working locally but are on site? Or not working on site but working locally?
+In local, server will look on the path local to, I think, the .RMD location
+On the web, server will look on the path local to the index.html file in public/content/XX-content/ ( or public/example/XX-example). 
+--> But it seems to get 03-content and 03-content_files mixed up?
+
+Solution: In both the SSC442_SS21>content>content folder AND in public/content/XX-content/, have an "img" folder. Refer to graphics
+using ![](./img/filename.png). Make sure it appears in both public>img and the local img. It should appear in-line as well.
+  build site before pushing to github
+  
+  If the site publishes links that are broken, right-click and look at the link path. .app can be thought of as a stub
+  for the index.html file under "public" so follow from there
+  
+  Wait, the path is relative to the index.html file in public/content/XX-contentorexmple
+  - finally, it worked when I copied all the images needed to the public/content/03-content/img folder and refer to it as ./img/filename.png
+
+++++
+Why is my website not formateed?
+
+---> this one::: OK, there was a content-03.html hanging around naked in public/content (but not 02 or 04 etc). That had to be deleted. No idea how it got there.
+
+/public/ is still used, and build_site button under Build tab is what updates that. Tried changing netlify.toml to static...def not it!
+
+Might also have needed to clear knitr cache?
+
+SOLUTION: LOOK FOR NAKED content-XX.html in public/content (or example-XX.html in public/example). Delete it!
+
++++
+
 +++
 To update, even without a good running hugo server, save the .Rmd, click "knit" to create the .html, then commit both of those. Use git push AJK to push it to Github. Netlify will AUTOMATICALLY re-deploy and update.
 
+blogdown::check_site() will check for issues
+
 +++ Ben's code does not call dplyr::select. Ugh.
+Note: fixed this by changing, in .Rprofile for the course, filter <-dplyr::filter(...)
 ```{r, eval=T, echo=F, purl=F}
 detach("package:dplyr")
 library(dplyr)
@@ -48,7 +81,9 @@ library(dplyr)
 
 
 ++ schedule.yaml is in DATA
-
+++ Slack link is in config>_default>menus.yaml
+++ Office hours and other front-page details are in config>_default>params.yaml
+++ Front-page graphics semester is located in content>home>hero.md
 
 ++ only works if you allow duplicate labels using options(knitr.duplicate.label = 'allow')
 ```{r, echo=F, purl = F}
@@ -58,3 +93,23 @@ knitr::purl(input = knitr::current_input(), documentation = 0, output = 'example
 +++ assignment template
 https://raw.githubusercontent.com/ajkirkpatrick/FS20/Spring2021/Rmarkdown_templates/SSC442_Lab_Assignment_Template.Rmd
 
+
+
+++ Knitting (to update) a whole folder like /content/example, filled with .RMDs
++ Open up the directory, open one file from it. Copy-paste (this is a text doc you're looking at):
+
+kn.dir = list.files(dirname(rstudioapi::getSourceEditorContext()$path), pattern = '.Rmd', full.names=TRUE)
+kn.dir = kn.dir[-15]
+lapply(kn.dir, function(xx) rmarkdown::render_site(xx,  encoding = 'UTF-8'))
+
+
+++ config.yaml has an OVERRIDE for --buildFuture. Basically, we were always building future (publishDate) pages.
+So, set the publish dates. Periodically, build the directory and re-push to Git:
+  blogdown::build_dir('content/assignment')
+  The pages WILL appear locally, regardless of config.toml (when serving locally, note -D -F flags. They stand for "draft" and "future"),
+  THEN, build_site()
+  THEN, build_hugo()
+  but when building on netlify, they will NOT be built. Netlify does a final build.
+  
+  Will need to re-render assignments as time goes on, then push. Should obey the publishDates now.
+  Oh, wait, the knit button works just fine. All that was due to wrong baseline URL

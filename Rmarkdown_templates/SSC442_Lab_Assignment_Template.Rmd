@@ -2,11 +2,19 @@
 title: "Lab No. X"
 author: "Your Name Here"
 date: "`r format(Sys.time(), '%d %B, %Y')`"
-output: pdf_document
+output: 
+  pdf_document:
+      pandoc_args: ["--extract-media", "."]
 ---
 
 ```{r setup, include=TRUE}
+# Do not delete this. It sets global options for your code chunks.
+# "echo" ensures that your code will appear along with your output
+#   - You can turn it off for your Final project by changing this argument to FALSE 
+# "collapse" keeps all of your code and output together in your final doc. 
+#   - Please keep it set to TRUE for our grader's sanity
 knitr::opts_chunk$set(echo = TRUE,
+                      collapse = TRUE,
                       fig.align = 'center')
 ```
 
@@ -15,18 +23,24 @@ knitr::opts_chunk$set(echo = TRUE,
 Write your answer here, before your code, or after your code. Just make sure your headers are correct.
 
 ```{r q1}
-print('Here is my code')
+a = (2+2)^2
+print(a)
 ```
 
 The rest of your answer to the first question.
+
+
 
 \newpage
 ## 2. Text of Question 2 Copied Here
 
 ### a. Subquestion text here
 
+
+
 ```{r q2}
-print('Here is more code for the second question')
+print('Here is more code for the second question.')
+print('Note, make sure each of the chunk titles (like "q1" and "q2" are different in your final work)')
 ```
 
 

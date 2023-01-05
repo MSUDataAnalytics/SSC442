@@ -1,0 +1,62 @@
+---
+title: "Illustrating Classification"
+linktitle: "10: Classification"
+output:
+  blogdown::html_page:
+    toc: true
+menu:
+  example:
+    parent: Examples
+    weight: 2
+type: docs
+weight: 1
+editor_options:
+  chunk_output_type: console
+---
+
+:::fyi
+
+Today's example will build on material in the "Content" tab.
+
+
+:::
+
+
+
+## Predicting Defaults
+
+Today, we will continue to use the `ISLR` data on defaults:
+
+```{r}
+library(ISLR)
+library(tibble)
+Default = ISLR::Default
+```
+
+:::fyi
+In our first breakout:
+
+1. Clean the data so that the `default` column is a binary indicator for default
+
+2. Build a logistic model to predict `default` using any combination of variables and interactions in the data. For now, just use your best judgement for choosing the variables and interactions -- your lab for this week will have you formally tune a logistic model to optimize results.
+
+3. Use a Bayes Classifier cutoff of .50 to generate your classifier output.
+
+:::
+
+
+Back in class, let's look at how we did. What variables were most useful in explaining `default`? 
+
+
+:::fyi
+In our second breakout, we will create a ROC curve manually. To do this
+
+1. Take your model from the first breakout, and using a loop (or `sapply`), step through a large number of possible cutoffs for classification ranging from 0 to 1.
+
+2. For each cutoff, generate a confusion matrix with *accuracy*, *sensitivity* and *specificity*.
+
+3. Combine the cutoff with the *sensitivity* and *specificity* results and make a ROC plot. Use `ggplot` for your plot and map the color aesthetic to the cutoff value.
+
+4. Calculate the AUC (the *area under the curve*). This is a little tricky but can be done with your data.
+:::
+

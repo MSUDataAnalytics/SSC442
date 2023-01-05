@@ -102,3 +102,85 @@ p + theme(strip.background = element_blank(),
     strip.text.x = element_blank(),
    strip.text.y = element_blank(),
    legend.position = "top")
+
+library(dplyr)
+library(ggplot2)
+
+library(dslabs)
+data(murders)
+library(ggthemes)
+library(ggrepel)
+
+r <- murders %>%
+  summarize(pop=sum(population), tot=sum(total)) %>%
+  mutate(rate = tot/pop*10^6) %>% pull(rate)
+
+murders %>% ggplot(aes(x = population/10^6, y = total, label = abb)) +
+  geom_abline(intercept = log10(r), lty=2, col="darkgrey") +
+  geom_point(aes(color=region), size = 3) +
+  geom_text_repel() +
+  scale_x_log10() +
+  scale_y_log10() +
+  xlab("Populations in millions (log scale)") +
+  ylab("Total number of murders (log scale)") +
+  ggtitle("US Gun Murders in 2010") +
+  scale_color_discrete(name="Region") +
+  theme_economist_white()
+
+library(dslabs)
+data(murders)
+
+## theme_set(theme_grey()) ## to imitate what happens with setting theme
+
+## ggplot(data = murders)
+
+murders %>% ggplot()
+
+p <- ggplot(data = murders)
+class(p)
+
+## print(p)
+## p
+
+## murders %>% ggplot() +
+##   geom_point(aes(x = population/10^6, y = total))
+
+p + geom_point(aes(x = population/10^6, y = total))
+
+p + geom_point(aes(x = population/10^6, y = total), size = 3)
+
+p + geom_point(aes(x = population/10^6, y = total), size = 3, shape = 17)
+
+p + geom_point(aes(x = population/10^6, y = total), size = 4, shape = 23, fill = '#18453B')
+
+p + geom_point(aes(x = population/10^6, y = total), size = 5, shape = 23, fill = '#18453B', color = 'white')
+
+p + geom_point(aes(x = population/10^6, y = total, color = region), size = 3)
+
+p + geom_point(aes(x = population/10^5, y = total, color = 100*total/population), size = 3)
+
+p + geom_point(aes(x = population/10^6, y = total, color = region, size = population/10^6))
+
+p + geom_point(aes(x = population/10^6, y = total, color = region, size = population/10^6), show.legend = FALSE)
+
+p + geom_point(aes(x = population/10^6, y = total)) +
+  geom_text(aes(x = population/10^6, y = total, label = abb))
+
+## p + geom_point(aes(x = population/10^6, y = total)) +
+##   geom_text(aes(population/10^6, total, label = abb))
+
+## p + geom_point(aes(x = population/10^6, y = total)) +
+##   geom_text(aes(population/10^6, total), label = abb)
+
+p + geom_point(aes(x = population/10^6, y = total)) +
+  geom_text(aes(population/10^6, total), label = 'abb')
+
+args(ggplot)
+
+p <- murders %>% ggplot(aes(x = population/10^6, y = total, label = abb))
+
+## p + geom_point(size = 3) +
+##   geom_text(nudge_x = 1.5) # offsets the label
+
+p + geom_point(size = 3) +
+  geom_text(aes(x = 10, y = 800, label = "Hello there!"))

@@ -1,0 +1,47 @@
+---
+title: "Model Evaluation"
+linktitle: "9: Model Evaluation"
+output:
+  blogdown::html_page:
+    toc: true
+menu:
+  assignment:
+    parent: Labs
+    weight: 2
+type: docs
+weight: 1
+editor_options:
+  chunk_output_type: console
+---
+
+:::fyi
+
+You must turn in a PDF document of your `R Markdown` knitted document. Submit this to D2L by 11:59 PM Eastern Time on Monday, March 21st.
+
+:::
+
+## Backstory and Set Up
+You work for a bank. This bank is trying to predict defaults on loans (a relatively uncommon occurence, but one that costs the bank a great deal of money when it does happen.) They've given you a dataset on defaults (encoded as the variable `y`). You're going to try to predict this.
+
+This is some new data. The snippet below loads it.
+
+```{r}
+
+bank <- read.table("https://raw.githubusercontent.com/ajkirkpatrick/FS20/Spring2021/classdata/bank.csv",
+                 header = TRUE,
+                 sep = ",")
+``` 
+
+There's not going to be a whole lot of wind-up here. You should be well-versed in doing these sorts of things by now (if not, look back at the previous lab for sample code).
+
+:::fyi
+
+__EXERCISE 1__
+
+1. Split the data into an 80/20 train vs. test split. Make sure you explicitly set the seed for replicability, but do not share your seed with others in the class. (We may compare some results across people.)
+
+2. Run a series of KNN models with $k$ ranging from 2 to 100. (You need not do every $k$ between 2 and 100, but you can easily write a short function to do this; see the Content tab).
+
+3. Create a chart plotting the model complexity as the $x$-axis variable and RMSE as the $y$-axis variable for __both__ the training and test data. What do you think is the optimal $k$?
+
+:::
