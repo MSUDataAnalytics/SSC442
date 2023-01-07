@@ -1,0 +1,131 @@
+<script src="00-example_files/header-attrs-2.10/header-attrs.js"></script>
+
+<div id="TOC">
+<ul>
+<li><a href="#introduction-to-examples" id="toc-introduction-to-examples">Introduction to Examples</a>
+<ul>
+<li><a href="#getting-started" id="toc-getting-started">Getting started with <code>R</code> and RStudio</a></li>
+<li><a href="#the-r-console" id="toc-the-r-console">The <code>R</code> console</a></li>
+<li><a href="#scripts" id="toc-scripts">Scripts</a></li>
+<li><a href="#rstudio" id="toc-rstudio">RStudio</a>
+<ul>
+<li><a href="#the-panes" id="toc-the-panes">The panes</a></li>
+<li><a href="#key-bindings" id="toc-key-bindings">Key bindings</a></li>
+<li><a href="#running-commands-while-editing-scripts" id="toc-running-commands-while-editing-scripts">Running commands while editing scripts</a></li>
+</ul></li>
+<li><a href="#installing-r-packages" id="toc-installing-r-packages">Installing <code>R</code> packages</a></li>
+<li><a href="#rmarkdown" id="toc-rmarkdown">Rmarkdown</a></li>
+<li><a href="#lecture-video" id="toc-lecture-video">Lecture Video</a></li>
+</ul></li>
+</ul>
+</div>
+
+<div id="introduction-to-examples" class="section level1">
+<h1>Introduction to Examples</h1>
+<p>Examples in this class are designed to be presented in-class. Accordingly, the notes here are <em>not</em> comprehensive. Instead, they are intended to guide students through</p>
+<p>I’m also aware that my writing is dry and lifeless. If you’re reading this online without the advantage of seeing it in person, don’t worry—I’ll be “funnier” in class.<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a></p>
+<div id="getting-started" class="section level2">
+<h2>Getting started with <code>R</code> and RStudio</h2>
+<p><code>R</code> is not a programming language like <code>C</code> or <code>Java</code>. It was not created by software engineers for software development. Instead, it was developed by statisticians as an interactive environment for data analysis. You can read the full history in the paper A Brief History of S<a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a>. The interactivity is an indispensable feature in data science because, as you will soon learn, the ability to quickly explore data is a necessity for success in this field. However, like in other programming languages, you can save your work as scripts that can be easily executed at any moment. These scripts serve as a record of the analysis you performed, a key feature that facilitates reproducible work. If you are an expert programmer, you should not expect <code>R</code> to follow the conventions you are used—assuming this will leave you disappointed. If you are patient, you will come to appreciate the unequal power of <code>R</code> when it comes to data analysis and data visualization.</p>
+<p>Other attractive features of <code>R</code> are:</p>
+<ol style="list-style-type: decimal">
+<li><code>R</code> is free and open source<a href="#fn3" class="footnote-ref" id="fnref3"><sup>3</sup></a>.</li>
+<li>It runs on all major platforms: Windows, Mac OS, UNIX/Linux.</li>
+<li>Scripts and data objects can be shared seamlessly across platforms.</li>
+<li>There is a large, growing, and active community of <code>R</code> users and, as a result, there are numerous resources for learning and asking questions<a href="#fn4" class="footnote-ref" id="fnref4"><sup>4</sup></a> <a href="#fn5" class="footnote-ref" id="fnref5"><sup>5</sup></a> <a href="#fn6" class="footnote-ref" id="fnref6"><sup>6</sup></a>.</li>
+<li>It is easy for others to contribute add-ons which enables developers to share software implementations of new data science methodologies. The latest methods and tools are developed in <code>R</code> for a wide variety of disciplines and since social science is so broad, <code>R</code> is one of the few tools that spans the varied social sciences.</li>
+</ol>
+</div>
+<div id="the-r-console" class="section level2">
+<h2>The <code>R</code> console</h2>
+<p>Interactive data analysis usually occurs on the <em>R console</em> that executes commands as you type them. There are several ways to gain access to an <code>R</code> console. One way is to simply start <code>R</code> on your computer. The console looks something like this:</p>
+<p><img src="/img/R_console2.png" /></p>
+<p>As a quick example, try using the console to calculate a 15% tip on a meal that cost $19.71:<a href="#fn7" class="footnote-ref" id="fnref7"><sup>7</sup></a></p>
+<pre class="r"><code>0.15 * 19.71  </code></pre>
+<pre><code>## [1] 2.9565</code></pre>
+<p><strong>Note that in this course (at least, on most browsers), grey boxes are used to show <code>R</code> code typed into the <code>R</code> console. The symbol <code>##</code> is used to denote what the <code>R</code> console outputs.</strong></p>
+</div>
+<div id="scripts" class="section level2">
+<h2>Scripts</h2>
+<p>One of the great advantages of <code>R</code> over point-and-click analysis software is that you can save your work as scripts. You can edit and save these scripts using a text editor. The material in this course was developed using the interactive <em>integrated development environment</em> (IDE) RStudio<a href="#fn8" class="footnote-ref" id="fnref8"><sup>8</sup></a>. RStudio includes an editor with many <code>R</code> specific features, a console to execute your code, and other useful panes, including one to show figures.</p>
+<p><img src="/img/RStudio.png" /></p>
+<p>Most web-based <code>R</code> consoles also provide a pane to edit scripts, but not all permit you to save the scripts for later use. On the upper-right part of this webpage you’ll see a little button with the <code>R</code> logo. You can access a web-based console there.</p>
+</div>
+<div id="rstudio" class="section level2">
+<h2>RStudio</h2>
+<p>RStudio will be our launching pad for data science projects. It not only provides an editor for us to create and edit our scripts but also provides many other useful tools. In this section, we go over some of the basics.</p>
+<div id="the-panes" class="section level3">
+<h3>The panes</h3>
+<p>When you start RStudio for the first time, you will see three panes. The left pane shows the <code>R</code> console. On the right, the top pane includes tabs such as <em>Environment</em> and <em>History</em>, while the bottom pane shows five tabs: <em>File</em>, <em>Plots</em>, <em>Packages</em>, <em>Help</em>, and <em>Viewer</em> (these tabs may change in new versions). You can click on each tab to move across the different features.</p>
+<p>To start a new script, you can click on File, then New File, then <code>R</code> Script.</p>
+<p>This starts a new pane on the left and it is here where you can start writing your script.</p>
+</div>
+<div id="key-bindings" class="section level3">
+<h3>Key bindings</h3>
+<p>Many tasks we perform with the mouse can be achieved with a combination of key strokes instead. These keyboard versions for performing tasks are referred to as <em>key bindings</em>. For example, we just showed how to use the mouse to start a new script, but you can also use a key binding: Ctrl+Shift+N on Windows and command+shift+N on the Mac.</p>
+<p>Although in this tutorial we often show how to use the mouse, <strong>we highly recommend that you memorize key bindings for the operations you use most</strong>. RStudio provides a useful cheat sheet with the most widely used commands. You might want to keep this handy so you can look up key-bindings when you find yourself performing repetitive point-and-clicking.</p>
+</div>
+<div id="running-commands-while-editing-scripts" class="section level3">
+<h3>Running commands while editing scripts</h3>
+<p>There are many editors specifically made for coding. These are useful because color and indentation are automatically added to make code more readable. RStudio is one of these editors, and it was specifically developed for R. One of the main advantages provided by RStudio over other editors is that we can test our code easily as we edit our scripts. Below we show an example.</p>
+<p>Let’s start by opening a new script as we did before. A next step is to give the script a name. We can do this through the editor by saving the current new unnamed script. To do this, click on the save icon or use the key binding Ctrl+S on Windows and command+S on the Mac.</p>
+<p>When you ask for the document to be saved for the first time, RStudio will prompt you for a name. A good convention is to use a descriptive name, with lower case letters, no spaces, only hyphens to separate words, and then followed by the suffix <em>.R</em>. We will call this script <em>my-first-script.R</em>.</p>
+<p>Now we are ready to start editing our first script. The first lines of code in an <code>R</code> script are dedicated to loading the libraries we will use. Another useful RStudio feature is that once we type <code>library()</code> it starts auto-completing with libraries that we have installed. Note what happens when we type <code>library(ti)</code>:</p>
+<p>Another feature you may have noticed is that when you type <code>library(</code> the second parenthesis is automatically added. This will help you avoid one of the most common errors in coding: forgetting to close a parenthesis.</p>
+<p>Now we can continue to write code. As an example, we will make a graph showing murder totals versus population totals by state. Once you are done writing the code needed to make this plot, you can try it out by <em>executing</em> the code. To do this, click on the <em>Run</em> button on the upper right side of the editing pane. You can also use the key binding: Ctrl+Shift+Enter on Windows or command+shift+return on the Mac.</p>
+<p>Once you run the code, you will see it appear in the <code>R</code> console and, in this case, the generated plot appears in the plots console. Note that the plot console has a useful interface that permits you to click back and forward across different plots, zoom in to the plot, or save the plots as files.</p>
+<p>To run one line at a time instead of the entire script, you can use Control-Enter on Windows and command-return on the Mac.</p>
+<div class="fyi">
+<p><strong>SETUP TIP</strong></p>
+<p>Change the option <em>Save workspace to .RData on exit</em> to <em>Never</em> and uncheck the <em>Restore .RData into workspace at start</em>. By default, when you exit <code>R</code> saves all the objects you have created into a file called .RData. This is done so that when you restart the session in the same folder, it will load these objects. I find that this causes confusion especially when sharing code with colleagues or peers.</p>
+</div>
+</div>
+</div>
+<div id="installing-r-packages" class="section level2">
+<h2>Installing <code>R</code> packages</h2>
+<p>The functionality provided by a fresh install of <code>R</code> is only a small fraction of what is possible. In fact, we refer to what you get after your first install as <em>base R</em>. The extra functionality comes from add-ons available from developers. There are currently hundreds of these available from CRAN and many others shared via other repositories such as GitHub. However, because not everybody needs all available functionality, <code>R</code> instead makes different components available via <em>packages</em>. <code>R</code> makes it very easy to install packages from within R. For example, to install the <strong>dslabs</strong> package, which we use to share datasets and code related to this book, you would type:</p>
+<pre class="r"><code>install.packages(&quot;dslabs&quot;)</code></pre>
+<p>In RStudio, you can navigate to the <em>Tools</em> tab and select install packages. We can then load the package into our <code>R</code> sessions using the <code>library</code> function:</p>
+<pre class="r"><code>library(dslabs)</code></pre>
+<pre><code>## 
+## Attaching package: &#39;dslabs&#39;</code></pre>
+<pre><code>## The following object is masked from &#39;package:gapminder&#39;:
+## 
+##     gapminder</code></pre>
+<p>As you go through this book, you will see that we load packages without installing them. This is because once you install a package, it remains installed and only needs to be loaded with <code>library</code>. The package remains loaded until we quit the <code>R</code> session. If you try to load a package and get an error, it probably means you need to
+install it first.</p>
+<p>We can install more than one package at once by feeding a character vector to this function:</p>
+<pre class="r"><code>install.packages(c(&quot;tidyverse&quot;, &quot;dslabs&quot;))</code></pre>
+<p>One advantage of using RStudio is that it auto-completes package names once you start typing, which is helpful when you do not remember the exact spelling of the package. Once you select your package, we recommend selecting all the defaults. Note that installing <strong>tidyverse</strong> actually installs several packages. This commonly occurs when a package has <em>dependencies</em>, or uses functions from other packages. When you load a package using <code>library</code>, you also load its dependencies.</p>
+<p>Once packages are installed, you can load them into <code>R</code> and you do not need to install them again, unless you install a fresh version of R. Remember packages are installed in <code>R</code> not RStudio.</p>
+<p>It is helpful to keep a list of all the packages you need for your work in a script because if you need to perform a fresh install of R, you can re-install all your packages by simply running a script.</p>
+<p>You can see all the packages you have installed using the following function:</p>
+<pre class="r"><code>installed.packages()</code></pre>
+<p>As we move through this course, we will constantly be adding to our toolbox of packages. Accordingly, you will need to keep track to ensure you have the requisite package for any given lecture.</p>
+</div>
+<div id="rmarkdown" class="section level2">
+<h2>Rmarkdown</h2>
+<p>Markdown is a general-purpose syntax for laying out documents. Rmarkdown is a combination of R and markdown, as the name implies. When using markdown, one can define headers and tables using specific notation, and depending on the rendering engine, the headers and tables (and a whole lot more) are customized. In fact, this whole website is built in R using Rmarkdown (and a lot of add-ons like Hugo and blogdown). In other contexts, the rendering engine may recognize that your headers are likely to be entries in a table of contents, and does so for you. The table of contents at the top of this document is built from the markdown headers.</p>
+<p>The power of Rmarkdown is that it lets us mix formatted text with R code. That is, you can have a section of the document that understands R code, and a separate section right after that discusses the results from the R code.</p>
+<p><a href="https://raw.githubusercontent.com/ajkirkpatrick/FS20/Spring2021/Rmarkdown_templates/SSC442_Weekly_Writing_Template.Rmd">Try it out using the Weekly Writing Template</a>. If it opens in your web browser, just right-click the link and select Save As…. <strong>Make sure you save the file to its own folder on your hard drive</strong>. In converting your Rmarkdown .Rmd file to a .pdf, your system will make multiple interim files<a href="#fn9" class="footnote-ref" id="fnref9"><sup>9</sup></a>. It also creates folders to store the output of any plots or graphics you create with your R code.</p>
+<p>If we have time today, let’s open the template linked above and see what happens when we select “knit to pdf”.</p>
+</div>
+<div id="lecture-video" class="section level2">
+<h2>Lecture Video</h2>
+<p>Video from lecture <a href="https://mediaspace.msu.edu/media/SSC442+-+Lecture+and+Office+Hours/1_pvyem45x?st=375">hosted on Mediaspace <i class="fas fa-film"></i></a></p>
+</div>
+</div>
+<div class="footnotes footnotes-end-of-document">
+<hr />
+<ol>
+<li id="fn1"><p>Comments from previous classes indicate that I am not, in fact, funny.<a href="#fnref1" class="footnote-back">↩︎</a></p></li>
+<li id="fn2"><p><a href="https://pdfs.semanticscholar.org/9b48/46f192aa37ca122cfabb1ed1b59866d8bfda.pdf" class="uri">https://pdfs.semanticscholar.org/9b48/46f192aa37ca122cfabb1ed1b59866d8bfda.pdf</a><a href="#fnref2" class="footnote-back">↩︎</a></p></li>
+<li id="fn3"><p><a href="https://opensource.org/history" class="uri">https://opensource.org/history</a><a href="#fnref3" class="footnote-back">↩︎</a></p></li>
+<li id="fn4"><p><a href="https://stats.stackexchange.com/questions/138/free-resources-for-learning-r" class="uri">https://stats.stackexchange.com/questions/138/free-resources-for-learning-r</a><a href="#fnref4" class="footnote-back">↩︎</a></p></li>
+<li id="fn5"><p><a href="https://www.r-project.org/help.html" class="uri">https://www.r-project.org/help.html</a><a href="#fnref5" class="footnote-back">↩︎</a></p></li>
+<li id="fn6"><p><a href="https://stackoverflow.com/documentation/r/topics" class="uri">https://stackoverflow.com/documentation/r/topics</a><a href="#fnref6" class="footnote-back">↩︎</a></p></li>
+<li id="fn7"><p>But probably tip more than 15%. Times are tough, man.<a href="#fnref7" class="footnote-back">↩︎</a></p></li>
+<li id="fn8"><p><a href="https://www.rstudio.com/" class="uri">https://www.rstudio.com/</a><a href="#fnref8" class="footnote-back">↩︎</a></p></li>
+<li id="fn9"><p>Specifically, knitr will create an intermediate .md file which is then processed with Pandoc using Latex to create a pdf. Whew!<a href="#fnref9" class="footnote-back">↩︎</a></p></li>
+</ol>
+</div>
