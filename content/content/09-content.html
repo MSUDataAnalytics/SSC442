@@ -1,0 +1,598 @@
+---
+title: "The Bias-Variance Tradeoff"
+linktitle: "9: Bias vs. Variance"
+read_date: "2022-03-22"
+menu:
+  content:
+    parent: Course content
+    weight: 1
+type: docs
+output:
+  blogdown::html_page:
+    toc: true
+---
+
+<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+
+<div id="TOC">
+<ul>
+<li><a href="#required-reading" id="toc-required-reading">Required Reading</a>
+<ul>
+<li><a href="#guiding-questions" id="toc-guiding-questions">Guiding Questions</a></li>
+</ul></li>
+<li><a href="#the-biasvariance-tradeoff" id="toc-the-biasvariance-tradeoff">The Bias–Variance Tradeoff</a>
+<ul>
+<li><a href="#r-setup-and-source" id="toc-r-setup-and-source">R Setup and Source</a></li>
+<li><a href="#the-regression-setup" id="toc-the-regression-setup">The Regression Setup</a></li>
+<li><a href="#reducible-and-irreducible-error" id="toc-reducible-and-irreducible-error">Reducible and Irreducible Error</a></li>
+<li><a href="#bias-variance-decomposition" id="toc-bias-variance-decomposition">Bias-Variance Decomposition</a></li>
+<li><a href="#using-simulation-to-estimate-bias-and-variance" id="toc-using-simulation-to-estimate-bias-and-variance">Using Simulation to Estimate Bias and Variance</a></li>
+<li><a href="#estimating-expected-prediction-error" id="toc-estimating-expected-prediction-error">Estimating Expected Prediction Error</a></li>
+<li><a href="#model-flexibility" id="toc-model-flexibility">Model Flexibility</a>
+<ul>
+<li><a href="#linear-models" id="toc-linear-models">Linear Models</a></li>
+<li><a href="#k-nearest-neighbors" id="toc-k-nearest-neighbors">k-Nearest Neighbors</a></li>
+<li><a href="#decision-trees" id="toc-decision-trees">Decision Trees</a></li>
+</ul></li>
+<li><a href="#lecture-video" id="toc-lecture-video">Lecture Video</a></li>
+</ul></li>
+</ul>
+</div>
+
+<div id="required-reading" class="section level2">
+<h2>Required Reading</h2>
+<ul>
+<li>This page.</li>
+<li><i class="fas fa-book"></i> <a href="https://trevorhastie.github.io/ISLR/ISLR%20Seventh%20Printing.pdf">Chapter 2</a> in <em>Introduction to Statistical Learning with Applications in R</em>.</li>
+</ul>
+<div id="guiding-questions" class="section level3">
+<h3>Guiding Questions</h3>
+<ul>
+<li>What is the relationship between <strong>bias</strong>, <strong>variance</strong>, and <strong>mean squared error?</strong></li>
+<li>What is the relationship between <strong>model flexibility</strong> and training error?</li>
+<li>What is the relationship between <strong>model flexibility</strong> and validation (or test) error?</li>
+</ul>
+</div>
+</div>
+<div id="the-biasvariance-tradeoff" class="section level1">
+<h1>The Bias–Variance Tradeoff</h1>
+<p>This lecture will begin to dig into some theoretical details of estimating regression functions, in particular how the <strong>bias-variance tradeoff</strong> helps explain the relationship between <strong>model flexibility</strong> and the errors a model makes.</p>
+<p>Don’t freak out if this seems mathematically overwhelming. We’ll walk through relatively slowly. It’s not super important to follow the nitty-gritty details; but the broad takeaways are quite important.</p>
+<div id="r-setup-and-source" class="section level2">
+<h2>R Setup and Source</h2>
+<pre class="r"><code>library(tibble)     # data frame printing
+library(dplyr)      # data manipulation
+
+library(caret)      # fitting knn
+library(rpart)      # fitting trees
+library(rpart.plot) # plotting trees</code></pre>
+</div>
+<div id="the-regression-setup" class="section level2">
+<h2>The Regression Setup</h2>
+<p>Consider the general regression setup where we are given a random pair <span class="math inline">\((X, Y) \in \mathbb{R}^p \times \mathbb{R}\)</span>. We would like to “predict” <span class="math inline">\(Y\)</span> with some function of <span class="math inline">\(X\)</span>, say, <span class="math inline">\(f(X)\)</span>.</p>
+<p>To clarify what we mean by “predict,” we specify that we would like <span class="math inline">\(f(X)\)</span> to be “close” to <span class="math inline">\(Y\)</span>. To further clarify what we mean by “close,” we define the <strong>squared error loss</strong> of estimating <span class="math inline">\(Y\)</span> using <span class="math inline">\(f(X)\)</span>.</p>
+<p><span class="math display">\[
+L(Y, f(X)) \triangleq (Y - f(X)) ^ 2
+\]</span></p>
+<p>Now we can clarify the goal of regression, which is to minimize the above loss, on average. We call this the <strong>risk</strong> of estimating <span class="math inline">\(Y\)</span> using <span class="math inline">\(f(X)\)</span>.</p>
+<p><span class="math display">\[
+R(Y, f(X)) \triangleq \mathbb{E}[L(Y, f(X))] = \mathbb{E}_{X, Y}[(Y - f(X)) ^ 2]
+\]</span></p>
+<p>Before attempting to minimize the risk, we first re-write the risk after conditioning on <span class="math inline">\(X\)</span>.</p>
+<p><span class="math display">\[
+\mathbb{E}_{X, Y} \left[ (Y - f(X)) ^ 2 \right] = \mathbb{E}_{X} \mathbb{E}_{Y \mid X} \left[ ( Y - f(X) ) ^ 2 \mid X = x \right]
+\]</span></p>
+<p>Minimizing the right-hand side is much easier, as it simply amounts to minimizing the inner expectation with respect to <span class="math inline">\(Y \mid X\)</span>, essentially minimizing the risk pointwise, for each <span class="math inline">\(x\)</span>.</p>
+<p>It turns out, that the risk is minimized by setting <span class="math inline">\(f(x)\)</span> to be equal the conditional mean of <span class="math inline">\(Y\)</span> given <span class="math inline">\(X\)</span>,</p>
+<p><span class="math display">\[
+f(x) = \mathbb{E}(Y \mid X = x)
+\]</span></p>
+<p>which we call the <strong>regression function</strong>.<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a></p>
+<p>Note that the choice of squared error loss is somewhat arbitrary. Suppose instead we chose absolute error loss.</p>
+<p><span class="math display">\[
+L(Y, f(X)) \triangleq | Y - f(X) |
+\]</span></p>
+<p>The risk would then be minimized setting <span class="math inline">\(f(x)\)</span> equal to the conditional median.</p>
+<p><span class="math display">\[
+f(x) = \text{median}(Y \mid X = x)
+\]</span></p>
+<p>Despite this possibility, our preference will still be for squared error loss. The reasons for this are numerous, including: historical, ease of optimization, and protecting against large deviations.</p>
+<p>Now, given data <span class="math inline">\(\mathcal{D} = (x_i, y_i) \in \mathbb{R}^p \times \mathbb{R}\)</span>, our goal becomes finding some <span class="math inline">\(\hat{f}\)</span> that is a good estimate of the regression function <span class="math inline">\(f\)</span>. We’ll see that this amounts to minimizing what we call the reducible error.</p>
+</div>
+<div id="reducible-and-irreducible-error" class="section level2">
+<h2>Reducible and Irreducible Error</h2>
+<p>Suppose that we obtain some <span class="math inline">\(\hat{f}\)</span>, how well does it estimate <span class="math inline">\(f\)</span>? We define the <strong>expected prediction error</strong> of predicting <span class="math inline">\(Y\)</span> using <span class="math inline">\(\hat{f}(X)\)</span>. A good <span class="math inline">\(\hat{f}\)</span> will have a low expected prediction error.</p>
+<p><span class="math display">\[
+\text{EPE}\left(Y, \hat{f}(X)\right) \triangleq \mathbb{E}_{X, Y, \mathcal{D}} \left[  \left( Y - \hat{f}(X) \right)^2 \right]
+\]</span></p>
+<p>This expectation is over <span class="math inline">\(X\)</span>, <span class="math inline">\(Y\)</span>, and also <span class="math inline">\(\mathcal{D}\)</span>. The estimate <span class="math inline">\(\hat{f}\)</span> is actually random depending on the data, <span class="math inline">\(\mathcal{D}\)</span>, used to estimate <span class="math inline">\(\hat{f}\)</span>. We could actually write <span class="math inline">\(\hat{f}(X, \mathcal{D})\)</span> to make this dependence explicit, but our notation will become cumbersome enough as it is.</p>
+<p>Like before, we’ll condition on <span class="math inline">\(X\)</span>. This results in the expected prediction error of predicting <span class="math inline">\(Y\)</span> using <span class="math inline">\(\hat{f}(X)\)</span> when <span class="math inline">\(X = x\)</span>.</p>
+<p><span class="math display">\[
+\text{EPE}\left(Y, \hat{f}(x)\right) =
+\mathbb{E}_{Y \mid X, \mathcal{D}} \left[  \left(Y - \hat{f}(X) \right)^2 \mid X = x \right] =
+\underbrace{\mathbb{E}_{\mathcal{D}} \left[  \left(f(x) - \hat{f}(x) \right)^2 \right]}_\textrm{reducible error} +
+\underbrace{\mathbb{V}_{Y \mid X} \left[ Y \mid X = x \right]}_\textrm{irreducible error}
+\]</span></p>
+<p>A number of things to note here:</p>
+<ul>
+<li>The expected prediction error is for a random <span class="math inline">\(Y\)</span> given a fixed <span class="math inline">\(x\)</span> and a random <span class="math inline">\(\hat{f}\)</span>. As such, the expectation is over <span class="math inline">\(Y \mid X\)</span> and <span class="math inline">\(\mathcal{D}\)</span>. Our estimated function <span class="math inline">\(\hat{f}\)</span> is random depending on the data, <span class="math inline">\(\mathcal{D}\)</span>, which is used to perform the estimation.</li>
+<li>The expected prediction error of predicting <span class="math inline">\(Y\)</span> using <span class="math inline">\(\hat{f}(X)\)</span> when <span class="math inline">\(X = x\)</span> has been decomposed into two errors:
+<ul>
+<li>The <strong>reducible error</strong>, which is the expected squared error loss of estimation <span class="math inline">\(f(x)\)</span> using <span class="math inline">\(\hat{f}(x)\)</span> at a fixed point <span class="math inline">\(x\)</span>. The only thing that is random here is <span class="math inline">\(\mathcal{D}\)</span>, the data used to obtain <span class="math inline">\(\hat{f}\)</span>. (Both <span class="math inline">\(f\)</span> and <span class="math inline">\(x\)</span> are fixed.) We’ll often call this reducible error the <strong>mean squared error</strong> of estimating <span class="math inline">\(f(x)\)</span> using <span class="math inline">\(\hat{f}\)</span> at a fixed point <span class="math inline">\(x\)</span>.
+<span class="math display">\[ \text{MSE}\left(f(x), \hat{f}(x)\right) \triangleq \mathbb{E}_{\mathcal{D}} \left[  \left(f(x) - \hat{f}(x) \right)^2 \right]\]</span></li>
+<li>The <strong>irreducible error</strong>. This is simply the variance of <span class="math inline">\(Y\)</span> given that <span class="math inline">\(X = x\)</span>, essentially noise that we do not want to learn. This is also called the <strong>Bayes error</strong>.</li>
+</ul></li>
+</ul>
+<p>As the name suggests, the reducible error is the error that we have some control over. But how do we control this error?</p>
+</div>
+<div id="bias-variance-decomposition" class="section level2">
+<h2>Bias-Variance Decomposition</h2>
+<p>After decomposing the expected prediction error into reducible and irreducible error, we can further decompose the reducible error.</p>
+<p>Recall the definition of the <strong>bias</strong> of an estimator.</p>
+<p><span class="math display">\[
+\text{bias}(\hat{\theta}) \triangleq \mathbb{E}\left[\hat{\theta}\right] - \theta
+\]</span></p>
+<p>Also recall the definition of the <strong>variance</strong> of an estimator.</p>
+<p><span class="math display">\[
+\mathbb{V}(\hat{\theta}) = \text{var}(\hat{\theta}) \triangleq \mathbb{E}\left [ ( \hat{\theta} -\mathbb{E}\left[\hat{\theta}\right] )^2 \right]
+\]</span></p>
+<p>Using this, we further decompose the reducible error (mean squared error) into bias squared and variance.</p>
+<p><span class="math display">\[
+\text{MSE}\left(f(x), \hat{f}(x)\right) =
+\mathbb{E}_{\mathcal{D}} \left[  \left(f(x) - \hat{f}(x) \right)^2 \right] =
+\underbrace{\left(f(x) - \mathbb{E} \left[ \hat{f}(x) \right]  \right)^2}_{\text{bias}^2 \left(\hat{f}(x) \right)} +
+\underbrace{\mathbb{E} \left[ \left( \hat{f}(x) - \mathbb{E} \left[ \hat{f}(x) \right] \right)^2 \right]}_{\text{var} \left(\hat{f}(x) \right)}
+\]</span></p>
+<p>This is actually a common fact in estimation theory, but we have stated it here specifically for estimation of some regression function <span class="math inline">\(f\)</span> using <span class="math inline">\(\hat{f}\)</span> at some point <span class="math inline">\(x\)</span>.</p>
+<p><span class="math display">\[
+\text{MSE}\left(f(x), \hat{f}(x)\right) = \text{bias}^2 \left(\hat{f}(x) \right) + \text{var} \left(\hat{f}(x) \right)
+\]</span></p>
+<p>In a perfect world, we would be able to find some <span class="math inline">\(\hat{f}\)</span> which is <strong>unbiased</strong>, that is <span class="math inline">\(\text{bias}\left(\hat{f}(x) \right) = 0\)</span>, which also has low variance. In practice, this isn’t always possible.</p>
+<p>It turns out, there is a <strong>bias-variance tradeoff</strong>. That is, often, the more bias in our estimation, the lesser the variance. Similarly, less variance is often accompanied by more bias. <span style="color: red;">Flexible models tend to be unbiased, but highly variable. Simple models are often extremely biased, but have low variance.</span></p>
+<p>In the context of regression, models are biased when:</p>
+<ul>
+<li>Parametric: The form of the model <a href="https://en.wikipedia.org/wiki/Omitted-variable_bias">does not incorporate all the necessary variables</a>, or the form of the relationship is too simple. For example, a parametric model assumes a linear relationship, but the true relationship is quadratic.</li>
+<li>Non-parametric: The model provides too much smoothing.</li>
+</ul>
+<p>In the context of regression, models are variable when:</p>
+<ul>
+<li>Parametric: The form of the model incorporates too many variables, or the form of the relationship is too flexible. For example, a parametric model assumes a cubic relationship, but the true relationship is linear.</li>
+<li>Non-parametric: The model does not provide enough smoothing. It is very, “wiggly.” <a href="https://ssc442kirkpatrick.netlify.app/content/08-content/#k-nearest-neighbors-1">Recall our KNN model example from Content 08</a></li>
+</ul>
+<p>So for us, to select a model that appropriately balances the tradeoff between bias and variance, and thus minimizes the reducible error, we need to select a model of the appropriate flexibility for the data.</p>
+<p>Recall that when fitting models, we’ve seen that train RMSE decreases as model flexibility is increasing. (Technically it is non-increasing.) For validation RMSE, we expect to see a U-shaped curve. Importantly, validation RMSE decreases, until a certain flexibility, then begins to increase.</p>
+<p>Now we can understand why this is happening. The expected test RMSE is essentially the expected prediction error, which we now known decomposes into (squared) bias, variance, and the irreducible Bayes error. The following plots show three examples of this.</p>
+<p><img src="/content/09-content_files/figure-html/unnamed-chunk-3-1.png" width="1152" style="display: block; margin: auto;" /></p>
+<p>The three plots show three examples of the bias-variance tradeoff. In the left panel, the variance influences the expected prediction error more than the bias. In the right panel, the opposite is true. The middle panel is somewhat neutral. In all cases, the difference between the Bayes error (the horizontal dashed grey line) and the expected prediction error (the solid black curve) is exactly the mean squared error, which is the sum of the squared bias (blue curve) and variance (orange curve). The vertical line indicates the flexibility that minimizes the prediction error.</p>
+<p>To summarize, if we assume that irreducible error can be written as</p>
+<p><span class="math display">\[
+\mathbb{V}[Y \mid X = x] = \sigma ^ 2
+\]</span></p>
+<p>then we can write the full decomposition of the expected prediction error of predicting <span class="math inline">\(Y\)</span> using <span class="math inline">\(\hat{f}\)</span> when <span class="math inline">\(X = x\)</span> as</p>
+<p><span class="math display">\[
+\text{EPE}\left(Y, \hat{f}(x)\right) =
+\underbrace{\text{bias}^2\left(\hat{f}(x)\right) + \text{var}\left(\hat{f}(x)\right)}_\textrm{reducible error} + \sigma^2.
+\]</span></p>
+<p>As model flexibility increases, bias decreases, while variance increases. By understanding the tradeoff between bias and variance, we can manipulate model flexibility to find a model that will predict well on unseen observations.</p>
+<p><img src="/content/09-content_files/figure-html/error-vs-flex-1.png" width="960" style="display: block; margin: auto;" /></p>
+<p>Tying this all together, the above image shows how we “expect” training and validation error to behavior in relation to model flexibility.<a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a> In practice, we won’t always see such a nice “curve” in the validation error, but we expect to see the general trends.</p>
+</div>
+<div id="using-simulation-to-estimate-bias-and-variance" class="section level2">
+<h2>Using Simulation to Estimate Bias and Variance</h2>
+<p>We will illustrate these decompositions, most importantly the bias-variance tradeoff, through simulation. Suppose we would like to train a model to learn the true regression function function <span class="math inline">\(f(x) = x^2\)</span>.</p>
+<pre class="r"><code>f = function(x) {
+  x ^ 2
+}</code></pre>
+<p>More specifically, we’d like to predict an observation, <span class="math inline">\(Y\)</span>, given that <span class="math inline">\(X = x\)</span> by using <span class="math inline">\(\hat{f}(x)\)</span> where</p>
+<p><span class="math display">\[
+\mathbb{E}[Y \mid X = x] = f(x) = x^2
+\]</span></p>
+<p>and</p>
+<p><span class="math display">\[
+\mathbb{V}[Y \mid X = x] = \sigma ^ 2.
+\]</span></p>
+<p>Alternatively, we could write this as</p>
+<p><span class="math display">\[
+Y = f(X) + \epsilon
+\]</span></p>
+<p>where <span class="math inline">\(\mathbb{E}[\epsilon] = 0\)</span> and <span class="math inline">\(\mathbb{V}[\epsilon] = \sigma ^ 2\)</span>. In this formulation, we call <span class="math inline">\(f(X)\)</span> the <strong>signal</strong> and <span class="math inline">\(\epsilon\)</span> the <strong>noise</strong>.</p>
+<p>To carry out a concrete simulation example, we need to fully specify the data generating process. We do so with the following <code>R</code> code.</p>
+<pre class="r"><code>gen_sim_data = function(f, sample_size = 100) {
+  x = runif(n = sample_size, min = 0, max = 1)
+  y = rnorm(n = sample_size, mean = f(x), sd = 0.3)
+  tibble(x, y)
+}</code></pre>
+<p>Also note that if you prefer to think of this situation using the <span class="math inline">\(Y = f(X) + \epsilon\)</span> formulation, the following code represents the same data generating process.</p>
+<pre class="r"><code>gen_sim_data = function(f, sample_size = 100) {
+  x = runif(n = sample_size, min = 0, max = 1)
+  eps = rnorm(n = sample_size, mean = 0, sd = 0.75)
+  y = f(x) + eps
+  tibble(x, y)
+}</code></pre>
+<p>To completely specify the data generating process, we have made more model assumptions than simply <span class="math inline">\(\mathbb{E}[Y \mid X = x] = x^2\)</span> and <span class="math inline">\(\mathbb{V}[Y \mid X = x] = \sigma ^ 2\)</span>. In particular,</p>
+<ul>
+<li>The <span class="math inline">\(x_i\)</span> in <span class="math inline">\(\mathcal{D}\)</span> are sampled from a uniform distribution over <span class="math inline">\([0, 1]\)</span>.</li>
+<li>The <span class="math inline">\(x_i\)</span> and <span class="math inline">\(\epsilon\)</span> are independent.</li>
+<li>The <span class="math inline">\(y_i\)</span> in <span class="math inline">\(\mathcal{D}\)</span> are sampled from the conditional normal distribution.</li>
+</ul>
+<p><span class="math display">\[
+Y \mid X \sim N(f(x), \sigma^2)
+\]</span></p>
+<p>Using this setup, we will generate datasets, <span class="math inline">\(\mathcal{D}\)</span>, with a sample size <span class="math inline">\(n = 100\)</span> and fit four models.</p>
+<p><span class="math display">\[
+\begin{aligned}
+\texttt{predict(fit0, x)} &amp;= \hat{f}_0(x) = \hat{\beta}_0\\
+\texttt{predict(fit1, x)} &amp;= \hat{f}_1(x) = \hat{\beta}_0 + \hat{\beta}_1 x \\
+\texttt{predict(fit2, x)} &amp;= \hat{f}_2(x) = \hat{\beta}_0 + \hat{\beta}_1 x + \hat{\beta}_2 x^2 \\
+\texttt{predict(fit9, x)} &amp;= \hat{f}_9(x) = \hat{\beta}_0 + \hat{\beta}_1 x + \hat{\beta}_2 x^2 + \ldots + \hat{\beta}_9 x^9
+\end{aligned}
+\]</span></p>
+<p>To get a sense of the data and these four models, we generate one simulated dataset, and fit the four models.</p>
+<pre class="r"><code>set.seed(1)
+sim_data = gen_sim_data(f)</code></pre>
+<pre class="r"><code>fit_0 = lm(y ~ 1,                   data = sim_data)
+fit_1 = lm(y ~ poly(x, degree = 1), data = sim_data)
+fit_2 = lm(y ~ poly(x, degree = 2), data = sim_data)
+fit_9 = lm(y ~ poly(x, degree = 9), data = sim_data)</code></pre>
+<p>Note that technically we’re being lazy and using orthogonal polynomials, but the fitted values are the same, so this makes no difference for our purposes. These could be KNN, or decision trees just the same - the principle still applies.</p>
+<p>Plotting these four trained models, we see that the zero predictor model does very poorly. The first degree model is reasonable, but we can see that the second degree model fits much better. The ninth degree model seem rather wild.</p>
+<p><img src="/content/09-content_files/figure-html/unnamed-chunk-9-1.png" width="864" style="display: block; margin: auto;" /></p>
+<p>The following three plots were created using three additional simulated datasets. The zero predictor and ninth degree polynomial were fit to each.</p>
+<p><img src="/content/09-content_files/figure-html/unnamed-chunk-10-1.png" width="1152" style="display: block; margin: auto;" /></p>
+<p>This plot should make clear the difference between the bias and variance of these two models. The zero predictor model is clearly wrong, that is, biased, but nearly the same for each of the datasets, since it has very low variance.</p>
+<p>While the ninth degree model doesn’t appear to be correct for any of these three simulations, we’ll see that on average it is, and thus is performing unbiased estimation. These plots do however clearly illustrate that the ninth degree polynomial is extremely variable. Each dataset results in a very different fitted model. Correct on average isn’t the only goal we’re after, since in practice, we’ll only have a single dataset. This is why we’d also like our models to exhibit low variance.</p>
+<p>We could have also fit <span class="math inline">\(k\)</span>-nearest neighbors models to these three datasets.</p>
+<p><img src="/content/09-content_files/figure-html/unnamed-chunk-11-1.png" width="1152" style="display: block; margin: auto;" /></p>
+<p>Here we see that when <span class="math inline">\(k = 100\)</span> we have a biased model with very low variance.<a href="#fn3" class="footnote-ref" id="fnref3"><sup>3</sup></a> When <span class="math inline">\(k = 5\)</span>, we again have a highly variable model.</p>
+<p>These two sets of plots reinforce our intuition about the bias-variance tradeoff. Flexible models (ninth degree polynomial and <span class="math inline">\(k\)</span> = 5) are highly variable, and often unbiased. Simple models (zero predictor linear model and <span class="math inline">\(k = 100\)</span>) are very biased, but have extremely low variance.</p>
+<p>We will now complete a simulation study to understand the relationship between the bias, variance, and mean squared error for the estimates of <span class="math inline">\(f(x)\)</span> given by these four models at the point <span class="math inline">\(x = 0.90\)</span>. We use simulation to complete this task, as performing the analytical calculations would prove to be rather tedious and difficult.</p>
+<pre class="r"><code>set.seed(1)
+n_sims = 250
+n_models = 4
+x = data.frame(x = 0.90) # fixed point at which we make predictions
+predictions = matrix(0, nrow = n_sims, ncol = n_models)</code></pre>
+<pre class="r"><code>for (sim in 1:n_sims) {
+
+  # simulate new, random, training data
+  # this is the only random portion of the bias, var, and mse calculations
+  # this allows us to calculate the expectation over D
+  sim_data = gen_sim_data(f)
+
+  # fit models
+  fit_0 = lm(y ~ 1,                   data = sim_data)
+  fit_1 = lm(y ~ poly(x, degree = 1), data = sim_data)
+  fit_2 = lm(y ~ poly(x, degree = 2), data = sim_data)
+  fit_9 = lm(y ~ poly(x, degree = 9), data = sim_data)
+
+  # get predictions
+  predictions[sim, 1] = predict(fit_0, x)
+  predictions[sim, 2] = predict(fit_1, x)
+  predictions[sim, 3] = predict(fit_2, x)
+  predictions[sim, 4] = predict(fit_9, x)
+}</code></pre>
+<p>Note that this is one of many ways we could have accomplished this task using <code>R</code>. For example we could have used a combination of <code>replicate()</code> and <code>*apply()</code> functions. Alternatively, we could have used a <a href="https://www.tidyverse.org/"><code>tidyverse</code></a> approach, which likely would have used some combination of <a href="http://dplyr.tidyverse.org/"><code>dplyr</code></a>, <a href="http://tidyr.tidyverse.org/"><code>tidyr</code></a>, and <a href="http://purrr.tidyverse.org/"><code>purrr</code></a>.</p>
+<p>Our approach, which would be considered a <code>base</code> <code>R</code> approach, was chosen to make it as clear as possible what is being done. The <code>tidyverse</code> approach is rapidly gaining popularity in the <code>R</code> community, but might make it more difficult to see what is happening here, unless you are already familiar with that approach.</p>
+<p>Also of note, while it may seem like the output stored in <code>predictions</code> would meet the definition of <a href="http://vita.had.co.nz/papers/tidy-data.html">tidy data</a> given by <a href="http://hadley.nz/">Hadley Wickham</a> since each row represents a simulation, it actually falls slightly short. For our data to be tidy, a row should store the simulation number, the model, and the resulting prediction. We’ve actually already aggregated one level above this. Our observational unit is a simulation (with four predictions), but for tidy data, it should be a single prediction.</p>
+<p><img src="/content/09-content_files/figure-html/unnamed-chunk-15-1.png" width="864" style="display: block; margin: auto;" /></p>
+<p>The above plot shows the predictions for each of the 250 simulations of each of the four models of different polynomial degrees. The truth, <span class="math inline">\(f(x = 0.90) = (0.9)^2 = 0.81\)</span>, is given by the solid black horizontal line.</p>
+<p>Two things are immediately clear:</p>
+<ul>
+<li>As flexibility <em>increases</em>, <strong>bias decreases</strong>. The mean of a model’s predictions is closer to the truth.</li>
+<li>As flexibility <em>increases</em>, <strong>variance increases</strong>. The variance about the mean of a model’s predictions increases.</li>
+</ul>
+<p>The goal of this simulation study is to show that the following holds true for each of the four models.</p>
+<p><span class="math display">\[
+\text{MSE}\left(f(0.90), \hat{f}_k(0.90)\right) =
+\underbrace{\left(\mathbb{E} \left[ \hat{f}_k(0.90) \right] - f(0.90) \right)^2}_{\text{bias}^2 \left(\hat{f}_k(0.90) \right)} +
+\underbrace{\mathbb{E} \left[ \left( \hat{f}_k(0.90) - \mathbb{E} \left[ \hat{f}_k(0.90) \right] \right)^2 \right]}_{\text{var} \left(\hat{f}_k(0.90) \right)}
+\]</span></p>
+<p>We’ll use the empirical results of our simulations to estimate these quantities. (Yes, we’re using estimation to justify facts about estimation.) Note that we’ve actually used a rather small number of simulations. In practice we should use more, but for the sake of computation time, we’ve performed just enough simulations to obtain the desired results. (Since we’re estimating estimation, the bigger the sample size, the better.)</p>
+<p>To estimate the mean squared error of our predictions, we’ll use</p>
+<p><span class="math display">\[
+\widehat{\text{MSE}}\left(f(0.90), \hat{f}_k(0.90)\right) = \frac{1}{n_{\texttt{sims}}}\sum_{i = 1}^{n_{\texttt{sims}}} \left(f(0.90) - \hat{f}_k^{[i]}(0.90) \right)^2
+\]</span></p>
+<p>where <span class="math inline">\(\hat{f}_k^{[i]}(0.90)\)</span> is the estimate of <span class="math inline">\(f(0.90)\)</span> using the <span class="math inline">\(i\)</span>-th from the polynomial degree <span class="math inline">\(k\)</span> model.</p>
+<p>We also write an accompanying <code>R</code> function.</p>
+<pre class="r"><code>get_mse = function(truth, estimate) {
+  mean((estimate - truth) ^ 2)
+}</code></pre>
+<p>Similarly, for the bias of our predictions we use,</p>
+<p><span class="math display">\[
+\widehat{\text{bias}} \left(\hat{f}(0.90) \right)  = \frac{1}{n_{\texttt{sims}}}\sum_{i = 1}^{n_{\texttt{sims}}} \left(\hat{f}_k^{[i]}(0.90) \right) - f(0.90)
+\]</span></p>
+<p>And again, we write an accompanying <code>R</code> function.</p>
+<pre class="r"><code>get_bias = function(estimate, truth) {
+  mean(estimate) - truth
+}</code></pre>
+<p>Lastly, for the variance of our predictions we have</p>
+<p><span class="math display">\[
+\widehat{\text{var}} \left(\hat{f}(0.90) \right) = \frac{1}{n_{\texttt{sims}}}\sum_{i = 1}^{n_{\texttt{sims}}} \left(\hat{f}_k^{[i]}(0.90) - \frac{1}{n_{\texttt{sims}}}\sum_{i = 1}^{n_{\texttt{sims}}}\hat{f}_k^{[i]}(0.90) \right)^2
+\]</span></p>
+<p>While there is already <code>R</code> function for variance, the following is more appropriate in this situation.</p>
+<pre class="r"><code>get_var = function(estimate) {
+  mean((estimate - mean(estimate)) ^ 2)
+}</code></pre>
+<p>To quickly obtain these results for each of the four models, we utilize the <code>apply()</code> function.</p>
+<pre class="r"><code>bias = apply(predictions, 2, get_bias, truth = f(x = 0.90))
+variance = apply(predictions, 2, get_var)
+mse = apply(predictions, 2, get_mse, truth = f(x = 0.90))</code></pre>
+<p>We summarize these results in the following table.</p>
+<table>
+<thead>
+<tr class="header">
+<th align="center">Degree</th>
+<th align="center">Mean Squared Error</th>
+<th align="center">Bias Squared</th>
+<th align="center">Variance</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center">0</td>
+<td align="center">0.22643</td>
+<td align="center">0.22476</td>
+<td align="center">0.00167</td>
+</tr>
+<tr class="even">
+<td align="center">1</td>
+<td align="center">0.00829</td>
+<td align="center">0.00508</td>
+<td align="center">0.00322</td>
+</tr>
+<tr class="odd">
+<td align="center">2</td>
+<td align="center">0.00387</td>
+<td align="center">0.00005</td>
+<td align="center">0.00381</td>
+</tr>
+<tr class="even">
+<td align="center">9</td>
+<td align="center">0.01019</td>
+<td align="center">0.00002</td>
+<td align="center">0.01017</td>
+</tr>
+</tbody>
+</table>
+<p>A number of things to notice here:</p>
+<ul>
+<li>We use squared bias in this table. Since bias can be positive or negative, squared bias is more useful for observing the trend as flexibility increases.</li>
+<li>The squared bias trend which we see here is <strong>decreasing</strong> as flexibility increases, which we expect to see in general.</li>
+<li>The exact opposite is true of variance. As model flexibility increases, variance <strong>increases</strong>.</li>
+<li>The mean squared error, which is a function of the bias and variance, decreases, then increases. This is a result of the bias-variance tradeoff. We can decrease bias, by increasing variance. Or, we can decrease variance by increasing bias. By striking the correct balance, we can find a good mean squared error!</li>
+</ul>
+<p>We can check for these trends with the <code>diff()</code> function in <code>R</code>.</p>
+<pre class="r"><code>all(diff(bias ^ 2) &lt; 0)</code></pre>
+<pre><code>## [1] TRUE</code></pre>
+<pre class="r"><code>all(diff(variance) &gt; 0)</code></pre>
+<pre><code>## [1] TRUE</code></pre>
+<pre class="r"><code>diff(mse) &lt; 0</code></pre>
+<pre><code>##     1     2     9 
+##  TRUE  TRUE FALSE</code></pre>
+<p>The models with polynomial degrees 2 and 9 are both essentially unbiased. We see some bias here as a result of using simulation. If we increased the number of simulations, we would see both biases go down. Since they are both unbiased, the model with degree 2 outperforms the model with degree 9 due to its smaller variance.</p>
+<p>Models with degree 0 and 1 are biased because they assume the wrong form of the regression function. While the degree 9 model does this as well, it does include all the necessary polynomial degrees.</p>
+<p><span class="math display">\[
+\hat{f}_9(x) = \hat{\beta}_0 + \hat{\beta}_1 x + \hat{\beta}_2 x^2 + \ldots + \hat{\beta}_9 x^9
+\]</span></p>
+<p>Then, since least squares estimation is unbiased, importantly,</p>
+<p><span class="math display">\[
+\mathbb{E}\left[\hat{\beta}_d\right] = \beta_d = 0
+\]</span></p>
+<p>for <span class="math inline">\(d = 3, 4, \ldots 9\)</span>, we have</p>
+<p><span class="math display">\[
+\mathbb{E}\left[\hat{f}_9(x)\right] = \beta_0 + \beta_1 x + \beta_2 x^2
+\]</span></p>
+<p>Now we can finally verify the bias-variance decomposition.</p>
+<pre class="r"><code>bias ^ 2 + variance == mse</code></pre>
+<pre><code>##     0     1     2     9 
+## FALSE FALSE FALSE  TRUE</code></pre>
+<p>But wait, this says it isn’t true, except for the degree 9 model? It turns out, this is simply a computational issue. If we allow for some very small error tolerance, we see that the bias-variance decomposition is indeed true for predictions from these for models.</p>
+<pre class="r"><code>all.equal(bias ^ 2 + variance, mse)</code></pre>
+<pre><code>## [1] TRUE</code></pre>
+<p>See <code>?all.equal()</code> for details.</p>
+<p>So far, we’ve focused our efforts on looking at the mean squared error of estimating <span class="math inline">\(f(0.90)\)</span> using <span class="math inline">\(\hat{f}(0.90)\)</span>. We could also look at the expected prediction error of using <span class="math inline">\(\hat{f}(X)\)</span> when <span class="math inline">\(X = 0.90\)</span> to estimate <span class="math inline">\(Y\)</span>.</p>
+<p><span class="math display">\[
+\text{EPE}\left(Y, \hat{f}_k(0.90)\right) =
+\mathbb{E}_{Y \mid X, \mathcal{D}} \left[  \left(Y - \hat{f}_k(X) \right)^2 \mid X = 0.90 \right]
+\]</span></p>
+<p>We can estimate this quantity for each of the four models using the simulation study we already performed.</p>
+<pre class="r"><code>get_epe = function(realized, estimate) {
+  mean((realized - estimate) ^ 2)
+}</code></pre>
+<pre class="r"><code>y = rnorm(n = nrow(predictions), mean = f(x = 0.9), sd = 0.3)
+epe = apply(predictions, 2, get_epe, realized = y)
+epe</code></pre>
+<pre><code>##         0         1         2         9 
+## 0.3180470 0.1104055 0.1095955 0.1205570</code></pre>
+<p>What about the unconditional expected prediction error. That is, for any <span class="math inline">\(X\)</span>, not just <span class="math inline">\(0.90\)</span>. Specifically, the expected prediction error of estimating <span class="math inline">\(Y\)</span> using <span class="math inline">\(\hat{f}(X)\)</span>. The following (new) simulation study provides an estimate of</p>
+<p><span class="math display">\[
+\text{EPE}\left(Y, \hat{f}_k(X)\right) = \mathbb{E}_{X, Y, \mathcal{D}} \left[  \left( Y - \hat{f}_k(X) \right)^2 \right]
+\]</span></p>
+<p>for the quadratic model, that is <span class="math inline">\(k = 2\)</span> as we have defined <span class="math inline">\(k\)</span>.</p>
+<pre class="r"><code>set.seed(42)
+n_sims = 2500
+X = runif(n = n_sims, min = 0, max = 1)
+Y = rnorm(n = n_sims, mean = f(X), sd = 0.3)
+
+f_hat_X = rep(0, length(X))
+
+for (i in seq_along(X)) {
+  sim_data = gen_sim_data(f)
+  fit_2 = lm(y ~ poly(x, degree = 2), data = sim_data)
+  f_hat_X[i] = predict(fit_2, newdata = data.frame(x = X[i]))
+}</code></pre>
+<pre class="r"><code># truth
+0.3 ^ 2</code></pre>
+<pre><code>## [1] 0.09</code></pre>
+<pre class="r"><code># via simulation
+mean((Y - f_hat_X) ^ 2)</code></pre>
+<pre><code>## [1] 0.09566445</code></pre>
+<p>Note that in practice, we should use many more simulations in this study.</p>
+</div>
+<div id="estimating-expected-prediction-error" class="section level2">
+<h2>Estimating Expected Prediction Error</h2>
+<p>While previously, we only decomposed the expected prediction error conditionally, a similar argument holds unconditionally.</p>
+<p>Assuming</p>
+<p><span class="math display">\[
+\mathbb{V}[Y \mid X = x] = \sigma ^ 2.
+\]</span></p>
+<p>we have</p>
+<p><span class="math display">\[
+\text{EPE}\left(Y, \hat{f}(X)\right) =
+\mathbb{E}_{X, Y, \mathcal{D}} \left[  (Y - \hat{f}(X))^2 \right] =
+\underbrace{\mathbb{E}_{X} \left[\text{bias}^2\left(\hat{f}(X)\right)\right] + \mathbb{E}_{X} \left[\text{var}\left(\hat{f}(X)\right)\right]}_\textrm{reducible error} + \sigma^2
+\]</span></p>
+<p>Lastly, we note that if</p>
+<p><span class="math display">\[
+\mathcal{D} = \mathcal{D}_{\texttt{trn}} \cup \mathcal{D}_{\texttt{tst}} = (x_i, y_i) \in \mathbb{R}^p \times \mathbb{R}, \ i = 1, 2, \ldots n
+\]</span></p>
+<p>where</p>
+<p><span class="math display">\[
+\mathcal{D}_{\texttt{trn}} = (x_i, y_i) \in \mathbb{R}^p \times \mathbb{R}, \ i \in \texttt{trn}
+\]</span></p>
+<p>and</p>
+<p><span class="math display">\[
+\mathcal{D}_{\texttt{tst}} = (x_i, y_i) \in \mathbb{R}^p \times \mathbb{R}, \ i \in \texttt{tst}
+\]</span></p>
+<p>Then, if we have a model fit to the training data <span class="math inline">\(\mathcal{D}_{\texttt{trn}}\)</span>, we can use the test mean squared error</p>
+<p><span class="math display">\[
+\sum_{i \in \texttt{tst}}\left(y_i - \hat{f}(x_i)\right) ^ 2
+\]</span></p>
+<p>as an estimate of</p>
+<p><span class="math display">\[
+\mathbb{E}_{X, Y, \mathcal{D}} \left[  (Y - \hat{f}(X))^2 \right]
+\]</span></p>
+<p>the expected prediction error.<a href="#fn4" class="footnote-ref" id="fnref4"><sup>4</sup></a></p>
+<p>How good is this estimate? Well, if <span class="math inline">\(\mathcal{D}\)</span> is a random sample from <span class="math inline">\((X, Y)\)</span>, and the <span class="math inline">\(\texttt{tst}\)</span> data are randomly sampled observations randomly sampled from <span class="math inline">\(i = 1, 2, \ldots, n\)</span>, then it is a reasonable estimate. However, it is rather variable due to the randomness of selecting the observations for the test set, if the test set is small.</p>
+</div>
+<div id="model-flexibility" class="section level2">
+<h2>Model Flexibility</h2>
+<p>Let’s return to the simiulated dataset we used occaisionally in the linear regression content. Recall there was a single feature <span class="math inline">\(x\)</span> with the following properties:</p>
+<pre class="r"><code># define regression function
+cubic_mean = function(x) {
+  1 - 2 * x - 3 * x ^ 2 + 5 * x ^ 3
+}</code></pre>
+<p>We then generated some data around this function with some added noise:</p>
+<pre class="r"><code># define full data generating process
+gen_slr_data = function(sample_size = 100, mu) {
+  x = runif(n = sample_size, min = -1, max = 1)
+  y = mu(x) + rnorm(n = sample_size)
+  tibble(x, y)
+}</code></pre>
+<p>After defining the data generating process, we generate and split the data.</p>
+<pre class="r"><code># simulate entire dataset
+set.seed(3)
+sim_slr_data = gen_slr_data(sample_size = 100, mu = cubic_mean)
+
+# test-train split
+slr_trn_idx = sample(nrow(sim_slr_data), size = 0.8 * nrow(sim_slr_data))
+slr_trn = sim_slr_data[slr_trn_idx, ]
+slr_tst = sim_slr_data[-slr_trn_idx, ]
+
+# estimation-validation split
+slr_est_idx = sample(nrow(slr_trn), size = 0.8 * nrow(slr_trn))
+slr_est = slr_trn[slr_est_idx, ]
+slr_val = slr_trn[-slr_est_idx, ]
+
+# check data
+head(slr_trn, n = 10)</code></pre>
+<pre><code>## # A tibble: 10 × 2
+##         x      y
+##     &lt;dbl&gt;  &lt;dbl&gt;
+##  1  0.573 -1.18 
+##  2  0.807  0.576
+##  3  0.272 -0.973
+##  4 -0.813 -1.78 
+##  5 -0.161  0.833
+##  6  0.736  1.07 
+##  7 -0.242  2.97 
+##  8  0.520 -1.64 
+##  9 -0.664  0.269
+## 10 -0.777 -2.02</code></pre>
+<p>For validating models, we will use RMSE.</p>
+<pre class="r"><code># helper function for calculating RMSE
+calc_rmse = function(actual, predicted) {
+  sqrt(mean((actual - predicted) ^ 2))
+}</code></pre>
+<p>Let’s check how linear, k-nearest neighbors, and decision tree models fit to this data make errors, while paying attention to their flexibility.</p>
+<p><img src="/content/09-content_files/figure-html/error-vs-flex-1.png" width="960" style="display: block; margin: auto;" /></p>
+<p>This picture is an idealized version of what we expect to see, but we’ll illustrate the sorts of validate “curves” that we might see in practice.</p>
+<p>Note that in the following three sub-sections, a significant portion of the code is suppressed for visual clarity. See the source document for full details.</p>
+<div id="linear-models" class="section level3">
+<h3>Linear Models</h3>
+<p>First up, linear models. We will fit polynomial models with degree from one to nine, and then validate.</p>
+<pre class="r"><code># fit polynomial models
+poly_mod_est_list = list(
+  poly_mod_1_est = lm(y ~ poly(x, degree = 1), data = slr_est),
+  poly_mod_2_est = lm(y ~ poly(x, degree = 2), data = slr_est),
+  poly_mod_3_est = lm(y ~ poly(x, degree = 3), data = slr_est),
+  poly_mod_4_est = lm(y ~ poly(x, degree = 4), data = slr_est),
+  poly_mod_5_est = lm(y ~ poly(x, degree = 5), data = slr_est),
+  poly_mod_6_est = lm(y ~ poly(x, degree = 6), data = slr_est),
+  poly_mod_7_est = lm(y ~ poly(x, degree = 7), data = slr_est),
+  poly_mod_8_est = lm(y ~ poly(x, degree = 8), data = slr_est),
+  poly_mod_9_est = lm(y ~ poly(x, degree = 9), data = slr_est)
+)</code></pre>
+<p>The plot below visualizes the results.</p>
+<p><img src="/content/09-content_files/figure-html/unnamed-chunk-35-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>What do we see here? As the polynomial degree <em>increases</em>:</p>
+<ul>
+<li>The training error <em>decreases</em>.</li>
+<li>The validation error <em>decreases</em>, then <em>increases</em>.</li>
+</ul>
+<p>This more of less matches the idealized version above, but the validation “curve” is much more jagged. This is something that we can expect in practice.</p>
+<p>We have previously noted that training error isn’t particularly useful for validating models. That is still true. However, it can be useful for checking that everything is working as planned. In this case, since we known that training error decreases as model flexibility increases, we can verify our intuition that a higher degree polynomial is indeed more flexible.<a href="#fn5" class="footnote-ref" id="fnref5"><sup>5</sup></a></p>
+</div>
+<div id="k-nearest-neighbors" class="section level3">
+<h3>k-Nearest Neighbors</h3>
+<p>Next up, k-nearest neighbors. We will consider values for <span class="math inline">\(k\)</span> that are odd and between <span class="math inline">\(1\)</span> and <span class="math inline">\(45\)</span> inclusive.</p>
+<pre class="r"><code># helper function for fitting knn models
+fit_knn_mod = function(neighbors) {
+  knnreg(y ~ x, data = slr_est, k = neighbors)
+}</code></pre>
+<pre class="r"><code># define values of tuning parameter k to evaluate
+k_to_try = seq(from = 1, to = 45, by = 2)
+
+# fit knn models
+knn_mod_est_list = lapply(k_to_try, fit_knn_mod)</code></pre>
+<p>The plot below visualizes the results.</p>
+<p><img src="/content/09-content_files/figure-html/unnamed-chunk-39-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Here we see the “opposite” of the usual plot. Why? Because with k-nearest neighbors, a small value of <span class="math inline">\(k\)</span> generates a flexible model compared to larger values of <span class="math inline">\(k\)</span>. So visually, this plot is flipped. That is we see that as <span class="math inline">\(k\)</span> <em>increases</em>:</p>
+<ul>
+<li>The training error <em>increases</em>.</li>
+<li>The validation error <em>decreases</em>, then <em>increases</em>.</li>
+</ul>
+<p>Important to note here: the pattern above only holds “in general,” that is, there can be minor deviations in the validation pattern along the way. This is due to the random nature of selection the data for the validate set.</p>
+</div>
+<div id="decision-trees" class="section level3">
+<h3>Decision Trees</h3>
+<p>Lastly, we evaluate some decision tree models. We choose some arbitrary values of <code>cp</code> to evaluate, while holding <code>minsplit</code> constant at <code>5</code>. There are arbitrary choices that produce a plot that is useful for discussion.</p>
+<pre class="r"><code># helper function for fitting decision tree models
+tree_knn_mod = function(flex) {
+  rpart(y ~ x, data = slr_est, cp = flex, minsplit = 5)
+}</code></pre>
+<pre class="r"><code># define values of tuning parameter cp to evaluate
+cp_to_try = c(0.5, 0.3, 0.1, 0.05, 0.01, 0.001, 0.0001)
+
+# fit decision tree models
+tree_mod_est_list = lapply(cp_to_try, tree_knn_mod)</code></pre>
+<p>The plot below visualizes the results.</p>
+<p><img src="/content/09-content_files/figure-html/unnamed-chunk-43-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Based on this plot, how is <code>cp</code> related to model flexibility?<a href="#fn6" class="footnote-ref" id="fnref6"><sup>6</sup></a></p>
+</div>
+</div>
+<div id="lecture-video" class="section level2">
+<h2>Lecture Video</h2>
+<p>The lecture video for this material is <a href="https://mediaspace.msu.edu/media/SSC442+-+Content+09+-+March+22nd/1_navp4aji?st=423">available here <i class="fas fa-film"></i></a></p>
+</div>
+</div>
+<div class="footnotes footnotes-end-of-document">
+<hr />
+<ol>
+<li id="fn1"><p>Note that in this section, we will refer to <span class="math inline">\(f(x)\)</span> as the regression function instead of <span class="math inline">\(\mu(x)\)</span> for unimportant and arbitrary reasons.<a href="#fnref1" class="footnote-back">↩︎</a></p></li>
+<li id="fn2"><p>Someday, someone will tell you this is a lie. They aren’t wrong. In modern deep learning, there is a concept called <a href="https://openai.com/blog/deep-double-descent/">Deep Double Descent</a>. See also <span class="citation">@belkin2018reconciling</span>.<a href="#fnref2" class="footnote-back">↩︎</a></p></li>
+<li id="fn3"><p>It’s actually the same as the 0 predictor linear model. Can you see why?<a href="#fnref3" class="footnote-back">↩︎</a></p></li>
+<li id="fn4"><p>In practice we prefer RMSE to MSE for comparing models and reporting because of the units.<a href="#fnref4" class="footnote-back">↩︎</a></p></li>
+<li id="fn5"><p>In practice, if you already know how your model’s flexibility works, by checking that the training error goes down as you increase flexibility, you can check that you have done your coding and model training correctly.<a href="#fnref5" class="footnote-back">↩︎</a></p></li>
+<li id="fn6"><p>As <code>cp</code> increases, model flexibility decreases.<a href="#fnref6" class="footnote-back">↩︎</a></p></li>
+</ol>
+</div>
