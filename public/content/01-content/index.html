@@ -30,7 +30,7 @@
   
     
   
-  <meta name="description" content="Readings  Guiding Question  Group Projects  Teams  Randomness and Data Analytics  Learning From Data Formalization The Target Function Why Estimate an Unknown Function? The Parable of the Marbles Outside the Data Hoeffding’s Inequality An example of Hoeffding’s Inequality  The tidyverse  Tidy data Manipulating data frames  Adding a column with mutate Subsetting with filter Selecting columns with select  The pipe: %&gt;% Summarizing data  summarize pull Group then summarize with group_by  Sorting data frames  Nested sorting The top \(n\)  Tibbles  Tibbles display better Subsets of tibbles are tibbles Tibbles can have complex entries Tibbles can be grouped Create a tibble using tibble instead of data.">
+  <meta name="description" content="Readings  Guiding Question  Final Projects  Teams  Randomness and Data Analytics  Formalization The Target Function Why Estimate an Unknown Function? The Parable of the Playing Cards Outside the Data Hoeffding’s Inequality An example of Hoeffding’s Inequality  The tidyverse  Tidy data Manipulating data frames  Adding a column with mutate Subsetting with filter Selecting columns with select  The pipe: %&gt;% Summarizing data  summarize pull Group then summarize with group_by  Sorting data frames  Nested sorting The top \(n\)  Tibbles  Tibbles display better Subsets of tibbles are tibbles Tibbles can have complex entries Tibbles can be grouped Create a tibble using tibble instead of data.">
 
   
   <link rel="alternate" hreflang="en-us" href="https://ssc442.netlify.app/content/01-content/">
@@ -238,13 +238,13 @@
   <meta property="og:site_name" content="Data Analytics">
   <meta property="og:url" content="https://ssc442.netlify.app/content/01-content/">
   <meta property="og:title" content="Introduction to the tidyverse | Data Analytics">
-  <meta property="og:description" content="Readings  Guiding Question  Group Projects  Teams  Randomness and Data Analytics  Learning From Data Formalization The Target Function Why Estimate an Unknown Function? The Parable of the Marbles Outside the Data Hoeffding’s Inequality An example of Hoeffding’s Inequality  The tidyverse  Tidy data Manipulating data frames  Adding a column with mutate Subsetting with filter Selecting columns with select  The pipe: %&gt;% Summarizing data  summarize pull Group then summarize with group_by  Sorting data frames  Nested sorting The top \(n\)  Tibbles  Tibbles display better Subsets of tibbles are tibbles Tibbles can have complex entries Tibbles can be grouped Create a tibble using tibble instead of data."><meta property="og:image" content="https://ssc442.netlify.app/img/social-image.png">
+  <meta property="og:description" content="Readings  Guiding Question  Final Projects  Teams  Randomness and Data Analytics  Formalization The Target Function Why Estimate an Unknown Function? The Parable of the Playing Cards Outside the Data Hoeffding’s Inequality An example of Hoeffding’s Inequality  The tidyverse  Tidy data Manipulating data frames  Adding a column with mutate Subsetting with filter Selecting columns with select  The pipe: %&gt;% Summarizing data  summarize pull Group then summarize with group_by  Sorting data frames  Nested sorting The top \(n\)  Tibbles  Tibbles display better Subsets of tibbles are tibbles Tibbles can have complex entries Tibbles can be grouped Create a tibble using tibble instead of data."><meta property="og:image" content="https://ssc442.netlify.app/img/social-image.png">
   <meta property="twitter:image" content="https://ssc442.netlify.app/img/social-image.png"><meta property="og:locale" content="en-us">
   
     
-      <meta property="article:published_time" content="2022-01-01T00:00:00&#43;00:00">
+      <meta property="article:published_time" content="2023-01-17T00:00:00&#43;00:00">
     
-    <meta property="article:modified_time" content="2023-01-07T12:46:36-05:00">
+    <meta property="article:modified_time" content="2023-01-17T10:27:35-05:00">
   
 
   
@@ -645,7 +645,7 @@
 
                     
                     <div class="due-date p-2 mb-3 bg-content text-white">
-                        Content for Tuesday, January 18, 2022
+                        Content for Tuesday, January 17, 2023
                     </div>
                     
 
@@ -661,17 +661,16 @@
 <ul>
 <li><a href="#guiding-question" id="toc-guiding-question">Guiding Question</a></li>
 </ul></li>
-<li><a href="#group-projects" id="toc-group-projects">Group Projects</a>
+<li><a href="#final-projects" id="toc-final-projects">Final Projects</a>
 <ul>
 <li><a href="#teams" id="toc-teams">Teams</a></li>
 </ul></li>
 <li><a href="#randomness-and-data-analytics" id="toc-randomness-and-data-analytics">Randomness and Data Analytics</a>
 <ul>
-<li><a href="#learning-from-data" id="toc-learning-from-data">Learning From Data</a></li>
 <li><a href="#formalization" id="toc-formalization">Formalization</a></li>
 <li><a href="#the-target-function" id="toc-the-target-function">The Target Function</a></li>
 <li><a href="#why-estimate-an-unknown-function" id="toc-why-estimate-an-unknown-function">Why Estimate an Unknown Function?</a></li>
-<li><a href="#the-parable-of-the-marbles" id="toc-the-parable-of-the-marbles">The Parable of the Marbles</a></li>
+<li><a href="#the-parable-of-the-playing-cards" id="toc-the-parable-of-the-playing-cards">The Parable of the Playing Cards</a></li>
 <li><a href="#outside-the-data" id="toc-outside-the-data">Outside the Data</a></li>
 <li><a href="#hoeffdings-inequality" id="toc-hoeffdings-inequality">Hoeffding’s Inequality</a></li>
 <li><a href="#an-example-of-hoeffdings-inequality" id="toc-an-example-of-hoeffdings-inequality">An example of Hoeffding’s Inequality</a></li>
@@ -712,6 +711,7 @@
 <ul>
 <li><a href="#case_when" id="toc-case_when"><code>case_when</code></a></li>
 <li><a href="#between" id="toc-between"><code>between</code></a></li>
+<li><a href="#cheat-sheet-dplyr" id="toc-cheat-sheet-dplyr">Cheat Sheet, <code>dplyr</code></a></li>
 </ul></li>
 <li><a href="#lecture-video" id="toc-lecture-video">Lecture Video</a></li>
 </ul></li>
@@ -732,69 +732,42 @@
 <li>Why do we want tidy data?</li>
 <li>What are the challenges associated with shaping things into a tidy format?</li>
 </ul>
-<!---
-## Slides
-
-The slides below are a much broader overview about goals for the class and thinking about relationships that we might explore with data. The technical aspects of this lecture will be explored in greater detail in the Thursday practical lecture.
-
-<ul class="nav nav-tabs" id="slide-tabs" role="tablist">
-<li class="nav-item">
-<a class="nav-link active" id="overview-tab" data-toggle="tab" href="#overview" role="tab" aria-controls="overview" aria-selected="true">Overview</a>
-</li>
-</ul>
-<div class="tab-content" id="slide-tabs">
-<div class="tab-pane fade show active" id="overview" role="tabpanel" aria-labelledby="overview-tab">
-<div class="embed-responsive embed-responsive-16by9">
-<iframe class="embed-responsive-item" src="/slides/01-slides.html#Overview"></iframe>
 </div>
 </div>
-</div>
--->
-</div>
-</div>
-<div id="group-projects" class="section level2">
-<h2>Group Projects</h2>
-<p>Your final is a group project.</p>
+<div id="final-projects" class="section level2">
+<h2>Final Projects</h2>
+<p>Your final is a project.</p>
 <p>You need to start planning soon.</p>
 <p>To aid in your planning, here are the required elements of your project (<strong>note: the project assignment that currently exists on this site, if you find it, is old and will change a lot between now and next week</strong>).</p>
 <ol style="list-style-type: decimal">
 <li><p>You must find existing data to analyze. Aggregating and merging data from multiple sources is encouraged.</p></li>
-<li><p>You must visualize 3 intersting features of that data.</p></li>
+<li><p>You must visualize three interesting features of that data.</p></li>
 <li><p>You must come up with some analysis—using tools from this course—which relates your data to either a prediction or a policy conclusion.</p></li>
-<li><p>You must think critically about your analysis and be able to identify potential issues/</p></li>
+<li><p>You must think critically about your analysis and be able to identify potential issues.</p></li>
 <li><p>You must present your analysis as if presenting to a C-suite executive.</p></li>
 </ol>
 <div id="teams" class="section level3">
 <h3>Teams</h3>
-<p>Please form teams of 2-4 people. Once all agree to be on a team, have one person email our TA, Xueshi, <a href="mailto:wangxu36@msu.edu" class="email">wangxu36@msu.edu</a> <strong>and cc all of the members of the team</strong> so that nobody is surprised to be included on a team. Title the email <em>[SSC442] - Group Formation</em>. Tell us your team name, and list in the email the names of all of the team members and their email address (in addition to cc-ing those team members on the email).</p>
-<p>If you opt to not form a team, you will be automatically added to the “willing to be randomly assigned” pool and will be paired with another 2-3 persons.</p>
-<p>Send this email by <strong>Sunday Jan 23rd</strong> and I will assign un-teamed folks at the beginning of next week.</p>
-<div id="more-on-your-team" class="section level4">
-<h4>More on your team</h4>
-<ul>
-<li><p>You should strongly consider coordinating your work via Github</p></li>
-<li><p>Your team will earn the same scores on all projects</p></li>
-<li><p>Teams will submit only one write-up for the mini-projects and the final</p></li>
-</ul>
-<p>To combat additional freeloading, we will use a reporting system for work contributed. More details will follow.</p>
-</div>
+<p>You may form teams of two or three people. You may complete the project on your own. Once all agree to be on a team, have one person email our TA, Nick, <a href="mailto:armst427@msu.edu" class="email">armst427@msu.edu</a> <strong>and cc all of the members of the team</strong> so that nobody is surprised to be included on a team. Title the email <em>[SSC442] - Group Formation</em>. Tell us your team name, and list in the email the names of all of the team members and their email address (in addition to cc’ing those team members on the email).</p>
+<p>If you opt to not form a team, you do not need to send such an email.</p>
+<p>Send this email by <strong>Sunday January 22nd</strong>.</p>
+<p>Some final notes on teams:
+- You should strongly consider coordinating your work via Github. This is how the pros do it.
+- Your team will earn the same scores on all projects.
+- Teams will submit only one write-up for the mini-projects and the final.</p>
+<p>To combat additional freeloading, we will use a reporting system for work contributed. More details are in the writeup about final projects.</p>
 </div>
 </div>
 <div id="randomness-and-data-analytics" class="section level2">
 <h2>Randomness and Data Analytics</h2>
 <p>And the fabulous importance of probabilistic inference…</p>
 <p>This lecture is very “high-level,” which means it is talking about abstract concepts. It is also quite important.</p>
-<p>We want to discuss <strong>why</strong> we eventually will need ot utilize tons of difficult mathematics. Why do we care so much about hypothesis tests and the like?</p>
-<p>Moreover, we can highlight why we want our data structured to behave nicely.</p>
-<div id="learning-from-data" class="section level3">
-<h3>Learning From Data</h3>
-<p>The following are the baisc requirements for statistical learning</p>
+<p>We want to discuss <strong>why</strong> we might need to utilize tons of difficult mathematics. Why do we care so much about hypothesis tests and the like? Moreover, we can highlight why we want our data structured to behave nicely. As noted in the previous lecture, the following are the basic requirements for statistical learning:</p>
 <ol style="list-style-type: decimal">
-<li><p>A pattern exists</p></li>
-<li><p>This pattern is not easily expressed in a closed mathematical form</p></li>
-<li><p>You have data</p></li>
+<li>A pattern exists</li>
+<li>This pattern is not easily expressed in a closed mathematical form</li>
+<li>You have data</li>
 </ol>
-</div>
 <div id="formalization" class="section level3">
 <h3>Formalization</h3>
 <p>We think of our outcome-of-interest as a <strong>reponse</strong> or <strong>target</strong> that we wish to predict or wish to learn something about.</p>
@@ -835,16 +808,15 @@ x_{N1} &amp; x_{N2}
 <p>Depending on the complexity of <span class="math inline">\(f\)</span>, we may be able to meaningfully understand how each component of <span class="math inline">\(X\)</span> affects <span class="math inline">\(Y\)</span>.</p>
 <p>(But we should be careful about assigning causal interpretations, more on this later)</p>
 </div>
-<div id="the-parable-of-the-marbles" class="section level3">
-<h3>The Parable of the Marbles</h3>
-<p>(Courtesy of Prof. Bushong)</p>
-<p>Imagine a bag of marbles with two types of marbles: ♣️ and ♦️.</p>
-<p>We are going to pick a <strong>sample</strong> of <span class="math inline">\(n\)</span> marbles (with replacement).</p>
-<p>We want to learn something about <span class="math inline">\(\mu\)</span>, the <strong>objective</strong> probability to pick a ♣️.</p>
+<div id="the-parable-of-the-playing-cards" class="section level3">
+<h3>The Parable of the Playing Cards</h3>
+<p>Imagine a simplified deck of playing cards with two types of suits: ♣️ and ♦️.</p>
+<p>We are going to pick a <strong>sample</strong> of <span class="math inline">\(n\)</span> cards (with replacement). That means we pull out a card, look at its suit, then replace it in the deck.</p>
+<p>Suppose we do not know the probability distribution within our deck. A sensible thing to do: learn something about <span class="math inline">\(\mu\)</span>, the <strong>objective</strong> probability to pick a ♣️.</p>
 <p>In addition to defining the <strong>objective</strong> probability of picking a ♣️, we have an observed fraction <span class="math inline">\(\eta\)</span>, which will define as the fraction of ♣️ in the <em>sample</em>.</p>
 <p><strong>Question</strong>: Can we say anything exact and for-sure about <span class="math inline">\(\mu\)</span> (outside the data) after observing <span class="math inline">\(\eta\)</span> (the data)?</p>
 <ul>
-<li><p>No. It is possible for the sample to be all ♣️, ♣️, ♣️, ♣️, ♣️ even when the bag is is 50/50 ♦️</p>
+<li><p>Nope. It is possible for the sample to be all ♣️, ♣️, ♣️, ♣️, ♣️ even when the deck is 50/50 ♦️</p>
 <ul>
 <li><p>No matter what we draw, we can’t (based on that draw alone) eliminate the possibility of drawing a ♦️.</p></li>
 <li><p>And unless we assume that the only two values in the world are ♦️ and ♣️, we can’t rule out 💩<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a></p></li>
@@ -861,9 +833,8 @@ x_{N1} &amp; x_{N2}
 <ul>
 <li>This is called <em>No Free Lunch</em></li>
 </ul>
-<p>You cannot know anything for sure about <span class="math inline">\(f\)</span> outside the data without making assumptions.</p>
-<p>Is there any hope to know anything about <span class="math inline">\(f\)</span> outside the data set without making assumptions about <span class="math inline">\(f\)</span>?</p>
-<p><strong>Yes</strong>, if we are willing to give up the “for sure”</p>
+<p>You cannot know anything for sure about <span class="math inline">\(f\)</span> outside the data without making assumptions.This seems like a total mess. Is there any hope to know anything about <span class="math inline">\(f\)</span> outside the data set without making assumptions about <span class="math inline">\(f\)</span>?</p>
+<p>There is good news. <strong>Yes</strong>, we can learn from our sample… if we are willing to give up the “for sure”.</p>
 </div>
 <div id="hoeffdings-inequality" class="section level3">
 <h3>Hoeffding’s Inequality</h3>
@@ -884,6 +855,7 @@ x_{N1} &amp; x_{N2}
 <p><strong>What does this mean?</strong></p>
 <p>If I repeatedly pick a sample of size 1,000, observe <span class="math inline">\(\eta\)</span> and claim that <span class="math inline">\(\mu \in \left[\eta - .05, \eta + .05\right]\)</span> (or that the error bar is <span class="math inline">\(\pm 0.05\)</span>), I will be right 99% of the time.</p>
 <p>On any particular sample you may be wrong, but not often.</p>
+<p>In this sense, we can learn something from the data. We’ll show in later discussions how we can extend this principle to learning an arbitrary function <span class="math inline">\(f\)</span> instead of just means.</p>
 <div class="fyi">
 <p><strong>NOTE</strong></p>
 <p>This week’s content is split into two “halves”: the critical data manipulation information contained below and a more-entertaining discussion of visualization included in the Exercises.</p>
@@ -1566,6 +1538,10 @@ case_when(x &lt; 0 ~ &quot;Negative&quot;,
 </ol>
 </div>
 </div>
+<div id="cheat-sheet-dplyr" class="section level3">
+<h3>Cheat Sheet, <code>dplyr</code></h3>
+<p><embed src="/content/01-content_files/data-transformation.pdf" /></p>
+</div>
 </div>
 <div id="lecture-video" class="section level2">
 <h2>Lecture Video</h2>
@@ -1584,7 +1560,7 @@ case_when(x &lt; 0 ~ &quot;Negative&quot;,
 <div class="footnotes footnotes-end-of-document">
 <hr />
 <ol>
-<li id="fn1"><p>I discovered the <code>emo::ji()</code> function at 8:55am. My wife joked that I would find a way to use the poop emoji by 9:00am. It is now 8:59am. She was right.<a href="#fnref1" class="footnote-back">↩︎</a></p></li>
+<li id="fn1"><p>A note from Prof. Kirkpatrick: “I discovered the <code>emo::ji()</code> function at 8:55am. My wife joked that I would find a way to use the poop emoji by 9:00am. It is now 8:59am. She was right.”<a href="#fnref1" class="footnote-back">↩︎</a></p></li>
 <li id="fn2"><p>If you have not installed this package already, you must use <code>install.packages("tidyverse")</code> prior to the <code>library()</code> call you see below.<a href="#fnref2" class="footnote-back">↩︎</a></p></li>
 </ol>
 </div>
@@ -1599,7 +1575,7 @@ case_when(x &lt; 0 ~ &quot;Negative&quot;,
                 </div>
 
                 <div class="body-footer">
-                    <p>Last updated on January 7, 2023</p>
+                    <p>Last updated on January 17, 2023</p>
 
                     
 

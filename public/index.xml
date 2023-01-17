@@ -13,6 +13,211 @@
     </image>
     
     <item>
+      <title>Basics of ggplot</title>
+      <link>https://ssc442.netlify.app/assignment/01-assignment/</link>
+      <pubDate>Tue, 17 Jan 2023 00:00:00 +0000</pubDate>
+      <guid>https://ssc442.netlify.app/assignment/01-assignment/</guid>
+      <description>
+&lt;script src=&#34;https://ssc442.netlify.app/rmarkdown-libs/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
+
+&lt;div id=&#34;TOC&#34;&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#using-ggplot2&#34; id=&#34;toc-using-ggplot2&#34;&gt;Using ggplot2&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#how-to-use-ggplot2-the-too-fast-and-wholly-unclear-recipe&#34; id=&#34;toc-how-to-use-ggplot2-the-too-fast-and-wholly-unclear-recipe&#34;&gt;How to use &lt;code&gt;ggplot2&lt;/code&gt; – the too-fast and wholly unclear recipe&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#mappings-link-data-to-things-you-see&#34; id=&#34;toc-mappings-link-data-to-things-you-see&#34;&gt;Mappings Link Data to Things You See&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#the-recipe&#34; id=&#34;toc-the-recipe&#34;&gt;The Recipe&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#mapping-aesthetics-vs-setting-them&#34; id=&#34;toc-mapping-aesthetics-vs-setting-them&#34;&gt;Mapping Aesthetics vs Setting them&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+
+&lt;div class=&#34;fyi&#34;&gt;
+&lt;p&gt;&lt;strong&gt;NOTE&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;You must turn in a PDF document of your &lt;code&gt;R markdown&lt;/code&gt; code. Submit this to D2L by 11:59 PM on Monday Jan 23th.&lt;/p&gt;
+&lt;/div&gt;
+&lt;p&gt;Our primary tool for data visualization in the course will be &lt;code&gt;ggplot&lt;/code&gt;. Technically, we’re using &lt;code&gt;ggplot2&lt;/code&gt;; the o.g. version lacked some of the modern features of its big brother. &lt;code&gt;ggplot2&lt;/code&gt; implements the grammar of graphics, a coherent and relatively straightforward system for describing and building graphs. With &lt;code&gt;ggplot2&lt;/code&gt;, you can do more faster by learning one system and applying it in many places. Other languages provide more specific tools, but require you to learn a different tool for each application. In this class, we’ll dig into a single package for our visuals.&lt;/p&gt;
+&lt;div id=&#34;using-ggplot2&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Using ggplot2&lt;/h2&gt;
+&lt;p&gt;In order to get our hands dirty, we will first have to load &lt;code&gt;ggplot2&lt;/code&gt;. To do this, and to access the datasets, help pages, and functions that we will use in this assignment, we will load the so-called tidyverse by running this code:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;library(tidyverse)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;If you run this code and get an error message “there is no package called ‘tidyverse’”, you’ll need to first install it, then run library() once again. To install packages in &lt;code&gt;R&lt;/code&gt;, we utilize the simple function install.packages(). In this case, we would write:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;install.packages(&amp;quot;tidyverse&amp;quot;)
+library(tidyverse)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Once we’re up and running, we’re ready to dive into some basic exercises. &lt;code&gt;ggplot2&lt;/code&gt; works by specifying the connections between the variables in the data and the colors, points, and shapes you see on the screen. These logical connections are called &lt;em&gt;aesthetic mappings&lt;/em&gt; or simply &lt;em&gt;aesthetics&lt;/em&gt;.&lt;/p&gt;
+&lt;div id=&#34;how-to-use-ggplot2-the-too-fast-and-wholly-unclear-recipe&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;How to use &lt;code&gt;ggplot2&lt;/code&gt; – the too-fast and wholly unclear recipe&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;&lt;code&gt;data =&lt;/code&gt;: Define what your data is. For instance, below we’ll use the mpg data frame found in ggplot2 (by using &lt;code&gt;ggplot2::mpg&lt;/code&gt;). As a reminder, a data frame is a rectangular collection of variables (in the columns) and observations (in the rows). This structure of data is often called a “table” but we’ll try to use terms slightly more precisely. The &lt;code&gt;mpg&lt;/code&gt; data frame contains observations collected by the US Environmental Protection Agency on 38 different models of car.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;code&gt;mapping = aes(...)&lt;/code&gt;: How to map the variables in the data to aesthetics&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Axes, size of points, intensities of colors, which colors, shape of points, lines/points&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Then say what type of plot you want:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;boxplot, scatterplot, histogram, …&lt;/li&gt;
+&lt;li&gt;these are called ‘geoms’ in ggplot’s grammar, such as &lt;code&gt;geom_point()&lt;/code&gt; giving scatter plots&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre&gt;&lt;code&gt;library(ggplot2)
+... + geom_point() # Produces scatterplots
+... + geom_bar() # Bar plots
+.... + geom_boxplot() # boxplots
+... #&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;You link these steps by &lt;em&gt;literally&lt;/em&gt; adding them together with &lt;code&gt;+&lt;/code&gt; as we’ll see.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Try it:&lt;/strong&gt; What other types of plots are there? Try to find several more &lt;code&gt;geom_&lt;/code&gt; functions.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;mappings-link-data-to-things-you-see&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Mappings Link Data to Things You See&lt;/h2&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(gapminder)
+library(ggplot2)
+gapminder::gapminder&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 1,704 × 6
+##    country     continent  year lifeExp      pop gdpPercap
+##    &amp;lt;fct&amp;gt;       &amp;lt;fct&amp;gt;     &amp;lt;int&amp;gt;   &amp;lt;dbl&amp;gt;    &amp;lt;int&amp;gt;     &amp;lt;dbl&amp;gt;
+##  1 Afghanistan Asia       1952    28.8  8425333      779.
+##  2 Afghanistan Asia       1957    30.3  9240934      821.
+##  3 Afghanistan Asia       1962    32.0 10267083      853.
+##  4 Afghanistan Asia       1967    34.0 11537966      836.
+##  5 Afghanistan Asia       1972    36.1 13079460      740.
+##  6 Afghanistan Asia       1977    38.4 14880372      786.
+##  7 Afghanistan Asia       1982    39.9 12881816      978.
+##  8 Afghanistan Asia       1987    40.8 13867957      852.
+##  9 Afghanistan Asia       1992    41.7 16317921      649.
+## 10 Afghanistan Asia       1997    41.8 22227415      635.
+## # … with 1,694 more rows&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p &amp;lt;- ggplot(data = gapminder,
+            mapping = aes(x = gdpPercap, y = lifeExp))
+p + geom_point()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/assignment/01-assignment_files/figure-html/unnamed-chunk-1-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Above we’ve loaded a different dataset and have started to explore a particular relationship. Before putting in this code yourself, try to intuit what &lt;em&gt;might&lt;/em&gt; be going on.&lt;/p&gt;
+&lt;p&gt;Any ideas?&lt;/p&gt;
+&lt;p&gt;Here’s a breakdown of everything that happens after the &lt;code&gt;p&amp;lt;- ggplot()&lt;/code&gt; call:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;data = gapminder&lt;/code&gt; tells ggplot to use gapminder dataset, so if variable names are mentioned, they should be looked up in gapminder&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;mapping = aes(...)&lt;/code&gt; shows that the mapping is a function call. There is a deeper logic to this that I will disucss below, but it’s easiest to simply accept that this is how you write it. Put another way, the &lt;code&gt;mapping = aes(...)&lt;/code&gt; argument &lt;em&gt;links variables&lt;/em&gt; to &lt;em&gt;things you will see&lt;/em&gt; on the plot.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;aes(x = gdpPercap, y = lifeExp)&lt;/code&gt; maps the GDP data onto &lt;code&gt;x&lt;/code&gt;, which is a known aesthetic (the x-coordinate) and life expectancy data onto &lt;code&gt;y&lt;/code&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;x&lt;/code&gt; and &lt;code&gt;y&lt;/code&gt; are predefined names that are used by &lt;code&gt;ggplot&lt;/code&gt; and friends&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;fyi&#34;&gt;
+&lt;p&gt;&lt;strong&gt;Exercise 1:&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Let’s return to the &lt;code&gt;mpg&lt;/code&gt; data. Among the variables in &lt;code&gt;mpg&lt;/code&gt; are:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;&lt;code&gt;displ&lt;/code&gt;, a car’s engine size, in litres.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;code&gt;hwy&lt;/code&gt;, a car’s fuel efficiency on the highway, in miles per gallon (mpg). A car with a low fuel efficiency consumes more fuel than a car with a high fuel efficiency when they travel the same distance.&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Generate a scatterplot between these two variables. Does it capture the intuitive relationship you expected? What happens if you make a scatterplot of &lt;code&gt;class&lt;/code&gt; vs &lt;code&gt;drv&lt;/code&gt;? Why is the plot not useful?&lt;/p&gt;
+&lt;/div&gt;
+&lt;p&gt;It turns out there’s a reason for doing all of this:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;“The greatest value of a picture is when it forces us to notice what we never expected to see.”” — John Tukey&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;In the plot you made above, one group of points seems to fall outside of the linear trend. These cars have a higher mileage than you might expect. How can you explain these cars?&lt;/p&gt;
+&lt;p&gt;Let’s hypothesize that the cars are hybrids. One way to test this hypothesis is to look at the class value for each car. The &lt;code&gt;class&lt;/code&gt; variable of the &lt;code&gt;mpg&lt;/code&gt; dataset classifies cars into groups such as compact, midsize, and SUV. If the outlying points are hybrids, they should be classified as compact cars or, perhaps, subcompact cars (keep in mind that this data was collected before hybrid trucks and SUVs became popular).&lt;/p&gt;
+&lt;p&gt;You can add a third variable, like &lt;code&gt;class&lt;/code&gt;, to a two dimensional scatterplot by mapping it to an aesthetic. An aesthetic is a visual property of the objects in your plot. Aesthetics include things like the size, the shape, or the color of your points. You can display a point (like the one below) in different ways by changing the values of its aesthetic properties. Since we already use the word “&lt;strong&gt;value&lt;/strong&gt;” to describe data, let’s use the word “&lt;strong&gt;level&lt;/strong&gt;” to describe aesthetic properties. Thus, we are interested in exploring &lt;code&gt;class&lt;/code&gt; as a level.&lt;/p&gt;
+&lt;p&gt;You can convey information about your data by mapping the aesthetics in your plot to the variables in your dataset. For example, you can map the colors of your points to the class variable to reveal the class of each car. To map an aesthetic to a variable, associate the name of the aesthetic to the name of the variable inside &lt;code&gt;aes()&lt;/code&gt;. &lt;code&gt;ggplot2&lt;/code&gt; will automatically assign a unique level of the aesthetic (here a unique color) to each unique value of the variable, a process known as scaling. &lt;code&gt;ggplot2&lt;/code&gt; will also add a legend that explains which levels correspond to which values.&lt;/p&gt;
+&lt;div class=&#34;fyi&#34;&gt;
+&lt;p&gt;&lt;strong&gt;Exercise 2:&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Using your previous scatterplot of &lt;code&gt;displ&lt;/code&gt; and &lt;code&gt;hwy&lt;/code&gt;, map the colors of your points to the class variable to reveal the class of each car. What conclusions can we make?&lt;/p&gt;
+&lt;/div&gt;
+&lt;p&gt;Let’s explore our previously saved &lt;code&gt;p&lt;/code&gt; in greater detail. As with Exercise 1, we’ll add a &lt;em&gt;layer&lt;/em&gt;. This says how some data gets turned into concrete visual aspects.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;p + geom_point()
+p + geom_smooth()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;Note:&lt;/strong&gt; Both of the above geom’s use the same mapping, where the x-axis represents &lt;code&gt;gdpPercap&lt;/code&gt; and the y-axis represents &lt;code&gt;lifeExp&lt;/code&gt;. You can find this yourself with some ease. But the first one maps the data to individual points, the other one maps it to a smooth line with error ranges.&lt;/p&gt;
+&lt;p&gt;We get a message that tells us that &lt;code&gt;geom_smooth()&lt;/code&gt; is using the method = ‘gam’, so presumably we can use other methods. Let’s see if we can figure out which other methods there are.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;?geom_smooth
+p + geom_point() + geom_smooth() + geom_smooth(method = ...) + geom_smooth(method = ...)
+p + geom_point() + geom_smooth() + geom_smooth(method = ...) + geom_smooth(method = ..., color = &amp;quot;red&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;You may start to see why &lt;code&gt;ggplot2&lt;/code&gt;’s way of breaking up tasks is quite powerful: the geometric objects can all reuse the &lt;em&gt;same&lt;/em&gt; mapping of data to aesthetics, yet the results are quite different. And if we want later geoms to use different mappings, then we can override them – but it isn’t necessary.&lt;/p&gt;
+&lt;p&gt;Consider the output we’ve explored thus far. One potential issue lurking in the data is that most of it is bunched to the left. If we instead used a logarithmic scale, we should be able to spread the data out better.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;p + geom_point() + geom_smooth(method = &amp;quot;lm&amp;quot;) + scale_x_log10()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;Try it:&lt;/strong&gt; Describe what the &lt;code&gt;scale_x_log10()&lt;/code&gt; does. Why is it a more evenly distributed cloud of points now? (2-3 sentences.)&lt;/p&gt;
+&lt;p&gt;Nice. We’re starting to get somewhere. But, you might notice that the x-axis now has scientific notation. Let’s change that.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;library(scales)
+p + geom_point() +
+  geom_smooth(method = &amp;quot;lm&amp;quot;) +
+  scale_x_log10(labels = scales::dollar)
+p + geom_point() +
+  geom_smooth(method = &amp;quot;lm&amp;quot;) +
+  scale_x_log10(labels = scales::...)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;Try it:&lt;/strong&gt; What does the &lt;code&gt;dollar()&lt;/code&gt; call do? How can you find other ways of relabeling the scales when using &lt;code&gt;scale_x_log10()&lt;/code&gt;?&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;?dollar()&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;the-recipe&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;The Recipe&lt;/h2&gt;
+&lt;ol style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;Tell the &lt;code&gt;ggplot()&lt;/code&gt; function what our data is.&lt;/li&gt;
+&lt;li&gt;Tell &lt;code&gt;ggplot()&lt;/code&gt; &lt;em&gt;what&lt;/em&gt; relationships we want to see. For convenience we will put the results of the first two steps in an object called &lt;code&gt;p&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;Tell &lt;code&gt;ggplot&lt;/code&gt; &lt;em&gt;how&lt;/em&gt; we want to see the relationships in our data.&lt;/li&gt;
+&lt;li&gt;Layer on geoms as needed, by adding them on the &lt;code&gt;p&lt;/code&gt; object one at a time.&lt;/li&gt;
+&lt;li&gt;Use some additional functions to adjust scales, labels, tickmarks, titles.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;ul&gt;
+&lt;li&gt;e.g. &lt;code&gt;scale_&lt;/code&gt;, &lt;code&gt;labs()&lt;/code&gt;, and &lt;code&gt;guides()&lt;/code&gt; functions&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;As you start to run more &lt;code&gt;R&lt;/code&gt; code, you’re likely to run into problems. Don’t worry — it happens to everyone. I have been writing code in numerous languages for years, and every day I still write code that doesn’t work. Sadly, &lt;code&gt;R&lt;/code&gt; is particularly persnickity, and its error messages are often opaque.&lt;/p&gt;
+&lt;p&gt;Start by carefully comparing the code that you’re running to the code in these notes. &lt;code&gt;R&lt;/code&gt; is extremely picky, and a misplaced character can make all the difference. Make sure that every ( is matched with a ) and every ” is paired with another “. Sometimes you’ll run the code and nothing happens. Check the left-hand of your console: if it’s a +, it means that R doesn’t think you’ve typed a complete expression and it’s waiting for you to finish it. In this case, it’s usually easy to start from scratch again by pressing ESCAPE to abort processing the current command.&lt;/p&gt;
+&lt;p&gt;One common problem when creating ggplot2 graphics is to put the + in the wrong place: it has to come at the end of the line, not the start.&lt;/p&gt;
+&lt;div id=&#34;mapping-aesthetics-vs-setting-them&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Mapping Aesthetics vs Setting them&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;p &amp;lt;- ggplot(data = gapminder,
+            mapping = aes(x = gdpPercap, y = lifeExp, color = &amp;#39;yellow&amp;#39;))
+p + geom_point() + scale_x_log10()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;This is interesting (or annoying): the points are not yellow. How can we tell ggplot to draw yellow points?&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;p &amp;lt;- ggplot(data = gapminder,
+            mapping = aes(x = gdpPercap, y = lifeExp, ...))
+p + geom_point(...) + scale_x_log10()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;Try it:&lt;/strong&gt; describe in your words what is going on.
+One way to avoid such mistakes is to read arguments inside &lt;code&gt;aes(&amp;lt;property&amp;gt; = &amp;lt;variable&amp;gt;)&lt;/code&gt;as &lt;em&gt;the property &lt;property&gt; in the graph is determined by the data in &lt;variable&gt;&lt;/em&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Try it:&lt;/strong&gt; Write the above sentence for the original call &lt;code&gt;aes(x = gdpPercap, y = lifeExp, color = &#39;yellow&#39;)&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;Aesthetics convey information about a variable in the dataset, whereas setting the color of all points to yellow conveys no information about the dataset - it changes the appearance of the plot in a way that is independent of the underlying data.&lt;/p&gt;
+&lt;p&gt;Remember: &lt;code&gt;color = &#39;yellow&#39;&lt;/code&gt; and &lt;code&gt;aes(color = &#39;yellow&#39;)&lt;/code&gt; are very different, and the second makes usually no sense, as &lt;code&gt;&#39;yellow&#39;&lt;/code&gt; is treated as &lt;em&gt;data&lt;/em&gt;.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;p &amp;lt;- ggplot(data = gapminder,
+            mapping = aes(x = gdpPercap, y = lifeExp))
+p + geom_point() + geom_smooth(color = &amp;quot;orange&amp;quot;, se = FALSE, size = 8, method = &amp;quot;lm&amp;quot;) + scale_x_log10()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;Try it:&lt;/strong&gt; Write down what all those arguments in &lt;code&gt;geom_smooth(...)&lt;/code&gt; do.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;p + geom_point(alpha = 0.3) +
+  geom_smooth(method = &amp;quot;gam&amp;quot;) +
+  scale_x_log10(labels = scales::dollar) +
+  labs(x = &amp;quot;GDP Per Capita&amp;quot;, y = &amp;quot;Life Expectancy in Years&amp;quot;,
+       title = &amp;quot;Economic Growth and Life Expectancy&amp;quot;,
+       subtitle = &amp;quot;Data Points are country-years&amp;quot;,
+       caption = &amp;quot;Source: Gapminder&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Coloring by continent:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;library(scales)
+p &amp;lt;- ggplot(data = gapminder,
+            mapping = aes(x = gdpPercap, y = lifeExp, color = continent, fill = continent))
+p + geom_point()
+p + geom_point() + scale_x_log10(labels = dollar)
+p + geom_point() + scale_x_log10(labels = dollar) + geom_smooth()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;Try it:&lt;/strong&gt; What does &lt;code&gt;fill = continent&lt;/code&gt; do? What do you think about the match of colors between lines and error bands?&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;p &amp;lt;- ggplot(data = gapminder,
+            mapping = aes(x = gdpPercap, y = lifeExp))
+p + geom_point(mapping = aes(color = continent)) + geom_smooth() + scale_x_log10()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;Try it:&lt;/strong&gt; Notice how the above code leads to a single smooth line, not one per continent. Why?&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Try it:&lt;/strong&gt; What is bad about the following example, assuming the graph is the one we want? Think about why you should set aesthetics at the top level rather than at the individual geometry level if that’s your intent.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;p &amp;lt;- ggplot(data = gapminder,
+            mapping = aes(x = gdpPercap, y = lifeExp))
+p + geom_point(mapping = aes(color = continent)) +
+  geom_smooth(mapping = aes(color = continent, fill = continent)) +
+  scale_x_log10() +
+  geom_smooth(mapping = aes(color = continent), method = &amp;quot;gam&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;div class=&#34;fyi&#34;&gt;
+&lt;p&gt;&lt;strong&gt;Exercise 3:&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Generate two new plots with &lt;code&gt;data = gapminder&lt;/code&gt; (note: you’ll need to install the package by the same name if you have not already). Label the axes and the header with clear, easy to understand language. In a few sentences, describe what you’ve visualized and why.&lt;/p&gt;
+&lt;p&gt;Note that this is your first foray into &lt;code&gt;ggplot2&lt;/code&gt;; accordingly, you should ry to make sure that you do not bite off more than you can chew. We will improve and refine our abilities as we progress through the semester.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    
+    <item>
       <title>Working with R and RStudio</title>
       <link>https://ssc442.netlify.app/example/00-example/</link>
       <pubDate>Thu, 12 Jan 2023 00:00:00 +0000</pubDate>
@@ -2584,211 +2789,6 @@ p&lt;/code&gt;&lt;/pre&gt;
 &lt;li id=&#34;fn9&#34;&gt;&lt;p&gt;&lt;a href=&#34;https://github.com/rstudio/cheatsheets&#34; class=&#34;uri&#34;&gt;https://github.com/rstudio/cheatsheets&lt;/a&gt;&lt;a href=&#34;#fnref9&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
 &lt;li id=&#34;fn10&#34;&gt;&lt;p&gt;&lt;a href=&#34;https://github.com/rstudio/cheatsheets/blob/master/LICENSE&#34; class=&#34;uri&#34;&gt;https://github.com/rstudio/cheatsheets/blob/master/LICENSE&lt;/a&gt;&lt;a href=&#34;#fnref10&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
 &lt;/ol&gt;
-&lt;/div&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>Basics of ggplot</title>
-      <link>https://ssc442.netlify.app/assignment/01-assignment/</link>
-      <pubDate>Tue, 04 Jan 2022 00:00:00 +0000</pubDate>
-      <guid>https://ssc442.netlify.app/assignment/01-assignment/</guid>
-      <description>
-&lt;script src=&#34;https://ssc442.netlify.app/rmarkdown-libs/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
-
-&lt;div id=&#34;TOC&#34;&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;a href=&#34;#using-ggplot2&#34; id=&#34;toc-using-ggplot2&#34;&gt;Using ggplot2&lt;/a&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;a href=&#34;#how-to-use-ggplot2-the-too-fast-and-wholly-unclear-recipe&#34; id=&#34;toc-how-to-use-ggplot2-the-too-fast-and-wholly-unclear-recipe&#34;&gt;How to use &lt;code&gt;ggplot2&lt;/code&gt; – the too-fast and wholly unclear recipe&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;#mappings-link-data-to-things-you-see&#34; id=&#34;toc-mappings-link-data-to-things-you-see&#34;&gt;Mappings Link Data to Things You See&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;#the-recipe&#34; id=&#34;toc-the-recipe&#34;&gt;The Recipe&lt;/a&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;a href=&#34;#mapping-aesthetics-vs-setting-them&#34; id=&#34;toc-mapping-aesthetics-vs-setting-them&#34;&gt;Mapping Aesthetics vs Setting them&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/div&gt;
-
-&lt;div class=&#34;fyi&#34;&gt;
-&lt;p&gt;&lt;strong&gt;NOTE&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;You must turn in a PDF document of your &lt;code&gt;R markdown&lt;/code&gt; code. Submit this to D2L by 11:59 PM on Monday Jan 24th.&lt;/p&gt;
-&lt;/div&gt;
-&lt;p&gt;Our primary tool for data visualization in the course will be &lt;code&gt;ggplot&lt;/code&gt;. Technically, we’re using &lt;code&gt;ggplot2&lt;/code&gt;; the o.g. version lacked some of the modern features of its big brother. &lt;code&gt;ggplot2&lt;/code&gt; implements the grammar of graphics, a coherent and relatively straightforward system for describing and building graphs. With &lt;code&gt;ggplot2&lt;/code&gt;, you can do more faster by learning one system and applying it in many places. Other languages provide more specific tools, but require you to learn a different tool for each application. In this class, we’ll dig into a single package for our visuals.&lt;/p&gt;
-&lt;div id=&#34;using-ggplot2&#34; class=&#34;section level2&#34;&gt;
-&lt;h2&gt;Using ggplot2&lt;/h2&gt;
-&lt;p&gt;In order to get our hands dirty, we will first have to load &lt;code&gt;ggplot2&lt;/code&gt;. To do this, and to access the datasets, help pages, and functions that we will use in this assignment, we will load the so-called tidyverse by running this code:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;library(tidyverse)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;If you run this code and get an error message “there is no package called ‘tidyverse’”, you’ll need to first install it, then run library() once again. To install packages in &lt;code&gt;R&lt;/code&gt;, we utilize the simple function install.packages(). In this case, we would write:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;install.packages(&amp;quot;tidyverse&amp;quot;)
-library(tidyverse)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Once we’re up and running, we’re ready to dive into some basic exercises. &lt;code&gt;ggplot2&lt;/code&gt; works by specifying the connections between the variables in the data and the colors, points, and shapes you see on the screen. These logical connections are called &lt;em&gt;aesthetic mappings&lt;/em&gt; or simply &lt;em&gt;aesthetics&lt;/em&gt;.&lt;/p&gt;
-&lt;div id=&#34;how-to-use-ggplot2-the-too-fast-and-wholly-unclear-recipe&#34; class=&#34;section level3&#34;&gt;
-&lt;h3&gt;How to use &lt;code&gt;ggplot2&lt;/code&gt; – the too-fast and wholly unclear recipe&lt;/h3&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;p&gt;&lt;code&gt;data =&lt;/code&gt;: Define what your data is. For instance, below we’ll use the mpg data frame found in ggplot2 (by using &lt;code&gt;ggplot2::mpg&lt;/code&gt;). As a reminder, a data frame is a rectangular collection of variables (in the columns) and observations (in the rows). This structure of data is often called a “table” but we’ll try to use terms slightly more precisely. The &lt;code&gt;mpg&lt;/code&gt; data frame contains observations collected by the US Environmental Protection Agency on 38 different models of car.&lt;/p&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;&lt;code&gt;mapping = aes(...)&lt;/code&gt;: How to map the variables in the data to aesthetics&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;Axes, size of points, intensities of colors, which colors, shape of points, lines/points&lt;/li&gt;
-&lt;/ul&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;Then say what type of plot you want:&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;boxplot, scatterplot, histogram, …&lt;/li&gt;
-&lt;li&gt;these are called ‘geoms’ in ggplot’s grammar, such as &lt;code&gt;geom_point()&lt;/code&gt; giving scatter plots&lt;/li&gt;
-&lt;/ul&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;pre&gt;&lt;code&gt;library(ggplot2)
-... + geom_point() # Produces scatterplots
-... + geom_bar() # Bar plots
-.... + geom_boxplot() # boxplots
-... #&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;You link these steps by &lt;em&gt;literally&lt;/em&gt; adding them together with &lt;code&gt;+&lt;/code&gt; as we’ll see.&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;Try it:&lt;/strong&gt; What other types of plots are there? Try to find several more &lt;code&gt;geom_&lt;/code&gt; functions.&lt;/p&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div id=&#34;mappings-link-data-to-things-you-see&#34; class=&#34;section level2&#34;&gt;
-&lt;h2&gt;Mappings Link Data to Things You See&lt;/h2&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(gapminder)
-library(ggplot2)
-gapminder::gapminder&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## # A tibble: 1,704 × 6
-##    country     continent  year lifeExp      pop gdpPercap
-##    &amp;lt;fct&amp;gt;       &amp;lt;fct&amp;gt;     &amp;lt;int&amp;gt;   &amp;lt;dbl&amp;gt;    &amp;lt;int&amp;gt;     &amp;lt;dbl&amp;gt;
-##  1 Afghanistan Asia       1952    28.8  8425333      779.
-##  2 Afghanistan Asia       1957    30.3  9240934      821.
-##  3 Afghanistan Asia       1962    32.0 10267083      853.
-##  4 Afghanistan Asia       1967    34.0 11537966      836.
-##  5 Afghanistan Asia       1972    36.1 13079460      740.
-##  6 Afghanistan Asia       1977    38.4 14880372      786.
-##  7 Afghanistan Asia       1982    39.9 12881816      978.
-##  8 Afghanistan Asia       1987    40.8 13867957      852.
-##  9 Afghanistan Asia       1992    41.7 16317921      649.
-## 10 Afghanistan Asia       1997    41.8 22227415      635.
-## # … with 1,694 more rows&lt;/code&gt;&lt;/pre&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p &amp;lt;- ggplot(data = gapminder,
-            mapping = aes(x = gdpPercap, y = lifeExp))
-p + geom_point()&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/assignment/01-assignment_files/figure-html/unnamed-chunk-1-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
-&lt;p&gt;Above we’ve loaded a different dataset and have started to explore a particular relationship. Before putting in this code yourself, try to intuit what &lt;em&gt;might&lt;/em&gt; be going on.&lt;/p&gt;
-&lt;p&gt;Any ideas?&lt;/p&gt;
-&lt;p&gt;Here’s a breakdown of everything that happens after the &lt;code&gt;p&amp;lt;- ggplot()&lt;/code&gt; call:&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;code&gt;data = gapminder&lt;/code&gt; tells ggplot to use gapminder dataset, so if variable names are mentioned, they should be looked up in gapminder&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;mapping = aes(...)&lt;/code&gt; shows that the mapping is a function call. There is a deeper logic to this that I will disucss below, but it’s easiest to simply accept that this is how you write it. Put another way, the &lt;code&gt;mapping = aes(...)&lt;/code&gt; argument &lt;em&gt;links variables&lt;/em&gt; to &lt;em&gt;things you will see&lt;/em&gt; on the plot.&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;aes(x = gdpPercap, y = lifeExp)&lt;/code&gt; maps the GDP data onto &lt;code&gt;x&lt;/code&gt;, which is a known aesthetic (the x-coordinate) and life expectancy data onto &lt;code&gt;y&lt;/code&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;code&gt;x&lt;/code&gt; and &lt;code&gt;y&lt;/code&gt; are predefined names that are used by &lt;code&gt;ggplot&lt;/code&gt; and friends&lt;/li&gt;
-&lt;/ul&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;div class=&#34;fyi&#34;&gt;
-&lt;p&gt;&lt;strong&gt;Exercise 1:&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;Let’s return to the &lt;code&gt;mpg&lt;/code&gt; data. Among the variables in &lt;code&gt;mpg&lt;/code&gt; are:&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;p&gt;&lt;code&gt;displ&lt;/code&gt;, a car’s engine size, in litres.&lt;/p&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;&lt;code&gt;hwy&lt;/code&gt;, a car’s fuel efficiency on the highway, in miles per gallon (mpg). A car with a low fuel efficiency consumes more fuel than a car with a high fuel efficiency when they travel the same distance.&lt;/p&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;Generate a scatterplot between these two variables. Does it capture the intuitive relationship you expected? What happens if you make a scatterplot of &lt;code&gt;class&lt;/code&gt; vs &lt;code&gt;drv&lt;/code&gt;? Why is the plot not useful?&lt;/p&gt;
-&lt;/div&gt;
-&lt;p&gt;It turns out there’s a reason for doing all of this:&lt;/p&gt;
-&lt;blockquote&gt;
-&lt;p&gt;“The greatest value of a picture is when it forces us to notice what we never expected to see.”” — John Tukey&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;p&gt;In the plot you made above, one group of points seems to fall outside of the linear trend. These cars have a higher mileage than you might expect. How can you explain these cars?&lt;/p&gt;
-&lt;p&gt;Let’s hypothesize that the cars are hybrids. One way to test this hypothesis is to look at the class value for each car. The &lt;code&gt;class&lt;/code&gt; variable of the &lt;code&gt;mpg&lt;/code&gt; dataset classifies cars into groups such as compact, midsize, and SUV. If the outlying points are hybrids, they should be classified as compact cars or, perhaps, subcompact cars (keep in mind that this data was collected before hybrid trucks and SUVs became popular).&lt;/p&gt;
-&lt;p&gt;You can add a third variable, like &lt;code&gt;class&lt;/code&gt;, to a two dimensional scatterplot by mapping it to an aesthetic. An aesthetic is a visual property of the objects in your plot. Aesthetics include things like the size, the shape, or the color of your points. You can display a point (like the one below) in different ways by changing the values of its aesthetic properties. Since we already use the word “&lt;strong&gt;value&lt;/strong&gt;” to describe data, let’s use the word “&lt;strong&gt;level&lt;/strong&gt;” to describe aesthetic properties. Thus, we are interested in exploring &lt;code&gt;class&lt;/code&gt; as a level.&lt;/p&gt;
-&lt;p&gt;You can convey information about your data by mapping the aesthetics in your plot to the variables in your dataset. For example, you can map the colors of your points to the class variable to reveal the class of each car. To map an aesthetic to a variable, associate the name of the aesthetic to the name of the variable inside &lt;code&gt;aes()&lt;/code&gt;. &lt;code&gt;ggplot2&lt;/code&gt; will automatically assign a unique level of the aesthetic (here a unique color) to each unique value of the variable, a process known as scaling. &lt;code&gt;ggplot2&lt;/code&gt; will also add a legend that explains which levels correspond to which values.&lt;/p&gt;
-&lt;div class=&#34;fyi&#34;&gt;
-&lt;p&gt;&lt;strong&gt;Exercise 2:&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;Using your previous scatterplot of &lt;code&gt;displ&lt;/code&gt; and &lt;code&gt;hwy&lt;/code&gt;, map the colors of your points to the class variable to reveal the class of each car. What conclusions can we make?&lt;/p&gt;
-&lt;/div&gt;
-&lt;p&gt;Let’s explore our previously saved &lt;code&gt;p&lt;/code&gt; in greater detail. As with Exercise 1, we’ll add a &lt;em&gt;layer&lt;/em&gt;. This says how some data gets turned into concrete visual aspects.&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;p + geom_point()
-p + geom_smooth()&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;strong&gt;Note:&lt;/strong&gt; Both of the above geom’s use the same mapping, where the x-axis represents &lt;code&gt;gdpPercap&lt;/code&gt; and the y-axis represents &lt;code&gt;lifeExp&lt;/code&gt;. You can find this yourself with some ease. But the first one maps the data to individual points, the other one maps it to a smooth line with error ranges.&lt;/p&gt;
-&lt;p&gt;We get a message that tells us that &lt;code&gt;geom_smooth()&lt;/code&gt; is using the method = ‘gam’, so presumably we can use other methods. Let’s see if we can figure out which other methods there are.&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;?geom_smooth
-p + geom_point() + geom_smooth() + geom_smooth(method = ...) + geom_smooth(method = ...)
-p + geom_point() + geom_smooth() + geom_smooth(method = ...) + geom_smooth(method = ..., color = &amp;quot;red&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;You may start to see why &lt;code&gt;ggplot2&lt;/code&gt;’s way of breaking up tasks is quite powerful: the geometric objects can all reuse the &lt;em&gt;same&lt;/em&gt; mapping of data to aesthetics, yet the results are quite different. And if we want later geoms to use different mappings, then we can override them – but it isn’t necessary.&lt;/p&gt;
-&lt;p&gt;Consider the output we’ve explored thus far. One potential issue lurking in the data is that most of it is bunched to the left. If we instead used a logarithmic scale, we should be able to spread the data out better.&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;p + geom_point() + geom_smooth(method = &amp;quot;lm&amp;quot;) + scale_x_log10()&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;strong&gt;Try it:&lt;/strong&gt; Describe what the &lt;code&gt;scale_x_log10()&lt;/code&gt; does. Why is it a more evenly distributed cloud of points now? (2-3 sentences.)&lt;/p&gt;
-&lt;p&gt;Nice. We’re starting to get somewhere. But, you might notice that the x-axis now has scientific notation. Let’s change that.&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;library(scales)
-p + geom_point() +
-  geom_smooth(method = &amp;quot;lm&amp;quot;) +
-  scale_x_log10(labels = scales::dollar)
-p + geom_point() +
-  geom_smooth(method = &amp;quot;lm&amp;quot;) +
-  scale_x_log10(labels = scales::...)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;strong&gt;Try it:&lt;/strong&gt; What does the &lt;code&gt;dollar()&lt;/code&gt; call do? How can you find other ways of relabeling the scales when using &lt;code&gt;scale_x_log10()&lt;/code&gt;?&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;?dollar()&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-&lt;div id=&#34;the-recipe&#34; class=&#34;section level2&#34;&gt;
-&lt;h2&gt;The Recipe&lt;/h2&gt;
-&lt;ol style=&#34;list-style-type: decimal&#34;&gt;
-&lt;li&gt;Tell the &lt;code&gt;ggplot()&lt;/code&gt; function what our data is.&lt;/li&gt;
-&lt;li&gt;Tell &lt;code&gt;ggplot()&lt;/code&gt; &lt;em&gt;what&lt;/em&gt; relationships we want to see. For convenience we will put the results of the first two steps in an object called &lt;code&gt;p&lt;/code&gt;.&lt;/li&gt;
-&lt;li&gt;Tell &lt;code&gt;ggplot&lt;/code&gt; &lt;em&gt;how&lt;/em&gt; we want to see the relationships in our data.&lt;/li&gt;
-&lt;li&gt;Layer on geoms as needed, by adding them on the &lt;code&gt;p&lt;/code&gt; object one at a time.&lt;/li&gt;
-&lt;li&gt;Use some additional functions to adjust scales, labels, tickmarks, titles.&lt;/li&gt;
-&lt;/ol&gt;
-&lt;ul&gt;
-&lt;li&gt;e.g. &lt;code&gt;scale_&lt;/code&gt;, &lt;code&gt;labs()&lt;/code&gt;, and &lt;code&gt;guides()&lt;/code&gt; functions&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;As you start to run more &lt;code&gt;R&lt;/code&gt; code, you’re likely to run into problems. Don’t worry — it happens to everyone. I have been writing code in numerous languages for years, and every day I still write code that doesn’t work. Sadly, &lt;code&gt;R&lt;/code&gt; is particularly persnickity, and its error messages are often opaque.&lt;/p&gt;
-&lt;p&gt;Start by carefully comparing the code that you’re running to the code in these notes. &lt;code&gt;R&lt;/code&gt; is extremely picky, and a misplaced character can make all the difference. Make sure that every ( is matched with a ) and every ” is paired with another “. Sometimes you’ll run the code and nothing happens. Check the left-hand of your console: if it’s a +, it means that R doesn’t think you’ve typed a complete expression and it’s waiting for you to finish it. In this case, it’s usually easy to start from scratch again by pressing ESCAPE to abort processing the current command.&lt;/p&gt;
-&lt;p&gt;One common problem when creating ggplot2 graphics is to put the + in the wrong place: it has to come at the end of the line, not the start.&lt;/p&gt;
-&lt;div id=&#34;mapping-aesthetics-vs-setting-them&#34; class=&#34;section level3&#34;&gt;
-&lt;h3&gt;Mapping Aesthetics vs Setting them&lt;/h3&gt;
-&lt;pre&gt;&lt;code&gt;p &amp;lt;- ggplot(data = gapminder,
-            mapping = aes(x = gdpPercap, y = lifeExp, color = &amp;#39;yellow&amp;#39;))
-p + geom_point() + scale_x_log10()&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;This is interesting (or annoying): the points are not yellow. How can we tell ggplot to draw yellow points?&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;p &amp;lt;- ggplot(data = gapminder,
-            mapping = aes(x = gdpPercap, y = lifeExp, ...))
-p + geom_point(...) + scale_x_log10()&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;strong&gt;Try it:&lt;/strong&gt; describe in your words what is going on.
-One way to avoid such mistakes is to read arguments inside &lt;code&gt;aes(&amp;lt;property&amp;gt; = &amp;lt;variable&amp;gt;)&lt;/code&gt;as &lt;em&gt;the property &lt;property&gt; in the graph is determined by the data in &lt;variable&gt;&lt;/em&gt;.&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;Try it:&lt;/strong&gt; Write the above sentence for the original call &lt;code&gt;aes(x = gdpPercap, y = lifeExp, color = &#39;yellow&#39;)&lt;/code&gt;.&lt;/p&gt;
-&lt;p&gt;Aesthetics convey information about a variable in the dataset, whereas setting the color of all points to yellow conveys no information about the dataset - it changes the appearance of the plot in a way that is independent of the underlying data.&lt;/p&gt;
-&lt;p&gt;Remember: &lt;code&gt;color = &#39;yellow&#39;&lt;/code&gt; and &lt;code&gt;aes(color = &#39;yellow&#39;)&lt;/code&gt; are very different, and the second makes usually no sense, as &lt;code&gt;&#39;yellow&#39;&lt;/code&gt; is treated as &lt;em&gt;data&lt;/em&gt;.&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;p &amp;lt;- ggplot(data = gapminder,
-            mapping = aes(x = gdpPercap, y = lifeExp))
-p + geom_point() + geom_smooth(color = &amp;quot;orange&amp;quot;, se = FALSE, size = 8, method = &amp;quot;lm&amp;quot;) + scale_x_log10()&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;strong&gt;Try it:&lt;/strong&gt; Write down what all those arguments in &lt;code&gt;geom_smooth(...)&lt;/code&gt; do.&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;p + geom_point(alpha = 0.3) +
-  geom_smooth(method = &amp;quot;gam&amp;quot;) +
-  scale_x_log10(labels = scales::dollar) +
-  labs(x = &amp;quot;GDP Per Capita&amp;quot;, y = &amp;quot;Life Expectancy in Years&amp;quot;,
-       title = &amp;quot;Economic Growth and Life Expectancy&amp;quot;,
-       subtitle = &amp;quot;Data Points are country-years&amp;quot;,
-       caption = &amp;quot;Source: Gapminder&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Coloring by continent:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;library(scales)
-p &amp;lt;- ggplot(data = gapminder,
-            mapping = aes(x = gdpPercap, y = lifeExp, color = continent, fill = continent))
-p + geom_point()
-p + geom_point() + scale_x_log10(labels = dollar)
-p + geom_point() + scale_x_log10(labels = dollar) + geom_smooth()&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;strong&gt;Try it:&lt;/strong&gt; What does &lt;code&gt;fill = continent&lt;/code&gt; do? What do you think about the match of colors between lines and error bands?&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;p &amp;lt;- ggplot(data = gapminder,
-            mapping = aes(x = gdpPercap, y = lifeExp))
-p + geom_point(mapping = aes(color = continent)) + geom_smooth() + scale_x_log10()&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;strong&gt;Try it:&lt;/strong&gt; Notice how the above code leads to a single smooth line, not one per continent. Why?&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;Try it:&lt;/strong&gt; What is bad about the following example, assuming the graph is the one we want? Think about why you should set aesthetics at the top level rather than at the individual geometry level if that’s your intent.&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;p &amp;lt;- ggplot(data = gapminder,
-            mapping = aes(x = gdpPercap, y = lifeExp))
-p + geom_point(mapping = aes(color = continent)) +
-  geom_smooth(mapping = aes(color = continent, fill = continent)) +
-  scale_x_log10() +
-  geom_smooth(mapping = aes(color = continent), method = &amp;quot;gam&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;div class=&#34;fyi&#34;&gt;
-&lt;p&gt;&lt;strong&gt;Exercise 3:&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;Generate two new plots with &lt;code&gt;data = gapminder&lt;/code&gt; (note: you’ll need to install the package by the same name if you have not already). Label the axes and the header with clear, easy to understand language. In a few sentences, describe what you’ve visualized and why.&lt;/p&gt;
-&lt;p&gt;Note that this is your first foray into &lt;code&gt;ggplot2&lt;/code&gt;; accordingly, you should ry to make sure that you do not bite off more than you can chew. We will improve and refine our abilities as we progress through the semester.&lt;/p&gt;
-&lt;/div&gt;
-&lt;/div&gt;
 &lt;/div&gt;
 </description>
     </item>
@@ -8337,11 +8337,11 @@ data(murders)&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;All lectures will be simulcast on Zoom, but the video will be only a shared screen. This should be considered a lesser option but still very viable: &lt;a href=&#34;https://msu.zoom.us/j/92799814299&#34;&gt;Zoom Link&lt;/a&gt; (Passcode: SSC442)&lt;/p&gt;
 &lt;div id=&#34;office-hours&#34; class=&#34;section level3&#34;&gt;
 &lt;h3&gt;Office Hours&lt;/h3&gt;
-&lt;p&gt;Tuesdays and Thursdays 4:30pm - 5:30pm.&lt;/p&gt;
+&lt;p&gt;Tuesdays and Thursdays 4:30pm - 5:30pm in Marshall-Adams Hall room 25A (Prof. Bushong’s office)&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;teaching-assistant&#34; class=&#34;section level3&#34;&gt;
 &lt;h3&gt;Teaching Assistant&lt;/h3&gt;
-&lt;p&gt;Nick Armstrong - armst427 @ msu.edu . Please apply the same courtesy to Nick as you would apply to me.&lt;/p&gt;
+&lt;p&gt;Nick Armstrong - armst427 @ msu.edu . Please apply the same courtesy to Nick as you would apply to me. He holds office hours Mondays at 1:00 PM at &lt;a href=&#34;https://msu.zoom.us/j/95463853095&#34;&gt;this link&lt;/a&gt;. (Passcode: 845341)&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;slack&#34; class=&#34;section level3&#34;&gt;
 &lt;h3&gt;Slack&lt;/h3&gt;
@@ -10621,17 +10621,16 @@ Print the object &lt;code&gt;p&lt;/code&gt; defined in exercise one and describe
 &lt;ul&gt;
 &lt;li&gt;&lt;a href=&#34;#guiding-question&#34; id=&#34;toc-guiding-question&#34;&gt;Guiding Question&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;#group-projects&#34; id=&#34;toc-group-projects&#34;&gt;Group Projects&lt;/a&gt;
+&lt;li&gt;&lt;a href=&#34;#final-projects&#34; id=&#34;toc-final-projects&#34;&gt;Final Projects&lt;/a&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;a href=&#34;#teams&#34; id=&#34;toc-teams&#34;&gt;Teams&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;#randomness-and-data-analytics&#34; id=&#34;toc-randomness-and-data-analytics&#34;&gt;Randomness and Data Analytics&lt;/a&gt;
 &lt;ul&gt;
-&lt;li&gt;&lt;a href=&#34;#learning-from-data&#34; id=&#34;toc-learning-from-data&#34;&gt;Learning From Data&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;#formalization&#34; id=&#34;toc-formalization&#34;&gt;Formalization&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;#the-target-function&#34; id=&#34;toc-the-target-function&#34;&gt;The Target Function&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;#why-estimate-an-unknown-function&#34; id=&#34;toc-why-estimate-an-unknown-function&#34;&gt;Why Estimate an Unknown Function?&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;#the-parable-of-the-marbles&#34; id=&#34;toc-the-parable-of-the-marbles&#34;&gt;The Parable of the Marbles&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#the-parable-of-the-playing-cards&#34; id=&#34;toc-the-parable-of-the-playing-cards&#34;&gt;The Parable of the Playing Cards&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;#outside-the-data&#34; id=&#34;toc-outside-the-data&#34;&gt;Outside the Data&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;#hoeffdings-inequality&#34; id=&#34;toc-hoeffdings-inequality&#34;&gt;Hoeffding’s Inequality&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;#an-example-of-hoeffdings-inequality&#34; id=&#34;toc-an-example-of-hoeffdings-inequality&#34;&gt;An example of Hoeffding’s Inequality&lt;/a&gt;&lt;/li&gt;
@@ -10672,6 +10671,7 @@ Print the object &lt;code&gt;p&lt;/code&gt; defined in exercise one and describe
 &lt;ul&gt;
 &lt;li&gt;&lt;a href=&#34;#case_when&#34; id=&#34;toc-case_when&#34;&gt;&lt;code&gt;case_when&lt;/code&gt;&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;#between&#34; id=&#34;toc-between&#34;&gt;&lt;code&gt;between&lt;/code&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#cheat-sheet-dplyr&#34; id=&#34;toc-cheat-sheet-dplyr&#34;&gt;Cheat Sheet, &lt;code&gt;dplyr&lt;/code&gt;&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;#lecture-video&#34; id=&#34;toc-lecture-video&#34;&gt;Lecture Video&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;&lt;/li&gt;
@@ -10692,69 +10692,42 @@ Print the object &lt;code&gt;p&lt;/code&gt; defined in exercise one and describe
 &lt;li&gt;Why do we want tidy data?&lt;/li&gt;
 &lt;li&gt;What are the challenges associated with shaping things into a tidy format?&lt;/li&gt;
 &lt;/ul&gt;
-&lt;!---
-## Slides
-
-The slides below are a much broader overview about goals for the class and thinking about relationships that we might explore with data. The technical aspects of this lecture will be explored in greater detail in the Thursday practical lecture.
-
-&lt;ul class=&#34;nav nav-tabs&#34; id=&#34;slide-tabs&#34; role=&#34;tablist&#34;&gt;
-&lt;li class=&#34;nav-item&#34;&gt;
-&lt;a class=&#34;nav-link active&#34; id=&#34;overview-tab&#34; data-toggle=&#34;tab&#34; href=&#34;#overview&#34; role=&#34;tab&#34; aria-controls=&#34;overview&#34; aria-selected=&#34;true&#34;&gt;Overview&lt;/a&gt;
-&lt;/li&gt;
-&lt;/ul&gt;
-&lt;div class=&#34;tab-content&#34; id=&#34;slide-tabs&#34;&gt;
-&lt;div class=&#34;tab-pane fade show active&#34; id=&#34;overview&#34; role=&#34;tabpanel&#34; aria-labelledby=&#34;overview-tab&#34;&gt;
-&lt;div class=&#34;embed-responsive embed-responsive-16by9&#34;&gt;
-&lt;iframe class=&#34;embed-responsive-item&#34; src=&#34;https://ssc442.netlify.app/slides/01-slides.html#Overview&#34;&gt;&lt;/iframe&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;/div&gt;
---&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div id=&#34;group-projects&#34; class=&#34;section level2&#34;&gt;
-&lt;h2&gt;Group Projects&lt;/h2&gt;
-&lt;p&gt;Your final is a group project.&lt;/p&gt;
+&lt;div id=&#34;final-projects&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Final Projects&lt;/h2&gt;
+&lt;p&gt;Your final is a project.&lt;/p&gt;
 &lt;p&gt;You need to start planning soon.&lt;/p&gt;
 &lt;p&gt;To aid in your planning, here are the required elements of your project (&lt;strong&gt;note: the project assignment that currently exists on this site, if you find it, is old and will change a lot between now and next week&lt;/strong&gt;).&lt;/p&gt;
 &lt;ol style=&#34;list-style-type: decimal&#34;&gt;
 &lt;li&gt;&lt;p&gt;You must find existing data to analyze. Aggregating and merging data from multiple sources is encouraged.&lt;/p&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;You must visualize 3 intersting features of that data.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;You must visualize three interesting features of that data.&lt;/p&gt;&lt;/li&gt;
 &lt;li&gt;&lt;p&gt;You must come up with some analysis—using tools from this course—which relates your data to either a prediction or a policy conclusion.&lt;/p&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;You must think critically about your analysis and be able to identify potential issues/&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;You must think critically about your analysis and be able to identify potential issues.&lt;/p&gt;&lt;/li&gt;
 &lt;li&gt;&lt;p&gt;You must present your analysis as if presenting to a C-suite executive.&lt;/p&gt;&lt;/li&gt;
 &lt;/ol&gt;
 &lt;div id=&#34;teams&#34; class=&#34;section level3&#34;&gt;
 &lt;h3&gt;Teams&lt;/h3&gt;
-&lt;p&gt;Please form teams of 2-4 people. Once all agree to be on a team, have one person email our TA, Xueshi, &lt;a href=&#34;mailto:wangxu36@msu.edu&#34; class=&#34;email&#34;&gt;wangxu36@msu.edu&lt;/a&gt; &lt;strong&gt;and cc all of the members of the team&lt;/strong&gt; so that nobody is surprised to be included on a team. Title the email &lt;em&gt;[SSC442] - Group Formation&lt;/em&gt;. Tell us your team name, and list in the email the names of all of the team members and their email address (in addition to cc-ing those team members on the email).&lt;/p&gt;
-&lt;p&gt;If you opt to not form a team, you will be automatically added to the “willing to be randomly assigned” pool and will be paired with another 2-3 persons.&lt;/p&gt;
-&lt;p&gt;Send this email by &lt;strong&gt;Sunday Jan 23rd&lt;/strong&gt; and I will assign un-teamed folks at the beginning of next week.&lt;/p&gt;
-&lt;div id=&#34;more-on-your-team&#34; class=&#34;section level4&#34;&gt;
-&lt;h4&gt;More on your team&lt;/h4&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;p&gt;You should strongly consider coordinating your work via Github&lt;/p&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;Your team will earn the same scores on all projects&lt;/p&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;Teams will submit only one write-up for the mini-projects and the final&lt;/p&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;To combat additional freeloading, we will use a reporting system for work contributed. More details will follow.&lt;/p&gt;
-&lt;/div&gt;
+&lt;p&gt;You may form teams of two or three people. You may complete the project on your own. Once all agree to be on a team, have one person email our TA, Nick, &lt;a href=&#34;mailto:armst427@msu.edu&#34; class=&#34;email&#34;&gt;armst427@msu.edu&lt;/a&gt; &lt;strong&gt;and cc all of the members of the team&lt;/strong&gt; so that nobody is surprised to be included on a team. Title the email &lt;em&gt;[SSC442] - Group Formation&lt;/em&gt;. Tell us your team name, and list in the email the names of all of the team members and their email address (in addition to cc’ing those team members on the email).&lt;/p&gt;
+&lt;p&gt;If you opt to not form a team, you do not need to send such an email.&lt;/p&gt;
+&lt;p&gt;Send this email by &lt;strong&gt;Sunday January 22nd&lt;/strong&gt;.&lt;/p&gt;
+&lt;p&gt;Some final notes on teams:
+- You should strongly consider coordinating your work via Github. This is how the pros do it.
+- Your team will earn the same scores on all projects.
+- Teams will submit only one write-up for the mini-projects and the final.&lt;/p&gt;
+&lt;p&gt;To combat additional freeloading, we will use a reporting system for work contributed. More details are in the writeup about final projects.&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;div id=&#34;randomness-and-data-analytics&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Randomness and Data Analytics&lt;/h2&gt;
 &lt;p&gt;And the fabulous importance of probabilistic inference…&lt;/p&gt;
 &lt;p&gt;This lecture is very “high-level,” which means it is talking about abstract concepts. It is also quite important.&lt;/p&gt;
-&lt;p&gt;We want to discuss &lt;strong&gt;why&lt;/strong&gt; we eventually will need ot utilize tons of difficult mathematics. Why do we care so much about hypothesis tests and the like?&lt;/p&gt;
-&lt;p&gt;Moreover, we can highlight why we want our data structured to behave nicely.&lt;/p&gt;
-&lt;div id=&#34;learning-from-data&#34; class=&#34;section level3&#34;&gt;
-&lt;h3&gt;Learning From Data&lt;/h3&gt;
-&lt;p&gt;The following are the baisc requirements for statistical learning&lt;/p&gt;
+&lt;p&gt;We want to discuss &lt;strong&gt;why&lt;/strong&gt; we might need to utilize tons of difficult mathematics. Why do we care so much about hypothesis tests and the like? Moreover, we can highlight why we want our data structured to behave nicely. As noted in the previous lecture, the following are the basic requirements for statistical learning:&lt;/p&gt;
 &lt;ol style=&#34;list-style-type: decimal&#34;&gt;
-&lt;li&gt;&lt;p&gt;A pattern exists&lt;/p&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;This pattern is not easily expressed in a closed mathematical form&lt;/p&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;You have data&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;A pattern exists&lt;/li&gt;
+&lt;li&gt;This pattern is not easily expressed in a closed mathematical form&lt;/li&gt;
+&lt;li&gt;You have data&lt;/li&gt;
 &lt;/ol&gt;
-&lt;/div&gt;
 &lt;div id=&#34;formalization&#34; class=&#34;section level3&#34;&gt;
 &lt;h3&gt;Formalization&lt;/h3&gt;
 &lt;p&gt;We think of our outcome-of-interest as a &lt;strong&gt;reponse&lt;/strong&gt; or &lt;strong&gt;target&lt;/strong&gt; that we wish to predict or wish to learn something about.&lt;/p&gt;
@@ -10795,16 +10768,15 @@ x_{N1} &amp;amp; x_{N2}
 &lt;p&gt;Depending on the complexity of &lt;span class=&#34;math inline&#34;&gt;\(f\)&lt;/span&gt;, we may be able to meaningfully understand how each component of &lt;span class=&#34;math inline&#34;&gt;\(X\)&lt;/span&gt; affects &lt;span class=&#34;math inline&#34;&gt;\(Y\)&lt;/span&gt;.&lt;/p&gt;
 &lt;p&gt;(But we should be careful about assigning causal interpretations, more on this later)&lt;/p&gt;
 &lt;/div&gt;
-&lt;div id=&#34;the-parable-of-the-marbles&#34; class=&#34;section level3&#34;&gt;
-&lt;h3&gt;The Parable of the Marbles&lt;/h3&gt;
-&lt;p&gt;(Courtesy of Prof. Bushong)&lt;/p&gt;
-&lt;p&gt;Imagine a bag of marbles with two types of marbles: ♣️ and ♦️.&lt;/p&gt;
-&lt;p&gt;We are going to pick a &lt;strong&gt;sample&lt;/strong&gt; of &lt;span class=&#34;math inline&#34;&gt;\(n\)&lt;/span&gt; marbles (with replacement).&lt;/p&gt;
-&lt;p&gt;We want to learn something about &lt;span class=&#34;math inline&#34;&gt;\(\mu\)&lt;/span&gt;, the &lt;strong&gt;objective&lt;/strong&gt; probability to pick a ♣️.&lt;/p&gt;
+&lt;div id=&#34;the-parable-of-the-playing-cards&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;The Parable of the Playing Cards&lt;/h3&gt;
+&lt;p&gt;Imagine a simplified deck of playing cards with two types of suits: ♣️ and ♦️.&lt;/p&gt;
+&lt;p&gt;We are going to pick a &lt;strong&gt;sample&lt;/strong&gt; of &lt;span class=&#34;math inline&#34;&gt;\(n\)&lt;/span&gt; cards (with replacement). That means we pull out a card, look at its suit, then replace it in the deck.&lt;/p&gt;
+&lt;p&gt;Suppose we do not know the probability distribution within our deck. A sensible thing to do: learn something about &lt;span class=&#34;math inline&#34;&gt;\(\mu\)&lt;/span&gt;, the &lt;strong&gt;objective&lt;/strong&gt; probability to pick a ♣️.&lt;/p&gt;
 &lt;p&gt;In addition to defining the &lt;strong&gt;objective&lt;/strong&gt; probability of picking a ♣️, we have an observed fraction &lt;span class=&#34;math inline&#34;&gt;\(\eta\)&lt;/span&gt;, which will define as the fraction of ♣️ in the &lt;em&gt;sample&lt;/em&gt;.&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;Question&lt;/strong&gt;: Can we say anything exact and for-sure about &lt;span class=&#34;math inline&#34;&gt;\(\mu\)&lt;/span&gt; (outside the data) after observing &lt;span class=&#34;math inline&#34;&gt;\(\eta\)&lt;/span&gt; (the data)?&lt;/p&gt;
 &lt;ul&gt;
-&lt;li&gt;&lt;p&gt;No. It is possible for the sample to be all ♣️, ♣️, ♣️, ♣️, ♣️ even when the bag is is 50/50 ♦️&lt;/p&gt;
+&lt;li&gt;&lt;p&gt;Nope. It is possible for the sample to be all ♣️, ♣️, ♣️, ♣️, ♣️ even when the deck is 50/50 ♦️&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;p&gt;No matter what we draw, we can’t (based on that draw alone) eliminate the possibility of drawing a ♦️.&lt;/p&gt;&lt;/li&gt;
 &lt;li&gt;&lt;p&gt;And unless we assume that the only two values in the world are ♦️ and ♣️, we can’t rule out 💩&lt;a href=&#34;#fn1&#34; class=&#34;footnote-ref&#34; id=&#34;fnref1&#34;&gt;&lt;sup&gt;1&lt;/sup&gt;&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
@@ -10821,9 +10793,8 @@ x_{N1} &amp;amp; x_{N2}
 &lt;ul&gt;
 &lt;li&gt;This is called &lt;em&gt;No Free Lunch&lt;/em&gt;&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;You cannot know anything for sure about &lt;span class=&#34;math inline&#34;&gt;\(f\)&lt;/span&gt; outside the data without making assumptions.&lt;/p&gt;
-&lt;p&gt;Is there any hope to know anything about &lt;span class=&#34;math inline&#34;&gt;\(f\)&lt;/span&gt; outside the data set without making assumptions about &lt;span class=&#34;math inline&#34;&gt;\(f\)&lt;/span&gt;?&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;Yes&lt;/strong&gt;, if we are willing to give up the “for sure”&lt;/p&gt;
+&lt;p&gt;You cannot know anything for sure about &lt;span class=&#34;math inline&#34;&gt;\(f\)&lt;/span&gt; outside the data without making assumptions.This seems like a total mess. Is there any hope to know anything about &lt;span class=&#34;math inline&#34;&gt;\(f\)&lt;/span&gt; outside the data set without making assumptions about &lt;span class=&#34;math inline&#34;&gt;\(f\)&lt;/span&gt;?&lt;/p&gt;
+&lt;p&gt;There is good news. &lt;strong&gt;Yes&lt;/strong&gt;, we can learn from our sample… if we are willing to give up the “for sure”.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;hoeffdings-inequality&#34; class=&#34;section level3&#34;&gt;
 &lt;h3&gt;Hoeffding’s Inequality&lt;/h3&gt;
@@ -10844,6 +10815,7 @@ x_{N1} &amp;amp; x_{N2}
 &lt;p&gt;&lt;strong&gt;What does this mean?&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;If I repeatedly pick a sample of size 1,000, observe &lt;span class=&#34;math inline&#34;&gt;\(\eta\)&lt;/span&gt; and claim that &lt;span class=&#34;math inline&#34;&gt;\(\mu \in \left[\eta - .05, \eta + .05\right]\)&lt;/span&gt; (or that the error bar is &lt;span class=&#34;math inline&#34;&gt;\(\pm 0.05\)&lt;/span&gt;), I will be right 99% of the time.&lt;/p&gt;
 &lt;p&gt;On any particular sample you may be wrong, but not often.&lt;/p&gt;
+&lt;p&gt;In this sense, we can learn something from the data. We’ll show in later discussions how we can extend this principle to learning an arbitrary function &lt;span class=&#34;math inline&#34;&gt;\(f\)&lt;/span&gt; instead of just means.&lt;/p&gt;
 &lt;div class=&#34;fyi&#34;&gt;
 &lt;p&gt;&lt;strong&gt;NOTE&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;This week’s content is split into two “halves”: the critical data manipulation information contained below and a more-entertaining discussion of visualization included in the Exercises.&lt;/p&gt;
@@ -11526,6 +11498,10 @@ case_when(x &amp;lt; 0 ~ &amp;quot;Negative&amp;quot;,
 &lt;/ol&gt;
 &lt;/div&gt;
 &lt;/div&gt;
+&lt;div id=&#34;cheat-sheet-dplyr&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Cheat Sheet, &lt;code&gt;dplyr&lt;/code&gt;&lt;/h3&gt;
+&lt;p&gt;&lt;embed src=&#34;https://ssc442.netlify.app/content/01-content_files/data-transformation.pdf&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
 &lt;/div&gt;
 &lt;div id=&#34;lecture-video&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Lecture Video&lt;/h2&gt;
@@ -11544,7 +11520,7 @@ case_when(x &amp;lt; 0 ~ &amp;quot;Negative&amp;quot;,
 &lt;div class=&#34;footnotes footnotes-end-of-document&#34;&gt;
 &lt;hr /&gt;
 &lt;ol&gt;
-&lt;li id=&#34;fn1&#34;&gt;&lt;p&gt;I discovered the &lt;code&gt;emo::ji()&lt;/code&gt; function at 8:55am. My wife joked that I would find a way to use the poop emoji by 9:00am. It is now 8:59am. She was right.&lt;a href=&#34;#fnref1&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li id=&#34;fn1&#34;&gt;&lt;p&gt;A note from Prof. Kirkpatrick: “I discovered the &lt;code&gt;emo::ji()&lt;/code&gt; function at 8:55am. My wife joked that I would find a way to use the poop emoji by 9:00am. It is now 8:59am. She was right.”&lt;a href=&#34;#fnref1&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
 &lt;li id=&#34;fn2&#34;&gt;&lt;p&gt;If you have not installed this package already, you must use &lt;code&gt;install.packages(&#34;tidyverse&#34;)&lt;/code&gt; prior to the &lt;code&gt;library()&lt;/code&gt; call you see below.&lt;a href=&#34;#fnref2&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
 &lt;/ol&gt;
 &lt;/div&gt;
