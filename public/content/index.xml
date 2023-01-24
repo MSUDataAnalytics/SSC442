@@ -13,6 +13,368 @@
     </image>
     
     <item>
+      <title>Effective Visualizations</title>
+      <link>https://ssc442.netlify.app/content/02-content/</link>
+      <pubDate>Tue, 24 Jan 2023 00:00:00 +0000</pubDate>
+      <guid>https://ssc442.netlify.app/content/02-content/</guid>
+      <description>
+&lt;script src=&#34;https://ssc442.netlify.app/rmarkdown-libs/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
+
+&lt;div id=&#34;TOC&#34;&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#readings&#34; id=&#34;toc-readings&#34;&gt;Readings&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#guiding-questions&#34; id=&#34;toc-guiding-questions&#34;&gt;Guiding Questions&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#starting-up&#34; id=&#34;toc-starting-up&#34;&gt;Starting up&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#scales-and-transformations&#34; id=&#34;toc-scales-and-transformations&#34;&gt;Scales and transformations&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#log-transformations&#34; id=&#34;toc-log-transformations&#34;&gt;Log transformations&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#transforming-data-vs.-transforming-using-scale_...&#34; id=&#34;toc-transforming-data-vs.-transforming-using-scale_...&#34;&gt;Transforming data vs. transforming using &lt;code&gt;scale_...&lt;/code&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#axis-labels-legends-and-titles&#34; id=&#34;toc-axis-labels-legends-and-titles&#34;&gt;Axis labels, legends, and titles&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#changing-axis-titles&#34; id=&#34;toc-changing-axis-titles&#34;&gt;Changing axis titles&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#titles&#34; id=&#34;toc-titles&#34;&gt;Titles&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#axis-ticks&#34; id=&#34;toc-axis-ticks&#34;&gt;Axis ticks&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#additional-geometries&#34; id=&#34;toc-additional-geometries&#34;&gt;Additional geometries&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#geom_line&#34; id=&#34;toc-geom_line&#34;&gt;&lt;code&gt;geom_line&lt;/code&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#using-different-data-with-different-geometries&#34; id=&#34;toc-using-different-data-with-different-geometries&#34;&gt;Using different data with different geometries&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#multiple-geometries&#34; id=&#34;toc-multiple-geometries&#34;&gt;Multiple geometries&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#lecture-videos&#34; id=&#34;toc-lecture-videos&#34;&gt;Lecture Videos&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#try-it&#34; id=&#34;toc-try-it&#34;&gt;Try it!&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+
+&lt;div id=&#34;readings&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Readings&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;This page.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div id=&#34;guiding-questions&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Guiding Questions&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;No guiding questions today as we’re mostly learning some technical aspects of &lt;code&gt;ggplot&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;We have largely reversed our &lt;strong&gt;content&lt;/strong&gt; and &lt;strong&gt;example&lt;/strong&gt; lectures for data viz.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;div id=&#34;starting-up&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Starting up&lt;/h3&gt;
+&lt;p&gt;Load up our &lt;code&gt;murders&lt;/code&gt; data&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(dslabs)
+library(ggplot2)
+library(dplyr)
+data(murders)
+
+p &amp;lt;- ggplot(data = murders, aes(x = population, y = total, label = abb))&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;scales-and-transformations&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Scales and transformations&lt;/h2&gt;
+&lt;div id=&#34;log-transformations&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Log transformations&lt;/h3&gt;
+&lt;p&gt;Last lecture, we re-scaled our population by 10^6 (millions), but still had a lot of variation because some states are tiny and some are huge. Sometimes, we want to have one (or both) of our axes scaled non-linearly. For instance, if we wanted to have our x-axis be in log base 10, then each major tick would represent a factor of 10 over the last. This is not the default, so this change needs to be added through a &lt;em&gt;scales&lt;/em&gt; layer. A quick look at the cheat sheet reveals the &lt;code&gt;scale_x_continuous&lt;/code&gt; function lets us control the behavior of scales. We use them like this:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p + geom_point(size = 3) +
+  geom_text(nudge_x = 0.05) +
+  scale_x_continuous(trans = &amp;quot;log10&amp;quot;) +
+  scale_y_continuous(trans = &amp;quot;log10&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/content/02-content_files/figure-html/ggplot-example-9-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;A couple of things here: adding things like &lt;code&gt;scale_x_continuous(...)&lt;/code&gt; operates on the whole plot. In some cases, order matters, but it doesn’t here, so we can throw &lt;code&gt;scale_x_continuous&lt;/code&gt; anywhere. Because we have altered the whole plot’s scale to be in the log-scale now, the &lt;em&gt;nudge&lt;/em&gt; must be made smaller. It is in log-base-10 units. Using &lt;code&gt;?scale_x_continuous&lt;/code&gt; brings us to the help for both &lt;code&gt;scale_x_continuous&lt;/code&gt; and &lt;code&gt;scale_y_continuous&lt;/code&gt;, which shows us the options for transformations &lt;code&gt;trans = ...&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;This particular transformation is so common that &lt;strong&gt;ggplot2&lt;/strong&gt; provides the specialized functions &lt;code&gt;scale_x_log10&lt;/code&gt; and &lt;code&gt;scale_y_log10&lt;/code&gt; which “inherit” (take the place of) the &lt;code&gt;scale_x_continuous&lt;/code&gt; functions but have log base 10 as default. We can use these to rewrite the code like this:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p + geom_point(size = 3) +
+  geom_text(nudge_x = 0.05) +
+  scale_x_log10() +
+  scale_y_log10()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/content/02-content_files/figure-html/unnamed-chunk-2-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;This can make a plot much easier to read, though one has to be sure to pay attention to the values on the axes. Plotting anything with very large outliers will almost always be better if done in log-scale. Adding the scale layer is an easy way to fix this.&lt;/p&gt;
+&lt;p&gt;We can also use one of many built-in transformations. Of note: &lt;strong&gt;reverse&lt;/strong&gt; just inverts the scale, which can be helpful, &lt;strong&gt;log&lt;/strong&gt; uses the natural log, &lt;strong&gt;sqrt&lt;/strong&gt; takes the square root (dropping anything with a negative value), &lt;strong&gt;reciprocal&lt;/strong&gt; takes 1/x. If your x-axis is in a date format, you can also scale to &lt;strong&gt;hms&lt;/strong&gt; (hour-minute-second) or &lt;strong&gt;date&lt;/strong&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;transforming-data-vs.-transforming-using-scale_...&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Transforming data vs. transforming using &lt;code&gt;scale_...&lt;/code&gt;&lt;/h3&gt;
+&lt;p&gt;We could simply take the log of population and log of total in the call and we’d get something very similar. Note that we had to override the aesthetic mapping set in &lt;code&gt;p&lt;/code&gt; in each of the geometries:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p + geom_point(aes(x = log(population, base=10), y = log(total, base=10)), size = 3) +
+  geom_text(aes(x = log(population, base=10), y = log(total, base=10)), nudge_x = 0.05) &lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/content/02-content_files/figure-html/unnamed-chunk-3-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;This avoids using &lt;code&gt;scale_x_continuous&lt;/code&gt; or it’s child function &lt;code&gt;scale_x_log10&lt;/code&gt;. One advantage to using &lt;code&gt;scale_x...&lt;/code&gt; is that the axes are correctly labeled. When we transform the data directly, the axis labels only show the transformed values, so 7,000,000 becomes 7.0. This could be confusing! We could update the axis labels to say “total murders (log base 10)” and “total population (log base 10)”, but that’s cumbersome. Using &lt;code&gt;scale_x...&lt;/code&gt; is a lot more refined and easy.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;axis-labels-legends-and-titles&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Axis labels, legends, and titles&lt;/h2&gt;
+&lt;p&gt;But let’s say we did want to re-name our x-axis label. Or maybe we don’t like that the variable column name is lower-case “p”.&lt;/p&gt;
+&lt;p&gt;As with many things in &lt;code&gt;ggplot&lt;/code&gt;, there are many ways to get the same result. We’ll go over one way of changing titles and labels, but know that there are many more.&lt;/p&gt;
+&lt;div id=&#34;changing-axis-titles&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Changing axis titles&lt;/h3&gt;
+&lt;p&gt;We’ll use the &lt;code&gt;labs(...)&lt;/code&gt; annotation layer to do this, which is pretty straightforward. &lt;code&gt;?labs&lt;/code&gt; shows us what we can change, and while it looks pretty basic, the real meat is in the &lt;code&gt;...&lt;/code&gt; argument, which the help says is “A list of new name-value pairs”. This means we can re-define the label on anything that is an aesthetic mapping. X and Y are aesthetic mappings, so…&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p + geom_point(size = 3) +
+  geom_text(nudge_x = 0.05) +
+  scale_x_log10() +
+  scale_y_log10() + 
+  labs(x = &amp;#39;Population&amp;#39;, y = &amp;#39;Total murders&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/content/02-content_files/figure-html/unnamed-chunk-4-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Now, let’s use an aesthetic mapping that generates a legend, like &lt;code&gt;color&lt;/code&gt;, and see what &lt;code&gt;labs&lt;/code&gt; renames:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p + geom_point(aes(color = region), size = 3) +
+  geom_text(nudge_x = 0.05) +
+  scale_x_log10() +
+  scale_y_log10() + 
+  labs(x = &amp;#39;Population&amp;#39;, y = &amp;#39;Total murders&amp;#39;, color = &amp;#39;US Region&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/content/02-content_files/figure-html/unnamed-chunk-5-1.png&#34; width=&#34;672&#34; /&gt;
+We can rename the aesthetic mapping-relevant label using &lt;code&gt;labs&lt;/code&gt;. Even if there are multiple mapped aesthetics:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p + geom_point(aes(color = region, size = total/population)) +
+  geom_text(nudge_x = 0.05) +
+  scale_x_log10() +
+  scale_y_log10() + 
+  labs(x = &amp;#39;Population&amp;#39;, y = &amp;#39;Total murders&amp;#39;, color = &amp;#39;US Region&amp;#39;, size = &amp;#39;Murder rate&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/content/02-content_files/figure-html/unnamed-chunk-6-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;titles&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Titles&lt;/h3&gt;
+&lt;p&gt;In &lt;code&gt;?labs&lt;/code&gt;, we also see some things that look like titles and captions. We can include those:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p + geom_point(aes(color = region, size = total/population)) +
+  geom_text(nudge_x = 0.05) +
+  scale_x_log10() +
+  scale_y_log10() + 
+  labs(x = &amp;#39;Population&amp;#39;, y = &amp;#39;Total murders&amp;#39;, color = &amp;#39;US Region&amp;#39;, size = &amp;#39;Murder rate&amp;#39;,
+       title = &amp;#39;This is a title&amp;#39;, subtitle = &amp;#39;This is a subtitle&amp;#39;, caption = &amp;#39;This is a caption&amp;#39;, tag = &amp;#39;This is a tag&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/content/02-content_files/figure-html/unnamed-chunk-7-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Now that you know how, &lt;strong&gt;always label your plots with at least a title and have meaningful axis and legend labels&lt;/strong&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;axis-ticks&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Axis ticks&lt;/h2&gt;
+&lt;p&gt;In addition to the axis labels, we may want to format or change the axis tick labels (like “1e+06” above) or even where the tick marks and lines are drawn. If we don’t specify anything, the axis labels and tick marks are drawn as best as &lt;code&gt;ggplot&lt;/code&gt; can do, but we can change this. This might be especially useful if our data has some meaningful cutoffs that aren’t found by the default, or we just don’t like where the marks fall or how they are labeled. This is easy to fix with &lt;code&gt;ggplot&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;To change the tick mark labels, we have to set the tick mark locations. Then we can set a label for each tick mark. Let’s go back to our &lt;code&gt;murders&lt;/code&gt; data and, for simplicity, take the log transformation off the Y axis. We’ll use &lt;code&gt;scale_y_continuous&lt;/code&gt; to tell R &lt;em&gt;where&lt;/em&gt; to put the breaks (&lt;code&gt;breaks =&lt;/code&gt;) and &lt;em&gt;what to label&lt;/em&gt; the breaks. We have to give it one label for every break. Let’s say we just want a line at the 500’s and let’s say we want to (absurdly) use written numerics for each of the Y-axis lines. Since &lt;code&gt;scale_y_log10&lt;/code&gt; &lt;strong&gt;inherits from&lt;/strong&gt; &lt;code&gt;scale_y_continuous&lt;/code&gt;, we can just use that and add the breaks and labels:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p + geom_point(aes(color = region), size = 3) +
+  geom_text(nudge_x = .05) +
+  scale_x_log10() +
+  scale_y_log10(breaks = c(0,50, 100, 500,1000,1500), 
+                     labels = c(&amp;#39;Zero&amp;#39;,&amp;#39;Fifty&amp;#39;,&amp;#39;One hundred&amp;#39;,&amp;#39;Five hundred&amp;#39;,&amp;#39;One thousand&amp;#39;,&amp;#39;Fifteen hundred&amp;#39;)) +
+  labs(x = &amp;#39;Population&amp;#39;, y = &amp;#39;Total murders&amp;#39;, color = &amp;#39;US Region&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/content/02-content_files/figure-html/unnamed-chunk-8-1.png&#34; width=&#34;672&#34; /&gt;
+We have manually set both the location and the label for the y-axis. Note that R filled in the in-between “minor” tick lines, but we can take those out. Since we are setting the location of the lines, we can do anything we want:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p + geom_point(aes(color = region), size = 3) +
+  geom_text(nudge_x = .05) +
+  scale_x_log10() +
+  scale_y_log10(breaks = c(0,50, 100, 721, 1000,1500), 
+                     labels = c(&amp;#39;Zero&amp;#39;,&amp;#39;Fifty&amp;#39;,&amp;#39;One hundred&amp;#39;,&amp;#39;Seven hundred twenty one&amp;#39;,&amp;#39;One thousand&amp;#39;,&amp;#39;Fifteen hundred&amp;#39;),
+                     minor_breaks = NULL) +
+  labs(x = &amp;#39;Population&amp;#39;, y = &amp;#39;Total murders&amp;#39;, color = &amp;#39;US Region&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/content/02-content_files/figure-html/unnamed-chunk-9-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;So we can now define where axis tick lines should lie and how they should be labeled.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;additional-geometries&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Additional geometries&lt;/h2&gt;
+&lt;p&gt;Let’s say we are happy with our axis tick locations, but we want to add a single additional line. Maybe we want to divide at 1,000,000 population (a vertical line at 1,000,000) becuase we think those over 1,000,000 are somehow different, and we want to call attention to the data around that point. As a more general example, if we were to plot, say, car accidents by age, we would maybe want to label age 21, when people can legally purchase alcohol (and subsequently cause car accidents).&lt;/p&gt;
+&lt;p&gt;This brings us to our first additional geometry beyond &lt;code&gt;geom_point&lt;/code&gt; (OK, we used &lt;code&gt;geom_text&lt;/code&gt;, but that’s more of an annotation). &lt;code&gt;geom_vline&lt;/code&gt; lets us add a single vertical line (without aesthetic mappings). If we look at &lt;code&gt;?geom_vline&lt;/code&gt; we see that it requires ones aesthetic:&lt;code&gt;xintercept&lt;/code&gt;. It also takes aesthetics like color and size, and introduces the &lt;code&gt;linetype&lt;/code&gt; aesthetic:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p + geom_point(aes(color = region), size = 3) +
+  geom_text(nudge_x = .05) +
+  geom_vline(aes(xintercept = 1000000), col = &amp;#39;red&amp;#39;, size = 2, linetype = 2) +
+  scale_x_log10() +
+  scale_y_log10(breaks = c(0,50, 100, 721, 1000,1500), 
+                     labels = c(&amp;#39;Zero&amp;#39;,&amp;#39;Fifty&amp;#39;,&amp;#39;One hundred&amp;#39;,&amp;#39;Seven hundred twenty one&amp;#39;,&amp;#39;One thousand&amp;#39;,&amp;#39;Fifteen hundred&amp;#39;),
+                     minor_breaks = NULL) +
+  labs(x = &amp;#39;Population&amp;#39;, y = &amp;#39;Total murders&amp;#39;, color = &amp;#39;US Region&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/content/02-content_files/figure-html/unnamed-chunk-10-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Combining geometries is as easy as adding the layers with &lt;code&gt;+&lt;/code&gt;.&lt;/p&gt;
+&lt;div id=&#34;geom_line&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;&lt;code&gt;geom_line&lt;/code&gt;&lt;/h3&gt;
+&lt;p&gt;For a good old line plot, we use the line geometry at &lt;code&gt;geom_line&lt;/code&gt;. The help for &lt;code&gt;?geom_line&lt;/code&gt; tells us that we need an x and a y aesthetic (much like &lt;code&gt;geom_points&lt;/code&gt;). Since our &lt;code&gt;murders&lt;/code&gt; data isn’t really suited to a line graph, we’ll use a daily stock price. We’ll get this using &lt;code&gt;tidyquant&lt;/code&gt;, which pulls stock prices from Yahoo Finance and maintains the “tidy” format. You’ll need to &lt;code&gt;install.packages(&#39;tidyquant&#39;)&lt;/code&gt; before you run this the first time.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(tidyquant)
+AAPL = tq_get(&amp;quot;AAPL&amp;quot;, from = &amp;#39;2009-01-01&amp;#39;, to = &amp;#39;2021-08-01&amp;#39;, get = &amp;#39;stock.prices&amp;#39;)
+head(AAPL)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 6 × 8
+##   symbol date        open  high   low close     volume adjusted
+##   &amp;lt;chr&amp;gt;  &amp;lt;date&amp;gt;     &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt;      &amp;lt;dbl&amp;gt;    &amp;lt;dbl&amp;gt;
+## 1 AAPL   2009-01-02  3.07  3.25  3.04  3.24  746015200     2.76
+## 2 AAPL   2009-01-05  3.33  3.44  3.31  3.38 1181608400     2.88
+## 3 AAPL   2009-01-06  3.43  3.47  3.30  3.32 1289310400     2.83
+## 4 AAPL   2009-01-07  3.28  3.30  3.22  3.25  753048800     2.77
+## 5 AAPL   2009-01-08  3.23  3.33  3.22  3.31  673500800     2.82
+## 6 AAPL   2009-01-09  3.33  3.34  3.22  3.24  546845600     2.76&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Now, we can plot a line graph of the Apple closing stock price over the requested date range. We want this to be a time series, so the x-axis will be the date and the y-axis will be the closing price.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(AAPL, aes(x = date, y = close)) +
+  geom_line() +
+  labs(x = &amp;#39;Date&amp;#39;, y = &amp;#39;Closing price&amp;#39;, title = &amp;#39;Apple stock price&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/content/02-content_files/figure-html/geomPath-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;In &lt;code&gt;geom_line&lt;/code&gt;, R will automatically sort on the x-variable. If you don’t want this, then &lt;code&gt;geom_path&lt;/code&gt; will use whatever order the data is in. Either way, if you have multiple observations for the same value on the x-axis, then you’ll get something pretty messy because R will try to connect, in some order, all the points. Let’s see an example with two stocks:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;AAPLNFLX = tq_get(c(&amp;quot;AAPL&amp;quot;,&amp;quot;NFLX&amp;quot;), from = &amp;#39;2021-01-01&amp;#39;, to = &amp;#39;2021-08-01&amp;#39;, get = &amp;#39;stock.prices&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Warning: `type_convert()` only converts columns of type &amp;#39;character&amp;#39;.
+## - `df` has no columns of type &amp;#39;character&amp;#39;
+
+## Warning: `type_convert()` only converts columns of type &amp;#39;character&amp;#39;.
+## - `df` has no columns of type &amp;#39;character&amp;#39;&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(AAPLNFLX, aes(x = date, y = close)) +
+  geom_line() +
+  labs(x = &amp;#39;Date&amp;#39;, y = &amp;#39;Closing price&amp;#39;, title = &amp;#39;Apple and Netflix stock price&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/content/02-content_files/figure-html/unnamed-chunk-11-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;That looks kinda strange. That’s because, for every date, we have two values - the NFLX and the AAPL value, so each day has a vertical line drawn between the two prices. This is nonsense, especially since what we want to see is the history of NFLX and AAPL over time.&lt;/p&gt;
+&lt;p&gt;Aesthetics to the rescue! Remember, when we use an aesthetic mapping, we are able to separate out data by things like color or linetype. Let’s use color as the aesthetic here, and map it to the stock ticker:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;AAPLNFLX = tq_get(c(&amp;quot;AAPL&amp;quot;,&amp;quot;NFLX&amp;quot;), from = &amp;#39;2021-01-01&amp;#39;, to = &amp;#39;2021-08-01&amp;#39;, get = &amp;#39;stock.prices&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Warning: `type_convert()` only converts columns of type &amp;#39;character&amp;#39;.
+## - `df` has no columns of type &amp;#39;character&amp;#39;
+
+## Warning: `type_convert()` only converts columns of type &amp;#39;character&amp;#39;.
+## - `df` has no columns of type &amp;#39;character&amp;#39;&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(AAPLNFLX, aes(x = date, y = close, color = symbol)) +
+  geom_line() +
+  labs(x = &amp;#39;Date&amp;#39;, y = &amp;#39;Closing price&amp;#39;, title = &amp;#39;Apple and Netflix stock price&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/content/02-content_files/figure-html/unnamed-chunk-12-1.png&#34; width=&#34;672&#34; /&gt;
+Well there we go! We can now see each stock price over time, with a convenient legend. Later on, we’ll learn how to change the color palatte. If we don’t necessarily want a different color but we do want to separate the lines, we can use the &lt;code&gt;group&lt;/code&gt; aesthetic.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;AAPLNFLX = tq_get(c(&amp;quot;AAPL&amp;quot;,&amp;quot;NFLX&amp;quot;), from = &amp;#39;2021-01-01&amp;#39;, to = &amp;#39;2021-08-01&amp;#39;, get = &amp;#39;stock.prices&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Warning: `type_convert()` only converts columns of type &amp;#39;character&amp;#39;.
+## - `df` has no columns of type &amp;#39;character&amp;#39;
+
+## Warning: `type_convert()` only converts columns of type &amp;#39;character&amp;#39;.
+## - `df` has no columns of type &amp;#39;character&amp;#39;&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(AAPLNFLX, aes(x = date, y = close, group = symbol)) +
+  geom_line() + 
+  labs(x = &amp;#39;Date&amp;#39;, y = &amp;#39;Closing price&amp;#39;, title = &amp;#39;Apple and Netflix stock price&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/content/02-content_files/figure-html/unnamed-chunk-13-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Similar result as &lt;code&gt;geom_line&lt;/code&gt;, but without the color difference (which makes it rather hard to tell what you’re looking at). But if we add labels using &lt;code&gt;geom_label&lt;/code&gt;, we’ll get one label for every point, which will be overwhelming. The solution? Use some filtered data so that there is only one point for each label. But that means replacing the &lt;code&gt;data&lt;/code&gt; in &lt;code&gt;ggplot&lt;/code&gt;. Here’s how.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;using-different-data-with-different-geometries&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Using different data with different geometries&lt;/h3&gt;
+&lt;p&gt;Just as we can use different aesthetic mappings on each geometry, we can use different &lt;em&gt;data&lt;/em&gt; entirely. This is useful when we want one geometry to have one set of data (like the stock prices above), but another geometry to only have a subset of the data. Why would we want that? Well, we’d like to label just &lt;em&gt;one&lt;/em&gt; part of each of the lines in our plot, right? That means we want to label a &lt;em&gt;subset&lt;/em&gt; of the stock data.&lt;/p&gt;
+&lt;p&gt;To replace data in a geometry, we just need to specify the &lt;code&gt;data =&lt;/code&gt; argument separately:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(AAPLNFLX, aes(x = date, y = close, group = symbol)) +
+  geom_line() +
+  geom_label(data = AAPLNFLX %&amp;gt;% group_by(symbol) %&amp;gt;% slice(100),
+             aes(label = symbol),
+             nudge_y = 20) + 
+  labs(x = &amp;#39;Date&amp;#39;, y = &amp;#39;Closing price&amp;#39;, title = &amp;#39;Apple and Netflix stock price&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/content/02-content_files/figure-html/unnamed-chunk-14-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;In &lt;code&gt;geom_label&lt;/code&gt;, we specified we wanted the 100th observation from each symbol to be the label location. Then, we nudged it up along y by 20 so that it’s clear of the line.&lt;/p&gt;
+&lt;p&gt;R also has a very useful &lt;code&gt;ggrepel&lt;/code&gt; package that gives us &lt;code&gt;geom_label_repel&lt;/code&gt; which takes care of the nudging for us, even in complicated situations (lots of points, lines, etc.). It does a decent job here of moving the label to a point where it doesn’t cover a lot of data.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(ggrepel)
+ggplot(AAPLNFLX, aes(x = date, y = close, group = symbol)) +
+  geom_line() +
+  geom_label_repel(data = AAPLNFLX %&amp;gt;% group_by(symbol) %&amp;gt;% slice(100),
+             aes(label = symbol)) + 
+  labs(x = &amp;#39;Date&amp;#39;, y = &amp;#39;Closing price&amp;#39;, title = &amp;#39;Apple and Netflix stock price&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/content/02-content_files/figure-html/unnamed-chunk-15-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Now, we don’t lose a lot of space to a legend, and we haven’t had to use color to separate the stock symbols.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;multiple-geometries&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Multiple geometries&lt;/h3&gt;
+&lt;p&gt;Since this section is about adding geometries, we &lt;em&gt;can&lt;/em&gt; combine points and lines. Since lines connect points, it will look like a giant connect-the-dots.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(ggrepel)
+ggplot(AAPLNFLX, aes(x = date, y = close, group = symbol)) +
+  geom_line() +
+  geom_point() + 
+  geom_label_repel(data = AAPLNFLX %&amp;gt;% group_by(symbol) %&amp;gt;% slice(100),
+             aes(label = symbol)) + 
+  labs(x = &amp;#39;Date&amp;#39;, y = &amp;#39;Closing price&amp;#39;, title = &amp;#39;Apple and Netflix stock price&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/content/02-content_files/figure-html/unnamed-chunk-16-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;lecture-videos&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Lecture Videos&lt;/h2&gt;
+&lt;p&gt;The video from this lecture will be &lt;a href=&#34;https://mediaspace.msu.edu/media/SSC442+-+Content+02+-+Jan+25th/1_htvxyae6&#34;&gt;available here around 3-6 days after class &lt;i class=&#34;fas fa-film&#34;&gt;&lt;/i&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;try-it&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Try it!&lt;/h2&gt;
+&lt;div class=&#34;fyi&#34;&gt;
+&lt;p&gt;&lt;strong&gt;TRY IT&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Start by loading the &lt;strong&gt;dplyr&lt;/strong&gt; and &lt;strong&gt;ggplot2&lt;/strong&gt; library as well as the &lt;code&gt;murders&lt;/code&gt; and &lt;code&gt;heights&lt;/code&gt; data.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(dplyr)
+library(ggplot2)
+library(dslabs)
+data(heights)
+data(murders)&lt;/code&gt;&lt;/pre&gt;
+&lt;ol style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;With &lt;strong&gt;ggplot2&lt;/strong&gt; plots can be saved as objects. For example we can associate a dataset with a plot object like this&lt;/li&gt;
+&lt;/ol&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p &amp;lt;- ggplot(data = murders)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Because &lt;code&gt;data&lt;/code&gt; is the first argument we don’t need to spell it out&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p &amp;lt;- ggplot(murders)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;and we can also use the pipe:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p &amp;lt;- murders %&amp;gt;% ggplot()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;What is class of the object &lt;code&gt;p&lt;/code&gt;?&lt;/p&gt;
+&lt;ol start=&#34;2&#34; style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;Remember that to print an object you can use the command &lt;code&gt;print&lt;/code&gt; or simply type the object.
+Print the object &lt;code&gt;p&lt;/code&gt; defined in exercise one and describe what you see.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;ol style=&#34;list-style-type: lower-alpha&#34;&gt;
+&lt;li&gt;Nothing happens.&lt;/li&gt;
+&lt;li&gt;A blank slate plot.&lt;/li&gt;
+&lt;li&gt;A scatterplot.&lt;/li&gt;
+&lt;li&gt;A histogram.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;ol start=&#34;3&#34; style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;&lt;p&gt;Using the pipe &lt;code&gt;%&amp;gt;%&lt;/code&gt;, create an object &lt;code&gt;p&lt;/code&gt; but this time associated with the &lt;code&gt;heights&lt;/code&gt; dataset instead of the &lt;code&gt;murders&lt;/code&gt; dataset.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;What is the class of the object &lt;code&gt;p&lt;/code&gt; you have just created?&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Now we are going to add a layer and the corresponding aesthetic mappings. For the murders data we plotted total murders versus population sizes. Explore the &lt;code&gt;murders&lt;/code&gt; data frame to remind yourself what are the names for these two variables and select the correct answer. &lt;strong&gt;Hint&lt;/strong&gt;: Look at &lt;code&gt;?murders&lt;/code&gt;.&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;ol style=&#34;list-style-type: lower-alpha&#34;&gt;
+&lt;li&gt;&lt;code&gt;state&lt;/code&gt; and &lt;code&gt;abb&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;total_murders&lt;/code&gt; and &lt;code&gt;population_size&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;total&lt;/code&gt; and &lt;code&gt;population&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;murders&lt;/code&gt; and &lt;code&gt;size&lt;/code&gt;.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;ol start=&#34;6&#34; style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;To create the scatterplot we add a layer with &lt;code&gt;geom_point&lt;/code&gt;. The aesthetic mappings require us to define the x-axis and y-axis variables, respectively. So the code looks like this:&lt;/li&gt;
+&lt;/ol&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;murders %&amp;gt;% ggplot(aes(x = , y = )) +
+  geom_point()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;except we have to define the two variables &lt;code&gt;x&lt;/code&gt; and &lt;code&gt;y&lt;/code&gt;. Fill this out with the correct variable names.&lt;/p&gt;
+&lt;ol start=&#34;7&#34; style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;Note that if we don’t use argument names, we can obtain the same plot by making sure we enter the variable names in the right order like this:&lt;/li&gt;
+&lt;/ol&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;murders %&amp;gt;% ggplot(aes(population, total)) +
+  geom_point()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Remake the plot but now with total in the x-axis and population in the y-axis.&lt;/p&gt;
+&lt;ol start=&#34;8&#34; style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;If instead of points we want to add text, we can use the &lt;code&gt;geom_text()&lt;/code&gt; or &lt;code&gt;geom_label()&lt;/code&gt; geometries. The following code&lt;/li&gt;
+&lt;/ol&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;murders %&amp;gt;% ggplot(aes(population, total)) + geom_label()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;will give us the error message: &lt;code&gt;Error: geom_label requires the following missing aesthetics: label&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;Why is this?&lt;/p&gt;
+&lt;ol style=&#34;list-style-type: lower-alpha&#34;&gt;
+&lt;li&gt;We need to map a character to each point through the label argument in aes.&lt;/li&gt;
+&lt;li&gt;We need to let &lt;code&gt;geom_label&lt;/code&gt; know what character to use in the plot.&lt;/li&gt;
+&lt;li&gt;The &lt;code&gt;geom_label&lt;/code&gt; geometry does not require x-axis and y-axis values.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;geom_label&lt;/code&gt; is not a ggplot2 command.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;ol start=&#34;9&#34; style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;&lt;p&gt;Rewrite the code above to use abbreviation as the label through &lt;code&gt;aes&lt;/code&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Change the color of the labels to blue. How will we do this?&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;ol style=&#34;list-style-type: lower-alpha&#34;&gt;
+&lt;li&gt;Adding a column called &lt;code&gt;blue&lt;/code&gt; to &lt;code&gt;murders&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;Because each label needs a different color we map the colors through &lt;code&gt;aes&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;Use the &lt;code&gt;color&lt;/code&gt; argument in &lt;code&gt;ggplot&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;Because we want all colors to be blue, we do not need to map colors, just use the color argument in &lt;code&gt;geom_label&lt;/code&gt;.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;ol start=&#34;11&#34; style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;&lt;p&gt;Rewrite the code above to make the labels blue.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Now suppose we want to use color to represent the different regions. In this case which of the following is most appropriate:&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;ol style=&#34;list-style-type: lower-alpha&#34;&gt;
+&lt;li&gt;Adding a column called &lt;code&gt;color&lt;/code&gt; to &lt;code&gt;murders&lt;/code&gt; with the color we want to use.&lt;/li&gt;
+&lt;li&gt;Because each label needs a different color we map the colors through the color argument of &lt;code&gt;aes&lt;/code&gt; .&lt;/li&gt;
+&lt;li&gt;Use the &lt;code&gt;color&lt;/code&gt; argument in &lt;code&gt;ggplot&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;Because we want all colors to be blue, we do not need to map colors, just use the color argument in &lt;code&gt;geom_label&lt;/code&gt;.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;ol start=&#34;13&#34; style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;&lt;p&gt;Rewrite the code above to make the labels’ color be determined by the state’s region.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Now we are going to change the x-axis to a log scale to account for the fact the distribution of population is skewed. Let’s start by defining an object &lt;code&gt;p&lt;/code&gt; holding the plot we have made up to now&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p &amp;lt;- murders %&amp;gt;%
+  ggplot(aes(population, total, label = abb, color = region)) +
+  geom_label()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;To change the y-axis to a log scale we learned about the &lt;code&gt;scale_x_log10()&lt;/code&gt; function. Add this layer to the object &lt;code&gt;p&lt;/code&gt; to change the scale and render the plot.&lt;/p&gt;
+&lt;ol start=&#34;15&#34; style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;&lt;p&gt;Repeat the previous exercise but now change both axes to be in the log scale.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Now edit the code above to add the title “Gun murder data” to the plot. Hint: use the &lt;code&gt;labs&lt;/code&gt; function or the &lt;code&gt;ggtitle&lt;/code&gt; function.&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    
+    <item>
       <title>Welcome Back to R</title>
       <link>https://ssc442.netlify.app/content/00-content/</link>
       <pubDate>Tue, 10 Jan 2023 00:00:00 +0000</pubDate>
@@ -2897,368 +3259,6 @@ pnorm(0, mu, se)&lt;/code&gt;&lt;/pre&gt;
 &lt;li id=&#34;fn6&#34;&gt;&lt;p&gt;&lt;a href=&#34;https://en.wikipedia.org/w/index.php?title=Binomial_distribution&#34; class=&#34;uri&#34;&gt;https://en.wikipedia.org/w/index.php?title=Binomial_distribution&lt;/a&gt;&lt;a href=&#34;#fnref6&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
 &lt;li id=&#34;fn7&#34;&gt;&lt;p&gt;&lt;a href=&#34;https://en.wikipedia.org/w/index.php?title=Poisson_distribution&#34; class=&#34;uri&#34;&gt;https://en.wikipedia.org/w/index.php?title=Poisson_distribution&lt;/a&gt;&lt;a href=&#34;#fnref7&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
 &lt;/ol&gt;
-&lt;/div&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>Effective Visualizations</title>
-      <link>https://ssc442.netlify.app/content/02-content/</link>
-      <pubDate>Tue, 25 Jan 2022 00:00:00 +0000</pubDate>
-      <guid>https://ssc442.netlify.app/content/02-content/</guid>
-      <description>
-&lt;script src=&#34;https://ssc442.netlify.app/rmarkdown-libs/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
-
-&lt;div id=&#34;TOC&#34;&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;a href=&#34;#readings&#34; id=&#34;toc-readings&#34;&gt;Readings&lt;/a&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;a href=&#34;#guiding-questions&#34; id=&#34;toc-guiding-questions&#34;&gt;Guiding Questions&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;#starting-up&#34; id=&#34;toc-starting-up&#34;&gt;Starting up&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;#scales-and-transformations&#34; id=&#34;toc-scales-and-transformations&#34;&gt;Scales and transformations&lt;/a&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;a href=&#34;#log-transformations&#34; id=&#34;toc-log-transformations&#34;&gt;Log transformations&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;#transforming-data-vs.-transforming-using-scale_...&#34; id=&#34;toc-transforming-data-vs.-transforming-using-scale_...&#34;&gt;Transforming data vs. transforming using &lt;code&gt;scale_...&lt;/code&gt;&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;#axis-labels-legends-and-titles&#34; id=&#34;toc-axis-labels-legends-and-titles&#34;&gt;Axis labels, legends, and titles&lt;/a&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;a href=&#34;#changing-axis-titles&#34; id=&#34;toc-changing-axis-titles&#34;&gt;Changing axis titles&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;#titles&#34; id=&#34;toc-titles&#34;&gt;Titles&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;#axis-ticks&#34; id=&#34;toc-axis-ticks&#34;&gt;Axis ticks&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;#additional-geometries&#34; id=&#34;toc-additional-geometries&#34;&gt;Additional geometries&lt;/a&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;a href=&#34;#geom_line&#34; id=&#34;toc-geom_line&#34;&gt;&lt;code&gt;geom_line&lt;/code&gt;&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;#using-different-data-with-different-geometries&#34; id=&#34;toc-using-different-data-with-different-geometries&#34;&gt;Using different data with different geometries&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;#multiple-geometries&#34; id=&#34;toc-multiple-geometries&#34;&gt;Multiple geometries&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;#lecture-videos&#34; id=&#34;toc-lecture-videos&#34;&gt;Lecture Videos&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;#try-it&#34; id=&#34;toc-try-it&#34;&gt;Try it!&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/div&gt;
-
-&lt;div id=&#34;readings&#34; class=&#34;section level2&#34;&gt;
-&lt;h2&gt;Readings&lt;/h2&gt;
-&lt;ul&gt;
-&lt;li&gt;This page.&lt;/li&gt;
-&lt;/ul&gt;
-&lt;div id=&#34;guiding-questions&#34; class=&#34;section level3&#34;&gt;
-&lt;h3&gt;Guiding Questions&lt;/h3&gt;
-&lt;ul&gt;
-&lt;li&gt;No guiding questions today as we’re mostly learning some technical aspects of &lt;code&gt;ggplot&lt;/code&gt;&lt;/li&gt;
-&lt;li&gt;We have largely reversed our &lt;strong&gt;content&lt;/strong&gt; and &lt;strong&gt;example&lt;/strong&gt; lectures for data viz.&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/div&gt;
-&lt;div id=&#34;starting-up&#34; class=&#34;section level3&#34;&gt;
-&lt;h3&gt;Starting up&lt;/h3&gt;
-&lt;p&gt;Load up our &lt;code&gt;murders&lt;/code&gt; data&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(dslabs)
-library(ggplot2)
-library(dplyr)
-data(murders)
-
-p &amp;lt;- ggplot(data = murders, aes(x = population, y = total, label = abb))&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div id=&#34;scales-and-transformations&#34; class=&#34;section level2&#34;&gt;
-&lt;h2&gt;Scales and transformations&lt;/h2&gt;
-&lt;div id=&#34;log-transformations&#34; class=&#34;section level3&#34;&gt;
-&lt;h3&gt;Log transformations&lt;/h3&gt;
-&lt;p&gt;Last lecture, we re-scaled our population by 10^6 (millions), but still had a lot of variation because some states are tiny and some are huge. Sometimes, we want to have one (or both) of our axes scaled non-linearly. For instance, if we wanted to have our x-axis be in log base 10, then each major tick would represent a factor of 10 over the last. This is not the default, so this change needs to be added through a &lt;em&gt;scales&lt;/em&gt; layer. A quick look at the cheat sheet reveals the &lt;code&gt;scale_x_continuous&lt;/code&gt; function lets us control the behavior of scales. We use them like this:&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p + geom_point(size = 3) +
-  geom_text(nudge_x = 0.05) +
-  scale_x_continuous(trans = &amp;quot;log10&amp;quot;) +
-  scale_y_continuous(trans = &amp;quot;log10&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/content/02-content_files/figure-html/ggplot-example-9-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
-&lt;p&gt;A couple of things here: adding things like &lt;code&gt;scale_x_continuous(...)&lt;/code&gt; operates on the whole plot. In some cases, order matters, but it doesn’t here, so we can throw &lt;code&gt;scale_x_continuous&lt;/code&gt; anywhere. Because we have altered the whole plot’s scale to be in the log-scale now, the &lt;em&gt;nudge&lt;/em&gt; must be made smaller. It is in log-base-10 units. Using &lt;code&gt;?scale_x_continuous&lt;/code&gt; brings us to the help for both &lt;code&gt;scale_x_continuous&lt;/code&gt; and &lt;code&gt;scale_y_continuous&lt;/code&gt;, which shows us the options for transformations &lt;code&gt;trans = ...&lt;/code&gt;&lt;/p&gt;
-&lt;p&gt;This particular transformation is so common that &lt;strong&gt;ggplot2&lt;/strong&gt; provides the specialized functions &lt;code&gt;scale_x_log10&lt;/code&gt; and &lt;code&gt;scale_y_log10&lt;/code&gt; which “inherit” (take the place of) the &lt;code&gt;scale_x_continuous&lt;/code&gt; functions but have log base 10 as default. We can use these to rewrite the code like this:&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p + geom_point(size = 3) +
-  geom_text(nudge_x = 0.05) +
-  scale_x_log10() +
-  scale_y_log10()&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/content/02-content_files/figure-html/unnamed-chunk-2-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
-&lt;p&gt;This can make a plot much easier to read, though one has to be sure to pay attention to the values on the axes. Plotting anything with very large outliers will almost always be better if done in log-scale. Adding the scale layer is an easy way to fix this.&lt;/p&gt;
-&lt;p&gt;We can also use one of many built-in transformations. Of note: &lt;strong&gt;reverse&lt;/strong&gt; just inverts the scale, which can be helpful, &lt;strong&gt;log&lt;/strong&gt; uses the natural log, &lt;strong&gt;sqrt&lt;/strong&gt; takes the square root (dropping anything with a negative value), &lt;strong&gt;reciprocal&lt;/strong&gt; takes 1/x. If your x-axis is in a date format, you can also scale to &lt;strong&gt;hms&lt;/strong&gt; (hour-minute-second) or &lt;strong&gt;date&lt;/strong&gt;.&lt;/p&gt;
-&lt;/div&gt;
-&lt;div id=&#34;transforming-data-vs.-transforming-using-scale_...&#34; class=&#34;section level3&#34;&gt;
-&lt;h3&gt;Transforming data vs. transforming using &lt;code&gt;scale_...&lt;/code&gt;&lt;/h3&gt;
-&lt;p&gt;We could simply take the log of population and log of total in the call and we’d get something very similar. Note that we had to override the aesthetic mapping set in &lt;code&gt;p&lt;/code&gt; in each of the geometries:&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p + geom_point(aes(x = log(population, base=10), y = log(total, base=10)), size = 3) +
-  geom_text(aes(x = log(population, base=10), y = log(total, base=10)), nudge_x = 0.05) &lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/content/02-content_files/figure-html/unnamed-chunk-3-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
-&lt;p&gt;This avoids using &lt;code&gt;scale_x_continuous&lt;/code&gt; or it’s child function &lt;code&gt;scale_x_log10&lt;/code&gt;. One advantage to using &lt;code&gt;scale_x...&lt;/code&gt; is that the axes are correctly labeled. When we transform the data directly, the axis labels only show the transformed values, so 7,000,000 becomes 7.0. This could be confusing! We could update the axis labels to say “total murders (log base 10)” and “total population (log base 10)”, but that’s cumbersome. Using &lt;code&gt;scale_x...&lt;/code&gt; is a lot more refined and easy.&lt;/p&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div id=&#34;axis-labels-legends-and-titles&#34; class=&#34;section level2&#34;&gt;
-&lt;h2&gt;Axis labels, legends, and titles&lt;/h2&gt;
-&lt;p&gt;But let’s say we did want to re-name our x-axis label. Or maybe we don’t like that the variable column name is lower-case “p”.&lt;/p&gt;
-&lt;p&gt;As with many things in &lt;code&gt;ggplot&lt;/code&gt;, there are many ways to get the same result. We’ll go over one way of changing titles and labels, but know that there are many more.&lt;/p&gt;
-&lt;div id=&#34;changing-axis-titles&#34; class=&#34;section level3&#34;&gt;
-&lt;h3&gt;Changing axis titles&lt;/h3&gt;
-&lt;p&gt;We’ll use the &lt;code&gt;labs(...)&lt;/code&gt; annotation layer to do this, which is pretty straightforward. &lt;code&gt;?labs&lt;/code&gt; shows us what we can change, and while it looks pretty basic, the real meat is in the &lt;code&gt;...&lt;/code&gt; argument, which the help says is “A list of new name-value pairs”. This means we can re-define the label on anything that is an aesthetic mapping. X and Y are aesthetic mappings, so…&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p + geom_point(size = 3) +
-  geom_text(nudge_x = 0.05) +
-  scale_x_log10() +
-  scale_y_log10() + 
-  labs(x = &amp;#39;Population&amp;#39;, y = &amp;#39;Total murders&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/content/02-content_files/figure-html/unnamed-chunk-4-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
-&lt;p&gt;Now, let’s use an aesthetic mapping that generates a legend, like &lt;code&gt;color&lt;/code&gt;, and see what &lt;code&gt;labs&lt;/code&gt; renames:&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p + geom_point(aes(color = region), size = 3) +
-  geom_text(nudge_x = 0.05) +
-  scale_x_log10() +
-  scale_y_log10() + 
-  labs(x = &amp;#39;Population&amp;#39;, y = &amp;#39;Total murders&amp;#39;, color = &amp;#39;US Region&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/content/02-content_files/figure-html/unnamed-chunk-5-1.png&#34; width=&#34;672&#34; /&gt;
-We can rename the aesthetic mapping-relevant label using &lt;code&gt;labs&lt;/code&gt;. Even if there are multiple mapped aesthetics:&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p + geom_point(aes(color = region, size = total/population)) +
-  geom_text(nudge_x = 0.05) +
-  scale_x_log10() +
-  scale_y_log10() + 
-  labs(x = &amp;#39;Population&amp;#39;, y = &amp;#39;Total murders&amp;#39;, color = &amp;#39;US Region&amp;#39;, size = &amp;#39;Murder rate&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/content/02-content_files/figure-html/unnamed-chunk-6-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
-&lt;/div&gt;
-&lt;div id=&#34;titles&#34; class=&#34;section level3&#34;&gt;
-&lt;h3&gt;Titles&lt;/h3&gt;
-&lt;p&gt;In &lt;code&gt;?labs&lt;/code&gt;, we also see some things that look like titles and captions. We can include those:&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p + geom_point(aes(color = region, size = total/population)) +
-  geom_text(nudge_x = 0.05) +
-  scale_x_log10() +
-  scale_y_log10() + 
-  labs(x = &amp;#39;Population&amp;#39;, y = &amp;#39;Total murders&amp;#39;, color = &amp;#39;US Region&amp;#39;, size = &amp;#39;Murder rate&amp;#39;,
-       title = &amp;#39;This is a title&amp;#39;, subtitle = &amp;#39;This is a subtitle&amp;#39;, caption = &amp;#39;This is a caption&amp;#39;, tag = &amp;#39;This is a tag&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/content/02-content_files/figure-html/unnamed-chunk-7-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
-&lt;p&gt;Now that you know how, &lt;strong&gt;always label your plots with at least a title and have meaningful axis and legend labels&lt;/strong&gt;.&lt;/p&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div id=&#34;axis-ticks&#34; class=&#34;section level2&#34;&gt;
-&lt;h2&gt;Axis ticks&lt;/h2&gt;
-&lt;p&gt;In addition to the axis labels, we may want to format or change the axis tick labels (like “1e+06” above) or even where the tick marks and lines are drawn. If we don’t specify anything, the axis labels and tick marks are drawn as best as &lt;code&gt;ggplot&lt;/code&gt; can do, but we can change this. This might be especially useful if our data has some meaningful cutoffs that aren’t found by the default, or we just don’t like where the marks fall or how they are labeled. This is easy to fix with &lt;code&gt;ggplot&lt;/code&gt;.&lt;/p&gt;
-&lt;p&gt;To change the tick mark labels, we have to set the tick mark locations. Then we can set a label for each tick mark. Let’s go back to our &lt;code&gt;murders&lt;/code&gt; data and, for simplicity, take the log transformation off the Y axis. We’ll use &lt;code&gt;scale_y_continuous&lt;/code&gt; to tell R &lt;em&gt;where&lt;/em&gt; to put the breaks (&lt;code&gt;breaks =&lt;/code&gt;) and &lt;em&gt;what to label&lt;/em&gt; the breaks. We have to give it one label for every break. Let’s say we just want a line at the 500’s and let’s say we want to (absurdly) use written numerics for each of the Y-axis lines. Since &lt;code&gt;scale_y_log10&lt;/code&gt; &lt;strong&gt;inherits from&lt;/strong&gt; &lt;code&gt;scale_y_continuous&lt;/code&gt;, we can just use that and add the breaks and labels:&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p + geom_point(aes(color = region), size = 3) +
-  geom_text(nudge_x = .05) +
-  scale_x_log10() +
-  scale_y_log10(breaks = c(0,50, 100, 500,1000,1500), 
-                     labels = c(&amp;#39;Zero&amp;#39;,&amp;#39;Fifty&amp;#39;,&amp;#39;One hundred&amp;#39;,&amp;#39;Five hundred&amp;#39;,&amp;#39;One thousand&amp;#39;,&amp;#39;Fifteen hundred&amp;#39;)) +
-  labs(x = &amp;#39;Population&amp;#39;, y = &amp;#39;Total murders&amp;#39;, color = &amp;#39;US Region&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/content/02-content_files/figure-html/unnamed-chunk-8-1.png&#34; width=&#34;672&#34; /&gt;
-We have manually set both the location and the label for the y-axis. Note that R filled in the in-between “minor” tick lines, but we can take those out. Since we are setting the location of the lines, we can do anything we want:&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p + geom_point(aes(color = region), size = 3) +
-  geom_text(nudge_x = .05) +
-  scale_x_log10() +
-  scale_y_log10(breaks = c(0,50, 100, 721, 1000,1500), 
-                     labels = c(&amp;#39;Zero&amp;#39;,&amp;#39;Fifty&amp;#39;,&amp;#39;One hundred&amp;#39;,&amp;#39;Seven hundred twenty one&amp;#39;,&amp;#39;One thousand&amp;#39;,&amp;#39;Fifteen hundred&amp;#39;),
-                     minor_breaks = NULL) +
-  labs(x = &amp;#39;Population&amp;#39;, y = &amp;#39;Total murders&amp;#39;, color = &amp;#39;US Region&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/content/02-content_files/figure-html/unnamed-chunk-9-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
-&lt;p&gt;So we can now define where axis tick lines should lie and how they should be labeled.&lt;/p&gt;
-&lt;/div&gt;
-&lt;div id=&#34;additional-geometries&#34; class=&#34;section level2&#34;&gt;
-&lt;h2&gt;Additional geometries&lt;/h2&gt;
-&lt;p&gt;Let’s say we are happy with our axis tick locations, but we want to add a single additional line. Maybe we want to divide at 1,000,000 population (a vertical line at 1,000,000) becuase we think those over 1,000,000 are somehow different, and we want to call attention to the data around that point. As a more general example, if we were to plot, say, car accidents by age, we would maybe want to label age 21, when people can legally purchase alcohol (and subsequently cause car accidents).&lt;/p&gt;
-&lt;p&gt;This brings us to our first additional geometry beyond &lt;code&gt;geom_point&lt;/code&gt; (OK, we used &lt;code&gt;geom_text&lt;/code&gt;, but that’s more of an annotation). &lt;code&gt;geom_vline&lt;/code&gt; lets us add a single vertical line (without aesthetic mappings). If we look at &lt;code&gt;?geom_vline&lt;/code&gt; we see that it requires ones aesthetic:&lt;code&gt;xintercept&lt;/code&gt;. It also takes aesthetics like color and size, and introduces the &lt;code&gt;linetype&lt;/code&gt; aesthetic:&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p + geom_point(aes(color = region), size = 3) +
-  geom_text(nudge_x = .05) +
-  geom_vline(aes(xintercept = 1000000), col = &amp;#39;red&amp;#39;, size = 2, linetype = 2) +
-  scale_x_log10() +
-  scale_y_log10(breaks = c(0,50, 100, 721, 1000,1500), 
-                     labels = c(&amp;#39;Zero&amp;#39;,&amp;#39;Fifty&amp;#39;,&amp;#39;One hundred&amp;#39;,&amp;#39;Seven hundred twenty one&amp;#39;,&amp;#39;One thousand&amp;#39;,&amp;#39;Fifteen hundred&amp;#39;),
-                     minor_breaks = NULL) +
-  labs(x = &amp;#39;Population&amp;#39;, y = &amp;#39;Total murders&amp;#39;, color = &amp;#39;US Region&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/content/02-content_files/figure-html/unnamed-chunk-10-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
-&lt;p&gt;Combining geometries is as easy as adding the layers with &lt;code&gt;+&lt;/code&gt;.&lt;/p&gt;
-&lt;div id=&#34;geom_line&#34; class=&#34;section level3&#34;&gt;
-&lt;h3&gt;&lt;code&gt;geom_line&lt;/code&gt;&lt;/h3&gt;
-&lt;p&gt;For a good old line plot, we use the line geometry at &lt;code&gt;geom_line&lt;/code&gt;. The help for &lt;code&gt;?geom_line&lt;/code&gt; tells us that we need an x and a y aesthetic (much like &lt;code&gt;geom_points&lt;/code&gt;). Since our &lt;code&gt;murders&lt;/code&gt; data isn’t really suited to a line graph, we’ll use a daily stock price. We’ll get this using &lt;code&gt;tidyquant&lt;/code&gt;, which pulls stock prices from Yahoo Finance and maintains the “tidy” format. You’ll need to &lt;code&gt;install.packages(&#39;tidyquant&#39;)&lt;/code&gt; before you run this the first time.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(tidyquant)
-AAPL = tq_get(&amp;quot;AAPL&amp;quot;, from = &amp;#39;2009-01-01&amp;#39;, to = &amp;#39;2021-08-01&amp;#39;, get = &amp;#39;stock.prices&amp;#39;)
-head(AAPL)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## # A tibble: 6 × 8
-##   symbol date        open  high   low close     volume adjusted
-##   &amp;lt;chr&amp;gt;  &amp;lt;date&amp;gt;     &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt;      &amp;lt;dbl&amp;gt;    &amp;lt;dbl&amp;gt;
-## 1 AAPL   2009-01-02  3.07  3.25  3.04  3.24  746015200     2.76
-## 2 AAPL   2009-01-05  3.33  3.44  3.31  3.38 1181608400     2.88
-## 3 AAPL   2009-01-06  3.43  3.47  3.30  3.32 1289310400     2.83
-## 4 AAPL   2009-01-07  3.28  3.30  3.22  3.25  753048800     2.77
-## 5 AAPL   2009-01-08  3.23  3.33  3.22  3.31  673500800     2.82
-## 6 AAPL   2009-01-09  3.33  3.34  3.22  3.24  546845600     2.76&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Now, we can plot a line graph of the Apple closing stock price over the requested date range. We want this to be a time series, so the x-axis will be the date and the y-axis will be the closing price.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(AAPL, aes(x = date, y = close)) +
-  geom_line() +
-  labs(x = &amp;#39;Date&amp;#39;, y = &amp;#39;Closing price&amp;#39;, title = &amp;#39;Apple stock price&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/content/02-content_files/figure-html/geomPath-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
-&lt;p&gt;In &lt;code&gt;geom_line&lt;/code&gt;, R will automatically sort on the x-variable. If you don’t want this, then &lt;code&gt;geom_path&lt;/code&gt; will use whatever order the data is in. Either way, if you have multiple observations for the same value on the x-axis, then you’ll get something pretty messy because R will try to connect, in some order, all the points. Let’s see an example with two stocks:&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;AAPLNFLX = tq_get(c(&amp;quot;AAPL&amp;quot;,&amp;quot;NFLX&amp;quot;), from = &amp;#39;2021-01-01&amp;#39;, to = &amp;#39;2021-08-01&amp;#39;, get = &amp;#39;stock.prices&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## Warning: `type_convert()` only converts columns of type &amp;#39;character&amp;#39;.
-## - `df` has no columns of type &amp;#39;character&amp;#39;
-
-## Warning: `type_convert()` only converts columns of type &amp;#39;character&amp;#39;.
-## - `df` has no columns of type &amp;#39;character&amp;#39;&lt;/code&gt;&lt;/pre&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(AAPLNFLX, aes(x = date, y = close)) +
-  geom_line() +
-  labs(x = &amp;#39;Date&amp;#39;, y = &amp;#39;Closing price&amp;#39;, title = &amp;#39;Apple and Netflix stock price&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/content/02-content_files/figure-html/unnamed-chunk-11-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
-&lt;p&gt;That looks kinda strange. That’s because, for every date, we have two values - the NFLX and the AAPL value, so each day has a vertical line drawn between the two prices. This is nonsense, especially since what we want to see is the history of NFLX and AAPL over time.&lt;/p&gt;
-&lt;p&gt;Aesthetics to the rescue! Remember, when we use an aesthetic mapping, we are able to separate out data by things like color or linetype. Let’s use color as the aesthetic here, and map it to the stock ticker:&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;AAPLNFLX = tq_get(c(&amp;quot;AAPL&amp;quot;,&amp;quot;NFLX&amp;quot;), from = &amp;#39;2021-01-01&amp;#39;, to = &amp;#39;2021-08-01&amp;#39;, get = &amp;#39;stock.prices&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## Warning: `type_convert()` only converts columns of type &amp;#39;character&amp;#39;.
-## - `df` has no columns of type &amp;#39;character&amp;#39;
-
-## Warning: `type_convert()` only converts columns of type &amp;#39;character&amp;#39;.
-## - `df` has no columns of type &amp;#39;character&amp;#39;&lt;/code&gt;&lt;/pre&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(AAPLNFLX, aes(x = date, y = close, color = symbol)) +
-  geom_line() +
-  labs(x = &amp;#39;Date&amp;#39;, y = &amp;#39;Closing price&amp;#39;, title = &amp;#39;Apple and Netflix stock price&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/content/02-content_files/figure-html/unnamed-chunk-12-1.png&#34; width=&#34;672&#34; /&gt;
-Well there we go! We can now see each stock price over time, with a convenient legend. Later on, we’ll learn how to change the color palatte. If we don’t necessarily want a different color but we do want to separate the lines, we can use the &lt;code&gt;group&lt;/code&gt; aesthetic.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;AAPLNFLX = tq_get(c(&amp;quot;AAPL&amp;quot;,&amp;quot;NFLX&amp;quot;), from = &amp;#39;2021-01-01&amp;#39;, to = &amp;#39;2021-08-01&amp;#39;, get = &amp;#39;stock.prices&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## Warning: `type_convert()` only converts columns of type &amp;#39;character&amp;#39;.
-## - `df` has no columns of type &amp;#39;character&amp;#39;
-
-## Warning: `type_convert()` only converts columns of type &amp;#39;character&amp;#39;.
-## - `df` has no columns of type &amp;#39;character&amp;#39;&lt;/code&gt;&lt;/pre&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(AAPLNFLX, aes(x = date, y = close, group = symbol)) +
-  geom_line() + 
-  labs(x = &amp;#39;Date&amp;#39;, y = &amp;#39;Closing price&amp;#39;, title = &amp;#39;Apple and Netflix stock price&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/content/02-content_files/figure-html/unnamed-chunk-13-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
-&lt;p&gt;Similar result as &lt;code&gt;geom_line&lt;/code&gt;, but without the color difference (which makes it rather hard to tell what you’re looking at). But if we add labels using &lt;code&gt;geom_label&lt;/code&gt;, we’ll get one label for every point, which will be overwhelming. The solution? Use some filtered data so that there is only one point for each label. But that means replacing the &lt;code&gt;data&lt;/code&gt; in &lt;code&gt;ggplot&lt;/code&gt;. Here’s how.&lt;/p&gt;
-&lt;/div&gt;
-&lt;div id=&#34;using-different-data-with-different-geometries&#34; class=&#34;section level3&#34;&gt;
-&lt;h3&gt;Using different data with different geometries&lt;/h3&gt;
-&lt;p&gt;Just as we can use different aesthetic mappings on each geometry, we can use different &lt;em&gt;data&lt;/em&gt; entirely. This is useful when we want one geometry to have one set of data (like the stock prices above), but another geometry to only have a subset of the data. Why would we want that? Well, we’d like to label just &lt;em&gt;one&lt;/em&gt; part of each of the lines in our plot, right? That means we want to label a &lt;em&gt;subset&lt;/em&gt; of the stock data.&lt;/p&gt;
-&lt;p&gt;To replace data in a geometry, we just need to specify the &lt;code&gt;data =&lt;/code&gt; argument separately:&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(AAPLNFLX, aes(x = date, y = close, group = symbol)) +
-  geom_line() +
-  geom_label(data = AAPLNFLX %&amp;gt;% group_by(symbol) %&amp;gt;% slice(100),
-             aes(label = symbol),
-             nudge_y = 20) + 
-  labs(x = &amp;#39;Date&amp;#39;, y = &amp;#39;Closing price&amp;#39;, title = &amp;#39;Apple and Netflix stock price&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/content/02-content_files/figure-html/unnamed-chunk-14-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
-&lt;p&gt;In &lt;code&gt;geom_label&lt;/code&gt;, we specified we wanted the 100th observation from each symbol to be the label location. Then, we nudged it up along y by 20 so that it’s clear of the line.&lt;/p&gt;
-&lt;p&gt;R also has a very useful &lt;code&gt;ggrepel&lt;/code&gt; package that gives us &lt;code&gt;geom_label_repel&lt;/code&gt; which takes care of the nudging for us, even in complicated situations (lots of points, lines, etc.). It does a decent job here of moving the label to a point where it doesn’t cover a lot of data.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(ggrepel)
-ggplot(AAPLNFLX, aes(x = date, y = close, group = symbol)) +
-  geom_line() +
-  geom_label_repel(data = AAPLNFLX %&amp;gt;% group_by(symbol) %&amp;gt;% slice(100),
-             aes(label = symbol)) + 
-  labs(x = &amp;#39;Date&amp;#39;, y = &amp;#39;Closing price&amp;#39;, title = &amp;#39;Apple and Netflix stock price&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/content/02-content_files/figure-html/unnamed-chunk-15-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
-&lt;p&gt;Now, we don’t lose a lot of space to a legend, and we haven’t had to use color to separate the stock symbols.&lt;/p&gt;
-&lt;/div&gt;
-&lt;div id=&#34;multiple-geometries&#34; class=&#34;section level3&#34;&gt;
-&lt;h3&gt;Multiple geometries&lt;/h3&gt;
-&lt;p&gt;Since this section is about adding geometries, we &lt;em&gt;can&lt;/em&gt; combine points and lines. Since lines connect points, it will look like a giant connect-the-dots.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(ggrepel)
-ggplot(AAPLNFLX, aes(x = date, y = close, group = symbol)) +
-  geom_line() +
-  geom_point() + 
-  geom_label_repel(data = AAPLNFLX %&amp;gt;% group_by(symbol) %&amp;gt;% slice(100),
-             aes(label = symbol)) + 
-  labs(x = &amp;#39;Date&amp;#39;, y = &amp;#39;Closing price&amp;#39;, title = &amp;#39;Apple and Netflix stock price&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/content/02-content_files/figure-html/unnamed-chunk-16-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div id=&#34;lecture-videos&#34; class=&#34;section level2&#34;&gt;
-&lt;h2&gt;Lecture Videos&lt;/h2&gt;
-&lt;p&gt;The video from this lecture will be &lt;a href=&#34;https://mediaspace.msu.edu/media/SSC442+-+Content+02+-+Jan+25th/1_htvxyae6&#34;&gt;available here around 3-6 days after class &lt;i class=&#34;fas fa-film&#34;&gt;&lt;/i&gt;&lt;/a&gt;&lt;/p&gt;
-&lt;/div&gt;
-&lt;div id=&#34;try-it&#34; class=&#34;section level2&#34;&gt;
-&lt;h2&gt;Try it!&lt;/h2&gt;
-&lt;div class=&#34;fyi&#34;&gt;
-&lt;p&gt;&lt;strong&gt;TRY IT&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;Start by loading the &lt;strong&gt;dplyr&lt;/strong&gt; and &lt;strong&gt;ggplot2&lt;/strong&gt; library as well as the &lt;code&gt;murders&lt;/code&gt; and &lt;code&gt;heights&lt;/code&gt; data.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(dplyr)
-library(ggplot2)
-library(dslabs)
-data(heights)
-data(murders)&lt;/code&gt;&lt;/pre&gt;
-&lt;ol style=&#34;list-style-type: decimal&#34;&gt;
-&lt;li&gt;With &lt;strong&gt;ggplot2&lt;/strong&gt; plots can be saved as objects. For example we can associate a dataset with a plot object like this&lt;/li&gt;
-&lt;/ol&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p &amp;lt;- ggplot(data = murders)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Because &lt;code&gt;data&lt;/code&gt; is the first argument we don’t need to spell it out&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p &amp;lt;- ggplot(murders)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;and we can also use the pipe:&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p &amp;lt;- murders %&amp;gt;% ggplot()&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;What is class of the object &lt;code&gt;p&lt;/code&gt;?&lt;/p&gt;
-&lt;ol start=&#34;2&#34; style=&#34;list-style-type: decimal&#34;&gt;
-&lt;li&gt;Remember that to print an object you can use the command &lt;code&gt;print&lt;/code&gt; or simply type the object.
-Print the object &lt;code&gt;p&lt;/code&gt; defined in exercise one and describe what you see.&lt;/li&gt;
-&lt;/ol&gt;
-&lt;ol style=&#34;list-style-type: lower-alpha&#34;&gt;
-&lt;li&gt;Nothing happens.&lt;/li&gt;
-&lt;li&gt;A blank slate plot.&lt;/li&gt;
-&lt;li&gt;A scatterplot.&lt;/li&gt;
-&lt;li&gt;A histogram.&lt;/li&gt;
-&lt;/ol&gt;
-&lt;ol start=&#34;3&#34; style=&#34;list-style-type: decimal&#34;&gt;
-&lt;li&gt;&lt;p&gt;Using the pipe &lt;code&gt;%&amp;gt;%&lt;/code&gt;, create an object &lt;code&gt;p&lt;/code&gt; but this time associated with the &lt;code&gt;heights&lt;/code&gt; dataset instead of the &lt;code&gt;murders&lt;/code&gt; dataset.&lt;/p&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;What is the class of the object &lt;code&gt;p&lt;/code&gt; you have just created?&lt;/p&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;Now we are going to add a layer and the corresponding aesthetic mappings. For the murders data we plotted total murders versus population sizes. Explore the &lt;code&gt;murders&lt;/code&gt; data frame to remind yourself what are the names for these two variables and select the correct answer. &lt;strong&gt;Hint&lt;/strong&gt;: Look at &lt;code&gt;?murders&lt;/code&gt;.&lt;/p&gt;&lt;/li&gt;
-&lt;/ol&gt;
-&lt;ol style=&#34;list-style-type: lower-alpha&#34;&gt;
-&lt;li&gt;&lt;code&gt;state&lt;/code&gt; and &lt;code&gt;abb&lt;/code&gt;.&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;total_murders&lt;/code&gt; and &lt;code&gt;population_size&lt;/code&gt;.&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;total&lt;/code&gt; and &lt;code&gt;population&lt;/code&gt;.&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;murders&lt;/code&gt; and &lt;code&gt;size&lt;/code&gt;.&lt;/li&gt;
-&lt;/ol&gt;
-&lt;ol start=&#34;6&#34; style=&#34;list-style-type: decimal&#34;&gt;
-&lt;li&gt;To create the scatterplot we add a layer with &lt;code&gt;geom_point&lt;/code&gt;. The aesthetic mappings require us to define the x-axis and y-axis variables, respectively. So the code looks like this:&lt;/li&gt;
-&lt;/ol&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;murders %&amp;gt;% ggplot(aes(x = , y = )) +
-  geom_point()&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;except we have to define the two variables &lt;code&gt;x&lt;/code&gt; and &lt;code&gt;y&lt;/code&gt;. Fill this out with the correct variable names.&lt;/p&gt;
-&lt;ol start=&#34;7&#34; style=&#34;list-style-type: decimal&#34;&gt;
-&lt;li&gt;Note that if we don’t use argument names, we can obtain the same plot by making sure we enter the variable names in the right order like this:&lt;/li&gt;
-&lt;/ol&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;murders %&amp;gt;% ggplot(aes(population, total)) +
-  geom_point()&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Remake the plot but now with total in the x-axis and population in the y-axis.&lt;/p&gt;
-&lt;ol start=&#34;8&#34; style=&#34;list-style-type: decimal&#34;&gt;
-&lt;li&gt;If instead of points we want to add text, we can use the &lt;code&gt;geom_text()&lt;/code&gt; or &lt;code&gt;geom_label()&lt;/code&gt; geometries. The following code&lt;/li&gt;
-&lt;/ol&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;murders %&amp;gt;% ggplot(aes(population, total)) + geom_label()&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;will give us the error message: &lt;code&gt;Error: geom_label requires the following missing aesthetics: label&lt;/code&gt;&lt;/p&gt;
-&lt;p&gt;Why is this?&lt;/p&gt;
-&lt;ol style=&#34;list-style-type: lower-alpha&#34;&gt;
-&lt;li&gt;We need to map a character to each point through the label argument in aes.&lt;/li&gt;
-&lt;li&gt;We need to let &lt;code&gt;geom_label&lt;/code&gt; know what character to use in the plot.&lt;/li&gt;
-&lt;li&gt;The &lt;code&gt;geom_label&lt;/code&gt; geometry does not require x-axis and y-axis values.&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;geom_label&lt;/code&gt; is not a ggplot2 command.&lt;/li&gt;
-&lt;/ol&gt;
-&lt;ol start=&#34;9&#34; style=&#34;list-style-type: decimal&#34;&gt;
-&lt;li&gt;&lt;p&gt;Rewrite the code above to use abbreviation as the label through &lt;code&gt;aes&lt;/code&gt;&lt;/p&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;Change the color of the labels to blue. How will we do this?&lt;/p&gt;&lt;/li&gt;
-&lt;/ol&gt;
-&lt;ol style=&#34;list-style-type: lower-alpha&#34;&gt;
-&lt;li&gt;Adding a column called &lt;code&gt;blue&lt;/code&gt; to &lt;code&gt;murders&lt;/code&gt;.&lt;/li&gt;
-&lt;li&gt;Because each label needs a different color we map the colors through &lt;code&gt;aes&lt;/code&gt;.&lt;/li&gt;
-&lt;li&gt;Use the &lt;code&gt;color&lt;/code&gt; argument in &lt;code&gt;ggplot&lt;/code&gt;.&lt;/li&gt;
-&lt;li&gt;Because we want all colors to be blue, we do not need to map colors, just use the color argument in &lt;code&gt;geom_label&lt;/code&gt;.&lt;/li&gt;
-&lt;/ol&gt;
-&lt;ol start=&#34;11&#34; style=&#34;list-style-type: decimal&#34;&gt;
-&lt;li&gt;&lt;p&gt;Rewrite the code above to make the labels blue.&lt;/p&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;Now suppose we want to use color to represent the different regions. In this case which of the following is most appropriate:&lt;/p&gt;&lt;/li&gt;
-&lt;/ol&gt;
-&lt;ol style=&#34;list-style-type: lower-alpha&#34;&gt;
-&lt;li&gt;Adding a column called &lt;code&gt;color&lt;/code&gt; to &lt;code&gt;murders&lt;/code&gt; with the color we want to use.&lt;/li&gt;
-&lt;li&gt;Because each label needs a different color we map the colors through the color argument of &lt;code&gt;aes&lt;/code&gt; .&lt;/li&gt;
-&lt;li&gt;Use the &lt;code&gt;color&lt;/code&gt; argument in &lt;code&gt;ggplot&lt;/code&gt;.&lt;/li&gt;
-&lt;li&gt;Because we want all colors to be blue, we do not need to map colors, just use the color argument in &lt;code&gt;geom_label&lt;/code&gt;.&lt;/li&gt;
-&lt;/ol&gt;
-&lt;ol start=&#34;13&#34; style=&#34;list-style-type: decimal&#34;&gt;
-&lt;li&gt;&lt;p&gt;Rewrite the code above to make the labels’ color be determined by the state’s region.&lt;/p&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;Now we are going to change the x-axis to a log scale to account for the fact the distribution of population is skewed. Let’s start by defining an object &lt;code&gt;p&lt;/code&gt; holding the plot we have made up to now&lt;/p&gt;&lt;/li&gt;
-&lt;/ol&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p &amp;lt;- murders %&amp;gt;%
-  ggplot(aes(population, total, label = abb, color = region)) +
-  geom_label()&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;To change the y-axis to a log scale we learned about the &lt;code&gt;scale_x_log10()&lt;/code&gt; function. Add this layer to the object &lt;code&gt;p&lt;/code&gt; to change the scale and render the plot.&lt;/p&gt;
-&lt;ol start=&#34;15&#34; style=&#34;list-style-type: decimal&#34;&gt;
-&lt;li&gt;&lt;p&gt;Repeat the previous exercise but now change both axes to be in the log scale.&lt;/p&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;Now edit the code above to add the title “Gun murder data” to the plot. Hint: use the &lt;code&gt;labs&lt;/code&gt; function or the &lt;code&gt;ggtitle&lt;/code&gt; function.&lt;/p&gt;&lt;/li&gt;
-&lt;/ol&gt;
-&lt;/div&gt;
 &lt;/div&gt;
 </description>
     </item>
