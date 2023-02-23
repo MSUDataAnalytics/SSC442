@@ -102,454 +102,9 @@
     </item>
     
     <item>
-      <title>Visualizing Uncertainty</title>
-      <link>https://ssc442.netlify.app/example/04-example/</link>
-      <pubDate>Tue, 07 Feb 2023 00:00:00 +0000</pubDate>
-      <guid>https://ssc442.netlify.app/example/04-example/</guid>
-      <description>
-&lt;script src=&#34;https://ssc442.netlify.app/rmarkdown-libs/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
-
-&lt;div id=&#34;TOC&#34;&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;a href=&#34;#part-1-statistical-inference-and-polls&#34; id=&#34;toc-part-1-statistical-inference-and-polls&#34;&gt;Part 1: Statistical Inference and Polls&lt;/a&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;a href=&#34;#polls&#34; id=&#34;toc-polls&#34;&gt;Polls&lt;/a&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;a href=&#34;#the-sampling-model-for-polls&#34; id=&#34;toc-the-sampling-model-for-polls&#34;&gt;The sampling model for polls&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;#populations-samples-parameters-and-estimates&#34; id=&#34;toc-populations-samples-parameters-and-estimates&#34;&gt;Populations, samples, parameters, and estimates&lt;/a&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;a href=&#34;#the-sample-average&#34; id=&#34;toc-the-sample-average&#34;&gt;The sample average&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;#parameters&#34; id=&#34;toc-parameters&#34;&gt;Parameters&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;#polling-versus-forecasting&#34; id=&#34;toc-polling-versus-forecasting&#34;&gt;Polling versus forecasting&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;#properties-of-our-estimate-expected-value-and-standard-error&#34; id=&#34;toc-properties-of-our-estimate-expected-value-and-standard-error&#34;&gt;Properties of our estimate: expected value and standard error&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;#clt&#34; id=&#34;toc-clt&#34;&gt;Central Limit Theorem&lt;/a&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;a href=&#34;#a-monte-carlo-simulation&#34; id=&#34;toc-a-monte-carlo-simulation&#34;&gt;A Monte Carlo simulation&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;#the-spread&#34; id=&#34;toc-the-spread&#34;&gt;The spread&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;#bias-why-not-run-a-very-large-poll&#34; id=&#34;toc-bias-why-not-run-a-very-large-poll&#34;&gt;Bias: why not run a very large poll?&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;&lt;/li&gt;
-&lt;/ul&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;#part-2-supplemental-additional-visualization-techniques&#34; id=&#34;toc-part-2-supplemental-additional-visualization-techniques&#34;&gt;Part 2: (Supplemental) Additional Visualization Techniques&lt;/a&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;a href=&#34;#code&#34; id=&#34;toc-code&#34;&gt;Code&lt;/a&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;a href=&#34;#load-and-clean-data&#34; id=&#34;toc-load-and-clean-data&#34;&gt;Load and clean data&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;#histograms&#34; id=&#34;toc-histograms&#34;&gt;Histograms&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;#density-plots&#34; id=&#34;toc-density-plots&#34;&gt;Density plots&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;#box-violin-and-rain-cloud-plots&#34; id=&#34;toc-box-violin-and-rain-cloud-plots&#34;&gt;Box, violin, and rain cloud plots&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;#lecture-video&#34; id=&#34;toc-lecture-video&#34;&gt;Lecture Video&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/div&gt;
-
-&lt;p&gt;Probabilistic thinking is central in the human experience. How we describe that thinking is mixed, but most of the time we use (rather imprecise) language. With only a few moments of searching, one can find thousands of articles that use probabilistic words to describe events. Here are some examples:&lt;/p&gt;
-&lt;blockquote&gt;
-&lt;p&gt;“‘Highly unlikely’ State of the Union will happen amid shutdown” – The Hill&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;blockquote&gt;
-&lt;p&gt;“Tiger Woods makes Masters 15th and most improbable major” – Fox&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;blockquote&gt;
-&lt;p&gt;“Trump predicts ‘very good chance’ of China trade deal” – CNN&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;p&gt;Yet people don’t have a good sense of what these things mean. Uncertainty is key to data analytics: if we were certain of things, A study in the 1960s explored the perception of probabilistic words like these among NATO officers. A more modern replication of this found the following basic pattern:&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/img/words.png&#34; width=&#34;80%&#34; /&gt;&lt;/p&gt;
-&lt;p&gt;A deep, basic fact about humans is that we struggle to understand probabilities. But visualizing things can help. The graphic above shows the uncertainty about uncertainty (very meta). We can convey all manner of uncertainty with clever graphics. Today’s practical example works through some of the myriad of ways to visualize variable data. We’ll cover some territory that we’ve already hit, in hopes of locking in some key concepts.&lt;/p&gt;
-&lt;div id=&#34;part-1-statistical-inference-and-polls&#34; class=&#34;section level1&#34;&gt;
-&lt;h1&gt;Part 1: Statistical Inference and Polls&lt;/h1&gt;
-&lt;p&gt;In this Example we will describe, in some detail, how poll aggregators such as FiveThirtyEight use data to predict election outcomes. To understand how they do this, we first need to learn the basics of &lt;em&gt;Statistical Inference&lt;/em&gt;, the part of statistics that helps distinguish patterns arising from signal from those arising from chance. Statistical inference is a broad topic and here we go over the very basics using polls as a motivating example. To describe the concepts, we complement the mathematical formulas with Monte Carlo simulations and &lt;code&gt;R&lt;/code&gt; code.&lt;/p&gt;
-&lt;div id=&#34;polls&#34; class=&#34;section level2&#34;&gt;
-&lt;h2&gt;Polls&lt;/h2&gt;
-&lt;p&gt;Opinion polling has been conducted since the 19th century. The general goal is to describe the opinions held by a specific population on a given set of topics. In recent times, these polls have been pervasive during presidential elections. Polls are useful when interviewing every member of a particular population is logistically impossible. The general strategy is to interview a smaller group, chosen at random, and then infer the opinions of the entire population from the opinions of the smaller group. Statistical theory is used to justify the process. This theory is referred to as &lt;em&gt;inference&lt;/em&gt; and it is the main topic of this chapter.&lt;/p&gt;
-&lt;p&gt;Perhaps the best known opinion polls are those conducted to determine which candidate is preferred by voters in a given election. Political strategists make extensive use of polls to decide, among other things, how to invest resources. For example, they may want to know in which geographical locations to focus their “get out the vote” efforts.&lt;/p&gt;
-&lt;p&gt;Elections are a particularly interesting case of opinion polls because the actual opinion of the entire population is revealed on election day. Of course, it costs millions of dollars to run an actual election which makes polling a cost effective strategy for those that want to forecast the results.&lt;/p&gt;
-&lt;p&gt;Although typically the results of these polls are kept private, similar polls are conducted by news organizations because results tend to be of interest to the general public and made public. We will eventually be looking at such data.&lt;/p&gt;
-&lt;p&gt;Real Clear Politics&lt;a href=&#34;#fn1&#34; class=&#34;footnote-ref&#34; id=&#34;fnref1&#34;&gt;&lt;sup&gt;1&lt;/sup&gt;&lt;/a&gt; is an example of a news aggregator that organizes and publishes poll results. For example, they present the following poll results reporting estimates of the popular vote for the 2016 presidential election&lt;a href=&#34;#fn2&#34; class=&#34;footnote-ref&#34; id=&#34;fnref2&#34;&gt;&lt;sup&gt;2&lt;/sup&gt;&lt;/a&gt;:&lt;/p&gt;
-&lt;!-- (Source: [Real Clear Politics](https://www.realclearpolitics.com/epolls/2016/president/us/general_election_trump_vs_clinton-5491.html)) --&gt;
-&lt;p&gt;Although in the United States the popular vote does not determine the result of the presidential election, we will use it as an illustrative and simple example of how well polls work. Forecasting the election is a more complex process since it involves combining results from 50 states and DC and we will go into some detail on this later.&lt;/p&gt;
-&lt;p&gt;Let’s make some observations about the table above. First, note that different polls, all taken days before the election, report a different &lt;em&gt;spread&lt;/em&gt;: the estimated difference between support for the two candidates. Notice also that the reported spreads hover around what ended up being the actual result: Clinton won the popular vote by 2.1%. We also see a column titled &lt;strong&gt;MoE&lt;/strong&gt; which stands for &lt;em&gt;margin of error&lt;/em&gt;.&lt;/p&gt;
-&lt;p&gt;In this example, we will show how the probability concepts we learned in the previous content can be applied to develop the statistical approaches that make polls an effective tool. We will learn the statistical concepts necessary to define &lt;em&gt;estimates&lt;/em&gt; and &lt;em&gt;margins of errors&lt;/em&gt;, and show how we can use these to forecast final results relatively well and also provide an estimate of the precision of our forecast. Once we learn this, we will be able to understand two concepts that are ubiquitous in data science: &lt;em&gt;confidence intervals&lt;/em&gt; and &lt;em&gt;p-values&lt;/em&gt;. Finally, to understand probabilistic statements about the probability of a candidate winning, we will have to learn about Bayesian modeling. In the final sections, we put it all together to recreate the simplified version of the FiveThirtyEight model and apply it to the 2016 election.&lt;/p&gt;
-&lt;p&gt;We start by connecting probability theory to the task of using polls to learn about a population.&lt;/p&gt;
-&lt;div id=&#34;the-sampling-model-for-polls&#34; class=&#34;section level3&#34;&gt;
-&lt;h3&gt;The sampling model for polls&lt;/h3&gt;
-&lt;p&gt;To help us understand the connection between polls and what we have learned, let’s construct a similar situation to the one pollsters face. To mimic the challenge real pollsters face in terms of competing with other pollsters for media attention, we will use an urn full of beads to represent voters and pretend we are competing for a $25 dollar prize. The challenge is to guess the spread between the proportion of blue and red beads in this hypothetical urn.&lt;/p&gt;
-&lt;p&gt;Before making a prediction, you can take a sample (with replacement) from the urn. To mimic the fact that running polls is expensive, it costs you 10 cents per each bead you sample. Therefore, if your sample size is 250, and you win, you will break even since you will pay \$25 to collect your \$25 prize. Your entry into the competition can be an interval. If the interval you submit contains the true proportion, you get half what you paid and pass to the second phase of the competition. In the second phase, the entry with the smallest interval is selected as the winner.&lt;/p&gt;
-&lt;p&gt;The &lt;strong&gt;dslabs&lt;/strong&gt; package includes a function that shows a random draw from this urn:&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(tidyverse)
-library(dslabs)
-take_poll(25)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/example/04-example_files/figure-html/first-simulated-poll-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
-&lt;p&gt;Think about how you would construct your interval based on the data shown above.&lt;/p&gt;
-&lt;p&gt;We have just described a simple sampling model for opinion polls. The beads inside the urn represent the individuals that will vote on election day. Those that will vote for the Republican candidate are represented with red beads and the Democrats with the blue beads. For simplicity, assume there are no other colors. That is, that there are just two parties: Republican and Democratic.&lt;/p&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div id=&#34;populations-samples-parameters-and-estimates&#34; class=&#34;section level2&#34;&gt;
-&lt;h2&gt;Populations, samples, parameters, and estimates&lt;/h2&gt;
-&lt;p&gt;We want to predict the proportion of blue beads in the urn. Let’s call this quantity &lt;span class=&#34;math inline&#34;&gt;\(p\)&lt;/span&gt;, which then tells us the proportion of red beads &lt;span class=&#34;math inline&#34;&gt;\(1-p\)&lt;/span&gt;, and the spread &lt;span class=&#34;math inline&#34;&gt;\(p - (1-p)\)&lt;/span&gt;, which simplifies to &lt;span class=&#34;math inline&#34;&gt;\(2p - 1\)&lt;/span&gt;.&lt;/p&gt;
-&lt;p&gt;In statistical textbooks, the beads in the urn are called the &lt;em&gt;population&lt;/em&gt;. The proportion of blue beads in the population &lt;span class=&#34;math inline&#34;&gt;\(p\)&lt;/span&gt; is called a &lt;em&gt;parameter&lt;/em&gt;. The 25 beads we see in the previous plot are called a &lt;em&gt;sample&lt;/em&gt;. The task of statistical inference is to predict the parameter &lt;span class=&#34;math inline&#34;&gt;\(p\)&lt;/span&gt; using the observed data in the sample.&lt;/p&gt;
-&lt;p&gt;Can we do this with the 25 observations above? It is certainly informative. For example, given that we see 13 red and 12 blue beads, it is unlikely that &lt;span class=&#34;math inline&#34;&gt;\(p\)&lt;/span&gt; &amp;gt; .9 or &lt;span class=&#34;math inline&#34;&gt;\(p\)&lt;/span&gt; &amp;lt; .1. But are we ready to predict with certainty that there are more red beads than blue in the jar?&lt;/p&gt;
-&lt;p&gt;We want to construct an estimate of &lt;span class=&#34;math inline&#34;&gt;\(p\)&lt;/span&gt; using only the information we observe. An estimate should be thought of as a summary of the observed data that we think is informative about the parameter of interest. It seems intuitive to think that the proportion of blue beads in the sample &lt;span class=&#34;math inline&#34;&gt;\(0.48\)&lt;/span&gt; must be at least related to the actual proportion &lt;span class=&#34;math inline&#34;&gt;\(p\)&lt;/span&gt;. But do we simply predict &lt;span class=&#34;math inline&#34;&gt;\(p\)&lt;/span&gt; to be 0.48? First, remember that the sample proportion is a random variable. If we run the command &lt;code&gt;take_poll(25)&lt;/code&gt; four times, we get a different answer each time, since the sample proportion is a random variable.&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/example/04-example_files/figure-html/four-simulated-polls-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
-&lt;p&gt;Note that in the four random samples shown above, the sample proportions range from 0.44 to 0.60. By describing the distribution of this random variable, we will be able to gain insights into how good this estimate is and how we can make it better.&lt;/p&gt;
-&lt;div id=&#34;the-sample-average&#34; class=&#34;section level3&#34;&gt;
-&lt;h3&gt;The sample average&lt;/h3&gt;
-&lt;p&gt;Conducting an opinion poll is being modeled as taking a random sample from an urn. We are proposing the use of the proportion of blue beads in our sample as an &lt;em&gt;estimate&lt;/em&gt; of the parameter &lt;span class=&#34;math inline&#34;&gt;\(p\)&lt;/span&gt;. Once we have this estimate, we can easily report an estimate for the spread &lt;span class=&#34;math inline&#34;&gt;\(2p-1\)&lt;/span&gt;, but for simplicity we will illustrate the concepts for estimating &lt;span class=&#34;math inline&#34;&gt;\(p\)&lt;/span&gt;. We will use our knowledge of probability to defend our use of the sample proportion and quantify how close we think it is from the population proportion &lt;span class=&#34;math inline&#34;&gt;\(p\)&lt;/span&gt;.&lt;/p&gt;
-&lt;p&gt;We start by defining the random variable &lt;span class=&#34;math inline&#34;&gt;\(X\)&lt;/span&gt; as: &lt;span class=&#34;math inline&#34;&gt;\(X=1\)&lt;/span&gt; if we pick a blue bead at random and &lt;span class=&#34;math inline&#34;&gt;\(X=0\)&lt;/span&gt; if it is red. This implies that the population is a list of 0s and 1s. If we sample &lt;span class=&#34;math inline&#34;&gt;\(N\)&lt;/span&gt; beads, then the average of the draws &lt;span class=&#34;math inline&#34;&gt;\(X_1, \dots, X_N\)&lt;/span&gt; is equivalent to the proportion of blue beads in our sample. This is because adding the &lt;span class=&#34;math inline&#34;&gt;\(X\)&lt;/span&gt;s is equivalent to counting the blue beads and dividing this count by the total &lt;span class=&#34;math inline&#34;&gt;\(N\)&lt;/span&gt; is equivalent to computing a proportion. We use the symbol &lt;span class=&#34;math inline&#34;&gt;\(\bar{X}\)&lt;/span&gt; to represent this average. In general, in statistics textbooks a bar on top of a symbol means the average. The theory we just learned about the sum of draws becomes useful because the average is a sum of draws multiplied by the constant &lt;span class=&#34;math inline&#34;&gt;\(1/N\)&lt;/span&gt;:&lt;/p&gt;
-&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[\bar{X} = 1/N \times \sum_{i=1}^N X_i\]&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;For simplicity, let’s assume that the draws are independent: after we see each sampled bead, we return it to the urn. In this case, what do we know about the distribution of the sum of draws? First, we know that the expected value of the sum of draws is &lt;span class=&#34;math inline&#34;&gt;\(N\)&lt;/span&gt; times the average of the values in the urn. We know that the average of the 0s and 1s in the urn must be &lt;span class=&#34;math inline&#34;&gt;\(p\)&lt;/span&gt;, the proportion of blue beads.&lt;/p&gt;
-&lt;p&gt;Here we encounter an important difference with what we did in the Probability chapter: we don’t know what is in the urn. We know there are blue and red beads, but we don’t know how many of each. This is what we want to find out: we are trying to &lt;strong&gt;estimate&lt;/strong&gt; &lt;span class=&#34;math inline&#34;&gt;\(p\)&lt;/span&gt;.&lt;/p&gt;
-&lt;/div&gt;
-&lt;div id=&#34;parameters&#34; class=&#34;section level3&#34;&gt;
-&lt;h3&gt;Parameters&lt;/h3&gt;
-&lt;p&gt;Just like we use variables to define unknowns in systems of equations, in statistical inference we define &lt;em&gt;parameters&lt;/em&gt; to define unknown parts of our models. In the urn model which we are using to mimic an opinion poll, we do not know the proportion of blue beads in the urn. We define the parameters &lt;span class=&#34;math inline&#34;&gt;\(p\)&lt;/span&gt; to represent this quantity. &lt;span class=&#34;math inline&#34;&gt;\(p\)&lt;/span&gt; is the average of the urn because if we take the average of the 1s (blue) and 0s (red), we get the proportion of blue beads. Since our main goal is figuring out what is &lt;span class=&#34;math inline&#34;&gt;\(p\)&lt;/span&gt;, we are going to &lt;em&gt;estimate this parameter&lt;/em&gt;.&lt;/p&gt;
-&lt;p&gt;The ideas presented here on how we estimate parameters, and provide insights into how good these estimates are, extrapolate to many data science tasks. For example, we may want to determine the difference in health improvement between patients receiving treatment and a control group. We may ask, what are the health effects of smoking on a population? What are the differences in racial groups of fatal shootings by police? What is the rate of change in life expectancy in the US during the last 10 years? All these questions can be framed as a task of estimating a parameter from a sample.&lt;/p&gt;
-&lt;/div&gt;
-&lt;div id=&#34;polling-versus-forecasting&#34; class=&#34;section level3&#34;&gt;
-&lt;h3&gt;Polling versus forecasting&lt;/h3&gt;
-&lt;p&gt;Before we continue, let’s make an important clarification related to the practical problem of forecasting the election. If a poll is conducted four months before the election, it is estimating the &lt;span class=&#34;math inline&#34;&gt;\(p\)&lt;/span&gt; for that moment and not for election day. The &lt;span class=&#34;math inline&#34;&gt;\(p\)&lt;/span&gt; for election night might be different since people’s opinions fluctuate through time. The polls provided the night before the election tend to be the most accurate since opinions don’t change that much in a day. However, forecasters try to build tools that model how opinions vary across time and try to predict the election night results taking into consideration the fact that opinions fluctuate. We will describe some approaches for doing this in a later section.&lt;/p&gt;
-&lt;/div&gt;
-&lt;div id=&#34;properties-of-our-estimate-expected-value-and-standard-error&#34; class=&#34;section level3&#34;&gt;
-&lt;h3&gt;Properties of our estimate: expected value and standard error&lt;/h3&gt;
-&lt;p&gt;To understand how good our estimate is, we will describe the statistical properties of the random variable defined above: the sample proportion &lt;span class=&#34;math inline&#34;&gt;\(\bar{X}\)&lt;/span&gt;. Remember that &lt;span class=&#34;math inline&#34;&gt;\(\bar{X}\)&lt;/span&gt; is the sum of independent draws so the rules we covered in the probability chapter apply.&lt;/p&gt;
-&lt;p&gt;Using what we have learned, the expected value of the sum &lt;span class=&#34;math inline&#34;&gt;\(N\bar{X}\)&lt;/span&gt; is &lt;span class=&#34;math inline&#34;&gt;\(N \times\)&lt;/span&gt; the average of the urn, &lt;span class=&#34;math inline&#34;&gt;\(p\)&lt;/span&gt;. So dividing by the non-random constant &lt;span class=&#34;math inline&#34;&gt;\(N\)&lt;/span&gt; gives us that the expected value of the average &lt;span class=&#34;math inline&#34;&gt;\(\bar{X}\)&lt;/span&gt; is &lt;span class=&#34;math inline&#34;&gt;\(p\)&lt;/span&gt;. We can write it using our mathematical notation:&lt;/p&gt;
-&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
-\mbox{E}(\bar{X}) = p
-\]&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;We can also use what we learned to figure out the standard error: the standard error of the sum is &lt;span class=&#34;math inline&#34;&gt;\(\sqrt{N} \times\)&lt;/span&gt; the standard deviation of the urn. Can we compute the standard error of the urn? We learned a formula that tells us that it is &lt;span class=&#34;math inline&#34;&gt;\((1-0) \sqrt{p (1-p)}\)&lt;/span&gt; = &lt;span class=&#34;math inline&#34;&gt;\(\sqrt{p (1-p)}\)&lt;/span&gt;. Because we are dividing the sum by &lt;span class=&#34;math inline&#34;&gt;\(N\)&lt;/span&gt;, we arrive at the following formula for the standard error of the average:&lt;/p&gt;
-&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
-\mbox{SE}(\bar{X}) = \sqrt{p(1-p)/N}
-\]&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;This result reveals the power of polls. The expected value of the sample proportion &lt;span class=&#34;math inline&#34;&gt;\(\bar{X}\)&lt;/span&gt; is the parameter of interest &lt;span class=&#34;math inline&#34;&gt;\(p\)&lt;/span&gt; and we can make the standard error as small as we want by increasing &lt;span class=&#34;math inline&#34;&gt;\(N\)&lt;/span&gt;. The law of large numbers tells us that with a large enough poll, our estimate converges to &lt;span class=&#34;math inline&#34;&gt;\(p\)&lt;/span&gt;.&lt;/p&gt;
-&lt;p&gt;If we take a large enough poll to make our standard error about 1%, we will be quite certain about who will win. But how large does the poll have to be for the standard error to be this small?&lt;/p&gt;
-&lt;p&gt;One problem is that we do not know &lt;span class=&#34;math inline&#34;&gt;\(p\)&lt;/span&gt;, so we can’t compute the standard error. However, for illustrative purposes, let’s assume that &lt;span class=&#34;math inline&#34;&gt;\(p=0.51\)&lt;/span&gt; and make a plot of the standard error versus the sample size &lt;span class=&#34;math inline&#34;&gt;\(N\)&lt;/span&gt;:&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/example/04-example_files/figure-html/standard-error-versus-sample-size-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
-&lt;p&gt;From the plot we see that we would need a poll of over 10,000 people to get the standard error that low. We rarely see polls of this size due in part to costs. From the Real Clear Politics table, we learn that the sample sizes in opinion polls range from 500-3,500 people. For a sample size of 1,000 and &lt;span class=&#34;math inline&#34;&gt;\(p=0.51\)&lt;/span&gt;, the standard error is:&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;sqrt(p*(1-p))/sqrt(1000)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## [1] 0.01580823&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;or 1.5 percentage points. So even with large polls, for close elections, &lt;span class=&#34;math inline&#34;&gt;\(\bar{X}\)&lt;/span&gt; can lead us astray if we don’t realize it is a random variable. Nonetheless, we can actually say more about how close we get the &lt;span class=&#34;math inline&#34;&gt;\(p\)&lt;/span&gt;.&lt;/p&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div id=&#34;clt&#34; class=&#34;section level2&#34;&gt;
-&lt;h2&gt;Central Limit Theorem&lt;/h2&gt;
-&lt;p&gt;The Central Limit Theorem (CLT) tells us that the distribution function for a sum of draws is approximately normal. You also may recall that dividing a normally distributed random variable by a constant is also a normally distributed variable. This implies that the distribution of &lt;span class=&#34;math inline&#34;&gt;\(\bar{X}\)&lt;/span&gt; is approximately normal.&lt;/p&gt;
-&lt;p&gt;In summary, we have that &lt;span class=&#34;math inline&#34;&gt;\(\bar{X}\)&lt;/span&gt; has an approximately normal distribution with expected value &lt;span class=&#34;math inline&#34;&gt;\(p\)&lt;/span&gt; and standard error &lt;span class=&#34;math inline&#34;&gt;\(\sqrt{p(1-p)/N}\)&lt;/span&gt;.&lt;/p&gt;
-&lt;p&gt;Now how does this help us? Suppose we want to know what is the probability that we are within 1% from &lt;span class=&#34;math inline&#34;&gt;\(p\)&lt;/span&gt;. We are basically asking what is&lt;/p&gt;
-&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
-\mbox{Pr}(| \bar{X} - p| \leq .01)
-\]&lt;/span&gt;
-which is the same as:&lt;/p&gt;
-&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
-\mbox{Pr}(\bar{X}\leq p + .01) - \mbox{Pr}(\bar{X} \leq p - .01)
-\]&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;Can we answer this question? We can use the mathematical trick we learned in the previous chapter. Subtract the expected value and divide by the standard error to get a standard normal random variable, call it &lt;span class=&#34;math inline&#34;&gt;\(Z\)&lt;/span&gt;, on the left. Since &lt;span class=&#34;math inline&#34;&gt;\(p\)&lt;/span&gt; is the expected value and &lt;span class=&#34;math inline&#34;&gt;\(\mbox{SE}(\bar{X}) = \sqrt{p(1-p)/N}\)&lt;/span&gt; is the standard error we get:&lt;/p&gt;
-&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
-\mbox{Pr}\left(Z \leq \frac{ \,.01} {\mbox{SE}(\bar{X})} \right) -
-\mbox{Pr}\left(Z \leq - \frac{ \,.01} {\mbox{SE}(\bar{X})} \right)
-\]&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;One problem we have is that since we don’t know &lt;span class=&#34;math inline&#34;&gt;\(p\)&lt;/span&gt;, we don’t know &lt;span class=&#34;math inline&#34;&gt;\(\mbox{SE}(\bar{X})\)&lt;/span&gt;. But it turns out that the CLT still works if we estimate the standard error by using &lt;span class=&#34;math inline&#34;&gt;\(\bar{X}\)&lt;/span&gt; in place of &lt;span class=&#34;math inline&#34;&gt;\(p\)&lt;/span&gt;. We say that we &lt;em&gt;plug-in&lt;/em&gt; the estimate. Our estimate of the standard error is therefore:&lt;/p&gt;
-&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
-\hat{\mbox{SE}}(\bar{X})=\sqrt{\bar{X}(1-\bar{X})/N}
-\]&lt;/span&gt;
-In statistics textbooks, we use a little hat to denote estimates. The estimate can be constructed using the observed data and &lt;span class=&#34;math inline&#34;&gt;\(N\)&lt;/span&gt;.&lt;/p&gt;
-&lt;p&gt;Now we continue with our calculation, but dividing by &lt;span class=&#34;math inline&#34;&gt;\(\hat{\mbox{SE}}(\bar{X})=\sqrt{\bar{X}(1-\bar{X})/N})\)&lt;/span&gt; instead. In our first sample we had 12 blue and 13 red so &lt;span class=&#34;math inline&#34;&gt;\(\bar{X} = 0.48\)&lt;/span&gt; and our estimate of standard error is:&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;x_hat &amp;lt;- 0.48
-se &amp;lt;- sqrt(x_hat*(1-x_hat)/25)
-se&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## [1] 0.09991997&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;And now we can answer the question of the probability of being close to &lt;span class=&#34;math inline&#34;&gt;\(p\)&lt;/span&gt;. The answer is:&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;pnorm(0.01/se) - pnorm(-0.01/se)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## [1] 0.07971926&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Therefore, there is a small chance that we will be close. A poll of only &lt;span class=&#34;math inline&#34;&gt;\(N=25\)&lt;/span&gt; people is not really very useful, at least not for a close election.&lt;/p&gt;
-&lt;p&gt;Earlier we mentioned the &lt;em&gt;margin of error&lt;/em&gt;. Now we can define it because it is simply two times the standard error, which we can now estimate. In our case it is:&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;1.96*se&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## [1] 0.1958431&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Why do we multiply by 1.96? Because if you ask what is the probability that we are within 1.96 standard errors from &lt;span class=&#34;math inline&#34;&gt;\(p\)&lt;/span&gt;, we get:&lt;/p&gt;
-&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
-\mbox{Pr}\left(Z \leq \, 1.96\,\mbox{SE}(\bar{X})  / \mbox{SE}(\bar{X}) \right) -
-\mbox{Pr}\left(Z \leq - 1.96\, \mbox{SE}(\bar{X}) / \mbox{SE}(\bar{X}) \right)
-\]&lt;/span&gt;
-which is:&lt;/p&gt;
-&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
-\mbox{Pr}\left(Z \leq 1.96 \right) -
-\mbox{Pr}\left(Z \leq - 1.96\right)
-\]&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;which we know is about 95%:&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;pnorm(1.96)-pnorm(-1.96)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## [1] 0.9500042&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Hence, there is a 95% probability that &lt;span class=&#34;math inline&#34;&gt;\(\bar{X}\)&lt;/span&gt; will be within &lt;span class=&#34;math inline&#34;&gt;\(1.96\times \hat{SE}(\bar{X})\)&lt;/span&gt;, in our case within about 0.2, of &lt;span class=&#34;math inline&#34;&gt;\(p\)&lt;/span&gt;. Note that 95% is somewhat of an arbitrary choice and sometimes other percentages are used, but it is the most commonly used value to define margin of error. We often round 1.96 up to 2 for simplicity of presentation.&lt;/p&gt;
-&lt;p&gt;In summary, the CLT tells us that our poll based on a sample size of &lt;span class=&#34;math inline&#34;&gt;\(25\)&lt;/span&gt; is not very useful. We don’t really learn much when the margin of error is this large. All we can really say is that the popular vote will not be won by a large margin. This is why pollsters tend to use larger sample sizes.&lt;/p&gt;
-&lt;p&gt;From the table above, we see that typical sample sizes range from 700 to 3500. To see how this gives us a much more practical result, notice that if we had obtained a &lt;span class=&#34;math inline&#34;&gt;\(\bar{X}\)&lt;/span&gt;=0.48 with a sample size of 2,000, our standard error &lt;span class=&#34;math inline&#34;&gt;\(\hat{\mbox{SE}}(\bar{X})\)&lt;/span&gt; would have been 0.0111714. So our result is an estimate of &lt;code&gt;48&lt;/code&gt;% with a margin of error of 2%. In this case, the result is much more informative and would make us think that there are more red balls than blue. Keep in mind, however, that this is hypothetical. We did not take a poll of 2,000 since we don’t want to ruin the competition.&lt;/p&gt;
-&lt;div id=&#34;a-monte-carlo-simulation&#34; class=&#34;section level3&#34;&gt;
-&lt;h3&gt;A Monte Carlo simulation&lt;/h3&gt;
-&lt;p&gt;Suppose we want to use a Monte Carlo simulation to corroborate the tools we have built using probability theory. To create the simulation, we would write code like this:&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;B &amp;lt;- 10000
-N &amp;lt;- 1000
-x_hat &amp;lt;- replicate(B, {
-  x &amp;lt;- sample(c(0,1), size = N, replace = TRUE, prob = c(1-p, p))
-  mean(x)
-})&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;The problem is, of course, we don’t know &lt;code&gt;p&lt;/code&gt;. We could construct an urn like the one pictured above and run an analog (without a computer) simulation. It would take a long time, but you could take 10,000 samples, count the beads and keep track of the proportions of blue. We can use the function &lt;code&gt;take_poll(n=1000)&lt;/code&gt; instead of drawing from an actual urn, but it would still take time to count the beads and enter the results.&lt;/p&gt;
-&lt;p&gt;One thing we therefore do to corroborate theoretical results is to pick one or several values of &lt;code&gt;p&lt;/code&gt; and run the simulations. Let’s set &lt;code&gt;p=0.45&lt;/code&gt;. We can then simulate a poll:&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p &amp;lt;- 0.45
-N &amp;lt;- 1000
-
-x &amp;lt;- sample(c(0,1), size = N, replace = TRUE, prob = c(1-p, p))
-x_hat &amp;lt;- mean(x)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;In this particular sample, our estimate is &lt;code&gt;x_hat&lt;/code&gt;. We can use that code to do a Monte Carlo simulation:&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;B &amp;lt;- 10000
-x_hat &amp;lt;- replicate(B, {
-  x &amp;lt;- sample(c(0,1), size = N, replace = TRUE, prob = c(1-p, p))
-  mean(x)
-})&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;To review, the theory tells us that &lt;span class=&#34;math inline&#34;&gt;\(\bar{X}\)&lt;/span&gt; is approximately normally distributed, has expected value &lt;span class=&#34;math inline&#34;&gt;\(p=\)&lt;/span&gt; 0.45 and standard error &lt;span class=&#34;math inline&#34;&gt;\(\sqrt{p(1-p)/N}\)&lt;/span&gt; = 0.0157321. The simulation confirms this:&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;mean(x_hat)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## [1] 0.4500761&lt;/code&gt;&lt;/pre&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;sd(x_hat)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## [1] 0.01579523&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;A histogram and qq-plot confirm that the normal approximation is accurate as well:&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/example/04-example_files/figure-html/normal-approximation-for-polls-1.png&#34; width=&#34;100%&#34; /&gt;&lt;/p&gt;
-&lt;p&gt;Of course, in real life we would never be able to run such an experiment because we don’t know &lt;span class=&#34;math inline&#34;&gt;\(p\)&lt;/span&gt;. But we could run it for various values of &lt;span class=&#34;math inline&#34;&gt;\(p\)&lt;/span&gt; and &lt;span class=&#34;math inline&#34;&gt;\(N\)&lt;/span&gt; and see that the theory does indeed work well for most values. You can easily do this by re-running the code above after changing &lt;code&gt;p&lt;/code&gt; and &lt;code&gt;N&lt;/code&gt;.&lt;/p&gt;
-&lt;/div&gt;
-&lt;div id=&#34;the-spread&#34; class=&#34;section level3&#34;&gt;
-&lt;h3&gt;The spread&lt;/h3&gt;
-&lt;p&gt;The competition is to predict the spread, not the proportion &lt;span class=&#34;math inline&#34;&gt;\(p\)&lt;/span&gt;. However, because we are assuming there are only two parties, we know that the spread is &lt;span class=&#34;math inline&#34;&gt;\(p - (1-p) = 2p - 1\)&lt;/span&gt;. As a result, everything we have done can easily be adapted to an estimate of &lt;span class=&#34;math inline&#34;&gt;\(2p - 1\)&lt;/span&gt;. Once we have our estimate &lt;span class=&#34;math inline&#34;&gt;\(\bar{X}\)&lt;/span&gt; and &lt;span class=&#34;math inline&#34;&gt;\(\hat{\mbox{SE}}(\bar{X})\)&lt;/span&gt;, we estimate the spread with &lt;span class=&#34;math inline&#34;&gt;\(2\bar{X} - 1\)&lt;/span&gt; and, since we are multiplying by 2, the standard error is &lt;span class=&#34;math inline&#34;&gt;\(2\hat{\mbox{SE}}(\bar{X})\)&lt;/span&gt;. Note that subtracting 1 does not add any variability so it does not affect the standard error.&lt;/p&gt;
-&lt;p&gt;For our 25 item sample above, our estimate &lt;span class=&#34;math inline&#34;&gt;\(p\)&lt;/span&gt; is &lt;code&gt;.48&lt;/code&gt; with margin of error &lt;code&gt;.20&lt;/code&gt; and our estimate of the spread is &lt;code&gt;0.04&lt;/code&gt; with margin of error &lt;code&gt;.40&lt;/code&gt;. Again, not a very useful sample size. However, the point is that once we have an estimate and standard error for &lt;span class=&#34;math inline&#34;&gt;\(p\)&lt;/span&gt;, we have it for the spread &lt;span class=&#34;math inline&#34;&gt;\(2p-1\)&lt;/span&gt;.&lt;/p&gt;
-&lt;/div&gt;
-&lt;div id=&#34;bias-why-not-run-a-very-large-poll&#34; class=&#34;section level3&#34;&gt;
-&lt;h3&gt;Bias: why not run a very large poll?&lt;/h3&gt;
-&lt;p&gt;For realistic values of &lt;span class=&#34;math inline&#34;&gt;\(p\)&lt;/span&gt;, say from 0.35 to 0.65, if we run a very large poll with 100,000 people, theory tells us that we would predict the election perfectly since the largest possible margin of error is around 0.3%:&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/example/04-example_files/figure-html/standard-error-versus-p-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
-&lt;p&gt;One reason is that running such a poll is very expensive. Another possibly more important reason is that theory has its limitations. Polling is much more complicated than picking beads from an urn. Some people might lie to pollsters and others might not have phones. But perhaps the most important way an actual poll differs from an urn model is that we actually don’t know for sure who is in our population and who is not. How do we know who is going to vote? Are we reaching all possible voters? Hence, even if our margin of error is very small, it might not be exactly right that our expected value is &lt;span class=&#34;math inline&#34;&gt;\(p\)&lt;/span&gt;. We call this bias. Historically, we observe that polls are indeed biased, although not by that much. The typical bias appears to be about 1-2%. This makes election forecasting a bit more interesting and we will talk about how to model this shortly.&lt;/p&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div id=&#34;part-2-supplemental-additional-visualization-techniques&#34; class=&#34;section level1&#34;&gt;
-&lt;h1&gt;Part 2: (Supplemental) Additional Visualization Techniques&lt;/h1&gt;
-&lt;p&gt;For this second part of the example, we’re going to use historical weather data from &lt;a href=&#34;https://darksky.net/forecast/33.7546,-84.39/us12/en&#34;&gt;Dark Sky&lt;/a&gt; about wind speed and temperature trends for downtown Atlanta (&lt;a href=&#34;https://www.google.com/maps/place/33°45&amp;#39;16.4%22N+84°23&amp;#39;24.0%22W/@33.754557,-84.3921977,17z/&#34;&gt;specifically &lt;code&gt;33.754557, -84.390009&lt;/code&gt;&lt;/a&gt;) in 2019. We downloaded this data using Dark Sky’s (about-to-be-retired-because-they-were-bought-by-Apple) API using the &lt;a href=&#34;https://github.com/hrbrmstr/darksky&#34;&gt;&lt;strong&gt;darksky&lt;/strong&gt; package&lt;/a&gt;.&lt;/p&gt;
-&lt;p&gt;If you want to follow along with this example, you can download the data below (you’ll likely need to right click and choose “Save Link As…”):&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;a href=&#34;https://ssc442.netlify.app/data/atl-weather-2019.csv&#34;&gt;&lt;i class=&#34;fas fa-file-csv&#34;&gt;&lt;/i&gt; &lt;code&gt;atl-weather-2019.csv&lt;/code&gt;&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;div id=&#34;code&#34; class=&#34;section level2&#34;&gt;
-&lt;h2&gt;Code&lt;/h2&gt;
-&lt;div id=&#34;load-and-clean-data&#34; class=&#34;section level3&#34;&gt;
-&lt;h3&gt;Load and clean data&lt;/h3&gt;
-&lt;p&gt;First, we load the libraries we’ll be using:&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(tidyverse)
-library(lubridate)
-library(ggridges)
-library(gghalves)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Then we load the data with &lt;code&gt;read_csv()&lt;/code&gt;. Here we assume that the CSV file lives in a subfolder in my project named &lt;code&gt;data&lt;/code&gt;. Naturally, you’ll need to point this to wherever you stashed the data.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;weather_atl_raw &amp;lt;- read_csv(&amp;quot;data/atl-weather-2019.csv&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;We’ll add a couple columns that we can use for faceting and filling using the &lt;code&gt;month()&lt;/code&gt; and &lt;code&gt;wday()&lt;/code&gt; functions from &lt;strong&gt;lubridate&lt;/strong&gt; for extracting parts of the date:&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;weather_atl &amp;lt;- weather_atl_raw %&amp;gt;%
-  mutate(Month = month(time, label = TRUE, abbr = FALSE),
-         Day = wday(time, label = TRUE, abbr = FALSE))&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Now we’re ready to go!&lt;/p&gt;
-&lt;/div&gt;
-&lt;div id=&#34;histograms&#34; class=&#34;section level3&#34;&gt;
-&lt;h3&gt;Histograms&lt;/h3&gt;
-&lt;p&gt;We can first make a histogram of wind speed. We’ll use a bin width of 1 and color the edges of the bars white:&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(weather_atl, aes(x = windSpeed)) +
-  geom_histogram(binwidth = 1, color = &amp;quot;white&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/example/04-example_files/figure-html/basic-histogram-1.png&#34; width=&#34;576&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
-&lt;p&gt;This is fine enough, but we can improve it by forcing the buckets/bins to start at whole numbers instead of containing ranges like 2.5–3.5. We’ll use the &lt;code&gt;boundary&lt;/code&gt; argument for that. We also add &lt;code&gt;scale_x_continuous()&lt;/code&gt; to add our own x-axis breaks instead of having things like 2.5, 5, and 7.5:&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(weather_atl, aes(x = windSpeed)) +
-  geom_histogram(binwidth = 1, color = &amp;quot;white&amp;quot;, boundary = 1) +
-  scale_x_continuous(breaks = seq(0, 12, by = 1))&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/example/04-example_files/figure-html/basic-histogram-better-1.png&#34; width=&#34;576&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
-&lt;p&gt;We can show the distribution of wind speed by month if we map the &lt;code&gt;Month&lt;/code&gt; column we made onto the fill aesthetic:&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(weather_atl, aes(x = windSpeed, fill = Month)) +
-  geom_histogram(binwidth = 1, color = &amp;quot;white&amp;quot;, boundary = 1) +
-  scale_x_continuous(breaks = seq(0, 12, by = 1))&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/example/04-example_files/figure-html/histogram-by-month-1.png&#34; width=&#34;576&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
-&lt;p&gt;This is colorful, but it’s impossible to actually interpret. Instead of only filling, we’ll also facet by month to see separate graphs for each month. We can turn off the fill legend because it’s now redundant.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(weather_atl, aes(x = windSpeed, fill = Month)) +
-  geom_histogram(binwidth = 1, color = &amp;quot;white&amp;quot;, boundary = 1) +
-  scale_x_continuous(breaks = seq(0, 12, by = 1)) +
-  guides(fill = FALSE) +
-  facet_wrap(vars(Month))&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## Warning: `guides(&amp;lt;scale&amp;gt; = FALSE)` is deprecated. Please use `guides(&amp;lt;scale&amp;gt; =
-## &amp;quot;none&amp;quot;)` instead.&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/example/04-example_files/figure-html/histogram-by-month-facet-1.png&#34; width=&#34;768&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
-&lt;p&gt;Neat! January, March, and April appear to have the most variation in windy days, with a few wind-less days and a few very-windy days, while August was very wind-less.&lt;/p&gt;
-&lt;/div&gt;
-&lt;div id=&#34;density-plots&#34; class=&#34;section level3&#34;&gt;
-&lt;h3&gt;Density plots&lt;/h3&gt;
-&lt;p&gt;The code to create a density plot is nearly identical to what we used for the histogram—the only thing we change is the &lt;code&gt;geom&lt;/code&gt; layer:&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(weather_atl, aes(x = windSpeed)) +
-  geom_density(color = &amp;quot;grey20&amp;quot;, fill = &amp;quot;grey50&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/example/04-example_files/figure-html/basic-density-1.png&#34; width=&#34;576&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
-&lt;p&gt;If we want, we can mess with some of the calculus options like the kernel and bandwidth:&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(weather_atl, aes(x = windSpeed)) +
-  geom_density(color = &amp;quot;grey20&amp;quot;, fill = &amp;quot;grey50&amp;quot;,
-               bw = 0.1, kernel = &amp;quot;epanechnikov&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/example/04-example_files/figure-html/density-kernel-bw-1.png&#34; width=&#34;576&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
-&lt;p&gt;We can also fill by month. We’ll make the different layers 50% transparent so we can kind of see through the whole stack:&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(weather_atl, aes(x = windSpeed, fill = Month)) +
-  geom_density(alpha = 0.5)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/example/04-example_files/figure-html/density-fill-by-month-1.png&#34; width=&#34;576&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
-&lt;p&gt;Even with the transparency, this is really hard to interpret. We can fix this by faceting, like we did with the histograms:&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(weather_atl, aes(x = windSpeed, fill = Month)) +
-  geom_density(alpha = 0.5) +
-  guides(fill = FALSE) +
-  facet_wrap(vars(Month))&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## Warning: `guides(&amp;lt;scale&amp;gt; = FALSE)` is deprecated. Please use `guides(&amp;lt;scale&amp;gt; =
-## &amp;quot;none&amp;quot;)` instead.&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/example/04-example_files/figure-html/density-facet-by-month-1.png&#34; width=&#34;768&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
-&lt;p&gt;Or we can stack the density plots behind each other with &lt;a href=&#34;https://cran.r-project.org/web/packages/ggridges/vignettes/introduction.html&#34;&gt;&lt;strong&gt;ggridges&lt;/strong&gt;&lt;/a&gt;. For that to work, we also need to map &lt;code&gt;Month&lt;/code&gt; to the y-axis. We can reverse the y-axis so that January is at the top if we use the &lt;code&gt;fct_rev()&lt;/code&gt; function:&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(weather_atl, aes(x = windSpeed, y = fct_rev(Month), fill = Month)) +
-  geom_density_ridges() +
-  guides(fill = FALSE)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## Warning: `guides(&amp;lt;scale&amp;gt; = FALSE)` is deprecated. Please use `guides(&amp;lt;scale&amp;gt; =
-## &amp;quot;none&amp;quot;)` instead.&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/example/04-example_files/figure-html/ggridges-basic-1.png&#34; width=&#34;576&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
-&lt;p&gt;We can add some extra information to &lt;code&gt;geom_density_ridges()&lt;/code&gt; with some other arguments like &lt;code&gt;quantile_lines&lt;/code&gt;. We can use the &lt;code&gt;quantiles&lt;/code&gt; argument to tell the plow how many parts to be cut into. Since we just want to show the median, we’ll set that to 2 so each density plot is divided in half:&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(weather_atl, aes(x = windSpeed, y = fct_rev(Month), fill = Month)) +
-  geom_density_ridges(quantile_lines = TRUE, quantiles = 2) +
-  guides(fill = FALSE)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## Warning: `guides(&amp;lt;scale&amp;gt; = FALSE)` is deprecated. Please use `guides(&amp;lt;scale&amp;gt; =
-## &amp;quot;none&amp;quot;)` instead.&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/example/04-example_files/figure-html/ggridges-quantile-1.png&#34; width=&#34;576&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
-&lt;p&gt;Now that we have good working code, we can easily substitute in other variables by changing the x mapping:&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(weather_atl, aes(x = temperatureHigh, y = fct_rev(Month), fill = Month)) +
-  geom_density_ridges(quantile_lines = TRUE, quantiles = 2) +
-  guides(fill = FALSE)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## Warning: `guides(&amp;lt;scale&amp;gt; = FALSE)` is deprecated. Please use `guides(&amp;lt;scale&amp;gt; =
-## &amp;quot;none&amp;quot;)` instead.&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/example/04-example_files/figure-html/ggridges-quantile-temp-1.png&#34; width=&#34;576&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
-&lt;p&gt;We can get extra fancy if we fill by temperature instead of filling by month. To get this to work, we need to use &lt;code&gt;geom_density_ridges_gradient()&lt;/code&gt;, and we need to change the &lt;code&gt;fill&lt;/code&gt; mapping to the strange looking &lt;code&gt;..x..&lt;/code&gt;, which is a weird ggplot trick that tells it to use the variable we mapped to the x-axis. For whatever reason, &lt;code&gt;fill = temperatureHigh&lt;/code&gt; doesn’t work:&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(weather_atl, aes(x = temperatureHigh, y = fct_rev(Month), fill = ..x..)) +
-  geom_density_ridges_gradient(quantile_lines = TRUE, quantiles = 2) +
-  scale_fill_viridis_c(option = &amp;quot;plasma&amp;quot;) +
-  labs(x = &amp;quot;High temperature&amp;quot;, y = NULL, color = &amp;quot;Temp&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/example/04-example_files/figure-html/ggridges-gradient-temp-1.png&#34; width=&#34;576&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
-&lt;p&gt;And finally, we can get &lt;em&gt;extra&lt;/em&gt; fancy and show the distributions for both the high and low temperatures each month. To make this work, we need to manipulate the data a little. Right now there are two columns for high and low temperature: &lt;code&gt;temperatureLow&lt;/code&gt; and &lt;code&gt;temperatureHigh&lt;/code&gt;. To be able to map temperature to the x-axis and high vs. low to another aesthetic (like &lt;code&gt;linetype&lt;/code&gt;), we need a column with the temperature and a column with an indicator variable for whether it is high or low. This data needs to be tidied (since right now we have a variable (high/low) encoded in the column name). We can tidy this data using &lt;code&gt;pivot_longer()&lt;/code&gt; from &lt;strong&gt;tidyr&lt;/strong&gt;, which was already loaded with &lt;code&gt;library(tidyverse)&lt;/code&gt;. In the RStudio primers, you did this same thing with &lt;code&gt;gather()&lt;/code&gt;—&lt;code&gt;pivot_longer()&lt;/code&gt; is the newer version of &lt;code&gt;gather()&lt;/code&gt;:&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;weather_atl_long &amp;lt;- weather_atl %&amp;gt;%
-  pivot_longer(cols = c(temperatureLow, temperatureHigh),
-               names_to = &amp;quot;temp_type&amp;quot;,
-               values_to = &amp;quot;temp&amp;quot;) %&amp;gt;%
-  # Clean up the new temp_type column so that &amp;quot;temperatureHigh&amp;quot; becomes &amp;quot;High&amp;quot;, etc.
-  mutate(temp_type = recode(temp_type,
-                            temperatureHigh = &amp;quot;High&amp;quot;,
-                            temperatureLow = &amp;quot;Low&amp;quot;)) %&amp;gt;%
-  # This is optional—just select a handful of columns
-  select(time, temp_type, temp, Month)
-
-# Show the first few rows
-head(weather_atl_long)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## # A tibble: 6 × 4
-##   time                temp_type  temp Month  
-##   &amp;lt;dttm&amp;gt;              &amp;lt;chr&amp;gt;     &amp;lt;dbl&amp;gt; &amp;lt;ord&amp;gt;  
-## 1 2019-01-01 05:00:00 Low        50.6 January
-## 2 2019-01-01 05:00:00 High       63.9 January
-## 3 2019-01-02 05:00:00 Low        49.0 January
-## 4 2019-01-02 05:00:00 High       57.4 January
-## 5 2019-01-03 05:00:00 Low        53.1 January
-## 6 2019-01-03 05:00:00 High       55.3 January&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Now we have a column for the temperature (&lt;code&gt;temp&lt;/code&gt;) and a column indicating if it is high or low (&lt;code&gt;temp_type&lt;/code&gt;). The dataset is also twice as long (730 rows) because each day has two rows (high and low). Let’s plot it and map high/low to the &lt;code&gt;linetype&lt;/code&gt; aesthetic to show high/low in the border of the plots:&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(weather_atl_long, aes(x = temp, y = fct_rev(Month),
-                             fill = ..x.., linetype = temp_type)) +
-  geom_density_ridges_gradient(quantile_lines = TRUE, quantiles = 2) +
-  scale_fill_viridis_c(option = &amp;quot;plasma&amp;quot;) +
-  labs(x = &amp;quot;High temperature&amp;quot;, y = NULL, color = &amp;quot;Temp&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/example/04-example_files/figure-html/ggridges-gradient-temp-high-low-1.png&#34; width=&#34;576&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
-&lt;p&gt;We can see much wider temperature disparities during the summer, with large gaps between high and low, and relatively equal high/low temperatures during the winter.&lt;/p&gt;
-&lt;/div&gt;
-&lt;div id=&#34;box-violin-and-rain-cloud-plots&#34; class=&#34;section level3&#34;&gt;
-&lt;h3&gt;Box, violin, and rain cloud plots&lt;/h3&gt;
-&lt;p&gt;Finally, we can look at the distribution of variables with box plots, violin plots, and other similar graphs. First, we’ll make a box plot of windspeed, filled by the &lt;code&gt;Day&lt;/code&gt; variable we made indicating weekday:&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(weather_atl,
-       aes(y = windSpeed, fill = Day)) +
-  geom_boxplot()&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/example/04-example_files/figure-html/basic-boxplot-1.png&#34; width=&#34;576&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
-&lt;p&gt;We can switch this to a violin plot by just changing the &lt;code&gt;geom&lt;/code&gt; layer and mapping &lt;code&gt;Day&lt;/code&gt; to the x-axis:&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(weather_atl,
-       aes(y = windSpeed, x = Day, fill = Day)) +
-  geom_violin()&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/example/04-example_files/figure-html/basic-violin-1.png&#34; width=&#34;576&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
-&lt;p&gt;With violin plots it’s typically good to overlay other geoms. We can add some jittered points for a strip plot:&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(weather_atl,
-       aes(y = windSpeed, x = Day, fill = Day)) +
-  geom_violin() +
-  geom_point(size = 0.5, position = position_jitter(width = 0.1)) +
-  guides(fill = FALSE)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## Warning: `guides(&amp;lt;scale&amp;gt; = FALSE)` is deprecated. Please use `guides(&amp;lt;scale&amp;gt; =
-## &amp;quot;none&amp;quot;)` instead.&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/example/04-example_files/figure-html/violin-strip-1.png&#34; width=&#34;576&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
-&lt;p&gt;We can also add larger points for the daily averages. We’ll use a special layer for this: &lt;code&gt;stat_summary()&lt;/code&gt;. It has a slightly different syntax, since we’re not actually mapping a column from the dataset. Instead, we’re feeding a column from a dataset into a function (here &lt;code&gt;&#34;mean&#34;&lt;/code&gt;) and then plotting that result:&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(weather_atl,
-       aes(y = windSpeed, x = Day, fill = Day)) +
-  geom_violin() +
-  stat_summary(geom = &amp;quot;point&amp;quot;, fun = &amp;quot;mean&amp;quot;, size = 5, color = &amp;quot;white&amp;quot;) +
-  geom_point(size = 0.5, position = position_jitter(width = 0.1)) +
-  guides(fill = FALSE)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## Warning: `guides(&amp;lt;scale&amp;gt; = FALSE)` is deprecated. Please use `guides(&amp;lt;scale&amp;gt; =
-## &amp;quot;none&amp;quot;)` instead.&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/example/04-example_files/figure-html/violin-strip-mean-1.png&#34; width=&#34;576&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
-&lt;p&gt;We can also show the mean and confidence interval at the same time by changing the summary function:&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(weather_atl,
-       aes(y = windSpeed, x = Day, fill = Day)) +
-  geom_violin() +
-  stat_summary(geom = &amp;quot;pointrange&amp;quot;, fun.data = &amp;quot;mean_se&amp;quot;, size = 1, color = &amp;quot;white&amp;quot;) +
-  geom_point(size = 0.5, position = position_jitter(width = 0.1)) +
-  guides(fill = FALSE)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## Warning: `guides(&amp;lt;scale&amp;gt; = FALSE)` is deprecated. Please use `guides(&amp;lt;scale&amp;gt; =
-## &amp;quot;none&amp;quot;)` instead.&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/example/04-example_files/figure-html/violin-strip-mean-ci-1.png&#34; width=&#34;576&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
-&lt;p&gt;Overlaying the points directly on top of the violins shows extra information, but it’s also really crowded and hard to read. If we use &lt;a href=&#34;https://github.com/erocoar/gghalves&#34;&gt;the &lt;strong&gt;gghalves&lt;/strong&gt; package&lt;/a&gt;, we can use special halved versions of some of these geoms like so:&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(weather_atl,
-       aes(x = fct_rev(Day), y = temperatureHigh)) +
-  geom_half_point(aes(color = Day), side = &amp;quot;l&amp;quot;, size = 0.5) +
-  geom_half_boxplot(aes(fill = Day), side = &amp;quot;r&amp;quot;) +
-  guides(color = FALSE, fill = FALSE)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## Warning: `guides(&amp;lt;scale&amp;gt; = FALSE)` is deprecated. Please use `guides(&amp;lt;scale&amp;gt; =
-## &amp;quot;none&amp;quot;)` instead.&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/example/04-example_files/figure-html/gghalves-point-boxplot-1.png&#34; width=&#34;576&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
-&lt;p&gt;Note the &lt;code&gt;side&lt;/code&gt; argument for specifying which half of the column the geom goes. We can also use &lt;code&gt;geom_half_violin()&lt;/code&gt;:&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(weather_atl,
-       aes(x = fct_rev(Day), y = temperatureHigh)) +
-  geom_half_point(aes(color = Day), side = &amp;quot;l&amp;quot;, size = 0.5) +
-  geom_half_violin(aes(fill = Day), side = &amp;quot;r&amp;quot;) +
-  guides(color = FALSE, fill = FALSE)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## Warning: `guides(&amp;lt;scale&amp;gt; = FALSE)` is deprecated. Please use `guides(&amp;lt;scale&amp;gt; =
-## &amp;quot;none&amp;quot;)` instead.&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/example/04-example_files/figure-html/gghalves-point-violon-1.png&#34; width=&#34;576&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
-&lt;p&gt;If we flip the plot, we can make a &lt;a href=&#34;https://micahallen.org/2018/03/15/introducing-raincloud-plots/&#34;&gt;rain cloud plot&lt;/a&gt;:&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(weather_atl,
-       aes(x = fct_rev(Day), y = temperatureHigh)) +
-  geom_half_boxplot(aes(fill = Day), side = &amp;quot;l&amp;quot;, width = 0.5, nudge = 0.1) +
-  geom_half_point(aes(color = Day), side = &amp;quot;l&amp;quot;, size = 0.5) +
-  geom_half_violin(aes(fill = Day), side = &amp;quot;r&amp;quot;) +
-  guides(color = FALSE, fill = FALSE) +
-  coord_flip()&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## Warning: `guides(&amp;lt;scale&amp;gt; = FALSE)` is deprecated. Please use `guides(&amp;lt;scale&amp;gt; =
-## &amp;quot;none&amp;quot;)` instead.&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/example/04-example_files/figure-html/gghalves-rain-cloud-1.png&#34; width=&#34;768&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div id=&#34;lecture-video&#34; class=&#34;section level2&#34;&gt;
-&lt;h2&gt;Lecture Video&lt;/h2&gt;
-&lt;p&gt;The lecture video for Tuesday (this material, but we only made it about 2/3rds of the way) is &lt;a href=&#34;https://mediaspace.msu.edu/media/SSC442+-+Example+04+-+Feb+10th/1_tyohp7mc&#34;&gt;available here &lt;i class=&#34;fas fa-film&#34;&gt;&lt;/i&gt;&lt;/a&gt;&lt;/p&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class=&#34;footnotes footnotes-end-of-document&#34;&gt;
-&lt;hr /&gt;
-&lt;ol&gt;
-&lt;li id=&#34;fn1&#34;&gt;&lt;p&gt;&lt;a href=&#34;http://www.realclearpolitics.com&#34; class=&#34;uri&#34;&gt;http://www.realclearpolitics.com&lt;/a&gt;&lt;a href=&#34;#fnref1&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
-&lt;li id=&#34;fn2&#34;&gt;&lt;p&gt;&lt;a href=&#34;http://www.realclearpolitics.com/epolls/2016/president/us/general_election_trump_vs_clinton-5491.html&#34; class=&#34;uri&#34;&gt;http://www.realclearpolitics.com/epolls/2016/president/us/general_election_trump_vs_clinton-5491.html&lt;/a&gt;&lt;a href=&#34;#fnref2&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
-&lt;/ol&gt;
-&lt;/div&gt;
-</description>
-    </item>
-    
-    <item>
       <title>Visualizations</title>
       <link>https://ssc442.netlify.app/example/03-example/</link>
-      <pubDate>Tue, 07 Feb 2023 00:00:00 +0000</pubDate>
+      <pubDate>Thu, 09 Feb 2023 00:00:00 +0000</pubDate>
       <guid>https://ssc442.netlify.app/example/03-example/</guid>
       <description>
 &lt;script src=&#34;https://ssc442.netlify.app/rmarkdown-libs/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
@@ -1052,6 +607,451 @@ dat &amp;lt;- us_contagious_diseases %&amp;gt;%
 &lt;li id=&#34;fn7&#34;&gt;&lt;p&gt;&lt;a href=&#34;https://en.wikipedia.org/wiki/Andrew_Wakefield&#34; class=&#34;uri&#34;&gt;https://en.wikipedia.org/wiki/Andrew_Wakefield&lt;/a&gt;&lt;a href=&#34;#fnref7&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
 &lt;li id=&#34;fn8&#34;&gt;&lt;p&gt;&lt;a href=&#34;http://graphics.wsj.com/infectious-diseases-and-vaccines/&#34; class=&#34;uri&#34;&gt;http://graphics.wsj.com/infectious-diseases-and-vaccines/&lt;/a&gt;&lt;a href=&#34;#fnref8&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
 &lt;li id=&#34;fn9&#34;&gt;&lt;p&gt;&lt;a href=&#34;http://www.tycho.pitt.edu/&#34; class=&#34;uri&#34;&gt;http://www.tycho.pitt.edu/&lt;/a&gt;&lt;a href=&#34;#fnref9&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Visualizing Uncertainty</title>
+      <link>https://ssc442.netlify.app/example/04-example/</link>
+      <pubDate>Tue, 07 Feb 2023 00:00:00 +0000</pubDate>
+      <guid>https://ssc442.netlify.app/example/04-example/</guid>
+      <description>
+&lt;script src=&#34;https://ssc442.netlify.app/rmarkdown-libs/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
+
+&lt;div id=&#34;TOC&#34;&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#part-1-statistical-inference-and-polls&#34; id=&#34;toc-part-1-statistical-inference-and-polls&#34;&gt;Part 1: Statistical Inference and Polls&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#polls&#34; id=&#34;toc-polls&#34;&gt;Polls&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#the-sampling-model-for-polls&#34; id=&#34;toc-the-sampling-model-for-polls&#34;&gt;The sampling model for polls&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#populations-samples-parameters-and-estimates&#34; id=&#34;toc-populations-samples-parameters-and-estimates&#34;&gt;Populations, samples, parameters, and estimates&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#the-sample-average&#34; id=&#34;toc-the-sample-average&#34;&gt;The sample average&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#parameters&#34; id=&#34;toc-parameters&#34;&gt;Parameters&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#polling-versus-forecasting&#34; id=&#34;toc-polling-versus-forecasting&#34;&gt;Polling versus forecasting&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#properties-of-our-estimate-expected-value-and-standard-error&#34; id=&#34;toc-properties-of-our-estimate-expected-value-and-standard-error&#34;&gt;Properties of our estimate: expected value and standard error&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#clt&#34; id=&#34;toc-clt&#34;&gt;Central Limit Theorem&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#a-monte-carlo-simulation&#34; id=&#34;toc-a-monte-carlo-simulation&#34;&gt;A Monte Carlo simulation&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#the-spread&#34; id=&#34;toc-the-spread&#34;&gt;The spread&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#bias-why-not-run-a-very-large-poll&#34; id=&#34;toc-bias-why-not-run-a-very-large-poll&#34;&gt;Bias: why not run a very large poll?&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#part-2-supplemental-additional-visualization-techniques&#34; id=&#34;toc-part-2-supplemental-additional-visualization-techniques&#34;&gt;Part 2: (Supplemental) Additional Visualization Techniques&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#code&#34; id=&#34;toc-code&#34;&gt;Code&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#load-and-clean-data&#34; id=&#34;toc-load-and-clean-data&#34;&gt;Load and clean data&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#histograms&#34; id=&#34;toc-histograms&#34;&gt;Histograms&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#density-plots&#34; id=&#34;toc-density-plots&#34;&gt;Density plots&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#box-violin-and-rain-cloud-plots&#34; id=&#34;toc-box-violin-and-rain-cloud-plots&#34;&gt;Box, violin, and rain cloud plots&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#lecture-video&#34; id=&#34;toc-lecture-video&#34;&gt;Lecture Video&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Probabilistic thinking is central in the human experience. How we describe that thinking is mixed, but most of the time we use (rather imprecise) language. With only a few moments of searching, one can find thousands of articles that use probabilistic words to describe events. Here are some examples:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;“‘Highly unlikely’ State of the Union will happen amid shutdown” – The Hill&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;blockquote&gt;
+&lt;p&gt;“Tiger Woods makes Masters 15th and most improbable major” – Fox&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;blockquote&gt;
+&lt;p&gt;“Trump predicts ‘very good chance’ of China trade deal” – CNN&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Yet people don’t have a good sense of what these things mean. Uncertainty is key to data analytics: if we were certain of things, A study in the 1960s explored the perception of probabilistic words like these among NATO officers. A more modern replication of this found the following basic pattern:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/img/words.png&#34; width=&#34;80%&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;A deep, basic fact about humans is that we struggle to understand probabilities. But visualizing things can help. The graphic above shows the uncertainty about uncertainty (very meta). We can convey all manner of uncertainty with clever graphics. Today’s practical example works through some of the myriad of ways to visualize variable data. We’ll cover some territory that we’ve already hit, in hopes of locking in some key concepts.&lt;/p&gt;
+&lt;div id=&#34;part-1-statistical-inference-and-polls&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Part 1: Statistical Inference and Polls&lt;/h1&gt;
+&lt;p&gt;In this Example we will describe, in some detail, how poll aggregators such as FiveThirtyEight use data to predict election outcomes. To understand how they do this, we first need to learn the basics of &lt;em&gt;Statistical Inference&lt;/em&gt;, the part of statistics that helps distinguish patterns arising from signal from those arising from chance. Statistical inference is a broad topic and here we go over the very basics using polls as a motivating example. To describe the concepts, we complement the mathematical formulas with Monte Carlo simulations and &lt;code&gt;R&lt;/code&gt; code.&lt;/p&gt;
+&lt;div id=&#34;polls&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Polls&lt;/h2&gt;
+&lt;p&gt;Opinion polling has been conducted since the 19th century. The general goal is to describe the opinions held by a specific population on a given set of topics. In recent times, these polls have been pervasive during presidential elections. Polls are useful when interviewing every member of a particular population is logistically impossible. The general strategy is to interview a smaller group, chosen at random, and then infer the opinions of the entire population from the opinions of the smaller group. Statistical theory is used to justify the process. This theory is referred to as &lt;em&gt;inference&lt;/em&gt; and it is the main topic of this chapter.&lt;/p&gt;
+&lt;p&gt;Perhaps the best known opinion polls are those conducted to determine which candidate is preferred by voters in a given election. Political strategists make extensive use of polls to decide, among other things, how to invest resources. For example, they may want to know in which geographical locations to focus their “get out the vote” efforts.&lt;/p&gt;
+&lt;p&gt;Elections are a particularly interesting case of opinion polls because the actual opinion of the entire population is revealed on election day. Of course, it costs millions of dollars to run an actual election which makes polling a cost effective strategy for those that want to forecast the results.&lt;/p&gt;
+&lt;p&gt;Although typically the results of these polls are kept private, similar polls are conducted by news organizations because results tend to be of interest to the general public and made public. We will eventually be looking at such data.&lt;/p&gt;
+&lt;p&gt;Real Clear Politics&lt;a href=&#34;#fn1&#34; class=&#34;footnote-ref&#34; id=&#34;fnref1&#34;&gt;&lt;sup&gt;1&lt;/sup&gt;&lt;/a&gt; is an example of a news aggregator that organizes and publishes poll results. For example, they present the following poll results reporting estimates of the popular vote for the 2016 presidential election&lt;a href=&#34;#fn2&#34; class=&#34;footnote-ref&#34; id=&#34;fnref2&#34;&gt;&lt;sup&gt;2&lt;/sup&gt;&lt;/a&gt;:&lt;/p&gt;
+&lt;!-- (Source: [Real Clear Politics](https://www.realclearpolitics.com/epolls/2016/president/us/general_election_trump_vs_clinton-5491.html)) --&gt;
+&lt;p&gt;Although in the United States the popular vote does not determine the result of the presidential election, we will use it as an illustrative and simple example of how well polls work. Forecasting the election is a more complex process since it involves combining results from 50 states and DC and we will go into some detail on this later.&lt;/p&gt;
+&lt;p&gt;Let’s make some observations about the table above. First, note that different polls, all taken days before the election, report a different &lt;em&gt;spread&lt;/em&gt;: the estimated difference between support for the two candidates. Notice also that the reported spreads hover around what ended up being the actual result: Clinton won the popular vote by 2.1%. We also see a column titled &lt;strong&gt;MoE&lt;/strong&gt; which stands for &lt;em&gt;margin of error&lt;/em&gt;.&lt;/p&gt;
+&lt;p&gt;In this example, we will show how the probability concepts we learned in the previous content can be applied to develop the statistical approaches that make polls an effective tool. We will learn the statistical concepts necessary to define &lt;em&gt;estimates&lt;/em&gt; and &lt;em&gt;margins of errors&lt;/em&gt;, and show how we can use these to forecast final results relatively well and also provide an estimate of the precision of our forecast. Once we learn this, we will be able to understand two concepts that are ubiquitous in data science: &lt;em&gt;confidence intervals&lt;/em&gt; and &lt;em&gt;p-values&lt;/em&gt;. Finally, to understand probabilistic statements about the probability of a candidate winning, we will have to learn about Bayesian modeling. In the final sections, we put it all together to recreate the simplified version of the FiveThirtyEight model and apply it to the 2016 election.&lt;/p&gt;
+&lt;p&gt;We start by connecting probability theory to the task of using polls to learn about a population.&lt;/p&gt;
+&lt;div id=&#34;the-sampling-model-for-polls&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;The sampling model for polls&lt;/h3&gt;
+&lt;p&gt;To help us understand the connection between polls and what we have learned, let’s construct a similar situation to the one pollsters face. To mimic the challenge real pollsters face in terms of competing with other pollsters for media attention, we will use an urn full of beads to represent voters and pretend we are competing for a $25 dollar prize. The challenge is to guess the spread between the proportion of blue and red beads in this hypothetical urn.&lt;/p&gt;
+&lt;p&gt;Before making a prediction, you can take a sample (with replacement) from the urn. To mimic the fact that running polls is expensive, it costs you 10 cents per each bead you sample. Therefore, if your sample size is 250, and you win, you will break even since you will pay \$25 to collect your \$25 prize. Your entry into the competition can be an interval. If the interval you submit contains the true proportion, you get half what you paid and pass to the second phase of the competition. In the second phase, the entry with the smallest interval is selected as the winner.&lt;/p&gt;
+&lt;p&gt;The &lt;strong&gt;dslabs&lt;/strong&gt; package includes a function that shows a random draw from this urn:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(tidyverse)
+library(dslabs)
+take_poll(25)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/example/04-example_files/figure-html/first-simulated-poll-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Think about how you would construct your interval based on the data shown above.&lt;/p&gt;
+&lt;p&gt;We have just described a simple sampling model for opinion polls. The beads inside the urn represent the individuals that will vote on election day. Those that will vote for the Republican candidate are represented with red beads and the Democrats with the blue beads. For simplicity, assume there are no other colors. That is, that there are just two parties: Republican and Democratic.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;populations-samples-parameters-and-estimates&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Populations, samples, parameters, and estimates&lt;/h2&gt;
+&lt;p&gt;We want to predict the proportion of blue beads in the urn. Let’s call this quantity &lt;span class=&#34;math inline&#34;&gt;\(p\)&lt;/span&gt;, which then tells us the proportion of red beads &lt;span class=&#34;math inline&#34;&gt;\(1-p\)&lt;/span&gt;, and the spread &lt;span class=&#34;math inline&#34;&gt;\(p - (1-p)\)&lt;/span&gt;, which simplifies to &lt;span class=&#34;math inline&#34;&gt;\(2p - 1\)&lt;/span&gt;.&lt;/p&gt;
+&lt;p&gt;In statistical textbooks, the beads in the urn are called the &lt;em&gt;population&lt;/em&gt;. The proportion of blue beads in the population &lt;span class=&#34;math inline&#34;&gt;\(p\)&lt;/span&gt; is called a &lt;em&gt;parameter&lt;/em&gt;. The 25 beads we see in the previous plot are called a &lt;em&gt;sample&lt;/em&gt;. The task of statistical inference is to predict the parameter &lt;span class=&#34;math inline&#34;&gt;\(p\)&lt;/span&gt; using the observed data in the sample.&lt;/p&gt;
+&lt;p&gt;Can we do this with the 25 observations above? It is certainly informative. For example, given that we see 13 red and 12 blue beads, it is unlikely that &lt;span class=&#34;math inline&#34;&gt;\(p\)&lt;/span&gt; &amp;gt; .9 or &lt;span class=&#34;math inline&#34;&gt;\(p\)&lt;/span&gt; &amp;lt; .1. But are we ready to predict with certainty that there are more red beads than blue in the jar?&lt;/p&gt;
+&lt;p&gt;We want to construct an estimate of &lt;span class=&#34;math inline&#34;&gt;\(p\)&lt;/span&gt; using only the information we observe. An estimate should be thought of as a summary of the observed data that we think is informative about the parameter of interest. It seems intuitive to think that the proportion of blue beads in the sample &lt;span class=&#34;math inline&#34;&gt;\(0.48\)&lt;/span&gt; must be at least related to the actual proportion &lt;span class=&#34;math inline&#34;&gt;\(p\)&lt;/span&gt;. But do we simply predict &lt;span class=&#34;math inline&#34;&gt;\(p\)&lt;/span&gt; to be 0.48? First, remember that the sample proportion is a random variable. If we run the command &lt;code&gt;take_poll(25)&lt;/code&gt; four times, we get a different answer each time, since the sample proportion is a random variable.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/example/04-example_files/figure-html/four-simulated-polls-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Note that in the four random samples shown above, the sample proportions range from 0.44 to 0.60. By describing the distribution of this random variable, we will be able to gain insights into how good this estimate is and how we can make it better.&lt;/p&gt;
+&lt;div id=&#34;the-sample-average&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;The sample average&lt;/h3&gt;
+&lt;p&gt;Conducting an opinion poll is being modeled as taking a random sample from an urn. We are proposing the use of the proportion of blue beads in our sample as an &lt;em&gt;estimate&lt;/em&gt; of the parameter &lt;span class=&#34;math inline&#34;&gt;\(p\)&lt;/span&gt;. Once we have this estimate, we can easily report an estimate for the spread &lt;span class=&#34;math inline&#34;&gt;\(2p-1\)&lt;/span&gt;, but for simplicity we will illustrate the concepts for estimating &lt;span class=&#34;math inline&#34;&gt;\(p\)&lt;/span&gt;. We will use our knowledge of probability to defend our use of the sample proportion and quantify how close we think it is from the population proportion &lt;span class=&#34;math inline&#34;&gt;\(p\)&lt;/span&gt;.&lt;/p&gt;
+&lt;p&gt;We start by defining the random variable &lt;span class=&#34;math inline&#34;&gt;\(X\)&lt;/span&gt; as: &lt;span class=&#34;math inline&#34;&gt;\(X=1\)&lt;/span&gt; if we pick a blue bead at random and &lt;span class=&#34;math inline&#34;&gt;\(X=0\)&lt;/span&gt; if it is red. This implies that the population is a list of 0s and 1s. If we sample &lt;span class=&#34;math inline&#34;&gt;\(N\)&lt;/span&gt; beads, then the average of the draws &lt;span class=&#34;math inline&#34;&gt;\(X_1, \dots, X_N\)&lt;/span&gt; is equivalent to the proportion of blue beads in our sample. This is because adding the &lt;span class=&#34;math inline&#34;&gt;\(X\)&lt;/span&gt;s is equivalent to counting the blue beads and dividing this count by the total &lt;span class=&#34;math inline&#34;&gt;\(N\)&lt;/span&gt; is equivalent to computing a proportion. We use the symbol &lt;span class=&#34;math inline&#34;&gt;\(\bar{X}\)&lt;/span&gt; to represent this average. In general, in statistics textbooks a bar on top of a symbol means the average. The theory we just learned about the sum of draws becomes useful because the average is a sum of draws multiplied by the constant &lt;span class=&#34;math inline&#34;&gt;\(1/N\)&lt;/span&gt;:&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[\bar{X} = 1/N \times \sum_{i=1}^N X_i\]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;For simplicity, let’s assume that the draws are independent: after we see each sampled bead, we return it to the urn. In this case, what do we know about the distribution of the sum of draws? First, we know that the expected value of the sum of draws is &lt;span class=&#34;math inline&#34;&gt;\(N\)&lt;/span&gt; times the average of the values in the urn. We know that the average of the 0s and 1s in the urn must be &lt;span class=&#34;math inline&#34;&gt;\(p\)&lt;/span&gt;, the proportion of blue beads.&lt;/p&gt;
+&lt;p&gt;Here we encounter an important difference with what we did in the Probability chapter: we don’t know what is in the urn. We know there are blue and red beads, but we don’t know how many of each. This is what we want to find out: we are trying to &lt;strong&gt;estimate&lt;/strong&gt; &lt;span class=&#34;math inline&#34;&gt;\(p\)&lt;/span&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;parameters&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Parameters&lt;/h3&gt;
+&lt;p&gt;Just like we use variables to define unknowns in systems of equations, in statistical inference we define &lt;em&gt;parameters&lt;/em&gt; to define unknown parts of our models. In the urn model which we are using to mimic an opinion poll, we do not know the proportion of blue beads in the urn. We define the parameters &lt;span class=&#34;math inline&#34;&gt;\(p\)&lt;/span&gt; to represent this quantity. &lt;span class=&#34;math inline&#34;&gt;\(p\)&lt;/span&gt; is the average of the urn because if we take the average of the 1s (blue) and 0s (red), we get the proportion of blue beads. Since our main goal is figuring out what is &lt;span class=&#34;math inline&#34;&gt;\(p\)&lt;/span&gt;, we are going to &lt;em&gt;estimate this parameter&lt;/em&gt;.&lt;/p&gt;
+&lt;p&gt;The ideas presented here on how we estimate parameters, and provide insights into how good these estimates are, extrapolate to many data science tasks. For example, we may want to determine the difference in health improvement between patients receiving treatment and a control group. We may ask, what are the health effects of smoking on a population? What are the differences in racial groups of fatal shootings by police? What is the rate of change in life expectancy in the US during the last 10 years? All these questions can be framed as a task of estimating a parameter from a sample.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;polling-versus-forecasting&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Polling versus forecasting&lt;/h3&gt;
+&lt;p&gt;Before we continue, let’s make an important clarification related to the practical problem of forecasting the election. If a poll is conducted four months before the election, it is estimating the &lt;span class=&#34;math inline&#34;&gt;\(p\)&lt;/span&gt; for that moment and not for election day. The &lt;span class=&#34;math inline&#34;&gt;\(p\)&lt;/span&gt; for election night might be different since people’s opinions fluctuate through time. The polls provided the night before the election tend to be the most accurate since opinions don’t change that much in a day. However, forecasters try to build tools that model how opinions vary across time and try to predict the election night results taking into consideration the fact that opinions fluctuate. We will describe some approaches for doing this in a later section.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;properties-of-our-estimate-expected-value-and-standard-error&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Properties of our estimate: expected value and standard error&lt;/h3&gt;
+&lt;p&gt;To understand how good our estimate is, we will describe the statistical properties of the random variable defined above: the sample proportion &lt;span class=&#34;math inline&#34;&gt;\(\bar{X}\)&lt;/span&gt;. Remember that &lt;span class=&#34;math inline&#34;&gt;\(\bar{X}\)&lt;/span&gt; is the sum of independent draws so the rules we covered in the probability chapter apply.&lt;/p&gt;
+&lt;p&gt;Using what we have learned, the expected value of the sum &lt;span class=&#34;math inline&#34;&gt;\(N\bar{X}\)&lt;/span&gt; is &lt;span class=&#34;math inline&#34;&gt;\(N \times\)&lt;/span&gt; the average of the urn, &lt;span class=&#34;math inline&#34;&gt;\(p\)&lt;/span&gt;. So dividing by the non-random constant &lt;span class=&#34;math inline&#34;&gt;\(N\)&lt;/span&gt; gives us that the expected value of the average &lt;span class=&#34;math inline&#34;&gt;\(\bar{X}\)&lt;/span&gt; is &lt;span class=&#34;math inline&#34;&gt;\(p\)&lt;/span&gt;. We can write it using our mathematical notation:&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
+\mbox{E}(\bar{X}) = p
+\]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;We can also use what we learned to figure out the standard error: the standard error of the sum is &lt;span class=&#34;math inline&#34;&gt;\(\sqrt{N} \times\)&lt;/span&gt; the standard deviation of the urn. Can we compute the standard error of the urn? We learned a formula that tells us that it is &lt;span class=&#34;math inline&#34;&gt;\((1-0) \sqrt{p (1-p)}\)&lt;/span&gt; = &lt;span class=&#34;math inline&#34;&gt;\(\sqrt{p (1-p)}\)&lt;/span&gt;. Because we are dividing the sum by &lt;span class=&#34;math inline&#34;&gt;\(N\)&lt;/span&gt;, we arrive at the following formula for the standard error of the average:&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
+\mbox{SE}(\bar{X}) = \sqrt{p(1-p)/N}
+\]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;This result reveals the power of polls. The expected value of the sample proportion &lt;span class=&#34;math inline&#34;&gt;\(\bar{X}\)&lt;/span&gt; is the parameter of interest &lt;span class=&#34;math inline&#34;&gt;\(p\)&lt;/span&gt; and we can make the standard error as small as we want by increasing &lt;span class=&#34;math inline&#34;&gt;\(N\)&lt;/span&gt;. The law of large numbers tells us that with a large enough poll, our estimate converges to &lt;span class=&#34;math inline&#34;&gt;\(p\)&lt;/span&gt;.&lt;/p&gt;
+&lt;p&gt;If we take a large enough poll to make our standard error about 1%, we will be quite certain about who will win. But how large does the poll have to be for the standard error to be this small?&lt;/p&gt;
+&lt;p&gt;One problem is that we do not know &lt;span class=&#34;math inline&#34;&gt;\(p\)&lt;/span&gt;, so we can’t compute the standard error. However, for illustrative purposes, let’s assume that &lt;span class=&#34;math inline&#34;&gt;\(p=0.51\)&lt;/span&gt; and make a plot of the standard error versus the sample size &lt;span class=&#34;math inline&#34;&gt;\(N\)&lt;/span&gt;:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/example/04-example_files/figure-html/standard-error-versus-sample-size-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;From the plot we see that we would need a poll of over 10,000 people to get the standard error that low. We rarely see polls of this size due in part to costs. From the Real Clear Politics table, we learn that the sample sizes in opinion polls range from 500-3,500 people. For a sample size of 1,000 and &lt;span class=&#34;math inline&#34;&gt;\(p=0.51\)&lt;/span&gt;, the standard error is:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;sqrt(p*(1-p))/sqrt(1000)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 0.01580823&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;or 1.5 percentage points. So even with large polls, for close elections, &lt;span class=&#34;math inline&#34;&gt;\(\bar{X}\)&lt;/span&gt; can lead us astray if we don’t realize it is a random variable. Nonetheless, we can actually say more about how close we get the &lt;span class=&#34;math inline&#34;&gt;\(p\)&lt;/span&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;clt&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Central Limit Theorem&lt;/h2&gt;
+&lt;p&gt;The Central Limit Theorem (CLT) tells us that the distribution function for a sum of draws is approximately normal. You also may recall that dividing a normally distributed random variable by a constant is also a normally distributed variable. This implies that the distribution of &lt;span class=&#34;math inline&#34;&gt;\(\bar{X}\)&lt;/span&gt; is approximately normal.&lt;/p&gt;
+&lt;p&gt;In summary, we have that &lt;span class=&#34;math inline&#34;&gt;\(\bar{X}\)&lt;/span&gt; has an approximately normal distribution with expected value &lt;span class=&#34;math inline&#34;&gt;\(p\)&lt;/span&gt; and standard error &lt;span class=&#34;math inline&#34;&gt;\(\sqrt{p(1-p)/N}\)&lt;/span&gt;.&lt;/p&gt;
+&lt;p&gt;Now how does this help us? Suppose we want to know what is the probability that we are within 1% from &lt;span class=&#34;math inline&#34;&gt;\(p\)&lt;/span&gt;. We are basically asking what is&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
+\mbox{Pr}(| \bar{X} - p| \leq .01)
+\]&lt;/span&gt;
+which is the same as:&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
+\mbox{Pr}(\bar{X}\leq p + .01) - \mbox{Pr}(\bar{X} \leq p - .01)
+\]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;Can we answer this question? We can use the mathematical trick we learned in the previous chapter. Subtract the expected value and divide by the standard error to get a standard normal random variable, call it &lt;span class=&#34;math inline&#34;&gt;\(Z\)&lt;/span&gt;, on the left. Since &lt;span class=&#34;math inline&#34;&gt;\(p\)&lt;/span&gt; is the expected value and &lt;span class=&#34;math inline&#34;&gt;\(\mbox{SE}(\bar{X}) = \sqrt{p(1-p)/N}\)&lt;/span&gt; is the standard error we get:&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
+\mbox{Pr}\left(Z \leq \frac{ \,.01} {\mbox{SE}(\bar{X})} \right) -
+\mbox{Pr}\left(Z \leq - \frac{ \,.01} {\mbox{SE}(\bar{X})} \right)
+\]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;One problem we have is that since we don’t know &lt;span class=&#34;math inline&#34;&gt;\(p\)&lt;/span&gt;, we don’t know &lt;span class=&#34;math inline&#34;&gt;\(\mbox{SE}(\bar{X})\)&lt;/span&gt;. But it turns out that the CLT still works if we estimate the standard error by using &lt;span class=&#34;math inline&#34;&gt;\(\bar{X}\)&lt;/span&gt; in place of &lt;span class=&#34;math inline&#34;&gt;\(p\)&lt;/span&gt;. We say that we &lt;em&gt;plug-in&lt;/em&gt; the estimate. Our estimate of the standard error is therefore:&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
+\hat{\mbox{SE}}(\bar{X})=\sqrt{\bar{X}(1-\bar{X})/N}
+\]&lt;/span&gt;
+In statistics textbooks, we use a little hat to denote estimates. The estimate can be constructed using the observed data and &lt;span class=&#34;math inline&#34;&gt;\(N\)&lt;/span&gt;.&lt;/p&gt;
+&lt;p&gt;Now we continue with our calculation, but dividing by &lt;span class=&#34;math inline&#34;&gt;\(\hat{\mbox{SE}}(\bar{X})=\sqrt{\bar{X}(1-\bar{X})/N})\)&lt;/span&gt; instead. In our first sample we had 12 blue and 13 red so &lt;span class=&#34;math inline&#34;&gt;\(\bar{X} = 0.48\)&lt;/span&gt; and our estimate of standard error is:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;x_hat &amp;lt;- 0.48
+se &amp;lt;- sqrt(x_hat*(1-x_hat)/25)
+se&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 0.09991997&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;And now we can answer the question of the probability of being close to &lt;span class=&#34;math inline&#34;&gt;\(p\)&lt;/span&gt;. The answer is:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;pnorm(0.01/se) - pnorm(-0.01/se)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 0.07971926&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Therefore, there is a small chance that we will be close. A poll of only &lt;span class=&#34;math inline&#34;&gt;\(N=25\)&lt;/span&gt; people is not really very useful, at least not for a close election.&lt;/p&gt;
+&lt;p&gt;Earlier we mentioned the &lt;em&gt;margin of error&lt;/em&gt;. Now we can define it because it is simply two times the standard error, which we can now estimate. In our case it is:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;1.96*se&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 0.1958431&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Why do we multiply by 1.96? Because if you ask what is the probability that we are within 1.96 standard errors from &lt;span class=&#34;math inline&#34;&gt;\(p\)&lt;/span&gt;, we get:&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
+\mbox{Pr}\left(Z \leq \, 1.96\,\mbox{SE}(\bar{X})  / \mbox{SE}(\bar{X}) \right) -
+\mbox{Pr}\left(Z \leq - 1.96\, \mbox{SE}(\bar{X}) / \mbox{SE}(\bar{X}) \right)
+\]&lt;/span&gt;
+which is:&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
+\mbox{Pr}\left(Z \leq 1.96 \right) -
+\mbox{Pr}\left(Z \leq - 1.96\right)
+\]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;which we know is about 95%:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;pnorm(1.96)-pnorm(-1.96)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 0.9500042&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Hence, there is a 95% probability that &lt;span class=&#34;math inline&#34;&gt;\(\bar{X}\)&lt;/span&gt; will be within &lt;span class=&#34;math inline&#34;&gt;\(1.96\times \hat{SE}(\bar{X})\)&lt;/span&gt;, in our case within about 0.2, of &lt;span class=&#34;math inline&#34;&gt;\(p\)&lt;/span&gt;. Note that 95% is somewhat of an arbitrary choice and sometimes other percentages are used, but it is the most commonly used value to define margin of error. We often round 1.96 up to 2 for simplicity of presentation.&lt;/p&gt;
+&lt;p&gt;In summary, the CLT tells us that our poll based on a sample size of &lt;span class=&#34;math inline&#34;&gt;\(25\)&lt;/span&gt; is not very useful. We don’t really learn much when the margin of error is this large. All we can really say is that the popular vote will not be won by a large margin. This is why pollsters tend to use larger sample sizes.&lt;/p&gt;
+&lt;p&gt;From the table above, we see that typical sample sizes range from 700 to 3500. To see how this gives us a much more practical result, notice that if we had obtained a &lt;span class=&#34;math inline&#34;&gt;\(\bar{X}\)&lt;/span&gt;=0.48 with a sample size of 2,000, our standard error &lt;span class=&#34;math inline&#34;&gt;\(\hat{\mbox{SE}}(\bar{X})\)&lt;/span&gt; would have been 0.0111714. So our result is an estimate of &lt;code&gt;48&lt;/code&gt;% with a margin of error of 2%. In this case, the result is much more informative and would make us think that there are more red balls than blue. Keep in mind, however, that this is hypothetical. We did not take a poll of 2,000 since we don’t want to ruin the competition.&lt;/p&gt;
+&lt;div id=&#34;a-monte-carlo-simulation&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;A Monte Carlo simulation&lt;/h3&gt;
+&lt;p&gt;Suppose we want to use a Monte Carlo simulation to corroborate the tools we have built using probability theory. To create the simulation, we would write code like this:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;B &amp;lt;- 10000
+N &amp;lt;- 1000
+x_hat &amp;lt;- replicate(B, {
+  x &amp;lt;- sample(c(0,1), size = N, replace = TRUE, prob = c(1-p, p))
+  mean(x)
+})&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The problem is, of course, we don’t know &lt;code&gt;p&lt;/code&gt;. We could construct an urn like the one pictured above and run an analog (without a computer) simulation. It would take a long time, but you could take 10,000 samples, count the beads and keep track of the proportions of blue. We can use the function &lt;code&gt;take_poll(n=1000)&lt;/code&gt; instead of drawing from an actual urn, but it would still take time to count the beads and enter the results.&lt;/p&gt;
+&lt;p&gt;One thing we therefore do to corroborate theoretical results is to pick one or several values of &lt;code&gt;p&lt;/code&gt; and run the simulations. Let’s set &lt;code&gt;p=0.45&lt;/code&gt;. We can then simulate a poll:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p &amp;lt;- 0.45
+N &amp;lt;- 1000
+
+x &amp;lt;- sample(c(0,1), size = N, replace = TRUE, prob = c(1-p, p))
+x_hat &amp;lt;- mean(x)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;In this particular sample, our estimate is &lt;code&gt;x_hat&lt;/code&gt;. We can use that code to do a Monte Carlo simulation:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;B &amp;lt;- 10000
+x_hat &amp;lt;- replicate(B, {
+  x &amp;lt;- sample(c(0,1), size = N, replace = TRUE, prob = c(1-p, p))
+  mean(x)
+})&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;To review, the theory tells us that &lt;span class=&#34;math inline&#34;&gt;\(\bar{X}\)&lt;/span&gt; is approximately normally distributed, has expected value &lt;span class=&#34;math inline&#34;&gt;\(p=\)&lt;/span&gt; 0.45 and standard error &lt;span class=&#34;math inline&#34;&gt;\(\sqrt{p(1-p)/N}\)&lt;/span&gt; = 0.0157321. The simulation confirms this:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;mean(x_hat)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 0.4500761&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;sd(x_hat)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 0.01579523&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;A histogram and qq-plot confirm that the normal approximation is accurate as well:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/example/04-example_files/figure-html/normal-approximation-for-polls-1.png&#34; width=&#34;100%&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Of course, in real life we would never be able to run such an experiment because we don’t know &lt;span class=&#34;math inline&#34;&gt;\(p\)&lt;/span&gt;. But we could run it for various values of &lt;span class=&#34;math inline&#34;&gt;\(p\)&lt;/span&gt; and &lt;span class=&#34;math inline&#34;&gt;\(N\)&lt;/span&gt; and see that the theory does indeed work well for most values. You can easily do this by re-running the code above after changing &lt;code&gt;p&lt;/code&gt; and &lt;code&gt;N&lt;/code&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;the-spread&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;The spread&lt;/h3&gt;
+&lt;p&gt;The competition is to predict the spread, not the proportion &lt;span class=&#34;math inline&#34;&gt;\(p\)&lt;/span&gt;. However, because we are assuming there are only two parties, we know that the spread is &lt;span class=&#34;math inline&#34;&gt;\(p - (1-p) = 2p - 1\)&lt;/span&gt;. As a result, everything we have done can easily be adapted to an estimate of &lt;span class=&#34;math inline&#34;&gt;\(2p - 1\)&lt;/span&gt;. Once we have our estimate &lt;span class=&#34;math inline&#34;&gt;\(\bar{X}\)&lt;/span&gt; and &lt;span class=&#34;math inline&#34;&gt;\(\hat{\mbox{SE}}(\bar{X})\)&lt;/span&gt;, we estimate the spread with &lt;span class=&#34;math inline&#34;&gt;\(2\bar{X} - 1\)&lt;/span&gt; and, since we are multiplying by 2, the standard error is &lt;span class=&#34;math inline&#34;&gt;\(2\hat{\mbox{SE}}(\bar{X})\)&lt;/span&gt;. Note that subtracting 1 does not add any variability so it does not affect the standard error.&lt;/p&gt;
+&lt;p&gt;For our 25 item sample above, our estimate &lt;span class=&#34;math inline&#34;&gt;\(p\)&lt;/span&gt; is &lt;code&gt;.48&lt;/code&gt; with margin of error &lt;code&gt;.20&lt;/code&gt; and our estimate of the spread is &lt;code&gt;0.04&lt;/code&gt; with margin of error &lt;code&gt;.40&lt;/code&gt;. Again, not a very useful sample size. However, the point is that once we have an estimate and standard error for &lt;span class=&#34;math inline&#34;&gt;\(p\)&lt;/span&gt;, we have it for the spread &lt;span class=&#34;math inline&#34;&gt;\(2p-1\)&lt;/span&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;bias-why-not-run-a-very-large-poll&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Bias: why not run a very large poll?&lt;/h3&gt;
+&lt;p&gt;For realistic values of &lt;span class=&#34;math inline&#34;&gt;\(p\)&lt;/span&gt;, say from 0.35 to 0.65, if we run a very large poll with 100,000 people, theory tells us that we would predict the election perfectly since the largest possible margin of error is around 0.3%:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/example/04-example_files/figure-html/standard-error-versus-p-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;One reason is that running such a poll is very expensive. Another possibly more important reason is that theory has its limitations. Polling is much more complicated than picking beads from an urn. Some people might lie to pollsters and others might not have phones. But perhaps the most important way an actual poll differs from an urn model is that we actually don’t know for sure who is in our population and who is not. How do we know who is going to vote? Are we reaching all possible voters? Hence, even if our margin of error is very small, it might not be exactly right that our expected value is &lt;span class=&#34;math inline&#34;&gt;\(p\)&lt;/span&gt;. We call this bias. Historically, we observe that polls are indeed biased, although not by that much. The typical bias appears to be about 1-2%. This makes election forecasting a bit more interesting and we will talk about how to model this shortly.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;part-2-supplemental-additional-visualization-techniques&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Part 2: (Supplemental) Additional Visualization Techniques&lt;/h1&gt;
+&lt;p&gt;For this second part of the example, we’re going to use historical weather data from &lt;a href=&#34;https://darksky.net/forecast/33.7546,-84.39/us12/en&#34;&gt;Dark Sky&lt;/a&gt; about wind speed and temperature trends for downtown Atlanta (&lt;a href=&#34;https://www.google.com/maps/place/33°45&amp;#39;16.4%22N+84°23&amp;#39;24.0%22W/@33.754557,-84.3921977,17z/&#34;&gt;specifically &lt;code&gt;33.754557, -84.390009&lt;/code&gt;&lt;/a&gt;) in 2019. We downloaded this data using Dark Sky’s (about-to-be-retired-because-they-were-bought-by-Apple) API using the &lt;a href=&#34;https://github.com/hrbrmstr/darksky&#34;&gt;&lt;strong&gt;darksky&lt;/strong&gt; package&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;If you want to follow along with this example, you can download the data below (you’ll likely need to right click and choose “Save Link As…”):&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://ssc442.netlify.app/data/atl-weather-2019.csv&#34;&gt;&lt;i class=&#34;fas fa-file-csv&#34;&gt;&lt;/i&gt; &lt;code&gt;atl-weather-2019.csv&lt;/code&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div id=&#34;code&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Code&lt;/h2&gt;
+&lt;div id=&#34;load-and-clean-data&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Load and clean data&lt;/h3&gt;
+&lt;p&gt;First, we load the libraries we’ll be using:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(tidyverse)
+library(lubridate)
+library(ggridges)
+library(gghalves)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Then we load the data with &lt;code&gt;read_csv()&lt;/code&gt;. Here we assume that the CSV file lives in a subfolder in my project named &lt;code&gt;data&lt;/code&gt;. Naturally, you’ll need to point this to wherever you stashed the data.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;weather_atl_raw &amp;lt;- read_csv(&amp;quot;data/atl-weather-2019.csv&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;We’ll add a couple columns that we can use for faceting and filling using the &lt;code&gt;month()&lt;/code&gt; and &lt;code&gt;wday()&lt;/code&gt; functions from &lt;strong&gt;lubridate&lt;/strong&gt; for extracting parts of the date:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;weather_atl &amp;lt;- weather_atl_raw %&amp;gt;%
+  mutate(Month = month(time, label = TRUE, abbr = FALSE),
+         Day = wday(time, label = TRUE, abbr = FALSE))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Now we’re ready to go!&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;histograms&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Histograms&lt;/h3&gt;
+&lt;p&gt;We can first make a histogram of wind speed. We’ll use a bin width of 1 and color the edges of the bars white:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(weather_atl, aes(x = windSpeed)) +
+  geom_histogram(binwidth = 1, color = &amp;quot;white&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/example/04-example_files/figure-html/basic-histogram-1.png&#34; width=&#34;576&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;This is fine enough, but we can improve it by forcing the buckets/bins to start at whole numbers instead of containing ranges like 2.5–3.5. We’ll use the &lt;code&gt;boundary&lt;/code&gt; argument for that. We also add &lt;code&gt;scale_x_continuous()&lt;/code&gt; to add our own x-axis breaks instead of having things like 2.5, 5, and 7.5:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(weather_atl, aes(x = windSpeed)) +
+  geom_histogram(binwidth = 1, color = &amp;quot;white&amp;quot;, boundary = 1) +
+  scale_x_continuous(breaks = seq(0, 12, by = 1))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/example/04-example_files/figure-html/basic-histogram-better-1.png&#34; width=&#34;576&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;We can show the distribution of wind speed by month if we map the &lt;code&gt;Month&lt;/code&gt; column we made onto the fill aesthetic:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(weather_atl, aes(x = windSpeed, fill = Month)) +
+  geom_histogram(binwidth = 1, color = &amp;quot;white&amp;quot;, boundary = 1) +
+  scale_x_continuous(breaks = seq(0, 12, by = 1))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/example/04-example_files/figure-html/histogram-by-month-1.png&#34; width=&#34;576&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;This is colorful, but it’s impossible to actually interpret. Instead of only filling, we’ll also facet by month to see separate graphs for each month. We can turn off the fill legend because it’s now redundant.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(weather_atl, aes(x = windSpeed, fill = Month)) +
+  geom_histogram(binwidth = 1, color = &amp;quot;white&amp;quot;, boundary = 1) +
+  scale_x_continuous(breaks = seq(0, 12, by = 1)) +
+  guides(fill = FALSE) +
+  facet_wrap(vars(Month))&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Warning: `guides(&amp;lt;scale&amp;gt; = FALSE)` is deprecated. Please use `guides(&amp;lt;scale&amp;gt; =
+## &amp;quot;none&amp;quot;)` instead.&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/example/04-example_files/figure-html/histogram-by-month-facet-1.png&#34; width=&#34;768&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Neat! January, March, and April appear to have the most variation in windy days, with a few wind-less days and a few very-windy days, while August was very wind-less.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;density-plots&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Density plots&lt;/h3&gt;
+&lt;p&gt;The code to create a density plot is nearly identical to what we used for the histogram—the only thing we change is the &lt;code&gt;geom&lt;/code&gt; layer:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(weather_atl, aes(x = windSpeed)) +
+  geom_density(color = &amp;quot;grey20&amp;quot;, fill = &amp;quot;grey50&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/example/04-example_files/figure-html/basic-density-1.png&#34; width=&#34;576&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;If we want, we can mess with some of the calculus options like the kernel and bandwidth:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(weather_atl, aes(x = windSpeed)) +
+  geom_density(color = &amp;quot;grey20&amp;quot;, fill = &amp;quot;grey50&amp;quot;,
+               bw = 0.1, kernel = &amp;quot;epanechnikov&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/example/04-example_files/figure-html/density-kernel-bw-1.png&#34; width=&#34;576&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;We can also fill by month. We’ll make the different layers 50% transparent so we can kind of see through the whole stack:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(weather_atl, aes(x = windSpeed, fill = Month)) +
+  geom_density(alpha = 0.5)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/example/04-example_files/figure-html/density-fill-by-month-1.png&#34; width=&#34;576&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Even with the transparency, this is really hard to interpret. We can fix this by faceting, like we did with the histograms:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(weather_atl, aes(x = windSpeed, fill = Month)) +
+  geom_density(alpha = 0.5) +
+  guides(fill = FALSE) +
+  facet_wrap(vars(Month))&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Warning: `guides(&amp;lt;scale&amp;gt; = FALSE)` is deprecated. Please use `guides(&amp;lt;scale&amp;gt; =
+## &amp;quot;none&amp;quot;)` instead.&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/example/04-example_files/figure-html/density-facet-by-month-1.png&#34; width=&#34;768&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Or we can stack the density plots behind each other with &lt;a href=&#34;https://cran.r-project.org/web/packages/ggridges/vignettes/introduction.html&#34;&gt;&lt;strong&gt;ggridges&lt;/strong&gt;&lt;/a&gt;. For that to work, we also need to map &lt;code&gt;Month&lt;/code&gt; to the y-axis. We can reverse the y-axis so that January is at the top if we use the &lt;code&gt;fct_rev()&lt;/code&gt; function:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(weather_atl, aes(x = windSpeed, y = fct_rev(Month), fill = Month)) +
+  geom_density_ridges() +
+  guides(fill = FALSE)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Warning: `guides(&amp;lt;scale&amp;gt; = FALSE)` is deprecated. Please use `guides(&amp;lt;scale&amp;gt; =
+## &amp;quot;none&amp;quot;)` instead.&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/example/04-example_files/figure-html/ggridges-basic-1.png&#34; width=&#34;576&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;We can add some extra information to &lt;code&gt;geom_density_ridges()&lt;/code&gt; with some other arguments like &lt;code&gt;quantile_lines&lt;/code&gt;. We can use the &lt;code&gt;quantiles&lt;/code&gt; argument to tell the plow how many parts to be cut into. Since we just want to show the median, we’ll set that to 2 so each density plot is divided in half:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(weather_atl, aes(x = windSpeed, y = fct_rev(Month), fill = Month)) +
+  geom_density_ridges(quantile_lines = TRUE, quantiles = 2) +
+  guides(fill = FALSE)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Warning: `guides(&amp;lt;scale&amp;gt; = FALSE)` is deprecated. Please use `guides(&amp;lt;scale&amp;gt; =
+## &amp;quot;none&amp;quot;)` instead.&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/example/04-example_files/figure-html/ggridges-quantile-1.png&#34; width=&#34;576&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Now that we have good working code, we can easily substitute in other variables by changing the x mapping:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(weather_atl, aes(x = temperatureHigh, y = fct_rev(Month), fill = Month)) +
+  geom_density_ridges(quantile_lines = TRUE, quantiles = 2) +
+  guides(fill = FALSE)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Warning: `guides(&amp;lt;scale&amp;gt; = FALSE)` is deprecated. Please use `guides(&amp;lt;scale&amp;gt; =
+## &amp;quot;none&amp;quot;)` instead.&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/example/04-example_files/figure-html/ggridges-quantile-temp-1.png&#34; width=&#34;576&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;We can get extra fancy if we fill by temperature instead of filling by month. To get this to work, we need to use &lt;code&gt;geom_density_ridges_gradient()&lt;/code&gt;, and we need to change the &lt;code&gt;fill&lt;/code&gt; mapping to the strange looking &lt;code&gt;..x..&lt;/code&gt;, which is a weird ggplot trick that tells it to use the variable we mapped to the x-axis. For whatever reason, &lt;code&gt;fill = temperatureHigh&lt;/code&gt; doesn’t work:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(weather_atl, aes(x = temperatureHigh, y = fct_rev(Month), fill = ..x..)) +
+  geom_density_ridges_gradient(quantile_lines = TRUE, quantiles = 2) +
+  scale_fill_viridis_c(option = &amp;quot;plasma&amp;quot;) +
+  labs(x = &amp;quot;High temperature&amp;quot;, y = NULL, color = &amp;quot;Temp&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/example/04-example_files/figure-html/ggridges-gradient-temp-1.png&#34; width=&#34;576&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;And finally, we can get &lt;em&gt;extra&lt;/em&gt; fancy and show the distributions for both the high and low temperatures each month. To make this work, we need to manipulate the data a little. Right now there are two columns for high and low temperature: &lt;code&gt;temperatureLow&lt;/code&gt; and &lt;code&gt;temperatureHigh&lt;/code&gt;. To be able to map temperature to the x-axis and high vs. low to another aesthetic (like &lt;code&gt;linetype&lt;/code&gt;), we need a column with the temperature and a column with an indicator variable for whether it is high or low. This data needs to be tidied (since right now we have a variable (high/low) encoded in the column name). We can tidy this data using &lt;code&gt;pivot_longer()&lt;/code&gt; from &lt;strong&gt;tidyr&lt;/strong&gt;, which was already loaded with &lt;code&gt;library(tidyverse)&lt;/code&gt;. In the RStudio primers, you did this same thing with &lt;code&gt;gather()&lt;/code&gt;—&lt;code&gt;pivot_longer()&lt;/code&gt; is the newer version of &lt;code&gt;gather()&lt;/code&gt;:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;weather_atl_long &amp;lt;- weather_atl %&amp;gt;%
+  pivot_longer(cols = c(temperatureLow, temperatureHigh),
+               names_to = &amp;quot;temp_type&amp;quot;,
+               values_to = &amp;quot;temp&amp;quot;) %&amp;gt;%
+  # Clean up the new temp_type column so that &amp;quot;temperatureHigh&amp;quot; becomes &amp;quot;High&amp;quot;, etc.
+  mutate(temp_type = recode(temp_type,
+                            temperatureHigh = &amp;quot;High&amp;quot;,
+                            temperatureLow = &amp;quot;Low&amp;quot;)) %&amp;gt;%
+  # This is optional—just select a handful of columns
+  select(time, temp_type, temp, Month)
+
+# Show the first few rows
+head(weather_atl_long)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 6 × 4
+##   time                temp_type  temp Month  
+##   &amp;lt;dttm&amp;gt;              &amp;lt;chr&amp;gt;     &amp;lt;dbl&amp;gt; &amp;lt;ord&amp;gt;  
+## 1 2019-01-01 05:00:00 Low        50.6 January
+## 2 2019-01-01 05:00:00 High       63.9 January
+## 3 2019-01-02 05:00:00 Low        49.0 January
+## 4 2019-01-02 05:00:00 High       57.4 January
+## 5 2019-01-03 05:00:00 Low        53.1 January
+## 6 2019-01-03 05:00:00 High       55.3 January&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Now we have a column for the temperature (&lt;code&gt;temp&lt;/code&gt;) and a column indicating if it is high or low (&lt;code&gt;temp_type&lt;/code&gt;). The dataset is also twice as long (730 rows) because each day has two rows (high and low). Let’s plot it and map high/low to the &lt;code&gt;linetype&lt;/code&gt; aesthetic to show high/low in the border of the plots:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(weather_atl_long, aes(x = temp, y = fct_rev(Month),
+                             fill = ..x.., linetype = temp_type)) +
+  geom_density_ridges_gradient(quantile_lines = TRUE, quantiles = 2) +
+  scale_fill_viridis_c(option = &amp;quot;plasma&amp;quot;) +
+  labs(x = &amp;quot;High temperature&amp;quot;, y = NULL, color = &amp;quot;Temp&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/example/04-example_files/figure-html/ggridges-gradient-temp-high-low-1.png&#34; width=&#34;576&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;We can see much wider temperature disparities during the summer, with large gaps between high and low, and relatively equal high/low temperatures during the winter.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;box-violin-and-rain-cloud-plots&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Box, violin, and rain cloud plots&lt;/h3&gt;
+&lt;p&gt;Finally, we can look at the distribution of variables with box plots, violin plots, and other similar graphs. First, we’ll make a box plot of windspeed, filled by the &lt;code&gt;Day&lt;/code&gt; variable we made indicating weekday:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(weather_atl,
+       aes(y = windSpeed, fill = Day)) +
+  geom_boxplot()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/example/04-example_files/figure-html/basic-boxplot-1.png&#34; width=&#34;576&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;We can switch this to a violin plot by just changing the &lt;code&gt;geom&lt;/code&gt; layer and mapping &lt;code&gt;Day&lt;/code&gt; to the x-axis:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(weather_atl,
+       aes(y = windSpeed, x = Day, fill = Day)) +
+  geom_violin()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/example/04-example_files/figure-html/basic-violin-1.png&#34; width=&#34;576&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;With violin plots it’s typically good to overlay other geoms. We can add some jittered points for a strip plot:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(weather_atl,
+       aes(y = windSpeed, x = Day, fill = Day)) +
+  geom_violin() +
+  geom_point(size = 0.5, position = position_jitter(width = 0.1)) +
+  guides(fill = FALSE)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Warning: `guides(&amp;lt;scale&amp;gt; = FALSE)` is deprecated. Please use `guides(&amp;lt;scale&amp;gt; =
+## &amp;quot;none&amp;quot;)` instead.&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/example/04-example_files/figure-html/violin-strip-1.png&#34; width=&#34;576&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;We can also add larger points for the daily averages. We’ll use a special layer for this: &lt;code&gt;stat_summary()&lt;/code&gt;. It has a slightly different syntax, since we’re not actually mapping a column from the dataset. Instead, we’re feeding a column from a dataset into a function (here &lt;code&gt;&#34;mean&#34;&lt;/code&gt;) and then plotting that result:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(weather_atl,
+       aes(y = windSpeed, x = Day, fill = Day)) +
+  geom_violin() +
+  stat_summary(geom = &amp;quot;point&amp;quot;, fun = &amp;quot;mean&amp;quot;, size = 5, color = &amp;quot;white&amp;quot;) +
+  geom_point(size = 0.5, position = position_jitter(width = 0.1)) +
+  guides(fill = FALSE)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Warning: `guides(&amp;lt;scale&amp;gt; = FALSE)` is deprecated. Please use `guides(&amp;lt;scale&amp;gt; =
+## &amp;quot;none&amp;quot;)` instead.&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/example/04-example_files/figure-html/violin-strip-mean-1.png&#34; width=&#34;576&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;We can also show the mean and confidence interval at the same time by changing the summary function:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(weather_atl,
+       aes(y = windSpeed, x = Day, fill = Day)) +
+  geom_violin() +
+  stat_summary(geom = &amp;quot;pointrange&amp;quot;, fun.data = &amp;quot;mean_se&amp;quot;, size = 1, color = &amp;quot;white&amp;quot;) +
+  geom_point(size = 0.5, position = position_jitter(width = 0.1)) +
+  guides(fill = FALSE)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Warning: `guides(&amp;lt;scale&amp;gt; = FALSE)` is deprecated. Please use `guides(&amp;lt;scale&amp;gt; =
+## &amp;quot;none&amp;quot;)` instead.&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/example/04-example_files/figure-html/violin-strip-mean-ci-1.png&#34; width=&#34;576&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Overlaying the points directly on top of the violins shows extra information, but it’s also really crowded and hard to read. If we use &lt;a href=&#34;https://github.com/erocoar/gghalves&#34;&gt;the &lt;strong&gt;gghalves&lt;/strong&gt; package&lt;/a&gt;, we can use special halved versions of some of these geoms like so:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(weather_atl,
+       aes(x = fct_rev(Day), y = temperatureHigh)) +
+  geom_half_point(aes(color = Day), side = &amp;quot;l&amp;quot;, size = 0.5) +
+  geom_half_boxplot(aes(fill = Day), side = &amp;quot;r&amp;quot;) +
+  guides(color = FALSE, fill = FALSE)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Warning: `guides(&amp;lt;scale&amp;gt; = FALSE)` is deprecated. Please use `guides(&amp;lt;scale&amp;gt; =
+## &amp;quot;none&amp;quot;)` instead.&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/example/04-example_files/figure-html/gghalves-point-boxplot-1.png&#34; width=&#34;576&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Note the &lt;code&gt;side&lt;/code&gt; argument for specifying which half of the column the geom goes. We can also use &lt;code&gt;geom_half_violin()&lt;/code&gt;:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(weather_atl,
+       aes(x = fct_rev(Day), y = temperatureHigh)) +
+  geom_half_point(aes(color = Day), side = &amp;quot;l&amp;quot;, size = 0.5) +
+  geom_half_violin(aes(fill = Day), side = &amp;quot;r&amp;quot;) +
+  guides(color = FALSE, fill = FALSE)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Warning: `guides(&amp;lt;scale&amp;gt; = FALSE)` is deprecated. Please use `guides(&amp;lt;scale&amp;gt; =
+## &amp;quot;none&amp;quot;)` instead.&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/example/04-example_files/figure-html/gghalves-point-violon-1.png&#34; width=&#34;576&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;If we flip the plot, we can make a &lt;a href=&#34;https://micahallen.org/2018/03/15/introducing-raincloud-plots/&#34;&gt;rain cloud plot&lt;/a&gt;:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(weather_atl,
+       aes(x = fct_rev(Day), y = temperatureHigh)) +
+  geom_half_boxplot(aes(fill = Day), side = &amp;quot;l&amp;quot;, width = 0.5, nudge = 0.1) +
+  geom_half_point(aes(color = Day), side = &amp;quot;l&amp;quot;, size = 0.5) +
+  geom_half_violin(aes(fill = Day), side = &amp;quot;r&amp;quot;) +
+  guides(color = FALSE, fill = FALSE) +
+  coord_flip()&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Warning: `guides(&amp;lt;scale&amp;gt; = FALSE)` is deprecated. Please use `guides(&amp;lt;scale&amp;gt; =
+## &amp;quot;none&amp;quot;)` instead.&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/example/04-example_files/figure-html/gghalves-rain-cloud-1.png&#34; width=&#34;768&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;lecture-video&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Lecture Video&lt;/h2&gt;
+&lt;p&gt;The lecture video for Tuesday (this material, but we only made it about 2/3rds of the way) is &lt;a href=&#34;https://mediaspace.msu.edu/media/SSC442+-+Example+04+-+Feb+10th/1_tyohp7mc&#34;&gt;available here &lt;i class=&#34;fas fa-film&#34;&gt;&lt;/i&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&#34;footnotes footnotes-end-of-document&#34;&gt;
+&lt;hr /&gt;
+&lt;ol&gt;
+&lt;li id=&#34;fn1&#34;&gt;&lt;p&gt;&lt;a href=&#34;http://www.realclearpolitics.com&#34; class=&#34;uri&#34;&gt;http://www.realclearpolitics.com&lt;/a&gt;&lt;a href=&#34;#fnref1&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li id=&#34;fn2&#34;&gt;&lt;p&gt;&lt;a href=&#34;http://www.realclearpolitics.com/epolls/2016/president/us/general_election_trump_vs_clinton-5491.html&#34; class=&#34;uri&#34;&gt;http://www.realclearpolitics.com/epolls/2016/president/us/general_election_trump_vs_clinton-5491.html&lt;/a&gt;&lt;a href=&#34;#fnref2&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
 &lt;/ol&gt;
 &lt;/div&gt;
 </description>
@@ -10613,6 +10613,152 @@ summary(model_multi)$coefficients&lt;/code&gt;&lt;/pre&gt;
     </item>
     
     <item>
+      <title>Project 1</title>
+      <link>https://ssc442.netlify.app/assignment/project1/</link>
+      <pubDate>Sun, 01 Jan 2023 00:00:00 +0000</pubDate>
+      <guid>https://ssc442.netlify.app/assignment/project1/</guid>
+      <description>
+&lt;script src=&#34;https://ssc442.netlify.app/rmarkdown-libs/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
+
+&lt;div id=&#34;TOC&#34;&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#part-1-rats-rats-rats.&#34; id=&#34;toc-part-1-rats-rats-rats.&#34;&gt;Part 1: Rats, rats, rats.&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#instructions&#34; id=&#34;toc-instructions&#34;&gt;Instructions&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#starter-code&#34; id=&#34;toc-starter-code&#34;&gt;Starter code&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#part-2-data-hunting&#34; id=&#34;toc-part-2-data-hunting&#34;&gt;Part 2: Data Hunting&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#evaluations&#34; id=&#34;toc-evaluations&#34;&gt;Evaluations&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+
+&lt;div class=&#34;fyi&#34;&gt;
+&lt;p&gt;One member of each group should turn in the group’s work on D2L. In addition to the requirements below, the project should have the group member’s names. &lt;em&gt;All other group members should turn in a text document stating the group members&lt;/em&gt;. Note that D2L requires something be turned in to give a grade and feedback, but I do not want to accidentally grade your projects 2-3 times over.&lt;/p&gt;
+&lt;p&gt;Turn in your copies by &lt;strong&gt;11:59, March 13blogth.&lt;/strong&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;part-1-rats-rats-rats.&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Part 1: Rats, rats, rats.&lt;/h2&gt;
+&lt;p&gt;New York City is full of urban wildlife, and rats are one of the city’s most infamous animal mascots. Rats in NYC are plentiful, but they also deliver food, so they’re useful too.&lt;/p&gt;
+&lt;p&gt;
+&lt;div style=&#34;position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;&#34;&gt;
+  &lt;iframe src=&#34;https://www.youtube.com/embed/PeJUqcbool4&#34; style=&#34;position: absolute; top: 0; left: 0; width: 100%; height: 100%; border:0;&#34; allowfullscreen title=&#34;YouTube Video&#34;&gt;&lt;/iframe&gt;
+&lt;/div&gt;
+&lt;/p&gt;
+&lt;p&gt;NYC keeps incredibly detailed data regarding animal sightings, including rats, and &lt;a href=&#34;https://www.kaggle.com/new-york-city/nyc-rat-sightings/data&#34;&gt;it makes this data publicly available&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;For this first project, pretend that you are an analyst with the NYC Mayor’s office, and you have been tasked with getting a better understanding of the rat problem. Your job is to use &lt;strong&gt;R and ggplot2&lt;/strong&gt; to tell an interesting story hidden in the data. You must create a story by looking carefully at the data, finding some insight into where or when rat sightings occur, and describing to the Mayor how this insight may inform a strategy to address the rats. Your assignment will take the form of a memo that presents the data and insights along with appropriate visualizations that communicate the story in-line. Your memo should be approximately 2-4 pages (including plots) and, of course, will use Rmarkdown rendered to PDF using LaTeX.&lt;/p&gt;
+&lt;div id=&#34;instructions&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Instructions&lt;/h3&gt;
+&lt;p&gt;Here’s what you need to do:&lt;/p&gt;
+&lt;ol style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;Download&lt;/strong&gt; New York City’s database of rat sightings since 2010:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://ssc442.netlify.app/data/Rat_sightings.csv&#34;&gt;&lt;i class=&#34;fas fa-file-csv&#34;&gt;&lt;/i&gt; &lt;code&gt;Rat_sightings.csv&lt;/code&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;Summarize&lt;/strong&gt; the data somehow. The raw data has more than 100,000 rows, which means you’ll need to aggregate the data (&lt;code&gt;filter()&lt;/code&gt;, &lt;code&gt;group_by()&lt;/code&gt;, and &lt;code&gt;summarize()&lt;/code&gt; will be your friends). Consider looking at the number of sightings per borough, per year, per dwelling type, etc., or a combination of these, like the change in the number sightings across the 5 boroughs between 2010 and 2016.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;Create&lt;/strong&gt; an appropriate visualization based on the data you summarized.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;Write&lt;/strong&gt; a polished, professional memo presenting your analysis. We are specifically looking for a discussion of the following:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;What story are you telling with your new graphic?&lt;/li&gt;
+&lt;li&gt;How have you applied reasonable standards in visual storytelling?&lt;/li&gt;
+&lt;li&gt;What policy implication is there (if any)?&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;Upload&lt;/strong&gt; the following outputs to D2L:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;A PDF file of your memo with your graphics embedded in it.&lt;a href=&#34;#fn1&#34; class=&#34;footnote-ref&#34; id=&#34;fnref1&#34;&gt;&lt;sup&gt;1&lt;/sup&gt;&lt;/a&gt; This means you’ll need to do all your coding in an &lt;code&gt;R&lt;/code&gt; Markdown file and embed your code in chunks.&lt;/li&gt;
+&lt;li&gt;Note that Part 2 of this project should be included in this PDF in it’s own section (see below).&lt;/li&gt;
+&lt;li&gt;Nothing else. No .Rmd, no code, nothing but your clean, polished memo with Part 1 and Part 2.&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;Some important notes on your assignment&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Your assignment should be clean and polished as if you were a city employee and you were turning in a work product. It should should flow nicely and use subsections (using &lt;code&gt;###&lt;/code&gt; at the start of the line) as appropriate.&lt;/li&gt;
+&lt;li&gt;Do &lt;strong&gt;not&lt;/strong&gt; “annotate” your thought process (e.g. do not write “we tried X but there were too many NA’s, so we did Y instead”). This should be a polished memo suitable for turning in as a work product.&lt;/li&gt;
+&lt;li&gt;Your code should &lt;strong&gt;not&lt;/strong&gt; appear in your output - it should be only your plots and memo writing.
+&lt;ul&gt;
+&lt;li&gt;To turn off code echoing, add &lt;code&gt;echo = FALSE&lt;/code&gt; in each of your code chunk options (e.g. &lt;code&gt;{r setup, echo = FALSE}&lt;/code&gt;), or set it globally in the first code chunk inside the &lt;code&gt;knitr::opts_chunk$set&lt;/code&gt; function.&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;div id=&#34;starter-code&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Starter code&lt;/h3&gt;
+&lt;p&gt;I’ve provided some starter code below. A couple comments about it:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;By default, &lt;code&gt;read_csv()&lt;/code&gt; treats cells that are empty or “NA” as missing values. This rat dataset uses “N/A” to mark missing values, so we need to add that as a possible marker of missingness (hence &lt;code&gt;na = c(&#34;&#34;, &#34;NA&#34;, &#34;N/A&#34;)&lt;/code&gt;)&lt;/li&gt;
+&lt;li&gt;To make life easier, I’ve renamed some of the key variables you might work with. You can rename others if you want.&lt;/li&gt;
+&lt;li&gt;I’ve also created a few date-related variables (&lt;code&gt;sighting_year&lt;/code&gt;, &lt;code&gt;sighting_month&lt;/code&gt;, &lt;code&gt;sighting_day&lt;/code&gt;, and &lt;code&gt;sighting_weekday&lt;/code&gt;). You don’t have to use them, but they’re there if you need them. The functions that create these, like &lt;code&gt;year()&lt;/code&gt; and &lt;code&gt;wday()&lt;/code&gt; are part of the &lt;strong&gt;lubridate&lt;/strong&gt; library.&lt;/li&gt;
+&lt;li&gt;The date/time variables are formatted like &lt;code&gt;04/03/2017 12:00:00 AM&lt;/code&gt;, which R is not able to automatically parse as a date when reading the CSV file. You can use the &lt;code&gt;mdy_hms()&lt;/code&gt; function in the &lt;strong&gt;lubridate&lt;/strong&gt; library to parse dates that are structured as “month-day-year-hour-minute”. There are also a bunch of other iterations of this function, like &lt;code&gt;ymd()&lt;/code&gt;, &lt;code&gt;dmy()&lt;/code&gt;, etc., for other date formats.&lt;/li&gt;
+&lt;li&gt;There’s one row with an unspecified borough, so I filter that out.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(tidyverse)
+library(lubridate)
+rats_raw &amp;lt;- read_csv(&amp;quot;data/Rat_Sightings.csv&amp;quot;, na = c(&amp;quot;&amp;quot;, &amp;quot;NA&amp;quot;, &amp;quot;N/A&amp;quot;))
+# If you get an error that says &amp;quot;All formats failed to parse. No formats
+# found&amp;quot;, it&amp;#39;s because the mdy_hms function couldn&amp;#39;t parse the date. The date
+# variable *should* be in this format: &amp;quot;04/03/2017 12:00:00 AM&amp;quot;, but in some
+# rare instances, it might load without the seconds as &amp;quot;04/03/2017 12:00 AM&amp;quot;.
+# If there are no seconds, use mdy_hm() instead of mdy_hms().
+rats_clean &amp;lt;- rats_raw %&amp;gt;%
+  rename(created_date = `Created Date`,
+         location_type = `Location Type`,
+         borough = Borough) %&amp;gt;%
+  mutate(created_date = mdy_hms(created_date)) %&amp;gt;%
+  mutate(sighting_year = year(created_date),
+         sighting_month = month(created_date),
+         sighting_day = day(created_date),
+         sighting_weekday = wday(created_date, label = TRUE, abbr = FALSE)) %&amp;gt;%
+  filter(borough != &amp;quot;Unspecified&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;You’ll summarize the data with functions from &lt;strong&gt;dplyr&lt;/strong&gt;, including stuff like &lt;code&gt;count()&lt;/code&gt;, &lt;code&gt;arrange()&lt;/code&gt;, &lt;code&gt;filter()&lt;/code&gt;, &lt;code&gt;group_by()&lt;/code&gt;, &lt;code&gt;summarize()&lt;/code&gt;, and &lt;code&gt;mutate()&lt;/code&gt;. Here are some examples of ways to summarize the data:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# See the count of rat sightings by weekday
+rats_clean %&amp;gt;%
+  count(sighting_weekday)
+# Assign a summarized data frame to an object to use it in a plot
+rats_by_weekday &amp;lt;- rats_clean %&amp;gt;%
+  count(sighting_weekday, sighting_year)
+ggplot(rats_by_weekday, aes(x = fct_rev(sighting_weekday), y = n)) +
+  geom_col() +
+  coord_flip() +
+  facet_wrap(~ sighting_year)
+# See the count of rat sightings by weekday and borough
+rats_clean %&amp;gt;%
+  count(sighting_weekday, borough, sighting_year)
+# An alternative to count() is to specify the groups with group_by() and then
+# be explicit about how you&amp;#39;re summarizing the groups, such as calculating the
+# mean, standard deviation, or number of observations (we do that here with
+# `n()`).
+rats_clean %&amp;gt;%
+  group_by(sighting_weekday, borough) %&amp;gt;%
+  summarize(n = n())&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;part-2-data-hunting&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Part 2: Data Hunting&lt;/h2&gt;
+&lt;p&gt;For the second part of the project, your task is simple. Your group must identify three different data sources&lt;a href=&#34;#fn2&#34; class=&#34;footnote-ref&#34; id=&#34;fnref2&#34;&gt;&lt;sup&gt;2&lt;/sup&gt;&lt;/a&gt; for potential use in your final project. You are not bound to this decision.&lt;/p&gt;
+&lt;p&gt;Do &lt;strong&gt;not&lt;/strong&gt; use Kaggle data. While Kaggle is useful for learning data science, part of this assignment is learning how to find actual data in the wild.&lt;/p&gt;
+&lt;p&gt;For each dataset, you must write a single short paragraph about what about this data interests you. Add this to the memo from Part 1, using &lt;code&gt;##&lt;/code&gt; to make a new header in Rmarkdown for this section.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;evaluations&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Evaluations&lt;/h2&gt;
+&lt;p&gt;I will evaluate these projects (not the TA). I will only give top marks to those groups showing initiative and cleverness. I will use the following weights for final scores:&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Part 1&lt;/strong&gt;&lt;/p&gt;
+&lt;ol style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;&lt;p&gt;Technical difficulty: Does the final project show mastery of the skills we’ve discussed thus far? Are axes and legends appropriately labeled? (12 points)&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Appropriateness of visuals: Do the visualizations tell a clear story? Have we learned something? (10 points)&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Storytelling: Does your memo clearly convey what you’re doing and why? (10 points)&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;&lt;strong&gt;Part 2&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Each piece of data (and description) is worth 6 points. (18 points total)&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&#34;footnotes footnotes-end-of-document&#34;&gt;
+&lt;hr /&gt;
+&lt;ol&gt;
+&lt;li id=&#34;fn1&#34;&gt;&lt;p&gt;You can approach this in a couple different ways—you can write the memo and then include the full figure and code at the end, &lt;a href=&#34;https://rud.is/b/2017/09/18/mapping-fall-foliage-with-sf/&#34;&gt;similar to this blog post&lt;/a&gt;, or you can write the memo in an incremental way, describing the different steps of creating the figure, ultimately arriving at a clean final figure, &lt;a href=&#34;https://rudeboybert.github.io/fivethirtyeight/articles/bechdel.html&#34;&gt;like this blog post&lt;/a&gt;.&lt;a href=&#34;#fnref1&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li id=&#34;fn2&#34;&gt;&lt;p&gt;The three different sources need not be different websites or from different organizations. For example, three different tables from the US Census would be sufficient&lt;a href=&#34;#fnref2&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    
+    <item>
       <title>Introduction to the tidyverse</title>
       <link>https://ssc442.netlify.app/content/01-content/</link>
       <pubDate>Mon, 10 Jan 2022 00:00:00 +0000</pubDate>
@@ -11527,154 +11673,6 @@ case_when(x &amp;lt; 0 ~ &amp;quot;Negative&amp;quot;,
 &lt;ol&gt;
 &lt;li id=&#34;fn1&#34;&gt;&lt;p&gt;A note from Prof. Kirkpatrick: “I discovered the &lt;code&gt;emo::ji()&lt;/code&gt; function at 8:55am. My wife joked that I would find a way to use the poop emoji by 9:00am. It is now 8:59am. She was right.”&lt;a href=&#34;#fnref1&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
 &lt;li id=&#34;fn2&#34;&gt;&lt;p&gt;If you have not installed this package already, you must use &lt;code&gt;install.packages(&#34;tidyverse&#34;)&lt;/code&gt; prior to the &lt;code&gt;library()&lt;/code&gt; call you see below.&lt;a href=&#34;#fnref2&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
-&lt;/ol&gt;
-&lt;/div&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>Project 1</title>
-      <link>https://ssc442.netlify.app/assignment/project1/</link>
-      <pubDate>Wed, 05 Jan 2022 00:00:00 +0000</pubDate>
-      <guid>https://ssc442.netlify.app/assignment/project1/</guid>
-      <description>
-&lt;script src=&#34;https://ssc442.netlify.app/rmarkdown-libs/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
-
-&lt;div id=&#34;TOC&#34;&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;a href=&#34;#part-1-rats-rats-rats.&#34; id=&#34;toc-part-1-rats-rats-rats.&#34;&gt;Part 1: Rats, rats, rats.&lt;/a&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;a href=&#34;#instructions&#34; id=&#34;toc-instructions&#34;&gt;Instructions&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;#starter-code&#34; id=&#34;toc-starter-code&#34;&gt;Starter code&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;#part-2-data-hunting&#34; id=&#34;toc-part-2-data-hunting&#34;&gt;Part 2: Data Hunting&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;#evaluations&#34; id=&#34;toc-evaluations&#34;&gt;Evaluations&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/div&gt;
-
-&lt;p&gt;Updated 4-4-2022 (no longer applicable for Sp22)&lt;/p&gt;
-&lt;div class=&#34;fyi&#34;&gt;
-&lt;p&gt;One member of each group should turn in the group’s work on D2L. In addition to the requirements below, the project should have the group member’s names. All other group members should turn in a text document stating the group members (D2L requires something be turned in to give a grade and feedback, but I do not want to accidentally grade your projects 2-3 times over.)&lt;/p&gt;
-&lt;p&gt;Turn in your copies by &lt;strong&gt;11:59 on the date listed on the Schedule&lt;/strong&gt;&lt;/p&gt;
-&lt;/div&gt;
-&lt;div id=&#34;part-1-rats-rats-rats.&#34; class=&#34;section level2&#34;&gt;
-&lt;h2&gt;Part 1: Rats, rats, rats.&lt;/h2&gt;
-&lt;p&gt;New York City is full of urban wildlife, and rats are one of the city’s most infamous animal mascots. Rats in NYC are plentiful, but they also deliver food, so they’re useful too.&lt;/p&gt;
-&lt;p&gt;
-&lt;div style=&#34;position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;&#34;&gt;
-  &lt;iframe src=&#34;https://www.youtube.com/embed/PeJUqcbool4&#34; style=&#34;position: absolute; top: 0; left: 0; width: 100%; height: 100%; border:0;&#34; allowfullscreen title=&#34;YouTube Video&#34;&gt;&lt;/iframe&gt;
-&lt;/div&gt;
-&lt;/p&gt;
-&lt;p&gt;NYC keeps incredibly detailed data regarding animal sightings, including rats, and &lt;a href=&#34;https://www.kaggle.com/new-york-city/nyc-rat-sightings/data&#34;&gt;it makes this data publicly available&lt;/a&gt;.&lt;/p&gt;
-&lt;p&gt;For this first project, pretend that you are an analyst with the NYC Mayor’s office, and you have been tasked with getting a better understanding of the rat problem. Your job is to use &lt;strong&gt;R and ggplot2&lt;/strong&gt; to tell an interesting story hidden in the data. You must create a story by looking carefully at the data, finding some insight into where or when rat sightings occur, and describing to the Mayor how this insight may inform a strategy to address the rats. Your assignment will take the form of a memo that presents the data and insights along with appropriate visualizations that communicate the story in-line. Your memo should be approximately 2-4 pages (including plots) and, of course, will use Rmarkdown rendered to PDF using LaTeX.&lt;/p&gt;
-&lt;div id=&#34;instructions&#34; class=&#34;section level3&#34;&gt;
-&lt;h3&gt;Instructions&lt;/h3&gt;
-&lt;p&gt;Here’s what you need to do:&lt;/p&gt;
-&lt;ol style=&#34;list-style-type: decimal&#34;&gt;
-&lt;li&gt;&lt;p&gt;&lt;strong&gt;Download&lt;/strong&gt; New York City’s database of rat sightings since 2010:&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;a href=&#34;https://ssc442.netlify.app/data/Rat_sightings.csv&#34;&gt;&lt;i class=&#34;fas fa-file-csv&#34;&gt;&lt;/i&gt; &lt;code&gt;Rat_sightings.csv&lt;/code&gt;&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;&lt;strong&gt;Summarize&lt;/strong&gt; the data somehow. The raw data has more than 100,000 rows, which means you’ll need to aggregate the data (&lt;code&gt;filter()&lt;/code&gt;, &lt;code&gt;group_by()&lt;/code&gt;, and &lt;code&gt;summarize()&lt;/code&gt; will be your friends). Consider looking at the number of sightings per borough, per year, per dwelling type, etc., or a combination of these, like the change in the number sightings across the 5 boroughs between 2010 and 2016.&lt;/p&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;&lt;strong&gt;Create&lt;/strong&gt; an appropriate visualization based on the data you summarized.&lt;/p&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;&lt;strong&gt;Write&lt;/strong&gt; a polished, professional memo presenting your analysis. We are specifically looking for a discussion of the following:&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;What story are you telling with your new graphic?&lt;/li&gt;
-&lt;li&gt;How have you applied reasonable standards in visual storytelling?&lt;/li&gt;
-&lt;li&gt;What policy implication is there (if any)?&lt;/li&gt;
-&lt;/ul&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;&lt;strong&gt;Upload&lt;/strong&gt; the following outputs to D2L:&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;A PDF file of your memo with your graphics embedded in it.&lt;a href=&#34;#fn1&#34; class=&#34;footnote-ref&#34; id=&#34;fnref1&#34;&gt;&lt;sup&gt;1&lt;/sup&gt;&lt;/a&gt; This means you’ll need to do all your coding in an &lt;code&gt;R&lt;/code&gt; Markdown file and embed your code in chunks.&lt;/li&gt;
-&lt;li&gt;Note that Part 2 of this project should be included in this PDF in it’s own section (see below).&lt;/li&gt;
-&lt;li&gt;Nothing else. No .Rmd, no code, nothing but your clean, polished memo with Part 1 and Part 2.&lt;/li&gt;
-&lt;/ul&gt;&lt;/li&gt;
-&lt;/ol&gt;
-&lt;p&gt;Some important notes on your assignment&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;Your assignment should be clean and polished as if you were a city employee and you were turning in a work product. It should should flow nicely and use subsections (using &lt;code&gt;###&lt;/code&gt; at the start of the line) as appropriate.&lt;/li&gt;
-&lt;li&gt;Do &lt;strong&gt;not&lt;/strong&gt; “annotate” your thought process (e.g. do not write “we tried X but there were too many NA’s, so we did Y instead”). This should be a polished memo suitable for turning in as a work product.&lt;/li&gt;
-&lt;li&gt;Your code should &lt;strong&gt;not&lt;/strong&gt; appear in your output - it should be only your plots and memo writing.
-&lt;ul&gt;
-&lt;li&gt;To turn off code echoing, add &lt;code&gt;echo = FALSE&lt;/code&gt; in each of your code chunk options (e.g. &lt;code&gt;{r setup, echo = FALSE}&lt;/code&gt;), or set it globally in the first code chunk inside the &lt;code&gt;knitr::opts_chunk$set&lt;/code&gt; function.&lt;/li&gt;
-&lt;/ul&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/div&gt;
-&lt;div id=&#34;starter-code&#34; class=&#34;section level3&#34;&gt;
-&lt;h3&gt;Starter code&lt;/h3&gt;
-&lt;p&gt;I’ve provided some starter code below. A couple comments about it:&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;By default, &lt;code&gt;read_csv()&lt;/code&gt; treats cells that are empty or “NA” as missing values. This rat dataset uses “N/A” to mark missing values, so we need to add that as a possible marker of missingness (hence &lt;code&gt;na = c(&#34;&#34;, &#34;NA&#34;, &#34;N/A&#34;)&lt;/code&gt;)&lt;/li&gt;
-&lt;li&gt;To make life easier, I’ve renamed some of the key variables you might work with. You can rename others if you want.&lt;/li&gt;
-&lt;li&gt;I’ve also created a few date-related variables (&lt;code&gt;sighting_year&lt;/code&gt;, &lt;code&gt;sighting_month&lt;/code&gt;, &lt;code&gt;sighting_day&lt;/code&gt;, and &lt;code&gt;sighting_weekday&lt;/code&gt;). You don’t have to use them, but they’re there if you need them. The functions that create these, like &lt;code&gt;year()&lt;/code&gt; and &lt;code&gt;wday()&lt;/code&gt; are part of the &lt;strong&gt;lubridate&lt;/strong&gt; library.&lt;/li&gt;
-&lt;li&gt;The date/time variables are formatted like &lt;code&gt;04/03/2017 12:00:00 AM&lt;/code&gt;, which R is not able to automatically parse as a date when reading the CSV file. You can use the &lt;code&gt;mdy_hms()&lt;/code&gt; function in the &lt;strong&gt;lubridate&lt;/strong&gt; library to parse dates that are structured as “month-day-year-hour-minute”. There are also a bunch of other iterations of this function, like &lt;code&gt;ymd()&lt;/code&gt;, &lt;code&gt;dmy()&lt;/code&gt;, etc., for other date formats.&lt;/li&gt;
-&lt;li&gt;There’s one row with an unspecified borough, so I filter that out.&lt;/li&gt;
-&lt;/ul&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(tidyverse)
-library(lubridate)
-rats_raw &amp;lt;- read_csv(&amp;quot;data/Rat_Sightings.csv&amp;quot;, na = c(&amp;quot;&amp;quot;, &amp;quot;NA&amp;quot;, &amp;quot;N/A&amp;quot;))
-# If you get an error that says &amp;quot;All formats failed to parse. No formats
-# found&amp;quot;, it&amp;#39;s because the mdy_hms function couldn&amp;#39;t parse the date. The date
-# variable *should* be in this format: &amp;quot;04/03/2017 12:00:00 AM&amp;quot;, but in some
-# rare instances, it might load without the seconds as &amp;quot;04/03/2017 12:00 AM&amp;quot;.
-# If there are no seconds, use mdy_hm() instead of mdy_hms().
-rats_clean &amp;lt;- rats_raw %&amp;gt;%
-  rename(created_date = `Created Date`,
-         location_type = `Location Type`,
-         borough = Borough) %&amp;gt;%
-  mutate(created_date = mdy_hms(created_date)) %&amp;gt;%
-  mutate(sighting_year = year(created_date),
-         sighting_month = month(created_date),
-         sighting_day = day(created_date),
-         sighting_weekday = wday(created_date, label = TRUE, abbr = FALSE)) %&amp;gt;%
-  filter(borough != &amp;quot;Unspecified&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;You’ll summarize the data with functions from &lt;strong&gt;dplyr&lt;/strong&gt;, including stuff like &lt;code&gt;count()&lt;/code&gt;, &lt;code&gt;arrange()&lt;/code&gt;, &lt;code&gt;filter()&lt;/code&gt;, &lt;code&gt;group_by()&lt;/code&gt;, &lt;code&gt;summarize()&lt;/code&gt;, and &lt;code&gt;mutate()&lt;/code&gt;. Here are some examples of ways to summarize the data:&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# See the count of rat sightings by weekday
-rats_clean %&amp;gt;%
-  count(sighting_weekday)
-# Assign a summarized data frame to an object to use it in a plot
-rats_by_weekday &amp;lt;- rats_clean %&amp;gt;%
-  count(sighting_weekday, sighting_year)
-ggplot(rats_by_weekday, aes(x = fct_rev(sighting_weekday), y = n)) +
-  geom_col() +
-  coord_flip() +
-  facet_wrap(~ sighting_year)
-# See the count of rat sightings by weekday and borough
-rats_clean %&amp;gt;%
-  count(sighting_weekday, borough, sighting_year)
-# An alternative to count() is to specify the groups with group_by() and then
-# be explicit about how you&amp;#39;re summarizing the groups, such as calculating the
-# mean, standard deviation, or number of observations (we do that here with
-# `n()`).
-rats_clean %&amp;gt;%
-  group_by(sighting_weekday, borough) %&amp;gt;%
-  summarize(n = n())&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div id=&#34;part-2-data-hunting&#34; class=&#34;section level2&#34;&gt;
-&lt;h2&gt;Part 2: Data Hunting&lt;/h2&gt;
-&lt;p&gt;For the second part of the project, your task is simple. Your group must identify three different data sources&lt;a href=&#34;#fn2&#34; class=&#34;footnote-ref&#34; id=&#34;fnref2&#34;&gt;&lt;sup&gt;2&lt;/sup&gt;&lt;/a&gt; for potential use in your final project. You are not bound to this decision.&lt;/p&gt;
-&lt;p&gt;Do &lt;strong&gt;not&lt;/strong&gt; use Kaggle data. While Kaggle is useful for learning data science, part of this assignment is learning how to find actual data in the wild.&lt;/p&gt;
-&lt;p&gt;For each dataset, you must write a single short paragraph about what about this data interests you. Add this to the memo from Part 1, using &lt;code&gt;##&lt;/code&gt; to make a new header in Rmarkdown for this section.&lt;/p&gt;
-&lt;/div&gt;
-&lt;div id=&#34;evaluations&#34; class=&#34;section level2&#34;&gt;
-&lt;h2&gt;Evaluations&lt;/h2&gt;
-&lt;p&gt;I will evaluate these projects (not the TA). I will only give top marks to those groups showing initiative and cleverness. I will use the following weights for final scores:&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;Part 1&lt;/strong&gt;&lt;/p&gt;
-&lt;ol style=&#34;list-style-type: decimal&#34;&gt;
-&lt;li&gt;&lt;p&gt;Technical difficulty: Does the final project show mastery of the skills we’ve discussed thus far? Are axes and legends appropriately labeled? (12 points)&lt;/p&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;Appropriateness of visuals: Do the visualizations tell a clear story? Have we learned something? (10 points)&lt;/p&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;Storytelling: Does your memo clearly convey what you’re doing and why? (10 points)&lt;/p&gt;&lt;/li&gt;
-&lt;/ol&gt;
-&lt;p&gt;&lt;strong&gt;Part 2&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;Each piece of data (and description) is worth 6 points. (18 points total)&lt;/p&gt;
-&lt;p&gt;.small[Updated 4-4-2022]&lt;/p&gt;
-&lt;/div&gt;
-&lt;div class=&#34;footnotes footnotes-end-of-document&#34;&gt;
-&lt;hr /&gt;
-&lt;ol&gt;
-&lt;li id=&#34;fn1&#34;&gt;&lt;p&gt;You can approach this in a couple different ways—you can write the memo and then include the full figure and code at the end, &lt;a href=&#34;https://rud.is/b/2017/09/18/mapping-fall-foliage-with-sf/&#34;&gt;similar to this blog post&lt;/a&gt;, or you can write the memo in an incremental way, describing the different steps of creating the figure, ultimately arriving at a clean final figure, &lt;a href=&#34;https://rudeboybert.github.io/fivethirtyeight/articles/bechdel.html&#34;&gt;like this blog post&lt;/a&gt;.&lt;a href=&#34;#fnref1&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
-&lt;li id=&#34;fn2&#34;&gt;&lt;p&gt;The three different sources need not be different websites or from different organizations. For example, three different tables from the US Census would be sufficient&lt;a href=&#34;#fnref2&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
 &lt;/ol&gt;
 &lt;/div&gt;
 </description>
