@@ -2434,7 +2434,6 @@ ggplot(predicted_values_fancy, aes(x = windSpeed, y = .fitted)) +
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       <guid>https://ssc442.netlify.app/example/06-example/</guid>
       <description>
-&lt;script src=&#34;https://ssc442.netlify.app/rmarkdown-libs/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
 
 &lt;div id=&#34;TOC&#34;&gt;
 &lt;ul&gt;
@@ -2466,14 +2465,16 @@ ggplot(predicted_values_fancy, aes(x = windSpeed, y = .fitted)) +
 &lt;h2&gt;Dummy Variables&lt;/h2&gt;
 &lt;p&gt;For this example and discussion, we will briefly use the built in dataset &lt;code&gt;mtcars&lt;/code&gt; before introducing the &lt;code&gt;autompg&lt;/code&gt; dataset. The reason to use these easy, straightforward datasets is that they make visualization of the &lt;strong&gt;entire dataset&lt;/strong&gt; trivially easy. Accordingly, the &lt;code&gt;mtcars&lt;/code&gt; dataset is small, so we’ll quickly take a look at the entire dataset.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(tidyverse)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## ── Attaching packages ─────────────────────────────────────── tidyverse 1.3.1 ──&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## ✓ ggplot2 3.3.5     ✓ purrr   0.3.4
-## ✓ tibble  3.1.3     ✓ dplyr   1.0.7
-## ✓ tidyr   1.1.3     ✓ stringr 1.4.0
-## ✓ readr   2.0.0     ✓ forcats 0.5.1&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
-## x dplyr::filter() masks stats::filter()
-## x dplyr::lag()    masks stats::lag()&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## ── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
+## ✔ dplyr     1.1.0     ✔ readr     2.1.4
+## ✔ forcats   1.0.0     ✔ stringr   1.5.0
+## ✔ ggplot2   3.4.1     ✔ tibble    3.2.0
+## ✔ lubridate 1.9.2     ✔ tidyr     1.3.0
+## ✔ purrr     1.0.1     
+## ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+## ✖ dplyr::filter() masks stats::filter()
+## ✖ dplyr::lag()    masks stats::lag()
+## ℹ Use the ]8;;http://conflicted.r-lib.org/conflicted package]8;; to force all conflicts to become errors&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;mtcars&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;##                      mpg cyl  disp  hp drat    wt  qsec vs am gear carb
 ## Mazda RX4           21.0   6 160.0 110 3.90 2.620 16.46  0  1    4    4
@@ -2642,7 +2643,7 @@ autompg = autompg %&amp;gt;%
   filter(!cyl %in% c(5,3)) %&amp;gt;%
   mutate(cyl = as.factor(cyl))&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;str(autompg)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## &amp;#39;data.frame&amp;#39;:    383 obs. of  10 variables:
+&lt;pre&gt;&lt;code&gt;## &amp;#39;data.frame&amp;#39;:	383 obs. of  10 variables:
 ##  $ mpg     : num  18 15 18 16 17 15 14 14 14 15 ...
 ##  $ cyl     : Factor w/ 3 levels &amp;quot;4&amp;quot;,&amp;quot;6&amp;quot;,&amp;quot;8&amp;quot;: 3 3 3 3 3 3 3 3 3 3 ...
 ##  $ disp    : num  307 350 318 304 302 429 454 440 455 390 ...
@@ -2747,7 +2748,7 @@ do_not_do_this = lm(mpg ~ disp + domestic + x3, data = autompg) # THIS CODE NOT 
 ## Signif. codes:  0 &amp;#39;***&amp;#39; 0.001 &amp;#39;**&amp;#39; 0.01 &amp;#39;*&amp;#39; 0.05 &amp;#39;.&amp;#39; 0.1 &amp;#39; &amp;#39; 1
 ## 
 ## Residual standard error: 4.308 on 379 degrees of freedom
-## Multiple R-squared:  0.7011, Adjusted R-squared:  0.6987 
+## Multiple R-squared:  0.7011,	Adjusted R-squared:  0.6987 
 ## F-statistic: 296.3 on 3 and 379 DF,  p-value: &amp;lt; 2.2e-16&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;We see that using &lt;code&gt;summary()&lt;/code&gt; gives the usual output for a multiple regression model. We pay close attention to the row for &lt;code&gt;disp:domestic&lt;/code&gt; which tests,&lt;/p&gt;
 &lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
@@ -2809,7 +2810,7 @@ summary(mpg_disp_int_hp)&lt;/code&gt;&lt;/pre&gt;
 ## Signif. codes:  0 &amp;#39;***&amp;#39; 0.001 &amp;#39;**&amp;#39; 0.01 &amp;#39;*&amp;#39; 0.05 &amp;#39;.&amp;#39; 0.1 &amp;#39; &amp;#39; 1
 ## 
 ## Residual standard error: 3.896 on 379 degrees of freedom
-## Multiple R-squared:  0.7554, Adjusted R-squared:  0.7535 
+## Multiple R-squared:  0.7554,	Adjusted R-squared:  0.7535 
 ## F-statistic: 390.2 on 3 and 379 DF,  p-value: &amp;lt; 2.2e-16&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Using &lt;code&gt;summary()&lt;/code&gt; we focus on the row for &lt;code&gt;disp:hp&lt;/code&gt; which tests,&lt;/p&gt;
 &lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
@@ -2863,7 +2864,7 @@ head(autompg$origin)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;autompg$origin = as.factor(autompg$origin)&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Now when we check the structure of the &lt;code&gt;autompg&lt;/code&gt; dataset, we see that &lt;code&gt;origin&lt;/code&gt; is a factor variable.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;str(autompg)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## &amp;#39;data.frame&amp;#39;:    383 obs. of  10 variables:
+&lt;pre&gt;&lt;code&gt;## &amp;#39;data.frame&amp;#39;:	383 obs. of  10 variables:
 ##  $ mpg     : num  18 15 18 16 17 15 14 14 14 15 ...
 ##  $ cyl     : Factor w/ 3 levels &amp;quot;4&amp;quot;,&amp;quot;6&amp;quot;,&amp;quot;8&amp;quot;: 3 3 3 3 3 3 3 3 3 3 ...
 ##  $ disp    : num  307 350 318 304 302 429 454 440 455 390 ...
@@ -3293,7 +3294,7 @@ summary(big_model)&lt;/code&gt;&lt;/pre&gt;
 ## Signif. codes:  0 &amp;#39;***&amp;#39; 0.001 &amp;#39;**&amp;#39; 0.01 &amp;#39;*&amp;#39; 0.05 &amp;#39;.&amp;#39; 0.1 &amp;#39; &amp;#39; 1
 ## 
 ## Residual standard error: 3.88 on 375 degrees of freedom
-## Multiple R-squared:   0.76,  Adjusted R-squared:  0.7556 
+## Multiple R-squared:   0.76,	Adjusted R-squared:  0.7556 
 ## F-statistic: 169.7 on 7 and 375 DF,  p-value: &amp;lt; 2.2e-16&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Do we actually need this large of a model? Let’s first test for the necessity of the three-way interaction term. That is,&lt;/p&gt;
 &lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[

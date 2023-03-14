@@ -7706,7 +7706,6 @@ b_2 &amp;lt;- mu_x - m_2 * mu_y&lt;/code&gt;&lt;/pre&gt;
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       <guid>https://ssc442.netlify.app/content/06-content/</guid>
       <description>
-&lt;script src=&#34;https://ssc442.netlify.app/rmarkdown-libs/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
 &lt;script src=&#34;https://ssc442.netlify.app/rmarkdown-libs/kePrint/kePrint.js&#34;&gt;&lt;/script&gt;
 &lt;link href=&#34;https://ssc442.netlify.app/rmarkdown-libs/lightable/lightable.css&#34; rel=&#34;stylesheet&#34; /&gt;
 
@@ -7812,7 +7811,7 @@ b_2 &amp;lt;- mu_x - m_2 * mu_y&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;The goal of a baseball game is to score more runs (points) than the other team. Each team has 9 batters that have an opportunity to hit a ball with a bat in a predetermined order. After the 9th batter has had their turn, the first batter bats again, then the second, and so on. Each time a batter has an opportunity to bat, we call it a plate appearance (PA). At each PA, the other team’s &lt;em&gt;pitcher&lt;/em&gt; throws the ball and the batter tries to hit it. The PA ends with an binary outcome: the batter either makes an &lt;em&gt;out&lt;/em&gt; (failure) and returns to the bench or the batter doesn’t (success) and can run around the bases, and potentially score a run (reach all 4 bases). Each team gets nine tries, referred to as &lt;em&gt;innings&lt;/em&gt;, to score runs and each inning ends after three outs (three failures).&lt;/p&gt;
 &lt;p&gt;Here is a video showing a success: &lt;a href=&#34;https://www.youtube.com/watch?v=HL-XjMCPfio&#34;&gt;https://www.youtube.com/watch?v=HL-XjMCPfio&lt;/a&gt;. And here is one showing a failure: &lt;a href=&#34;https://www.youtube.com/watch?v=NeloljCx-1g&#34;&gt;https://www.youtube.com/watch?v=NeloljCx-1g&lt;/a&gt;. In these videos, we see how luck is involved in the process. When at bat, the batter wants to hit the ball hard. If the batter hits it hard enough, it is a HR, the best possible outcome as the batter gets at least one automatic run. But sometimes, due to chance, the batter hits the ball very hard and a defender catches it, resulting in an out. In contrast, sometimes the batter hits the ball softly, but it lands just in the right place. The fact that there is chance involved hints at why probability models will be involved.&lt;/p&gt;
 &lt;p&gt;Now there are several ways to succeed. Understanding this distinction will be important for our analysis. When the batter hits the ball, the batter wants to pass as many &lt;em&gt;bases&lt;/em&gt; as possible. There are four bases with the fourth one called &lt;em&gt;home plate&lt;/em&gt;. Home plate is where batters start by trying to hit, so the bases form a cycle.&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;img/Baseball_Diamond1.png&#34; /&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/content/06-content_files/Baseball_Diamond1.png&#34; /&gt;
 (Courtesy of Cburnett&lt;a href=&#34;#fn4&#34; class=&#34;footnote-ref&#34; id=&#34;fnref4&#34;&gt;&lt;sup&gt;4&lt;/sup&gt;&lt;/a&gt;. CC BY-SA 3.0 license&lt;a href=&#34;#fn5&#34; class=&#34;footnote-ref&#34; id=&#34;fnref5&#34;&gt;&lt;sup&gt;5&lt;/sup&gt;&lt;/a&gt;.)
 &lt;!--Source: [Wikipedia Commons](https://commons.wikimedia.org/wiki/File:Baseball_diamond_simplified.svg))--&gt;&lt;/p&gt;
 &lt;p&gt;A batter who &lt;em&gt;goes around the bases&lt;/em&gt; and arrives home, scores a run.&lt;/p&gt;
@@ -7832,9 +7831,7 @@ If a batter gets to a base, the batter still has a chance of getting home and sc
 &lt;div id=&#34;no-awards-for-bb&#34; class=&#34;section level3&#34;&gt;
 &lt;h3&gt;No awards for BB&lt;/h3&gt;
 &lt;p&gt;Historically, the &lt;em&gt;batting average&lt;/em&gt; has been considered the most important offensive statistic. To define this average, we define a &lt;em&gt;hit&lt;/em&gt; (H) and an &lt;em&gt;at bat&lt;/em&gt; (AB). Singles, doubles, triples, and home runs are hits. The fifth way to be successful, BB, is not a hit. An AB is the number of times you either get a hit or make an out; BBs are excluded. The batting average is simply H/AB and is considered the main measure of a success rate. Today this success rate ranges from 20% to 38%. We refer to the batting average in thousands so, for example, if your success rate is 28%, we call it &lt;em&gt;batting 280&lt;/em&gt;.&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;./img/JumboTron.png&#34; /&gt;
-(Picture courtesy of Keith Allison&lt;a href=&#34;#fn6&#34; class=&#34;footnote-ref&#34; id=&#34;fnref6&#34;&gt;&lt;sup&gt;6&lt;/sup&gt;&lt;/a&gt;. CC BY-SA 2.0 license&lt;a href=&#34;#fn7&#34; class=&#34;footnote-ref&#34; id=&#34;fnref7&#34;&gt;&lt;sup&gt;7&lt;/sup&gt;&lt;/a&gt;.)&lt;/p&gt;
-&lt;p&gt;One of Bill James’ first important insights is that the batting average ignores BB, but a BB is a success. He proposed we use the &lt;em&gt;on base percentage&lt;/em&gt; (OBP) instead of batting average. He defined OBP as (H+BB)/(AB+BB) which is simply the proportion of plate appearances that don’t result in an out, a very intuitive measure. He noted that a player that gets many more BB than the average player might not be recognized if the batter does not excel in batting average. But is this player not helping produce runs? No award is given to the player with the most BB. However, bad habits are hard to break and baseball did not immediately adopt OBP as an important statistic. In contrast, total stolen bases were considered important and an award&lt;a href=&#34;#fn8&#34; class=&#34;footnote-ref&#34; id=&#34;fnref8&#34;&gt;&lt;sup&gt;8&lt;/sup&gt;&lt;/a&gt; given to the player with the most. But players with high totals of SB also made more outs as they did not always succeed. Does a player with high SB total help produce runs? Can we use data science to determine if it’s better to pay for players with high BB or SB?&lt;/p&gt;
+&lt;p&gt;One of Bill James’ first important insights is that the batting average ignores BB, but a BB is a success. He proposed we use the &lt;em&gt;on base percentage&lt;/em&gt; (OBP) instead of batting average. He defined OBP as (H+BB)/(AB+BB) which is simply the proportion of plate appearances that don’t result in an out, a very intuitive measure. He noted that a player that gets many more BB than the average player might not be recognized if the batter does not excel in batting average. But is this player not helping produce runs? No award is given to the player with the most BB. However, bad habits are hard to break and baseball did not immediately adopt OBP as an important statistic. In contrast, total stolen bases were considered important and an award&lt;a href=&#34;#fn6&#34; class=&#34;footnote-ref&#34; id=&#34;fnref6&#34;&gt;&lt;sup&gt;6&lt;/sup&gt;&lt;/a&gt; given to the player with the most. But players with high totals of SB also made more outs as they did not always succeed. Does a player with high SB total help produce runs? Can we use data science to determine if it’s better to pay for players with high BB or SB?&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;base-on-balls-or-stolen-bases&#34; class=&#34;section level3&#34;&gt;
 &lt;h3&gt;Base on balls or stolen bases?&lt;/h3&gt;
@@ -7908,7 +7905,7 @@ p + geom_abline(intercept = reg_line$intercept, slope = reg_line$slope)&lt;/code
 &lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/content/06-content_files/figure-html/hr-versus-runs-regression-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;For plotting, we can also use the argument &lt;code&gt;method = &#34;lm&#34;&lt;/code&gt; which stands for &lt;em&gt;linear model&lt;/em&gt;, the title of an upcoming section. So we can simplify the code above like this:&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p + geom_smooth(method = &amp;quot;lm&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## `geom_smooth()` using formula &amp;#39;y ~ x&amp;#39;&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## `geom_smooth()` using formula = &amp;#39;y ~ x&amp;#39;&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/content/06-content_files/figure-html/hr-versus-runs-regression-easy-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;And, for complete review, we can also use &lt;code&gt;lm&lt;/code&gt; to run the regression, and then extract the coefficients to use in &lt;code&gt;geom_abline()&lt;/code&gt;. Results are the same.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;reg_data = Teams %&amp;gt;% filter(yearID %in% 1961:2001 ) %&amp;gt;%
@@ -7971,7 +7968,7 @@ singles_slope&lt;/code&gt;&lt;/pre&gt;
   geom_point(alpha = 0.5) +
   geom_smooth(method = &amp;quot;lm&amp;quot;) +
   facet_wrap( ~ HR_strata)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## `geom_smooth()` using formula &amp;#39;y ~ x&amp;#39;&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## `geom_smooth()` using formula = &amp;#39;y ~ x&amp;#39;&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/content/06-content_files/figure-html/runs-vs-bb-by-hr-strata-1.png&#34; width=&#34;80%&#34; /&gt;&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# Note: we&amp;#39;ll get a &amp;quot;warning&amp;quot;
 # telling us that ggplot has
@@ -7997,7 +7994,7 @@ singles_slope&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;The slopes are reduced, but they are not 0, which indicates that BBs are helpful for producing runs, just not as much as previously thought.
 In fact, the values above are closer to the slope we obtained from singles, 0.45, which is more consistent with our intuition. Since both singles and BB get us to first base, they should have about the same predictive power.&lt;/p&gt;
 &lt;p&gt;Although our understanding of the application tells us that HR cause BB but not the other way around, we can still check if stratifying by BB makes the effect of BB go down. To do this, we use the same code except that we swap HR and BBs to get this plot:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;## `geom_smooth()` using formula &amp;#39;y ~ x&amp;#39;&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## `geom_smooth()` using formula = &amp;#39;y ~ x&amp;#39;&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/content/06-content_files/figure-html/runs-vs-hr-by-bb-strata-1.png&#34; width=&#34;100%&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;In this case, the slopes do not change much from the original:&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;dat %&amp;gt;% group_by(BB_strata) %&amp;gt;%
@@ -8126,7 +8123,7 @@ fit$coef&lt;/code&gt;&lt;/pre&gt;
 ## Signif. codes:  0 &amp;#39;***&amp;#39; 0.001 &amp;#39;**&amp;#39; 0.01 &amp;#39;*&amp;#39; 0.05 &amp;#39;.&amp;#39; 0.1 &amp;#39; &amp;#39; 1
 ## 
 ## Residual standard error: 2.45 on 177 degrees of freedom
-## Multiple R-squared:  0.1878, Adjusted R-squared:  0.1833 
+## Multiple R-squared:  0.1878,	Adjusted R-squared:  0.1833 
 ## F-statistic: 40.94 on 1 and 177 DF,  p-value: 1.36e-09&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;To understand some of the information included in this summary we need to remember that the LSE are random variables. Mathematical statistics gives us some ideas of the distribution of these random variables&lt;/p&gt;
 &lt;/div&gt;
@@ -8331,10 +8328,11 @@ tidy(fit)&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;The other functions provided by &lt;strong&gt;broom&lt;/strong&gt;, &lt;code&gt;glance&lt;/code&gt;, and &lt;code&gt;augment&lt;/code&gt;, relate to model-specific and observation-specific outcomes, respectively. Here, we can see the model fit summaries &lt;code&gt;glance&lt;/code&gt; returns:&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;glance(fit)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## # A tibble: 1 × 12
-##   r.squared adj.r.squared sigma statistic  p.value    df logLik   AIC   BIC
-##       &amp;lt;dbl&amp;gt;         &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt;    &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt;  &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt;
-## 1     0.266         0.265 0.454      343. 1.35e-65     1  -596. 1199. 1214.
-## # … with 3 more variables: deviance &amp;lt;dbl&amp;gt;, df.residual &amp;lt;int&amp;gt;, nobs &amp;lt;int&amp;gt;&lt;/code&gt;&lt;/pre&gt;
+##   r.squared adj.r.squa…¹ sigma stati…²  p.value    df logLik   AIC   BIC devia…³
+##       &amp;lt;dbl&amp;gt;        &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt;   &amp;lt;dbl&amp;gt;    &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt;  &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt;   &amp;lt;dbl&amp;gt;
+## 1     0.266        0.265 0.454    343. 1.35e-65     1  -596. 1199. 1214.    195.
+## # … with 2 more variables: df.residual &amp;lt;int&amp;gt;, nobs &amp;lt;int&amp;gt;, and abbreviated
+## #   variable names ¹​adj.r.squared, ²​statistic, ³​deviance&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;You can learn more about these summaries in any regression text book.&lt;/p&gt;
 &lt;p&gt;We will see an example of &lt;code&gt;augment&lt;/code&gt; in the next section.&lt;/p&gt;
 &lt;/div&gt;
@@ -8439,6 +8437,10 @@ coefs&lt;/code&gt;&lt;/pre&gt;
   mutate(R_hat = predict(fit, newdata = .))&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;The player-specific predicted runs computed here can be interpreted as the number of runs we predict a team will score if all batters are exactly like that player. The distribution shows that there is wide variability across players:&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;qplot(R_hat, data = players, binwidth = 0.5, color = I(&amp;quot;black&amp;quot;))&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Warning: `qplot()` was deprecated in ggplot2 3.4.0.
+## This warning is displayed once every 8 hours.
+## Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
+## generated.&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/content/06-content_files/figure-html/r-hat-hist-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;div id=&#34;adding-salary-and-position-information&#34; class=&#34;section level3&#34;&gt;
 &lt;h3&gt;Adding salary and position information&lt;/h3&gt;
@@ -8465,17 +8467,25 @@ tmp &amp;lt;- Appearances %&amp;gt;%
 pos &amp;lt;- tmp %&amp;gt;%
   select(position_names) %&amp;gt;%
   apply(., 1, which.max)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## Note: Using an external vector in selections is ambiguous.
-## ℹ Use `all_of(position_names)` instead of `position_names` to silence this message.
-## ℹ See &amp;lt;https://tidyselect.r-lib.org/reference/faq-external-vector.html&amp;gt;.
-## This message is displayed once per session.&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Warning: Using an external vector in selections was deprecated in tidyselect 1.1.0.
+## ℹ Please use `all_of()` or `any_of()` instead.
+##   # Was:
+##   data %&amp;gt;% select(position_names)
+## 
+##   # Now:
+##   data %&amp;gt;% select(all_of(position_names))
+## 
+## See &amp;lt;https://tidyselect.r-lib.org/reference/faq-external-vector.html&amp;gt;.
+## This warning is displayed once every 8 hours.
+## Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
+## generated.&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;players &amp;lt;- tibble(playerID = tmp$playerID, POS = position_names[pos]) %&amp;gt;%
   mutate(POS = str_to_upper(str_remove(POS, &amp;quot;G_&amp;quot;))) %&amp;gt;%
   filter(POS != &amp;quot;P&amp;quot;) %&amp;gt;%
   right_join(players, by=&amp;quot;playerID&amp;quot;) %&amp;gt;%
   filter(!is.na(POS)  &amp;amp; !is.na(salary))&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Finally, we add their first and last name:&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;players &amp;lt;- Master %&amp;gt;%
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;players &amp;lt;- People %&amp;gt;%
   select(playerID, nameFirst, nameLast, debut) %&amp;gt;%
   mutate(debut = as.Date(debut)) %&amp;gt;%
   right_join(players, by=&amp;quot;playerID&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
@@ -8968,12 +8978,16 @@ Valentin
 &lt;blockquote&gt;
 &lt;p&gt;A sophomore slump or sophomore jinx or sophomore jitters refers to an instance in which a second, or sophomore, effort fails to live up to the standards of the first effort. It is commonly used to refer to the apathy of students (second year of high school, college or university), the performance of athletes (second season of play), singers/bands (second album), television shows (second seasons) and movies (sequels/prequels).&lt;/p&gt;
 &lt;/blockquote&gt;
-&lt;p&gt;In Major League Baseball, the rookie of the year (ROY) award is given to the first-year player who is judged to have performed the best. The &lt;em&gt;sophmore slump&lt;/em&gt; phrase is used to describe the observation that ROY award winners don’t do as well during their second year. For example, this Fox Sports article&lt;a href=&#34;#fn9&#34; class=&#34;footnote-ref&#34; id=&#34;fnref9&#34;&gt;&lt;sup&gt;9&lt;/sup&gt;&lt;/a&gt; asks “Will MLB’s tremendous rookie class of 2015 suffer a sophomore slump?”.&lt;/p&gt;
+&lt;p&gt;In Major League Baseball, the rookie of the year (ROY) award is given to the first-year player who is judged to have performed the best. The &lt;em&gt;sophmore slump&lt;/em&gt; phrase is used to describe the observation that ROY award winners don’t do as well during their second year. For example, this Fox Sports article&lt;a href=&#34;#fn7&#34; class=&#34;footnote-ref&#34; id=&#34;fnref7&#34;&gt;&lt;sup&gt;7&lt;/sup&gt;&lt;/a&gt; asks “Will MLB’s tremendous rookie class of 2015 suffer a sophomore slump?”.&lt;/p&gt;
 &lt;p&gt;Does the data confirm the existence of a sophomore slump? Let’s take a look. Examining the data for batting average, we see that this observation holds true for the top performing ROYs:&lt;/p&gt;
 &lt;!--The data is available in the Lahman library, but we have to do some work to create a table with the statistics for all the ROY. First we create a table with player ID, their names, and their most played position.--&gt;
 &lt;!--
 Now, we will create a table with only the ROY award winners and add their batting statistics. We filter out pitchers, since pitchers are not given awards for batting and we are going to focus on offense. Specifically, we will focus on batting average since it is the summary that most pundits talk about when discussing the sophomore slump:
 --&gt;
+&lt;pre&gt;&lt;code&gt;## Warning in right_join(., Batting, by = &amp;quot;playerID&amp;quot;): Each row in `x` is expected to match at most 1 row in `y`.
+## ℹ Row 1 of `x` matches multiple rows.
+## ℹ If multiple matches are expected, set `multiple = &amp;quot;all&amp;quot;` to silence this
+##   warning.&lt;/code&gt;&lt;/pre&gt;
 &lt;!--
 We also will keep only the rookie and sophomore seasons and remove players that did not play sophomore seasons:
 --&gt;
@@ -9088,7 +9102,7 @@ Pujols
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
-&lt;p&gt;In fact, the proportion of players that have a lower batting average their sophomore year is 0.6862745.&lt;/p&gt;
+&lt;p&gt;In fact, the proportion of players that have a lower batting average their sophomore year is 0.6981132.&lt;/p&gt;
 &lt;p&gt;So is it “jitters” or “jinx”? To answer this question, let’s turn our attention to all players that played the 2013 and 2014 seasons and batted more than 130 times (minimum to win Rookie of the Year).&lt;/p&gt;
 &lt;!--We perform similar operations to what we did above: --&gt;
 &lt;p&gt;The same pattern arises when we look at the top performers: batting averages go down for most of the top performers.&lt;/p&gt;
@@ -9355,10 +9369,8 @@ tidy(fit)&lt;/code&gt;&lt;/pre&gt;
 &lt;li id=&#34;fn3&#34;&gt;&lt;p&gt;&lt;a href=&#34;https://en.wikipedia.org/wiki/Sabermetrics&#34; class=&#34;uri&#34;&gt;https://en.wikipedia.org/wiki/Sabermetrics&lt;/a&gt;&lt;a href=&#34;#fnref3&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
 &lt;li id=&#34;fn4&#34;&gt;&lt;p&gt;&lt;a href=&#34;https://en.wikipedia.org/wiki/User:Cburnett&#34; class=&#34;uri&#34;&gt;https://en.wikipedia.org/wiki/User:Cburnett&lt;/a&gt;&lt;a href=&#34;#fnref4&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
 &lt;li id=&#34;fn5&#34;&gt;&lt;p&gt;&lt;a href=&#34;https://creativecommons.org/licenses/by-sa/3.0/deed.en&#34; class=&#34;uri&#34;&gt;https://creativecommons.org/licenses/by-sa/3.0/deed.en&lt;/a&gt;&lt;a href=&#34;#fnref5&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
-&lt;li id=&#34;fn6&#34;&gt;&lt;p&gt;&lt;a href=&#34;https://www.flickr.com/people/27003603@N00&#34; class=&#34;uri&#34;&gt;https://www.flickr.com/people/27003603@N00&lt;/a&gt;&lt;a href=&#34;#fnref6&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
-&lt;li id=&#34;fn7&#34;&gt;&lt;p&gt;&lt;a href=&#34;https://creativecommons.org/licenses/by-sa/2.0&#34; class=&#34;uri&#34;&gt;https://creativecommons.org/licenses/by-sa/2.0&lt;/a&gt;&lt;a href=&#34;#fnref7&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
-&lt;li id=&#34;fn8&#34;&gt;&lt;p&gt;&lt;a href=&#34;http://www.baseball-almanac.com/awards/lou_brock_award.shtml&#34; class=&#34;uri&#34;&gt;http://www.baseball-almanac.com/awards/lou_brock_award.shtml&lt;/a&gt;&lt;a href=&#34;#fnref8&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
-&lt;li id=&#34;fn9&#34;&gt;&lt;p&gt;&lt;a href=&#34;http://www.foxsports.com/mlb/story/kris-bryant-carlos-correa-rookies-of-year-award-matt-duffy-francisco-lindor-kang-sano-120715&#34; class=&#34;uri&#34;&gt;http://www.foxsports.com/mlb/story/kris-bryant-carlos-correa-rookies-of-year-award-matt-duffy-francisco-lindor-kang-sano-120715&lt;/a&gt;&lt;a href=&#34;#fnref9&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li id=&#34;fn6&#34;&gt;&lt;p&gt;&lt;a href=&#34;http://www.baseball-almanac.com/awards/lou_brock_award.shtml&#34; class=&#34;uri&#34;&gt;http://www.baseball-almanac.com/awards/lou_brock_award.shtml&lt;/a&gt;&lt;a href=&#34;#fnref6&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li id=&#34;fn7&#34;&gt;&lt;p&gt;&lt;a href=&#34;http://www.foxsports.com/mlb/story/kris-bryant-carlos-correa-rookies-of-year-award-matt-duffy-francisco-lindor-kang-sano-120715&#34; class=&#34;uri&#34;&gt;http://www.foxsports.com/mlb/story/kris-bryant-carlos-correa-rookies-of-year-award-matt-duffy-francisco-lindor-kang-sano-120715&lt;/a&gt;&lt;a href=&#34;#fnref7&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
 &lt;/ol&gt;
 &lt;/div&gt;
 </description>

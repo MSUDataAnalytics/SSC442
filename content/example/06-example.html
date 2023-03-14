@@ -14,7 +14,6 @@ editor_options:
   chunk_output_type: console
 ---
 
-<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
 
 <div id="TOC">
 <ul>
@@ -46,14 +45,16 @@ editor_options:
 <h2>Dummy Variables</h2>
 <p>For this example and discussion, we will briefly use the built in dataset <code>mtcars</code> before introducing the <code>autompg</code> dataset. The reason to use these easy, straightforward datasets is that they make visualization of the <strong>entire dataset</strong> trivially easy. Accordingly, the <code>mtcars</code> dataset is small, so we’ll quickly take a look at the entire dataset.</p>
 <pre class="r"><code>library(tidyverse)</code></pre>
-<pre><code>## ── Attaching packages ─────────────────────────────────────── tidyverse 1.3.1 ──</code></pre>
-<pre><code>## ✓ ggplot2 3.3.5     ✓ purrr   0.3.4
-## ✓ tibble  3.1.3     ✓ dplyr   1.0.7
-## ✓ tidyr   1.1.3     ✓ stringr 1.4.0
-## ✓ readr   2.0.0     ✓ forcats 0.5.1</code></pre>
-<pre><code>## ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
-## x dplyr::filter() masks stats::filter()
-## x dplyr::lag()    masks stats::lag()</code></pre>
+<pre><code>## ── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
+## ✔ dplyr     1.1.0     ✔ readr     2.1.4
+## ✔ forcats   1.0.0     ✔ stringr   1.5.0
+## ✔ ggplot2   3.4.1     ✔ tibble    3.2.0
+## ✔ lubridate 1.9.2     ✔ tidyr     1.3.0
+## ✔ purrr     1.0.1     
+## ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+## ✖ dplyr::filter() masks stats::filter()
+## ✖ dplyr::lag()    masks stats::lag()
+## ℹ Use the ]8;;http://conflicted.r-lib.org/conflicted package]8;; to force all conflicts to become errors</code></pre>
 <pre class="r"><code>mtcars</code></pre>
 <pre><code>##                      mpg cyl  disp  hp drat    wt  qsec vs am gear carb
 ## Mazda RX4           21.0   6 160.0 110 3.90 2.620 16.46  0  1    4    4
@@ -222,7 +223,7 @@ autompg = autompg %&gt;%
   filter(!cyl %in% c(5,3)) %&gt;%
   mutate(cyl = as.factor(cyl))</code></pre>
 <pre class="r"><code>str(autompg)</code></pre>
-<pre><code>## &#39;data.frame&#39;:    383 obs. of  10 variables:
+<pre><code>## &#39;data.frame&#39;:	383 obs. of  10 variables:
 ##  $ mpg     : num  18 15 18 16 17 15 14 14 14 15 ...
 ##  $ cyl     : Factor w/ 3 levels &quot;4&quot;,&quot;6&quot;,&quot;8&quot;: 3 3 3 3 3 3 3 3 3 3 ...
 ##  $ disp    : num  307 350 318 304 302 429 454 440 455 390 ...
@@ -327,7 +328,7 @@ do_not_do_this = lm(mpg ~ disp + domestic + x3, data = autompg) # THIS CODE NOT 
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 ## 
 ## Residual standard error: 4.308 on 379 degrees of freedom
-## Multiple R-squared:  0.7011, Adjusted R-squared:  0.6987 
+## Multiple R-squared:  0.7011,	Adjusted R-squared:  0.6987 
 ## F-statistic: 296.3 on 3 and 379 DF,  p-value: &lt; 2.2e-16</code></pre>
 <p>We see that using <code>summary()</code> gives the usual output for a multiple regression model. We pay close attention to the row for <code>disp:domestic</code> which tests,</p>
 <p><span class="math display">\[
@@ -389,7 +390,7 @@ summary(mpg_disp_int_hp)</code></pre>
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 ## 
 ## Residual standard error: 3.896 on 379 degrees of freedom
-## Multiple R-squared:  0.7554, Adjusted R-squared:  0.7535 
+## Multiple R-squared:  0.7554,	Adjusted R-squared:  0.7535 
 ## F-statistic: 390.2 on 3 and 379 DF,  p-value: &lt; 2.2e-16</code></pre>
 <p>Using <code>summary()</code> we focus on the row for <code>disp:hp</code> which tests,</p>
 <p><span class="math display">\[
@@ -443,7 +444,7 @@ head(autompg$origin)</code></pre>
 <pre class="r"><code>autompg$origin = as.factor(autompg$origin)</code></pre>
 <p>Now when we check the structure of the <code>autompg</code> dataset, we see that <code>origin</code> is a factor variable.</p>
 <pre class="r"><code>str(autompg)</code></pre>
-<pre><code>## &#39;data.frame&#39;:    383 obs. of  10 variables:
+<pre><code>## &#39;data.frame&#39;:	383 obs. of  10 variables:
 ##  $ mpg     : num  18 15 18 16 17 15 14 14 14 15 ...
 ##  $ cyl     : Factor w/ 3 levels &quot;4&quot;,&quot;6&quot;,&quot;8&quot;: 3 3 3 3 3 3 3 3 3 3 ...
 ##  $ disp    : num  307 350 318 304 302 429 454 440 455 390 ...
@@ -873,7 +874,7 @@ summary(big_model)</code></pre>
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 ## 
 ## Residual standard error: 3.88 on 375 degrees of freedom
-## Multiple R-squared:   0.76,  Adjusted R-squared:  0.7556 
+## Multiple R-squared:   0.76,	Adjusted R-squared:  0.7556 
 ## F-statistic: 169.7 on 7 and 375 DF,  p-value: &lt; 2.2e-16</code></pre>
 <p>Do we actually need this large of a model? Let’s first test for the necessity of the three-way interaction term. That is,</p>
 <p><span class="math display">\[
