@@ -1,6 +1,6 @@
 ---
 title: "Illustrating Bias vs. Variance"
-linktitle: "9: Bias vs. Variance"
+linktitle: "7b: Bias vs. Variance"
 output:
   blogdown::html_page:
     toc: true
@@ -14,7 +14,6 @@ editor_options:
   chunk_output_type: console
 ---
 
-<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
 
 <div id="TOC">
 <ul>
@@ -33,11 +32,11 @@ editor_options:
 
 <div id="review-and-clarify" class="section level2">
 <h2>Review and Clarify</h2>
-<p>Bias and Variance are tricky subjects. Hopefully the illustrations from yesterday are helpful. Let’s talk through a few things based on questions some of you have asked since Content 9.</p>
+<p>Bias and Variance are tricky subjects. Hopefully the illustrations from yesterday are helpful. Let’s talk through a few things based on questions that commonly arise.</p>
 <div id="illustration-of-bias-vs.-variance" class="section level3">
 <h3>Illustration of Bias vs. Variance</h3>
 <p>Bias is about how close you are on average to the correct answer. Variance is about how scattered your estimates would be if you repeated your experiment with new data.</p>
-<div class="figure"><span id="fig:unnamed-chunk-1"></span>
+<div class="figure"><span style="display:block;" id="fig:unnamed-chunk-1"></span>
 <img src="https://www.machinelearningplus.com/wp-content/uploads/2020/10/output_31_0.png" alt="Image from MachineLearningPlus.com"  />
 <p class="caption">
 Figure 1: Image from MachineLearningPlus.com
@@ -185,14 +184,15 @@ print(myList)</code></pre>
 <pre class="r"><code>library(ggplot2)
 library(patchwork)
 library(tidyverse)</code></pre>
-<pre><code>## ── Attaching packages ─────────────────────────────────────── tidyverse 1.3.1 ──</code></pre>
-<pre><code>## ✓ tibble  3.1.3     ✓ dplyr   1.0.7
-## ✓ tidyr   1.1.3     ✓ stringr 1.4.0
-## ✓ readr   2.0.0     ✓ forcats 0.5.1
-## ✓ purrr   0.3.4</code></pre>
-<pre><code>## ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
-## x dplyr::filter() masks stats::filter()
-## x dplyr::lag()    masks stats::lag()</code></pre>
+<pre><code>## ── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
+## ✔ dplyr     1.1.0     ✔ readr     2.1.4
+## ✔ forcats   1.0.0     ✔ stringr   1.5.0
+## ✔ lubridate 1.9.2     ✔ tibble    3.2.0
+## ✔ purrr     1.0.1     ✔ tidyr     1.3.0
+## ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+## ✖ dplyr::filter() masks stats::filter()
+## ✖ dplyr::lag()    masks stats::lag()
+## ℹ Use the ]8;;http://conflicted.r-lib.org/conflicted package]8;; to force all conflicts to become errors</code></pre>
 <p>And here, I’ve made a little change to Content 9’s code so we can play with sample size <code>NN</code> and the SD of the irreducible Bayes error.</p>
 <pre class="r"><code>NN = 100   #----&gt; In class, we will change this to 
 #                 see how our results change in response
