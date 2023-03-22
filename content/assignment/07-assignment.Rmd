@@ -14,7 +14,6 @@ editor_options:
   chunk_output_type: console
 ---
 
-<!-- Updated after Sp2022 -->
 
 :::fyi
 
@@ -22,7 +21,11 @@ editor_options:
 
 The content below describes both Lab 7 and Lab 8. Lab 7 is Exercise 1; Lab 8 is Exercise 2.
 
-You must turn in a PDF document of your `R Markdown` code. Submit this to D2L by 11:59 PM Eastern Time on Monday, March 14th for both labs (so that you do not have one due during Spring Break). Submit labs separately, though. Uploading both labs to Lab 7 will result in a 0 on Lab 8.
+You must turn in a PDF document of your `R Markdown` code. Submit this to D2L by 11:59 PM Eastern Time on Monday, March 27th for Lab 7. 
+
+Lab 8 is due Monday, April 3rd. 
+
+Submit labs separately. Uploading both labs to Lab 7 may result in a 0 on Lab 8.
 
 :::
 
@@ -33,7 +36,7 @@ As always, let's load the data.
 
 ```{r}
 
-Ames <- read.table('https://raw.githubusercontent.com/ajkirkpatrick/FS20/postS21_rev/classdata/ames.csv', 
+Ames <- read.table('https://www.openintro.org/data/csv/ames.csv', 
                    header = TRUE,
                    sep = ',') 
 ```
@@ -41,20 +44,22 @@ Ames <- read.table('https://raw.githubusercontent.com/ajkirkpatrick/FS20/postS21
 ## Data Cleaning
 **Do not skip this section. This isn't your kitchen junk drawer -- you can't get away with not cleaning your data.**
 
-Oh, the Ames data yet again. It's given us lots of trouble. Many of you have found a few variables (columns) that should be avoided. The main problem is that some columns have only one value in them, or they have only `NA` and one value, so once `lm(...)` drops the `NA` rows, they are left with only one value. Linear regression by OLS does not like variables that don't vary! So, let's be systematic about figuring out which columns in our data are to be avoided.
+Oh, the Ames data yet again. 
+
+We're going to use the *unpolished* version of this data that was the original dataset. This is good (a little more data) and bad (slight changes in names of data fields, lots of missing data).
 
 The `skimr` package is very helpful for seeing what our data contains. Install it, and then use `skim(Ames)` directly in the console (we're just looking at data at the moment -- do **not** put `skim` output into your RMarkdwon output - it will give you an error). Take a look at the "complete rate" column - this tells us the fraction of observations in that column that are `NA`. If it's very small (see `Alley`), then that variable will be problematic. The "n_unique" column tells us if there are few or many different values - a "1" in "n_unique" is definitely going to be a problem and you must drop that variable.
 
 You can make a note of those columns that have extremely low "complete rates" and drop them to start off. There are about 5-6 of them that will cause an error if we include them in a regression.
 
 ### Many models do not like `NA` values
-`predict` has some unusual behavior that can give unexpected results. Thus far, we have mostly used `predict(myOLS)`, which gives the predicted values from a model *using the same data that estimated the model*. When we ask `lm` (or, later, other machine learning models) to estimate a model, it will drop any rows of our data that contain a `NA` value for any of the variables used in the estimation. If your regression is `SalePrice ~ GrLivArea`, then it will check `SalePrice` and `GrLivArea` for NA's. If you add another variable, then you add another possible set of `NA` values that can be dropped, and R will estimate the model on a subset of the data.
+`predict` has some unusual behavior that can give unexpected results. Thus far, we have mostly used `predict(myOLS)`, which gives the predicted values from a model *using the same data that estimated the model*. When we ask `lm` (or, later, other machine learning models) to estimate a model, it will drop any rows of our data that contain a `NA` value for any of the variables used in the estimation. If your regression is `price ~ GrLivArea`, then it will check `price` and `GrLivArea` for NA's. If you add another variable, then you add another possible set of `NA` values that can be dropped, and R will estimate the model on a subset of the data.
 
 This will mess with your measure of $RMSE$ - if you compare two models that use different sets of the data, then you aren't really comparing the fit very well. Because of that, we need to take a moment to check our data.
 
-Ames has a lot of variables, and in this assignment, you're going to be asked to construct 15 regressions of increasing complexity. So we're going to choose 15 variables to be explanatory, one variable we want to be the target variable we predict (your choice for Lab 7), plus `SalePrice`, which will be our target variable for Lab 8. Make sure we have dropped any observation (row) that contains one or more `NA` value across the 17 columns. You should have already dropped any variable with a very low complete rate or small "n_unique" count. 
+Ames has a lot of variables, and in this assignment, you're going to be asked to construct 15 regressions of increasing complexity. So we're going to choose 15 variables to be explanatory, one variable we want to be the target variable we predict (your choice for Lab 7), plus `price`, which will be our target variable for Lab 8. Make sure we have dropped any observation (row) that contains one or more `NA` value across the 17 columns. You should have already dropped any variable with a very low complete rate or small "n_unique" count. 
 
-Make a character vector of the variables you think will best predict your chosen variable. Then, make a new version of `Ames` that contains only those 17 variables (you can use `dplyr::select` or any other method). Once you've done that, use `na.omit` to make a new, clean version of Ames that has (1) no NA's in it, and (2) 16 variables of your choice (as long as one is `SalePrice`). This way, we know every model we make will have the same number of rows in it as none will be dropped due to NA values.
+Make a character vector of the variables you think will best predict your chosen variable. Then, make a new version of `Ames` that contains only those 17 variables (you can use `dplyr::select` or any other method). Once you've done that, use `na.omit` to make a new, clean version of Ames that has (1) no NA's in it, and (2) 16 variables of your choice (as long as one is `price`). This way, we know every model we make will have the same number of rows in it as none will be dropped due to NA values.
 
 
 
@@ -113,7 +118,7 @@ __EXERCISE 1__
 
 2. Using `skimr::skim`, find the variables that have a complete rate of below 60\% and drop them. 60\% isn't a magic number by any means, the "right" number is entirely dependent on your data. It is always standard practice to document the fields you have dropped from the data, so make sure you state which variables have been dropped. Also using `skim`, note the variables with values for "n_unique" equal to 1 and drop them. 
 
-3. Then, choose one numeric variable to be your target variable (the variable you want to explain or predict), and the 15 variables you want to use to predict it - they can be numeric or categorical, both will work. Then, use `na.omit` to make a clean version of `Ames` where every variable is 100% complete. See the instructions above under "Data Cleaning". Include `SalePrice` in your cleaning, but don't use it yet -- it will be the target variable for your Lab 8.
+3. Then, choose one numeric variable to be your target variable (the variable you want to explain or predict), and the 15 variables you want to use to predict it - they can be numeric or categorical, both will work. Then, use `na.omit` to make a clean version of `Ames` where every variable is 100% complete. See the instructions above under "Data Cleaning". Include `price` in your cleaning, but don't use it yet -- it will be the target variable for your Lab 8.
 
 
 4. Using **forward selection** (that is, select one variable, then select another) create a series of models up to complexity length 15. While you can code each of the 15 regressions separately, if you really want to be efficient, try to use a loop along with a character vector of your 15 variables to "step" through the 15 regressions. Use a list object to hold your results, and use `lapply` along with your RMSE function(s) to get a list of the RMSE's, one for each model.
@@ -128,7 +133,7 @@ __EXERCISE 1__
 
 ### Test-Train Split (Lab 8)
 
-Here, we will use `SalePrice` as our target variable. You can re-use your code for cleaning from above (you included `SalePrice` there, right?), and if you want to choose different predictors, feel free to do so.
+Here, we will use `price` as our target variable. You can re-use your code for cleaning from above (you included `price` there, right?), and if you want to choose different predictors, feel free to do so.
 
 
 There is an issue with fitting a model to all available data then using RMSE to determine how well the model predicts: it is essentially cheating. As a linear model becomes more complex, the RSS, thus RMSE, can never go up. It will only go down---or, in very specific cases where a new predictor is completely uncorrelated with the target, stay the same. This might seem to suggest that in order to predict well, we should use the largest possible model. However, in reality we have fit to a specific dataset, but as soon as we see new data, a large model may (in fact) predict poorly. This is called **overfitting**.
@@ -165,22 +170,22 @@ Here $n_{Te}$ is the number of observations in the test set. Test RMSE uses the 
 We will start with the simplest possible linear model, that is, a model with no predictors.
 
 ```{r}
-fit_0 = lm(SalePrice ~ 1, data = train_data)
+fit_0 = lm(price ~ 1, data = train_data)
 get_complexity(fit_0)
 
 # train RMSE
-sqrt(mean((train_data$SalePrice - predict(fit_0, train_data)) ^ 2))
+sqrt(mean((train_data$price - predict(fit_0, train_data)) ^ 2))
 # test RMSE
-sqrt(mean((test_data$SalePrice - predict(fit_0, test_data)) ^ 2))
+sqrt(mean((test_data$price - predict(fit_0, test_data)) ^ 2))
 ```
 
 The previous two operations obtain the train and test RMSE. Since these are operations we are about to use repeatedly, we should use the function that we happen to have already written.
 
 ```{r}
 # train RMSE
-rmse(actual = train_data$SalePrice, predicted = predict(fit_0, train_data))
+rmse(actual = train_data$price, predicted = predict(fit_0, train_data))
 # test RMSE
-rmse(actual = test_data$SalePrice, predicted = predict(fit_0, test_data))
+rmse(actual = test_data$price, predicted = predict(fit_0, test_data))
 ```
 
 This function can actually be improved for the inputs that we are using. We would like to obtain train and test RMSE for a fitted model, given a train or test dataset, and the appropriate response variable.
@@ -195,8 +200,8 @@ get_rmse = function(model, data, response) {
 By using this function, our code becomes easier to read, and it is more obvious what task we are accomplishing.
 
 ```{r}
-get_rmse(model = fit_0, data = train_data, response = "SalePrice") # train RMSE
-get_rmse(model = fit_0, data = test_data, response = "SalePrice") # test RMSE
+get_rmse(model = fit_0, data = train_data, response = "price") # train RMSE
+get_rmse(model = fit_0, data = test_data, response = "price") # test RMSE
 ```
 
 **Try it:** Apply this basic function with different arguments. Do you understand how we've nested functions within functions?
@@ -217,8 +222,8 @@ model_list = list(fit_1, fit_2, fit_3, fit_4, fit_5)
 We then obtain train RMSE, test RMSE, and model complexity for each. In doing so, we'll introduce a handy function from `R` called `sapply()`. You can likely intuit what it does by looking at the code below.
 
 ```{r, eval=FALSE}
-train_rmse = sapply(model_list, get_rmse, data = train_data, response = "SalePrice")
-test_rmse = sapply(model_list, get_rmse, data = test_data, response = "SalePrice")
+train_rmse = sapply(model_list, get_rmse, data = train_data, response = "price")
+test_rmse = sapply(model_list, get_rmse, data = test_data, response = "price")
 model_complexity = sapply(model_list, get_complexity)
 ```
 
@@ -229,11 +234,11 @@ Once you've done this, you'll notice the following:
 ```{r, eval=FALSE}
 # This is the same as the apply command above
 
-test_rmse = c(get_rmse(fit_1, test_data, "SalePrice"),
-              get_rmse(fit_2, test_data, "SalePrice"),
-              get_rmse(fit_3, test_data, "SalePrice"),
-              get_rmse(fit_4, test_data, "SalePrice"),
-              get_rmse(fit_5, test_data, "SalePrice"))
+test_rmse = c(get_rmse(fit_1, test_data, "price"),
+              get_rmse(fit_2, test_data, "price"),
+              get_rmse(fit_3, test_data, "price"),
+              get_rmse(fit_4, test_data, "price"),
+              get_rmse(fit_5, test_data, "price"))
 ```
 
 We can plot the results. If you execute the code below, you'll see the train RMSE in blue, while the test RMSE is given in orange.[^3]
@@ -274,7 +279,7 @@ __EXERCISE 2__
 
 (AKA Lab 8)
 
-1. Using any method you choose and any number of regressors, predict `SalePrice` with no fewer than five models of increasing complexity. Complexity can be increased by adding variables *or* by adding interactions of existing variables. Put the five models into a list.
+1. Using any method you choose and any number of regressors, predict `price` with no fewer than five models of increasing complexity. Complexity can be increased by adding variables *or* by adding interactions of existing variables. Put the five models into a list.
 
 2. Calculate the Train and Test RMSE. Your goal is to have a lower *Test* RMSE than others in the class. 
 
