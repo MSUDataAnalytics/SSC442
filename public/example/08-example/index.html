@@ -30,7 +30,7 @@
   
     
   
-  <meta name="description" content="Our data and goal  Some functions  Breakout #1  Breakout #1 discussion  Automating models  Loops  Breakout #2  Breakout #2 discussion  Getting RMSE from the list Breakout #3 (if time) Lecture Video   Our data and goal We want to use the wooldridge::wage2 data on wages to generate and tune a non-parametric model of wages using a regression tree.
+  <meta name="description" content="Our data and goal  Some functions  Task #1  Discussion  Automating models  Loops  Task #2  Task #2 discussion  Getting RMSE from the list Task #3 (if time)   Our data and goal We want to use the wooldridge::wage2 data on wages to generate and tune a non-parametric model of wages using a regression tree.
 We’ve learned that our RMSE calculations have a hard time with NAs in the data.">
 
   
@@ -239,7 +239,7 @@ We’ve learned that our RMSE calculations have a hard time with NAs in the data
   <meta property="og:site_name" content="Data Analytics">
   <meta property="og:url" content="https://ssc442.netlify.app/example/08-example/">
   <meta property="og:title" content="Nonparametric Regression | Data Analytics">
-  <meta property="og:description" content="Our data and goal  Some functions  Breakout #1  Breakout #1 discussion  Automating models  Loops  Breakout #2  Breakout #2 discussion  Getting RMSE from the list Breakout #3 (if time) Lecture Video   Our data and goal We want to use the wooldridge::wage2 data on wages to generate and tune a non-parametric model of wages using a regression tree.
+  <meta property="og:description" content="Our data and goal  Some functions  Task #1  Discussion  Automating models  Loops  Task #2  Task #2 discussion  Getting RMSE from the list Task #3 (if time)   Our data and goal We want to use the wooldridge::wage2 data on wages to generate and tune a non-parametric model of wages using a regression tree.
 We’ve learned that our RMSE calculations have a hard time with NAs in the data."><meta property="og:image" content="https://ssc442.netlify.app/img/social-image.png">
   <meta property="twitter:image" content="https://ssc442.netlify.app/img/social-image.png"><meta property="og:locale" content="en-us">
   
@@ -645,7 +645,6 @@ We’ve learned that our RMSE calculations have a hard time with NAs in the data
 
                     <div class="article-style">
                         
-<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
 
 <div id="TOC">
 <ul>
@@ -653,21 +652,20 @@ We’ve learned that our RMSE calculations have a hard time with NAs in the data
 <ul>
 <li><a href="#some-functions" id="toc-some-functions">Some functions</a></li>
 </ul></li>
-<li><a href="#breakout-1" id="toc-breakout-1">Breakout #1</a>
+<li><a href="#task-1" id="toc-task-1">Task #1</a>
 <ul>
-<li><a href="#breakout-1-discussion" id="toc-breakout-1-discussion">Breakout #1 discussion</a></li>
+<li><a href="#discussion" id="toc-discussion">Discussion</a></li>
 </ul></li>
 <li><a href="#automating-models" id="toc-automating-models">Automating models</a>
 <ul>
 <li><a href="#loops" id="toc-loops">Loops</a></li>
 </ul></li>
-<li><a href="#breakout-2" id="toc-breakout-2">Breakout #2</a>
+<li><a href="#task-2" id="toc-task-2">Task #2</a>
 <ul>
-<li><a href="#breakout-2-discussion" id="toc-breakout-2-discussion">Breakout #2 discussion</a></li>
+<li><a href="#task-2-discussion" id="toc-task-2-discussion">Task #2 discussion</a></li>
 </ul></li>
 <li><a href="#getting-rmse-from-the-list" id="toc-getting-rmse-from-the-list">Getting RMSE from the list</a></li>
-<li><a href="#breakout-3-if-time" id="toc-breakout-3-if-time">Breakout #3 (if time)</a></li>
-<li><a href="#lecture-video" id="toc-lecture-video">Lecture Video</a></li>
+<li><a href="#task-3-if-time" id="toc-task-3-if-time">Task #3 (if time)</a></li>
 </ul>
 </div>
 
@@ -690,19 +688,16 @@ We’ve learned that our RMSE calculations have a hard time with NAs in the data
 }</code></pre>
 </div>
 </div>
-<div id="breakout-1" class="section level2">
-<h2>Breakout #1</h2>
-<p>I’m going to assign you to breakout rooms to work in groups of 3-4 on live-coding. One person in the group will need to have Rstudio up, be able to share screen, and have the correct packages loaded (<code>caret</code>, <code>rpart</code>, and <code>rpart.plot</code>, plus <code>skimr</code>). Copy the <code>rmse</code> and <code>get_rmse</code> code into a blank R script (you don’t have to use RMarkdown, just use a blank R script and run from there).</p>
-<p>For the first breakout, all I want you to do is the following:</p>
-<ul>
-<li>Estimate a default regression tree on <code>wage_clean</code> using the default parameters.</li>
-<li>Use <code>rpart.plot</code> to vizualize your regression tree, and <em>talk through the interpretation</em> with each other.</li>
-<li>Calculate the RMSE for your regression tree.</li>
-</ul>
+<div id="task-1" class="section level2">
+<h2>Task #1</h2>
+<p>Tasks for live coding:
+- Estimate a default regression tree on <code>wage_clean</code> using the default parameters.
+- Use <code>rpart.plot</code> to vizualize your regression tree, and <em>talk through the interpretation</em> with each other.
+- Calculate the RMSE for your regression tree.</p>
 <p>I’ll bring you back in about 5 minutes. Remember, you can use <code>?wage2</code> to see the variable names. Make sure you know what variables are showing up in the plot and explaining <code>wage</code> in your model. You may find something odd at first and may need to drop more variables…</p>
 <p><strong>5 minutes</strong></p>
-<div id="breakout-1-discussion" class="section level3">
-<h3>Breakout #1 discussion</h3>
+<div id="discussion" class="section level3">
+<h3>Discussion</h3>
 <p>Let’s choose a group to share their plot and discuss the results.</p>
 </div>
 </div>
@@ -770,12 +765,12 @@ for(i in c(0, 0.01, 0.02)){
 <p><img src="/example/08-example_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
 </div>
 </div>
-<div id="breakout-2" class="section level2">
-<h2>Breakout #2</h2>
-<p>Let’s send you back to your breakout rooms. Using the loop method, generate 5 regression trees to explain <code>wage</code> in <code>wage_clean</code>. You can iterate through values of <code>cp</code>, the complexity parameter, or <code>minsplit</code>, the minimum # of points that have to be in each split.</p>
+<div id="task-2" class="section level2">
+<h2>Task #2</h2>
+<p>Using the loop method, generate 5 regression trees to explain <code>wage</code> in <code>wage_clean</code>. You can iterate through values of <code>cp</code>, the complexity parameter, or <code>minsplit</code>, the minimum # of points that have to be in each split.</p>
 <p><strong>10 minutes</strong></p>
-<div id="breakout-2-discussion" class="section level3">
-<h3>Breakout #2 discussion</h3>
+<div id="task-2-discussion" class="section level3">
+<h3>Task #2 discussion</h3>
 </div>
 </div>
 <div id="getting-rmse-from-the-list" class="section level2">
@@ -824,14 +819,10 @@ myList[[3]] = get_rmse(x, wage_clean, &#39;wage&#39;)</code></pre>
 - <code>myList[[2]]</code></p>
 <p>Just like you can refer to <code>data.frame</code> columns by name or by index.</p>
 </div>
-<div id="breakout-3-if-time" class="section level2">
-<h2>Breakout #3 (if time)</h2>
-<p>Let’s send you to the breakout rooms one more time, and use <code>lapply</code> to get a list of your RMSE’s (one for each of your models). Note that we are not yet splitting into <code>test</code> and <code>train</code> (which you <strong>will</strong> need to do on your lab assignment).</p>
+<div id="task-3-if-time" class="section level2">
+<h2>Task #3 (if time)</h2>
+<p>Let’s use <code>lapply</code> to get a list of your RMSE’s (one for each of your models). Note that we are not yet splitting into <code>test</code> and <code>train</code> (which you <strong>will</strong> need to do on your lab assignment).</p>
 <p>Once you have your list, <strong>create the plot of RMSEs</strong> similar to the one we looked at in Content this week. Note: you can use <code>unlist(myRMSE)</code> to get a numeric vector of the RMSE’s (as long as all of the elements in <code>myRMSE</code> are numeric). Then, it’s a matter of plotting either with base <code>plot</code> or with <code>ggplot</code> (if you use <code>ggplot</code> you’ll have to <code>tidy</code> the RMSE by adding the index column or naming the x-axis).</p>
-</div>
-<div id="lecture-video" class="section level2">
-<h2>Lecture Video</h2>
-<p>The lecture video for Tuesday (this material, but we only made it about 2/3rds of the way) is <a href="https://mediaspace.msu.edu/media/SSC442+-+Lecture+and+Office+Hours/1_l1untxni">available here <i class="fas fa-film"></i></a></p>
 </div>
 
                     </div>

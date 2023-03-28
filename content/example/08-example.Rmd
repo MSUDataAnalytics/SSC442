@@ -56,11 +56,8 @@ get_rmse = function(model, data, response) {
 
 
 
-## Breakout #1
-I'm going to assign you to breakout rooms to work in groups of 3-4 on live-coding. One person in the group will need to have Rstudio up, be able to share screen, and have the correct packages loaded (`caret`, `rpart`, and `rpart.plot`, plus `skimr`). Copy the `rmse` and `get_rmse` code into a blank R script (you don't have to use RMarkdown, just use a blank R script and run from there).
-
-For the first breakout, all I want you to do is the following:
-
+## Task #1
+Tasks for live coding:
 - Estimate a default regression tree on `wage_clean` using the default parameters. 
 - Use `rpart.plot` to vizualize your regression tree, and *talk through the interpretation* with each other. 
 - Calculate the RMSE for your regression tree.
@@ -72,7 +69,7 @@ wage_clean$lwage = NULL
 ```
 **5 minutes**
 
-### Breakout #1 discussion
+### Discussion
 Let's choose a group to share their plot and discuss the results.
 
 
@@ -139,12 +136,12 @@ rpart.plot(myList[['Tuning0.01']])
 ```
 
 
-## Breakout #2
-Let's send you back to your breakout rooms. Using the loop method, generate 5 regression trees to explain `wage` in `wage_clean`. You can iterate through values of `cp`, the complexity parameter, or `minsplit`, the minimum # of points that have to be in each split.
+## Task #2
+Using the loop method, generate 5 regression trees to explain `wage` in `wage_clean`. You can iterate through values of `cp`, the complexity parameter, or `minsplit`, the minimum # of points that have to be in each split.
 
 **10 minutes**
 
-### Breakout #2 discussion
+### Task #2 discussion
 
 ## Getting RMSE from the list
 Finally, we want to move towards getting the RMSE for each of these trees. We've done this before using `lapply`. Let's introduce a neat coding shortcut, the `anonymous function`:
@@ -192,11 +189,8 @@ Or you can refer to `myList` by the index:
 
 Just like you can refer to `data.frame` columns by name or by index.
 
-## Breakout #3 (if time)
-Let's send you to the breakout rooms one more time, and use `lapply` to get a list of your RMSE's (one for each of your models). Note that we are not yet splitting into `test` and `train` (which you **will** need to do on your lab assignment). 
+## Task #3 (if time)
+Let's use `lapply` to get a list of your RMSE's (one for each of your models). Note that we are not yet splitting into `test` and `train` (which you **will** need to do on your lab assignment). 
 
 Once you have your list, **create the plot of RMSEs** similar to the one we looked at in Content this week. Note: you can use `unlist(myRMSE)` to get a numeric vector of the RMSE's (as long as all of the elements in `myRMSE` are numeric). Then, it's a matter of plotting either with base `plot` or with `ggplot` (if you use `ggplot` you'll have to `tidy` the RMSE by adding the index column or naming the x-axis).
 
-
-## Lecture Video
-The lecture video for Tuesday (this material, but we only made it about 2/3rds of the way) is [available here <i class="fas fa-film"></i>](https://mediaspace.msu.edu/media/SSC442+-+Lecture+and+Office+Hours/1_l1untxni)
