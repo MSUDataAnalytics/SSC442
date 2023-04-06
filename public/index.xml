@@ -3284,7 +3284,6 @@ my_func &amp;lt;- function(y){
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       <guid>https://ssc442.netlify.app/assignment/10-assignment/</guid>
       <description>
-&lt;script src=&#34;https://ssc442.netlify.app/rmarkdown-libs/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
 
 &lt;div id=&#34;TOC&#34;&gt;
 &lt;ul&gt;
@@ -3293,7 +3292,7 @@ my_func &amp;lt;- function(y){
 &lt;/div&gt;
 
 &lt;div class=&#34;fyi&#34;&gt;
-&lt;p&gt;You must turn in a PDF document of your &lt;code&gt;R Markdown&lt;/code&gt; code. Submit this to D2L by 11:59 PM Eastern Time on &lt;strong&gt;Monday, Monday April 4th&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;You must turn in a PDF document of your &lt;code&gt;R Markdown&lt;/code&gt; code. Submit this to D2L by 11:59 PM Eastern Time on &lt;strong&gt;Monday, Monday April 10th&lt;/strong&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;backstory-and-set-up&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Backstory and Set Up&lt;/h2&gt;
@@ -3321,40 +3320,156 @@ my_func &amp;lt;- function(y){
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       <guid>https://ssc442.netlify.app/example/10-example/</guid>
       <description>
-&lt;script src=&#34;https://ssc442.netlify.app/rmarkdown-libs/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
 
 &lt;div id=&#34;TOC&#34;&gt;
 &lt;ul&gt;
-&lt;li&gt;&lt;a href=&#34;#predicting-defaults&#34; id=&#34;toc-predicting-defaults&#34;&gt;Predicting Defaults&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#return-of-the-moneyball&#34; id=&#34;toc-return-of-the-moneyball&#34;&gt;Return of the Moneyball&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#steps-for-real-world-analysis&#34; id=&#34;toc-steps-for-real-world-analysis&#34;&gt;Steps for Real-World Analysis&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#tips-and-tricks&#34; id=&#34;toc-tips-and-tricks&#34;&gt;Tips and Tricks&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/div&gt;
 
 &lt;div class=&#34;fyi&#34;&gt;
-&lt;p&gt;Today’s example will build on material in the “Content” tab.&lt;/p&gt;
+&lt;p&gt;Today’s in-class work is your weekly writing. You must turn in your best model (from any type of modeling approach) and one visualization that you believe would aid the reader in interpreting your result.&lt;/p&gt;
 &lt;/div&gt;
-&lt;div id=&#34;predicting-defaults&#34; class=&#34;section level2&#34;&gt;
-&lt;h2&gt;Predicting Defaults&lt;/h2&gt;
-&lt;p&gt;Today, we will continue to use the &lt;code&gt;ISLR&lt;/code&gt; data on defaults:&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(ISLR)
-library(tibble)
-Default = ISLR::Default&lt;/code&gt;&lt;/pre&gt;
-&lt;div class=&#34;fyi&#34;&gt;
-&lt;p&gt;In our first breakout:&lt;/p&gt;
+&lt;div id=&#34;return-of-the-moneyball&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Return of the Moneyball&lt;/h2&gt;
+&lt;p&gt;In this exercise, we will explore a dataset of Major League Baseball (MLB) players and their statistics to predict whether a player will be inducted into the Hall of Fame. We will use &lt;code&gt;R&lt;/code&gt; and the &lt;code&gt;tidyverse&lt;/code&gt; tools to manipulate and analyze the data, as well as build predictive models. The primary dataset for this assignment is sourced from the Lahman Baseball Database, which includes player performance statistics and the Hall of Fame data. You will need the following packages; a few are new to give you exposure to some new tools:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(&amp;quot;tidymodels&amp;quot;)
+library(&amp;quot;tidyverse&amp;quot;)
+library(&amp;quot;Lahman&amp;quot;)
+library(&amp;quot;rsample&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;We have two main datasets to work with:&lt;/p&gt;
 &lt;ol style=&#34;list-style-type: decimal&#34;&gt;
-&lt;li&gt;&lt;p&gt;Clean the data so that the &lt;code&gt;default&lt;/code&gt; column is a binary indicator for default&lt;/p&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;Build a logistic model to predict &lt;code&gt;default&lt;/code&gt; using any combination of variables and interactions in the data. For now, just use your best judgement for choosing the variables and interactions – your lab for this week will have you formally tune a logistic model to optimize results.&lt;/p&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;Use a Bayes Classifier cutoff of .50 to generate your classifier output.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;Batting - Contains player performance statistics such as hits, home runs, and runs batted in, among others.&lt;/li&gt;
+&lt;li&gt;HallOfFame - Contains information about Hall of Fame inductees, including the year of induction and the voting percentage.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;We will use the &lt;code&gt;left_join()&lt;/code&gt; function from the &lt;code&gt;dplyr&lt;/code&gt; package to merge the datasets by the &lt;code&gt;playerID&lt;/code&gt; variable. Additionally, we will join the first and last names of the players and check whether they have been inducted into the Hall of Fame. Note that I’ve created a logical called &lt;code&gt;inHall&lt;/code&gt;; you might need to convert it to a factor variable at some point. Or maybe not… you tell me.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data &amp;lt;- Batting %&amp;gt;%
+  left_join(People, by = &amp;quot;playerID&amp;quot;) %&amp;gt;%
+  unite(Name, nameFirst:nameLast, sep = &amp;quot; &amp;quot;) %&amp;gt;%
+  left_join(
+    HallOfFame %&amp;gt;%
+      mutate(inHall = ifelse(inducted == &amp;quot;Y&amp;quot;, TRUE, FALSE)) %&amp;gt;%
+      group_by(playerID) %&amp;gt;%
+      summarize(inHall = any(inHall), .groups = &amp;quot;drop&amp;quot;),
+    by = &amp;quot;playerID&amp;quot;
+  )%&amp;gt;%
+  mutate(inHall = if_else(is.na(inHall), FALSE, inHall))&lt;/code&gt;&lt;/pre&gt;
+&lt;div id=&#34;steps-for-real-world-analysis&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Steps for Real-World Analysis&lt;/h3&gt;
+&lt;ol style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;Perform exploratory data analysis on the merged dataset. You may want to consider the following:&lt;/li&gt;
+&lt;/ol&gt;
+&lt;ol style=&#34;list-style-type: lower-alpha&#34;&gt;
+&lt;li&gt;Summary statistics of key variables.&lt;/li&gt;
+&lt;li&gt;Visualize relationships between variables.&lt;/li&gt;
+&lt;li&gt;Identify potential outliers or missing values.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;ol start=&#34;2&#34; style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;Prepare the dataset for modeling. This may involve:&lt;/li&gt;
+&lt;/ol&gt;
+&lt;ol style=&#34;list-style-type: lower-alpha&#34;&gt;
+&lt;li&gt;Handling missing values.&lt;/li&gt;
+&lt;li&gt;Creating new features or transforming existing ones.&lt;/li&gt;
+&lt;li&gt;Splitting the dataset into training and testing sets.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;ol start=&#34;3&#34; style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;&lt;p&gt;Choose an appropriate predictive model and fit it to the data. Some popular models to consider include linear regression, logistic regression, decision trees, or k nearest neighbors.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Evaluate the performance of your model using appropriate metrics. I’d like you to focus on accuracy, but keep in mind that the relative &lt;em&gt;prevalence&lt;/em&gt; of Hall-of-Famers is low.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Think about any limitations of your analysis and / or possible improvements.&lt;/p&gt;&lt;/li&gt;
 &lt;/ol&gt;
 &lt;/div&gt;
-&lt;p&gt;Back in class, let’s look at how we did. What variables were most useful in explaining &lt;code&gt;default&lt;/code&gt;?&lt;/p&gt;
-&lt;div class=&#34;fyi&#34;&gt;
-&lt;p&gt;In our second breakout, we will create a ROC curve manually. To do this&lt;/p&gt;
+&lt;div id=&#34;tips-and-tricks&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Tips and Tricks&lt;/h3&gt;
 &lt;ol style=&#34;list-style-type: decimal&#34;&gt;
-&lt;li&gt;&lt;p&gt;Take your model from the first breakout, and using a loop (or &lt;code&gt;sapply&lt;/code&gt;), step through a large number of possible cutoffs for classification ranging from 0 to 1.&lt;/p&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;For each cutoff, generate a confusion matrix with &lt;em&gt;accuracy&lt;/em&gt;, &lt;em&gt;sensitivity&lt;/em&gt; and &lt;em&gt;specificity&lt;/em&gt;.&lt;/p&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;Combine the cutoff with the &lt;em&gt;sensitivity&lt;/em&gt; and &lt;em&gt;specificity&lt;/em&gt; results and make a ROC plot. Use &lt;code&gt;ggplot&lt;/code&gt; for your plot and map the color aesthetic to the cutoff value.&lt;/p&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;Calculate the AUC (the &lt;em&gt;area under the curve&lt;/em&gt;). This is a little tricky but can be done with your data.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Think about data preparation and feature engineering.&lt;/strong&gt;&lt;/li&gt;
 &lt;/ol&gt;
+&lt;p&gt;Here’s a snippet to calculate the career statistics for each player. But you can do more:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;career_stats &amp;lt;- data %&amp;gt;%
+  group_by(playerID, Name, inHall) %&amp;gt;%
+  summarize(
+    total_games = sum(G, na.rm = TRUE),
+    total_hits = sum(H, na.rm = TRUE),
+    total_HR = sum(HR, na.rm = TRUE),
+    total_RBI = sum(RBI, na.rm = TRUE),
+    .groups = &amp;quot;drop&amp;quot;
+  )&lt;/code&gt;&lt;/pre&gt;
+&lt;ol start=&#34;2&#34; style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;&lt;strong&gt;Modeling&lt;/strong&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;As always, split the dataset into training and testing sets. If you run this code, you’ll get a warning. Dig around… what does the warning mean?&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;set.seed(42)
+split &amp;lt;- initial_split(career_stats, prop = 0.75, strata = inHall)
+train_set &amp;lt;- training(split)
+test_set &amp;lt;- testing(split)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Now, let’s fit a logistic regression model. Again, you shouldn’t do exactly what I’m suggesting… try some stuff for yourself. Especially since, if you do this exactly as written and only using the stuff above, it won’t work!&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# Define the model specification
+log_reg_spec &amp;lt;- logistic_reg() %&amp;gt;%
+  set_engine(&amp;quot;glm&amp;quot;) %&amp;gt;%
+  set_mode(&amp;quot;classification&amp;quot;)
+
+# Define the recipe for preprocessing the data
+log_reg_recipe &amp;lt;- recipe(inHall ~ total_HR + total_RBI, data = train_set)
+
+# Create the workflow
+log_reg_wf &amp;lt;- workflow() %&amp;gt;%
+  add_model(log_reg_spec) %&amp;gt;%
+  add_recipe(log_reg_recipe)
+
+# Fit the model to the training data
+log_reg_fit &amp;lt;- fit(log_reg_wf, data = train_set)&lt;/code&gt;&lt;/pre&gt;
+&lt;ol start=&#34;3&#34; style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;&lt;strong&gt;Visualize relationships between variables&lt;/strong&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;Create a scatterplot of home runs vs. runs batted in, color-coded by Hall of Fame induction status:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(career_stats, aes(x = total_HR, y = total_RBI, color = inHall)) +
+  geom_point(alpha = 0.6) +
+  labs(title = &amp;quot;Home Runs vs. Runs Batted In&amp;quot;,
+       x = &amp;quot;Total Home Runs&amp;quot;,
+       y = &amp;quot;Total Runs Batted In&amp;quot;,
+       color = &amp;quot;Hall of Fame&amp;quot;) +
+  theme_minimal()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/example/10-example_files/figure-html/unnamed-chunk-7-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;ol start=&#34;4&#34; style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;&lt;strong&gt;Model evaluation&lt;/strong&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;Use the fitted model to make predictions on the test set and calculate performance metrics. &lt;strong&gt;This won’t work as-is.&lt;/strong&gt; You need to fix a couple of minor errors. You can either use other code from previous examples or try decoding the error messages you see.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# Make predictions on the test set
+predictions &amp;lt;- predict(log_reg_fit, test_set, type = &amp;quot;prob&amp;quot;)
+
+# Bind the predictions to the test set
+test_set_results &amp;lt;- bind_cols(test_set, predictions)
+
+# Calculate performance metrics
+metrics &amp;lt;- test_set_results %&amp;gt;%
+  metrics(truth = inHall, estimate = .pred_TRUE)
+
+print(metrics)&lt;/code&gt;&lt;/pre&gt;
+&lt;ol start=&#34;5&#34; style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;(A nice added thing to do) &lt;strong&gt;Visualize the model&lt;/strong&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;You can plot the predicted probabilities of being inducted into the Hall of Fame against one of the predictor variables, such as total home runs. This will help us see how the model differentiates between players who are likely to be inducted and those who are not.&lt;/p&gt;
+&lt;p&gt;First, use the fitted model to make predictions for the entire dataset, then plot the results:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# Make predictions on the entire dataset
+full_data_predictions &amp;lt;- predict(log_reg_fit, career_stats, type = &amp;quot;prob&amp;quot;)
+
+# Bind the predictions to the full dataset
+full_data_results &amp;lt;- bind_cols(career_stats, full_data_predictions)
+
+# Plot the results
+ggplot(full_data_results, aes(x = total_HR, y = .pred_TRUE, color = inHall)) +
+  geom_point(alpha = 0.6) +
+  labs(
+    title = &amp;quot;Predicted Hall of Fame Induction Probability vs. Total Home Runs&amp;quot;,
+    x = &amp;quot;Total Home Runs&amp;quot;,
+    y = &amp;quot;Predicted Probability of Hall of Fame Induction&amp;quot;,
+    color = &amp;quot;Hall of Fame&amp;quot;
+  ) +
+  theme_minimal()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/example/10-example_files/figure-html/unnamed-chunk-9-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 </description>

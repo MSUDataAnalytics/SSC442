@@ -14,49 +14,173 @@ editor_options:
   chunk_output_type: console
 ---
 
+
 :::fyi
 
-Today's example will build on material in the "Content" tab.
-
-
+Today's in-class work is your weekly writing. You must turn in your best model (from any type of modeling approach) and one visualization that you believe would aid the reader in interpreting your result. 
 :::
 
+## Return of the Moneyball
+
+In this exercise, we will explore a dataset of Major League Baseball (MLB) players and their statistics to predict whether a player will be inducted into the Hall of Fame. We will use `R` and the `tidyverse` tools to manipulate and analyze the data, as well as build predictive models. The primary dataset for this assignment is sourced from the Lahman Baseball Database, which includes player performance statistics and the Hall of Fame data. You will need the following packages; a few are new to give you exposure to some new tools:
 
 
-## Predicting Defaults
-
-Today, we will continue to use the `ISLR` data on defaults:
-
-```{r}
-library(ISLR)
-library(tibble)
-Default = ISLR::Default
+```{r, echo=TRUE, message = FALSE, warning = FALSE}
+library("tidymodels")
+library("tidyverse")
+library("Lahman")
+library("rsample")
 ```
 
-:::fyi
-In our first breakout:
+We have two main datasets to work with:
 
-1. Clean the data so that the `default` column is a binary indicator for default
+1. Batting - Contains player performance statistics such as hits, home runs, and runs batted in, among others.
+2. HallOfFame - Contains information about Hall of Fame inductees, including the year of induction and the voting percentage.
 
-2. Build a logistic model to predict `default` using any combination of variables and interactions in the data. For now, just use your best judgement for choosing the variables and interactions -- your lab for this week will have you formally tune a logistic model to optimize results.
+We will use the `left_join()` function from the `dplyr` package to merge the datasets by the `playerID` variable. Additionally, we will join the first and last names of the players and check whether they have been inducted into the Hall of Fame. Note that I've created a logical called `inHall`; you might need to convert it to a factor variable at some point. Or maybe not... you tell me.
 
-3. Use a Bayes Classifier cutoff of .50 to generate your classifier output.
+```{r, echo=TRUE, message = FALSE, warning=FALSE}
+data <- Batting %>%
+  left_join(People, by = "playerID") %>%
+  unite(Name, nameFirst:nameLast, sep = " ") %>%
+  left_join(
+    HallOfFame %>%
+      mutate(inHall = ifelse(inducted == "Y", TRUE, FALSE)) %>%
+      group_by(playerID) %>%
+      summarize(inHall = any(inHall), .groups = "drop"),
+    by = "playerID"
+  )%>%
+  mutate(inHall = if_else(is.na(inHall), FALSE, inHall))
+```
 
-:::
+```{r, echo=FALSE}
+data$inHall <- factor(data$inHall)
+```
+
+### Steps for Real-World Analysis
+
+1. Perform exploratory data analysis on the merged dataset. You may want to consider the following:
+  a. Summary statistics of key variables.
+  b. Visualize relationships between variables.
+  c. Identify potential outliers or missing values.
+
+2. Prepare the dataset for modeling. This may involve:
+  a. Handling missing values.
+  b. Creating new features or transforming existing ones.
+  c. Splitting the dataset into training and testing sets.
+  
+3. Choose an appropriate predictive model and fit it to the data. Some popular models to consider include linear regression, logistic regression, decision trees, or k nearest neighbors.
+
+4. Evaluate the performance of your model using appropriate metrics. I'd like you to focus on accuracy, but keep in mind that the relative *prevalence* of Hall-of-Famers is low. 
+
+5. Think about any limitations of your analysis and / or possible improvements.
+
+### Tips and Tricks
+
+1. **Think about data preparation and feature engineering.**
+
+Here's a snippet to calculate the career statistics for each player. But you can do more:
+
+```{r}
+career_stats <- data %>%
+  group_by(playerID, Name, inHall) %>%
+  summarize(
+    total_games = sum(G, na.rm = TRUE),
+    total_hits = sum(H, na.rm = TRUE),
+    total_HR = sum(HR, na.rm = TRUE),
+    total_RBI = sum(RBI, na.rm = TRUE),
+    .groups = "drop"
+  )
+```
 
 
-Back in class, let's look at how we did. What variables were most useful in explaining `default`? 
+2. **Modeling**
+
+As always, split the dataset into training and testing sets. If you run this code, you'll get a warning. Dig around... what does the warning mean?
+
+```{r, warning=FALSE}
+set.seed(42)
+split <- initial_split(career_stats, prop = 0.75, strata = inHall)
+train_set <- training(split)
+test_set <- testing(split)
+```
 
 
-:::fyi
-In our second breakout, we will create a ROC curve manually. To do this
+Now, let's fit a logistic regression model. Again, you shouldn't do exactly what I'm suggesting... try some stuff for yourself. Especially since, if you do this exactly as written and only using the stuff above, it won't work! 
 
-1. Take your model from the first breakout, and using a loop (or `sapply`), step through a large number of possible cutoffs for classification ranging from 0 to 1.
+```{r, echo=TRUE}
 
-2. For each cutoff, generate a confusion matrix with *accuracy*, *sensitivity* and *specificity*.
+# Define the model specification
+log_reg_spec <- logistic_reg() %>%
+  set_engine("glm") %>%
+  set_mode("classification")
 
-3. Combine the cutoff with the *sensitivity* and *specificity* results and make a ROC plot. Use `ggplot` for your plot and map the color aesthetic to the cutoff value.
+# Define the recipe for preprocessing the data
+log_reg_recipe <- recipe(inHall ~ total_HR + total_RBI, data = train_set)
 
-4. Calculate the AUC (the *area under the curve*). This is a little tricky but can be done with your data.
-:::
+# Create the workflow
+log_reg_wf <- workflow() %>%
+  add_model(log_reg_spec) %>%
+  add_recipe(log_reg_recipe)
+
+# Fit the model to the training data
+log_reg_fit <- fit(log_reg_wf, data = train_set)
+```
+
+3. **Visualize relationships between variables**
+
+Create a scatterplot of home runs vs. runs batted in, color-coded by Hall of Fame induction status:
+
+```{r}
+ggplot(career_stats, aes(x = total_HR, y = total_RBI, color = inHall)) +
+  geom_point(alpha = 0.6) +
+  labs(title = "Home Runs vs. Runs Batted In",
+       x = "Total Home Runs",
+       y = "Total Runs Batted In",
+       color = "Hall of Fame") +
+  theme_minimal()
+```
+
+4. **Model evaluation** 
+
+Use the fitted model to make predictions on the test set and calculate performance metrics. **This won't work as-is.** You need to fix a couple of minor errors. You can either use other code from previous examples or try decoding the error messages you see.
+
+```{r, echo=TRUE, eval=FALSE}
+# Make predictions on the test set
+predictions <- predict(log_reg_fit, test_set, type = "prob")
+
+# Bind the predictions to the test set
+test_set_results <- bind_cols(test_set, predictions)
+
+# Calculate performance metrics
+metrics <- test_set_results %>%
+  metrics(truth = inHall, estimate = .pred_TRUE)
+
+print(metrics)
+```
+
+5. (A nice added thing to do) **Visualize the model**
+
+You can plot the predicted probabilities of being inducted into the Hall of Fame against one of the predictor variables, such as total home runs. This will help us see how the model differentiates between players who are likely to be inducted and those who are not.
+
+First, use the fitted model to make predictions for the entire dataset, then plot the results:
+
+```{r}
+# Make predictions on the entire dataset
+full_data_predictions <- predict(log_reg_fit, career_stats, type = "prob")
+
+# Bind the predictions to the full dataset
+full_data_results <- bind_cols(career_stats, full_data_predictions)
+
+# Plot the results
+ggplot(full_data_results, aes(x = total_HR, y = .pred_TRUE, color = inHall)) +
+  geom_point(alpha = 0.6) +
+  labs(
+    title = "Predicted Hall of Fame Induction Probability vs. Total Home Runs",
+    x = "Total Home Runs",
+    y = "Predicted Probability of Hall of Fame Induction",
+    color = "Hall of Fame"
+  ) +
+  theme_minimal()
+```
 

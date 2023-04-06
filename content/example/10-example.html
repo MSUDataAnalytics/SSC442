@@ -14,39 +14,155 @@ editor_options:
   chunk_output_type: console
 ---
 
-<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
 
 <div id="TOC">
 <ul>
-<li><a href="#predicting-defaults" id="toc-predicting-defaults">Predicting Defaults</a></li>
+<li><a href="#return-of-the-moneyball" id="toc-return-of-the-moneyball">Return of the Moneyball</a>
+<ul>
+<li><a href="#steps-for-real-world-analysis" id="toc-steps-for-real-world-analysis">Steps for Real-World Analysis</a></li>
+<li><a href="#tips-and-tricks" id="toc-tips-and-tricks">Tips and Tricks</a></li>
+</ul></li>
 </ul>
 </div>
 
 <div class="fyi">
-<p>Today’s example will build on material in the “Content” tab.</p>
+<p>Today’s in-class work is your weekly writing. You must turn in your best model (from any type of modeling approach) and one visualization that you believe would aid the reader in interpreting your result.</p>
 </div>
-<div id="predicting-defaults" class="section level2">
-<h2>Predicting Defaults</h2>
-<p>Today, we will continue to use the <code>ISLR</code> data on defaults:</p>
-<pre class="r"><code>library(ISLR)
-library(tibble)
-Default = ISLR::Default</code></pre>
-<div class="fyi">
-<p>In our first breakout:</p>
+<div id="return-of-the-moneyball" class="section level2">
+<h2>Return of the Moneyball</h2>
+<p>In this exercise, we will explore a dataset of Major League Baseball (MLB) players and their statistics to predict whether a player will be inducted into the Hall of Fame. We will use <code>R</code> and the <code>tidyverse</code> tools to manipulate and analyze the data, as well as build predictive models. The primary dataset for this assignment is sourced from the Lahman Baseball Database, which includes player performance statistics and the Hall of Fame data. You will need the following packages; a few are new to give you exposure to some new tools:</p>
+<pre class="r"><code>library(&quot;tidymodels&quot;)
+library(&quot;tidyverse&quot;)
+library(&quot;Lahman&quot;)
+library(&quot;rsample&quot;)</code></pre>
+<p>We have two main datasets to work with:</p>
 <ol style="list-style-type: decimal">
-<li><p>Clean the data so that the <code>default</code> column is a binary indicator for default</p></li>
-<li><p>Build a logistic model to predict <code>default</code> using any combination of variables and interactions in the data. For now, just use your best judgement for choosing the variables and interactions – your lab for this week will have you formally tune a logistic model to optimize results.</p></li>
-<li><p>Use a Bayes Classifier cutoff of .50 to generate your classifier output.</p></li>
+<li>Batting - Contains player performance statistics such as hits, home runs, and runs batted in, among others.</li>
+<li>HallOfFame - Contains information about Hall of Fame inductees, including the year of induction and the voting percentage.</li>
+</ol>
+<p>We will use the <code>left_join()</code> function from the <code>dplyr</code> package to merge the datasets by the <code>playerID</code> variable. Additionally, we will join the first and last names of the players and check whether they have been inducted into the Hall of Fame. Note that I’ve created a logical called <code>inHall</code>; you might need to convert it to a factor variable at some point. Or maybe not… you tell me.</p>
+<pre class="r"><code>data &lt;- Batting %&gt;%
+  left_join(People, by = &quot;playerID&quot;) %&gt;%
+  unite(Name, nameFirst:nameLast, sep = &quot; &quot;) %&gt;%
+  left_join(
+    HallOfFame %&gt;%
+      mutate(inHall = ifelse(inducted == &quot;Y&quot;, TRUE, FALSE)) %&gt;%
+      group_by(playerID) %&gt;%
+      summarize(inHall = any(inHall), .groups = &quot;drop&quot;),
+    by = &quot;playerID&quot;
+  )%&gt;%
+  mutate(inHall = if_else(is.na(inHall), FALSE, inHall))</code></pre>
+<div id="steps-for-real-world-analysis" class="section level3">
+<h3>Steps for Real-World Analysis</h3>
+<ol style="list-style-type: decimal">
+<li>Perform exploratory data analysis on the merged dataset. You may want to consider the following:</li>
+</ol>
+<ol style="list-style-type: lower-alpha">
+<li>Summary statistics of key variables.</li>
+<li>Visualize relationships between variables.</li>
+<li>Identify potential outliers or missing values.</li>
+</ol>
+<ol start="2" style="list-style-type: decimal">
+<li>Prepare the dataset for modeling. This may involve:</li>
+</ol>
+<ol style="list-style-type: lower-alpha">
+<li>Handling missing values.</li>
+<li>Creating new features or transforming existing ones.</li>
+<li>Splitting the dataset into training and testing sets.</li>
+</ol>
+<ol start="3" style="list-style-type: decimal">
+<li><p>Choose an appropriate predictive model and fit it to the data. Some popular models to consider include linear regression, logistic regression, decision trees, or k nearest neighbors.</p></li>
+<li><p>Evaluate the performance of your model using appropriate metrics. I’d like you to focus on accuracy, but keep in mind that the relative <em>prevalence</em> of Hall-of-Famers is low.</p></li>
+<li><p>Think about any limitations of your analysis and / or possible improvements.</p></li>
 </ol>
 </div>
-<p>Back in class, let’s look at how we did. What variables were most useful in explaining <code>default</code>?</p>
-<div class="fyi">
-<p>In our second breakout, we will create a ROC curve manually. To do this</p>
+<div id="tips-and-tricks" class="section level3">
+<h3>Tips and Tricks</h3>
 <ol style="list-style-type: decimal">
-<li><p>Take your model from the first breakout, and using a loop (or <code>sapply</code>), step through a large number of possible cutoffs for classification ranging from 0 to 1.</p></li>
-<li><p>For each cutoff, generate a confusion matrix with <em>accuracy</em>, <em>sensitivity</em> and <em>specificity</em>.</p></li>
-<li><p>Combine the cutoff with the <em>sensitivity</em> and <em>specificity</em> results and make a ROC plot. Use <code>ggplot</code> for your plot and map the color aesthetic to the cutoff value.</p></li>
-<li><p>Calculate the AUC (the <em>area under the curve</em>). This is a little tricky but can be done with your data.</p></li>
+<li><strong>Think about data preparation and feature engineering.</strong></li>
 </ol>
+<p>Here’s a snippet to calculate the career statistics for each player. But you can do more:</p>
+<pre class="r"><code>career_stats &lt;- data %&gt;%
+  group_by(playerID, Name, inHall) %&gt;%
+  summarize(
+    total_games = sum(G, na.rm = TRUE),
+    total_hits = sum(H, na.rm = TRUE),
+    total_HR = sum(HR, na.rm = TRUE),
+    total_RBI = sum(RBI, na.rm = TRUE),
+    .groups = &quot;drop&quot;
+  )</code></pre>
+<ol start="2" style="list-style-type: decimal">
+<li><strong>Modeling</strong></li>
+</ol>
+<p>As always, split the dataset into training and testing sets. If you run this code, you’ll get a warning. Dig around… what does the warning mean?</p>
+<pre class="r"><code>set.seed(42)
+split &lt;- initial_split(career_stats, prop = 0.75, strata = inHall)
+train_set &lt;- training(split)
+test_set &lt;- testing(split)</code></pre>
+<p>Now, let’s fit a logistic regression model. Again, you shouldn’t do exactly what I’m suggesting… try some stuff for yourself. Especially since, if you do this exactly as written and only using the stuff above, it won’t work!</p>
+<pre class="r"><code># Define the model specification
+log_reg_spec &lt;- logistic_reg() %&gt;%
+  set_engine(&quot;glm&quot;) %&gt;%
+  set_mode(&quot;classification&quot;)
+
+# Define the recipe for preprocessing the data
+log_reg_recipe &lt;- recipe(inHall ~ total_HR + total_RBI, data = train_set)
+
+# Create the workflow
+log_reg_wf &lt;- workflow() %&gt;%
+  add_model(log_reg_spec) %&gt;%
+  add_recipe(log_reg_recipe)
+
+# Fit the model to the training data
+log_reg_fit &lt;- fit(log_reg_wf, data = train_set)</code></pre>
+<ol start="3" style="list-style-type: decimal">
+<li><strong>Visualize relationships between variables</strong></li>
+</ol>
+<p>Create a scatterplot of home runs vs. runs batted in, color-coded by Hall of Fame induction status:</p>
+<pre class="r"><code>ggplot(career_stats, aes(x = total_HR, y = total_RBI, color = inHall)) +
+  geom_point(alpha = 0.6) +
+  labs(title = &quot;Home Runs vs. Runs Batted In&quot;,
+       x = &quot;Total Home Runs&quot;,
+       y = &quot;Total Runs Batted In&quot;,
+       color = &quot;Hall of Fame&quot;) +
+  theme_minimal()</code></pre>
+<p><img src="/example/10-example_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+<ol start="4" style="list-style-type: decimal">
+<li><strong>Model evaluation</strong></li>
+</ol>
+<p>Use the fitted model to make predictions on the test set and calculate performance metrics. <strong>This won’t work as-is.</strong> You need to fix a couple of minor errors. You can either use other code from previous examples or try decoding the error messages you see.</p>
+<pre class="r"><code># Make predictions on the test set
+predictions &lt;- predict(log_reg_fit, test_set, type = &quot;prob&quot;)
+
+# Bind the predictions to the test set
+test_set_results &lt;- bind_cols(test_set, predictions)
+
+# Calculate performance metrics
+metrics &lt;- test_set_results %&gt;%
+  metrics(truth = inHall, estimate = .pred_TRUE)
+
+print(metrics)</code></pre>
+<ol start="5" style="list-style-type: decimal">
+<li>(A nice added thing to do) <strong>Visualize the model</strong></li>
+</ol>
+<p>You can plot the predicted probabilities of being inducted into the Hall of Fame against one of the predictor variables, such as total home runs. This will help us see how the model differentiates between players who are likely to be inducted and those who are not.</p>
+<p>First, use the fitted model to make predictions for the entire dataset, then plot the results:</p>
+<pre class="r"><code># Make predictions on the entire dataset
+full_data_predictions &lt;- predict(log_reg_fit, career_stats, type = &quot;prob&quot;)
+
+# Bind the predictions to the full dataset
+full_data_results &lt;- bind_cols(career_stats, full_data_predictions)
+
+# Plot the results
+ggplot(full_data_results, aes(x = total_HR, y = .pred_TRUE, color = inHall)) +
+  geom_point(alpha = 0.6) +
+  labs(
+    title = &quot;Predicted Hall of Fame Induction Probability vs. Total Home Runs&quot;,
+    x = &quot;Total Home Runs&quot;,
+    y = &quot;Predicted Probability of Hall of Fame Induction&quot;,
+    color = &quot;Hall of Fame&quot;
+  ) +
+  theme_minimal()</code></pre>
+<p><img src="/example/10-example_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
 </div>
 </div>
