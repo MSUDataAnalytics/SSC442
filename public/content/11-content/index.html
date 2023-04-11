@@ -30,7 +30,7 @@
   
     
   
-  <meta name="description" content="Required Reading  Guiding Questions  Introduction to data wrangling Reshaping data  gather spread separate unite  Joining tables  Joins  Left join Right join Inner join Full join Semi join Anti join  Binding  Binding columns Binding by rows  Set operators  Intersect Union setdiff setequal  A note about merging and duplicated rows  Parsing dates and times  The date data type The lubridate package Lecture Video    Required Reading  This page.">
+  <meta name="description" content="Required Reading  Guiding Questions  Introduction to data wrangling Reshaping data  gather spread separate unite  Joining tables  Joins  Left join Right join Inner join Full join Semi join Anti join  Binding  Binding columns Binding by rows  Set operators  Intersect Union setdiff setequal  A note about merging and duplicated rows  Parsing dates and times  The date data type The lubridate package  Code for In-Class Discussion (Airbnb Data)     Required Reading  This page.">
 
   
   <link rel="alternate" hreflang="en-us" href="https://ssc442.netlify.app/content/11-content/">
@@ -238,7 +238,7 @@
   <meta property="og:site_name" content="Data Analytics">
   <meta property="og:url" content="https://ssc442.netlify.app/content/11-content/">
   <meta property="og:title" content="Data Wrangling | Data Analytics">
-  <meta property="og:description" content="Required Reading  Guiding Questions  Introduction to data wrangling Reshaping data  gather spread separate unite  Joining tables  Joins  Left join Right join Inner join Full join Semi join Anti join  Binding  Binding columns Binding by rows  Set operators  Intersect Union setdiff setequal  A note about merging and duplicated rows  Parsing dates and times  The date data type The lubridate package Lecture Video    Required Reading  This page."><meta property="og:image" content="https://ssc442.netlify.app/img/social-image.png">
+  <meta property="og:description" content="Required Reading  Guiding Questions  Introduction to data wrangling Reshaping data  gather spread separate unite  Joining tables  Joins  Left join Right join Inner join Full join Semi join Anti join  Binding  Binding columns Binding by rows  Set operators  Intersect Union setdiff setequal  A note about merging and duplicated rows  Parsing dates and times  The date data type The lubridate package  Code for In-Class Discussion (Airbnb Data)     Required Reading  This page."><meta property="og:image" content="https://ssc442.netlify.app/img/social-image.png">
   <meta property="twitter:image" content="https://ssc442.netlify.app/img/social-image.png"><meta property="og:locale" content="en-us">
   
     
@@ -643,7 +643,7 @@
 
                     
                     <div class="due-date p-2 mb-3 bg-content text-white">
-                        Content for Tuesday, April 5, 2022
+                        Content for Tuesday, April 11, 2023
                     </div>
                     
 
@@ -651,7 +651,6 @@
 
                     <div class="article-style">
                         
-<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
 
 <div id="TOC">
 <ul>
@@ -695,8 +694,10 @@
 <li><a href="#parsing-dates-and-times" id="toc-parsing-dates-and-times">Parsing dates and times</a>
 <ul>
 <li><a href="#the-date-data-type" id="toc-the-date-data-type">The date data type</a></li>
-<li><a href="#lubridate" id="toc-lubridate">The lubridate package</a></li>
-<li><a href="#lecture-video" id="toc-lecture-video">Lecture Video</a></li>
+<li><a href="#lubridate" id="toc-lubridate">The lubridate package</a>
+<ul>
+<li><a href="#code-for-in-class-discussion-airbnb-data" id="toc-code-for-in-class-discussion-airbnb-data">Code for In-Class Discussion (Airbnb Data)</a></li>
+</ul></li>
 </ul></li>
 </ul>
 </div>
@@ -799,10 +800,11 @@ filename &lt;-  file.path(path, filename)
 raw_dat &lt;- read_csv(filename)
 dplyr::select(raw_dat, 1:5)</code></pre>
 <pre><code>## # A tibble: 2 × 5
-##   country     `1960_fertility` `1960_life_expe… `1961_fertility` `1961_life_expe…
-##   &lt;chr&gt;                  &lt;dbl&gt;            &lt;dbl&gt;            &lt;dbl&gt;            &lt;dbl&gt;
-## 1 Germany                 2.41             69.3             2.44             69.8
-## 2 South Korea             6.16             53.0             5.99             53.8</code></pre>
+##   country     `1960_fertility` `1960_life_expectancy` `1961_fertility` 1961_li…¹
+##   &lt;chr&gt;                  &lt;dbl&gt;                  &lt;dbl&gt;            &lt;dbl&gt;     &lt;dbl&gt;
+## 1 Germany                 2.41                   69.3             2.44      69.8
+## 2 South Korea             6.16                   53.0             5.99      53.8
+## # … with abbreviated variable name ¹​`1961_life_expectancy`</code></pre>
 <p>First, note that the data is in wide format. Second, notice that this table includes values for two variables, fertility and life expectancy, with the column name encoding which column represents which variable. Encoding information in the column names is not recommended but, unfortunately, it is quite common. We will put our wrangling skills to work to extract this information and store it in a tidy fashion.</p>
 <p>We can start the data wrangling with the <code>gather</code> function, but we should no longer use the column name <code>year</code> for the new column since it also contains the variable type. We will call it <code>key</code>, the default, for now:</p>
 <pre class="r"><code>dat &lt;- raw_dat %&gt;% gather(key, value, -country)
@@ -1287,8 +1289,12 @@ head(tidyData)</code></pre>
 ## 5 CA    Los Angeles               31
 ## 6 CA    Kern                       8</code></pre>
 <p>If we use the only common field, <code>state</code> to merge <code>tidyData</code>, which is unique on <code>state</code> and <code>year</code>, to <code>notTidyData</code>, which is unique on <code>county</code>, then every time we see <code>state</code> in our “left” data, we will get <strong>all three counties in that state and for that year</strong>. Even worse, we will get the <code>InNOut_locations</code> tally repeated for every matching <code>state</code>!</p>
-<pre class="r"><code>joinedData &lt;- left_join(tidyData, notTidyData, by = c(&#39;state&#39;))
-joinedData</code></pre>
+<pre class="r"><code>joinedData &lt;- left_join(tidyData, notTidyData, by = c(&#39;state&#39;))</code></pre>
+<pre><code>## Warning in left_join(tidyData, notTidyData, by = c(&quot;state&quot;)): Each row in `x` is expected to match at most 1 row in `y`.
+## ℹ Row 1 of `x` matches multiple rows.
+## ℹ If multiple matches are expected, set `multiple = &quot;all&quot;` to silence this
+##   warning.</code></pre>
+<pre class="r"><code>joinedData</code></pre>
 <pre><code>## # A tibble: 12 × 5
 ##    state  year Arrests County      InNOut_locations
 ##    &lt;chr&gt; &lt;dbl&gt;   &lt;dbl&gt; &lt;chr&gt;                  &lt;dbl&gt;
@@ -1409,17 +1415,17 @@ In these cases, examining the entire vector of dates will help you determine wha
 <pre><code>## [1] &quot;2001-02-09&quot;</code></pre>
 <p>The <strong>lubridate</strong> package is also useful for dealing with times. In R base, you can get the current time typing <code>Sys.time()</code>. The <strong>lubridate</strong> package provides a slightly more advanced function, <code>now</code>, that permits you to define the time zone:</p>
 <pre class="r"><code>now()</code></pre>
-<pre><code>## [1] &quot;2023-01-07 15:37:28 EST&quot;</code></pre>
+<pre><code>## [1] &quot;2023-04-11 11:42:26 EDT&quot;</code></pre>
 <pre class="r"><code>now(&quot;GMT&quot;)</code></pre>
-<pre><code>## [1] &quot;2023-01-07 20:37:28 GMT&quot;</code></pre>
+<pre><code>## [1] &quot;2023-04-11 15:42:26 GMT&quot;</code></pre>
 <p>You can see all the available time zones with <code>OlsonNames()</code> function.</p>
 <p>We can also extract hours, minutes, and seconds:</p>
 <pre class="r"><code>now() %&gt;% hour()</code></pre>
-<pre><code>## [1] 15</code></pre>
+<pre><code>## [1] 11</code></pre>
 <pre class="r"><code>now() %&gt;% minute()</code></pre>
-<pre><code>## [1] 37</code></pre>
+<pre><code>## [1] 42</code></pre>
 <pre class="r"><code>now() %&gt;% second()</code></pre>
-<pre><code>## [1] 28.01117</code></pre>
+<pre><code>## [1] 26.31125</code></pre>
 <p>The package also includes a function to parse strings into times as well as parsers for time objects that include dates:</p>
 <pre class="r"><code>x &lt;- c(&quot;12:34:56&quot;)
 hms(x)</code></pre>
@@ -1441,6 +1447,10 @@ mdy_hms(x)</code></pre>
   group_by(week) %&gt;%
   summarize(margin = mean(rawpoll_clinton - rawpoll_trump)) %&gt;%
   qplot(week, margin, data = .)</code></pre>
+<pre><code>## Warning: `qplot()` was deprecated in ggplot2 3.4.0.
+## This warning is displayed once every 8 hours.
+## Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
+## generated.</code></pre>
 <p><img src="/content/11-content_files/figure-html/poll-margin-versus-week-1.png" width="672" /></p>
 <p>Date objects can be added to and subtracted from with <code>hours</code>, <code>minutes</code>, etc.</p>
 <pre class="r"><code>startDate &lt;- ymd_hms(&#39;2021-06-14 12:20:57&#39;)
@@ -1466,10 +1476,49 @@ endDate - startDate</code></pre>
 ##  [9] &quot;2021-06-14 20:20:57 UTC&quot; &quot;2021-06-14 21:20:57 UTC&quot;
 ## [11] &quot;2021-06-14 22:20:57 UTC&quot; &quot;2021-06-14 23:20:57 UTC&quot;
 ## [13] &quot;2021-06-15 00:20:57 UTC&quot;</code></pre>
+<div id="code-for-in-class-discussion-airbnb-data" class="section level3">
+<h3>Code for In-Class Discussion (Airbnb Data)</h3>
+<p>Airbnb datasets contain listings of rental properties in various cities and are known for having messy data. You can download the data for a city of your choice from Inside Airbnb. Link <a href="http://insideairbnb.com/get-the-data/">here</a>.</p>
+<p>Here are the tasks to perform to start. We’ll do more of this on Thursday.</p>
+<ol style="list-style-type: decimal">
+<li>Load the data</li>
+<li>Clean and format variables</li>
+<li>Filter and sort data</li>
+<li>Calculate new variables</li>
+</ol>
+<pre class="r"><code># Load necessary packages
+library(tidyverse)
+library(lubridate)
+
+# 1. Load the data
+listings &lt;- read_csv(&quot;listings.csv&quot;)
+
+# 2. Clean and format variables
+listings_clean &lt;- listings %&gt;%
+  mutate(price = parse_number(price),
+         cleaning_fee = parse_number(cleaning_fee, na = &quot;0&quot;),
+         host_since = ymd(host_since),
+         host_duration = as.numeric(difftime(today(), host_since, units = &quot;days&quot;)) / 365
+  )
+
+# 3. Filter and sort data
+listings_filtered &lt;- listings_clean %&gt;%
+  filter(room_type == &quot;Entire home/apt&quot;,
+         accommodates &gt;= 2,
+         bedrooms &gt;= 1,
+         bathrooms &gt;= 1
+  ) %&gt;%
+  arrange(desc(review_scores_rating))
+
+# 4. Calculate new variables
+listings_summary &lt;- listings_filtered %&gt;%
+  group_by(neighbourhood) %&gt;%
+  summarize(count = n(),
+            avg_price = mean(price, na.rm = TRUE),
+            avg_rating = mean(review_scores_rating, na.rm = TRUE)
+  ) %&gt;%
+  arrange(desc(count))</code></pre>
 </div>
-<div id="lecture-video" class="section level2">
-<h2>Lecture Video</h2>
-<p>The lecture video for this material is <a href="https://mediaspace.msu.edu/media/SSC442+-+Content+11+-+April+5th+2022/1_63z01mgu?st=407">available here <i class="fas fa-film"></i></a></p>
 </div>
 </div>
 <div class="footnotes footnotes-end-of-document">

@@ -4188,7 +4188,6 @@ case_when(x &amp;lt; 0 ~ &amp;quot;Negative&amp;quot;,
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       <guid>https://ssc442.netlify.app/content/11-content/</guid>
       <description>
-&lt;script src=&#34;https://ssc442.netlify.app/rmarkdown-libs/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
 
 &lt;div id=&#34;TOC&#34;&gt;
 &lt;ul&gt;
@@ -4232,8 +4231,10 @@ case_when(x &amp;lt; 0 ~ &amp;quot;Negative&amp;quot;,
 &lt;li&gt;&lt;a href=&#34;#parsing-dates-and-times&#34; id=&#34;toc-parsing-dates-and-times&#34;&gt;Parsing dates and times&lt;/a&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;a href=&#34;#the-date-data-type&#34; id=&#34;toc-the-date-data-type&#34;&gt;The date data type&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;#lubridate&#34; id=&#34;toc-lubridate&#34;&gt;The lubridate package&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;#lecture-video&#34; id=&#34;toc-lecture-video&#34;&gt;Lecture Video&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#lubridate&#34; id=&#34;toc-lubridate&#34;&gt;The lubridate package&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#code-for-in-class-discussion-airbnb-data&#34; id=&#34;toc-code-for-in-class-discussion-airbnb-data&#34;&gt;Code for In-Class Discussion (Airbnb Data)&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
 &lt;/ul&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/div&gt;
@@ -4336,10 +4337,11 @@ filename &amp;lt;-  file.path(path, filename)
 raw_dat &amp;lt;- read_csv(filename)
 dplyr::select(raw_dat, 1:5)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## # A tibble: 2 × 5
-##   country     `1960_fertility` `1960_life_expe… `1961_fertility` `1961_life_expe…
-##   &amp;lt;chr&amp;gt;                  &amp;lt;dbl&amp;gt;            &amp;lt;dbl&amp;gt;            &amp;lt;dbl&amp;gt;            &amp;lt;dbl&amp;gt;
-## 1 Germany                 2.41             69.3             2.44             69.8
-## 2 South Korea             6.16             53.0             5.99             53.8&lt;/code&gt;&lt;/pre&gt;
+##   country     `1960_fertility` `1960_life_expectancy` `1961_fertility` 1961_li…¹
+##   &amp;lt;chr&amp;gt;                  &amp;lt;dbl&amp;gt;                  &amp;lt;dbl&amp;gt;            &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt;
+## 1 Germany                 2.41                   69.3             2.44      69.8
+## 2 South Korea             6.16                   53.0             5.99      53.8
+## # … with abbreviated variable name ¹​`1961_life_expectancy`&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;First, note that the data is in wide format. Second, notice that this table includes values for two variables, fertility and life expectancy, with the column name encoding which column represents which variable. Encoding information in the column names is not recommended but, unfortunately, it is quite common. We will put our wrangling skills to work to extract this information and store it in a tidy fashion.&lt;/p&gt;
 &lt;p&gt;We can start the data wrangling with the &lt;code&gt;gather&lt;/code&gt; function, but we should no longer use the column name &lt;code&gt;year&lt;/code&gt; for the new column since it also contains the variable type. We will call it &lt;code&gt;key&lt;/code&gt;, the default, for now:&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;dat &amp;lt;- raw_dat %&amp;gt;% gather(key, value, -country)
@@ -4824,8 +4826,12 @@ head(tidyData)&lt;/code&gt;&lt;/pre&gt;
 ## 5 CA    Los Angeles               31
 ## 6 CA    Kern                       8&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;If we use the only common field, &lt;code&gt;state&lt;/code&gt; to merge &lt;code&gt;tidyData&lt;/code&gt;, which is unique on &lt;code&gt;state&lt;/code&gt; and &lt;code&gt;year&lt;/code&gt;, to &lt;code&gt;notTidyData&lt;/code&gt;, which is unique on &lt;code&gt;county&lt;/code&gt;, then every time we see &lt;code&gt;state&lt;/code&gt; in our “left” data, we will get &lt;strong&gt;all three counties in that state and for that year&lt;/strong&gt;. Even worse, we will get the &lt;code&gt;InNOut_locations&lt;/code&gt; tally repeated for every matching &lt;code&gt;state&lt;/code&gt;!&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;joinedData &amp;lt;- left_join(tidyData, notTidyData, by = c(&amp;#39;state&amp;#39;))
-joinedData&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;joinedData &amp;lt;- left_join(tidyData, notTidyData, by = c(&amp;#39;state&amp;#39;))&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Warning in left_join(tidyData, notTidyData, by = c(&amp;quot;state&amp;quot;)): Each row in `x` is expected to match at most 1 row in `y`.
+## ℹ Row 1 of `x` matches multiple rows.
+## ℹ If multiple matches are expected, set `multiple = &amp;quot;all&amp;quot;` to silence this
+##   warning.&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;joinedData&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## # A tibble: 12 × 5
 ##    state  year Arrests County      InNOut_locations
 ##    &amp;lt;chr&amp;gt; &amp;lt;dbl&amp;gt;   &amp;lt;dbl&amp;gt; &amp;lt;chr&amp;gt;                  &amp;lt;dbl&amp;gt;
@@ -4946,17 +4952,17 @@ In these cases, examining the entire vector of dates will help you determine wha
 &lt;pre&gt;&lt;code&gt;## [1] &amp;quot;2001-02-09&amp;quot;&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;The &lt;strong&gt;lubridate&lt;/strong&gt; package is also useful for dealing with times. In R base, you can get the current time typing &lt;code&gt;Sys.time()&lt;/code&gt;. The &lt;strong&gt;lubridate&lt;/strong&gt; package provides a slightly more advanced function, &lt;code&gt;now&lt;/code&gt;, that permits you to define the time zone:&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;now()&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;2023-01-07 15:37:28 EST&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;2023-04-11 11:42:26 EDT&amp;quot;&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;now(&amp;quot;GMT&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;2023-01-07 20:37:28 GMT&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;2023-04-11 15:42:26 GMT&amp;quot;&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;You can see all the available time zones with &lt;code&gt;OlsonNames()&lt;/code&gt; function.&lt;/p&gt;
 &lt;p&gt;We can also extract hours, minutes, and seconds:&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;now() %&amp;gt;% hour()&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## [1] 15&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 11&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;now() %&amp;gt;% minute()&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## [1] 37&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 42&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;now() %&amp;gt;% second()&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## [1] 28.01117&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 26.31125&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;The package also includes a function to parse strings into times as well as parsers for time objects that include dates:&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;x &amp;lt;- c(&amp;quot;12:34:56&amp;quot;)
 hms(x)&lt;/code&gt;&lt;/pre&gt;
@@ -4978,6 +4984,10 @@ mdy_hms(x)&lt;/code&gt;&lt;/pre&gt;
   group_by(week) %&amp;gt;%
   summarize(margin = mean(rawpoll_clinton - rawpoll_trump)) %&amp;gt;%
   qplot(week, margin, data = .)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Warning: `qplot()` was deprecated in ggplot2 3.4.0.
+## This warning is displayed once every 8 hours.
+## Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
+## generated.&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/content/11-content_files/figure-html/poll-margin-versus-week-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Date objects can be added to and subtracted from with &lt;code&gt;hours&lt;/code&gt;, &lt;code&gt;minutes&lt;/code&gt;, etc.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;startDate &amp;lt;- ymd_hms(&amp;#39;2021-06-14 12:20:57&amp;#39;)
@@ -5003,10 +5013,49 @@ endDate - startDate&lt;/code&gt;&lt;/pre&gt;
 ##  [9] &amp;quot;2021-06-14 20:20:57 UTC&amp;quot; &amp;quot;2021-06-14 21:20:57 UTC&amp;quot;
 ## [11] &amp;quot;2021-06-14 22:20:57 UTC&amp;quot; &amp;quot;2021-06-14 23:20:57 UTC&amp;quot;
 ## [13] &amp;quot;2021-06-15 00:20:57 UTC&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;div id=&#34;code-for-in-class-discussion-airbnb-data&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Code for In-Class Discussion (Airbnb Data)&lt;/h3&gt;
+&lt;p&gt;Airbnb datasets contain listings of rental properties in various cities and are known for having messy data. You can download the data for a city of your choice from Inside Airbnb. Link &lt;a href=&#34;http://insideairbnb.com/get-the-data/&#34;&gt;here&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Here are the tasks to perform to start. We’ll do more of this on Thursday.&lt;/p&gt;
+&lt;ol style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;Load the data&lt;/li&gt;
+&lt;li&gt;Clean and format variables&lt;/li&gt;
+&lt;li&gt;Filter and sort data&lt;/li&gt;
+&lt;li&gt;Calculate new variables&lt;/li&gt;
+&lt;/ol&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# Load necessary packages
+library(tidyverse)
+library(lubridate)
+
+# 1. Load the data
+listings &amp;lt;- read_csv(&amp;quot;listings.csv&amp;quot;)
+
+# 2. Clean and format variables
+listings_clean &amp;lt;- listings %&amp;gt;%
+  mutate(price = parse_number(price),
+         cleaning_fee = parse_number(cleaning_fee, na = &amp;quot;0&amp;quot;),
+         host_since = ymd(host_since),
+         host_duration = as.numeric(difftime(today(), host_since, units = &amp;quot;days&amp;quot;)) / 365
+  )
+
+# 3. Filter and sort data
+listings_filtered &amp;lt;- listings_clean %&amp;gt;%
+  filter(room_type == &amp;quot;Entire home/apt&amp;quot;,
+         accommodates &amp;gt;= 2,
+         bedrooms &amp;gt;= 1,
+         bathrooms &amp;gt;= 1
+  ) %&amp;gt;%
+  arrange(desc(review_scores_rating))
+
+# 4. Calculate new variables
+listings_summary &amp;lt;- listings_filtered %&amp;gt;%
+  group_by(neighbourhood) %&amp;gt;%
+  summarize(count = n(),
+            avg_price = mean(price, na.rm = TRUE),
+            avg_rating = mean(review_scores_rating, na.rm = TRUE)
+  ) %&amp;gt;%
+  arrange(desc(count))&lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
-&lt;div id=&#34;lecture-video&#34; class=&#34;section level2&#34;&gt;
-&lt;h2&gt;Lecture Video&lt;/h2&gt;
-&lt;p&gt;The lecture video for this material is &lt;a href=&#34;https://mediaspace.msu.edu/media/SSC442+-+Content+11+-+April+5th+2022/1_63z01mgu?st=407&#34;&gt;available here &lt;i class=&#34;fas fa-film&#34;&gt;&lt;/i&gt;&lt;/a&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;div class=&#34;footnotes footnotes-end-of-document&#34;&gt;

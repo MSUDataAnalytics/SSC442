@@ -1,7 +1,7 @@
 ---
 title: "Data Wrangling"
 linktitle: "11: Data Wrangling"
-read_date: "2022-04-05"
+read_date: "2023-04-11"
 menu:
   content:
     parent: Course content
@@ -831,10 +831,51 @@ seq(from = startDate, to = endDate, by = 'hour')
 ```
 
 
+### Code for In-Class Discussion (Airbnb Data)
+
+Airbnb datasets contain listings of rental properties in various cities and are known for having messy data. You can download the data for a city of your choice from Inside Airbnb. Link [here](http://insideairbnb.com/get-the-data/). 
+
+Here are the tasks to perform to start. We'll do more of this on Thursday. 
+
+1. Load the data
+2. Clean and format variables
+3. Filter and sort data
+4. Calculate new variables
 
 
+```{r, eval = FALSE, echo=TRUE}
+# Load necessary packages
+library(tidyverse)
+library(lubridate)
+
+# 1. Load the data
+listings <- read_csv("listings.csv")
+
+# 2. Clean and format variables
+listings_clean <- listings %>%
+  mutate(price = parse_number(price),
+         cleaning_fee = parse_number(cleaning_fee, na = "0"),
+         host_since = ymd(host_since),
+         host_duration = as.numeric(difftime(today(), host_since, units = "days")) / 365
+  )
+
+# 3. Filter and sort data
+listings_filtered <- listings_clean %>%
+  filter(room_type == "Entire home/apt",
+         accommodates >= 2,
+         bedrooms >= 1,
+         bathrooms >= 1
+  ) %>%
+  arrange(desc(review_scores_rating))
+
+# 4. Calculate new variables
+listings_summary <- listings_filtered %>%
+  group_by(neighbourhood) %>%
+  summarize(count = n(),
+            avg_price = mean(price, na.rm = TRUE),
+            avg_rating = mean(review_scores_rating, na.rm = TRUE)
+  ) %>%
+  arrange(desc(count))
+```
 
 
-
-## Lecture Video
-The lecture video for this material is [available here <i class="fas fa-film"></i>](https://mediaspace.msu.edu/media/SSC442+-+Content+11+-+April+5th+2022/1_63z01mgu?st=407)

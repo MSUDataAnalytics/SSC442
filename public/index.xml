@@ -3481,12 +3481,11 @@ ggplot(full_data_results, aes(x = total_HR, y = .pred_TRUE, color = inHall)) +
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       <guid>https://ssc442.netlify.app/assignment/11-assignment/</guid>
       <description>
-&lt;script src=&#34;https://ssc442.netlify.app/rmarkdown-libs/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
 
 &lt;div id=&#34;TOC&#34;&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;a href=&#34;#your-final-lab&#34; id=&#34;toc-your-final-lab&#34;&gt;Your final lab&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;#data-wrangling-continued&#34; id=&#34;toc-data-wrangling-continued&#34;&gt;Data Wrangling Continued…&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#data-wrangling&#34; id=&#34;toc-data-wrangling&#34;&gt;Data Wrangling&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/div&gt;
 
@@ -3497,10 +3496,10 @@ ggplot(full_data_results, aes(x = total_HR, y = .pred_TRUE, color = inHall)) +
 You must turn in a PDF document of your &lt;code&gt;R Markdown&lt;/code&gt; code. Submit this to D2L by 11:59 PM Eastern Time on &lt;strong&gt;Monday, Monday April 12th.&lt;/strong&gt;
 ::&lt;/p&gt;
 &lt;/div&gt;
-&lt;div id=&#34;data-wrangling-continued&#34; class=&#34;section level2&#34;&gt;
-&lt;h2&gt;Data Wrangling Continued…&lt;/h2&gt;
-&lt;p&gt;You still work for a travel booking website as a data analyst. The hotel has once again asked your company for data on corporate bookings at the hotel via your site. Specifically, they have five corporations that are frequent customers of the hotel, and they want to know who spends the most with them. They’ve asked you to help out. Most of the corporate spending is in the form of room reservations, but there are also parking fees that the hotel wants included in the analysis. Your goal: total up spending by corporation and report the biggest and smallest spenders inclusive of rooms and parking.&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;You did this already in class, but your boss now has some different data. It’s similar, and your code from before will help, but it has some new wrinkles in it to tackle&lt;/strong&gt;. Here’s your data:&lt;/p&gt;
+&lt;div id=&#34;data-wrangling&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Data Wrangling&lt;/h2&gt;
+&lt;p&gt;You work for a travel booking website as a data analyst. The hotel has asked your company for data on corporate bookings at the hotel via your site. Specifically, they have five corporations that are frequent customers of the hotel, and they want to know who spends the most with them. They’ve asked you to help out. Most of the corporate spending is in the form of room reservations, but there are also parking fees that the hotel wants included in the analysis. Your goal: total up spending by corporation and report the biggest and smallest spenders inclusive of rooms and parking.&lt;/p&gt;
+&lt;p&gt;Here’s your data:&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;p&gt;&lt;a href=&#34;https://ssc442.netlify.app/data/Lab11_booking.csv&#34;&gt;&lt;i class=&#34;fas fa-file-csv&#34;&gt;&lt;/i&gt; &lt;code&gt;booking.csv&lt;/code&gt;&lt;/a&gt; - Contains the corporation name, the room type, and the dates someone from the corporation stayed at the hotel. It was pulled by an intern who doesn’t understand date-time stamps.&lt;/p&gt;&lt;/li&gt;
 &lt;li&gt;&lt;p&gt;&lt;a href=&#34;https://ssc442.netlify.app/data/Lab11_roomrates.csv&#34;&gt;&lt;i class=&#34;fas fa-file-csv&#34;&gt;&lt;/i&gt; &lt;code&gt;roomrates.csv&lt;/code&gt;&lt;/a&gt; - Contains the price of each room on each day. The Lab 11 version of this data is from our German affiliate, so pay attention to the date format!&lt;/p&gt;&lt;/li&gt;
@@ -3510,12 +3509,10 @@ You must turn in a PDF document of your &lt;code&gt;R Markdown&lt;/code&gt; code
 &lt;div class=&#34;fyi&#34;&gt;
 &lt;p&gt;&lt;strong&gt;EXERCISE 1&lt;/strong&gt;&lt;/p&gt;
 &lt;ol style=&#34;list-style-type: decimal&#34;&gt;
-&lt;li&gt;&lt;p&gt;As you did in class, but with your new set of data, total up spending by corporation and report the biggest and smallest spenders inclusive of rooms and parking&lt;/p&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;Visualize (using &lt;code&gt;ggplot&lt;/code&gt;) each corporation’s spending at the hotel over time and by roomtype. Make one plot with &lt;code&gt;ggplot&lt;/code&gt; that shows this.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Total up spending by corporation and report the biggest and smallest spenders inclusive of rooms and parking&lt;/p&gt;&lt;/li&gt;
 &lt;li&gt;&lt;p&gt;Visualize (using &lt;code&gt;ggplot&lt;/code&gt;) the room rates over time by room type. Can you tell what factors determine room price? Note that we know each corporation gets the same room rate as the others on the same day, so this is about room rates, not corporate spending. Make &lt;strong&gt;two&lt;/strong&gt; total plots, the first showing the room rates over time by room type, and the second explaining some feature of one of the room rates (e.g. when is the double room price high? When is it low?). Using the &lt;code&gt;month(...)&lt;/code&gt; and &lt;code&gt;day(...)&lt;/code&gt; functions from &lt;code&gt;lubridate&lt;/code&gt; will help with figuring out the patterns.&lt;/p&gt;&lt;/li&gt;
 &lt;/ol&gt;
 &lt;/div&gt;
-&lt;p&gt;Congrats on finishing your last lab!&lt;/p&gt;
 &lt;/div&gt;
 </description>
     </item>
@@ -3526,31 +3523,109 @@ You must turn in a PDF document of your &lt;code&gt;R Markdown&lt;/code&gt; code
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       <guid>https://ssc442.netlify.app/example/11-example/</guid>
       <description>
-&lt;script src=&#34;https://ssc442.netlify.app/rmarkdown-libs/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
 
 &lt;div id=&#34;TOC&#34;&gt;
 &lt;ul&gt;
-&lt;li&gt;&lt;a href=&#34;#data-to-be-wrangled&#34; id=&#34;toc-data-to-be-wrangled&#34;&gt;Data to be wrangled&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#airbnb-and-weather-data&#34; id=&#34;toc-airbnb-and-weather-data&#34;&gt;Airbnb and Weather Data&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/div&gt;
 
-&lt;div id=&#34;data-to-be-wrangled&#34; class=&#34;section level1&#34;&gt;
-&lt;h1&gt;Data to be wrangled&lt;/h1&gt;
-&lt;p&gt;You work for a travel booking website as a data analyst. A hotel has asked your company for data on corporate bookings at the hotel via your site. Specifically, they have five corporations that are frequent customers of the hotel, and they want to know who spends the most with them. They’ve asked you to help out. Most of the corporate spending is in the form of room reservations, but there are also parking fees that the hotel wants included in the analysis. Your goal: total up spending by corporation and report the biggest and smallest spenders inclusive of rooms and parking.&lt;/p&gt;
-&lt;p&gt;Unfortunately, you only have the following data:&lt;/p&gt;
+&lt;div id=&#34;airbnb-and-weather-data&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Airbnb and Weather Data&lt;/h1&gt;
+&lt;p&gt;In this exercise, you will practice your data wrangling skills by working with two datasets: Airbnb property listings and local weather data. You will first clean and preprocess the data using various techniques, and then join the datasets to explore the relationship between weather conditions and rental prices or availability. This hands-on exercise will help you gain practical experience in handling real-world data and extracting insights from it.&lt;/p&gt;
+&lt;p&gt;Exercise&lt;/p&gt;
+&lt;ol style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;Load the Airbnb dataset for a city of your choice from &lt;a href=&#34;http://insideairbnb.com/get-the-data/&#34;&gt;Inside Airbnb&lt;/a&gt; and preprocess it as follows:&lt;/li&gt;
+&lt;/ol&gt;
 &lt;ul&gt;
-&lt;li&gt;&lt;p&gt;&lt;a href=&#34;https://ssc442.netlify.app/data/Example11_booking.csv&#34;&gt;&lt;i class=&#34;fas fa-file-csv&#34;&gt;&lt;/i&gt; &lt;code&gt;booking.csv&lt;/code&gt;&lt;/a&gt; - Contains the corporation name, the room type, and the dates someone from the corporation stayed at the hoted.&lt;/p&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;&lt;a href=&#34;https://ssc442.netlify.app/data/Example11_roomrates.csv&#34;&gt;&lt;i class=&#34;fas fa-file-csv&#34;&gt;&lt;/i&gt; &lt;code&gt;roomrates.csv&lt;/code&gt;&lt;/a&gt; - Contains the price of each room on each day&lt;/p&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;&lt;a href=&#34;https://ssc442.netlify.app/data/Example11_parking.csv&#34;&gt;&lt;i class=&#34;fas fa-file-csv&#34;&gt;&lt;/i&gt; &lt;code&gt;parking.csv&lt;/code&gt;&lt;/a&gt; - Contains the corporations who negotiated free parking for employees&lt;/p&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;Parking at the hotel is $60 if you don’t have free parking. This hotel is in California, so everyone drives and parks when they stay.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;Clean and format variables like price, cleaning_fee, and host_since&lt;/li&gt;
+&lt;li&gt;Filter listings based on certain criteria, such as room type, number of guests, bedrooms, and bathrooms&lt;/li&gt;
+&lt;li&gt;Calculate new variables, like &lt;code&gt;host_duration&lt;/code&gt;&lt;/li&gt;
 &lt;/ul&gt;
-&lt;div class=&#34;fyi&#34;&gt;
-&lt;p&gt;Some tips:&lt;/p&gt;
+&lt;ol start=&#34;2&#34; style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;Obtain historical weather data for the same city from a source like NOAA Climate Data Online (CDO) or use APIs like &lt;a href=&#34;https://openweathermap.org/api&#34;&gt;OpenWeather&lt;/a&gt; and preprocess it:&lt;/li&gt;
+&lt;/ol&gt;
 &lt;ul&gt;
-&lt;li&gt;&lt;p&gt;Right-click on each of the links, copy the address, and read the URL in using &lt;code&gt;read.csv&lt;/code&gt; or &lt;code&gt;read_csv&lt;/code&gt; or whatever you prefer to read .csv’s&lt;/p&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;You’ll find you need to use most of the tools we covered on Tuesday including &lt;code&gt;gather&lt;/code&gt;, &lt;code&gt;separate&lt;/code&gt; and more.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;Clean and format weather variables like &lt;code&gt;date&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;Aggregate weather data by month and year to calculate average temperature and precipitation&lt;/li&gt;
 &lt;/ul&gt;
-&lt;/div&gt;
+&lt;ol start=&#34;3&#34; style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;&lt;p&gt;Join the Airbnb and weather datasets using the &lt;code&gt;first_review&lt;/code&gt; date in the Airbnb dataset and the aggregated weather data.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Perform exploratory data analysis using the combined dataset to answer at least one of the following questions:&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;ul&gt;
+&lt;li&gt;Is there a relationship between the average temperature during the month of the first review and the rental price? Create a scatter plot to visualize the relationship, and fit a linear regression line to the data.&lt;/li&gt;
+&lt;li&gt;How does the average precipitation during the month of the first review impact the rental price? Create a scatter plot to visualize the relationship, and fit a linear regression line to the data.&lt;/li&gt;
+&lt;li&gt;Do listings with higher review scores tend to be in months with higher or lower temperatures? Calculate the correlation between average temperature and review scores.&lt;/li&gt;
+&lt;li&gt;Investigate if any particular neighborhood experiences higher average temperatures or precipitation levels during the first review. Create a bar chart to display the average weather conditions by neighborhood.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;Note:&lt;/strong&gt; This exercise, which is your weekly writing, is designed to be completed in approximately 90 minutes but may take a bit longer. If you face any odd issues or need clarification, don’t hesitate to ask. Some miscellaneous sample code is below, but functionality is not guaranteed.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# Load necessary packages
+library(tidyverse)
+library(lubridate)
+
+# 1. Load weather data
+weather &amp;lt;- read_csv(&amp;quot;weather.csv&amp;quot;)
+
+# 2. Clean and format weather variables
+weather_clean &amp;lt;- weather %&amp;gt;%
+  mutate(date = ymd(date),
+         month = month(date),
+         year = year(date)
+  )
+
+# 3. Aggregate weather data
+weather_summary &amp;lt;- weather_clean %&amp;gt;%
+  group_by(year, month) %&amp;gt;%
+  summarize(avg_temp = mean(temperature, na.rm = TRUE),
+            avg_precip = mean(precipitation, na.rm = TRUE)
+  )
+
+# 4. Join Airbnb and weather data
+listings_weather &amp;lt;- listings_clean %&amp;gt;%
+  mutate(month = month(first_review),
+         year = year(first_review)
+  ) %&amp;gt;%
+  left_join(weather_summary, by = c(&amp;quot;year&amp;quot;, &amp;quot;month&amp;quot;))
+
+# Example analysis: Explore the relationship between average temperature and price
+ggplot(listings_weather, aes(x = avg_temp, y = price)) +
+  geom_point() +
+  geom_smooth(method = &amp;quot;lm&amp;quot;, se = FALSE) +
+  labs(title = &amp;quot;Relationship between Average Temperature and Airbnb Price&amp;quot;,
+       x = &amp;quot;Average Temperature (°F)&amp;quot;,
+       y = &amp;quot;Price ($)&amp;quot;
+  )
+
+# Convert temperature from Fahrenheit to Celsius
+weather_clean &amp;lt;- weather_clean %&amp;gt;%
+  mutate(temperature_c = (temperature - 32) * 5/9)
+Replace missing values in a variable:
+
+# Replace missing values in the review_scores_rating variable with the mean rating
+listings_clean &amp;lt;- listings_clean %&amp;gt;%
+  mutate(review_scores_rating = if_else(is.na(review_scores_rating),
+                                        mean(review_scores_rating, na.rm = TRUE),
+                                        review_scores_rating))
+
+# Calculate the correlation between average temperature and review_scores_rating
+correlation &amp;lt;- cor(listings_weather$avg_temp, listings_weather$review_scores_rating, use = &amp;quot;pairwise.complete.obs&amp;quot;)
+
+# Create a bar chart comparing average weather conditions by neighborhood:
+listings_weather %&amp;gt;%
+  group_by(neighbourhood) %&amp;gt;%
+  summarize(avg_temp_neigh = mean(avg_temp, na.rm = TRUE),
+            avg_precip_neigh = mean(avg_precip, na.rm = TRUE)
+  ) %&amp;gt;%
+  gather(key = &amp;quot;weather_variable&amp;quot;, value = &amp;quot;value&amp;quot;, avg_temp_neigh, avg_precip_neigh) %&amp;gt;%
+  ggplot(aes(x = reorder(neighbourhood, value), y = value, fill = weather_variable)) +
+  geom_col(position = &amp;quot;dodge&amp;quot;) +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  labs(title = &amp;quot;Average Weather Conditions by Neighborhood&amp;quot;,
+       x = &amp;quot;Neighborhood&amp;quot;,
+       y = &amp;quot;Value&amp;quot;,
+       fill = &amp;quot;Weather Variable&amp;quot;
+  )&lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 </description>
     </item>
@@ -12023,7 +12098,6 @@ myData = WDI(country = refugees_clean$iso2, indicator = &amp;#39;SP.POP.TOTL&amp
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       <guid>https://ssc442.netlify.app/content/11-content/</guid>
       <description>
-&lt;script src=&#34;https://ssc442.netlify.app/rmarkdown-libs/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
 
 &lt;div id=&#34;TOC&#34;&gt;
 &lt;ul&gt;
@@ -12067,8 +12141,10 @@ myData = WDI(country = refugees_clean$iso2, indicator = &amp;#39;SP.POP.TOTL&amp
 &lt;li&gt;&lt;a href=&#34;#parsing-dates-and-times&#34; id=&#34;toc-parsing-dates-and-times&#34;&gt;Parsing dates and times&lt;/a&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;a href=&#34;#the-date-data-type&#34; id=&#34;toc-the-date-data-type&#34;&gt;The date data type&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;#lubridate&#34; id=&#34;toc-lubridate&#34;&gt;The lubridate package&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;#lecture-video&#34; id=&#34;toc-lecture-video&#34;&gt;Lecture Video&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#lubridate&#34; id=&#34;toc-lubridate&#34;&gt;The lubridate package&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#code-for-in-class-discussion-airbnb-data&#34; id=&#34;toc-code-for-in-class-discussion-airbnb-data&#34;&gt;Code for In-Class Discussion (Airbnb Data)&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
 &lt;/ul&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/div&gt;
@@ -12171,10 +12247,11 @@ filename &amp;lt;-  file.path(path, filename)
 raw_dat &amp;lt;- read_csv(filename)
 dplyr::select(raw_dat, 1:5)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## # A tibble: 2 × 5
-##   country     `1960_fertility` `1960_life_expe… `1961_fertility` `1961_life_expe…
-##   &amp;lt;chr&amp;gt;                  &amp;lt;dbl&amp;gt;            &amp;lt;dbl&amp;gt;            &amp;lt;dbl&amp;gt;            &amp;lt;dbl&amp;gt;
-## 1 Germany                 2.41             69.3             2.44             69.8
-## 2 South Korea             6.16             53.0             5.99             53.8&lt;/code&gt;&lt;/pre&gt;
+##   country     `1960_fertility` `1960_life_expectancy` `1961_fertility` 1961_li…¹
+##   &amp;lt;chr&amp;gt;                  &amp;lt;dbl&amp;gt;                  &amp;lt;dbl&amp;gt;            &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt;
+## 1 Germany                 2.41                   69.3             2.44      69.8
+## 2 South Korea             6.16                   53.0             5.99      53.8
+## # … with abbreviated variable name ¹​`1961_life_expectancy`&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;First, note that the data is in wide format. Second, notice that this table includes values for two variables, fertility and life expectancy, with the column name encoding which column represents which variable. Encoding information in the column names is not recommended but, unfortunately, it is quite common. We will put our wrangling skills to work to extract this information and store it in a tidy fashion.&lt;/p&gt;
 &lt;p&gt;We can start the data wrangling with the &lt;code&gt;gather&lt;/code&gt; function, but we should no longer use the column name &lt;code&gt;year&lt;/code&gt; for the new column since it also contains the variable type. We will call it &lt;code&gt;key&lt;/code&gt;, the default, for now:&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;dat &amp;lt;- raw_dat %&amp;gt;% gather(key, value, -country)
@@ -12659,8 +12736,12 @@ head(tidyData)&lt;/code&gt;&lt;/pre&gt;
 ## 5 CA    Los Angeles               31
 ## 6 CA    Kern                       8&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;If we use the only common field, &lt;code&gt;state&lt;/code&gt; to merge &lt;code&gt;tidyData&lt;/code&gt;, which is unique on &lt;code&gt;state&lt;/code&gt; and &lt;code&gt;year&lt;/code&gt;, to &lt;code&gt;notTidyData&lt;/code&gt;, which is unique on &lt;code&gt;county&lt;/code&gt;, then every time we see &lt;code&gt;state&lt;/code&gt; in our “left” data, we will get &lt;strong&gt;all three counties in that state and for that year&lt;/strong&gt;. Even worse, we will get the &lt;code&gt;InNOut_locations&lt;/code&gt; tally repeated for every matching &lt;code&gt;state&lt;/code&gt;!&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;joinedData &amp;lt;- left_join(tidyData, notTidyData, by = c(&amp;#39;state&amp;#39;))
-joinedData&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;joinedData &amp;lt;- left_join(tidyData, notTidyData, by = c(&amp;#39;state&amp;#39;))&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Warning in left_join(tidyData, notTidyData, by = c(&amp;quot;state&amp;quot;)): Each row in `x` is expected to match at most 1 row in `y`.
+## ℹ Row 1 of `x` matches multiple rows.
+## ℹ If multiple matches are expected, set `multiple = &amp;quot;all&amp;quot;` to silence this
+##   warning.&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;joinedData&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## # A tibble: 12 × 5
 ##    state  year Arrests County      InNOut_locations
 ##    &amp;lt;chr&amp;gt; &amp;lt;dbl&amp;gt;   &amp;lt;dbl&amp;gt; &amp;lt;chr&amp;gt;                  &amp;lt;dbl&amp;gt;
@@ -12781,17 +12862,17 @@ In these cases, examining the entire vector of dates will help you determine wha
 &lt;pre&gt;&lt;code&gt;## [1] &amp;quot;2001-02-09&amp;quot;&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;The &lt;strong&gt;lubridate&lt;/strong&gt; package is also useful for dealing with times. In R base, you can get the current time typing &lt;code&gt;Sys.time()&lt;/code&gt;. The &lt;strong&gt;lubridate&lt;/strong&gt; package provides a slightly more advanced function, &lt;code&gt;now&lt;/code&gt;, that permits you to define the time zone:&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;now()&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;2023-01-07 15:37:28 EST&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;2023-04-11 11:42:26 EDT&amp;quot;&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;now(&amp;quot;GMT&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;2023-01-07 20:37:28 GMT&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;2023-04-11 15:42:26 GMT&amp;quot;&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;You can see all the available time zones with &lt;code&gt;OlsonNames()&lt;/code&gt; function.&lt;/p&gt;
 &lt;p&gt;We can also extract hours, minutes, and seconds:&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;now() %&amp;gt;% hour()&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## [1] 15&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 11&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;now() %&amp;gt;% minute()&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## [1] 37&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 42&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;now() %&amp;gt;% second()&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## [1] 28.01117&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 26.31125&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;The package also includes a function to parse strings into times as well as parsers for time objects that include dates:&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;x &amp;lt;- c(&amp;quot;12:34:56&amp;quot;)
 hms(x)&lt;/code&gt;&lt;/pre&gt;
@@ -12813,6 +12894,10 @@ mdy_hms(x)&lt;/code&gt;&lt;/pre&gt;
   group_by(week) %&amp;gt;%
   summarize(margin = mean(rawpoll_clinton - rawpoll_trump)) %&amp;gt;%
   qplot(week, margin, data = .)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Warning: `qplot()` was deprecated in ggplot2 3.4.0.
+## This warning is displayed once every 8 hours.
+## Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
+## generated.&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;img src=&#34;https://ssc442.netlify.app/content/11-content_files/figure-html/poll-margin-versus-week-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Date objects can be added to and subtracted from with &lt;code&gt;hours&lt;/code&gt;, &lt;code&gt;minutes&lt;/code&gt;, etc.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;startDate &amp;lt;- ymd_hms(&amp;#39;2021-06-14 12:20:57&amp;#39;)
@@ -12838,10 +12923,49 @@ endDate - startDate&lt;/code&gt;&lt;/pre&gt;
 ##  [9] &amp;quot;2021-06-14 20:20:57 UTC&amp;quot; &amp;quot;2021-06-14 21:20:57 UTC&amp;quot;
 ## [11] &amp;quot;2021-06-14 22:20:57 UTC&amp;quot; &amp;quot;2021-06-14 23:20:57 UTC&amp;quot;
 ## [13] &amp;quot;2021-06-15 00:20:57 UTC&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;div id=&#34;code-for-in-class-discussion-airbnb-data&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Code for In-Class Discussion (Airbnb Data)&lt;/h3&gt;
+&lt;p&gt;Airbnb datasets contain listings of rental properties in various cities and are known for having messy data. You can download the data for a city of your choice from Inside Airbnb. Link &lt;a href=&#34;http://insideairbnb.com/get-the-data/&#34;&gt;here&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Here are the tasks to perform to start. We’ll do more of this on Thursday.&lt;/p&gt;
+&lt;ol style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;Load the data&lt;/li&gt;
+&lt;li&gt;Clean and format variables&lt;/li&gt;
+&lt;li&gt;Filter and sort data&lt;/li&gt;
+&lt;li&gt;Calculate new variables&lt;/li&gt;
+&lt;/ol&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# Load necessary packages
+library(tidyverse)
+library(lubridate)
+
+# 1. Load the data
+listings &amp;lt;- read_csv(&amp;quot;listings.csv&amp;quot;)
+
+# 2. Clean and format variables
+listings_clean &amp;lt;- listings %&amp;gt;%
+  mutate(price = parse_number(price),
+         cleaning_fee = parse_number(cleaning_fee, na = &amp;quot;0&amp;quot;),
+         host_since = ymd(host_since),
+         host_duration = as.numeric(difftime(today(), host_since, units = &amp;quot;days&amp;quot;)) / 365
+  )
+
+# 3. Filter and sort data
+listings_filtered &amp;lt;- listings_clean %&amp;gt;%
+  filter(room_type == &amp;quot;Entire home/apt&amp;quot;,
+         accommodates &amp;gt;= 2,
+         bedrooms &amp;gt;= 1,
+         bathrooms &amp;gt;= 1
+  ) %&amp;gt;%
+  arrange(desc(review_scores_rating))
+
+# 4. Calculate new variables
+listings_summary &amp;lt;- listings_filtered %&amp;gt;%
+  group_by(neighbourhood) %&amp;gt;%
+  summarize(count = n(),
+            avg_price = mean(price, na.rm = TRUE),
+            avg_rating = mean(review_scores_rating, na.rm = TRUE)
+  ) %&amp;gt;%
+  arrange(desc(count))&lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
-&lt;div id=&#34;lecture-video&#34; class=&#34;section level2&#34;&gt;
-&lt;h2&gt;Lecture Video&lt;/h2&gt;
-&lt;p&gt;The lecture video for this material is &lt;a href=&#34;https://mediaspace.msu.edu/media/SSC442+-+Content+11+-+April+5th+2022/1_63z01mgu?st=407&#34;&gt;available here &lt;i class=&#34;fas fa-film&#34;&gt;&lt;/i&gt;&lt;/a&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;div class=&#34;footnotes footnotes-end-of-document&#34;&gt;
