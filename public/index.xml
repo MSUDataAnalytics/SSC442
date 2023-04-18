@@ -12987,7 +12987,6 @@ listings_summary &amp;lt;- listings_filtered %&amp;gt;%
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       <guid>https://ssc442.netlify.app/content/12-content/</guid>
       <description>
-&lt;script src=&#34;https://ssc442.netlify.app/rmarkdown-libs/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
 
 &lt;div id=&#34;TOC&#34;&gt;
 &lt;ul&gt;
@@ -14073,20 +14072,21 @@ the_names&lt;/code&gt;&lt;/pre&gt;
   mutate_at(-1, parse_number)
 new_research_funding_rates %&amp;gt;% as_tibble()&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## # A tibble: 9 × 10
-##   discipline    applications_tot… applications_men applications_wo… awards_total
-##   &amp;lt;chr&amp;gt;                     &amp;lt;dbl&amp;gt;            &amp;lt;dbl&amp;gt;            &amp;lt;dbl&amp;gt;        &amp;lt;dbl&amp;gt;
-## 1 Chemical sci…               122               83               39           32
-## 2 Physical sci…               174              135               39           35
-## 3 Physics                      76               67                9           20
-## 4 Humanities                  396              230              166           65
-## 5 Technical sc…               251              189               62           43
-## 6 Interdiscipl…               183              105               78           29
-## 7 Earth/life s…               282              156              126           56
-## 8 Social scien…               834              425              409          112
-## 9 Medical scie…               505              245              260           75
-## # … with 5 more variables: awards_men &amp;lt;dbl&amp;gt;, awards_women &amp;lt;dbl&amp;gt;,
-## #   success_rates_total &amp;lt;dbl&amp;gt;, success_rates_men &amp;lt;dbl&amp;gt;,
-## #   success_rates_women &amp;lt;dbl&amp;gt;&lt;/code&gt;&lt;/pre&gt;
+##   discipline     appli…¹ appli…² appli…³ award…⁴ award…⁵ award…⁶ succe…⁷ succe…⁸
+##   &amp;lt;chr&amp;gt;            &amp;lt;dbl&amp;gt;   &amp;lt;dbl&amp;gt;   &amp;lt;dbl&amp;gt;   &amp;lt;dbl&amp;gt;   &amp;lt;dbl&amp;gt;   &amp;lt;dbl&amp;gt;   &amp;lt;dbl&amp;gt;   &amp;lt;dbl&amp;gt;
+## 1 Chemical scie…     122      83      39      32      22      10    26.2    26.5
+## 2 Physical scie…     174     135      39      35      26       9    20.1    19.3
+## 3 Physics             76      67       9      20      18       2    26.3    26.9
+## 4 Humanities         396     230     166      65      33      32    16.4    14.3
+## 5 Technical sci…     251     189      62      43      30      13    17.1    15.9
+## 6 Interdiscipli…     183     105      78      29      12      17    15.8    11.4
+## 7 Earth/life sc…     282     156     126      56      38      18    19.9    24.4
+## 8 Social scienc…     834     425     409     112      65      47    13.4    15.3
+## 9 Medical scien…     505     245     260      75      46      29    14.9    18.8
+## # … with 1 more variable: success_rates_women &amp;lt;dbl&amp;gt;, and abbreviated variable
+## #   names ¹​applications_total, ²​applications_men, ³​applications_women,
+## #   ⁴​awards_total, ⁵​awards_men, ⁶​awards_women, ⁷​success_rates_total,
+## #   ⁸​success_rates_men&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;We can see that the objects are identical:&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;identical(research_funding_rates, new_research_funding_rates)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## [1] TRUE&lt;/code&gt;&lt;/pre&gt;
@@ -14258,9 +14258,9 @@ h &amp;lt;- read_html(url)&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Now, how do we extract the table from the object &lt;code&gt;h&lt;/code&gt;? If we print &lt;code&gt;h&lt;/code&gt;, we don’t really see much:&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;h&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## {html_document}
-## &amp;lt;html class=&amp;quot;client-nojs&amp;quot; lang=&amp;quot;en&amp;quot; dir=&amp;quot;ltr&amp;quot;&amp;gt;
+## &amp;lt;html class=&amp;quot;client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-language-alert-in-sidebar-enabled vector-feature-sticky-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-enabled vector-feature-main-menu-pinned-disabled vector-feature-limited-width-enabled vector-feature-limited-width-content-enabled vector-feature-zebra-design-disabled&amp;quot; lang=&amp;quot;en&amp;quot; dir=&amp;quot;ltr&amp;quot;&amp;gt;
 ## [1] &amp;lt;head&amp;gt;\n&amp;lt;meta http-equiv=&amp;quot;Content-Type&amp;quot; content=&amp;quot;text/html; charset=UTF-8 ...
-## [2] &amp;lt;body class=&amp;quot;skin-vector-legacy mediawiki ltr sitedir-ltr mw-hide-empty-e ...&lt;/code&gt;&lt;/pre&gt;
+## [2] &amp;lt;body class=&amp;quot;skin-vector skin-vector-search-vue mediawiki ltr sitedir-ltr ...&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;We can see all the code that defines the downloaded webpage using the &lt;code&gt;html_text&lt;/code&gt; function like this:&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;html_text(h)&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;We don’t show the output here because it includes thousands of characters, but if we look at it, we can see the data we are after are stored in an HTML table: you can see this in this line of the HTML code above &lt;code&gt;&amp;lt;table class=&#34;wikitable sortable&#34;&amp;gt;&lt;/code&gt;. The different parts of an HTML document, often defined with a message in between &lt;code&gt;&amp;lt;&lt;/code&gt; and &lt;code&gt;&amp;gt;&lt;/code&gt; are referred to as &lt;em&gt;nodes&lt;/em&gt;. The &lt;strong&gt;rvest&lt;/strong&gt; package includes functions to extract nodes of an HTML document: &lt;code&gt;html_nodes&lt;/code&gt; extracts all nodes of different types and &lt;code&gt;html_node&lt;/code&gt; extracts the first one. To extract the tables from the html code we use:&lt;/p&gt;

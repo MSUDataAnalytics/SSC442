@@ -1,7 +1,7 @@
 ---
 title: "Text as Data"
 linktitle: "12: Text as Data"
-read_date: "2022-04-12"
+read_date: "2023-04-18"
 menu:
   content:
     parent: Course content
@@ -12,7 +12,6 @@ output:
     toc: true
 ---
 
-<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
 
 <div id="TOC">
 <ul>
@@ -1098,20 +1097,21 @@ the_names</code></pre>
   mutate_at(-1, parse_number)
 new_research_funding_rates %&gt;% as_tibble()</code></pre>
 <pre><code>## # A tibble: 9 × 10
-##   discipline    applications_tot… applications_men applications_wo… awards_total
-##   &lt;chr&gt;                     &lt;dbl&gt;            &lt;dbl&gt;            &lt;dbl&gt;        &lt;dbl&gt;
-## 1 Chemical sci…               122               83               39           32
-## 2 Physical sci…               174              135               39           35
-## 3 Physics                      76               67                9           20
-## 4 Humanities                  396              230              166           65
-## 5 Technical sc…               251              189               62           43
-## 6 Interdiscipl…               183              105               78           29
-## 7 Earth/life s…               282              156              126           56
-## 8 Social scien…               834              425              409          112
-## 9 Medical scie…               505              245              260           75
-## # … with 5 more variables: awards_men &lt;dbl&gt;, awards_women &lt;dbl&gt;,
-## #   success_rates_total &lt;dbl&gt;, success_rates_men &lt;dbl&gt;,
-## #   success_rates_women &lt;dbl&gt;</code></pre>
+##   discipline     appli…¹ appli…² appli…³ award…⁴ award…⁵ award…⁶ succe…⁷ succe…⁸
+##   &lt;chr&gt;            &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;
+## 1 Chemical scie…     122      83      39      32      22      10    26.2    26.5
+## 2 Physical scie…     174     135      39      35      26       9    20.1    19.3
+## 3 Physics             76      67       9      20      18       2    26.3    26.9
+## 4 Humanities         396     230     166      65      33      32    16.4    14.3
+## 5 Technical sci…     251     189      62      43      30      13    17.1    15.9
+## 6 Interdiscipli…     183     105      78      29      12      17    15.8    11.4
+## 7 Earth/life sc…     282     156     126      56      38      18    19.9    24.4
+## 8 Social scienc…     834     425     409     112      65      47    13.4    15.3
+## 9 Medical scien…     505     245     260      75      46      29    14.9    18.8
+## # … with 1 more variable: success_rates_women &lt;dbl&gt;, and abbreviated variable
+## #   names ¹​applications_total, ²​applications_men, ³​applications_women,
+## #   ⁴​awards_total, ⁵​awards_men, ⁶​awards_women, ⁷​success_rates_total,
+## #   ⁸​success_rates_men</code></pre>
 <p>We can see that the objects are identical:</p>
 <pre class="r"><code>identical(research_funding_rates, new_research_funding_rates)</code></pre>
 <pre><code>## [1] TRUE</code></pre>
@@ -1283,9 +1283,9 @@ h &lt;- read_html(url)</code></pre>
 <p>Now, how do we extract the table from the object <code>h</code>? If we print <code>h</code>, we don’t really see much:</p>
 <pre class="r"><code>h</code></pre>
 <pre><code>## {html_document}
-## &lt;html class=&quot;client-nojs&quot; lang=&quot;en&quot; dir=&quot;ltr&quot;&gt;
+## &lt;html class=&quot;client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-language-alert-in-sidebar-enabled vector-feature-sticky-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-enabled vector-feature-main-menu-pinned-disabled vector-feature-limited-width-enabled vector-feature-limited-width-content-enabled vector-feature-zebra-design-disabled&quot; lang=&quot;en&quot; dir=&quot;ltr&quot;&gt;
 ## [1] &lt;head&gt;\n&lt;meta http-equiv=&quot;Content-Type&quot; content=&quot;text/html; charset=UTF-8 ...
-## [2] &lt;body class=&quot;skin-vector-legacy mediawiki ltr sitedir-ltr mw-hide-empty-e ...</code></pre>
+## [2] &lt;body class=&quot;skin-vector skin-vector-search-vue mediawiki ltr sitedir-ltr ...</code></pre>
 <p>We can see all the code that defines the downloaded webpage using the <code>html_text</code> function like this:</p>
 <pre class="r"><code>html_text(h)</code></pre>
 <p>We don’t show the output here because it includes thousands of characters, but if we look at it, we can see the data we are after are stored in an HTML table: you can see this in this line of the HTML code above <code>&lt;table class="wikitable sortable"&gt;</code>. The different parts of an HTML document, often defined with a message in between <code>&lt;</code> and <code>&gt;</code> are referred to as <em>nodes</em>. The <strong>rvest</strong> package includes functions to extract nodes of an HTML document: <code>html_nodes</code> extracts all nodes of different types and <code>html_node</code> extracts the first one. To extract the tables from the html code we use:</p>
