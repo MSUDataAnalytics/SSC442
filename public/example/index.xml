@@ -2164,20 +2164,103 @@ listings_weather %&amp;gt;%
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       <guid>https://ssc442.netlify.app/example/12-example/</guid>
       <description>
-&lt;script src=&#34;https://ssc442.netlify.app/rmarkdown-libs/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
 
 &lt;div id=&#34;TOC&#34;&gt;
 &lt;ul&gt;
-&lt;li&gt;&lt;a href=&#34;#lecture-video&#34; id=&#34;toc-lecture-video&#34;&gt;Lecture Video&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#an-application-of-text-cleaning&#34; id=&#34;toc-an-application-of-text-cleaning&#34;&gt;An Application of Text Cleaning&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#analyzing-the-relationship-between-specific-words-and-star-ratings&#34; id=&#34;toc-analyzing-the-relationship-between-specific-words-and-star-ratings&#34;&gt;Analyzing the Relationship between Specific Words and Star Ratings&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#breaking-down-the-analysis&#34; id=&#34;toc-breaking-down-the-analysis&#34;&gt;Breaking Down the Analysis&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#optional-extensions&#34; id=&#34;toc-optional-extensions&#34;&gt;Optional Extensions&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/div&gt;
 
-&lt;div class=&#34;fyi&#34;&gt;
-&lt;p&gt;Today’s example will come from the “Content” tab.&lt;/p&gt;
+&lt;div id=&#34;an-application-of-text-cleaning&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;An Application of Text Cleaning&lt;/h2&gt;
+&lt;div id=&#34;analyzing-the-relationship-between-specific-words-and-star-ratings&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Analyzing the Relationship between Specific Words and Star Ratings&lt;/h3&gt;
+&lt;p&gt;In this exercise, you will work with an Amazon product reviews dataset. Your task will be to analyze the relationship between the occurrence of specific words (such as “awesome” and “good”) in the review text and the star ratings.&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://www.kaggle.com/snap/amazon-fine-food-reviews&#34;&gt;Link to Dataset.&lt;/a&gt;. If you wish to follow along with the code, you’ll need to save this as &lt;code&gt;Reviews.csv&lt;/code&gt; or manually load the data as &lt;code&gt;reviews&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;As with last week, this exercise will be the weekly writing. Your final effort should be submitted using the standard format. And with that you are nearly done with the course.&lt;/p&gt;
 &lt;/div&gt;
-&lt;div id=&#34;lecture-video&#34; class=&#34;section level2&#34;&gt;
-&lt;h2&gt;Lecture Video&lt;/h2&gt;
-&lt;p&gt;The lecture video for this material is &lt;a href=&#34;https://mediaspace.msu.edu/media/SSC442+-+Example+12+%28actually%2C+Content+12+Pt+2%29+-+Apr+14th/1_q7asiqhe?st=1766&#34;&gt;available here &lt;i class=&#34;fas fa-film&#34;&gt;&lt;/i&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;div id=&#34;breaking-down-the-analysis&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Breaking Down the Analysis&lt;/h3&gt;
+&lt;p&gt;Below is some code to get you started. It may not work out of the box; you’ll have to hack and slash your way through.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Step 1:&lt;/strong&gt; Read the dataset containing product reviews into R.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# Load required packages
+library(tidyverse)
+
+# Read the dataset
+reviews &amp;lt;- read_csv(&amp;quot;Reviews.csv&amp;quot;)
+
+# Display the first few rows
+head(reviews)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;Step 2:&lt;/strong&gt; Calculate the occurrences of specific words (e.g., “awesome” and “good”) in the review text using string processing functions from the &lt;code&gt;stringr&lt;/code&gt; package.&lt;/p&gt;
+&lt;p&gt;Note that this code is not &lt;em&gt;robust&lt;/em&gt; in the sense that it does not capture alternative spellings and capitalization. You should use regular expressions to alter this code.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# Load the stringr package
+library(stringr)
+
+# Calculate occurrences of specific words
+reviews$awesome_count &amp;lt;- str_count(reviews$Text, &amp;quot;awesome&amp;quot;)
+reviews$good_count &amp;lt;- str_count(reviews$Text, &amp;quot;good&amp;quot;)
+
+# Display the first few rows with word occurrences
+head(reviews)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;Step 3:&lt;/strong&gt; Compute the average star rating for reviews containing each specific word.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# Calculate the average star rating for reviews containing &amp;quot;awesome&amp;quot;
+awesome_reviews &amp;lt;- reviews %&amp;gt;% filter(awesome_count &amp;gt; 0)
+average_rating_awesome &amp;lt;- mean(awesome_reviews$Score, na.rm = TRUE)
+
+# Calculate the average star rating for reviews containing &amp;quot;good&amp;quot;
+good_reviews &amp;lt;- reviews %&amp;gt;% filter(good_count &amp;gt; 0)
+average_rating_good &amp;lt;- mean(good_reviews$Score, na.rm = TRUE)
+
+# Display the average ratings
+cat(&amp;quot;The average rating for reviews containing &amp;#39;awesome&amp;#39; is:&amp;quot;, average_rating_awesome, &amp;quot;\n&amp;quot;)
+cat(&amp;quot;The average rating for reviews containing &amp;#39;good&amp;#39; is:&amp;quot;, average_rating_good, &amp;quot;\n&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;Step 4:&lt;/strong&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# Combine &amp;#39;awesome&amp;#39; and &amp;#39;good&amp;#39; reviews into a single dataset for plotting
+plot_data &amp;lt;- awesome_reviews %&amp;gt;%
+  select(Score) %&amp;gt;%
+  mutate(word = &amp;quot;awesome&amp;quot;) %&amp;gt;%
+  bind_rows(good_reviews %&amp;gt;%
+              select(Score) %&amp;gt;%
+              mutate(word = &amp;quot;good&amp;quot;))
+
+# Create boxplots to visualize the distribution of star ratings
+ggplot(plot_data, aes(x = word, y = Score)) +
+  geom_boxplot(fill = &amp;quot;lightblue&amp;quot;, color = &amp;quot;black&amp;quot;) +
+  labs(title = &amp;quot;Distribution of Star Ratings for Reviews Containing Specific Words&amp;quot;,
+       x = &amp;quot;Word&amp;quot;, y = &amp;quot;Star Rating&amp;quot;) +
+  scale_y_continuous(breaks = seq(1, 5, 1))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;Step 5:&lt;/strong&gt; Predictive analytics - using word occurrences to predict star ratings. In this step, we will build a simple linear regression model to predict the star ratings based on the occurrences of specific words (“awesome” and “good”) in the review text. You should explore alternatives and not merely copy and paste code.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# Load required package
+library(caret)
+
+# Create a training and testing dataset
+set.seed(123)
+train_index &amp;lt;- createDataPartition(reviews$Score, p = 0.8, list = FALSE)
+train_data &amp;lt;- reviews[train_index,]
+test_data &amp;lt;- reviews[-train_index,]
+
+# Fit a linear regression model using occurrences of &amp;quot;awesome&amp;quot; and &amp;quot;good&amp;quot; as predictors
+model &amp;lt;- lm(Score ~ awesome_count + good_count, data = train_data)
+
+# Display the model summary
+summary(model)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;Step 6:&lt;/strong&gt; Evaluate the predictive performance of the linear regression model on the test dataset.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# Predict the star ratings on the test dataset
+predictions &amp;lt;- predict(model, test_data)
+
+# Calculate the Root Mean Squared Error (RMSE)
+rmse &amp;lt;- sqrt(mean((predictions - test_data$Score)^2))
+cat(&amp;quot;The Root Mean Squared Error (RMSE) of the model is:&amp;quot;, rmse, &amp;quot;\n&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;optional-extensions&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Optional Extensions&lt;/h3&gt;
+&lt;p&gt;Explore more advanced predictive models, such as decision trees, knn, or text-based models like bag-of-words or TF-IDF, to improve the prediction accuracy. You can use packages like &lt;code&gt;randomForest&lt;/code&gt;, &lt;code&gt;xgboost&lt;/code&gt;, or &lt;code&gt;text2vec&lt;/code&gt; for these advanced models.&lt;/p&gt;
+&lt;/div&gt;
 &lt;/div&gt;
 </description>
     </item>

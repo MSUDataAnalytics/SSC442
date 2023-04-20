@@ -14,18 +14,101 @@ editor_options:
   chunk_output_type: console
 ---
 
-<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
 
 <div id="TOC">
 <ul>
-<li><a href="#lecture-video" id="toc-lecture-video">Lecture Video</a></li>
+<li><a href="#an-application-of-text-cleaning" id="toc-an-application-of-text-cleaning">An Application of Text Cleaning</a>
+<ul>
+<li><a href="#analyzing-the-relationship-between-specific-words-and-star-ratings" id="toc-analyzing-the-relationship-between-specific-words-and-star-ratings">Analyzing the Relationship between Specific Words and Star Ratings</a></li>
+<li><a href="#breaking-down-the-analysis" id="toc-breaking-down-the-analysis">Breaking Down the Analysis</a></li>
+<li><a href="#optional-extensions" id="toc-optional-extensions">Optional Extensions</a></li>
+</ul></li>
 </ul>
 </div>
 
-<div class="fyi">
-<p>Today’s example will come from the “Content” tab.</p>
+<div id="an-application-of-text-cleaning" class="section level2">
+<h2>An Application of Text Cleaning</h2>
+<div id="analyzing-the-relationship-between-specific-words-and-star-ratings" class="section level3">
+<h3>Analyzing the Relationship between Specific Words and Star Ratings</h3>
+<p>In this exercise, you will work with an Amazon product reviews dataset. Your task will be to analyze the relationship between the occurrence of specific words (such as “awesome” and “good”) in the review text and the star ratings.</p>
+<p><a href="https://www.kaggle.com/snap/amazon-fine-food-reviews">Link to Dataset.</a>. If you wish to follow along with the code, you’ll need to save this as <code>Reviews.csv</code> or manually load the data as <code>reviews</code>.</p>
+<p>As with last week, this exercise will be the weekly writing. Your final effort should be submitted using the standard format. And with that you are nearly done with the course.</p>
 </div>
-<div id="lecture-video" class="section level2">
-<h2>Lecture Video</h2>
-<p>The lecture video for this material is <a href="https://mediaspace.msu.edu/media/SSC442+-+Example+12+%28actually%2C+Content+12+Pt+2%29+-+Apr+14th/1_q7asiqhe?st=1766">available here <i class="fas fa-film"></i></a></p>
+<div id="breaking-down-the-analysis" class="section level3">
+<h3>Breaking Down the Analysis</h3>
+<p>Below is some code to get you started. It may not work out of the box; you’ll have to hack and slash your way through.</p>
+<p><strong>Step 1:</strong> Read the dataset containing product reviews into R.</p>
+<pre class="r"><code># Load required packages
+library(tidyverse)
+
+# Read the dataset
+reviews &lt;- read_csv(&quot;Reviews.csv&quot;)
+
+# Display the first few rows
+head(reviews)</code></pre>
+<p><strong>Step 2:</strong> Calculate the occurrences of specific words (e.g., “awesome” and “good”) in the review text using string processing functions from the <code>stringr</code> package.</p>
+<p>Note that this code is not <em>robust</em> in the sense that it does not capture alternative spellings and capitalization. You should use regular expressions to alter this code.</p>
+<pre class="r"><code># Load the stringr package
+library(stringr)
+
+# Calculate occurrences of specific words
+reviews$awesome_count &lt;- str_count(reviews$Text, &quot;awesome&quot;)
+reviews$good_count &lt;- str_count(reviews$Text, &quot;good&quot;)
+
+# Display the first few rows with word occurrences
+head(reviews)</code></pre>
+<p><strong>Step 3:</strong> Compute the average star rating for reviews containing each specific word.</p>
+<pre class="r"><code># Calculate the average star rating for reviews containing &quot;awesome&quot;
+awesome_reviews &lt;- reviews %&gt;% filter(awesome_count &gt; 0)
+average_rating_awesome &lt;- mean(awesome_reviews$Score, na.rm = TRUE)
+
+# Calculate the average star rating for reviews containing &quot;good&quot;
+good_reviews &lt;- reviews %&gt;% filter(good_count &gt; 0)
+average_rating_good &lt;- mean(good_reviews$Score, na.rm = TRUE)
+
+# Display the average ratings
+cat(&quot;The average rating for reviews containing &#39;awesome&#39; is:&quot;, average_rating_awesome, &quot;\n&quot;)
+cat(&quot;The average rating for reviews containing &#39;good&#39; is:&quot;, average_rating_good, &quot;\n&quot;)</code></pre>
+<p><strong>Step 4:</strong></p>
+<pre class="r"><code># Combine &#39;awesome&#39; and &#39;good&#39; reviews into a single dataset for plotting
+plot_data &lt;- awesome_reviews %&gt;%
+  select(Score) %&gt;%
+  mutate(word = &quot;awesome&quot;) %&gt;%
+  bind_rows(good_reviews %&gt;%
+              select(Score) %&gt;%
+              mutate(word = &quot;good&quot;))
+
+# Create boxplots to visualize the distribution of star ratings
+ggplot(plot_data, aes(x = word, y = Score)) +
+  geom_boxplot(fill = &quot;lightblue&quot;, color = &quot;black&quot;) +
+  labs(title = &quot;Distribution of Star Ratings for Reviews Containing Specific Words&quot;,
+       x = &quot;Word&quot;, y = &quot;Star Rating&quot;) +
+  scale_y_continuous(breaks = seq(1, 5, 1))</code></pre>
+<p><strong>Step 5:</strong> Predictive analytics - using word occurrences to predict star ratings. In this step, we will build a simple linear regression model to predict the star ratings based on the occurrences of specific words (“awesome” and “good”) in the review text. You should explore alternatives and not merely copy and paste code.</p>
+<pre class="r"><code># Load required package
+library(caret)
+
+# Create a training and testing dataset
+set.seed(123)
+train_index &lt;- createDataPartition(reviews$Score, p = 0.8, list = FALSE)
+train_data &lt;- reviews[train_index,]
+test_data &lt;- reviews[-train_index,]
+
+# Fit a linear regression model using occurrences of &quot;awesome&quot; and &quot;good&quot; as predictors
+model &lt;- lm(Score ~ awesome_count + good_count, data = train_data)
+
+# Display the model summary
+summary(model)</code></pre>
+<p><strong>Step 6:</strong> Evaluate the predictive performance of the linear regression model on the test dataset.</p>
+<pre class="r"><code># Predict the star ratings on the test dataset
+predictions &lt;- predict(model, test_data)
+
+# Calculate the Root Mean Squared Error (RMSE)
+rmse &lt;- sqrt(mean((predictions - test_data$Score)^2))
+cat(&quot;The Root Mean Squared Error (RMSE) of the model is:&quot;, rmse, &quot;\n&quot;)</code></pre>
+</div>
+<div id="optional-extensions" class="section level3">
+<h3>Optional Extensions</h3>
+<p>Explore more advanced predictive models, such as decision trees, knn, or text-based models like bag-of-words or TF-IDF, to improve the prediction accuracy. You can use packages like <code>randomForest</code>, <code>xgboost</code>, or <code>text2vec</code> for these advanced models.</p>
+</div>
 </div>

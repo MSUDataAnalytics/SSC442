@@ -14,16 +14,116 @@ editor_options:
   chunk_output_type: console
 ---
 
-:::fyi
+## An Application of Text Cleaning
 
-Today's example will come from the "Content" tab.
+### Analyzing the Relationship between Specific Words and Star Ratings
+
+In this exercise, you will work with an Amazon product reviews dataset. Your task will be to analyze the relationship between the occurrence of specific words (such as "awesome" and "good") in the review text and the star ratings.
+
+[Link to Dataset.](https://www.kaggle.com/snap/amazon-fine-food-reviews). If you wish to follow along with the code, you'll need to save this as `Reviews.csv` or manually load the data as `reviews`. 
+
+As with last week, this exercise will be the weekly writing. Your final effort should be submitted using the standard format. And with that you are nearly done with the course. 
 
 
-:::
+### Breaking Down the Analysis
 
+Below is some code to get you started. It may not work out of the box; you'll have to hack and slash your way through. 
 
+**Step 1:** Read the dataset containing product reviews into R.
 
+```{r, eval=FALSE}
+# Load required packages
+library(tidyverse)
 
+# Read the dataset
+reviews <- read_csv("Reviews.csv")
 
-## Lecture Video
-The lecture video for this material is [available here <i class="fas fa-film"></i>](https://mediaspace.msu.edu/media/SSC442+-+Example+12+%28actually%2C+Content+12+Pt+2%29+-+Apr+14th/1_q7asiqhe?st=1766)
+# Display the first few rows
+head(reviews)
+```
+
+**Step 2:** Calculate the occurrences of specific words (e.g., "awesome" and "good") in the review text using string processing functions from the `stringr` package.
+
+Note that this code is not _robust_ in the sense that it does not capture alternative spellings and capitalization. You should use regular expressions to alter this code. 
+
+```{r, eval=FALSE}
+# Load the stringr package
+library(stringr)
+
+# Calculate occurrences of specific words
+reviews$awesome_count <- str_count(reviews$Text, "awesome")
+reviews$good_count <- str_count(reviews$Text, "good")
+
+# Display the first few rows with word occurrences
+head(reviews)
+```
+
+**Step 3:** Compute the average star rating for reviews containing each specific word.
+
+```{r, eval=FALSE}
+# Calculate the average star rating for reviews containing "awesome"
+awesome_reviews <- reviews %>% filter(awesome_count > 0)
+average_rating_awesome <- mean(awesome_reviews$Score, na.rm = TRUE)
+
+# Calculate the average star rating for reviews containing "good"
+good_reviews <- reviews %>% filter(good_count > 0)
+average_rating_good <- mean(good_reviews$Score, na.rm = TRUE)
+
+# Display the average ratings
+cat("The average rating for reviews containing 'awesome' is:", average_rating_awesome, "\n")
+cat("The average rating for reviews containing 'good' is:", average_rating_good, "\n")
+```
+
+**Step 4:** 
+
+```{r, eval=FALSE}
+# Combine 'awesome' and 'good' reviews into a single dataset for plotting
+plot_data <- awesome_reviews %>%
+  select(Score) %>%
+  mutate(word = "awesome") %>%
+  bind_rows(good_reviews %>%
+              select(Score) %>%
+              mutate(word = "good"))
+
+# Create boxplots to visualize the distribution of star ratings
+ggplot(plot_data, aes(x = word, y = Score)) +
+  geom_boxplot(fill = "lightblue", color = "black") +
+  labs(title = "Distribution of Star Ratings for Reviews Containing Specific Words",
+       x = "Word", y = "Star Rating") +
+  scale_y_continuous(breaks = seq(1, 5, 1))
+```
+
+**Step 5:** Predictive analytics - using word occurrences to predict star ratings. In this step, we will build a simple linear regression model to predict the star ratings based on the occurrences of specific words ("awesome" and "good") in the review text. You should explore alternatives and not merely copy and paste code. 
+
+```{r, eval=FALSE}
+# Load required package
+library(caret)
+
+# Create a training and testing dataset
+set.seed(123)
+train_index <- createDataPartition(reviews$Score, p = 0.8, list = FALSE)
+train_data <- reviews[train_index,]
+test_data <- reviews[-train_index,]
+
+# Fit a linear regression model using occurrences of "awesome" and "good" as predictors
+model <- lm(Score ~ awesome_count + good_count, data = train_data)
+
+# Display the model summary
+summary(model)
+```
+
+**Step 6:** Evaluate the predictive performance of the linear regression model on the test dataset.
+
+```{r, eval=FALSE}
+# Predict the star ratings on the test dataset
+predictions <- predict(model, test_data)
+
+# Calculate the Root Mean Squared Error (RMSE)
+rmse <- sqrt(mean((predictions - test_data$Score)^2))
+cat("The Root Mean Squared Error (RMSE) of the model is:", rmse, "\n")
+```
+
+### Optional Extensions 
+
+Explore more advanced predictive models, such as decision trees, knn, or text-based models like bag-of-words or TF-IDF, to improve the prediction accuracy. You can use packages like `randomForest`, `xgboost`, or `text2vec` for these advanced models.
+
